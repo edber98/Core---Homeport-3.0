@@ -1,5 +1,6 @@
-import { Component, Input, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzPopoverModule } from 'ng-zorro-antd/popover';
@@ -91,7 +92,7 @@ for (const k of ['save_memory', 'get_memory', 'enrich_context', 'save_project_me
 @Component({
   selector: 'ai-message',
   standalone: true,
-  imports: [CommonModule, NzIconModule, NzTagModule, NzPopoverModule, NodeExecResultDialogComponent],
+  imports: [CommonModule, NzButtonModule, NzIconModule, NzTagModule, NzPopoverModule, NodeExecResultDialogComponent],
   template: `
     <div class="ai-msg" [class.user]="msg.role === 'user'" [class.assistant]="msg.role === 'assistant'">
       <div class="avatar">
@@ -220,6 +221,16 @@ for (const k of ['save_memory', 'get_memory', 'enrich_context', 'save_project_me
           </ng-container>
         </div>
 
+        <!-- Cancelled response -->
+        <div class="cancelled-banner" *ngIf="msg.cancelled">
+          <nz-tag class="cancelled-tag">
+            <span nz-icon nzType="stop" nzTheme="outline"></span> Réponse annulée
+          </nz-tag>
+          <button nz-button nzType="text" nzSize="small" (click)="retryClick.emit()" class="retry-btn">
+            <span nz-icon nzType="redo" nzTheme="outline"></span> Réessayer
+          </button>
+        </div>
+
         <!-- Tool result dialog -->
         <node-exec-result-dialog
           *ngIf="selectedToolResult"
@@ -282,10 +293,15 @@ for (const k of ['save_memory', 'get_memory', 'enrich_context', 'save_project_me
     .aq-check { font-size: 10px; }
     .aq-batch { margin: 6px 0; }
     .aq-sub-text { font-size: 12px; color: #333; margin-bottom: 4px; font-weight: 500; }
+    .cancelled-banner { display: flex; align-items: center; gap: 8px; padding: 4px 0; }
+    .cancelled-tag { color: #ff4d4f; border: 1px solid #ff4d4f; background: transparent; margin: 0; }
+    .retry-btn { color: #666; font-size: 12px; }
+    .retry-btn:hover { color: #1677ff; }
   `]
 })
 export class AiMessageComponent {
   @Input() msg!: AiMessage;
+  @Output() retryClick = new EventEmitter<void>();
   private ai = inject(AiService);
   private cdr = inject(ChangeDetectorRef);
 

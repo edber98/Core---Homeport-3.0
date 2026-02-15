@@ -18,18 +18,34 @@ const DEFAULT_MAX_LOOPS = 40;
 const STREAM_TIMEOUT_MS = 120_000; // 120s per-event timeout
 
 /**
- * Read next value from async iterator with timeout.
- * Throws if no event arrives within timeoutMs.
+ * Read next value from async iterator with timeout + abort signal.
+ * Rejects immediately if signal is aborted or fires abort during wait.
  */
-function nextWithTimeout(iterator, timeoutMs) {
+function nextWithTimeout(iterator, timeoutMs, signal) {
   return new Promise((resolve, reject) => {
+    if (signal?.aborted) return reject(new Error('Stream aborted'));
+
     const timer = setTimeout(
       () => reject(new Error(`LLM stream timeout: no event for ${timeoutMs / 1000}s`)),
       timeoutMs,
     );
+
+    let settled = false;
+    const cleanup = () => {
+      clearTimeout(timer);
+      if (signal) signal.removeEventListener('abort', onAbort);
+    };
+    const onAbort = () => {
+      if (settled) return;
+      settled = true;
+      cleanup();
+      reject(new Error('Stream aborted'));
+    };
+    if (signal) signal.addEventListener('abort', onAbort, { once: true });
+
     iterator.next().then(
-      r => { clearTimeout(timer); resolve(r); },
-      e => { clearTimeout(timer); reject(e); },
+      r => { if (!settled) { settled = true; cleanup(); resolve(r); } },
+      e => { if (!settled) { settled = true; cleanup(); reject(e); } },
     );
   });
 }
@@ -83,7 +99,7 @@ ${lines.join('\n')}
  * @param {object} [opts.agentOverrides]
  * @yields SSE events
  */
-async function* runHarness({ mode, messages, context, metadata, agentOverrides }) {
+async function* runHarness({ mode, messages, context, metadata, agentOverrides, signal }) {
   // Onboarding → fallback to original runAgent
   if (mode === 'onboarding') {
     console.log('[harness] onboarding → original runAgent');
@@ -161,6 +177,7 @@ async function* runHarness({ mode, messages, context, metadata, agentOverrides }
   console.log(`[harness] start: mode=${mode}, capsules=[${[...activeCapsules]}], tools=${toolSet.definitions.length}, provider=${llm.provider}, model=${llmConfig.model}`);
 
   while (loopCount < maxLoops) {
+    if (signal?.aborted) { console.log('[harness] aborted before loop', loopCount + 1); break; }
     loopCount++;
     console.log(`[harness] loop ${loopCount}/${maxLoops}, tools=${toolSet.definitions.length}`);
     yield { type: 'thinking', iteration: loopCount };
@@ -181,7 +198,13 @@ async function* runHarness({ mode, messages, context, metadata, agentOverrides }
     const it = stream[Symbol.asyncIterator]();
     try {
       while (true) {
-        const { done, value: event } = await nextWithTimeout(it, STREAM_TIMEOUT_MS);
+        if (signal?.aborted) break;
+        // Yield to event loop every 20 events so req.on('close') can fire
+        if (eventCount > 0 && eventCount % 20 === 0) {
+          await new Promise(r => setImmediate(r));
+          if (signal?.aborted) break;
+        }
+        const { done, value: event } = await nextWithTimeout(it, STREAM_TIMEOUT_MS, signal);
         if (done) break;
         eventCount++;
 
@@ -214,6 +237,13 @@ async function* runHarness({ mode, messages, context, metadata, agentOverrides }
         }
       }
     } catch (streamErr) {
+      // Client disconnected — clean exit
+      if (streamErr?.message === 'Stream aborted') {
+        console.log(`[harness] stream aborted by client after ${eventCount} events`);
+        await toolSet.cleanup();
+        yield { type: 'done', usage: totalUsage };
+        return;
+      }
       console.error(`[harness] stream error after ${eventCount} events:`, streamErr?.message || streamErr);
       // If we got text, yield what we have before throwing
       if (assistantText && pendingToolCalls.length === 0) {
@@ -226,6 +256,14 @@ async function* runHarness({ mode, messages, context, metadata, agentOverrides }
 
     console.log(`[harness] stream complete: events=${eventCount}, text=${assistantText.length}chars, pendingTools=${pendingToolCalls.length}`);
 
+    // Client disconnected mid-stream → stop immediately
+    if (signal?.aborted) {
+      console.log('[harness] aborted after stream, cleaning up');
+      await toolSet.cleanup();
+      yield { type: 'done', usage: totalUsage };
+      return;
+    }
+
     // No tool calls → agent is done
     if (pendingToolCalls.length === 0) {
       await toolSet.cleanup();
@@ -236,6 +274,7 @@ async function* runHarness({ mode, messages, context, metadata, agentOverrides }
     // Execute tools
     const toolResults = [];
     for (const tc of pendingToolCalls) {
+      if (signal?.aborted) { console.log('[harness] aborted before tool:', tc.name); break; }
       const startTime = Date.now();
       console.log(`[harness] tool: ${tc.name}`, JSON.stringify(tc.input || {}).slice(0, 500));
 

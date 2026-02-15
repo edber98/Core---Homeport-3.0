@@ -38,6 +38,7 @@ const AiMessageSchema = new Schema({
   question: { type: QuestionSchema, default: undefined },
   attachments: { type: [Schema.Types.Mixed], default: undefined },
   answer: { type: Schema.Types.Mixed, default: undefined },
+  cancelled: { type: Boolean, default: undefined },
   usage: {
     input: { type: Number },
     output: { type: Number },

@@ -16,6 +16,9 @@ const { runAgent } = require('../../ai/agent-runner');
 const { runHarness } = require('../../ai/agent-harness');
 const { toolIndex } = require('../../ai/tools/tool-index');
 
+// Active SSE streams — keyed by threadId string
+const activeStreams = new Map();
+
 module.exports = function () {
   const r = express.Router();
   r.use(authMiddleware());
@@ -501,7 +504,12 @@ ${toolLines.join('\n')}
     const heartbeat = setInterval(() => { try { res.write(':keepalive\n\n'); } catch {} }, 15000);
     let closed = false;
     let doneSent = false;
-    req.on('close', () => { closed = true; clearInterval(heartbeat); });
+    const ac = new AbortController();
+    const threadKey = String(thread._id);
+    activeStreams.set(threadKey, ac);
+    const onClose = () => { closed = true; clearInterval(heartbeat); ac.abort(); activeStreams.delete(threadKey); };
+    req.on('close', onClose);
+    res.on('close', onClose);
 
     // Build metadata from thread for mode-specific tools
     // graph/schema from body (latest unsaved state) take priority over thread metadata (DB state)
@@ -528,10 +536,11 @@ ${toolLines.join('\n')}
         context,
         metadata,
         agentOverrides,
+        signal: ac.signal,
       });
 
       for await (const event of generator) {
-        if (closed) break;
+        if (closed || ac.signal.aborted) break;
 
         switch (event.type) {
           case 'message': {
@@ -654,6 +663,7 @@ ${toolLines.join('\n')}
           toolCalls: toolCalls.length ? toolCalls : undefined,
           segments: cleanSegments.length ? cleanSegments : undefined,
           question: questionData ? { text: questionData.text, questionType: questionData.questionType, options: questionData.options, questions: questionData.questions } : undefined,
+          cancelled: ac.signal.aborted || undefined,
           usage: usageData && (usageData.input || usageData.output) ? usageData : undefined,
         });
       }
@@ -673,9 +683,24 @@ ${toolLines.join('\n')}
       send({ type: 'error', code: 'agent_error', message: e?.message || 'Internal error' });
     } finally {
       clearInterval(heartbeat);
+      activeStreams.delete(threadKey);
       if (!doneSent) { doneSent = true; send({ type: 'done' }); }
       try { res.end(); } catch {}
     }
+  });
+
+  // Cancel active stream for a thread
+  r.post('/ai/threads/:threadId/cancel', async (req, res) => {
+    const thread = await findThread(req.params.threadId);
+    if (!thread) return res.apiError(404, 'thread_not_found', 'Thread not found');
+    const key = String(thread._id);
+    const ac = activeStreams.get(key);
+    if (ac) {
+      ac.abort();
+      activeStreams.delete(key);
+      console.log(`[ai] stream cancelled for thread ${key}`);
+    }
+    res.apiOk({ cancelled: !!ac });
   });
 
   // ══════════════════════════════

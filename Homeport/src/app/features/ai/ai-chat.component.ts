@@ -85,7 +85,7 @@ interface StreamTool {
           <div class="system-content" *ngIf="expandedMsgs.has(msg)" [innerHTML]="renderMd(msg.content)"></div>
         </div>
         <!-- Regular message -->
-        <ai-message *ngIf="msg.role !== 'system'" [msg]="msg"></ai-message>
+        <ai-message *ngIf="msg.role !== 'system'" [msg]="msg" (retryClick)="retry()"></ai-message>
       </ng-container>
 
       <!-- Waiting for first token / thinking between iterations -->
@@ -178,6 +178,12 @@ interface StreamTool {
             </div>
           </div>
         </div>
+        <!-- Interrupted tag -->
+        <div class="interrupted-tag" *ngIf="interrupted && segments.length">
+          <nz-tag nzColor="orange">
+            <span nz-icon nzType="pause-circle" nzTheme="outline"></span> Interrompu
+          </nz-tag>
+        </div>
       </div>
 
       <!-- Pending question -->
@@ -211,11 +217,14 @@ interface StreamTool {
           placeholder="Écris un message..."
           (keydown)="onInputKeydown($event)"
           [nzAutosize]="{ minRows: 1, maxRows: 6 }"
-          [disabled]="ai.streaming() || audio.transcribing()">
+          [disabled]="audio.transcribing()">
         </textarea>
         <div class="input-suffix">
-          <button nz-button nzType="text" nzSize="small" (click)="send()" [disabled]="ai.streaming() || !inputText.trim()">
-            <span nz-icon [nzType]="ai.streaming() ? 'loading' : 'send'" nzTheme="outline"></span>
+          <button *ngIf="ai.streaming()" nz-button nzType="text" nzSize="small" nzDanger (click)="stopStream()">
+            <span nz-icon nzType="pause-circle" nzTheme="outline"></span>
+          </button>
+          <button *ngIf="!ai.streaming()" nz-button nzType="text" nzSize="small" (click)="send()" [disabled]="!inputText.trim()">
+            <span nz-icon nzType="send" nzTheme="outline"></span>
           </button>
         </div>
       </div>
@@ -316,6 +325,7 @@ interface StreamTool {
     .question-msg { display: flex; gap: 10px; padding: 8px 0; }
     .question-msg .avatar { width: 32px; height: 32px; border-radius: 50%; background: #e6f4ff; color: #1677ff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 16px; }
     .question-msg .question-body { flex: 1; min-width: 0; max-width: 85%; }
+    .interrupted-tag { padding: 4px 0; }
   `]
 })
 export class AiChatComponent {
@@ -324,6 +334,7 @@ export class AiChatComponent {
   streamError: string | null = null;
   expandedMsgs = new Set<any>();
   thinkingIteration = 0;
+  interrupted = false;
   @ViewChild('scrollContainer') scrollContainer?: ElementRef<HTMLDivElement>;
   @ViewChild('waveformCanvas') waveformCanvas?: ElementRef<HTMLCanvasElement>;
 
@@ -386,6 +397,7 @@ export class AiChatComponent {
     this.segments = [];
     this.streamError = null;
     this.thinkingIteration = 0;
+    this.interrupted = false;
 
     const { events$, stop } = await this.ai.quickSend(text);
     this.stopFn = stop;
@@ -429,10 +441,28 @@ export class AiChatComponent {
     } catch { this.cdr.detectChanges(); }
   }
 
+  stopStream() {
+    this.stopFn?.();
+    this.stopFn = undefined;
+    this.interrupted = true;
+  }
+
+  retry() {
+    const msgs = this.ai.messages();
+    for (let i = msgs.length - 1; i >= 0; i--) {
+      if (msgs[i].role === 'user' && msgs[i].content) {
+        this.inputText = msgs[i].content;
+        this.send();
+        return;
+      }
+    }
+  }
+
   onAnswer(answer: any) {
     this.segments = [];
     this.streamError = null;
     this.thinkingIteration = 0;
+    this.interrupted = false;
     const result = this.ai.answerQuestion(answer);
     if (!result) return;
     const { events$, stop } = result;

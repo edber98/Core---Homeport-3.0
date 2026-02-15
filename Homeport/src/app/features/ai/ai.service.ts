@@ -74,6 +74,7 @@ export interface AiMessage {
   question?: AiQuestion;
   attachments?: any[];
   answer?: any;
+  cancelled?: boolean;
   createdAt?: string;
 }
 
@@ -248,8 +249,13 @@ export class AiService {
 
     this.streamPost(url, body, tok, abortController.signal, subj);
 
+    const threadId = thread.id || thread._id;
     const stop = () => {
       try { abortController.abort(); } catch {}
+      // Also tell backend to cancel (in case TCP close isn't detected)
+      fetch(this.buildFetchUrl(`/api/ai/threads/${threadId}/cancel?workspaceId=${encodeURIComponent(wsId)}`), {
+        method: 'POST', headers: { 'Authorization': `Bearer ${tok}` },
+      }).catch(() => {});
       this.streaming.set(false);
       subj.complete();
     };
@@ -258,6 +264,10 @@ export class AiService {
   }
 
   private async streamPost(url: string, body: any, token: string, signal: AbortSignal, subj: Subject<AiStreamEvent>) {
+    let assistantText = '';
+    const toolCalls: AiToolCall[] = [];
+    const segments: AiMessageSegment[] = [];
+
     try {
       const res = await fetch(url, {
         method: 'POST',
@@ -282,9 +292,6 @@ export class AiService {
       const reader = res.body!.getReader();
       const decoder = new TextDecoder();
       let buffer = '';
-      let assistantText = '';
-      const toolCalls: AiToolCall[] = [];
-      const segments: AiMessageSegment[] = [];
       let finished = false;
 
       while (true) {
@@ -403,7 +410,23 @@ export class AiService {
         if (!subj.closed) subj.complete();
       });
     } catch (e: any) {
-      if (e?.name === 'AbortError') return;
+      if (e?.name === 'AbortError') {
+        // Stream was intentionally cancelled — add partial message with cancelled flag
+        this.zone.run(() => {
+          if (assistantText || toolCalls.length) {
+            const assistantMsg: AiMessage = {
+              threadId: this.currentThread()?._id || '',
+              role: 'assistant',
+              content: assistantText,
+              toolCalls: toolCalls.length ? [...toolCalls] : undefined,
+              segments: segments.length ? [...segments] : undefined,
+              cancelled: true,
+            };
+            this.messages.update(msgs => [...msgs, assistantMsg]);
+          }
+        });
+        return;
+      }
       this.zone.run(() => {
         subj.next({ type: 'error', code: 'stream_error', message: e?.message || 'Connection failed' });
         this.streaming.set(false);
