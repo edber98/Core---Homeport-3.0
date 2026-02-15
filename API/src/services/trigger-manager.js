@@ -100,9 +100,11 @@ class TriggerManager {
 
     // Save state
     this.activeTriggers.set(String(flow._id), trigger);
+    const now = new Date();
     await Flow.updateOne({ _id: flow._id }, {
       status: 'production',
-      deployedAt: new Date(),
+      deployedAt: now,
+      lastDeployedAt: now,
       triggerType: adapterEntry.type,
       triggerNodeId: eventNode.id,
       webhookToken: trigger.webhookToken || flow.webhookToken || null,

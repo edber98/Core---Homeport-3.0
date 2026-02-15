@@ -1855,6 +1855,7 @@ function createWorkflowExecutor(metadata, emit) {
           enabled: flow.enabled !== false,
           deployed: flow.status === 'production',
           deployedAt: flow.deployedAt || null,
+          lastDeployedAt: flow.lastDeployedAt || null,
           triggerType: flow.triggerType || triggerStatus?.triggerType || null,
           triggerNodeId: flow.triggerNodeId || null,
           active: triggerStatus?.active || false,

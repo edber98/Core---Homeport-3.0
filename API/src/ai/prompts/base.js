@@ -59,7 +59,10 @@ function buildBasePrompt(ctx) {
     const lines = ctx.recentFlows.map(f => {
       const providers = f.providers.length ? `, providers: ${f.providers.join(', ')}` : '';
       const desc = f.description ? ` — ${f.description}` : '';
-      return `- "${f.name}" (${f.status}, ${f.nodeCount} noeud${f.nodeCount > 1 ? 's' : ''}${providers}) — ${f.id}${desc}`;
+      const deployDate = f.lastDeployedAt || f.deployedAt;
+      const deploy = deployDate ? `, dernier déploiement: ${new Date(deployDate).toLocaleDateString('fr-FR')}` : '';
+      const trigger = f.triggerType ? `, trigger: ${f.triggerType}` : '';
+      return `- "${f.name}" (${f.status}${deploy}${trigger}, ${f.nodeCount} noeud${f.nodeCount > 1 ? 's' : ''}${providers}) — ${f.id}${desc}`;
     });
     parts.push(`\n## Workflows existants\n${lines.join('\n')}`);
   }

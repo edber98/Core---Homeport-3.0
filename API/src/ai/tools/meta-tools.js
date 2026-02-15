@@ -427,9 +427,9 @@ async function executeMetaTool(name, input, ctx) {
       const regex = new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
       const flows = await Flow.find(
         { workspaceId: ctx.workspaceId, $or: [{ name: regex }, { description: regex }] },
-        'id name description status enabled'
+        'id name description status enabled deployedAt lastDeployedAt triggerType'
       ).limit(limit).lean();
-      return flows.map(f => ({ id: f.id, name: f.name, description: f.description || '', status: f.status, enabled: f.enabled }));
+      return flows.map(f => ({ id: f.id, name: f.name, description: f.description || '', status: f.status, enabled: f.enabled, deployedAt: f.deployedAt || null, lastDeployedAt: f.lastDeployedAt || null, triggerType: f.triggerType || null }));
     }
 
     case 'run_workflow': {
@@ -479,7 +479,7 @@ async function executeMetaTool(name, input, ctx) {
         if (!flow) return { error: 'Flow introuvable' };
         const { triggerManager } = require('../../services/trigger-manager');
         const ts = triggerManager.getStatus ? triggerManager.getStatus(flow._id) : {};
-        return { success: true, flowName: flow.name, status: flow.status || 'draft', enabled: flow.enabled !== false, deployed: flow.status === 'production', deployedAt: flow.deployedAt || null, triggerType: flow.triggerType || ts?.triggerType || null, active: ts?.active || false };
+        return { success: true, flowName: flow.name, status: flow.status || 'draft', enabled: flow.enabled !== false, deployed: flow.status === 'production', deployedAt: flow.deployedAt || null, lastDeployedAt: flow.lastDeployedAt || null, triggerType: flow.triggerType || ts?.triggerType || null, active: ts?.active || false };
       } catch (e) {
         return { error: e?.message || String(e) };
       }

@@ -15,7 +15,7 @@ async function buildContext({ companyId, workspaceId, userId }) {
     AiCompanyContext.findOne({ companyId }).lean().catch(() => null),
     AiWorkspaceContext.findOne({ workspaceId }).lean().catch(() => null),
     AiUserContext.findOne({ userId }).lean().catch(() => null),
-    Flow.find({ workspaceId }, 'id name description status graph').sort({ updatedAt: -1 }).limit(20).lean().catch(() => []),
+    Flow.find({ workspaceId }, 'id name description status graph enabled deployedAt lastDeployedAt triggerType').sort({ updatedAt: -1 }).limit(20).lean().catch(() => []),
     Form.find({ workspaceId }, 'id name description status schema').sort({ updatedAt: -1 }).limit(20).lean().catch(() => []),
   ]);
 
@@ -45,6 +45,10 @@ async function buildContext({ companyId, workspaceId, userId }) {
     return {
       id: f.id, name: f.name, description: f.description || '',
       status: f.status, nodeCount: nodes.length, providers: [...providerSet],
+      enabled: f.enabled !== false,
+      deployedAt: f.deployedAt || null,
+      lastDeployedAt: f.lastDeployedAt || null,
+      triggerType: f.triggerType || null,
     };
   });
 
