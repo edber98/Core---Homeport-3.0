@@ -74,7 +74,8 @@ async function handler(node, msg, inputs, opts) { ... }
 }
 ```
 
-**Acces aux args**: `node.model?.context` ou directement `inputs` (qui est deja le contexte compile).
+**IMPORTANT**: `node` ne contient PAS de propriete `args`. Les args compiles sont dans `inputs` (3eme parametre). `node.args` est TOUJOURS `undefined`.
+**Acces aux args**: Utiliser `inputs` (3eme parametre) qui contient les args compiles apres resolution des expressions.
 
 ### Parametre `msg` - Message courant
 
@@ -86,17 +87,25 @@ async function handler(node, msg, inputs, opts) { ... }
 }
 ```
 
-### Parametre `inputs` - Args compiles
+### Parametre `inputs` - Args compiles (UTILISER CELUI-CI)
 
-C'est `node.model.context` apres compilation des expressions/templates. Contient directement les valeurs des champs du formulaire.
+C'est `node.model.context` apres compilation des expressions/templates par le moteur (`deepRender`). Contient directement les valeurs des champs du formulaire avec les expressions resolues.
+
+**CRITIQUE**: C'est LE parametre a utiliser pour acceder aux args du formulaire. NE PAS utiliser `node.args` (n'existe pas) ni `node.model.context` (non compile).
 
 ```javascript
 // Pour un node HTTP avec args: { method: "POST", url: "https://...", body: "{...}" }
+// Le moteur compile les expressions {{ }} avant de passer inputs au handler
 inputs = {
   method: "POST",
   url: "https://api.example.com/data",
   body: '{"key": "value"}'
 }
+
+// Pattern standard dans un handler:
+const args = inputs || {};
+const url = args.url;
+const method = args.method || 'GET';
 ```
 
 ### Parametre `opts` - Options runtime
@@ -172,8 +181,8 @@ Le moteur detecte l'erreur si `result.ok === false` ou `result.error != null`, e
 
 ```javascript
 module.exports = {
-  async http(node, msg, inputs) {
-    const args = (node && node.args) || {};
+  async http(node, msg, inputs, opts) {
+    const args = inputs || {};  // TOUJOURS utiliser inputs, JAMAIS node.args
     const method = String(args.method || 'GET').toUpperCase();
     const url = String(args.url || '').trim();
     if (!url) throw new Error('http.url is required');
@@ -460,7 +469,7 @@ async my_plugin_items_list(node, msg, inputs, opts) {
 3. **Credentials via opts**: Ne jamais hardcoder de secrets, utiliser `opts.credentials`
 4. **Gerer les erreurs**: try/catch autour des appels externes, retourner un message d'erreur clair
 5. **Nom de la fonction = key du manifest**: `openai_chat_completion` dans le manifest = `async openai_chat_completion()` dans le handler
-6. **Acceder aux args**: Utiliser `inputs` (deja compile) ou `node.args` / `node.model?.context`
+6. **Acceder aux args**: TOUJOURS utiliser `inputs` (3eme parametre, deja compile). JAMAIS `node.args` (n'existe pas !). Pattern: `const args = inputs || {};`
 7. **Pas de side effects**: Les handlers doivent etre idempotents si possible
 8. **require conditionnel**: Pour les dependances optionnelles, faire un try/catch sur require()
 9. **Logs de progression**: Ajouter `opts.log()` à chaque étape importante du handler pour informer l'utilisateur en temps réel

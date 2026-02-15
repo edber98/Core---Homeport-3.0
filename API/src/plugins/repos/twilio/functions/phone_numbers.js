@@ -2,7 +2,7 @@ module.exports = {
   async twilio_list_phone_numbers(node, msg, inputs, opts) {
     const log = (opts && opts.log) ? opts.log : () => {};
     const { twilioRequest } = require("../utils").utils;
-    const args = node.args || {};
+    const args = inputs || {};
     const params = [];
     if (args.page_size !== undefined && args.page_size !== null && args.page_size !== "") params.push(`PageSize=${Number(args.page_size)}`);
     const qs = params.length ? `?${params.join("&")}` : "";
@@ -13,7 +13,7 @@ module.exports = {
   async twilio_get_phone_number(node, msg, inputs, opts) {
     const log = (opts && opts.log) ? opts.log : () => {};
     const { twilioRequest } = require("../utils").utils;
-    const args = node.args || {};
+    const args = inputs || {};
     const phoneSid = args.phone_sid || "";
     const result = await twilioRequest(opts, "GET", `/IncomingPhoneNumbers/${phoneSid}`);
     return result;

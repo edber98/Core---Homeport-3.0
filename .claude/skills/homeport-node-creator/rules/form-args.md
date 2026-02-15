@@ -22,7 +22,7 @@ Le champ `args` d'un node template definit le formulaire de configuration visibl
 ```json
 {
   "type": "text",
-  "key": "url",                        // REQUIS - cle dans node.args
+  "key": "url",                        // REQUIS - cle dans inputs (3eme param du handler)
   "label": "URL",                      // Label affiche
   "description": "Adresse de la requete", // Texte d'aide
   "col": { "xs": 24, "sm": 24, "md": 12 }, // Grille responsive (24 = pleine largeur)

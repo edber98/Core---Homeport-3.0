@@ -57,8 +57,8 @@ Exemples tires directement du codebase Homeport.
 **functions/http.js:**
 ```javascript
 module.exports = {
-  async http(node, msg, inputs) {
-    const args = (node && node.args) || {};
+  async http(node, msg, inputs, opts) {
+    const args = inputs || {};  // TOUJOURS utiliser inputs, JAMAIS node.args
     const method = String(args.method || 'GET').toUpperCase();
     const url = String(args.url || '').trim();
     if (!url) throw new Error('http.url is required');

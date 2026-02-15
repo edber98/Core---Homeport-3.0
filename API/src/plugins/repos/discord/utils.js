@@ -23,7 +23,7 @@ async function discordRequest(opts, method, path, body = null) {
     res = await fetch(`https://discord.com/api/v10${path}`, options);
   } catch (e) { return { ok: false, error: e.message }; }
 
-  if (res.status === 204) return { ok: true, data: { success: true } };
+  if (res.status === 204) return { ok: true, status: "success", message: "Opération réussie" };
 
   let data;
   try {
@@ -31,7 +31,8 @@ async function discordRequest(opts, method, path, body = null) {
   } catch (e) { return { ok: false, error: "Réponse invalide de Discord." }; }
 
   if (!res.ok) return { ok: false, error: data.message || "Discord API error", details: data };
-  return { ok: true, data };
+  if (Array.isArray(data)) return { ok: true, data };
+  return { ok: true, ...(data || {}) };
 }
 
 module.exports = { utils: { discordRequest } };

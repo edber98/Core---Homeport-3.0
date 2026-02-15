@@ -1445,13 +1445,15 @@
             ]
           },
           {
-            "type": "text",
+            "type": "file",
             "key": "url",
-            "label": "URL de la photo",
-            "description": "URL publique de la photo.",
+            "label": "Photo",
+            "description": "Image à publier.",
             "col": {
               "xs": 24
             },
+            "accept": "image/*",
+            "lifecycle": "execution",
             "validators": [
               {
                 "type": "required"

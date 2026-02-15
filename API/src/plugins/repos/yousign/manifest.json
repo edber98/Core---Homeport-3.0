@@ -1674,6 +1674,9 @@
             "col": {
               "xs": 24
             },
+            "accept": ".pdf,application/pdf",
+            "lifecycle": "execution",
+            "multiple": false,
             "validators": [
               {
                 "type": "required"

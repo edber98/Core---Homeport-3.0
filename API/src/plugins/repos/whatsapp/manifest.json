@@ -292,13 +292,16 @@
             ]
           },
           {
-            "type": "text",
+            "type": "file",
             "key": "image_url",
-            "label": "URL de l'image",
-            "description": "URL publique de l'image.",
+            "label": "Image",
+            "description": "Image à envoyer.",
             "col": {
               "xs": 24
-            }
+            },
+            "accept": "image/*",
+            "lifecycle": "execution",
+            "validators": [{ "type": "required" }]
           },
           {
             "type": "text",
@@ -382,13 +385,16 @@
             ]
           },
           {
-            "type": "text",
+            "type": "file",
             "key": "document_url",
-            "label": "URL du document",
-            "description": "URL publique du document.",
+            "label": "Document",
+            "description": "Fichier à envoyer.",
             "col": {
               "xs": 24
-            }
+            },
+            "accept": "",
+            "lifecycle": "execution",
+            "validators": [{ "type": "required" }]
           },
           {
             "type": "text",
@@ -802,18 +808,16 @@
         },
         "fields": [
           {
-            "type": "text",
+            "type": "file",
             "key": "media_url",
-            "label": "URL du média",
-            "description": "URL publique du fichier à téléverser.",
+            "label": "Fichier",
+            "description": "Fichier à téléverser.",
             "col": {
               "xs": 24
             },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            "accept": "image/*,video/*,audio/*,application/pdf",
+            "lifecycle": "execution",
+            "validators": [{ "type": "required" }]
           },
           {
             "type": "text",

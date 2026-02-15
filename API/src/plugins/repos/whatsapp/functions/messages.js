@@ -2,7 +2,7 @@ module.exports = {
   async wa_send_text(node, msg, inputs, opts) {
     const log = (opts && opts.log) ? opts.log : () => {};
     const { whatsappRequest, getPhoneNumberId } = require("../utils").utils;
-    const args = node.args || {};
+    const args = inputs || {};
     const phoneNumberId = getPhoneNumberId(opts);
     const body = {
       messaging_product: "whatsapp",
@@ -11,13 +11,14 @@ module.exports = {
       text: { body: args.text || "" }
     };
     const result = await whatsappRequest(opts, "POST", `/${phoneNumberId}/messages`, body);
-    return result;
+    if (!result.ok) return result;
+    return { ok: true, message_id: (result.messages && result.messages[0] && result.messages[0].id) || "", to: args.to || "", type: "text", status: "sent" };
   },
 
   async wa_send_template(node, msg, inputs, opts) {
     const log = (opts && opts.log) ? opts.log : () => {};
     const { whatsappRequest, getPhoneNumberId } = require("../utils").utils;
-    const args = node.args || {};
+    const args = inputs || {};
     const phoneNumberId = getPhoneNumberId(opts);
     const template = {
       name: args.template_name || "",
@@ -33,16 +34,27 @@ module.exports = {
       template
     };
     const result = await whatsappRequest(opts, "POST", `/${phoneNumberId}/messages`, body);
-    return result;
+    if (!result.ok) return result;
+    return { ok: true, message_id: (result.messages && result.messages[0] && result.messages[0].id) || "", to: args.to || "", type: "template", status: "sent" };
   },
 
   async wa_send_image(node, msg, inputs, opts) {
     const log = (opts && opts.log) ? opts.log : () => {};
-    const { whatsappRequest, getPhoneNumberId } = require("../utils").utils;
-    const args = node.args || {};
+    const { whatsappRequest, getPhoneNumberId, resolveFileArg, uploadMediaBuffer } = require("../utils").utils;
+    const args = inputs || {};
     const phoneNumberId = getPhoneNumberId(opts);
     const image = {};
-    if (args.image_url !== undefined && args.image_url !== null && args.image_url !== "") image.link = args.image_url;
+
+    // Resolve fileRef or URL → upload to WhatsApp media, then use media id
+    const fileData = await resolveFileArg(args.image_url, opts);
+    if (fileData) {
+      log('Téléversement de l\'image vers WhatsApp...');
+      const media = await uploadMediaBuffer(opts, fileData.buffer, fileData.mimeType, fileData.name);
+      image.id = media.id;
+    } else if (args.image_url !== undefined && args.image_url !== null && args.image_url !== "") {
+      image.link = args.image_url;
+    }
+
     if (args.image_id !== undefined && args.image_id !== null && args.image_id !== "") image.id = args.image_id;
     if (args.caption !== undefined && args.caption !== null && args.caption !== "") image.caption = args.caption;
     const body = {
@@ -52,16 +64,28 @@ module.exports = {
       image
     };
     const result = await whatsappRequest(opts, "POST", `/${phoneNumberId}/messages`, body);
-    return result;
+    if (!result.ok) return result;
+    return { ok: true, message_id: (result.messages && result.messages[0] && result.messages[0].id) || "", to: args.to || "", type: "image", status: "sent" };
   },
 
   async wa_send_document(node, msg, inputs, opts) {
     const log = (opts && opts.log) ? opts.log : () => {};
-    const { whatsappRequest, getPhoneNumberId } = require("../utils").utils;
-    const args = node.args || {};
+    const { whatsappRequest, getPhoneNumberId, resolveFileArg, uploadMediaBuffer } = require("../utils").utils;
+    const args = inputs || {};
     const phoneNumberId = getPhoneNumberId(opts);
     const document = {};
-    if (args.document_url !== undefined && args.document_url !== null && args.document_url !== "") document.link = args.document_url;
+
+    // Resolve fileRef or URL → upload to WhatsApp media, then use media id
+    const fileData = await resolveFileArg(args.document_url, opts);
+    if (fileData) {
+      log('Téléversement du document vers WhatsApp...');
+      const media = await uploadMediaBuffer(opts, fileData.buffer, fileData.mimeType, fileData.name);
+      document.id = media.id;
+      if (!args.filename) document.filename = fileData.name;
+    } else if (args.document_url !== undefined && args.document_url !== null && args.document_url !== "") {
+      document.link = args.document_url;
+    }
+
     if (args.document_id !== undefined && args.document_id !== null && args.document_id !== "") document.id = args.document_id;
     if (args.caption !== undefined && args.caption !== null && args.caption !== "") document.caption = args.caption;
     if (args.filename !== undefined && args.filename !== null && args.filename !== "") document.filename = args.filename;
@@ -72,13 +96,14 @@ module.exports = {
       document
     };
     const result = await whatsappRequest(opts, "POST", `/${phoneNumberId}/messages`, body);
-    return result;
+    if (!result.ok) return result;
+    return { ok: true, message_id: (result.messages && result.messages[0] && result.messages[0].id) || "", to: args.to || "", type: "document", status: "sent" };
   },
 
   async wa_send_location(node, msg, inputs, opts) {
     const log = (opts && opts.log) ? opts.log : () => {};
     const { whatsappRequest, getPhoneNumberId } = require("../utils").utils;
-    const args = node.args || {};
+    const args = inputs || {};
     const phoneNumberId = getPhoneNumberId(opts);
     const location = {};
     if (args.latitude !== undefined && args.latitude !== null && args.latitude !== "") location.latitude = Number(args.latitude);
@@ -92,13 +117,14 @@ module.exports = {
       location
     };
     const result = await whatsappRequest(opts, "POST", `/${phoneNumberId}/messages`, body);
-    return result;
+    if (!result.ok) return result;
+    return { ok: true, message_id: (result.messages && result.messages[0] && result.messages[0].id) || "", to: args.to || "", type: "location", status: "sent" };
   },
 
   async wa_send_contact(node, msg, inputs, opts) {
     const log = (opts && opts.log) ? opts.log : () => {};
     const { whatsappRequest, getPhoneNumberId } = require("../utils").utils;
-    const args = node.args || {};
+    const args = inputs || {};
     const phoneNumberId = getPhoneNumberId(opts);
     let contacts = [];
     if (args.contacts_json !== undefined && args.contacts_json !== null && args.contacts_json !== "") {
@@ -116,13 +142,14 @@ module.exports = {
       contacts
     };
     const result = await whatsappRequest(opts, "POST", `/${phoneNumberId}/messages`, body);
-    return result;
+    if (!result.ok) return result;
+    return { ok: true, message_id: (result.messages && result.messages[0] && result.messages[0].id) || "", to: args.to || "", type: "contacts", status: "sent" };
   },
 
   async wa_mark_read(node, msg, inputs, opts) {
     const log = (opts && opts.log) ? opts.log : () => {};
     const { whatsappRequest, getPhoneNumberId } = require("../utils").utils;
-    const args = node.args || {};
+    const args = inputs || {};
     const phoneNumberId = getPhoneNumberId(opts);
     const body = {
       messaging_product: "whatsapp",
@@ -130,6 +157,7 @@ module.exports = {
       message_id: args.message_id || ""
     };
     const result = await whatsappRequest(opts, "POST", `/${phoneNumberId}/messages`, body);
-    return result;
+    if (!result.ok) return result;
+    return { ok: true, status: result.success ? "success" : "unknown", message: "Message marqué comme lu" };
   }
 };

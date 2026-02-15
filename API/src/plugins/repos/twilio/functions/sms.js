@@ -2,7 +2,7 @@ module.exports = {
   async twilio_send_sms(node, msg, inputs, opts) {
     const log = (opts && opts.log) ? opts.log : () => {};
     const { twilioRequest } = require("../utils").utils;
-    const args = node.args || {};
+    const args = inputs || {};
     const body = {};
     if (args.to !== undefined && args.to !== null && args.to !== "") body.To = args.to;
     if (args.from !== undefined && args.from !== null && args.from !== "") body.From = args.from;
@@ -15,7 +15,7 @@ module.exports = {
   async twilio_list_sms(node, msg, inputs, opts) {
     const log = (opts && opts.log) ? opts.log : () => {};
     const { twilioRequest } = require("../utils").utils;
-    const args = node.args || {};
+    const args = inputs || {};
     const params = [];
     if (args.to !== undefined && args.to !== null && args.to !== "") params.push(`To=${encodeURIComponent(args.to)}`);
     if (args.from !== undefined && args.from !== null && args.from !== "") params.push(`From=${encodeURIComponent(args.from)}`);

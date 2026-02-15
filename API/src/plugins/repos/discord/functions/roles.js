@@ -2,7 +2,7 @@ module.exports = {
   async discord_list_roles(node, msg, inputs, opts) {
     const log = (opts && opts.log) ? opts.log : () => {};
     const { discordRequest } = require("../utils").utils;
-    const args = node.args || {};
+    const args = inputs || {};
     const guildId = args.guild_id || "";
     const result = await discordRequest(opts, "GET", `/guilds/${guildId}/roles`);
     return result;
@@ -11,7 +11,7 @@ module.exports = {
   async discord_create_role(node, msg, inputs, opts) {
     const log = (opts && opts.log) ? opts.log : () => {};
     const { discordRequest } = require("../utils").utils;
-    const args = node.args || {};
+    const args = inputs || {};
     const guildId = args.guild_id || "";
     const body = {};
     if (args.name !== undefined && args.name !== null && args.name !== "") body.name = args.name;
@@ -25,7 +25,7 @@ module.exports = {
   async discord_add_role_to_member(node, msg, inputs, opts) {
     const log = (opts && opts.log) ? opts.log : () => {};
     const { discordRequest } = require("../utils").utils;
-    const args = node.args || {};
+    const args = inputs || {};
     const guildId = args.guild_id || "";
     const userId = args.user_id || "";
     const roleId = args.role_id || "";

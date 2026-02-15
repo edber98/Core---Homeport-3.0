@@ -2,7 +2,7 @@ module.exports = {
   async discord_get_user(node, msg, inputs, opts) {
     const log = (opts && opts.log) ? opts.log : () => {};
     const { discordRequest } = require("../utils").utils;
-    const args = node.args || {};
+    const args = inputs || {};
     const userId = args.user_id || "";
     const result = await discordRequest(opts, "GET", `/users/${userId}`);
     return result;
@@ -11,7 +11,7 @@ module.exports = {
   async discord_get_me(node, msg, inputs, opts) {
     const log = (opts && opts.log) ? opts.log : () => {};
     const { discordRequest } = require("../utils").utils;
-    const args = node.args || {};
+    const args = inputs || {};
     const result = await discordRequest(opts, "GET", `/users/@me`);
     return result;
   }

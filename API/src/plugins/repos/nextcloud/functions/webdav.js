@@ -1,7 +1,7 @@
 module.exports = {
   async nextcloud_upload_file(node, msg, inputs, opts) {
     const log = (opts && opts.log) ? opts.log : () => {};
-    return { ok: true, uploaded: true, path: node.args?.path };
+    return { ok: true, uploaded: true, path: args?.path };
   },
   async nextcloud_create_share_link(node, msg, inputs, opts) {
     const log = (opts && opts.log) ? opts.log : () => {};

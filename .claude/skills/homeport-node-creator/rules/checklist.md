@@ -86,7 +86,7 @@
 - [ ] Retourner toujours un objet avec `ok`:
   - Succes: `{ ok: true, ...data }`
   - Erreur: `{ ok: false, error: "message" }`
-- [ ] Acceder aux args: via `inputs` (compile) ou `node.args`
+- [ ] Acceder aux args: via `inputs` (3eme parametre, compile). Pattern: `const args = inputs || {};`. **JAMAIS `node.args`** (n'existe pas !)
 - [ ] Acceder aux credentials: via `opts.credentials`
 - [ ] Acceder aux donnees entrantes: via `opts.incoming.byHandle`
 - [ ] **Ajouter des logs de progression**: `const log = (opts && opts.log) ? opts.log : () => {};` puis `log('Étape en cours...')` à chaque étape importante

@@ -1,7 +1,7 @@
 module.exports = {
   async discord_execute_webhook(node, msg, inputs, opts) {
     const log = (opts && opts.log) ? opts.log : () => {};
-    const args = node.args || {};
+    const args = inputs || {};
     const webhookUrl = args.webhook_url || "";
     if (!webhookUrl) return { ok: false, error: "URL du webhook manquante." };
 
@@ -23,14 +23,14 @@ module.exports = {
       });
     } catch (e) { return { ok: false, error: e.message }; }
 
-    if (res.status === 204) return { ok: true, data: { success: true } };
+    if (res.status === 204) return { ok: true, status: "success", message: "Webhook exécuté avec succès" };
 
     let data;
     try {
       data = await res.json();
-    } catch (e) { return { ok: true, data: { success: true } }; }
+    } catch (e) { return { ok: true, status: "success", message: "Webhook exécuté avec succès" }; }
 
     if (!res.ok) return { ok: false, error: data.message || "Webhook error", details: data };
-    return { ok: true, data };
+    return { ok: true, ...(data || {}) };
   }
 };

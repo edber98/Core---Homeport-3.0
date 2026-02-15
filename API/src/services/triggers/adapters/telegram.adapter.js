@@ -21,8 +21,14 @@ class TelegramAdapter extends SubscriptionTrigger {
     // Now start polling
     this.bot.startPolling();
 
-    this.bot.on('message', (msg) => this._emit(msg));
-    this.bot.on('callback_query', (query) => this._emit({ callback_query: query }));
+    this.bot.on('message', (msg) => {
+      this.log.info(`[telegram] message received: chat=${msg.chat?.id} from=${msg.from?.id} text="${(msg.text || '').slice(0, 80)}"`);
+      this._emit({ message: msg });
+    });
+    this.bot.on('callback_query', (query) => {
+      this.log.info(`[telegram] callback_query received: from=${query.from?.id} data="${query.data || ''}"`);
+      this._emit({ callback_query: query });
+    });
     this.bot.on('polling_error', (err) => {
       this.lastError = err.message;
       this.log.error(`[telegram] polling error: ${err.message}`);

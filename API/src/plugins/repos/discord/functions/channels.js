@@ -2,7 +2,7 @@ module.exports = {
   async discord_get_channel(node, msg, inputs, opts) {
     const log = (opts && opts.log) ? opts.log : () => {};
     const { discordRequest } = require("../utils").utils;
-    const args = node.args || {};
+    const args = inputs || {};
     const channelId = args.channel_id || "";
     const result = await discordRequest(opts, "GET", `/channels/${channelId}`);
     return result;
@@ -11,7 +11,7 @@ module.exports = {
   async discord_list_channels(node, msg, inputs, opts) {
     const log = (opts && opts.log) ? opts.log : () => {};
     const { discordRequest } = require("../utils").utils;
-    const args = node.args || {};
+    const args = inputs || {};
     const guildId = args.guild_id || "";
     const result = await discordRequest(opts, "GET", `/guilds/${guildId}/channels`);
     return result;
@@ -20,7 +20,7 @@ module.exports = {
   async discord_create_channel(node, msg, inputs, opts) {
     const log = (opts && opts.log) ? opts.log : () => {};
     const { discordRequest } = require("../utils").utils;
-    const args = node.args || {};
+    const args = inputs || {};
     const guildId = args.guild_id || "";
     const body = {};
     if (args.name !== undefined && args.name !== null && args.name !== "") body.name = args.name;
@@ -34,7 +34,7 @@ module.exports = {
   async discord_modify_channel(node, msg, inputs, opts) {
     const log = (opts && opts.log) ? opts.log : () => {};
     const { discordRequest } = require("../utils").utils;
-    const args = node.args || {};
+    const args = inputs || {};
     const channelId = args.channel_id || "";
     const body = {};
     if (args.name !== undefined && args.name !== null && args.name !== "") body.name = args.name;
@@ -48,9 +48,10 @@ module.exports = {
   async discord_delete_channel(node, msg, inputs, opts) {
     const log = (opts && opts.log) ? opts.log : () => {};
     const { discordRequest } = require("../utils").utils;
-    const args = node.args || {};
+    const args = inputs || {};
     const channelId = args.channel_id || "";
     const result = await discordRequest(opts, "DELETE", `/channels/${channelId}`);
-    return result;
+    if (!result.ok) return result;
+    return { ok: true, status: "success", message: "Canal supprimé" };
   }
 };

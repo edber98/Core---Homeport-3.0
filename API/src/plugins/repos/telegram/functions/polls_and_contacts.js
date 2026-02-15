@@ -2,7 +2,7 @@ module.exports = {
   async tg_send_poll(node, msg, inputs, opts) {
     const log = (opts && opts.log) ? opts.log : () => {};
     const { telegramRequest } = require("../utils").utils;
-    const args = node.args || {};
+    const args = inputs || {};
     const body = {};
     if (args.chat_id) body.chat_id = args.chat_id;
     if (args.question) body.question = args.question;
@@ -20,7 +20,7 @@ module.exports = {
   async tg_send_contact(node, msg, inputs, opts) {
     const log = (opts && opts.log) ? opts.log : () => {};
     const { telegramRequest } = require("../utils").utils;
-    const args = node.args || {};
+    const args = inputs || {};
     const body = {};
     if (args.chat_id !== undefined && args.chat_id !== null && args.chat_id !== "") body.chat_id = args.chat_id;
     if (args.phone_number !== undefined && args.phone_number !== null && args.phone_number !== "") body.phone_number = args.phone_number;
@@ -33,7 +33,7 @@ module.exports = {
   async tg_send_venue(node, msg, inputs, opts) {
     const log = (opts && opts.log) ? opts.log : () => {};
     const { telegramRequest } = require("../utils").utils;
-    const args = node.args || {};
+    const args = inputs || {};
     const body = {};
     if (args.chat_id !== undefined && args.chat_id !== null && args.chat_id !== "") body.chat_id = args.chat_id;
     if (args.latitude !== undefined && args.latitude !== null && args.latitude !== "") body.latitude = Number(args.latitude);

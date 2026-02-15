@@ -14,7 +14,7 @@ module.exports = {
       body = fileVal || "";
     }
 
-    return { ok: true, uploaded: true, path: d.path || node.args?.path };
+    return { ok: true, uploaded: true, path: d.path || args?.path };
   },
   async sharepoint_upload_file(node, msg, inputs, opts) {
     const log = (opts && opts.log) ? opts.log : () => {};
@@ -35,6 +35,6 @@ module.exports = {
   },
   async sharepoint_share_link(node, msg, inputs, opts) {
     const log = (opts && opts.log) ? opts.log : () => {};
-    return { ok: true, link: 'https://sharepoint.fake/link/' + (node.args?.itemId || '') };
+    return { ok: true, link: 'https://sharepoint.fake/link/' + (args?.itemId || '') };
   }
 };

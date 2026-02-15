@@ -3,7 +3,7 @@
 module.exports = {
   async http(node, msg, inputs, opts) {
     const log = (opts && opts.log) ? opts.log : () => {};
-    const args = (node && node.args) || {};
+    const args = (inputs) || {};
     const method = String(args.method || 'GET').toUpperCase();
     const url = String(args.url || '').trim();
     if (!url) throw new Error('http.url is required');

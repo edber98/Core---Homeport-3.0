@@ -2,7 +2,7 @@ module.exports = {
   async discord_create_thread(node, msg, inputs, opts) {
     const log = (opts && opts.log) ? opts.log : () => {};
     const { discordRequest } = require("../utils").utils;
-    const args = node.args || {};
+    const args = inputs || {};
     const channelId = args.channel_id || "";
     const body = {};
     if (args.name !== undefined && args.name !== null && args.name !== "") body.name = args.name;
@@ -19,9 +19,10 @@ module.exports = {
   async discord_list_threads(node, msg, inputs, opts) {
     const log = (opts && opts.log) ? opts.log : () => {};
     const { discordRequest } = require("../utils").utils;
-    const args = node.args || {};
+    const args = inputs || {};
     const guildId = args.guild_id || "";
     const result = await discordRequest(opts, "GET", `/guilds/${guildId}/threads/active`);
-    return result;
+    if (!result.ok) return result;
+    return { ok: true, data: result.threads || [] };
   }
 };

@@ -30,11 +30,14 @@ class BaseTrigger {
   async _emit(rawPayload) {
     this.eventCount++;
     this.lastEventAt = new Date();
+    const flowLabel = this.flow?.id || this.flow?._id || '?';
+    this.log.info(`[trigger] event #${this.eventCount} received for flow=${flowLabel} keys=[${Object.keys(rawPayload || {}).join(',')}]`);
     try {
       await this.onEvent(rawPayload);
+      this.log.info(`[trigger] event #${this.eventCount} processed OK for flow=${flowLabel}`);
     } catch (e) {
       this.lastError = e.message;
-      this.log.error(`[trigger] execution failed: ${e.message}`);
+      this.log.error(`[trigger] event #${this.eventCount} execution failed for flow=${flowLabel}: ${e.message}`);
     }
   }
 }

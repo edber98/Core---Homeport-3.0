@@ -38,7 +38,7 @@ async function twilioRequest(opts, method, path, body = null) {
   } catch (e) { return { ok: false, error: "Réponse invalide de Twilio." }; }
 
   if (!res.ok) return { ok: false, error: data.message || "Twilio API error", details: data };
-  return { ok: true, data };
+  return { ok: true, ...(data || {}) };
 }
 
 async function twilioLookupRequest(opts, path) {
@@ -59,7 +59,7 @@ async function twilioLookupRequest(opts, path) {
   let data;
   try { data = await res.json(); } catch (e) { return { ok: false, error: "Réponse invalide." }; }
   if (!res.ok) return { ok: false, error: data.message || "Lookup API error", details: data };
-  return { ok: true, data };
+  return { ok: true, ...(data || {}) };
 }
 
 async function twilioVerifyRequest(opts, method, path, body = null) {
@@ -91,7 +91,7 @@ async function twilioVerifyRequest(opts, method, path, body = null) {
   let data;
   try { data = await res.json(); } catch (e) { return { ok: false, error: "Réponse invalide." }; }
   if (!res.ok) return { ok: false, error: data.message || "Verify API error", details: data };
-  return { ok: true, data };
+  return { ok: true, ...(data || {}) };
 }
 
 module.exports = { utils: { twilioRequest, twilioLookupRequest, twilioVerifyRequest } };

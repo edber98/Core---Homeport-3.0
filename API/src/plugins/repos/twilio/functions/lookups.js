@@ -2,7 +2,7 @@ module.exports = {
   async twilio_phone_lookup(node, msg, inputs, opts) {
     const log = (opts && opts.log) ? opts.log : () => {};
     const { twilioLookupRequest } = require("../utils").utils;
-    const args = node.args || {};
+    const args = inputs || {};
     const phoneNumber = encodeURIComponent(args.phone_number || "");
     const params = [];
     if (args.fields !== undefined && args.fields !== null && args.fields !== "") params.push(`Fields=${args.fields}`);

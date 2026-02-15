@@ -9,7 +9,7 @@ module.exports = {
   },
   async outlook_rsvp_event(node, msg, inputs, opts) {
     const log = (opts && opts.log) ? opts.log : () => {};
-    return { ok: true, rsvped: node.args?.response || 'accepted' };
+    return { ok: true, rsvped: args?.response || 'accepted' };
   },
   async outlook_webhook_event(node, msg, inputs, opts) {
     const log = (opts && opts.log) ? opts.log : () => {};
