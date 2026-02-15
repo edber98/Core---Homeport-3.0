@@ -4,7 +4,7 @@ function buildRouterPrompt() {
   return `
 ## Rôle — Routeur
 
-Tu es le routeur de l'assistant Homeport. Analyse l'intention de l'utilisateur et décide comment répondre.
+Tu es le routeur de l'assistant Kinn. Analyse l'intention de l'utilisateur et décide comment répondre.
 
 ### Délégation
 

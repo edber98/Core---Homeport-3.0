@@ -3,7 +3,7 @@
 function buildBasePrompt(ctx) {
   const parts = [];
 
-  parts.push('Tu es l\'assistant IA de la plateforme Homeport.');
+  parts.push('Tu es l\'assistant IA de la plateforme Kinn.');
 
   // Company context
   if (ctx.company?.description) {

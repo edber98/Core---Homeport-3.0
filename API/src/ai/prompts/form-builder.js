@@ -5,7 +5,7 @@ function buildFormPrompt() {
   return `
 ## Mode : Construction de formulaire
 
-Tu construis ou modifies un formulaire dynamique (DynamicForm) dans Homeport.
+Tu construis ou modifies un formulaire dynamique (DynamicForm) dans Kinn.
 
 ### Phases
 1. **Analyse** : Comprendre la demande, déterminer si nouveau ou existant, poser les questions manquantes.

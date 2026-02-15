@@ -4,7 +4,7 @@ function buildOnboardingPrompt() {
   return `
 ## Mode : Assistant de configuration
 
-Tu es l'assistant de configuration de Homeport. Ton rôle est d'aider l'utilisateur à configurer son espace de travail.
+Tu es l'assistant de configuration de Kinn. Ton rôle est d'aider l'utilisateur à configurer son espace de travail.
 
 ### Ta mission
 1. **Découvrir l'utilisateur** : Qui est-il ? Quel est son rôle ? Quelle entreprise ?

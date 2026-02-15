@@ -1790,12 +1790,20 @@ function createWorkflowExecutor(metadata, emit) {
       const fid = input?.flowId || metadata.flowId;
       if (!fid) return { success: false, error: 'Aucun flow. Spécifie flowId ou charge un flow d\'abord.' };
       try {
-        const flow = await Flow.findById(fid);
+        let flow = Types.ObjectId.isValid(fid) ? await Flow.findById(fid) : null;
+        if (!flow) flow = await Flow.findOne({ id: fid });
         if (!flow) return { success: false, error: 'Flow introuvable' };
         if (!flow.enabled) return { success: false, error: 'Le flow est désactivé. Active-le d\'abord.' };
         if (flow.status === 'production') return { success: false, error: 'Le flow est déjà en production.' };
 
-        const triggerManager = require('../../services/trigger-manager');
+        // Auto-save in-memory graph to DB before deploying (trigger-manager re-reads from DB)
+        if (graph) {
+          flow.graph = gref();
+          await flow.save();
+          changed = false;
+        }
+
+        const { triggerManager } = require('../../services/trigger-manager');
         const status = await triggerManager.deployFlow(flow._id);
         return {
           success: true,
@@ -1806,9 +1814,9 @@ function createWorkflowExecutor(metadata, emit) {
         };
       } catch (e) {
         const msg = e?.message || String(e);
-        if (msg.includes('already')) return { success: false, error: 'Le flow est déjà déployé.' };
-        if (msg.includes('event') || msg.includes('trigger')) return { success: false, error: 'Aucun noeud event/trigger trouvé. Ajoute un noeud event pour activer le déploiement.' };
-        if (msg.includes('adapter')) return { success: false, error: 'Adaptateur de trigger introuvable pour ce type d\'événement.' };
+        if (msg.includes('already deployed')) return { success: false, error: 'Le flow est déjà déployé.' };
+        if (msg.includes('No event trigger')) return { success: false, error: 'Aucun nœud event/trigger trouvé. Ajoute un nœud event pour activer le déploiement.' };
+        if (msg.includes('No trigger adapter')) return { success: false, error: `Adaptateur de trigger introuvable : ${msg}` };
         return { success: false, error: msg };
       }
     },
@@ -1817,11 +1825,12 @@ function createWorkflowExecutor(metadata, emit) {
       const fid = input?.flowId || metadata.flowId;
       if (!fid) return { success: false, error: 'Aucun flow. Spécifie flowId ou charge un flow d\'abord.' };
       try {
-        const flow = await Flow.findById(fid);
+        let flow = Types.ObjectId.isValid(fid) ? await Flow.findById(fid) : null;
+        if (!flow) flow = await Flow.findOne({ id: fid });
         if (!flow) return { success: false, error: 'Flow introuvable' };
         if (flow.status !== 'production') return { success: false, error: 'Le flow n\'est pas en production.' };
 
-        const triggerManager = require('../../services/trigger-manager');
+        const { triggerManager } = require('../../services/trigger-manager');
         await triggerManager.undeployFlow(flow._id);
         return { success: true, status: 'undeployed', message: `Flow "${flow.name}" arrêté.` };
       } catch (e) {
@@ -1833,10 +1842,11 @@ function createWorkflowExecutor(metadata, emit) {
       const fid = input?.flowId || metadata.flowId;
       if (!fid) return { success: false, error: 'Aucun flow. Spécifie flowId ou charge un flow d\'abord.' };
       try {
-        const flow = await Flow.findById(fid).lean();
+        let flow = Types.ObjectId.isValid(fid) ? await Flow.findById(fid).lean() : null;
+        if (!flow) flow = await Flow.findOne({ id: fid }).lean();
         if (!flow) return { success: false, error: 'Flow introuvable' };
 
-        const triggerManager = require('../../services/trigger-manager');
+        const { triggerManager } = require('../../services/trigger-manager');
         const triggerStatus = triggerManager.getStatus ? triggerManager.getStatus(flow._id) : {};
         return {
           success: true,
@@ -1861,9 +1871,17 @@ function createWorkflowExecutor(metadata, emit) {
       const fid = input?.flowId || metadata.flowId;
       if (!fid) return { success: false, error: 'Aucun flow. Spécifie flowId ou charge un flow d\'abord.' };
       try {
-        const flow = await Flow.findById(fid);
+        let flow = Types.ObjectId.isValid(fid) ? await Flow.findById(fid) : null;
+        if (!flow) flow = await Flow.findOne({ id: fid });
         if (!flow) return { success: false, error: 'Flow introuvable' };
         if (!flow.enabled) return { success: false, error: 'Le flow est désactivé.' };
+
+        // Auto-save in-memory graph to DB before running (engine reads from DB)
+        if (graph) {
+          flow.graph = gref();
+          await flow.save();
+          changed = false;
+        }
 
         // Validate templates before run
         const { validateFlowTemplates } = require('../../plugins/validate');
