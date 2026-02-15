@@ -33,7 +33,7 @@ module.exports = {
         console.warn("Erreur parsing attachments:", err);
       }
 
-      // Construire l’email
+      // Construire l'email
       const mailOptions = {
         from: username,
         to: inputs.to,
@@ -45,8 +45,12 @@ module.exports = {
         attachments: attachments,
       };
 
+      log(`Envoi de l'email à ${inputs.to} (sujet : "${inputs.subject}")…`);
+
       // Envoi du mail
       const info = await transporter.sendMail(mailOptions);
+
+      log(`Email envoyé avec succès (messageId: ${info.messageId})`);
 
       return {
         ok: true,
