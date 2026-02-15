@@ -65,6 +65,13 @@ import { ApiClientService } from '../../services/api-client.service';
                   </nz-option>
                 </nz-option-group>
               </nz-select>
+              <div class="active-agent-info">
+                <div class="aai-row" *ngIf="selectedAgentInfo()?.description"><span class="aai-label">Description</span> {{ selectedAgentInfo()?.description }}</div>
+                <div class="aai-row"><span class="aai-label">Type</span> {{ selectedAgentInfo()?.type === 'custom' ? 'Personnalisé' : 'Système' }}</div>
+                <div class="aai-row"><span class="aai-label">Autonomie</span> {{ autonomyLabel(selectedAgentInfo()?.autonomyLevel) }}</div>
+                <div class="aai-row" *ngIf="(selectedAgentInfo()?.allowedProviders?.length || 0) > 0"><span class="aai-label">Providers</span> {{ selectedAgentInfo()?.allowedProviders?.join(', ') }}</div>
+                <div class="aai-row" *ngIf="(selectedAgentInfo()?.toolCount || 0) > 0"><span class="aai-label">Actions</span> {{ selectedAgentInfo()?.toolCount }}</div>
+              </div>
             </div>
 
             <nz-divider></nz-divider>
@@ -124,6 +131,12 @@ import { ApiClientService } from '../../services/api-client.service';
                       <nz-option nzValue="skip" nzLabel="Direct (pas de routeur)"></nz-option>
                       <nz-option nzValue="force" nzLabel="Forcer (toujours via le routeur)"></nz-option>
                     </nz-select>
+                    <label class="ca-label">Niveau d'autonomie</label>
+                    <nz-select [(ngModel)]="editAutonomyLevel" nzSize="small" style="width: 100%">
+                      <nz-option nzValue="prudent" nzLabel="Prudent (confirme les écritures)"></nz-option>
+                      <nz-option nzValue="balanced" nzLabel="Équilibré (confirme les destructives)"></nz-option>
+                      <nz-option nzValue="autonomous" nzLabel="Autonome (agit directement)"></nz-option>
+                    </nz-select>
                     <label class="ca-label">Boucles max</label>
                     <nz-input-number [(ngModel)]="editMaxToolLoops" [nzMin]="1" [nzMax]="100" nzSize="small" style="width: 100%"></nz-input-number>
                     <button nz-button nzType="primary" nzSize="small" (click)="saveEditAgent(a.id)" style="margin-top: 6px">
@@ -162,6 +175,12 @@ import { ApiClientService } from '../../services/api-client.service';
                   </label>
                 </div>
                 <div class="field-hint">Vide = tous les groupes (par défaut)</div>
+                <label class="ca-label">Niveau d'autonomie</label>
+                <nz-select [(ngModel)]="newAgentAutonomyLevel" nzSize="small" style="width: 100%">
+                  <nz-option nzValue="prudent" nzLabel="Prudent (confirme les écritures)"></nz-option>
+                  <nz-option nzValue="balanced" nzLabel="Équilibré (confirme les destructives)"></nz-option>
+                  <nz-option nzValue="autonomous" nzLabel="Autonome (agit directement)"></nz-option>
+                </nz-select>
                 <label class="ca-label">Comportement du routeur</label>
                 <nz-select [(ngModel)]="newAgentRouterBehavior" nzSize="small" style="width: 100%">
                   <nz-option nzValue="auto" nzLabel="Auto"></nz-option>
@@ -410,6 +429,10 @@ import { ApiClientService } from '../../services/api-client.service';
     .provider-opt { display: flex; align-items: center; gap: 6px; }
     .provider-opt-icon { width: 16px; height: 16px; border-radius: 3px; object-fit: contain; }
     .field-hint { font-size: 11px; color: #999; margin-top: 2px; }
+    .active-agent-info { margin-top: 8px; padding: 8px 10px; background: #f6f8fa; border-radius: 6px; border: 1px solid #f0f0f0; }
+    .aai-row { font-size: 12px; color: #666; margin-bottom: 2px; }
+    .aai-row:last-child { margin-bottom: 0; }
+    .aai-label { font-weight: 600; color: #333; margin-right: 4px; }
     .save-hint { font-size: 11px; color: #999; margin-top: 4px; }
     .memory-empty-inline { padding: 8px 0; }
     .memory-item.project { border-color: #d9e8ff; background: #f0f7ff; }
@@ -469,9 +492,11 @@ export class AiSettingsComponent implements OnInit, OnDestroy {
   editToolGroups: string[] = [];
   editBlockedTools: string[] = [];
   editRouterBehavior = 'auto';
+  editAutonomyLevel = 'autonomous';
   editMaxToolLoops = 40;
 
   newAgentToolGroups: string[] = [];
+  newAgentAutonomyLevel = 'autonomous';
   newAgentRouterBehavior = 'auto';
 
   // MCP
@@ -576,6 +601,21 @@ export class AiSettingsComponent implements OnInit, OnDestroy {
     this.ai.selectedAgentId.set(agentId);
   }
 
+  selectedAgentInfo(): AiAvailableAgent {
+    const all = [...this.systemAgents, ...this.customAgents];
+    return all.find(a => a.id === this.selectedAgentId)
+      || { id: 'general', name: 'Général', description: 'Assistant polyvalent', icon: null, type: 'system' as const, toolCount: 0 };
+  }
+
+  autonomyLabel(level?: string): string {
+    switch (level || 'autonomous') {
+      case 'prudent': return 'Prudent (confirme les écritures)';
+      case 'balanced': return 'Équilibré (confirme les destructives)';
+      case 'autonomous': return 'Autonome (agit directement)';
+      default: return level || 'Autonome';
+    }
+  }
+
   onInstructionsChange(val: string) {
     this.instructionsSaving = true;
     this.instructions$.next(val);
@@ -591,6 +631,7 @@ export class AiSettingsComponent implements OnInit, OnDestroy {
       allowedProviders: this.newAgentProviders,
       toolGroups: this.newAgentToolGroups,
       routerBehavior: this.newAgentRouterBehavior,
+      autonomyLevel: this.newAgentAutonomyLevel,
     }).subscribe({
       next: () => {
         this.newAgentName = '';
@@ -598,6 +639,7 @@ export class AiSettingsComponent implements OnInit, OnDestroy {
         this.newAgentPrompt = '';
         this.newAgentProviders = [];
         this.newAgentToolGroups = [];
+        this.newAgentAutonomyLevel = 'autonomous';
         this.newAgentRouterBehavior = 'auto';
         this.showCreateForm = false;
         this.reloadAgents();
@@ -617,6 +659,7 @@ export class AiSettingsComponent implements OnInit, OnDestroy {
     this.editToolGroups = (agent as any).toolGroups ? [...(agent as any).toolGroups] : [];
     this.editBlockedTools = (agent as any).blockedTools ? [...(agent as any).blockedTools] : [];
     this.editRouterBehavior = (agent as any).routerBehavior || 'auto';
+    this.editAutonomyLevel = (agent as any).autonomyLevel || 'autonomous';
     this.editMaxToolLoops = (agent as any).maxToolLoops || 40;
     this.editSystemPrompt = '';
   }
@@ -630,6 +673,7 @@ export class AiSettingsComponent implements OnInit, OnDestroy {
       toolGroups: this.editToolGroups,
       blockedTools: this.editBlockedTools,
       routerBehavior: this.editRouterBehavior,
+      autonomyLevel: this.editAutonomyLevel,
       maxToolLoops: this.editMaxToolLoops,
     }).subscribe({
       next: () => {

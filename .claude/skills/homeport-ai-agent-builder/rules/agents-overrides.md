@@ -55,6 +55,7 @@ async function resolveAgentOverrides(agentId, ctx) {
     promptFragment: agent.systemPrompt || '',
     blockedTools: agent.blockedTools || [],
     maxToolLoops: agent.maxToolLoops || undefined,
+    autonomyLevel: agent.autonomyLevel || null,
   };
 
   // LLM overrides
@@ -120,6 +121,22 @@ const toolSet = buildOrchestratorToolSet({
 const maxLoops = agentOverrides?.maxToolLoops || DEFAULT_MAX_LOOPS;
 ```
 
+### 5. Autonomy level
+
+```javascript
+// ai.js route SSE — résolution par priorité :
+context._autonomyLevel = thread.metadata?.autonomyLevel  // per-conversation override
+  || resolvedAgent?.autonomyLevel                         // per-agent setting
+  || 'autonomous';                                        // global default
+
+// base.js — injection dans le prompt :
+const { buildAutonomyPrompt } = require('./autonomy');
+parts.push(buildAutonomyPrompt(ctx._autonomyLevel));
+```
+
+Niveaux : `prudent` (confirme écritures) → `balanced` (confirme destructives) → `autonomous` (agit directement, défaut).
+Module : `API/src/ai/prompts/autonomy.js`.
+
 ---
 
 ## Modèle agent (AiAgent)
@@ -137,6 +154,8 @@ const maxLoops = agentOverrides?.maxToolLoops || DEFAULT_MAX_LOOPS;
   llmModel: String,              // Override model (ex: 'claude-sonnet-4-5-20250929')
   blockedTools: [String],        // Outils bloqués (ex: ['create_flow'])
   maxToolLoops: Number,          // Max itérations
+  routerBehavior: String,        // 'auto' | 'skip' | 'force'
+  autonomyLevel: String,         // 'prudent' | 'balanced' | 'autonomous' (default)
   icon: String,                  // Icône pour le select
   enabled: Boolean,
 }
@@ -178,7 +197,8 @@ POST /api/ai/agents
   "llmProvider": "anthropic",
   "llmModel": "claude-sonnet-4-5-20250929",
   "blockedTools": [],
-  "maxToolLoops": 20
+  "maxToolLoops": 20,
+  "autonomyLevel": "autonomous"
 }
 ```
 

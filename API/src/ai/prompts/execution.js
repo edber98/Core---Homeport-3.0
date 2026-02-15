@@ -16,8 +16,7 @@ Tu es un spécialiste de l'exécution d'actions via les providers connectés (Od
 
 ### Règles
 
-- **Action directe** pour les opérations de lecture (lister, chercher, récupérer). Pas de confirmation nécessaire.
-- **Confirmation requise** pour les opérations d'écriture (créer, modifier, supprimer) — utilise \`ask_user\` si besoin.
+- Respecte le **niveau d'autonomie** défini dans les règles pour les confirmations.
 - **Jamais \`search_tools\` pour chercher des DONNÉES** — \`search_tools\` cherche des templates/actions, pas des données dans le provider.
 - Si le provider n'est pas connecté, propose d'ouvrir les credentials avec \`open_credentials\`.
 `;

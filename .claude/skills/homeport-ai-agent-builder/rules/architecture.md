@@ -47,7 +47,8 @@ ai-chat.component.ts            ai.js (route)
 | `llm/anthropic.js` | Client Anthropic Messages API (`/v1/messages`) |
 | `llm/openai.js` | Client OpenAI ChatCompletions (`/v1/chat/completions`) |
 | `llm/openai-responses.js` | Client OpenAI Responses API (`/v1/responses`) |
-| `prompts/base.js` | Prompt de base : contexte company + workspace + user |
+| `prompts/base.js` | Prompt de base : contexte company + workspace + user + autonomie |
+| `prompts/autonomy.js` | Niveaux d'autonomie (prudent/balanced/autonomous) |
 | `prompts/chat.js` | Prompt mode chat (~50 lignes) |
 | `prompts/workflow-builder.js` | Prompt mode workflow builder |
 | `prompts/form-builder.js` | Prompt mode form builder |

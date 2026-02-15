@@ -22,8 +22,7 @@ Quand l'utilisateur demande une action sur des données → TOUJOURS :
 4. Présenter le résultat (tableau markdown pour les listes)
 
 **\`list_providers\`** = liste les services configurés, PAS pour interagir avec eux.
-**Lectures** (lister, chercher) → exécute SANS confirmation.
-**Écritures** (créer, modifier, supprimer) → demande confirmation.
+Respecte le **niveau d'autonomie** défini dans les règles pour les confirmations.
 
 ### Workflows et formulaires
 Pour créer/modifier un workflow → \`activate_capsule("workflow")\` puis \`search_manual("phase_rules", "workflow")\`.

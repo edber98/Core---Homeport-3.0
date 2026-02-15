@@ -26,7 +26,8 @@ Le système IA utilise 2 niveaux de documentation pour le LLM :
 
 ```
 API/src/ai/prompts/
-├── base.js               ← Contexte partagé (company, workspace, user, rules)
+├── base.js               ← Contexte partagé (company, workspace, user, rules, autonomy)
+├── autonomy.js           ← Niveaux d'autonomie (prudent/balanced/autonomous)
 ├── chat.js               ← Mode chat (~50 lignes)
 ├── workflow-builder.js   ← Mode workflow builder
 ├── form-builder.js       ← Mode form builder
@@ -49,8 +50,9 @@ Injecte dans le system prompt :
 6. **Instructions entreprise** : system prompt admin (si défini)
 7. **Workflows existants** : 20 derniers (nom, status, nodeCount, providers)
 8. **Formulaires existants** : 20 derniers (nom, status, fieldCount)
-9. **Règles** : credentials, confirmation destructive, ask_user, langue, capitalisation
-10. **Planification** : réfléchir, vérifier, admettre les échecs
+9. **Règles** : credentials, ask_user, langue, capitalisation
+10. **Niveau d'autonomie** : `buildAutonomyPrompt(ctx._autonomyLevel)` (prudent/balanced/autonomous)
+11. **Planification** : réfléchir, vérifier, admettre les échecs
 11. **Transfert** : compact_and_transfer pour changer d'élément
 12. **Mémoire** : 2 niveaux (globale save_memory + projet save_project_memory)
 
@@ -94,7 +96,7 @@ function buildSystemPrompt(mode, ctx) {
 ### Ordre d'injection dans le prompt final
 
 ```
-1. buildBasePrompt(ctx)           ← Contexte + règles de base
+1. buildBasePrompt(ctx)           ← Contexte + règles de base + autonomie
 2. buildXxxPrompt()               ← Constitution du mode
 3. buildCapsuleInstructions()     ← Capsules disponibles (chat mode uniquement)
 4. ctx._agentPromptFragment       ← Spécialisation agent (si agent custom/provider)

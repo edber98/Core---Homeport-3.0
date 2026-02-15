@@ -19,6 +19,7 @@ const AiAgentSchema = new Schema({
   blockedTools: { type: [String], default: [] },      // e.g. ['deploy_flow', 'undeploy_flow']
   maxToolLoops: { type: Number, default: 40 },        // max agent loop iterations
   routerBehavior: { type: String, enum: ['auto', 'skip', 'force'], default: 'auto' },
+  autonomyLevel: { type: String, enum: ['prudent', 'balanced', 'autonomous'], default: 'autonomous' },
   enabled: { type: Boolean, default: true },
   createdBy: { type: Types.ObjectId, ref: 'User' },
 }, { timestamps: true });

@@ -1,4 +1,5 @@
 // Base system prompt — shared context injected into all modes
+const { buildAutonomyPrompt } = require('./autonomy');
 
 function buildBasePrompt(ctx) {
   const parts = [];
@@ -75,7 +76,6 @@ function buildBasePrompt(ctx) {
   // Rules
   parts.push(`\n## Règles
 - Ne JAMAIS afficher ou demander des credentials, secrets, mots de passe ou clés API.
-- Toujours demander confirmation avant d'exécuter une action destructive (suppression, modification massive).
 - \`ask_user\` est UNIQUEMENT pour des choix structurés avec des options concrètes (boutons cliquables). Pour les questions ouvertes, conversationnelles ou demandes de précision → écris simplement la question dans ton message texte. L'utilisateur répondra naturellement dans le chat.
 - Répondre en français sauf si l'utilisateur écrit dans une autre langue.
 - Être concis et utile. Pas de formules de politesse excessives.
@@ -120,6 +120,9 @@ Exemples :
 - "On utilise le modèle gpt-4o pour ce workflow" → \`save_project_memory({ key: "llm_model", value: "gpt-4o" })\`
 
 **IMPORTANT** : Consulte les sections "Mémoire et préférences utilisateur" et "Mémoire du projet" ci-dessus avant de poser des questions — si la réponse y est déjà, utilise-la directement.`);
+
+  // Autonomy level
+  parts.push('\n' + buildAutonomyPrompt(ctx._autonomyLevel));
 
   return parts.join('\n');
 }

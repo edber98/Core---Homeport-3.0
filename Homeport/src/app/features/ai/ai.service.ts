@@ -112,6 +112,7 @@ export interface AiAvailableAgent {
   type: 'system' | 'custom';
   toolCount: number;
   allowedProviders?: string[];
+  autonomyLevel?: string;
 }
 
 // ── Service ──
@@ -513,7 +514,7 @@ export class AiService {
     return obs;
   }
 
-  createAgent(data: { name: string; description?: string; systemPrompt?: string; allowedProviders?: string[]; workspaceId?: string; toolGroups?: string[]; blockedTools?: string[]; maxToolLoops?: number; routerBehavior?: string }): Observable<any> {
+  createAgent(data: { name: string; description?: string; systemPrompt?: string; allowedProviders?: string[]; workspaceId?: string; toolGroups?: string[]; blockedTools?: string[]; maxToolLoops?: number; routerBehavior?: string; autonomyLevel?: string }): Observable<any> {
     return this.api.post<any>('/api/ai/agents', data, { workspaceId: this.wsId() });
   }
 

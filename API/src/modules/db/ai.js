@@ -58,7 +58,7 @@ ${toolLines.join('\n')}
 
 3. **Recherche et filtrage** — Les outils de type "Lister" acceptent généralement des paramètres de filtrage (search, query, name, etc.). Si tu ne connais pas les paramètres exacts, utilise \`get_tool_details\` avec la clé pour voir le schéma complet des arguments AVANT d'exécuter.
 
-4. **Action directe** — Ne demande pas de confirmation pour des opérations de lecture (lister, chercher, récupérer). Exécute directement. Demande confirmation uniquement pour les modifications (créer, supprimer, modifier).
+4. **Autonomie** — Respecte le niveau d'autonomie défini dans les règles générales pour les confirmations.
 
 5. **Vocabulaire utilisateur** — L'utilisateur peut utiliser des termes génériques ("cherche", "montre-moi", "je veux voir") ou des termes spécifiques à ${provider.name}. Dans tous les cas, identifie l'outil ${provider.name} approprié et exécute-le.`;
 
@@ -113,6 +113,7 @@ ${toolLines.join('\n')}
       blockedTools: agent.blockedTools?.length ? agent.blockedTools : null,
       maxToolLoops: agent.maxToolLoops || null,
       routerBehavior: agent.routerBehavior || null,
+      autonomyLevel: agent.autonomyLevel || null,
     };
   }
 
@@ -465,26 +466,32 @@ ${toolLines.join('\n')}
 
     // Load agent overrides if agentId is set (dynamic provider or custom)
     let agentOverrides = null;
+    let resolvedAgent = null;
     if (thread.agentId) {
-      const resolved = await resolveAgentOverrides(thread.agentId, context);
-      if (resolved) {
+      resolvedAgent = await resolveAgentOverrides(thread.agentId, context);
+      if (resolvedAgent) {
         // Inject prompt fragment into context for buildSystemPrompt
-        if (resolved.promptFragment) {
-          context._agentPromptFragment = resolved.promptFragment;
+        if (resolvedAgent.promptFragment) {
+          context._agentPromptFragment = resolvedAgent.promptFragment;
         }
         // Pass LLM overrides and access control if custom agent specifies them
-        if (resolved.llmProvider || resolved.llmModel || resolved.toolGroups || resolved.blockedTools || resolved.maxToolLoops || resolved.routerBehavior) {
+        if (resolvedAgent.llmProvider || resolvedAgent.llmModel || resolvedAgent.toolGroups || resolvedAgent.blockedTools || resolvedAgent.maxToolLoops || resolvedAgent.routerBehavior) {
           agentOverrides = {
-            llmProvider: resolved.llmProvider || null,
-            llmModel: resolved.llmModel || null,
-            toolGroups: resolved.toolGroups || null,
-            blockedTools: resolved.blockedTools || null,
-            maxToolLoops: resolved.maxToolLoops || null,
-            routerBehavior: resolved.routerBehavior || null,
+            llmProvider: resolvedAgent.llmProvider || null,
+            llmModel: resolvedAgent.llmModel || null,
+            toolGroups: resolvedAgent.toolGroups || null,
+            blockedTools: resolvedAgent.blockedTools || null,
+            maxToolLoops: resolvedAgent.maxToolLoops || null,
+            routerBehavior: resolvedAgent.routerBehavior || null,
           };
         }
       }
     }
+
+    // Resolve autonomy level: thread override > agent setting > default
+    context._autonomyLevel = thread.metadata?.autonomyLevel
+      || resolvedAgent?.autonomyLevel
+      || 'autonomous';
 
     // SSE response
     res.setHeader('Content-Type', 'text/event-stream');
@@ -953,6 +960,7 @@ ${toolLines.join('\n')}
           type: 'custom',
           toolCount: customToolCount,
           allowedProviders: a.allowedProviders || [],
+          autonomyLevel: a.autonomyLevel || 'autonomous',
         });
       }
 
@@ -973,7 +981,7 @@ ${toolLines.join('\n')}
 
   // Create agent
   r.post('/ai/agents', async (req, res) => {
-    const { name, description, icon, color, systemPrompt, mode, allowedProviders, allowedTemplateKeys, llmProvider, llmModel, toolGroups, blockedTools, maxToolLoops, routerBehavior, workspaceId } = req.body || {};
+    const { name, description, icon, color, systemPrompt, mode, allowedProviders, allowedTemplateKeys, llmProvider, llmModel, toolGroups, blockedTools, maxToolLoops, routerBehavior, autonomyLevel, workspaceId } = req.body || {};
     if (!name) return res.apiError(400, 'name_required', 'Agent name is required');
     const agent = await AiAgent.create({
       companyId: req.user.companyId,
@@ -992,6 +1000,7 @@ ${toolLines.join('\n')}
       blockedTools: blockedTools || [],
       maxToolLoops: maxToolLoops || 40,
       routerBehavior: routerBehavior || 'auto',
+      autonomyLevel: autonomyLevel || 'autonomous',
       createdBy: req.user.id,
     });
     res.status(201).json({ success: true, data: agent, requestId: req.requestId, ts: Date.now() });
@@ -1001,7 +1010,7 @@ ${toolLines.join('\n')}
   r.put('/ai/agents/:agentId', async (req, res) => {
     const agent = await AiAgent.findOne({ id: req.params.agentId, companyId: req.user.companyId });
     if (!agent) return res.apiError(404, 'agent_not_found', 'Agent not found');
-    const allowed = ['name', 'description', 'icon', 'color', 'systemPrompt', 'mode', 'allowedProviders', 'allowedTemplateKeys', 'llmProvider', 'llmModel', 'toolGroups', 'blockedTools', 'maxToolLoops', 'routerBehavior', 'enabled', 'workspaceId'];
+    const allowed = ['name', 'description', 'icon', 'color', 'systemPrompt', 'mode', 'allowedProviders', 'allowedTemplateKeys', 'llmProvider', 'llmModel', 'toolGroups', 'blockedTools', 'maxToolLoops', 'routerBehavior', 'autonomyLevel', 'enabled', 'workspaceId'];
     for (const k of allowed) {
       if (req.body[k] !== undefined) agent[k] = req.body[k];
     }

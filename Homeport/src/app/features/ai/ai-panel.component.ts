@@ -1,5 +1,6 @@
-import { Component, ChangeDetectorRef, effect, HostListener } from '@angular/core';
+import { Component, ChangeDetectorRef, effect, HostListener, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NzDrawerModule } from 'ng-zorro-antd/drawer';
 import { NzButtonModule } from 'ng-zorro-antd/button';
@@ -9,6 +10,9 @@ import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { NzListModule } from 'ng-zorro-antd/list';
 import { NzEmptyModule } from 'ng-zorro-antd/empty';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
+import { NzPopoverModule } from 'ng-zorro-antd/popover';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzInputModule } from 'ng-zorro-antd/input';
 import { AiService, AiThread, AiPageContext, AiAvailableAgent } from './ai.service';
 import { AiChatComponent } from './ai-chat.component';
 import { AiSettingsComponent } from './ai-settings.component';
@@ -16,7 +20,7 @@ import { AiSettingsComponent } from './ai-settings.component';
 @Component({
   selector: 'ai-panel',
   standalone: true,
-  imports: [CommonModule, NzDrawerModule, NzButtonModule, NzIconModule, NzDropDownModule, NzMenuModule, NzListModule, NzEmptyModule, NzToolTipModule, AiChatComponent, AiSettingsComponent],
+  imports: [CommonModule, FormsModule, NzDrawerModule, NzButtonModule, NzIconModule, NzDropDownModule, NzMenuModule, NzListModule, NzEmptyModule, NzToolTipModule, NzPopoverModule, NzSelectModule, NzInputModule, AiChatComponent, AiSettingsComponent],
   template: `
     <nz-drawer
       [nzVisible]="ai.drawerOpen()"
@@ -39,7 +43,12 @@ import { AiSettingsComponent } from './ai-settings.component';
               <span class="title" *ngIf="view === 'settings'">Paramètres</span>
             </div>
             <div class="header-right">
-              <button nz-button nzType="text" nzSize="small" nz-tooltip nzTooltipTitle="Paramètres"
+              <button *ngIf="view === 'chat' && ai.currentThread()" nz-button nzType="text" nzSize="small"
+                nz-popover [nzPopoverContent]="threadSettingsPopover" nzPopoverTrigger="click" nzPopoverPlacement="bottomRight"
+                nz-tooltip nzTooltipTitle="Paramètres du chat">
+                <span nz-icon nzType="control" nzTheme="outline"></span>
+              </button>
+              <button nz-button nzType="text" nzSize="small" nz-tooltip nzTooltipTitle="Paramètres IA"
                 (click)="toggleView('settings')" [class.active-btn]="view === 'settings'">
                 <span nz-icon nzType="setting" nzTheme="outline"></span>
               </button>
@@ -92,6 +101,45 @@ import { AiSettingsComponent } from './ai-settings.component';
 
           <!-- Chat -->
           <ai-chat *ngIf="view === 'chat'" class="chat-area"></ai-chat>
+
+          <!-- Thread settings popover -->
+          <ng-template #threadSettingsPopover>
+            <div class="thread-settings-popover">
+              <div class="tsp-field">
+                <label>Titre</label>
+                <input nz-input nzSize="small" [ngModel]="ai.currentThread()?.title" (ngModelChange)="updateThreadTitle($event)" />
+              </div>
+              <div class="tsp-field">
+                <label>Agent</label>
+                <nz-select nzSize="small" style="width:100%"
+                  [ngModel]="ai.currentThread()?.agentId || 'general'"
+                  (ngModelChange)="updateThreadAgent($event)"
+                  nzShowSearch>
+                  <nz-option *ngFor="let a of allAgents" [nzValue]="a.id" [nzLabel]="a.name"></nz-option>
+                </nz-select>
+              </div>
+              <div class="tsp-field">
+                <label>Mode</label>
+                <nz-select nzSize="small" style="width:100%"
+                  [ngModel]="ai.currentThread()?.mode"
+                  (ngModelChange)="updateThreadMode($event)">
+                  <nz-option nzValue="chat" nzLabel="Chat"></nz-option>
+                  <nz-option nzValue="workflow" nzLabel="Workflow"></nz-option>
+                  <nz-option nzValue="form" nzLabel="Formulaire"></nz-option>
+                </nz-select>
+              </div>
+              <div class="tsp-field">
+                <label>Autonomie</label>
+                <nz-select nzSize="small" style="width:100%"
+                  [ngModel]="ai.currentThread()?.metadata?.autonomyLevel || 'autonomous'"
+                  (ngModelChange)="updateThreadAutonomy($event)">
+                  <nz-option nzValue="prudent" nzLabel="Prudent"></nz-option>
+                  <nz-option nzValue="balanced" nzLabel="Équilibré"></nz-option>
+                  <nz-option nzValue="autonomous" nzLabel="Autonome"></nz-option>
+                </nz-select>
+              </div>
+            </div>
+          </ng-template>
         </div>
       </ng-container>
     </nz-drawer>
@@ -121,12 +169,18 @@ import { AiSettingsComponent } from './ai-settings.component';
     .agent-dot { width: 6px; height: 6px; border-radius: 50%; background: #722ed1; }
     .chat-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-height: 0; }
     .settings-area { flex: 1; overflow: hidden; min-height: 0; }
+    .thread-settings-popover { width: 260px; }
+    .tsp-field { margin-bottom: 10px; }
+    .tsp-field:last-child { margin-bottom: 0; }
+    .tsp-field label { display: block; font-size: 11px; color: #999; margin-bottom: 3px; text-transform: uppercase; font-weight: 500; }
   `]
 })
-export class AiPanelComponent {
+export class AiPanelComponent implements OnInit {
   view: 'chat' | 'history' | 'settings' = 'chat';
   threads: AiThread[] = [];
+  allAgents: AiAvailableAgent[] = [];
   drawerWidth: number | string = 460;
+  private titleDebounce?: any;
 
   @HostListener('window:resize')
   onResize() { this.updateDrawerWidth(); }
@@ -150,6 +204,55 @@ export class AiPanelComponent {
           this.cdr.detectChanges();
         }
       }
+    });
+  }
+
+  ngOnInit() {
+    this.loadAgents();
+  }
+
+  loadAgents() {
+    this.ai.loadAvailableAgents().subscribe({
+      next: (res: any) => {
+        this.allAgents = res?.data || res || [];
+        this.cdr.detectChanges();
+      },
+    });
+  }
+
+  updateThreadTitle(title: string) {
+    const thread = this.ai.currentThread();
+    if (!thread) return;
+    clearTimeout(this.titleDebounce);
+    this.titleDebounce = setTimeout(() => {
+      this.ai.updateThread(thread.id || thread._id, { title }).subscribe({
+        next: () => this.ai.currentThread.set({ ...thread, title }),
+      });
+    }, 500);
+  }
+
+  updateThreadAgent(agentId: string) {
+    const thread = this.ai.currentThread();
+    if (!thread) return;
+    const newAgentId = agentId === 'general' ? '' : agentId;
+    this.ai.updateThread(thread.id || thread._id, { agentId: newAgentId }).subscribe({
+      next: () => this.ai.currentThread.set({ ...thread, agentId: newAgentId || undefined }),
+    });
+  }
+
+  updateThreadMode(mode: string) {
+    const thread = this.ai.currentThread();
+    if (!thread) return;
+    this.ai.updateThread(thread.id || thread._id, { mode }).subscribe({
+      next: () => this.ai.currentThread.set({ ...thread, mode: mode as any }),
+    });
+  }
+
+  updateThreadAutonomy(level: string) {
+    const thread = this.ai.currentThread();
+    if (!thread) return;
+    this.ai.updateThread(thread.id || thread._id, { metadata: { autonomyLevel: level } }).subscribe({
+      next: () => this.ai.currentThread.set({ ...thread, metadata: { ...(thread.metadata || {}), autonomyLevel: level } }),
     });
   }
 

@@ -9,6 +9,7 @@ import { NzEmptyModule } from 'ng-zorro-antd/empty';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzPopoverModule } from 'ng-zorro-antd/popover';
+import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { AiService, AiThread, AiAvailableAgent } from './ai.service';
 import { ApiClientService } from '../../services/api-client.service';
@@ -19,7 +20,7 @@ import { AiSettingsComponent } from './ai-settings.component';
 @Component({
   selector: 'ai-fullpage',
   standalone: true,
-  imports: [CommonModule, FormsModule, NzButtonModule, NzIconModule, NzSelectModule, NzEmptyModule, NzToolTipModule, NzPopconfirmModule, NzPopoverModule, AiChatComponent, AiSettingsComponent],
+  imports: [CommonModule, FormsModule, NzButtonModule, NzIconModule, NzSelectModule, NzInputModule, NzEmptyModule, NzToolTipModule, NzPopconfirmModule, NzPopoverModule, AiChatComponent, AiSettingsComponent],
   template: `
     <div class="fp-layout">
       <!-- Sidebar -->
@@ -176,6 +177,16 @@ import { AiSettingsComponent } from './ai-settings.component';
                       <nz-option nzValue="chat" nzLabel="Chat"></nz-option>
                       <nz-option nzValue="workflow" nzLabel="Workflow"></nz-option>
                       <nz-option nzValue="form" nzLabel="Formulaire"></nz-option>
+                    </nz-select>
+                  </div>
+                  <div class="sp-field">
+                    <label>Autonomie</label>
+                    <nz-select nzSize="small" style="width:100%"
+                      [ngModel]="ai.currentThread()?.metadata?.autonomyLevel || 'autonomous'"
+                      (ngModelChange)="updateThreadAutonomy($event)">
+                      <nz-option nzValue="prudent" nzLabel="Prudent"></nz-option>
+                      <nz-option nzValue="balanced" nzLabel="Équilibré"></nz-option>
+                      <nz-option nzValue="autonomous" nzLabel="Autonome"></nz-option>
                     </nz-select>
                   </div>
                   <div class="sp-divider"></div>
@@ -544,6 +555,17 @@ export class AiFullpageComponent implements OnInit, OnDestroy {
           this.nzMsg.success('Workflow lié');
           this.cdr.detectChanges();
         }
+      },
+    });
+  }
+
+  updateThreadAutonomy(level: string) {
+    const thread = this.ai.currentThread();
+    if (!thread) return;
+    this.ai.updateThread(thread.id || thread._id, { metadata: { autonomyLevel: level } }).subscribe({
+      next: () => {
+        const updated = { ...thread, metadata: { ...(thread.metadata || {}), autonomyLevel: level } };
+        this.ai.currentThread.set(updated);
       },
     });
   }

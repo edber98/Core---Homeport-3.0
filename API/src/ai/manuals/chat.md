@@ -6,8 +6,7 @@
 4. execute_tool(key, args) → EXÉCUTER L'ACTION.
 5. Présenter le résultat clairement (tableau markdown pour les listes).
 
-Pour les lectures → exécute SANS confirmation.
-Pour les écritures → demande confirmation.
+Respecte le **niveau d'autonomie** défini dans les règles générales pour les confirmations.
 
 <!-- @topic:workflow_creation -->
 ## Création de workflows
