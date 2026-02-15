@@ -128,7 +128,7 @@
       "key": "google_ai_chat",
       "name": "googleAiChat",
       "schemaVersion": 2,
-      "title": "Chat Completion",
+      "title": "Complétion de chat",
       "type": "function",
       "nodeKind": "function",
       "category": "AI",
@@ -156,7 +156,7 @@
       "args": {
         "displayTitle": false,
         "displayDescription": false,
-        "title": "Chat Completion",
+        "title": "Complétion de chat",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true

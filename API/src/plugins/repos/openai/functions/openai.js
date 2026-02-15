@@ -77,33 +77,40 @@ module.exports = {
     const model = String(inputs.model || 'gpt-image-1');
     const prompt = String(inputs.prompt || '');
     const size = String(inputs.size || '1024x1024');
+    const quality = String(inputs.quality || 'auto');
     log('Génération de l\'image...');
+    const body = { model, prompt, size, n: 1 };
+    // gpt-image-1 uses output_format, dall-e uses response_format
+    if (model.startsWith('gpt-image')) {
+      body.output_format = 'png';
+      body.quality = quality;
+    } else {
+      body.response_format = 'b64_json';
+      body.quality = quality === 'auto' ? 'standard' : quality;
+    }
     const res = await fetch(`${baseURL.replace(/\/$/,'')}/images/generations`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
-      body: JSON.stringify({ model, prompt, size })
+      body: JSON.stringify(body)
     });
     if (!res.ok) {
       const text = await res.text();
-      throw new Error(`OpenAI images API failed: ${res.status} ${text}`);
+      throw new Error(`OpenAI images API ${res.status}: ${text.slice(0, 500)}`);
     }
     const out = await res.json();
-    const images = [];
-    for (let i = 0; i < (out.data || []).length; i++) {
-      const d = out.data[i];
-      const url = d.url || null;
-      const b64 = d.b64_json || null;
-      let file = null;
-      if (opts.files && b64) {
-        file = await opts.files.store(b64, {
-          name: `generated_image_${i + 1}.png`,
-          mimeType: 'image/png',
-          lifecycle: 'execution'
-        });
-      }
-      images.push({ url, b64, file });
+    const d = (out.data || [])[0] || {};
+    const url = d.url || null;
+    const b64 = d.b64_json || null;
+    const revised_prompt = d.revised_prompt || null;
+    let file = null;
+    if (opts.files && b64) {
+      file = await opts.files.store(b64, {
+        name: 'generated_image.png',
+        mimeType: 'image/png',
+        lifecycle: 'execution'
+      });
     }
-    return { ok: true, images };
+    return { ok: true, file, url, revised_prompt };
   },
   // Memory embeddings from text (real embeddings)
   async openai_memory_embed(node, msg, inputs, opts) {

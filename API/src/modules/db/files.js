@@ -77,8 +77,11 @@ module.exports = function () {
       const file = await resolveFile(req);
       if (!file) return res.apiError(404, 'file_not_found', 'File not found');
 
-      res.setHeader('Content-Type', file.mimeType || 'application/octet-stream');
-      res.setHeader('Content-Disposition', `attachment; filename="${encodeURIComponent(file.name)}"`);
+      const mime = file.mimeType || 'application/octet-stream';
+      res.setHeader('Content-Type', mime);
+      // Inline for images (so <img src> works), attachment for others
+      const disposition = mime.startsWith('image/') ? 'inline' : 'attachment';
+      res.setHeader('Content-Disposition', `${disposition}; filename="${encodeURIComponent(file.name)}"`);
       if (file.size) res.setHeader('Content-Length', file.size);
 
       const stream = readStream(file);

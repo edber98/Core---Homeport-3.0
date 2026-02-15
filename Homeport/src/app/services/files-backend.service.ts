@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpEvent, HttpRequest } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 import { ApiClientService } from './api-client.service';
+import { AuthTokenService } from './auth-token.service';
 import { apiRoot, apiSuffix } from '../shared/api-base';
 import { environment } from '../../environments/environment';
 
@@ -30,6 +31,7 @@ export class FilesBackendService {
   constructor(
     private http: HttpClient,
     private api: ApiClientService,
+    private authToken: AuthTokenService,
   ) {}
 
   private buildUrl(path: string): string {
@@ -76,7 +78,9 @@ export class FilesBackendService {
    * Build a download URL for a file (for use in <a href> or window.open).
    */
   downloadUrl(fileId: string): string {
-    return this.buildUrl(`/api/files/${encodeURIComponent(fileId)}`);
+    const url = this.buildUrl(`/api/files/${encodeURIComponent(fileId)}`);
+    const token = this.authToken.token;
+    return token ? `${url}?token=${encodeURIComponent(token)}` : url;
   }
 
   /**

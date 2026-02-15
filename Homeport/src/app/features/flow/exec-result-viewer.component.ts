@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzCollapseModule } from 'ng-zorro-antd/collapse';
@@ -244,7 +244,7 @@ interface NestedSection {
           <!-- Single file ref -->
           <ng-container *ngIf="isFileRef(value)">
             <img *ngIf="isImageFile(value, field)" [src]="fileUrl(value)" class="rv-img-preview"
-                 [class.rv-img-card]="field.listType === 'picture-card'" />
+                 [class.rv-img-card]="field.listType === 'picture-card'" (click)="openLightbox(fileUrl(value))" />
             <a *ngIf="!isImageFile(value, field)" [href]="fileUrl(value)" target="_blank" class="rv-file-link">
               <i class="fa-solid fa-file"></i> {{ value.name }} ({{ formatSize(value.size) }})
             </a>
@@ -253,7 +253,7 @@ interface NestedSection {
           <div *ngIf="isFileArray(value)" [class]="isImageAccept(field) ? 'rv-img-grid' : 'rv-file-list'">
             <ng-container *ngFor="let f of value">
               <img *ngIf="isImageFile(f, field)" [src]="fileUrl(f)" class="rv-img-preview"
-                   [class.rv-img-card]="field.listType === 'picture-card'" />
+                   [class.rv-img-card]="field.listType === 'picture-card'" (click)="openLightbox(fileUrl(f))" />
               <a *ngIf="!isImageFile(f, field)" [href]="fileUrl(f)" target="_blank" class="rv-file-link">
                 <i class="fa-solid fa-file"></i> {{ f.name }} ({{ formatSize(f.size) }})
               </a>
@@ -272,7 +272,7 @@ interface NestedSection {
     <!-- Auto-detection cell template (no schema) -->
     <ng-template #autoCellTpl let-value="value">
       <ng-container *ngIf="isFileRef(value)">
-        <img *ngIf="isImage(value)" [src]="fileUrl(value)" class="rv-img-preview" />
+        <img *ngIf="isImage(value)" [src]="fileUrl(value)" class="rv-img-preview" (click)="openLightbox(fileUrl(value))" />
         <a *ngIf="!isImage(value)" [href]="fileUrl(value)" target="_blank" class="rv-file-link">
           <i class="fa-solid fa-file"></i> {{ value.name }} ({{ formatSize(value.size) }})
         </a>
@@ -283,7 +283,7 @@ interface NestedSection {
           {{ value ? 'Oui' : 'Non' }}
         </span>
         <span *ngIf="isDateValue(value)" class="rv-date-auto">{{ formatDate(value) }}</span>
-        <span *ngIf="isImageUrl(value)"><img [src]="value" class="rv-img-preview" /></span>
+        <span *ngIf="isImageUrl(value)"><img [src]="value" class="rv-img-preview" (click)="openLightbox(value)" /></span>
         <a *ngIf="isUrl(value)" [href]="value" target="_blank" rel="noopener" class="rv-link">{{ value }}</a>
         <span *ngIf="!isBool(value) && !isDateValue(value) && !isImageUrl(value) && !isUrl(value)">{{ formatAuto(value) }}</span>
       </ng-container>
@@ -321,12 +321,14 @@ interface NestedSection {
 
     .rv-tags { display: inline-flex; gap: 4px; flex-wrap: wrap; }
 
-    .rv-img-preview { max-width: 160px; max-height: 100px; border-radius: 6px; object-fit: cover; cursor: pointer; }
+    .rv-img-preview { max-width: 160px; max-height: 100px; border-radius: 6px; object-fit: cover; cursor: pointer; transition: opacity 0.15s; }
+    .rv-img-preview:hover { opacity: 0.8; }
     .rv-file-link { color: #1677ff; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; }
     .rv-file-link:hover { text-decoration: underline; }
     .rv-img-grid { display: flex; gap: 8px; flex-wrap: wrap; }
     .rv-file-list { display: flex; flex-direction: column; gap: 4px; }
     .rv-img-card { max-width: 140px; max-height: 140px; border-radius: 8px; border: 1px solid #e5e7eb; padding: 4px; }
+
     .rv-secret { color: #9ca3af; letter-spacing: 2px; }
     .rv-date-auto { font-variant-numeric: tabular-nums; }
 
@@ -357,7 +359,7 @@ interface NestedSection {
     .rv-unknown-table .rv-label { background: #fffbeb; }
   `]
 })
-export class ExecResultViewerComponent implements OnChanges {
+export class ExecResultViewerComponent implements OnChanges, OnDestroy {
   @Input() data: any;
   @Input() schema: any = null;
   @Output() hasTableContent = new EventEmitter<boolean>();
@@ -366,6 +368,7 @@ export class ExecResultViewerComponent implements OnChanges {
   hasSchema = false;
   labelsOnTop = false;
   showUnknown = false;
+  private _lightboxEl: HTMLElement | null = null;
   scalarEntries: ScalarEntry[] = [];
   arraySections: ArraySection[] = [];
   unknownEntries: Array<{ key: string; value: any }> = [];
@@ -608,6 +611,54 @@ export class ExecResultViewerComponent implements OnChanges {
   fileUrl(ref: any): string {
     if (!ref?.fileId) return '';
     return this.filesService.downloadUrl(ref.fileId);
+  }
+
+  openLightbox(url: string) {
+    if (!url) return;
+    this.closeLightbox();
+    const overlay = document.createElement('div');
+    overlay.style.cssText = 'position:fixed;inset:0;z-index:100000;display:flex;align-items:center;justify-content:center;animation:rvFadeIn .15s ease';
+    overlay.innerHTML = `
+      <div style="position:absolute;inset:0;background:rgba(0,0,0,0.8)" data-rv-close></div>
+      <div style="position:relative;max-width:92vw;max-height:92vh;display:flex;align-items:center;justify-content:center">
+        <img src="${url}" style="max-width:92vw;max-height:92vh;object-fit:contain;border-radius:8px;box-shadow:0 8px 32px rgba(0,0,0,0.5)" />
+        <div style="position:absolute;top:-44px;right:0;display:flex;gap:8px">
+          <a href="${url}" target="_blank" download style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.15);color:#fff;display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:16px;cursor:pointer;border:none" title="Télécharger"><i class="fa-solid fa-download"></i></a>
+          <button style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.15);color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;border:none" data-rv-close title="Fermer"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+      </div>
+    `;
+    // Inject keyframe once
+    if (!document.getElementById('rv-lightbox-style')) {
+      const style = document.createElement('style');
+      style.id = 'rv-lightbox-style';
+      style.textContent = '@keyframes rvFadeIn{from{opacity:0}to{opacity:1}}';
+      document.head.appendChild(style);
+    }
+    overlay.addEventListener('click', (e) => {
+      if ((e.target as HTMLElement).closest('[data-rv-close]')) this.closeLightbox();
+    });
+    this._onEsc = (e: KeyboardEvent) => { if (e.key === 'Escape') this.closeLightbox(); };
+    document.addEventListener('keydown', this._onEsc);
+    document.body.appendChild(overlay);
+    this._lightboxEl = overlay;
+  }
+
+  private _onEsc: ((e: KeyboardEvent) => void) | null = null;
+
+  closeLightbox() {
+    if (this._lightboxEl) {
+      this._lightboxEl.remove();
+      this._lightboxEl = null;
+    }
+    if (this._onEsc) {
+      document.removeEventListener('keydown', this._onEsc);
+      this._onEsc = null;
+    }
+  }
+
+  ngOnDestroy() {
+    this.closeLightbox();
   }
 
   formatDate(v: any, field?: any): string {
