@@ -197,6 +197,18 @@ const WORKFLOW_TOOL_DEFINITIONS = [
     },
   },
   {
+    name: 'set_node_credential',
+    description: 'Assigne un credential spécifique à un node du workflow. Utilise list_credentials(providerKey) pour trouver les credentials disponibles, puis assigne le bon.',
+    parameters: {
+      type: 'object',
+      properties: {
+        nodeId: { type: 'string', description: 'ID du node' },
+        credentialId: { type: 'string', description: 'ID du credential (retourné par list_credentials)' },
+      },
+      required: ['nodeId', 'credentialId'],
+    },
+  },
+  {
     name: 'propose_context_mapping',
     description: 'Simule le workflow jusqu\'à un node cible et propose un mapping automatique des arguments. Retourne aussi upstreamOutputs : le schéma de sortie de chaque node en amont (CRITIQUE pour les multi-output/classifiers — contient les noms de champs exacts pour {{ }}).',
     parameters: {
@@ -543,18 +555,40 @@ function createWorkflowExecutor(metadata, emit) {
     const allKnownExpressions = new Map();
 
     // If simulation data provided, extract field names from msgIn
+    // The engine puts node results as top-level keys: msgIn[nodeId] = { field1, field2, ... }
+    // It also has payload, _nodes, loop as special keys
     const simFields = new Map(); // nodeId → Set of field names
+    const INTERNAL_KEYS = new Set(['_meta', '_nodeResults', '_nodes', 'payload', 'loop']);
+    const graphNodeIds = new Set((g.nodes || []).map(n => String(n.id)));
     if (simData) {
       const scenarios = Array.isArray(simData.scenarios) ? simData.scenarios : [];
       for (const sc of scenarios) {
         const msg = sc.msgIn || {};
-        // Top-level keys in msgIn (except internal keys) are available as payload.xxx
-        for (const k of Object.keys(msg)) {
-          if (k === '_meta' || k === '_nodeResults') continue;
-          payloadFields.add(k);
-          allKnownExpressions.set(`payload.${k}`, true);
+        // payload.xxx fields
+        const payload = msg.payload;
+        if (payload && typeof payload === 'object') {
+          for (const k of Object.keys(payload)) {
+            payloadFields.add(k);
+            allKnownExpressions.set(`payload.${k}`, true);
+          }
         }
-        // Per-node results from _nodeResults
+        // Top-level keys that are node IDs → per-node results (engine simulation format)
+        for (const [k, v] of Object.entries(msg)) {
+          if (INTERNAL_KEYS.has(k)) continue;
+          if (graphNodeIds.has(k) && v && typeof v === 'object') {
+            // This is a node result: msgIn[nodeId] = { text: "...", ok: true, ... }
+            if (!simFields.has(k)) simFields.set(k, new Set());
+            for (const field of Object.keys(v)) {
+              simFields.get(k).add(field);
+              allKnownExpressions.set(`${k}.${field}`, true);
+            }
+          } else {
+            // Regular payload-level field
+            payloadFields.add(k);
+            allKnownExpressions.set(`payload.${k}`, true);
+          }
+        }
+        // Also check _nodeResults format (from simulateScenarios fallback)
         const nr = msg._nodeResults || {};
         for (const [nid, result] of Object.entries(nr)) {
           if (!simFields.has(nid)) simFields.set(nid, new Set());
@@ -767,10 +801,10 @@ function createWorkflowExecutor(metadata, emit) {
             'id _id name'
           ).lean();
           if (creds.length === 1) {
-            credentialId = String(creds[0]._id);
+            credentialId = creds[0].id || String(creds[0]._id);
           } else if (creds.length > 1) {
             // Use the first one as default — user can change later
-            credentialId = String(creds[0]._id);
+            credentialId = creds[0].id || String(creds[0]._id);
           }
         }
       } catch {}
@@ -1045,6 +1079,19 @@ function createWorkflowExecutor(metadata, emit) {
         id: hid, name: getOutputHandleName(node, hid),
       }));
       const result = { success: true, nodeId: node.id, name: node.data.model.name, type: tpl.type, outputHandles };
+      // Report credential status
+      if (node.data.model.credentialId) {
+        result.credentialId = node.data.model.credentialId;
+        result.credentialNote = 'Credential auto-assigné.';
+      } else if (tpl.providerKey) {
+        try {
+          const prov = await Provider.findOne({ key: tpl.providerKey }, 'hasCredentials allowWithoutCredentials').lean();
+          if (prov?.hasCredentials && !prov?.allowWithoutCredentials && !tpl.allowWithoutCredentials) {
+            result.credentialMissing = true;
+            result.credentialNote = `⚠ Ce node requiert des credentials (provider: ${tpl.providerKey}) mais aucun n'est disponible. Utilise open_credentials("${tpl.providerKey}") pour en créer, ou list_credentials("${tpl.providerKey}") pour vérifier.`;
+          }
+        } catch {}
+      }
       // For multi-output nodes: include outputSchema so AI knows the data fields per branch
       if (tpl.output_array_field && Array.isArray(tpl.outputSchema) && tpl.outputSchema.length) {
         result.isMultiOutput = true;
@@ -1464,6 +1511,18 @@ function createWorkflowExecutor(metadata, emit) {
       emitPatch([{ op: 'replace', path: `/nodes/${idx}`, value: g.nodes[idx] }]);
       emit({ type: 'desc', nodeId: input.nodeId, text: input.description });
       return { success: true };
+    },
+
+    async set_node_credential(input) {
+      await ensureGraph();
+      const g = gref();
+      const idx = findNodeIndex(input.nodeId);
+      if (idx < 0) return { success: false, error: 'Node introuvable' };
+      g.nodes[idx].data = g.nodes[idx].data || {};
+      g.nodes[idx].data.model = g.nodes[idx].data.model || {};
+      g.nodes[idx].data.model.credentialId = input.credentialId;
+      emitPatch([{ op: 'replace', path: `/nodes/${idx}`, value: g.nodes[idx] }]);
+      return { success: true, nodeId: input.nodeId, credentialId: input.credentialId };
     },
 
     async propose_context_mapping(input) {

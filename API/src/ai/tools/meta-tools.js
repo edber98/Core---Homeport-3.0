@@ -20,7 +20,7 @@ const BUILDER_TOOL_NAMES = new Set([
   'ensure_start', 'add_node', 'remove_node', 'replace_node',
   'connect_nodes', 'connect_by_output_name', 'disconnect_nodes',
   'get_output_options', 'get_node_schema', 'get_output_schema',
-  'set_node_args', 'set_node_description', 'propose_context_mapping',
+  'set_node_args', 'set_node_description', 'set_node_credential', 'propose_context_mapping',
   'validate_flow', 'auto_layout', 'save_flow', 'create_start_form',
   'build_schema', 'deploy_flow', 'undeploy_flow', 'get_deployment_status',
   'start_run', 'list_runs', 'get_run_stats',
@@ -211,6 +211,16 @@ const META_TOOL_DEFINITIONS = [
         providerName: { type: 'string', description: 'Nom lisible du provider (ex: Odoo, Slack)' },
       },
       required: ['providerKey'],
+    },
+  },
+  {
+    name: 'list_credentials',
+    description: 'Liste les credentials (identifiants) disponibles dans le workspace pour un provider donné. Retourne les noms et IDs. Utilise pour vérifier si des credentials existent avant d\'ajouter un node, ou pour choisir entre plusieurs credentials.',
+    parameters: {
+      type: 'object',
+      properties: {
+        providerKey: { type: 'string', description: 'Clé du provider (ex: odoo, slack, google_drive, email). Si omis, liste tous les credentials du workspace.' },
+      },
     },
   },
   {
@@ -436,6 +446,34 @@ async function executeMetaTool(name, input, ctx) {
     case 'open_credentials': {
       // Return action event — frontend will handle opening the modal
       return { _action: true, action: 'open_credentials', providerKey: input.providerKey, providerName: input.providerName || input.providerKey };
+    }
+
+    case 'list_credentials': {
+      const filter = { workspaceId: ctx.workspaceId };
+      if (input.providerKey) filter.providerKey = input.providerKey;
+      const creds = await Credential.find(filter, 'id _id name providerKey createdAt').lean().limit(50).sort({ createdAt: -1 });
+      if (!creds.length) {
+        const msg = input.providerKey
+          ? `Aucun credential trouvé pour le provider "${input.providerKey}". Utilise open_credentials("${input.providerKey}") pour en créer.`
+          : 'Aucun credential dans ce workspace.';
+        return { credentials: [], message: msg };
+      }
+      return {
+        credentials: creds.map(c => ({
+          id: c.id || String(c._id),
+          name: c.name,
+          providerKey: c.providerKey,
+        })),
+        count: creds.length,
+        hint: creds.length === 1
+          ? `Un seul credential disponible : "${creds[0].name}" — il sera auto-assigné aux nouveaux nodes.`
+          : `${creds.length} credentials disponibles. Choisis le bon pour chaque node ou demande à l'utilisateur.`,
+      };
+    }
+
+    case 'set_node_credential': {
+      // Handled by workflow capsule (workflow-tools.js) — not a meta-tool
+      return { error: 'set_node_credential est un outil workflow (capsule). Il est disponible quand la capsule workflow est active.' };
     }
 
     case 'enrich_context': {

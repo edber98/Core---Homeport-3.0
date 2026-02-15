@@ -49,6 +49,20 @@ function loadManuals() {
 }
 
 /**
+ * Resolve namespace filter: supports prefix matching.
+ * "workflow" matches "workflow", "workflow-expressions", "workflow-loops", etc.
+ */
+function resolveNamespaces(namespace) {
+  const manuals = loadManuals();
+  if (!namespace) return Object.keys(manuals);
+  // Always include exact match + all prefixed variants
+  // "workflow" matches "workflow", "workflow-build", "workflow-nodes", etc.
+  const prefix = namespace + '-';
+  const matches = Object.keys(manuals).filter(ns => ns === namespace || ns.startsWith(prefix));
+  return matches.length ? matches : [namespace]; // fallback to exact (will yield no results)
+}
+
+/**
  * Score how well a query matches a section.
  */
 function scoreMatch(queryWords, topic, title, summary) {
@@ -67,7 +81,7 @@ function scoreMatch(queryWords, topic, title, summary) {
 /**
  * Search manual sections by keyword.
  * @param {string} query - Search text
- * @param {string} [namespace] - Limit to a specific namespace
+ * @param {string} [namespace] - Limit to a specific namespace (supports prefix: "workflow" matches "workflow-*")
  * @returns {Array<{ namespace, topic, title, summary, score }>}
  */
 function searchManual(query, namespace) {
@@ -78,7 +92,7 @@ function searchManual(query, namespace) {
   const words = q.split(/\s+/).filter(Boolean);
   const results = [];
 
-  const namespaces = namespace ? [namespace] : Object.keys(manuals);
+  const namespaces = resolveNamespaces(namespace);
   for (const ns of namespaces) {
     const sections = manuals[ns];
     if (!sections) continue;
@@ -91,18 +105,18 @@ function searchManual(query, namespace) {
   }
 
   results.sort((a, b) => b.score - a.score);
-  return { results: results.slice(0, 8), totalSections: results.length };
+  return { results: results.slice(0, 12), totalSections: results.length };
 }
 
 /**
  * Get a specific manual section by topic ID.
  * @param {string} topic - Topic ID
- * @param {string} [namespace] - Namespace (if omitted, searches all)
+ * @param {string} [namespace] - Namespace (if omitted or prefix, searches matching namespaces)
  * @returns {{ namespace, topic, title, content } | null}
  */
 function getManualSection(topic, namespace) {
   const manuals = loadManuals();
-  const namespaces = namespace ? [namespace] : Object.keys(manuals);
+  const namespaces = resolveNamespaces(namespace);
   for (const ns of namespaces) {
     if (manuals[ns]?.[topic]) {
       const sec = manuals[ns][topic];
