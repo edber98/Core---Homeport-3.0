@@ -38,6 +38,7 @@ yarn-error.log
 .history/*
 
 # Miscellaneous
+Homeport/.angular/
 /.angular/cache
 .sass-cache/
 /connect.lock
