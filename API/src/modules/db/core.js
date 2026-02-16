@@ -75,15 +75,23 @@ module.exports = function(){
 
   r.get('/workspaces', async (req, res) => {
     await ensureDefaultWorkspace(req.user.companyId, req.user.id);
-    const memberships = await WorkspaceMembership.find({ userId: req.user.id }).lean();
-    const ids = memberships.map(m => m.workspaceId);
     let { limit = 50, page = 1 } = req.query;
     limit = Math.max(1, Math.min(100, Number(limit) || 50));
     page = Math.max(1, Number(page) || 1);
     const { q, sort } = req.query;
-    const query = { _id: { $in: ids } };
+
+    let query;
+    if (req.user.role === 'admin') {
+      // Admin sees all company workspaces
+      query = { companyId: req.user.companyId };
+    } else {
+      // Regular user sees only workspaces they are members of
+      const memberships = await WorkspaceMembership.find({ userId: req.user.id }).lean();
+      const ids = memberships.map(m => m.workspaceId);
+      query = { _id: { $in: ids } };
+    }
     if (q) query['name'] = { $regex: String(q), $options: 'i' };
-    let sortObj = { createdAt: -1 };
+    let sortObj = { isDefault: -1, createdAt: 1 };
     if (typeof sort === 'string') {
       const [field, dir] = String(sort).split(':');
       if (field) sortObj = { [field]: (dir === 'asc' ? 1 : -1) };

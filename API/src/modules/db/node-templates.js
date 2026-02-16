@@ -5,6 +5,12 @@ const Workspace = require('../../db/models/workspace.model');
 const Flow = require('../../db/models/flow.model');
 const Notification = require('../../db/models/notification.model');
 const { validateFlowGraph } = require('../../utils/validate');
+const { toolIndex } = require('../../ai/tools/tool-index');
+
+/** Rebuild AI tool index in background after template changes */
+function rebuildToolIndex() {
+  toolIndex.rebuild().catch(e => console.error('[node-templates] toolIndex rebuild error:', e?.message));
+}
 
 module.exports = function(){
   const r = express.Router();
@@ -14,7 +20,7 @@ module.exports = function(){
   r.get('/node-templates', async (req, res) => {
     const { category } = req.query;
     let { limit = 100, page = 1 } = req.query;
-    limit = Math.max(1, Math.min(200, Number(limit) || 100));
+    limit = Math.max(1, Math.min(2000, Number(limit) || 100));
     page = Math.max(1, Number(page) || 1);
     const { q, sort } = req.query;
     const query = category ? { category } : {};
@@ -24,7 +30,19 @@ module.exports = function(){
     }
     let sortObj = { name: 1 };
     if (typeof sort === 'string') { const [f,d] = String(sort).split(':'); if (f) sortObj = { [f]: (d === 'desc' ? -1 : 1) }; }
-    const list = await NodeTemplate.find(query)
+    // Hide templates when all their repos are disabled; honor template.enabled
+    const PluginRepo = require('../../db/models/plugin-repo.model');
+    const enabledRepos = await PluginRepo.find({ enabled: true }).select('_id').lean();
+    const enabledIds = new Set(enabledRepos.map(r => String(r._id)));
+    const list = await NodeTemplate.find({
+        ...query,
+        enabled: { $ne: false },
+        $or: [
+          { repos: { $exists: false } },
+          { repos: { $size: 0 } },
+          { repos: { $in: [...enabledIds] } },
+        ]
+      })
       .sort(sortObj)
       .skip((page - 1) * limit)
       .limit(limit)
@@ -42,6 +60,7 @@ module.exports = function(){
     if (!body.title && body.name) body.title = body.name;
     if (!body.subtitle && body.providerKey) body.subtitle = body.providerKey;
     const t = await NodeTemplate.create(body);
+    rebuildToolIndex();
     res.status(201).json({ success: true, data: t, requestId: req.requestId, ts: Date.now() });
   });
 
@@ -56,9 +75,19 @@ module.exports = function(){
     if (!patch.subtitle && (patch.providerKey || tpl.providerKey)) patch.subtitle = patch.providerKey || tpl.providerKey;
     Object.assign(tpl, patch); await tpl.save();
 
-    // If args (form) changed, flag impacted flows (optional)
+    // If args (form) or structure changed, flag impacted flows
     const schemaChanged = JSON.stringify(old.args || {}) !== JSON.stringify(tpl.args || {});
-    if (schemaChanged){
+    const structureChanged = (
+      JSON.stringify(old.inputHandles || []) !== JSON.stringify(tpl.inputHandles || []) ||
+      JSON.stringify(old.outputHandles || []) !== JSON.stringify(tpl.outputHandles || []) ||
+      JSON.stringify(old.linkedHandles || []) !== JSON.stringify(tpl.linkedHandles || []) ||
+      JSON.stringify(old.outputSchema || []) !== JSON.stringify(tpl.outputSchema || []) ||
+      old.output_array_field !== tpl.output_array_field ||
+      old.output_schema_field !== tpl.output_schema_field ||
+      !!old.authorize_catch_error !== !!tpl.authorize_catch_error ||
+      !!old.authorize_skip_error !== !!tpl.authorize_skip_error
+    );
+    if (schemaChanged || structureChanged){
       // get all flows in company scope? templates are global, validate all flows
       const flows = await Flow.find();
       const impacted = [];
@@ -88,18 +117,32 @@ module.exports = function(){
           getProviderByKey: async (k) => Provider.findOne({ key: k }).lean(),
           hasCredential: async (providerKey) => !!(await Credential.exists({ providerKey, workspaceId: ws._id })),
         };
-        const { validateFlowGraph } = require('../../utils/validate');
+        const { validateFlowGraph, validateFlowTemplates } = require('../../utils/validate');
         const v = await validateFlowGraph(f.graph || f, { strict: true, loaders });
         const { uses, ids } = flowUsesTemplate(f);
         if (!uses) continue; // skip flows that do not use this template
+        // Collect errors from graph validation (filtered to affected nodes)
+        const allErrors = [];
         if (!v.ok){
           const filtered = (v.errors || []).filter(e => {
             const nid = e?.details?.nodeId ? String(e.details.nodeId) : null;
             return nid ? ids.has(nid) : false;
           });
-          if (filtered.length){
-            impacted.push({ flowId: String(f._id), workspaceId: String(ws._id), companyId: String(ws.companyId), name: f.name, errors: filtered });
+          allErrors.push(...filtered);
+        }
+        // Also check template staleness (embedded checksums vs live DB)
+        try {
+          const tv = await validateFlowTemplates(f.graph || f);
+          if (!tv.ok) {
+            const tplErrors = (tv.errors || []).filter(e => {
+              const nid = e?.details?.nodeId ? String(e.details.nodeId) : null;
+              return nid ? ids.has(nid) : false;
+            });
+            allErrors.push(...tplErrors);
           }
+        } catch {}
+        if (allErrors.length){
+          impacted.push({ flowId: String(f._id), workspaceId: String(ws._id), companyId: String(ws.companyId), name: f.name, errors: allErrors });
         }
       }
       if (impacted.length && !force){
@@ -117,11 +160,13 @@ module.exports = function(){
             await f.save();
           }
           await Run.updateMany({ flowId: it.flowId, status: 'running' }, { $set: { status: 'cancelled', finishedAt: new Date() } });
-          await Notification.create({ companyId: it.companyId, workspaceId: it.workspaceId, entityType: 'flow', entityId: it.flowId, severity: 'critical', code: 'flow_invalid', message: `Flow disabled due to template '${key}' update`, details: { errors: it.errors }, link: `/flows/${it.flowId}/editor` });
+          await Notification.create({ companyId: it.companyId, workspaceId: it.workspaceId, entityType: 'flow', entityId: it.flowId, severity: 'critical', code: 'flow_invalid', message: `Flow désactivé suite à la mise à jour du template '${key}'`, details: { errors: it.errors }, link: `/flows/${it.flowId}/editor` });
         }
       }
+      rebuildToolIndex();
       return res.apiOk({ template: tpl, impacted });
     }
+    rebuildToolIndex();
     res.apiOk({ template: tpl, impacted: [] });
   });
 
@@ -186,10 +231,22 @@ module.exports = function(){
           await f.save();
         }
         await Run.updateMany({ flowId: it.flowId, status: 'running' }, { $set: { status: 'cancelled', finishedAt: new Date() } });
-        await Notification.create({ companyId: it.companyId, workspaceId: it.workspaceId, entityType: 'flow', entityId: it.flowId, severity: 'critical', code: 'template_deleted', message: `Flow disabled due to deleted template '${key}'`, details: { errors: it.errors }, link: `/flows/${it.flowId}/editor` });
+        await Notification.create({ companyId: it.companyId, workspaceId: it.workspaceId, entityType: 'flow', entityId: it.flowId, severity: 'critical', code: 'template_deleted', message: `Flow désactivé suite à la suppression du template '${key}'`, details: { errors: it.errors }, link: `/flows/${it.flowId}/editor` });
       }
     }
+    rebuildToolIndex();
     res.apiOk({ deleted: true, key, impacted });
+  });
+
+  // Admin utility: purge templates without providerKey (orphans from local/demo)
+  r.post('/node-templates/purge-orphans', requireAdmin(), async (req, res) => {
+    const dryRun = !!(req.query.dryRun === '1' || req.body?.dryRun);
+    const q = { $or: [ { providerKey: { $exists: false } }, { providerKey: null }, { providerKey: '' } ] };
+    const list = await NodeTemplate.find(q).lean();
+    if (dryRun) return res.apiOk({ wouldDelete: list.map(t => t.key), count: list.length });
+    const keys = list.map(t => t.key);
+    await NodeTemplate.deleteMany({ key: { $in: keys } });
+    res.apiOk({ deleted: keys, count: keys.length });
   });
   return r;
 }

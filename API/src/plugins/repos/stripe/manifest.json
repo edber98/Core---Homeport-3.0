@@ -1,0 +1,4479 @@
+{
+  "repo": {
+    "name": "stripe",
+    "type": "local",
+    "label": "Stripe"
+  },
+  "variables": {
+    "stripe_customer": {
+      "title": "Client Stripe",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du client.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "email",
+          "label": "Email",
+          "description": "Adresse e-mail.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom du client.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "description",
+          "label": "Description",
+          "description": "Description.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "phone",
+          "label": "Téléphone",
+          "description": "Numéro de téléphone.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "created",
+          "label": "Crée le",
+          "description": "Timestamp de creation.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "currency",
+          "label": "Devise",
+          "description": "Devise par defaut.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "stripe_customers": {
+      "title": "Clients Stripe",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "hasMore",
+          "label": "Plus de résultats",
+          "description": "Indique s'il y a plus de résultats disponibles.",
+          "col": { "xs": 24 }
+        },
+        {
+          "type": "section",
+          "title": "Clients",
+          "description": "Liste des clients",
+          "mode": "array",
+          "key": "customers",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "email",
+              "label": "Email",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "description",
+              "label": "Description",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "phone",
+              "label": "Téléphone",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "created",
+              "label": "Crée le",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "currency",
+              "label": "Devise",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "stripe_product": {
+      "title": "Produit Stripe",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du produit.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom du produit.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "description",
+          "label": "Description",
+          "description": "Description.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "switch",
+          "key": "active",
+          "label": "Actif",
+          "description": "Produit actif.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "created",
+          "label": "Crée le",
+          "description": "Timestamp de creation.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "stripe_products": {
+      "title": "Produits Stripe",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "hasMore",
+          "label": "Plus de résultats",
+          "description": "Indique s'il y a plus de résultats disponibles.",
+          "col": { "xs": 24 }
+        },
+        {
+          "type": "section",
+          "title": "Produits",
+          "description": "Liste des produits",
+          "mode": "array",
+          "key": "products",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "description",
+              "label": "Description",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "switch",
+              "key": "active",
+              "label": "Actif",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "created",
+              "label": "Crée le",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "stripe_price": {
+      "title": "Prix Stripe",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du prix.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "product",
+          "label": "Produit",
+          "description": "ID du produit associe.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "unit_amount",
+          "label": "Montant unitaire",
+          "description": "Montant en centimes.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "currency",
+          "label": "Devise",
+          "description": "Code devise (ex: usd, eur).",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "type",
+          "label": "Type",
+          "description": "one_time ou recurring.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "recurring_interval",
+          "label": "Intervalle recurrent",
+          "description": "day, week, month, year.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "switch",
+          "key": "active",
+          "label": "Actif",
+          "description": "Prix actif.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "stripe_prices": {
+      "title": "Prix Stripe",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "hasMore",
+          "label": "Plus de résultats",
+          "description": "Indique s'il y a plus de résultats disponibles.",
+          "col": { "xs": 24 }
+        },
+        {
+          "type": "section",
+          "title": "Prix",
+          "description": "Liste des prix",
+          "mode": "array",
+          "key": "prices",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "product",
+              "label": "Produit",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "unit_amount",
+              "label": "Montant unitaire",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "currency",
+              "label": "Devise",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "type",
+              "label": "Type",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "recurring_interval",
+              "label": "Intervalle recurrent",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "switch",
+              "key": "active",
+              "label": "Actif",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "stripe_payment_intent": {
+      "title": "Payment Intent Stripe",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du payment intent.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "amount",
+          "label": "Montant",
+          "description": "Montant en centimes.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "currency",
+          "label": "Devise",
+          "description": "Code devise.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut du paiement.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "customer",
+          "label": "Client",
+          "description": "ID du client.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "description",
+          "label": "Description",
+          "description": "Description.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "created",
+          "label": "Crée le",
+          "description": "Timestamp de creation.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "stripe_payment_intents": {
+      "title": "Payment Intents Stripe",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "hasMore",
+          "label": "Plus de résultats",
+          "description": "Indique s'il y a plus de résultats disponibles.",
+          "col": { "xs": 24 }
+        },
+        {
+          "type": "section",
+          "title": "Payment Intents",
+          "description": "Liste des payment intents",
+          "mode": "array",
+          "key": "payment_intents",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "amount",
+              "label": "Montant",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "currency",
+              "label": "Devise",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "customer",
+              "label": "Client",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "description",
+              "label": "Description",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "created",
+              "label": "Crée le",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "stripe_subscription": {
+      "title": "Abonnement Stripe",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant de l'abonnement.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "customer",
+          "label": "Client",
+          "description": "ID du client.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut de l'abonnement.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "current_period_start",
+          "label": "Début periode",
+          "description": "Timestamp début de la periode.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "current_period_end",
+          "label": "Fin periode",
+          "description": "Timestamp fin de la periode.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "created",
+          "label": "Crée le",
+          "description": "Timestamp de creation.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "switch",
+          "key": "cancel_at_period_end",
+          "label": "Annuler en fin de periode",
+          "description": "Si l'abonnement sera annule.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "stripe_subscriptions": {
+      "title": "Abonnements Stripe",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "hasMore",
+          "label": "Plus de résultats",
+          "description": "Indique s'il y a plus de résultats disponibles.",
+          "col": { "xs": 24 }
+        },
+        {
+          "type": "section",
+          "title": "Abonnements",
+          "description": "Liste des abonnements",
+          "mode": "array",
+          "key": "subscriptions",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "customer",
+              "label": "Client",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "current_period_start",
+              "label": "Début periode",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "current_period_end",
+              "label": "Fin periode",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "created",
+              "label": "Crée le",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "switch",
+              "key": "cancel_at_period_end",
+              "label": "Annuler en fin de periode",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "stripe_invoice": {
+      "title": "Facture Stripe",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant de la facture.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "customer",
+          "label": "Client",
+          "description": "ID du client.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut de la facture.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "amount_due",
+          "label": "Montant du",
+          "description": "Montant du en centimes.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "amount_paid",
+          "label": "Montant paye",
+          "description": "Montant paye en centimes.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "currency",
+          "label": "Devise",
+          "description": "Code devise.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "created",
+          "label": "Crée le",
+          "description": "Timestamp de creation.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "hosted_invoice_url",
+          "label": "URL facture",
+          "description": "Lien vers la facture hebergee.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "stripe_invoices": {
+      "title": "Factures Stripe",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "hasMore",
+          "label": "Plus de résultats",
+          "description": "Indique s'il y a plus de résultats disponibles.",
+          "col": { "xs": 24 }
+        },
+        {
+          "type": "section",
+          "title": "Factures",
+          "description": "Liste des factures",
+          "mode": "array",
+          "key": "invoices",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "customer",
+              "label": "Client",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "amount_due",
+              "label": "Montant du",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "amount_paid",
+              "label": "Montant paye",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "currency",
+              "label": "Devise",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "created",
+              "label": "Crée le",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "hosted_invoice_url",
+              "label": "URL facture",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "stripe_charge": {
+      "title": "Charge Stripe",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant de la charge.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "amount",
+          "label": "Montant",
+          "description": "Montant en centimes.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "currency",
+          "label": "Devise",
+          "description": "Code devise.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut de la charge.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "customer",
+          "label": "Client",
+          "description": "ID du client.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "description",
+          "label": "Description",
+          "description": "Description.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "created",
+          "label": "Crée le",
+          "description": "Timestamp de creation.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "stripe_charges": {
+      "title": "Charges Stripe",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "hasMore",
+          "label": "Plus de résultats",
+          "description": "Indique s'il y a plus de résultats disponibles.",
+          "col": { "xs": 24 }
+        },
+        {
+          "type": "section",
+          "title": "Charges",
+          "description": "Liste des charges",
+          "mode": "array",
+          "key": "charges",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "amount",
+              "label": "Montant",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "currency",
+              "label": "Devise",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "customer",
+              "label": "Client",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "description",
+              "label": "Description",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "created",
+              "label": "Crée le",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "stripe_refund": {
+      "title": "Remboursement Stripe",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du remboursement.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "amount",
+          "label": "Montant",
+          "description": "Montant rembourse en centimes.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "currency",
+          "label": "Devise",
+          "description": "Code devise.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut du remboursement.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "charge",
+          "label": "Charge",
+          "description": "ID de la charge.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "reason",
+          "label": "Raison",
+          "description": "Raison du remboursement.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "created",
+          "label": "Crée le",
+          "description": "Timestamp de creation.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "stripe_refunds": {
+      "title": "Remboursements Stripe",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "hasMore",
+          "label": "Plus de résultats",
+          "description": "Indique s'il y a plus de résultats disponibles.",
+          "col": { "xs": 24 }
+        },
+        {
+          "type": "section",
+          "title": "Remboursements",
+          "description": "Liste des remboursements",
+          "mode": "array",
+          "key": "refunds",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "amount",
+              "label": "Montant",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "currency",
+              "label": "Devise",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "charge",
+              "label": "Charge",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "reason",
+              "label": "Raison",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "created",
+              "label": "Crée le",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "stripe_checkout_session": {
+      "title": "Session Checkout Stripe",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant de la session.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "url",
+          "label": "URL",
+          "description": "URL de la page de paiement.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "mode",
+          "label": "Mode",
+          "description": "payment ou subscription.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut de la session.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "customer",
+          "label": "Client",
+          "description": "ID du client.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "amount_total",
+          "label": "Montant total",
+          "description": "Montant total en centimes.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "currency",
+          "label": "Devise",
+          "description": "Code devise.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "stripe_checkout_sessions": {
+      "title": "Sessions Checkout Stripe",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "hasMore",
+          "label": "Plus de résultats",
+          "description": "Indique s'il y a plus de résultats disponibles.",
+          "col": { "xs": 24 }
+        },
+        {
+          "type": "section",
+          "title": "Sessions",
+          "description": "Liste des sessions checkout",
+          "mode": "array",
+          "key": "sessions",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "url",
+              "label": "URL",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "mode",
+              "label": "Mode",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "customer",
+              "label": "Client",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "amount_total",
+              "label": "Montant total",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "currency",
+              "label": "Devise",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "stripe_balance": {
+      "title": "Solde Stripe",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "number",
+          "key": "available_amount",
+          "label": "Montant disponible",
+          "description": "Montant disponible en centimes.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "available_currency",
+          "label": "Devise disponible",
+          "description": "Devise du montant disponible.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "pending_amount",
+          "label": "Montant en attente",
+          "description": "Montant en attente en centimes.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "pending_currency",
+          "label": "Devise en attente",
+          "description": "Devise du montant en attente.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "stripe_balance_tx": {
+      "title": "Transaction de solde Stripe",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant de la transaction.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "amount",
+          "label": "Montant",
+          "description": "Montant en centimes.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "currency",
+          "label": "Devise",
+          "description": "Code devise.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "type",
+          "label": "Type",
+          "description": "Type de transaction.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut de la transaction.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "created",
+          "label": "Crée le",
+          "description": "Timestamp de creation.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "description",
+          "label": "Description",
+          "description": "Description.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "stripe_balance_txs": {
+      "title": "Transactions de solde Stripe",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "hasMore",
+          "label": "Plus de résultats",
+          "description": "Indique s'il y a plus de résultats disponibles.",
+          "col": { "xs": 24 }
+        },
+        {
+          "type": "section",
+          "title": "Transactions",
+          "description": "Liste des transactions de solde",
+          "mode": "array",
+          "key": "transactions",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "amount",
+              "label": "Montant",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "currency",
+              "label": "Devise",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "type",
+              "label": "Type",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "created",
+              "label": "Crée le",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "description",
+              "label": "Description",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "stripe_result": {
+      "title": "Résultat Stripe",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut de l'operation.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "message",
+          "label": "Message",
+          "description": "Message de retour.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "stripe",
+      "name": "Stripe",
+      "title": "Stripe",
+      "iconClass": "fa-brands fa-stripe",
+      "color": "#c8c5fa",
+      "tags": [
+        "stripe",
+        "payment",
+        "billing"
+      ],
+      "categories": [
+        "Payments"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Stripe",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "secretKey",
+            "label": "Secret Key",
+            "description": "Clé secrete Stripe (sk_...)",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "iconUrl": "https://cdn.simpleicons.org/stripe"
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "stripe_customer_create",
+      "name": "stripeCustomerCreate",
+      "schemaVersion": 2,
+      "title": "Créer un client",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Customers",
+      "providerKey": "stripe",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:stripe_customer"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un nouveau client Stripe.",
+      "args": {
+        "title": "Créer un client",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "email",
+            "label": "Email",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "Adresse e-mail du client."
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nom complet du client."
+          },
+          {
+            "type": "text",
+            "key": "description",
+            "label": "Description",
+            "col": {
+              "xs": 24
+            },
+            "description": "Description du client."
+          },
+          {
+            "type": "text",
+            "key": "phone",
+            "label": "Téléphone",
+            "col": {
+              "xs": 24
+            },
+            "description": "Numéro de téléphone."
+          },
+          {
+            "type": "textarea",
+            "key": "metadata",
+            "label": "Metadata (JSON)",
+            "col": {
+              "xs": 24
+            },
+            "description": "Metadata au format JSON."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Clients",
+      "icon": "fa-solid fa-square-plus",
+      "group": "Clients",
+      "tags": [
+        "création",
+        "stripe"
+      ]
+    },
+    {
+      "key": "stripe_customer_get",
+      "name": "stripeCustomerGet",
+      "schemaVersion": 2,
+      "title": "Obtenir un client",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Customers",
+      "providerKey": "stripe",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:stripe_customer"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère les details d'un client Stripe.",
+      "args": {
+        "title": "Obtenir un client",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "customerId",
+            "label": "Customer ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "Identifiant du client (cus_...)."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Clients",
+      "icon": "fa-solid fa-eye",
+      "group": "Clients",
+      "tags": [
+        "lecture",
+        "stripe"
+      ]
+    },
+    {
+      "key": "stripe_customer_update",
+      "name": "stripeCustomerUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier un client",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Customers",
+      "providerKey": "stripe",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:stripe_customer"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Modifié un client Stripe existant.",
+      "args": {
+        "title": "Modifier un client",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "customerId",
+            "label": "Customer ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "Identifiant du client (cus_...)."
+          },
+          {
+            "type": "text",
+            "key": "email",
+            "label": "Email",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nouvelle adresse e-mail."
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nouveau nom."
+          },
+          {
+            "type": "text",
+            "key": "description",
+            "label": "Description",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nouvelle description."
+          },
+          {
+            "type": "text",
+            "key": "phone",
+            "label": "Téléphone",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nouveau numéro de téléphone."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Clients",
+      "icon": "fa-solid fa-pen-to-square",
+      "group": "Clients",
+      "tags": [
+        "mise-à-jour",
+        "stripe"
+      ]
+    },
+    {
+      "key": "stripe_customer_delete",
+      "name": "stripeCustomerDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un client",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Customers",
+      "providerKey": "stripe",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:stripe_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Supprime un client Stripe.",
+      "args": {
+        "title": "Supprimer un client",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "customerId",
+            "label": "Customer ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "Identifiant du client (cus_...)."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Clients",
+      "icon": "fa-solid fa-trash",
+      "group": "Clients",
+      "tags": [
+        "suppression",
+        "stripe"
+      ]
+    },
+    {
+      "key": "stripe_customers_list",
+      "name": "stripeCustomersList",
+      "schemaVersion": 2,
+      "title": "Lister les clients",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Customers",
+      "providerKey": "stripe",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:stripe_customers"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les clients Stripe.",
+      "args": {
+        "title": "Lister les clients",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nombre maximum de résultats (1-100)."
+          },
+          {
+            "type": "text",
+            "key": "starting_after",
+            "label": "Starting After",
+            "col": {
+              "xs": 24
+            },
+            "description": "Curseur de pagination (ID du dernier element)."
+          },
+          {
+            "type": "text",
+            "key": "email",
+            "label": "Email",
+            "col": {
+              "xs": 24
+            },
+            "description": "Filtrer par adresse e-mail."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Clients",
+      "icon": "fa-solid fa-list",
+      "group": "Clients",
+      "tags": [
+        "liste",
+        "stripe"
+      ]
+    },
+    {
+      "key": "stripe_product_create",
+      "name": "stripeProductCreate",
+      "schemaVersion": 2,
+      "title": "Créer un produit",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Products",
+      "providerKey": "stripe",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:stripe_product"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un nouveau produit Stripe.",
+      "args": {
+        "title": "Créer un produit",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "Nom du produit."
+          },
+          {
+            "type": "text",
+            "key": "description",
+            "label": "Description",
+            "col": {
+              "xs": 24
+            },
+            "description": "Description du produit."
+          },
+          {
+            "type": "switch",
+            "key": "active",
+            "label": "Actif",
+            "col": {
+              "xs": 24
+            },
+            "description": "Produit actif (true/false)."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Produits",
+      "icon": "fa-solid fa-square-plus",
+      "group": "Produits",
+      "tags": [
+        "création",
+        "stripe"
+      ]
+    },
+    {
+      "key": "stripe_product_get",
+      "name": "stripeProductGet",
+      "schemaVersion": 2,
+      "title": "Obtenir un produit",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Products",
+      "providerKey": "stripe",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:stripe_product"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère les details d'un produit Stripe.",
+      "args": {
+        "title": "Obtenir un produit",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "productId",
+            "label": "Product ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "Identifiant du produit (prod_...)."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Produits",
+      "icon": "fa-solid fa-eye",
+      "group": "Produits",
+      "tags": [
+        "lecture",
+        "stripe"
+      ]
+    },
+    {
+      "key": "stripe_product_update",
+      "name": "stripeProductUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier un produit",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Products",
+      "providerKey": "stripe",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:stripe_product"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Modifié un produit Stripe existant.",
+      "args": {
+        "title": "Modifier un produit",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "productId",
+            "label": "Product ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "Identifiant du produit (prod_...)."
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nouveau nom."
+          },
+          {
+            "type": "text",
+            "key": "description",
+            "label": "Description",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nouvelle description."
+          },
+          {
+            "type": "switch",
+            "key": "active",
+            "label": "Actif",
+            "col": {
+              "xs": 24
+            },
+            "description": "Produit actif (true/false)."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Produits",
+      "icon": "fa-solid fa-pen-to-square",
+      "group": "Produits",
+      "tags": [
+        "mise-à-jour",
+        "stripe"
+      ]
+    },
+    {
+      "key": "stripe_products_list",
+      "name": "stripeProductsList",
+      "schemaVersion": 2,
+      "title": "Lister les produits",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Products",
+      "providerKey": "stripe",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:stripe_products"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les produits Stripe.",
+      "args": {
+        "title": "Lister les produits",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nombre maximum de résultats (1-100)."
+          },
+          {
+            "type": "text",
+            "key": "starting_after",
+            "label": "Starting After",
+            "col": {
+              "xs": 24
+            },
+            "description": "Curseur de pagination."
+          },
+          {
+            "type": "switch",
+            "key": "active",
+            "label": "Actif",
+            "col": {
+              "xs": 24
+            },
+            "description": "Filtrer par statut actif."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Produits",
+      "icon": "fa-solid fa-list",
+      "group": "Produits",
+      "tags": [
+        "liste",
+        "stripe"
+      ]
+    },
+    {
+      "key": "stripe_price_create",
+      "name": "stripePriceCreate",
+      "schemaVersion": 2,
+      "title": "Créer un prix",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Prices",
+      "providerKey": "stripe",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:stripe_price"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un nouveau prix Stripe.",
+      "args": {
+        "title": "Créer un prix",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "product",
+            "label": "Product ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "Identifiant du produit (prod_...)."
+          },
+          {
+            "type": "number",
+            "key": "unit_amount",
+            "label": "Montant unitaire",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "Montant en centimes (ex: 1000 = 10.00)."
+          },
+          {
+            "type": "text",
+            "key": "currency",
+            "label": "Devise",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "Code devise (ex: usd, eur)."
+          },
+          {
+            "type": "text",
+            "key": "recurring_interval",
+            "label": "Intervalle recurrent",
+            "col": {
+              "xs": 24
+            },
+            "description": "day, week, month, year (vide = paiement unique)."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Prix",
+      "icon": "fa-solid fa-square-plus",
+      "group": "Prix",
+      "tags": [
+        "création",
+        "stripe"
+      ]
+    },
+    {
+      "key": "stripe_price_get",
+      "name": "stripePriceGet",
+      "schemaVersion": 2,
+      "title": "Obtenir un prix",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Prices",
+      "providerKey": "stripe",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:stripe_price"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère les details d'un prix Stripe.",
+      "args": {
+        "title": "Obtenir un prix",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "priceId",
+            "label": "Price ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "Identifiant du prix (price_...)."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Prix",
+      "icon": "fa-solid fa-eye",
+      "group": "Prix",
+      "tags": [
+        "lecture",
+        "stripe"
+      ]
+    },
+    {
+      "key": "stripe_prices_list",
+      "name": "stripePricesList",
+      "schemaVersion": 2,
+      "title": "Lister les prix",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Prices",
+      "providerKey": "stripe",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:stripe_prices"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les prix Stripe.",
+      "args": {
+        "title": "Lister les prix",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nombre maximum de résultats (1-100)."
+          },
+          {
+            "type": "text",
+            "key": "starting_after",
+            "label": "Starting After",
+            "col": {
+              "xs": 24
+            },
+            "description": "Curseur de pagination."
+          },
+          {
+            "type": "text",
+            "key": "product",
+            "label": "Product ID",
+            "col": {
+              "xs": 24
+            },
+            "description": "Filtrer par produit."
+          },
+          {
+            "type": "switch",
+            "key": "active",
+            "label": "Actif",
+            "col": {
+              "xs": 24
+            },
+            "description": "Filtrer par statut actif."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Prix",
+      "icon": "fa-solid fa-list",
+      "group": "Prix",
+      "tags": [
+        "liste",
+        "stripe"
+      ]
+    },
+    {
+      "key": "stripe_payment_intent_create",
+      "name": "stripePaymentIntentCreate",
+      "schemaVersion": 2,
+      "title": "Créer un payment intent",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Payment Intents",
+      "providerKey": "stripe",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:stripe_payment_intent"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un nouveau payment intent Stripe.",
+      "args": {
+        "title": "Créer un payment intent",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "amount",
+            "label": "Montant",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "Montant en centimes (ex: 1000 = 10.00)."
+          },
+          {
+            "type": "text",
+            "key": "currency",
+            "label": "Devise",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "Code devise (ex: usd, eur)."
+          },
+          {
+            "type": "text",
+            "key": "customer",
+            "label": "Customer ID",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant du client."
+          },
+          {
+            "type": "text",
+            "key": "description",
+            "label": "Description",
+            "col": {
+              "xs": 24
+            },
+            "description": "Description du paiement."
+          },
+          {
+            "type": "text",
+            "key": "payment_method_types",
+            "label": "Types de methode",
+            "col": {
+              "xs": 24
+            },
+            "description": "Types de paiement separes par virgule (ex: card)."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Paiements",
+      "icon": "fa-solid fa-square-plus",
+      "group": "Paiements",
+      "tags": [
+        "création",
+        "stripe"
+      ]
+    },
+    {
+      "key": "stripe_payment_intent_get",
+      "name": "stripePaymentIntentGet",
+      "schemaVersion": 2,
+      "title": "Obtenir un payment intent",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Payment Intents",
+      "providerKey": "stripe",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:stripe_payment_intent"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère les details d'un payment intent.",
+      "args": {
+        "title": "Obtenir un payment intent",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "paymentIntentId",
+            "label": "Payment Intent ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "Identifiant du payment intent (pi_...)."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Paiements",
+      "icon": "fa-solid fa-eye",
+      "group": "Paiements",
+      "tags": [
+        "lecture",
+        "stripe"
+      ]
+    },
+    {
+      "key": "stripe_payment_intent_confirm",
+      "name": "stripePaymentIntentConfirm",
+      "schemaVersion": 2,
+      "title": "Confirmer un payment intent",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Payment Intents",
+      "providerKey": "stripe",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:stripe_payment_intent"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Confirme un payment intent Stripe.",
+      "args": {
+        "title": "Confirmer un payment intent",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "paymentIntentId",
+            "label": "Payment Intent ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "Identifiant du payment intent (pi_...)."
+          },
+          {
+            "type": "text",
+            "key": "payment_method",
+            "label": "Payment Method",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant de la methode de paiement (pm_...)."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Paiements",
+      "icon": "fa-solid fa-circle-check",
+      "group": "Paiements",
+      "tags": [
+        "mise-à-jour",
+        "stripe"
+      ]
+    },
+    {
+      "key": "stripe_payment_intent_cancel",
+      "name": "stripePaymentIntentCancel",
+      "schemaVersion": 2,
+      "title": "Annuler un payment intent",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Payment Intents",
+      "providerKey": "stripe",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:stripe_payment_intent"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Annule un payment intent Stripe.",
+      "args": {
+        "title": "Annuler un payment intent",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "paymentIntentId",
+            "label": "Payment Intent ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "Identifiant du payment intent (pi_...)."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Paiements",
+      "icon": "fa-solid fa-ban",
+      "group": "Paiements",
+      "tags": [
+        "mise-à-jour",
+        "stripe"
+      ]
+    },
+    {
+      "key": "stripe_payment_intents_list",
+      "name": "stripePaymentIntentsList",
+      "schemaVersion": 2,
+      "title": "Lister les payment intents",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Payment Intents",
+      "providerKey": "stripe",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:stripe_payment_intents"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les payment intents Stripe.",
+      "args": {
+        "title": "Lister les payment intents",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nombre maximum de résultats (1-100)."
+          },
+          {
+            "type": "text",
+            "key": "starting_after",
+            "label": "Starting After",
+            "col": {
+              "xs": 24
+            },
+            "description": "Curseur de pagination."
+          },
+          {
+            "type": "text",
+            "key": "customer",
+            "label": "Customer ID",
+            "col": {
+              "xs": 24
+            },
+            "description": "Filtrer par client."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Paiements",
+      "icon": "fa-solid fa-list",
+      "group": "Paiements",
+      "tags": [
+        "liste",
+        "stripe"
+      ]
+    },
+    {
+      "key": "stripe_subscription_create",
+      "name": "stripeSubscriptionCreate",
+      "schemaVersion": 2,
+      "title": "Créer un abonnement",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Subscriptions",
+      "providerKey": "stripe",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:stripe_subscription"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un nouvel abonnement Stripe.",
+      "args": {
+        "title": "Créer un abonnement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "customer",
+            "label": "Customer ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "Identifiant du client (cus_...)."
+          },
+          {
+            "type": "text",
+            "key": "items_price",
+            "label": "Price ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "Identifiant du prix pour l'abonnement (price_...)."
+          },
+          {
+            "type": "number",
+            "key": "trial_period_days",
+            "label": "Jours d'essai",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nombre de jours d'essai gratuit."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Abonnements",
+      "icon": "fa-solid fa-square-plus",
+      "group": "Abonnements",
+      "tags": [
+        "création",
+        "stripe"
+      ]
+    },
+    {
+      "key": "stripe_subscription_get",
+      "name": "stripeSubscriptionGet",
+      "schemaVersion": 2,
+      "title": "Obtenir un abonnement",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Subscriptions",
+      "providerKey": "stripe",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:stripe_subscription"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère les details d'un abonnement Stripe.",
+      "args": {
+        "title": "Obtenir un abonnement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "subscriptionId",
+            "label": "Subscription ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "Identifiant de l'abonnement (sub_...)."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Abonnements",
+      "icon": "fa-solid fa-eye",
+      "group": "Abonnements",
+      "tags": [
+        "lecture",
+        "stripe"
+      ]
+    },
+    {
+      "key": "stripe_subscription_update",
+      "name": "stripeSubscriptionUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier un abonnement",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Subscriptions",
+      "providerKey": "stripe",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:stripe_subscription"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Modifié un abonnement Stripe existant.",
+      "args": {
+        "title": "Modifier un abonnement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "subscriptionId",
+            "label": "Subscription ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "Identifiant de l'abonnement (sub_...)."
+          },
+          {
+            "type": "switch",
+            "key": "cancel_at_period_end",
+            "label": "Annuler en fin de periode",
+            "col": {
+              "xs": 24
+            },
+            "description": "Annuler a la fin de la periode (true/false)."
+          },
+          {
+            "type": "text",
+            "key": "trial_end",
+            "label": "Fin d'essai",
+            "col": {
+              "xs": 24
+            },
+            "description": "Timestamp de fin d'essai ou 'now'."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Abonnements",
+      "icon": "fa-solid fa-pen-to-square",
+      "group": "Abonnements",
+      "tags": [
+        "mise-à-jour",
+        "stripe"
+      ]
+    },
+    {
+      "key": "stripe_subscription_cancel",
+      "name": "stripeSubscriptionCancel",
+      "schemaVersion": 2,
+      "title": "Annuler un abonnement",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Subscriptions",
+      "providerKey": "stripe",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:stripe_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Annule un abonnement Stripe.",
+      "args": {
+        "title": "Annuler un abonnement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "subscriptionId",
+            "label": "Subscription ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "Identifiant de l'abonnement (sub_...)."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Abonnements",
+      "icon": "fa-solid fa-ban",
+      "group": "Abonnements",
+      "tags": [
+        "mise-à-jour",
+        "stripe"
+      ]
+    },
+    {
+      "key": "stripe_subscriptions_list",
+      "name": "stripeSubscriptionsList",
+      "schemaVersion": 2,
+      "title": "Lister les abonnements",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Subscriptions",
+      "providerKey": "stripe",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:stripe_subscriptions"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les abonnements Stripe.",
+      "args": {
+        "title": "Lister les abonnements",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nombre maximum de résultats (1-100)."
+          },
+          {
+            "type": "text",
+            "key": "starting_after",
+            "label": "Starting After",
+            "col": {
+              "xs": 24
+            },
+            "description": "Curseur de pagination."
+          },
+          {
+            "type": "text",
+            "key": "customer",
+            "label": "Customer ID",
+            "col": {
+              "xs": 24
+            },
+            "description": "Filtrer par client."
+          },
+          {
+            "type": "text",
+            "key": "status",
+            "label": "Statut",
+            "col": {
+              "xs": 24
+            },
+            "description": "Filtrer par statut (active, past_due, canceled, etc.)."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Abonnements",
+      "icon": "fa-solid fa-list",
+      "group": "Abonnements",
+      "tags": [
+        "liste",
+        "stripe"
+      ]
+    },
+    {
+      "key": "stripe_invoice_create",
+      "name": "stripeInvoiceCreate",
+      "schemaVersion": 2,
+      "title": "Créer une facture",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Invoices",
+      "providerKey": "stripe",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:stripe_invoice"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée une nouvelle facture Stripe.",
+      "args": {
+        "title": "Créer une facture",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "customer",
+            "label": "Customer ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "Identifiant du client (cus_...)."
+          },
+          {
+            "type": "text",
+            "key": "description",
+            "label": "Description",
+            "col": {
+              "xs": 24
+            },
+            "description": "Description de la facture."
+          },
+          {
+            "type": "switch",
+            "key": "auto_advance",
+            "label": "Auto-avance",
+            "col": {
+              "xs": 24
+            },
+            "description": "Avancer automatiquement la facture."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Factures",
+      "icon": "fa-solid fa-square-plus",
+      "group": "Factures",
+      "tags": [
+        "création",
+        "stripe"
+      ]
+    },
+    {
+      "key": "stripe_invoice_get",
+      "name": "stripeInvoiceGet",
+      "schemaVersion": 2,
+      "title": "Obtenir une facture",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Invoices",
+      "providerKey": "stripe",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:stripe_invoice"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère les details d'une facture Stripe.",
+      "args": {
+        "title": "Obtenir une facture",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "invoiceId",
+            "label": "Invoice ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "Identifiant de la facture (in_...)."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Factures",
+      "icon": "fa-solid fa-eye",
+      "group": "Factures",
+      "tags": [
+        "lecture",
+        "stripe"
+      ]
+    },
+    {
+      "key": "stripe_invoice_finalize",
+      "name": "stripeInvoiceFinalize",
+      "schemaVersion": 2,
+      "title": "Finaliser une facture",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Invoices",
+      "providerKey": "stripe",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:stripe_invoice"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Finalise une facture brouillon Stripe.",
+      "args": {
+        "title": "Finaliser une facture",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "invoiceId",
+            "label": "Invoice ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "Identifiant de la facture (in_...)."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Factures",
+      "icon": "fa-solid fa-circle-check",
+      "group": "Factures",
+      "tags": [
+        "lecture",
+        "stripe"
+      ]
+    },
+    {
+      "key": "stripe_invoice_pay",
+      "name": "stripeInvoicePay",
+      "schemaVersion": 2,
+      "title": "Payer une facture",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Invoices",
+      "providerKey": "stripe",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:stripe_invoice"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Paie une facture ouverte Stripe.",
+      "args": {
+        "title": "Payer une facture",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "invoiceId",
+            "label": "Invoice ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "Identifiant de la facture (in_...)."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Factures",
+      "icon": "fa-solid fa-money-bill-wave",
+      "group": "Factures",
+      "tags": [
+        "lecture",
+        "stripe"
+      ]
+    },
+    {
+      "key": "stripe_invoices_list",
+      "name": "stripeInvoicesList",
+      "schemaVersion": 2,
+      "title": "Lister les factures",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Invoices",
+      "providerKey": "stripe",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:stripe_invoices"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les factures Stripe.",
+      "args": {
+        "title": "Lister les factures",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nombre maximum de résultats (1-100)."
+          },
+          {
+            "type": "text",
+            "key": "starting_after",
+            "label": "Starting After",
+            "col": {
+              "xs": 24
+            },
+            "description": "Curseur de pagination."
+          },
+          {
+            "type": "text",
+            "key": "customer",
+            "label": "Customer ID",
+            "col": {
+              "xs": 24
+            },
+            "description": "Filtrer par client."
+          },
+          {
+            "type": "text",
+            "key": "status",
+            "label": "Statut",
+            "col": {
+              "xs": 24
+            },
+            "description": "Filtrer par statut (draft, open, paid, void, uncollectible)."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Factures",
+      "icon": "fa-solid fa-list",
+      "group": "Factures",
+      "tags": [
+        "liste",
+        "stripe"
+      ]
+    },
+    {
+      "key": "stripe_charge_get",
+      "name": "stripeChargeGet",
+      "schemaVersion": 2,
+      "title": "Obtenir une charge",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Charges",
+      "providerKey": "stripe",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:stripe_charge"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère les details d'une charge Stripe.",
+      "args": {
+        "title": "Obtenir une charge",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "chargeId",
+            "label": "Charge ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "Identifiant de la charge (ch_...)."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Charges",
+      "icon": "fa-solid fa-eye",
+      "group": "Charges",
+      "tags": [
+        "lecture",
+        "stripe"
+      ]
+    },
+    {
+      "key": "stripe_charges_list",
+      "name": "stripeChargesList",
+      "schemaVersion": 2,
+      "title": "Lister les charges",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Charges",
+      "providerKey": "stripe",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:stripe_charges"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les charges Stripe.",
+      "args": {
+        "title": "Lister les charges",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nombre maximum de résultats (1-100)."
+          },
+          {
+            "type": "text",
+            "key": "starting_after",
+            "label": "Starting After",
+            "col": {
+              "xs": 24
+            },
+            "description": "Curseur de pagination."
+          },
+          {
+            "type": "text",
+            "key": "customer",
+            "label": "Customer ID",
+            "col": {
+              "xs": 24
+            },
+            "description": "Filtrer par client."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Charges",
+      "icon": "fa-solid fa-list",
+      "group": "Charges",
+      "tags": [
+        "liste",
+        "stripe"
+      ]
+    },
+    {
+      "key": "stripe_refund_create",
+      "name": "stripeRefundCreate",
+      "schemaVersion": 2,
+      "title": "Créer un remboursement",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Refunds",
+      "providerKey": "stripe",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:stripe_refund"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un nouveau remboursement Stripe.",
+      "args": {
+        "title": "Créer un remboursement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "charge",
+            "label": "Charge ID",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant de la charge (ch_...). Requis si pas de payment_intent."
+          },
+          {
+            "type": "text",
+            "key": "payment_intent",
+            "label": "Payment Intent ID",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant du payment intent (pi_...). Requis si pas de charge."
+          },
+          {
+            "type": "number",
+            "key": "amount",
+            "label": "Montant",
+            "col": {
+              "xs": 24
+            },
+            "description": "Montant a rembourser en centimes (vide = total)."
+          },
+          {
+            "type": "text",
+            "key": "reason",
+            "label": "Raison",
+            "col": {
+              "xs": 24
+            },
+            "description": "duplicate, fraudulent, requested_by_customer."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Remboursements",
+      "icon": "fa-solid fa-rotate-left",
+      "group": "Remboursements",
+      "tags": [
+        "création",
+        "stripe"
+      ]
+    },
+    {
+      "key": "stripe_refund_get",
+      "name": "stripeRefundGet",
+      "schemaVersion": 2,
+      "title": "Obtenir un remboursement",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Refunds",
+      "providerKey": "stripe",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:stripe_refund"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère les details d'un remboursement Stripe.",
+      "args": {
+        "title": "Obtenir un remboursement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "refundId",
+            "label": "Refund ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "Identifiant du remboursement (re_...)."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Remboursements",
+      "icon": "fa-solid fa-eye",
+      "group": "Remboursements",
+      "tags": [
+        "lecture",
+        "stripe"
+      ]
+    },
+    {
+      "key": "stripe_refunds_list",
+      "name": "stripeRefundsList",
+      "schemaVersion": 2,
+      "title": "Lister les remboursements",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Refunds",
+      "providerKey": "stripe",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:stripe_refunds"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les remboursements Stripe.",
+      "args": {
+        "title": "Lister les remboursements",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nombre maximum de résultats (1-100)."
+          },
+          {
+            "type": "text",
+            "key": "starting_after",
+            "label": "Starting After",
+            "col": {
+              "xs": 24
+            },
+            "description": "Curseur de pagination."
+          },
+          {
+            "type": "text",
+            "key": "charge",
+            "label": "Charge ID",
+            "col": {
+              "xs": 24
+            },
+            "description": "Filtrer par charge."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Remboursements",
+      "icon": "fa-solid fa-list",
+      "group": "Remboursements",
+      "tags": [
+        "liste",
+        "stripe"
+      ]
+    },
+    {
+      "key": "stripe_checkout_session_create",
+      "name": "stripeCheckoutSessionCreate",
+      "schemaVersion": 2,
+      "title": "Créer une session checkout",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Checkout",
+      "providerKey": "stripe",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:stripe_checkout_session"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée une nouvelle session Checkout Stripe.",
+      "args": {
+        "title": "Créer une session checkout",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "mode",
+            "label": "Mode",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "Mode de la session: payment ou subscription."
+          },
+          {
+            "type": "text",
+            "key": "success_url",
+            "label": "Success URL",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "URL de redirection apres succes."
+          },
+          {
+            "type": "text",
+            "key": "cancel_url",
+            "label": "Cancel URL",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "URL de redirection apres annulation."
+          },
+          {
+            "type": "text",
+            "key": "line_items_price",
+            "label": "Price ID",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant du prix (price_...)."
+          },
+          {
+            "type": "number",
+            "key": "line_items_quantity",
+            "label": "Quantite",
+            "col": {
+              "xs": 24
+            },
+            "description": "Quantite pour le line item.",
+            "default": 1
+          },
+          {
+            "type": "text",
+            "key": "customer",
+            "label": "Customer ID",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant du client (cus_...)."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Checkout",
+      "icon": "fa-solid fa-cart-shopping",
+      "group": "Checkout",
+      "tags": [
+        "création",
+        "stripe"
+      ]
+    },
+    {
+      "key": "stripe_checkout_session_get",
+      "name": "stripeCheckoutSessionGet",
+      "schemaVersion": 2,
+      "title": "Obtenir une session checkout",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Checkout",
+      "providerKey": "stripe",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:stripe_checkout_session"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère les details d'une session Checkout Stripe.",
+      "args": {
+        "title": "Obtenir une session checkout",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "sessionId",
+            "label": "Session ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "Identifiant de la session (cs_...)."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Checkout",
+      "icon": "fa-solid fa-eye",
+      "group": "Checkout",
+      "tags": [
+        "lecture",
+        "stripe"
+      ]
+    },
+    {
+      "key": "stripe_checkout_sessions_list",
+      "name": "stripeCheckoutSessionsList",
+      "schemaVersion": 2,
+      "title": "Lister les sessions checkout",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Checkout",
+      "providerKey": "stripe",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:stripe_checkout_sessions"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les sessions Checkout Stripe.",
+      "args": {
+        "title": "Lister les sessions checkout",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nombre maximum de résultats (1-100)."
+          },
+          {
+            "type": "text",
+            "key": "starting_after",
+            "label": "Starting After",
+            "col": {
+              "xs": 24
+            },
+            "description": "Curseur de pagination."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Checkout",
+      "icon": "fa-solid fa-list",
+      "group": "Checkout",
+      "tags": [
+        "liste",
+        "stripe"
+      ]
+    },
+    {
+      "key": "stripe_balance_get",
+      "name": "stripeBalanceGet",
+      "schemaVersion": 2,
+      "title": "Obtenir le solde",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Balance",
+      "providerKey": "stripe",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:stripe_balance"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère le solde du compte Stripe.",
+      "args": {
+        "title": "Obtenir le solde",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Solde",
+      "icon": "fa-solid fa-coins",
+      "group": "Solde",
+      "tags": [
+        "lecture",
+        "stripe"
+      ]
+    },
+    {
+      "key": "stripe_balance_transactions_list",
+      "name": "stripeBalanceTransactionsList",
+      "schemaVersion": 2,
+      "title": "Lister les transactions de solde",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Balance",
+      "providerKey": "stripe",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:stripe_balance_txs"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les transactions de solde Stripe.",
+      "args": {
+        "title": "Lister les transactions de solde",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nombre maximum de résultats (1-100)."
+          },
+          {
+            "type": "text",
+            "key": "starting_after",
+            "label": "Starting After",
+            "col": {
+              "xs": 24
+            },
+            "description": "Curseur de pagination."
+          },
+          {
+            "type": "text",
+            "key": "type",
+            "label": "Type",
+            "col": {
+              "xs": 24
+            },
+            "description": "Filtrer par type de transaction."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Solde",
+      "icon": "fa-solid fa-list",
+      "group": "Solde",
+      "tags": [
+        "liste",
+        "stripe"
+      ]
+    }
+  ]
+}

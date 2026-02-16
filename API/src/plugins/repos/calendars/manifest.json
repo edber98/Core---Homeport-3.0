@@ -1,22 +1,63 @@
 {
+  "repo": {
+    "name": "calendars",
+    "type": "local",
+    "label": "Calendars"
+  },
   "providers": [
     {
       "key": "googleCalendar",
       "name": "Google Calendar",
       "title": "Google Calendar",
       "iconClass": "fa-brands fa-google",
+      "iconUrl": "https://images.freeimages.com/fic/images/icons/2795/office_2013_hd/2000/outlook.png",
       "color": "#4285F4",
-      "tags": ["calendar"],
-      "categories": ["Communication"],
+      "tags": [
+        "calendar"
+      ],
+      "categories": [
+        "Communication"
+      ],
       "hasCredentials": true,
       "credentialsForm": {
         "title": "OAuth Google",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
-          { "type": "text", "key": "clientId", "label": "ID client", "col": { "xs": 24 } },
-          { "type": "text", "key": "clientSecret", "label": "Secret client", "col": { "xs": 24 }, "secret": true },
-          { "type": "text", "key": "refreshToken", "label": "Jeton d’actualisation", "col": { "xs": 24 }, "secret": true }
-        ]
+          {
+            "type": "text",
+            "key": "clientId",
+            "label": "ID client",
+            "description": "Identifiant client OAuth.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "clientSecret",
+            "label": "Secret client",
+            "description": "Secret client OAuth.",
+            "col": {
+              "xs": 24
+            },
+            "secret": true
+          },
+          {
+            "type": "text",
+            "key": "refreshToken",
+            "label": "Jeton d’actualisation",
+            "description": "Jeton d’actualisation OAuth.",
+            "col": {
+              "xs": 24
+            },
+            "secret": true
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       }
     },
     {
@@ -24,70 +65,682 @@
       "name": "Outlook Calendar",
       "title": "Outlook Calendar",
       "iconClass": "fa-brands fa-microsoft",
-      "color": "#0078D4",
-      "tags": ["calendar"],
-      "categories": ["Communication"],
+      "iconUrl": "https://images.freeimages.com/fic/images/icons/2795/office_2013_hd/2000/outlook.png",
+      "color": "#7ac3fa",
+      "tags": [
+        "calendar"
+      ],
+      "categories": [
+        "Communication"
+      ],
       "hasCredentials": true,
       "credentialsForm": {
         "title": "OAuth Microsoft Graph",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
-          { "type": "text", "key": "tenantId", "label": "ID du tenant", "col": { "xs": 24 } },
-          { "type": "text", "key": "clientId", "label": "ID client", "col": { "xs": 24 } },
-          { "type": "text", "key": "clientSecret", "label": "Secret client", "col": { "xs": 24 }, "secret": true }
-        ]
+          {
+            "type": "text",
+            "key": "tenantId",
+            "label": "ID du tenant",
+            "description": "ID du tenant Microsoft.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "clientId",
+            "label": "ID client",
+            "description": "Client ID OAuth.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "clientSecret",
+            "label": "Secret client",
+            "description": "Client secret OAuth.",
+            "col": {
+              "xs": 24
+            },
+            "secret": true
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       }
     }
   ],
   "nodeTemplates": [
-    { "key": "gcal_create_event", "name": "gcalCreateEvent", "title": "Créer un événement", "type": "function", "category": "Google Agenda", "providerKey": "googleCalendar", "output": ["Success"],
-      "description": "Créer un événement d’agenda (Google)", "args": { "title": "Créer un événement", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
-        {"type":"text","key":"calendarId","label":"ID de calendrier","col":{"xs":24},"default":"primary"},
-        {"type":"text","key":"summary","label":"Titre","col":{"xs":24}},
-        {"type":"datetime","key":"start","label":"Début","col":{"xs":24}},
-        {"type":"datetime","key":"end","label":"Fin","col":{"xs":24}},
-        {"type":"checkbox","key":"meetLink","label":"Ajouter un lien Google Meet","col":{"xs":24},"default":true}
-      ] } },
-    { "key": "gcal_update_event", "name": "gcalUpdateEvent", "title": "Mettre à jour un événement", "type": "function", "category": "Google Agenda", "providerKey": "googleCalendar", "output": ["Success"],
-      "description": "Mettre à jour un événement d’agenda", "args": { "title": "Mettre à jour un événement", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
-        {"type":"text","key":"calendarId","label":"ID de calendrier","col":{"xs":24},"default":"primary"},
-        {"type":"text","key":"eventId","label":"ID de l’événement","col":{"xs":24},"validators":[{"type":"required"}]},
-        {"type":"textarea","key":"patch","label":"Patch (JSON)","col":{"xs":24},"default":"{}"}
-      ] } },
-    { "key": "gcal_rsvp_event", "name": "gcalRsvpEvent", "title": "RSVP", "type": "function", "category": "Google Agenda", "providerKey": "googleCalendar", "output": ["Success"],
-      "description": "Répondre (RSVP) à un événement", "args": { "title": "RSVP", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
-        {"type":"text","key":"calendarId","label":"ID de calendrier","col":{"xs":24},"default":"primary"},
-        {"type":"text","key":"eventId","label":"ID de l’événement","col":{"xs":24},"validators":[{"type":"required"}]},
-        {"type":"select","key":"response","label":"Réponse","col":{"xs":24},"options":[{"label":"acceptée","value":"accepted"},{"label":"provisoire","value":"tentative"},{"label":"refusée","value":"declined"}]}
-      ] } },
-    { "key": "gcal_webhook_event", "name": "gcalWebhookEvent", "title": "Webhook", "subtitle": "Déclencheur", "type": "event", "category": "Google Agenda", "providerKey": "googleCalendar",
-      "description": "Déclenchement sur webhook Google Agenda", "args": { "title": "Webhook", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
-        {"type":"text","key":"path","label":"Chemin d’endpoint","col":{"xs":24},"default":"/hooks/gcal"}
-      ] } },
-
-    { "key": "outlook_create_event", "name": "outlookCreateEvent", "title": "Créer un événement", "type": "function", "category": "Outlook Agenda", "providerKey": "outlookCalendar", "output": ["Success"],
-      "description": "Créer un événement Outlook", "args": { "title": "Créer un événement", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
-        {"type":"text","key":"calendarId","label":"ID de calendrier","col":{"xs":24},"default":"primary"},
-        {"type":"text","key":"subject","label":"Sujet","col":{"xs":24}},
-        {"type":"datetime","key":"start","label":"Début","col":{"xs":24}},
-        {"type":"datetime","key":"end","label":"Fin","col":{"xs":24}},
-        {"type":"checkbox","key":"teamsMeeting","label":"Ajouter une réunion Teams","col":{"xs":24},"default":true}
-      ] } },
-    { "key": "outlook_update_event", "name": "outlookUpdateEvent", "title": "Mettre à jour un événement", "type": "function", "category": "Outlook Agenda", "providerKey": "outlookCalendar", "output": ["Success"],
-      "description": "Mettre à jour un événement Outlook", "args": { "title": "Mettre à jour un événement", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
-        {"type":"text","key":"calendarId","label":"ID de calendrier","col":{"xs":24},"default":"primary"},
-        {"type":"text","key":"eventId","label":"ID de l’événement","col":{"xs":24},"validators":[{"type":"required"}]},
-        {"type":"textarea","key":"patch","label":"Patch (JSON)","col":{"xs":24},"default":"{}"}
-      ] } },
-    { "key": "outlook_rsvp_event", "name": "outlookRsvpEvent", "title": "RSVP", "type": "function", "category": "Outlook Agenda", "providerKey": "outlookCalendar", "output": ["Success"],
-      "description": "Répondre (RSVP) à un événement Outlook", "args": { "title": "RSVP", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
-        {"type":"text","key":"calendarId","label":"ID de calendrier","col":{"xs":24},"default":"primary"},
-        {"type":"text","key":"eventId","label":"ID de l’événement","col":{"xs":24},"validators":[{"type":"required"}]},
-        {"type":"select","key":"response","label":"Réponse","col":{"xs":24},"options":[{"label":"acceptée","value":"accepted"},{"label":"provisoire","value":"tentative"},{"label":"refusée","value":"declined"}]}
-      ] } },
-    { "key": "outlook_webhook_event", "name": "outlookWebhookEvent", "title": "Webhook", "subtitle": "Déclencheur", "type": "event", "category": "Outlook Agenda", "providerKey": "outlookCalendar",
-      "description": "Déclenchement sur webhook Outlook Agenda", "args": { "title": "Webhook", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
-        {"type":"text","key":"path","label":"Chemin d’endpoint","col":{"xs":24},"default":"/hooks/outlook-cal"}
-      ] } }
+    {
+      "key": "gcal_create_event",
+      "name": "gcalCreateEvent",
+      "schemaVersion": 2,
+      "title": "Créer un événement",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Google Agenda",
+      "providerKey": "googleCalendar",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload"
+        }
+      ],
+      "description": "Créer un événement d’agenda (Google)",
+      "args": {
+        "title": "Créer un événement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "calendarId",
+            "label": "ID de calendrier",
+            "description": "Identifiant du calendrier (ex.: primary).",
+            "col": {
+              "xs": 24
+            },
+            "default": "primary"
+          },
+          {
+            "type": "text",
+            "key": "summary",
+            "label": "Titre",
+            "description": "Titre de l’événement.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "datetime",
+            "key": "start",
+            "label": "Début",
+            "description": "Date/heure de début.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "datetime",
+            "key": "end",
+            "label": "Fin",
+            "description": "Date/heure de fin.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "meetLink",
+            "label": "Ajouter un lien Google Meet",
+            "description": "Ajouter automatiquement un lien Meet.",
+            "col": {
+              "xs": 24
+            },
+            "default": true
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Google Agenda",
+      "icon": "fa-solid fa-square-plus",
+      "group": "Google Agenda",
+      "tags": [
+        "création",
+        "événement",
+        "calendars"
+      ]
+    },
+    {
+      "key": "gcal_update_event",
+      "name": "gcalUpdateEvent",
+      "schemaVersion": 2,
+      "title": "Mettre à jour un événement",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Google Agenda",
+      "providerKey": "googleCalendar",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload"
+        }
+      ],
+      "description": "Mettre à jour un événement d’agenda",
+      "args": {
+        "title": "Mettre à jour un événement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "calendarId",
+            "label": "ID de calendrier",
+            "description": "Identifiant du calendrier.",
+            "col": {
+              "xs": 24
+            },
+            "default": "primary"
+          },
+          {
+            "type": "text",
+            "key": "eventId",
+            "label": "ID de l’événement",
+            "description": "Identifiant de l’événement.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "patch",
+            "label": "Patch (JSON)",
+            "description": "Changements au format JSON.",
+            "col": {
+              "xs": 24
+            },
+            "default": "{}"
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Google Agenda",
+      "icon": "fa-solid fa-pen-to-square",
+      "group": "Google Agenda",
+      "tags": [
+        "mise-à-jour",
+        "événement",
+        "calendars"
+      ]
+    },
+    {
+      "key": "gcal_rsvp_event",
+      "name": "gcalRsvpEvent",
+      "schemaVersion": 2,
+      "title": "RSVP",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Google Agenda",
+      "providerKey": "googleCalendar",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload"
+        }
+      ],
+      "description": "Répondre (RSVP) à un événement",
+      "args": {
+        "title": "RSVP",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "calendarId",
+            "label": "ID de calendrier",
+            "description": "Identifiant du calendrier.",
+            "col": {
+              "xs": 24
+            },
+            "default": "primary"
+          },
+          {
+            "type": "text",
+            "key": "eventId",
+            "label": "ID de l’événement",
+            "description": "Identifiant de l’événement.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "key": "response",
+            "label": "Réponse",
+            "description": "Réponse à l’invitation.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "acceptée",
+                "value": "accepted"
+              },
+              {
+                "label": "provisoire",
+                "value": "tentative"
+              },
+              {
+                "label": "refusée",
+                "value": "declined"
+              }
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Google Agenda",
+      "icon": "fa-solid fa-circle-check",
+      "group": "Google Agenda",
+      "tags": [
+        "mise-à-jour",
+        "calendars"
+      ]
+    },
+    {
+      "key": "gcal_webhook_event",
+      "name": "gcalWebhookEvent",
+      "schemaVersion": 2,
+      "title": "Webhook",
+      "subtitle": "Déclencheur",
+      "icon": "fa-solid fa-bolt",
+      "type": "event",
+      "category": "Google Agenda",
+      "providerKey": "googleCalendar",
+      "description": "Déclenchement sur webhook Google Agenda",
+      "args": {
+        "title": "Webhook",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Chemin d’endpoint",
+            "description": "Chemin d’URL pour recevoir le webhook.",
+            "col": {
+              "xs": 24
+            },
+            "default": "/hooks/gcal"
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Déclencheur",
+      "tags": [
+        "événement",
+        "calendars"
+      ]
+    },
+    {
+      "key": "outlook_create_event",
+      "name": "outlookCreateEvent",
+      "schemaVersion": 2,
+      "title": "Créer un événement",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Outlook Agenda",
+      "providerKey": "outlookCalendar",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload"
+        }
+      ],
+      "description": "Créer un événement Outlook",
+      "args": {
+        "title": "Créer un événement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "calendarId",
+            "label": "ID de calendrier",
+            "description": "Identifiant du calendrier.",
+            "col": {
+              "xs": 24
+            },
+            "default": "primary"
+          },
+          {
+            "type": "text",
+            "key": "subject",
+            "label": "Sujet",
+            "description": "Sujet de l’événement.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "datetime",
+            "key": "start",
+            "label": "Début",
+            "description": "Date/heure de début.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "datetime",
+            "key": "end",
+            "label": "Fin",
+            "description": "Date/heure de fin.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "teamsMeeting",
+            "label": "Ajouter une réunion Teams",
+            "description": "Créer automatiquement une réunion Teams.",
+            "col": {
+              "xs": 24
+            },
+            "default": true
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Outlook Agenda",
+      "icon": "fa-solid fa-square-plus",
+      "group": "Outlook Agenda",
+      "tags": [
+        "création",
+        "événement",
+        "calendars"
+      ]
+    },
+    {
+      "key": "outlook_update_event",
+      "name": "outlookUpdateEvent",
+      "schemaVersion": 2,
+      "title": "Mettre à jour un événement",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Outlook Agenda",
+      "providerKey": "outlookCalendar",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload"
+        }
+      ],
+      "description": "Mettre à jour un événement Outlook",
+      "args": {
+        "title": "Mettre à jour un événement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "calendarId",
+            "label": "ID de calendrier",
+            "description": "Identifiant du calendrier.",
+            "col": {
+              "xs": 24
+            },
+            "default": "primary"
+          },
+          {
+            "type": "text",
+            "key": "eventId",
+            "label": "ID de l’événement",
+            "description": "Identifiant de l’événement.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "patch",
+            "label": "Patch (JSON)",
+            "description": "Changements au format JSON.",
+            "col": {
+              "xs": 24
+            },
+            "default": "{}"
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Outlook Agenda",
+      "icon": "fa-solid fa-pen-to-square",
+      "group": "Outlook Agenda",
+      "tags": [
+        "mise-à-jour",
+        "événement",
+        "calendars"
+      ]
+    },
+    {
+      "key": "outlook_rsvp_event",
+      "name": "outlookRsvpEvent",
+      "schemaVersion": 2,
+      "title": "RSVP",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Outlook Agenda",
+      "providerKey": "outlookCalendar",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload"
+        }
+      ],
+      "description": "Répondre (RSVP) à un événement Outlook",
+      "args": {
+        "title": "RSVP",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "calendarId",
+            "label": "ID de calendrier",
+            "description": "Identifiant du calendrier.",
+            "col": {
+              "xs": 24
+            },
+            "default": "primary"
+          },
+          {
+            "type": "text",
+            "key": "eventId",
+            "label": "ID de l’événement",
+            "description": "Identifiant de l’événement.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "key": "response",
+            "label": "Réponse",
+            "description": "Réponse à l’invitation.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "acceptée",
+                "value": "accepted"
+              },
+              {
+                "label": "provisoire",
+                "value": "tentative"
+              },
+              {
+                "label": "refusée",
+                "value": "declined"
+              }
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Outlook Agenda",
+      "icon": "fa-solid fa-circle-check",
+      "group": "Outlook Agenda",
+      "tags": [
+        "mise-à-jour",
+        "calendars"
+      ]
+    },
+    {
+      "key": "outlook_webhook_event",
+      "name": "outlookWebhookEvent",
+      "schemaVersion": 2,
+      "title": "Webhook",
+      "subtitle": "Déclencheur",
+      "icon": "fa-solid fa-bolt",
+      "type": "event",
+      "category": "Outlook Agenda",
+      "providerKey": "outlookCalendar",
+      "description": "Déclenchement sur webhook Outlook Agenda",
+      "args": {
+        "title": "Webhook",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Chemin d’endpoint",
+            "description": "Chemin d’URL pour recevoir le webhook.",
+            "col": {
+              "xs": 24
+            },
+            "default": "/hooks/outlook-cal"
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Déclencheur",
+      "tags": [
+        "événement",
+        "calendars"
+      ]
+    }
   ]
 }

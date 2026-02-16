@@ -24,6 +24,7 @@ export function openSse<T extends SseEvent>(opts: {
   const zone = opts.zone || inject(NgZone);
   const subj = new Subject<T>();
   const es = new EventSource(opts.url, { withCredentials: false });
+  let finished = false;
   const coerce = opts.coerce || ((raw, fallbackType) => {
     const obj = typeof raw === 'object' && raw ? raw : { text: String(raw) };
     if (!obj.type && fallbackType) (obj as any).type = fallbackType;
@@ -39,9 +40,8 @@ export function openSse<T extends SseEvent>(opts: {
     }
   };
   for (const t of opts.eventTypes) es.addEventListener(t, handle(t));
-  es.addEventListener('done', () => { zone.run(() => subj.next(coerce({ type: 'done' }, 'done'))); try { es.close(); } catch {} subj.complete(); });
-  es.onerror = () => { zone.run(() => subj.next(coerce({ type: opts.onErrorAs || 'error', code: 'eventsource_error', message: 'Connection failed' }, opts.onErrorAs || 'error'))); };
+  es.addEventListener('done', () => { finished = true; zone.run(() => subj.next(coerce({ type: 'done' }, 'done'))); try { es.close(); } catch {} subj.complete(); });
+  es.onerror = () => { if (finished) return; zone.run(() => subj.next(coerce({ type: opts.onErrorAs || 'error', code: 'eventsource_error', message: 'Connection failed' }, opts.onErrorAs || 'error'))); };
   const stop = () => { try { es.close(); } catch {} subj.complete(); };
   return { events$: subj.asObservable(), stop };
 }
-

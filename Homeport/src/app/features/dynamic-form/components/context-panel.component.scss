@@ -24,9 +24,10 @@
   align-items: center;
   gap: 6px;
   padding: 4px 6px;
-  border-radius: 999px;
-  background: linear-gradient(180deg, #ffffff, #f8fafc);
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  border-radius: 9px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 3px 10px rgba(0,0,0,.06);
 }
 .icon-toolbar .sep {
   width: 1px;
@@ -46,6 +47,7 @@
   align-items: center;
   justify-content: center;
   flex: 0 0 auto;
+  border-radius: 8px;
 }
 .icon-grid button[nz-button][disabled] {
   opacity: .45;
@@ -60,28 +62,31 @@
 }
 
 .icon-toolbar button[nz-button]:hover {
-  --btn-bg: linear-gradient(180deg, #ffffff, #eef2f7);
-  box-shadow: inset 0 0 0 1px #e5e7eb, 0 2px 6px rgba(0,0,0,0.06);
+  --btn-bg: rgba(22,119,255,0.1);
+  color: #1677ff;
+  box-shadow: 0 2px 6px rgba(22,119,255,0.14);
+  transform: translateY(-1px);
 }
 .icon-toolbar i { font-size: 14px; line-height: 1; }
 
 .icon-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+  display: grid;
+  grid-template-columns: repeat(4, 36px);
+  grid-auto-rows: 36px;
+  gap: 10px;
 }
 .icon-grid button[nz-button] {
   border: 1px solid #e5e7eb;
   background: #fff;
   color: #0f172a;
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   padding: 0;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   flex: 0 0 auto;
-}
+  }
 .icon-toolbar button[nz-button][disabled] {
   opacity: .45;
   filter: grayscale(0.35);
@@ -89,8 +94,10 @@
 }
 
 .icon-grid button[nz-button]:hover {
-  background: linear-gradient(180deg, #ffffff, #eef2f7);
-  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  background: rgba(22,119,255,0.1);
+  color: #1677ff;
+  box-shadow: 0 2px 6px rgba(22,119,255,0.14);
+  transform: translateY(-1px);
 }
 .icon-grid i { font-size: 14px; line-height: 1; }
 
@@ -121,5 +128,42 @@
 
 /* Sub-headers inside the card to match main title style */
 .sub-header {
-  display:flex; justify-content:center; padding:6px 0 8px; margin:16px 0 8px; border-bottom:1px solid #E2E1E4;
+  display: flex;
+  justify-content: center;
+  padding: 0 0 8px;
+  margin: 0 0 8px;
+  border-bottom: 0;
+}
+
+.tree-node-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+}
+
+.tree-node-icon {
+  color: #94a3b8;
+  font-size: 12px;
+  width: 14px;
+  text-align: center;
+  flex: 0 0 auto;
+}
+
+.tree-node-text {
+  flex: 1 1 auto;
+}
+
+/* Card body spacing for tabs */
+:host ::ng-deep .ant-tabs-content-holder {
+  padding-top: 6px;
+}
+/* Make tree area scrollable within card */
+.tree { max-height: 320px; overflow: auto; padding: 4px 0; }
+
+/* Structure tree: selected node in blue (instead of gray) */
+:host ::ng-deep .tree .ant-tree .ant-tree-node-content-wrapper.ant-tree-node-selected,
+:host ::ng-deep .tree .ant-tree .ant-tree-treenode-selected .ant-tree-node-content-wrapper {
+  background-color: #eef4ff !important;
+  box-shadow: inset 0 0 0 1px #1677ff !important;
 }

@@ -1,8 +1,8 @@
 <div [formGroup]="form">
   <nz-form-item
     class="df-form-item"
+    [class.df-cron]="field.type === 'cron'"
     [class.df-textblock]="field.type === 'textblock'"
-    [ngStyle]="itemStyle"
     [style.--df-label-color]="$any(field).labelStyle?.color || null"
     [style.--df-label-font-size]="$any(field).labelStyle?.fontSize || null">
 
@@ -19,7 +19,7 @@
 
       <!-- inputs -->
       <ng-container *ngSwitchDefault>
-        <nz-form-label *ngIf="field.type!=='checkbox'"
+        <nz-form-label *ngIf="field.type !== 'checkbox' || (!disableExpressions && $any(field).expression?.allow === true && exprEnabled)"
           [nzFor]="fieldKey"
           [nzRequired]="requiredFlag"
           [nzSpan]="labelSpan"
@@ -27,7 +27,6 @@
           [nzLabelAlign]="ui?.labelAlign ?? 'left'">
           {{ field.label || '' }}
         </nz-form-label>
-        <nz-form-label *ngIf="field.type==='checkbox'" [nzSpan]="labelSpan" [nzOffset]="labelOffset"></nz-form-label>
 
         <nz-form-control
           [nzSpan]="controlSpan"
@@ -90,11 +89,60 @@
                   <textarea *ngIf="field.type==='textarea'"
                             nz-input [id]="key" [placeholder]="field.placeholder || ''" [formControlName]="key"></textarea>
 
+                  <!-- Email input (HTML5 type=email for mobile keyboard + browser validation) -->
+                  <ng-container *ngIf="field.type==='email'">
+                    <ng-container *ngIf="$any(field).secret; else plainEmailInput">
+                      <nz-input-group [nzSuffix]="secretToggleTplEmail">
+                        <input nz-input [id]="key" [type]="secretVisible ? 'email' : 'password'" [placeholder]="field.placeholder || 'exemple@email.com'" [formControlName]="key" />
+                      </nz-input-group>
+                      <ng-template #secretToggleTplEmail>
+                        <i class="fa-regular" [class.fa-eye]="!secretVisible" [class.fa-eye-slash]="secretVisible" (click)="secretVisible = !secretVisible" style="cursor:pointer;"></i>
+                      </ng-template>
+                    </ng-container>
+                    <ng-template #plainEmailInput>
+                      <input nz-input [id]="key" type="email" [placeholder]="field.placeholder || 'exemple@email.com'" [formControlName]="key" />
+                    </ng-template>
+                  </ng-container>
+
+                  <!-- Tel input (HTML5 type=tel for mobile numeric keyboard) -->
+                  <ng-container *ngIf="field.type==='tel'">
+                    <ng-container *ngIf="$any(field).secret; else plainTelInput">
+                      <nz-input-group [nzSuffix]="secretToggleTplTel">
+                        <input nz-input [id]="key" [type]="secretVisible ? 'tel' : 'password'" [placeholder]="field.placeholder || '+33 6 12 34 56 78'" [formControlName]="key" />
+                      </nz-input-group>
+                      <ng-template #secretToggleTplTel>
+                        <i class="fa-regular" [class.fa-eye]="!secretVisible" [class.fa-eye-slash]="secretVisible" (click)="secretVisible = !secretVisible" style="cursor:pointer;"></i>
+                      </ng-template>
+                    </ng-container>
+                    <ng-template #plainTelInput>
+                      <input nz-input [id]="key" type="tel" [placeholder]="field.placeholder || '+33 6 12 34 56 78'" [formControlName]="key" />
+                    </ng-template>
+                  </ng-container>
+
+                  <!-- Color picker -->
+                  <nz-color-picker *ngIf="field.type==='color'"
+                                   [formControlName]="key"
+                                   [nzShowText]="$any(field).color?.showText !== false"
+                                   [nzAllowClear]="$any(field).color?.allowClear === true"></nz-color-picker>
+
                   <input *ngIf="field.type==='number'"
                         nz-input type="number" [id]="key" [placeholder]="field.placeholder || ''" [formControlName]="key" />
 
                   <nz-date-picker *ngIf="field.type==='date'"
-                                  style="width: 100%;" [formControlName]="key"></nz-date-picker>
+                                  style="width: 100%;"
+                                  [formControlName]="key"
+                                  [nzFormat]="$any(field).date?.format || 'dd/MM/yyyy'"
+                                  [nzShowTime]="$any(field).date?.showTime || false"
+                                  [nzShowToday]="$any(field).date?.showToday !== false"
+                                  [nzAllowClear]="$any(field).date?.allowClear !== false"
+                                  [nzPlaceHolder]="field.placeholder || 'Sélectionner une date'"></nz-date-picker>
+
+                  <nz-cron-expression *ngIf="field.type==='cron'"
+                                      [formControlName]="key"
+                                      [nzType]="$any(field).cron?.type || 'linux'"
+                                      [nzSize]="$any(field).cron?.size || 'default'"
+                                      [nzBorderless]="$any(field).cron?.borderless || false"
+                                      [nzCollapseDisable]="$any(field).cron?.collapseDisable || false"></nz-cron-expression>
 
                   <nz-select *ngIf="field.type==='select'" [formControlName]="key" nzAllowClear nzShowSearch>
                     <nz-option *ngFor="let opt of (field.options || [])"
@@ -104,6 +152,20 @@
                   <nz-radio-group *ngIf="field.type==='radio'" [formControlName]="key">
                     <label nz-radio *ngFor="let opt of (field.options || [])" [nzValue]="opt.value">{{ opt.label || '' }}</label>
                   </nz-radio-group>
+
+                  <nz-select *ngIf="field.type==='tags'"
+                             [formControlName]="key"
+                             nzMode="tags"
+                             nzAllowClear
+                             [nzPlaceHolder]="field.placeholder || 'Ajouter...'">
+                  </nz-select>
+
+                  <df-file-field *ngIf="field.type==='file'"
+                                 [formControlName]="key"
+                                 [config]="$any(field).file || {}"></df-file-field>
+
+                  <df-schema-builder *ngIf="field.type==='schema_builder'"
+                                     [formControlName]="key"></df-schema-builder>
                 </ng-container>
               </ng-container>
               </ng-container>

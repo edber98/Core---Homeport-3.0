@@ -40,6 +40,7 @@ export class MonacoJsonEditorComponent implements AfterViewInit, OnDestroy, OnCh
   @Output() valueChange = new EventEmitter<string>();
   @Input() height = 220;
   @Input() language: string = 'json';
+  @Input() readonly = false;
 
   @ViewChild('host', { static: true }) hostRef!: ElementRef<HTMLDivElement>;
 
@@ -85,6 +86,7 @@ export class MonacoJsonEditorComponent implements AfterViewInit, OnDestroy, OnCh
       minimap: { enabled: false },
       formatOnPaste: true,
       formatOnType: true,
+      readOnly: !!this.readonly,
     });
     this.editor.onDidChangeModelContent(() => {
       if (this.disposing) return;
@@ -114,6 +116,9 @@ export class MonacoJsonEditorComponent implements AfterViewInit, OnDestroy, OnCh
           if (cur !== v) this.editor.setValue(v);
         } catch {}
       }
+    }
+    if ('readonly' in changes) {
+      try { this.editor?.updateOptions?.({ readOnly: !!this.readonly }); } catch {}
     }
   }
 }

@@ -23,16 +23,16 @@ import { DynamicForm } from '../../modules/dynamic-form/dynamic-form';
         <div class="card-title left"><span class="t">App</span><span class="s">{{ a.name }}</span></div>
       </div>
       <div class="actions">
-        <button nz-button class="apple-btn" *ngIf="app?.id" (click)="edit()" [disabled]="!isAdmin"><i class="fa-regular fa-pen-to-square"></i><span class="label">Édition</span></button>
-        <button nz-button class="apple-btn" *ngIf="app?.id" (click)="duplicate()" [disabled]="!isAdmin"><i class="fa-regular fa-copy"></i><span class="label">Dupliquer</span></button>
+        <button type="button" class="icon-ghost" *ngIf="app?.id" (click)="edit()" [disabled]="!isAdmin" title="Édition"><i class="fa-regular fa-pen-to-square"></i></button>
+        <button type="button" class="icon-ghost" *ngIf="app?.id" (click)="duplicate()" [disabled]="!isAdmin" title="Dupliquer"><i class="fa-regular fa-copy"></i></button>
       </div>
     </div>
     <div class="content">
       <div class="left-pane">
         <div class="icon" [style.background]="a.color || '#f3f4f6'">
-          <i *ngIf="a.iconClass" [class]="a.iconClass"></i>
-          <img *ngIf="!a.iconClass && a.iconUrl" [src]="a.iconUrl" alt="icon"/>
-          <img *ngIf="!a.iconClass && !a.iconUrl" [src]="simpleIconUrl(a.id)" alt="icon"/>
+          <img *ngIf="a.iconUrl" [src]="a.iconUrl" alt="icon"/>
+          <i *ngIf="!a.iconUrl && a.iconClass" [class]="a.iconClass" [style.color]="fgColor(a.color)"></i>
+          <img *ngIf="!a.iconUrl && !a.iconClass" [src]="simpleIconUrl(a.id)" alt="icon"/>
         </div>
         <div class="kv">
           <div><span class="k">ID</span><span class="v">{{ a.id }}</span></div>
@@ -68,8 +68,9 @@ import { DynamicForm } from '../../modules/dynamic-form/dynamic-form';
     .header .left { display:flex; align-items:left; gap:0px; }
     .icon-btn.back { width:32px; height:32px; display:inline-flex; align-items:center; justify-content:center; border:0; background:transparent; border-radius:8px; cursor:pointer; }
     .actions { display:flex; gap:8px; }
-    .apple-btn[disabled] { opacity: .55; filter: grayscale(1); cursor: not-allowed; }
-    @media (max-width: 640px) { .apple-btn .label { display:none; } }
+    .icon-ghost { border:0; background:transparent; padding:6px; border-radius:8px; display:inline-flex; align-items:center; justify-content:center; color:#111; cursor:pointer; }
+    .icon-ghost[disabled] { opacity:.5; cursor:not-allowed; }
+    .icon-ghost:hover { background:#f5f5f5; }
     .card-title { display:flex; flex-direction:column; }
     .card-title .t { font-weight:600; font-size:14px; }
     .card-title .s { font-size:12px; color:#64748b; }
@@ -132,6 +133,21 @@ export class AppProviderViewerComponent implements OnInit, OnDestroy {
     } catch {}
   }
   simpleIconUrl(id: string) { return `https://cdn.simpleicons.org/${encodeURIComponent(id)}`; }
+  fgColor(bg?: string | null): string {
+    const b = String(bg || '#1677ff');
+    try {
+      const { r, g, b: bb } = this.hexToRgb(b);
+      const yiq = (r * 299 + g * 587 + bb * 114) / 1000;
+      return yiq >= 140 ? '#111' : '#fff';
+    } catch { return '#111'; }
+  }
+  private hexToRgb(hex: string): { r: number; g: number; b: number } {
+    let s = hex.trim();
+    if (s.startsWith('#')) s = s.slice(1);
+    if (s.length === 3) s = s.split('').map(c => c + c).join('');
+    const num = parseInt(s, 16);
+    return { r: (num>>16)&255, g: (num>>8)&255, b: num&255 };
+  }
   back() { history.back(); }
   edit() { if (this.app?.id) this.router.navigate(['/apps/editor'], { queryParams: { id: this.app.id } }); }
   duplicate() { if (this.app?.id) this.router.navigate(['/apps/editor'], { queryParams: { duplicateFrom: this.app.id } }); }

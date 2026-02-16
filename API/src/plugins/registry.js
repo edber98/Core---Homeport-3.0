@@ -6,7 +6,11 @@ class PluginRegistry {
     this.handlers = new Map(); // key -> async (node,msg,inputs)
     this.meta = new Map();     // key -> { source, mtime }
     // Track baseDirs with optional repo metadata for import attribution
-    this.baseDirs = [ { path: path.resolve(__dirname, 'local'), repo: null }, { path: path.resolve(__dirname, 'repos'), repo: null } ];
+    // Default: include both local and repos
+    this.baseDirs = [
+      { path: path.resolve(__dirname, 'local'), repo: null },
+      { path: path.resolve(__dirname, 'repos'), repo: null }
+    ];
   }
 
   normalizeKey(k){
@@ -30,24 +34,44 @@ class PluginRegistry {
 
   addBaseDir(dir, repo = null){ this.baseDirs.push({ path: path.resolve(dir), repo: repo || null }); }
 
-  loadFromDir(dir, repo){
+  async loadFromDir(dir, repo){
     const loaded = [];
-    if (!fs.existsSync(dir)) return loaded;
+    // Collect import promises and manifest keys for cleanup
+    const importJobs = [];
+    if (!fs.existsSync(dir)) return { loaded, importJobs };
     // Each subdir is a plugin repo with manifest.json and functions/*.js
     const entries = fs.readdirSync(dir, { withFileTypes: true }).filter(d => d.isDirectory());
     for (const ent of entries){
       const plugDir = path.join(dir, ent.name);
       const manifestPath = path.join(plugDir, 'manifest.json');
-      if (fs.existsSync(manifestPath)){
+      const allowImport = process.env.PLUGIN_IMPORT_ENABLED === '1';
+      if (fs.existsSync(manifestPath) && allowImport){
         try {
           const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
-          // Import providers/nodeTemplates into DB
+          // Determine/ensure a PluginRepo doc for this folder (builtin repo)
+          let repoMeta = repo || null;
+          try {
+            const PluginRepo = require('../db/models/plugin-repo.model');
+            const name = (manifest.repo && manifest.repo.name) || ent.name;
+            const type = (manifest.repo && manifest.repo.type) || 'local';
+            const url = (manifest.repo && manifest.repo.url) || undefined;
+            const branch = (manifest.repo && manifest.repo.branch) || undefined;
+            let pr = await PluginRepo.findOne({ name, path: plugDir, type, companyId: null });
+            if (!pr) pr = await PluginRepo.create({ name, type, path: plugDir, url, branch, companyId: null, enabled: true, status: 'builtin' });
+            const obj = pr.toObject();
+            repoMeta = { id: obj._id || obj.id, name: obj.name, companyId: obj.companyId || null };
+          } catch {}
+          // Import providers/nodeTemplates into DB with repo metadata and manifest path
           try {
             const { importManifest } = require('./importer');
-            importManifest(manifest, { repo })
-              .then((summary) => logImportSuccess(repo, manifestPath, summary))
-              .catch((e)=>logImportError(repo, manifestPath, e));
-          } catch (e) { logImportError(repo, manifestPath, e); }
+            const importPromise = importManifest(manifest, { repo: repoMeta, manifestPath })
+              .then((summary) => {
+                logImportSuccess(repoMeta, manifestPath, summary);
+                return { repoMeta, summary };
+              })
+              .catch((e) => { logImportError(repoMeta, manifestPath, e); return null; });
+            importJobs.push(importPromise);
+          } catch (e) { logImportError(repoMeta, manifestPath, e); }
         } catch (e) { logImportError(repo, manifestPath, e); }
       }
       const fnDir = path.join(plugDir, 'functions');
@@ -74,20 +98,54 @@ class PluginRegistry {
               for (const [k, fn] of Object.entries(exp)) if (typeof fn === 'function') { if (this.register(k, fn, full)) loaded.push(k); }
               continue;
             }
-          } catch {}
+          } catch (loadErr) { try { console.error('[plugins] handler load error', full, loadErr && loadErr.message ? loadErr.message : loadErr); } catch {} }
         }
       }
     }
     if (loaded.length) {
       try { console.log('[plugins] handlers loaded from', dir, '→', loaded.length); } catch {}
     }
-    return loaded;
+    return { loaded, importJobs };
   }
 
-  reload(){
+  async reload(){
     this.handlers.clear(); this.meta.clear();
     let total = [];
-    for (const entry of this.baseDirs) total = total.concat(this.loadFromDir(entry.path, entry.repo || null));
+    let allImportJobs = [];
+    for (const entry of this.baseDirs){
+      const { loaded, importJobs } = await this.loadFromDir(entry.path, entry.repo || null);
+      total = total.concat(loaded);
+      allImportJobs = allImportJobs.concat(importJobs || []);
+    }
+
+    // Cleanup stale entries if enabled (separate env var to avoid overhead)
+    if (process.env.PLUGIN_CLEANUP_ENABLED === '1' && allImportJobs.length > 0){
+      try {
+        // Wait for all imports to complete first
+        const results = await Promise.all(allImportJobs);
+        // Aggregate keys per repo
+        const repoMap = new Map(); // repoId -> { providerKeys: Set, templateKeys: Set }
+        for (const r of results){
+          if (!r || !r.repoMeta || !r.repoMeta.id) continue;
+          const rid = String(r.repoMeta.id);
+          if (!repoMap.has(rid)) repoMap.set(rid, { providerKeys: new Set(), templateKeys: new Set() });
+          const entry = repoMap.get(rid);
+          for (const k of (r.summary.providerKeys || [])) entry.providerKeys.add(k);
+          for (const k of (r.summary.templateKeys || [])) entry.templateKeys.add(k);
+        }
+        // Run cleanup for each repo
+        const { cleanupStale } = require('./importer');
+        for (const [repoId, keys] of repoMap.entries()){
+          try {
+            const cr = await cleanupStale(repoId, keys.providerKeys, keys.templateKeys);
+            if (cr.templatesRemoved || cr.providersRemoved){
+              console.log(`[plugins] cleanup for repo ${repoId}: ${cr.templatesRemoved} template(s), ${cr.providersRemoved} provider(s) removed`);
+            }
+          } catch (e) { console.error('[plugins] cleanup error for repo', repoId, e && e.message || e); }
+        }
+      } catch (e) { console.error('[plugins] cleanup phase error:', e && e.message || e); }
+    }
+
     return total;
   }
 }
@@ -102,7 +160,7 @@ function logImportError(repo, manifestPath, e){
     const Notification = require('../db/models/notification.model');
     const companyId = repo && repo.companyId ? repo.companyId : null;
     const entityId = repo && repo.id ? String(repo.id) : null;
-    Notification.create({ companyId, workspaceId: null, entityType: 'plugin_repo', entityId, severity: 'error', code: 'plugin_import_error', message: `Import failed for ${manifestPath}`, details: { error: String(e && e.message || e) } }).catch(()=>{});
+    Notification.create({ companyId, workspaceId: null, entityType: 'plugin_repo', entityId, severity: 'error', code: 'plugin_import_error', message: `Échec de l'import pour ${manifestPath}`, details: { error: String(e && e.message || e) } }).catch(()=>{});
   } catch {}
 }
 
@@ -111,5 +169,13 @@ function logImportSuccess(repo, manifestPath, summary){
     const p = summary && summary.providers || {};
     const t = summary && summary.nodeTemplates || {};
     console.log('[plugins] import ok', manifestPath, `providers(c/u/s): ${p.created||0}/${p.updated||0}/${p.skipped||0}`, `templates(c/u/s): ${t.created||0}/${t.updated||0}/${t.skipped||0}`);
+    // Persist import history if available
+    if (summary && Array.isArray(summary.history) && summary.history.length){
+      try {
+        const PluginImportHistory = require('../db/models/plugin-import-history.model');
+        const bulk = summary.history.map(h => ({ insertOne: { document: h } }));
+        if (bulk.length) PluginImportHistory.bulkWrite(bulk).catch(()=>{});
+      } catch {}
+    }
   } catch {}
 }

@@ -1,41 +1,62 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { ApiClientService } from '../../services/api-client.service';
 
 export interface DashboardKpis {
-  executions: number[]; // per period
-  errors: number[];     // per period
-  avgLatencyMs: number[]; // per period
-  activeNodes: number;    // current count
+  totalFlows: number;
+  activeFlows: number;
+  totalRuns: number;
+  successRuns: number;
+  errorRuns: number;
+  runningRuns: number;
+  avgDurationMs: number;
+  minDurationMs: number;
+  maxDurationMs: number;
+  totalCredentials: number;
+  aiTokensInput: number;
+  aiTokensOutput: number;
+  aiTokensTotal: number;
 }
 
-export interface ChannelStat { label: string; value: number; }
-export interface ActivityItem { icon: string; title: string; time: string; }
-export interface FunctionStat { name: string; success: number; error: number; avgMs: number; }
+export interface RunsTrendPoint { date: string; total: number; success: number; error: number; }
+export interface TopFlow { flowId: string; name: string; runCount: number; successCount: number; errorCount: number; avgDurationMs: number; }
+export interface TopNodeTemplate { key: string; name: string; count: number; iconUrl?: string | null; color?: string | null; }
+export interface ProductionFlow { flowId: string; name: string; triggerType: string | null; deployedAt: string; lastRunAt: string | null; lastRunStatus: string | null; }
+export interface RecentRun { runId: string; flowId: string; flowName: string; status: string; startedAt: string; durationMs: number; }
+export interface RecentNotification { id: string; code: string; message: string; severity: string; link?: string; createdAt: string; }
+
+export interface DashboardData {
+  kpis: DashboardKpis;
+  runsTrend: RunsTrendPoint[];
+  topFlows: TopFlow[];
+  topNodeTemplates: TopNodeTemplate[];
+  productionFlows: ProductionFlow[];
+  recentRuns: RecentRun[];
+  recentNotifications: RecentNotification[];
+}
 
 @Injectable({ providedIn: 'root' })
 export class DashboardService {
-  private kpis$ = new BehaviorSubject<DashboardKpis>({ executions: [], errors: [], avgLatencyMs: [], activeNodes: 0 });
-  private channels$ = new BehaviorSubject<ChannelStat[]>([]);
-  private activity$ = new BehaviorSubject<ActivityItem[]>([]);
-  private functions$ = new BehaviorSubject<FunctionStat[]>([]);
+  private data$ = new BehaviorSubject<DashboardData | null>(null);
+  loading$ = new BehaviorSubject<boolean>(false);
 
-  getKpis(): Observable<DashboardKpis> { return this.kpis$.asObservable(); }
-  getChannels(): Observable<ChannelStat[]> { return this.channels$.asObservable(); }
-  getActivity(): Observable<ActivityItem[]> { return this.activity$.asObservable(); }
-  getFunctionStats(): Observable<FunctionStat[]> { return this.functions$.asObservable(); }
+  constructor(private api: ApiClientService) {}
 
-  // Update API to be called by other features (flows, dynamic-form, etc.)
-  updateKpis(next: Partial<DashboardKpis>) {
-    const cur = this.kpis$.value;
-    this.kpis$.next({
-      executions: next.executions ?? cur.executions,
-      errors: next.errors ?? cur.errors,
-      avgLatencyMs: next.avgLatencyMs ?? cur.avgLatencyMs,
-      activeNodes: next.activeNodes ?? cur.activeNodes,
+  getData(): Observable<DashboardData | null> { return this.data$.asObservable(); }
+
+  get snapshot(): DashboardData | null { return this.data$.value; }
+
+  loadDashboard(wsId: string): Observable<DashboardData> {
+    this.loading$.next(true);
+    const obs = this.api.get<DashboardData>(`/api/workspaces/${encodeURIComponent(wsId)}/dashboard`);
+    obs.subscribe({
+      next: (res: any) => {
+        const data = res?.data || res;
+        this.data$.next(data);
+        this.loading$.next(false);
+      },
+      error: () => this.loading$.next(false),
     });
+    return obs;
   }
-  updateChannels(next: ChannelStat[]) { this.channels$.next(next || []); }
-  addActivity(item: ActivityItem) { this.activity$.next([item, ...this.activity$.value].slice(0, 20)); }
-  setActivity(items: ActivityItem[]) { this.activity$.next(items || []); }
-  updateFunctionStats(items: FunctionStat[]) { this.functions$.next(items || []); }
 }

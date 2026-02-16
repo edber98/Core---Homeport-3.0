@@ -1,0 +1,2501 @@
+{
+  "repo": {
+    "name": "notion",
+    "type": "local",
+    "label": "Notion"
+  },
+  "variables": {
+    "notion_page": {
+      "title": "Page Notion",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant de la page.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "title",
+          "label": "Titre",
+          "description": "Titre de la page.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "url",
+          "label": "URL",
+          "description": "URL de la page.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "parent_type",
+          "label": "Type parent",
+          "description": "Type du parent (database_id, page_id, workspace).",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "parent_id",
+          "label": "Parent ID",
+          "description": "Identifiant du parent.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "archived",
+          "label": "Archivé",
+          "description": "Page archivée ou non.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "created_time",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "last_edited_time",
+          "label": "Date modification",
+          "description": "Date de dernière modification.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "notion_pages": {
+      "title": "Pages",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Pages",
+          "description": "Liste des pages",
+          "mode": "array",
+          "key": "pages",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "title",
+              "label": "Titre",
+              "description": "Titre.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "url",
+              "label": "URL",
+              "description": "URL.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "parent_type",
+              "label": "Type parent",
+              "description": "Type du parent.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "parent_id",
+              "label": "Parent ID",
+              "description": "Identifiant du parent.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "archived",
+              "label": "Archivé",
+              "description": "Archivé.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "created_time",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "last_edited_time",
+              "label": "Date modification",
+              "description": "Date de modification.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "notion_database": {
+      "title": "Base de données Notion",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant de la base de données.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "title",
+          "label": "Titre",
+          "description": "Titre de la base de données.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "url",
+          "label": "URL",
+          "description": "URL de la base de données.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "description",
+          "label": "Description",
+          "description": "Description de la base de données.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "created_time",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "last_edited_time",
+          "label": "Date modification",
+          "description": "Date de dernière modification.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "notion_databases": {
+      "title": "Bases de données",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Bases de données",
+          "description": "Liste des bases de données",
+          "mode": "array",
+          "key": "databases",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "title",
+              "label": "Titre",
+              "description": "Titre.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "url",
+              "label": "URL",
+              "description": "URL.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "description",
+              "label": "Description",
+              "description": "Description.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "created_time",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "last_edited_time",
+              "label": "Date modification",
+              "description": "Date de modification.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "notion_block": {
+      "title": "Bloc Notion",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du bloc.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "type",
+          "label": "Type",
+          "description": "Type de bloc.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "has_children",
+          "label": "Enfants",
+          "description": "Contient des blocs enfants.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "content",
+          "label": "Contenu",
+          "description": "Contenu du bloc (JSON).",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "created_time",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "last_edited_time",
+          "label": "Date modification",
+          "description": "Date de dernière modification.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "notion_blocks": {
+      "title": "Blocs",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Blocs",
+          "description": "Liste des blocs",
+          "mode": "array",
+          "key": "blocks",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "type",
+              "label": "Type",
+              "description": "Type.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "has_children",
+              "label": "Enfants",
+              "description": "Enfants.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "content",
+              "label": "Contenu",
+              "description": "Contenu.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "created_time",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "last_edited_time",
+              "label": "Date modification",
+              "description": "Date de modification.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "checkbox",
+          "key": "hasMore",
+          "label": "Plus de résultats",
+          "description": "Indique s'il reste des résultats.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextCursor",
+          "label": "Curseur suivant",
+          "description": "Curseur pour la page suivante.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "notion_user": {
+      "title": "Utilisateur Notion",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant de l'utilisateur.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom de l'utilisateur.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "type",
+          "label": "Type",
+          "description": "Type d'utilisateur (person, bot).",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "email",
+          "label": "Email",
+          "description": "Adresse e-mail.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "avatar_url",
+          "label": "Avatar",
+          "description": "URL de l'avatar.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "notion_users": {
+      "title": "Utilisateurs",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Utilisateurs",
+          "description": "Liste des utilisateurs",
+          "mode": "array",
+          "key": "users",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "type",
+              "label": "Type",
+              "description": "Type.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "email",
+              "label": "Email",
+              "description": "Email.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "avatar_url",
+              "label": "Avatar",
+              "description": "Avatar.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "checkbox",
+          "key": "hasMore",
+          "label": "Plus de résultats",
+          "description": "Indique s'il reste des résultats.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextCursor",
+          "label": "Curseur suivant",
+          "description": "Curseur pour la page suivante.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "notion_comment": {
+      "title": "Commentaire Notion",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du commentaire.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "discussion_id",
+          "label": "Discussion ID",
+          "description": "Identifiant de la discussion.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "rich_text",
+          "label": "Contenu",
+          "description": "Contenu du commentaire.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "created_time",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "notion_comments": {
+      "title": "Commentaires",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Commentaires",
+          "description": "Liste des commentaires",
+          "mode": "array",
+          "key": "comments",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "discussion_id",
+              "label": "Discussion ID",
+              "description": "Discussion.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "rich_text",
+              "label": "Contenu",
+              "description": "Contenu.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "created_time",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "checkbox",
+          "key": "hasMore",
+          "label": "Plus de résultats",
+          "description": "Indique s'il reste des résultats.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextCursor",
+          "label": "Curseur suivant",
+          "description": "Curseur pour la page suivante.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "notion_search": {
+      "title": "Résultats de recherche",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total de résultats.",
+          "col": { "xs": 24 }
+        },
+        {
+          "type": "section",
+          "title": "Résultats de recherche",
+          "description": "Liste des résultats de recherche",
+          "mode": "array",
+          "key": "results",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant de l'objet.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "object",
+              "label": "Type d'objet",
+              "description": "Type (page, database).",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "title",
+              "label": "Titre",
+              "description": "Titre de l'objet.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "url",
+              "label": "URL",
+              "description": "URL de l'objet.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "notion_result": {
+      "title": "Résultat",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut de l'opération.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "message",
+          "label": "Message",
+          "description": "Message de retour.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "notion_user_me": {
+      "title": "Bot actuel Notion",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "text", "key": "id", "label": "ID", "description": "Identifiant du bot.", "col": { "xs": 12 } },
+        { "type": "text", "key": "name", "label": "Nom", "description": "Nom du bot.", "col": { "xs": 12 } },
+        { "type": "text", "key": "type", "label": "Type", "description": "Type d'utilisateur (bot ou person).", "col": { "xs": 12 } },
+        { "type": "email", "key": "email", "label": "E-mail", "description": "E-mail du propriétaire.", "col": { "xs": 12 } },
+        { "type": "url", "key": "avatar_url", "label": "Avatar", "description": "URL de l'avatar.", "col": { "xs": 24 } },
+        { "type": "text", "key": "bot_owner", "label": "Type de propriétaire", "description": "Type du propriétaire du bot (workspace ou user).", "col": { "xs": 24 } }
+      ]
+    },
+    "notion_page_property": {
+      "title": "Propriété de page Notion",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "text", "key": "id", "label": "ID de la propriété", "description": "Identifiant de la propriété.", "col": { "xs": 12 } },
+        { "type": "text", "key": "type", "label": "Type", "description": "Type de propriété (relation, rollup, rich_text, title, people, etc.).", "col": { "xs": 12 } },
+        { "type": "json", "key": "value", "label": "Valeur", "description": "Valeur de la propriété (pour les types simples).", "col": { "xs": 24 } },
+        { "type": "number", "key": "totalCount", "label": "Nombre total", "description": "Nombre total de résultats (pour les types paginés).", "col": { "xs": 24 } },
+        {
+          "type": "section", "key": "results", "title": "Résultats",
+          "mode": "array", "col": { "xs": 24 },
+          "fields": [
+            { "type": "text", "key": "id", "label": "ID", "col": { "xs": 12 } },
+            { "type": "text", "key": "type", "label": "Type", "col": { "xs": 12 } }
+          ]
+        }
+      ]
+    },
+    "notion_event": {
+      "title": "Événement Notion",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "type",
+          "label": "Type",
+          "description": "Type d'événement.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "data",
+          "label": "Données",
+          "description": "Données de l'événement (JSON).",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "timestamp",
+          "label": "Horodatage",
+          "description": "Horodatage de l'événement.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "notion",
+      "name": "Notion",
+      "title": "Notion",
+      "iconClass": "fa-solid fa-book",
+      "iconUrl": "https://cdn.simpleicons.org/notion",
+      "color": "#e2e2e2",
+      "tags": [
+        "notion",
+        "productivité",
+        "documentation"
+      ],
+      "categories": [
+        "Productivité"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Notion",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "integrationToken",
+            "label": "Integration Token",
+            "description": "Token d'intégration Notion (Internal Integration).",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "notion_page_create",
+      "name": "notionPageCreate",
+      "schemaVersion": 2,
+      "title": "Créer une page",
+      "subtitle": "Pages",
+      "icon": "fa-solid fa-square-plus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Notion",
+      "providerKey": "notion",
+      "tags": [
+        "création",
+        "notion"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:notion_page"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée une nouvelle page dans Notion.",
+      "args": {
+        "title": "Créer une page",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "parentType",
+            "label": "Type de parent",
+            "description": "Type: database_id ou page_id.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "parentId",
+            "label": "Parent ID",
+            "description": "Identifiant du parent.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "title",
+            "label": "Titre",
+            "description": "Titre de la page.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "content",
+            "label": "Contenu",
+            "description": "Contenu de la page (texte).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Pages"
+    },
+    {
+      "key": "notion_page_get",
+      "name": "notionPageGet",
+      "schemaVersion": 2,
+      "title": "Obtenir une page",
+      "subtitle": "Pages",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Notion",
+      "providerKey": "notion",
+      "tags": [
+        "lecture",
+        "notion"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:notion_page"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère une page Notion par son ID.",
+      "args": {
+        "title": "Obtenir une page",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "pageId",
+            "label": "Page ID",
+            "description": "Identifiant de la page.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Pages"
+    },
+    {
+      "key": "notion_page_update",
+      "name": "notionPageUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier une page",
+      "subtitle": "Pages",
+      "icon": "fa-solid fa-pen-to-square",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Notion",
+      "providerKey": "notion",
+      "tags": [
+        "mise-à-jour",
+        "notion"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:notion_page"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Met à jour les propriétés d'une page.",
+      "args": {
+        "title": "Modifier une page",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "pageId",
+            "label": "Page ID",
+            "description": "Identifiant de la page.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "properties",
+            "label": "Propriétés",
+            "description": "Propriétés à mettre à jour (JSON).",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Pages"
+    },
+    {
+      "key": "notion_page_archive",
+      "name": "notionPageArchive",
+      "schemaVersion": 2,
+      "title": "Archiver une page",
+      "subtitle": "Pages",
+      "icon": "fa-solid fa-archive",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Notion",
+      "providerKey": "notion",
+      "tags": [
+        "archivage",
+        "notion"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:notion_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Archive une page Notion.",
+      "args": {
+        "title": "Archiver une page",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "pageId",
+            "label": "Page ID",
+            "description": "Identifiant de la page à archiver.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Pages"
+    },
+    {
+      "key": "notion_page_list_children",
+      "name": "notionPageListChildren",
+      "schemaVersion": 2,
+      "title": "Lister les enfants d'une page",
+      "subtitle": "Pages",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Notion",
+      "providerKey": "notion",
+      "tags": [
+        "liste",
+        "notion"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:notion_blocks"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les blocs enfants d'une page.",
+      "args": {
+        "title": "Lister les enfants d'une page",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "blockId",
+            "label": "Block ID",
+            "description": "Identifiant du bloc parent (page ID).",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "pageSize",
+            "label": "Taille de page",
+            "description": "Nombre de résultats par page (défaut 100).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Pages"
+    },
+    {
+      "key": "notion_database_create",
+      "name": "notionDatabaseCreate",
+      "schemaVersion": 2,
+      "title": "Créer une base de données",
+      "subtitle": "Bases de données",
+      "icon": "fa-solid fa-square-plus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Notion",
+      "providerKey": "notion",
+      "tags": [
+        "création",
+        "notion"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:notion_database"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée une base de données dans une page.",
+      "args": {
+        "title": "Créer une base de données",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "parentPageId",
+            "label": "Page parent ID",
+            "description": "Identifiant de la page parente.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "title",
+            "label": "Titre",
+            "description": "Titre de la base de données.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "properties",
+            "label": "Propriétés",
+            "description": "Schéma des propriétés (JSON).",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Bases de données"
+    },
+    {
+      "key": "notion_database_get",
+      "name": "notionDatabaseGet",
+      "schemaVersion": 2,
+      "title": "Obtenir une base de données",
+      "subtitle": "Bases de données",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Notion",
+      "providerKey": "notion",
+      "tags": [
+        "lecture",
+        "notion"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:notion_database"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère une base de données par son ID.",
+      "args": {
+        "title": "Obtenir une base de données",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "databaseId",
+            "label": "Database ID",
+            "description": "Identifiant de la base de données.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Bases de données"
+    },
+    {
+      "key": "notion_database_query",
+      "name": "notionDatabaseQuery",
+      "schemaVersion": 2,
+      "title": "Interroger une base de données",
+      "subtitle": "Bases de données",
+      "icon": "fa-solid fa-magnifying-glass",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Notion",
+      "providerKey": "notion",
+      "tags": [
+        "recherche",
+        "notion"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:notion_pages"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Interroge une base de données avec des filtres.",
+      "args": {
+        "title": "Interroger une base de données",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "databaseId",
+            "label": "Database ID",
+            "description": "Identifiant de la base de données.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "filter",
+            "label": "Filtre",
+            "description": "Filtre de requête (JSON).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "sorts",
+            "label": "Tri",
+            "description": "Critères de tri (JSON).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "pageSize",
+            "label": "Taille de page",
+            "description": "Nombre de résultats (défaut 100).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Bases de données"
+    },
+    {
+      "key": "notion_database_update",
+      "name": "notionDatabaseUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier une base de données",
+      "subtitle": "Bases de données",
+      "icon": "fa-solid fa-pen-to-square",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Notion",
+      "providerKey": "notion",
+      "tags": [
+        "mise-à-jour",
+        "notion"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:notion_database"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Met à jour une base de données.",
+      "args": {
+        "title": "Modifier une base de données",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "databaseId",
+            "label": "Database ID",
+            "description": "Identifiant de la base de données.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "title",
+            "label": "Titre",
+            "description": "Nouveau titre.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "properties",
+            "label": "Propriétés",
+            "description": "Propriétés à modifier (JSON).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Bases de données"
+    },
+    {
+      "key": "notion_block_get",
+      "name": "notionBlockGet",
+      "schemaVersion": 2,
+      "title": "Obtenir un bloc",
+      "subtitle": "Blocs",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Notion",
+      "providerKey": "notion",
+      "tags": [
+        "lecture",
+        "notion"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:notion_block"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère un bloc par son ID.",
+      "args": {
+        "title": "Obtenir un bloc",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "blockId",
+            "label": "Block ID",
+            "description": "Identifiant du bloc.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Blocs"
+    },
+    {
+      "key": "notion_block_list_children",
+      "name": "notionBlockListChildren",
+      "schemaVersion": 2,
+      "title": "Lister les enfants d'un bloc",
+      "subtitle": "Blocs",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Notion",
+      "providerKey": "notion",
+      "tags": [
+        "liste",
+        "notion"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:notion_blocks"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les blocs enfants.",
+      "args": {
+        "title": "Lister les enfants d'un bloc",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "blockId",
+            "label": "Block ID",
+            "description": "Identifiant du bloc parent.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "pageSize",
+            "label": "Taille de page",
+            "description": "Nombre de résultats (défaut 100).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Blocs"
+    },
+    {
+      "key": "notion_block_append",
+      "name": "notionBlockAppend",
+      "schemaVersion": 2,
+      "title": "Ajouter des blocs",
+      "subtitle": "Blocs",
+      "icon": "fa-solid fa-square-plus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Notion",
+      "providerKey": "notion",
+      "tags": [
+        "création",
+        "notion"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:notion_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Ajoute des blocs enfants à un bloc.",
+      "args": {
+        "title": "Ajouter des blocs",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "blockId",
+            "label": "Block ID",
+            "description": "Identifiant du bloc parent.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "children",
+            "label": "Blocs enfants",
+            "description": "Blocs enfants à ajouter (JSON).",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Blocs"
+    },
+    {
+      "key": "notion_block_update",
+      "name": "notionBlockUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier un bloc",
+      "subtitle": "Blocs",
+      "icon": "fa-solid fa-pen-to-square",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Notion",
+      "providerKey": "notion",
+      "tags": [
+        "mise-à-jour",
+        "notion"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:notion_block"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Met à jour un bloc existant.",
+      "args": {
+        "title": "Modifier un bloc",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "blockId",
+            "label": "Block ID",
+            "description": "Identifiant du bloc.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "content",
+            "label": "Contenu",
+            "description": "Nouveau contenu du bloc (JSON).",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Blocs"
+    },
+    {
+      "key": "notion_block_delete",
+      "name": "notionBlockDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un bloc",
+      "subtitle": "Blocs",
+      "icon": "fa-solid fa-trash",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Notion",
+      "providerKey": "notion",
+      "tags": [
+        "suppression",
+        "notion"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:notion_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Supprime un bloc Notion.",
+      "args": {
+        "title": "Supprimer un bloc",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "blockId",
+            "label": "Block ID",
+            "description": "Identifiant du bloc à supprimer.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Blocs"
+    },
+    {
+      "key": "notion_user_get",
+      "name": "notionUserGet",
+      "schemaVersion": 2,
+      "title": "Obtenir un utilisateur",
+      "subtitle": "Utilisateurs",
+      "icon": "fa-solid fa-user",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Notion",
+      "providerKey": "notion",
+      "tags": [
+        "lecture",
+        "notion"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:notion_user"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère un utilisateur par son ID.",
+      "args": {
+        "title": "Obtenir un utilisateur",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "userId",
+            "label": "User ID",
+            "description": "Identifiant de l'utilisateur.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Utilisateurs"
+    },
+    {
+      "key": "notion_users_list",
+      "name": "notionUsersList",
+      "schemaVersion": 2,
+      "title": "Lister les utilisateurs",
+      "subtitle": "Utilisateurs",
+      "icon": "fa-solid fa-users",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Notion",
+      "providerKey": "notion",
+      "tags": [
+        "liste",
+        "notion"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:notion_users"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les utilisateurs de l'espace de travail.",
+      "args": {
+        "title": "Lister les utilisateurs",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "pageSize",
+            "label": "Taille de page",
+            "description": "Nombre de résultats (défaut 100).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Utilisateurs"
+    },
+    {
+      "key": "notion_search",
+      "name": "notionSearch",
+      "schemaVersion": 2,
+      "title": "Rechercher",
+      "subtitle": "Recherche",
+      "icon": "fa-solid fa-magnifying-glass",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Notion",
+      "providerKey": "notion",
+      "tags": [
+        "recherche",
+        "notion"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:notion_search"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Recherche des pages et bases de données.",
+      "args": {
+        "title": "Rechercher",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "query",
+            "label": "Recherche",
+            "description": "Terme de recherche (laisser vide pour tout lister).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "select",
+            "key": "filterType",
+            "label": "Type de filtre",
+            "description": "Filtrer par type d'objet.",
+            "options": [
+              { "label": "Tous", "value": "" },
+              { "label": "Page", "value": "page" },
+              { "label": "Base de données", "value": "database" }
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "pageSize",
+            "label": "Taille de page",
+            "description": "Nombre de résultats (défaut 100).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Recherche"
+    },
+    {
+      "key": "notion_comment_create",
+      "name": "notionCommentCreate",
+      "schemaVersion": 2,
+      "title": "Créer un commentaire",
+      "subtitle": "Commentaires",
+      "icon": "fa-solid fa-comment",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Notion",
+      "providerKey": "notion",
+      "tags": [
+        "création",
+        "notion"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:notion_comment"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un commentaire sur une page ou discussion.",
+      "args": {
+        "title": "Créer un commentaire",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "pageId",
+            "label": "Page ID",
+            "description": "Identifiant de la page (ou discussion_id).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "discussionId",
+            "label": "Discussion ID",
+            "description": "Identifiant de la discussion (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "richText",
+            "label": "Contenu",
+            "description": "Contenu du commentaire.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Commentaires"
+    },
+    {
+      "key": "notion_comments_list",
+      "name": "notionCommentsList",
+      "schemaVersion": 2,
+      "title": "Lister les commentaires",
+      "subtitle": "Commentaires",
+      "icon": "fa-solid fa-comments",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Notion",
+      "providerKey": "notion",
+      "tags": [
+        "liste",
+        "notion"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:notion_comments"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les commentaires d'une page ou discussion.",
+      "args": {
+        "title": "Lister les commentaires",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "blockId",
+            "label": "Block ID",
+            "description": "Identifiant de la page ou du bloc.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "pageSize",
+            "label": "Taille de page",
+            "description": "Nombre de résultats (défaut 100).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Commentaires"
+    },
+    {
+      "key": "notion_user_me",
+      "name": "notionUserMe",
+      "schemaVersion": 2,
+      "title": "Récupérer le bot actuel",
+      "subtitle": "Utilisateurs",
+      "icon": "fa-solid fa-robot",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Notion",
+      "providerKey": "notion",
+      "tags": ["utilisateur", "bot", "notion"],
+      "inputHandles": [{ "id": "in", "name": "Entrée", "type": "payload" }],
+      "outputHandles": [
+        { "id": "ok", "name": "Succès", "type": "payload", "schema": "$var:notion_user_me" },
+        { "id": "err", "name": "Erreur", "type": "payload" }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère les informations du bot ou de l'intégration actuelle.",
+      "args": {
+        "title": "Bot actuel",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Utilisateurs"
+    },
+    {
+      "key": "notion_page_property_get",
+      "name": "notionPagePropertyGet",
+      "schemaVersion": 2,
+      "title": "Récupérer une propriété de page",
+      "subtitle": "Pages",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Notion",
+      "providerKey": "notion",
+      "tags": ["page", "propriété", "notion"],
+      "inputHandles": [{ "id": "in", "name": "Entrée", "type": "payload" }],
+      "outputHandles": [
+        { "id": "ok", "name": "Succès", "type": "payload", "schema": "$var:notion_page_property" },
+        { "id": "err", "name": "Erreur", "type": "payload" }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère une propriété paginée d'une page (relation, rollup, people, etc.).",
+      "args": {
+        "title": "Propriété de page",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          {
+            "type": "text", "key": "pageId", "label": "ID de la page",
+            "description": "Identifiant de la page Notion.",
+            "col": { "xs": 24 }, "required": true
+          },
+          {
+            "type": "text", "key": "propertyId", "label": "ID de la propriété",
+            "description": "Identifiant ou nom de la propriété à récupérer.",
+            "col": { "xs": 24 }, "required": true
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Pages"
+    },
+    {
+      "key": "notion_page_restore",
+      "name": "notionPageRestore",
+      "schemaVersion": 2,
+      "title": "Restaurer une page",
+      "subtitle": "Pages",
+      "icon": "fa-solid fa-rotate-left",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Notion",
+      "providerKey": "notion",
+      "tags": ["page", "restaurer", "notion"],
+      "inputHandles": [{ "id": "in", "name": "Entrée", "type": "payload" }],
+      "outputHandles": [
+        { "id": "ok", "name": "Succès", "type": "payload", "schema": "$var:notion_page" },
+        { "id": "err", "name": "Erreur", "type": "payload" }
+      ],
+      "authorize_catch_error": true,
+      "description": "Restaure une page Notion précédemment archivée.",
+      "args": {
+        "title": "Restaurer une page",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          {
+            "type": "text", "key": "pageId", "label": "ID de la page",
+            "description": "Identifiant de la page à restaurer.",
+            "col": { "xs": 24 }, "required": true
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Pages"
+    },
+    {
+      "key": "notion_webhook_event",
+      "name": "notionWebhookEvent",
+      "schemaVersion": 2,
+      "title": "Événement entrant",
+      "subtitle": "Événements",
+      "icon": "fa-solid fa-bolt",
+      "type": "event",
+      "nodeKind": "event",
+      "category": "Notion",
+      "providerKey": "notion",
+      "tags": [
+        "événement",
+        "notion"
+      ],
+      "inputHandles": [],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Received",
+          "type": "payload",
+          "schema": "$var:notion_event"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Reçoit un événement entrant Notion.",
+      "args": {
+        "title": "Événement entrant",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Chemin",
+            "description": "Chemin du webhook.",
+            "col": {
+              "xs": 24
+            },
+            "default": "/notion"
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Événements"
+    }
+  ]
+}

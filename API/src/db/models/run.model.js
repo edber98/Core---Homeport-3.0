@@ -32,6 +32,10 @@ const RunSchema = new Schema({
   workspaceId: { type: Types.ObjectId, ref: 'Workspace', required: true, index: true },
   companyId: { type: Types.ObjectId, ref: 'Company', required: true, index: true },
   status: { type: String, enum: ['queued','running','success','error','cancelled','timed_out','partial_success'], default: 'running', index: true },
+  // Exact snapshot of the flow graph used for this execution
+  graph: { type: Schema.Types.Mixed },
+  // UI/editor settings snapshot (e.g., orientation) at execution time
+  meta: { type: Schema.Types.Mixed },
   events: { type: [RunEventSchema], default: [] },
   result: { type: Schema.Types.Mixed },
   finalPayload: { type: Schema.Types.Mixed },

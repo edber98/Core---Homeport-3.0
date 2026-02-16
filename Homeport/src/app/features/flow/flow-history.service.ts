@@ -34,6 +34,17 @@ export class FlowHistoryService {
     this.futureMeta = [];
   }
 
+  pushRestore(state: FlowState, reason: string = 'restore', force = true) {
+    const next = this.clone(state);
+    const last = this.past[this.past.length - 1];
+    try {
+      const same = JSON.stringify(last) === JSON.stringify(next);
+      if (same && !force) return;
+    } catch {}
+    this.past.push(next);
+    this.pastMeta.push({ ts: Date.now(), reason });
+  }
+
   canUndo(): boolean { return this.past.length > 1; }
   canRedo(): boolean { return this.future.length > 0; }
 

@@ -131,7 +131,10 @@ export class FlowBuilderUtilsService {
   ensureStableConditionIds(oldModel: any | undefined | null, model: any | undefined | null) {
     try {
       const tmpl = model?.templateObj;
-      if (!tmpl || tmpl.type !== 'condition') return model;
+      if (!tmpl) return model;
+      // Handle both condition nodes AND function nodes with output_array_field
+      const hasOutputArray = !!tmpl.output_array_field;
+      if (tmpl.type !== 'condition' && !hasOutputArray) return model;
       const field = tmpl.output_array_field || 'items';
       const newModel = JSON.parse(JSON.stringify(model || {}));
       const newArr: any[] = (newModel?.context && Array.isArray(newModel.context[field])) ? newModel.context[field] : [];
@@ -184,7 +187,8 @@ export class FlowBuilderUtilsService {
       const before = edges.length;
       let outEdges = edges.slice();
 
-      if (type === 'condition') {
+      const hasOutputArray = !!model?.templateObj?.output_array_field;
+      if (type === 'condition' || hasOutputArray) {
         const oldFull = this.getConditionItemsFull(oldModel);
         const full = this.getConditionItemsFull(model);
         const idSet = new Set(full.map(it => it.id));
@@ -301,7 +305,30 @@ export class FlowBuilderUtilsService {
     try {
       const findByType = (t: string) => (items.find(it => it?.template?.type === t)?.template);
       const startT = findByType('start') || { id: 'tmpl_start', name: 'Start', type: 'start', title: 'Start', subtitle: 'Trigger', icon: 'fa-solid fa-play', args: {} };
-      const condT = findByType('condition') || { id: 'tmpl_condition', name: 'Condition', type: 'condition', icon: 'fa-solid fa-code-branch', title: 'Condition', subtitle: 'Multi-branch', args: {}, output_array_field: 'items' };
+      const condT = findByType('condition') || {
+        id: 'tmpl_condition',
+        name: 'Condition',
+        type: 'condition',
+        icon: 'fa-solid fa-code-branch',
+        title: 'Condition',
+        subtitle: 'Multi-branch',
+        output_array_field: 'items',
+        args: {
+          title: 'Conditions',
+          ui: { layout: 'vertical', labelsOnTop: true },
+          fields: [
+            { type: 'section', title: 'Branches', key: 'items', mode: 'array',
+              array: { initialItems: 1, minItems: 0, controls: { add: { kind: 'text', text: 'Ajouter' }, remove: { kind: 'text', text: 'Supprimer' } } },
+              fields: [
+                { type: 'text', key: 'name', label: 'Nom', col: { xs: 24 }, default: '', expression: { allow: true }, validators: [{ type: 'required' }] },
+                { type: 'text', key: 'condition', label: 'Condition', col: { xs: 24 }, default: '', expression: { allow: true }, validators: [{ type: 'required' }] }
+              ],
+              col: { xs: 24 }, grid: { gutter: 16 }, ui: { layout: 'vertical' }
+            },
+            { type: 'checkbox', key: 'else_enabled', label: 'Activer Else', col: { xs: 24 }, default: false }
+          ]
+        }
+      } as any;
       const functionItems = items.filter(it => it?.template?.type === 'function').map(it => it.template);
       const fnT1 = functionItems[0] || { id: 'tmpl_fn1', name: 'Function', type: 'function', icon: 'fa-solid fa-cog', title: 'Function', subtitle: 'Step', output: [], args: {} };
       const fnT2 = functionItems[1] || { id: 'tmpl_fn2', name: 'Function 2', type: 'function', icon: 'fa-solid fa-bolt', title: 'Function 2', subtitle: 'Step', output: [], args: {} };
@@ -310,7 +337,7 @@ export class FlowBuilderUtilsService {
       const fn1Model = { id: 'node_fn1', name: fnT1.name || 'Function', template: fnT1.id, templateObj: fnT1, context: {} };
       const fn2Model: any = { id: 'node_fn2', name: fnT2.name || 'Function', template: fnT2.id, templateObj: fnT2, context: {} };
       try { if (fnT2?.authorize_catch_error) fn2Model.catch_error = true; } catch { }
-      const condModel = { id: 'node_cond', name: condT.name || 'Condition', template: condT.id, templateObj: condT, context: { items: [{ name: 'A', condition: '' }, { name: 'B', condition: '' }, { name: 'C', condition: '' }] } } as any;
+      const condModel = { id: 'node_cond', name: condT.name || 'Condition', template: condT.id, templateObj: condT, context: { else_enabled: false, items: [{ name: 'A', condition: '' }, { name: 'B', condition: '' }, { name: 'C', condition: '' }] } } as any;
 
       const startVNode = { id: startModel.id, point: { x: 380, y: 140 }, type: 'html-template', data: { model: startModel } };
       const fn1VNode = { id: fn1Model.id, point: { x: 180, y: 320 }, type: 'html-template', data: { model: fn1Model } };
@@ -355,13 +382,23 @@ export class FlowBuilderUtilsService {
     return ('00000000' + h.toString(16)).slice(-8);
   }
 
-  // Compute a short signature for template feature flags that affect node behavior
+  // Compute a short signature for template structural fields that affect node behavior
   featureChecksum(tpl: any): string {
     try {
-      const a = !!(tpl && tpl.authorize_catch_error);
-      const s = !!(tpl && (tpl as any).authorize_skip_error);
-      // pack two booleans into a short string
-      return (a ? '1' : '0') + (s ? '1' : '0');
-    } catch { return '00'; }
+      if (!tpl) return '';
+      const obj = {
+        authorize_catch_error: !!tpl.authorize_catch_error,
+        authorize_skip_error: !!tpl.authorize_skip_error,
+        allowWithoutCredentials: !!tpl.allowWithoutCredentials,
+        nodeKind: tpl.nodeKind || tpl.type || '',
+        inputHandles: tpl.inputHandles || [],
+        outputHandles: tpl.outputHandles || [],
+        linkedHandles: tpl.linkedHandles || [],
+        output_array_field: tpl.output_array_field || undefined,
+        output_schema_field: tpl.output_schema_field || undefined,
+        outputSchema: tpl.outputSchema || undefined,
+      };
+      return this.argsChecksum(obj);
+    } catch { return ''; }
   }
 }

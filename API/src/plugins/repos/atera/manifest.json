@@ -1,0 +1,5746 @@
+{
+  "repo": {
+    "name": "atera",
+    "type": "local",
+    "label": "Atera"
+  },
+  "variables": {
+    "atera_customer": {
+      "title": "Client Atera",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "CustomerID",
+          "label": "ID client",
+          "description": "Identifiant du client.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "CustomerName",
+          "label": "Nom du client",
+          "description": "Nom du client.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "Domain",
+          "label": "Domaine",
+          "description": "Domaine web.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "Address",
+          "label": "Adresse",
+          "description": "Adresse postale.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "City",
+          "label": "Ville",
+          "description": "Ville.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "State",
+          "label": "Province/État",
+          "description": "Province ou état.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "Country",
+          "label": "Pays",
+          "description": "Pays.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "Phone",
+          "label": "Téléphone",
+          "description": "Numéro de téléphone.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "Notes",
+          "label": "Notes",
+          "description": "Notes.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "CreatedOn",
+          "label": "Date de création",
+          "description": "Date de création du client.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "atera_customers": {
+      "title": "Clients",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalItemCount",
+          "label": "Nombre total",
+          "description": "Nombre total de clients.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "page",
+          "label": "Page",
+          "description": "Page actuelle.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "itemsInPage",
+          "label": "Éléments par page",
+          "description": "Nombre d'éléments retournés sur cette page.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "totalPages",
+          "label": "Total de pages",
+          "description": "Nombre total de pages.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Clients",
+          "description": "Liste des clients",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "CustomerID",
+              "label": "ID client",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "CustomerName",
+              "label": "Nom",
+              "description": "Nom du client.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "Domain",
+              "label": "Domaine",
+              "description": "Domaine.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "City",
+              "label": "Ville",
+              "description": "Ville.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "Phone",
+              "label": "Téléphone",
+              "description": "Téléphone.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "CreatedOn",
+              "label": "Date de création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "atera_contact": {
+      "title": "Contact Atera",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "EndUserID",
+          "label": "ID contact",
+          "description": "Identifiant du contact.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "CustomerID",
+          "label": "ID client",
+          "description": "Identifiant du client associé.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "CustomerName",
+          "label": "Nom du client",
+          "description": "Nom du client associé.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "Firstname",
+          "label": "Prénom",
+          "description": "Prénom du contact.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "Lastname",
+          "label": "Nom",
+          "description": "Nom de famille du contact.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "Email",
+          "label": "Email",
+          "description": "Adresse e-mail.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "Phone",
+          "label": "Téléphone",
+          "description": "Numéro de téléphone.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "JobTitle",
+          "label": "Titre du poste",
+          "description": "Titre du poste.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "CreatedOn",
+          "label": "Date de création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "atera_contacts": {
+      "title": "Contacts",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalItemCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "page",
+          "label": "Page",
+          "description": "Page actuelle.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "itemsInPage",
+          "label": "Éléments par page",
+          "description": "Nombre d'éléments retournés sur cette page.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "totalPages",
+          "label": "Total de pages",
+          "description": "Nombre total de pages.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Contacts",
+          "description": "Liste des contacts",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "EndUserID",
+              "label": "ID contact",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "Firstname",
+              "label": "Prénom",
+              "description": "Prénom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "Lastname",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "Email",
+              "label": "Email",
+              "description": "Email.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "Phone",
+              "label": "Téléphone",
+              "description": "Téléphone.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "atera_ticket": {
+      "title": "Ticket Atera",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "TicketID",
+          "label": "ID ticket",
+          "description": "Identifiant du ticket.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "TicketTitle",
+          "label": "Titre",
+          "description": "Titre du ticket.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "TicketNumber",
+          "label": "Numéro",
+          "description": "Numéro du ticket.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "TicketStatus",
+          "label": "Statut",
+          "description": "Statut du ticket.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "TicketPriority",
+          "label": "Priorité",
+          "description": "Priorité du ticket.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "TicketType",
+          "label": "Type",
+          "description": "Type du ticket.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "EndUserEmail",
+          "label": "Email utilisateur",
+          "description": "Email de l'utilisateur.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "CustomerID",
+          "label": "ID client",
+          "description": "Identifiant du client.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "CustomerName",
+          "label": "Nom du client",
+          "description": "Nom du client.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "TicketCreatedDate",
+          "label": "Date de création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "atera_tickets": {
+      "title": "Tickets",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalItemCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "page",
+          "label": "Page",
+          "description": "Page actuelle.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "itemsInPage",
+          "label": "Éléments par page",
+          "description": "Nombre d'éléments retournés sur cette page.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "totalPages",
+          "label": "Total de pages",
+          "description": "Nombre total de pages.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Tickets",
+          "description": "Liste des tickets",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "TicketID",
+              "label": "ID ticket",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "TicketTitle",
+              "label": "Titre",
+              "description": "Titre.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "TicketStatus",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "TicketPriority",
+              "label": "Priorité",
+              "description": "Priorité.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "CustomerName",
+              "label": "Client",
+              "description": "Client.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "TicketCreatedDate",
+              "label": "Date de création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "atera_agent": {
+      "title": "Agent Atera",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "AgentID",
+          "label": "ID agent",
+          "description": "Identifiant de l'agent.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "AgentName",
+          "label": "Nom de l'agent",
+          "description": "Nom de l'agent.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "MachineName",
+          "label": "Nom de la machine",
+          "description": "Nom de la machine.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "CustomerID",
+          "label": "ID client",
+          "description": "Identifiant du client.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "CustomerName",
+          "label": "Nom du client",
+          "description": "Nom du client.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "Online",
+          "label": "En ligne",
+          "description": "Statut en ligne.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "OS",
+          "label": "Système d'exploitation",
+          "description": "Système d'exploitation.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "LastSeen",
+          "label": "Vu le",
+          "description": "Dernière connexion.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "atera_agents": {
+      "title": "Agents",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalItemCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "page",
+          "label": "Page",
+          "description": "Page actuelle.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "itemsInPage",
+          "label": "Éléments par page",
+          "description": "Nombre d'éléments retournés sur cette page.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "totalPages",
+          "label": "Total de pages",
+          "description": "Nombre total de pages.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Agents",
+          "description": "Liste des agents",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "AgentID",
+              "label": "ID agent",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "AgentName",
+              "label": "Nom",
+              "description": "Nom de l'agent.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "MachineName",
+              "label": "Machine",
+              "description": "Nom de la machine.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "CustomerName",
+              "label": "Client",
+              "description": "Client.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "Online",
+              "label": "En ligne",
+              "description": "En ligne.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "OS",
+              "label": "OS",
+              "description": "OS.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "atera_alert": {
+      "title": "Alerte Atera",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "AlertID",
+          "label": "ID alerte",
+          "description": "Identifiant de l'alerte.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "Title",
+          "label": "Titre",
+          "description": "Titre de l'alerte.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "Severity",
+          "label": "Sévérité",
+          "description": "Sévérité de l'alerte.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "AlertMessage",
+          "label": "Message",
+          "description": "Message de l'alerte.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "DeviceName",
+          "label": "Appareil",
+          "description": "Nom de l'appareil.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "CustomerID",
+          "label": "ID client",
+          "description": "Identifiant du client.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "CustomerName",
+          "label": "Nom du client",
+          "description": "Nom du client.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "Created",
+          "label": "Date de création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "Archived",
+          "label": "Archivée",
+          "description": "Alerte archivée.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "atera_alerts": {
+      "title": "Alertes",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalItemCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "page",
+          "label": "Page",
+          "description": "Page actuelle.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "itemsInPage",
+          "label": "Éléments par page",
+          "description": "Nombre d'éléments retournés sur cette page.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "totalPages",
+          "label": "Total de pages",
+          "description": "Nombre total de pages.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Alertes",
+          "description": "Liste des alertes",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "AlertID",
+              "label": "ID alerte",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "Title",
+              "label": "Titre",
+              "description": "Titre.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "Severity",
+              "label": "Sévérité",
+              "description": "Sévérité.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "DeviceName",
+              "label": "Appareil",
+              "description": "Appareil.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "CustomerName",
+              "label": "Client",
+              "description": "Client.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "Created",
+              "label": "Date de création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "atera_contract": {
+      "title": "Contrat Atera",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "ContractID",
+          "label": "ID contrat",
+          "description": "Identifiant du contrat.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "ContractName",
+          "label": "Nom du contrat",
+          "description": "Nom du contrat.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "ContractType",
+          "label": "Type",
+          "description": "Type du contrat.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "CustomerID",
+          "label": "ID client",
+          "description": "Identifiant du client.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "CustomerName",
+          "label": "Nom du client",
+          "description": "Nom du client.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "Active",
+          "label": "Actif",
+          "description": "Contrat actif.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "StartDate",
+          "label": "Date de début",
+          "description": "Date de début.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "EndDate",
+          "label": "Date de fin",
+          "description": "Date de fin.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "atera_contracts": {
+      "title": "Contrats",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalItemCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "page",
+          "label": "Page",
+          "description": "Page actuelle.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "itemsInPage",
+          "label": "Éléments par page",
+          "description": "Nombre d'éléments retournés sur cette page.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "totalPages",
+          "label": "Total de pages",
+          "description": "Nombre total de pages.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Contrats",
+          "description": "Liste des contrats",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "ContractID",
+              "label": "ID contrat",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "ContractName",
+              "label": "Nom",
+              "description": "Nom du contrat.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "ContractType",
+              "label": "Type",
+              "description": "Type.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "CustomerName",
+              "label": "Client",
+              "description": "Client.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "Active",
+              "label": "Actif",
+              "description": "Actif.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "atera_kb": {
+      "title": "Article KB Atera",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "KBID",
+          "label": "ID article",
+          "description": "Identifiant de l'article.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "KBProduct",
+          "label": "Produit",
+          "description": "Produit associé.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "KBContext",
+          "label": "Contenu",
+          "description": "Contenu de l'article.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "KBKeywords",
+          "label": "Mots-clés",
+          "description": "Mots-clés.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "KBTimestamp",
+          "label": "Date de création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "KBIsPrivate",
+          "label": "Privé",
+          "description": "Article privé.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "atera_kbs": {
+      "title": "Articles KB",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalItemCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "page",
+          "label": "Page",
+          "description": "Page actuelle.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "itemsInPage",
+          "label": "Éléments par page",
+          "description": "Nombre d'éléments retournés sur cette page.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "totalPages",
+          "label": "Total de pages",
+          "description": "Nombre total de pages.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Articles",
+          "description": "Liste des articles",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "KBID",
+              "label": "ID article",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "KBProduct",
+              "label": "Produit",
+              "description": "Produit.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "KBKeywords",
+              "label": "Mots-clés",
+              "description": "Mots-clés.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "KBTimestamp",
+              "label": "Date de création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "atera_department": {
+      "title": "Département Atera",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "Id",
+          "label": "ID département",
+          "description": "Identifiant du département.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "Name",
+          "label": "Nom",
+          "description": "Nom du département.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "Description",
+          "label": "Description",
+          "description": "Description du département.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "atera_departments": {
+      "title": "Départements",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalItemCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "page",
+          "label": "Page",
+          "description": "Page actuelle.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "itemsInPage",
+          "label": "Éléments par page",
+          "description": "Nombre d'éléments retournés sur cette page.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "totalPages",
+          "label": "Total de pages",
+          "description": "Nombre total de pages.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Départements",
+          "description": "Liste des départements",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "Id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "Name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "Description",
+              "label": "Description",
+              "description": "Description.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "atera_device": {
+      "title": "Appareil Atera",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "DeviceID",
+          "label": "ID appareil",
+          "description": "Identifiant de l'appareil.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "Name",
+          "label": "Nom",
+          "description": "Nom de l'appareil.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "DeviceGuid",
+          "label": "GUID",
+          "description": "GUID de l'appareil.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "CustomerID",
+          "label": "ID client",
+          "description": "Identifiant du client.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "CustomerName",
+          "label": "Nom du client",
+          "description": "Nom du client.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "Monitored",
+          "label": "Surveillé",
+          "description": "Appareil surveillé.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "atera_devices": {
+      "title": "Appareils",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalItemCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "page",
+          "label": "Page",
+          "description": "Page actuelle.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "itemsInPage",
+          "label": "Éléments par page",
+          "description": "Nombre d'éléments retournés sur cette page.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "totalPages",
+          "label": "Total de pages",
+          "description": "Nombre total de pages.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Appareils",
+          "description": "Liste des appareils",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "DeviceID",
+              "label": "ID appareil",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "Name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "CustomerName",
+              "label": "Client",
+              "description": "Client.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "Monitored",
+              "label": "Surveillé",
+              "description": "Surveillé.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "atera_rate": {
+      "title": "Tarif Atera",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "RateID",
+          "label": "ID tarif",
+          "description": "Identifiant du tarif.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "Amount",
+          "label": "Montant",
+          "description": "Montant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "Description",
+          "label": "Description",
+          "description": "Description.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "SKU",
+          "label": "SKU",
+          "description": "Code SKU.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "Category",
+          "label": "Catégorie",
+          "description": "Catégorie.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "atera_rates": {
+      "title": "Tarifs",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Tarifs",
+          "description": "Liste des tarifs",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "RateID",
+              "label": "ID tarif",
+              "description": "Identifiant du tarif.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "Amount",
+              "label": "Montant",
+              "description": "Montant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "Description",
+              "label": "Description",
+              "description": "Description.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "SKU",
+              "label": "SKU",
+              "description": "Code SKU.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "Category",
+              "label": "Catégorie",
+              "description": "Catégorie.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "atera_invoice": {
+      "title": "Facture Atera",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "InvoiceNumber",
+          "label": "Numéro de facture",
+          "description": "Numéro de la facture.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "Total",
+          "label": "Total",
+          "description": "Total de la facture.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "Subtotal",
+          "label": "Sous-total",
+          "description": "Sous-total.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "Tax",
+          "label": "Taxe",
+          "description": "Taxe.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "InvoiceDate",
+          "label": "Date de facture",
+          "description": "Date de la facture.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "ContractName",
+          "label": "Contrat",
+          "description": "Nom du contrat.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "Currency",
+          "label": "Devise",
+          "description": "Devise.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "atera_invoices": {
+      "title": "Factures",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Factures",
+          "description": "Liste des factures",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "InvoiceNumber",
+              "label": "Numéro de facture",
+              "description": "Numéro de la facture.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "Total",
+              "label": "Total",
+              "description": "Total de la facture.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "Subtotal",
+              "label": "Sous-total",
+              "description": "Sous-total.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "Tax",
+              "label": "Taxe",
+              "description": "Taxe.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "InvoiceDate",
+              "label": "Date de facture",
+              "description": "Date de la facture.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "ContractName",
+              "label": "Contrat",
+              "description": "Nom du contrat.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "Currency",
+              "label": "Devise",
+              "description": "Devise.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "atera_custom_value": {
+      "title": "Valeur personnalisée Atera",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "ItemId",
+          "label": "ID élément",
+          "description": "Identifiant de l'élément.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "FieldName",
+          "label": "Nom du champ",
+          "description": "Nom du champ personnalisé.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "ValueAsString",
+          "label": "Valeur",
+          "description": "Valeur du champ.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "atera_custom_values": {
+      "title": "Valeurs personnalisées",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Valeurs",
+          "description": "Liste des valeurs",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "ItemId",
+              "label": "ID élément",
+              "description": "Identifiant de l'élément.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "FieldName",
+              "label": "Nom du champ",
+              "description": "Nom du champ personnalisé.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "ValueAsString",
+              "label": "Valeur",
+              "description": "Valeur du champ.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "atera_result": {
+      "title": "Résultat Atera",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "ok",
+          "label": "Succès",
+          "description": "Opération réussie.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "ActionID",
+          "label": "ID action",
+          "description": "Identifiant de l'action.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "atera_comment_result": {
+      "title": "Résultat commentaire",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "ok",
+          "label": "Succès",
+          "description": "Opération réussie.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "atera_customer_search_results": {
+      "title": "Résultats recherche clients",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "matchCount",
+          "label": "Nombre de résultats",
+          "description": "Nombre de clients correspondants.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "totalScanned",
+          "label": "Total analysés",
+          "description": "Nombre total de clients parcourus.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Clients trouvés",
+          "description": "Liste des clients correspondants",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "CustomerID",
+              "label": "ID client",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "CustomerName",
+              "label": "Nom",
+              "description": "Nom du client.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "Domain",
+              "label": "Domaine",
+              "description": "Domaine.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "City",
+              "label": "Ville",
+              "description": "Ville.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "Phone",
+              "label": "Téléphone",
+              "description": "Téléphone.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "CreatedOn",
+              "label": "Date de création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "atera_customer_find_result": {
+      "title": "Client trouvé",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "found",
+          "label": "Trouvé",
+          "description": "Client trouvé ou non.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "CustomerID",
+          "label": "ID client",
+          "description": "Identifiant du client.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "CustomerName",
+          "label": "Nom du client",
+          "description": "Nom du client.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "Domain",
+          "label": "Domaine",
+          "description": "Domaine web.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "Address",
+          "label": "Adresse",
+          "description": "Adresse postale.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "City",
+          "label": "Ville",
+          "description": "Ville.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "State",
+          "label": "Province/État",
+          "description": "Province ou état.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "Country",
+          "label": "Pays",
+          "description": "Pays.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "Phone",
+          "label": "Téléphone",
+          "description": "Numéro de téléphone.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "Notes",
+          "label": "Notes",
+          "description": "Notes.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "CreatedOn",
+          "label": "Date de création",
+          "description": "Date de création du client.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "atera_alerts_count": {
+      "title": "Compteur d'alertes",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "Open",
+          "label": "Ouvertes",
+          "description": "Nombre d'alertes ouvertes.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "Resolved",
+          "label": "Résolues",
+          "description": "Nombre d'alertes résolues.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "Snoozed",
+          "label": "En pause",
+          "description": "Nombre d'alertes en pause.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "atera",
+      "name": "Atera",
+      "title": "Atera RMM",
+      "iconUrl": "https://techbagfrontend.s3-ap-south-1.amazonaws.com/logos/7ZfnqQvGCcYnFxVLfw3aZP.png",
+      "iconClass": "fa-solid fa-shield-halved",
+      "color": "#ffc0d6",
+      "tags": [
+        "rmm",
+        "monitoring",
+        "it"
+      ],
+      "categories": [
+        "IT"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Atera",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "apiKey",
+            "label": "Clé API",
+            "description": "Clé API Atera.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "atera_customer_create",
+      "name": "ateraCustomerCreate",
+      "schemaVersion": 2,
+      "title": "Créer un client",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Atera",
+      "providerKey": "atera",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:atera_customer"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un nouveau client dans Atera.",
+      "args": {
+        "title": "Créer un client",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "CustomerName",
+            "label": "Nom du client",
+            "description": "Nom du client.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "Domain",
+            "label": "Domaine",
+            "description": "Domaine web du client.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "Address",
+            "label": "Adresse",
+            "description": "Adresse postale.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "City",
+            "label": "Ville",
+            "description": "Ville.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "State",
+            "label": "Province/État",
+            "description": "Province ou état.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "Country",
+            "label": "Pays",
+            "description": "Pays.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "Phone",
+            "label": "Téléphone",
+            "description": "Numéro de téléphone.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "Notes",
+            "label": "Notes",
+            "description": "Notes.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Clients",
+      "icon": "fa-solid fa-square-plus",
+      "group": "Clients",
+      "tags": [
+        "création",
+        "atera"
+      ]
+    },
+    {
+      "key": "atera_customer_get",
+      "name": "ateraCustomerGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un client",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Atera",
+      "providerKey": "atera",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:atera_customer"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère un client par son ID.",
+      "args": {
+        "title": "Récupérer un client",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "customerId",
+            "label": "ID client",
+            "description": "Identifiant du client.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Clients",
+      "icon": "fa-solid fa-eye",
+      "group": "Clients",
+      "tags": [
+        "lecture",
+        "atera"
+      ]
+    },
+    {
+      "key": "atera_customer_update",
+      "name": "ateraCustomerUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier un client",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Atera",
+      "providerKey": "atera",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:atera_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Modifie un client existant dans Atera.",
+      "args": {
+        "title": "Modifier un client",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "customerId",
+            "label": "ID client",
+            "description": "Identifiant du client.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "CustomerName",
+            "label": "Nom du client",
+            "description": "Nouveau nom du client.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "Domain",
+            "label": "Domaine",
+            "description": "Domaine web.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "Address",
+            "label": "Adresse",
+            "description": "Adresse postale.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "City",
+            "label": "Ville",
+            "description": "Ville.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "State",
+            "label": "Province/État",
+            "description": "Province ou état.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "Country",
+            "label": "Pays",
+            "description": "Pays.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "Phone",
+            "label": "Téléphone",
+            "description": "Numéro de téléphone.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "Notes",
+            "label": "Notes",
+            "description": "Notes.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Clients",
+      "icon": "fa-solid fa-pen-to-square",
+      "group": "Clients",
+      "tags": [
+        "mise-à-jour",
+        "atera"
+      ]
+    },
+    {
+      "key": "atera_customer_delete",
+      "name": "ateraCustomerDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un client",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Atera",
+      "providerKey": "atera",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:atera_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Supprime un client par son ID.",
+      "args": {
+        "title": "Supprimer un client",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "customerId",
+            "label": "ID client",
+            "description": "Identifiant du client.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Clients",
+      "icon": "fa-solid fa-trash",
+      "group": "Clients",
+      "tags": [
+        "suppression",
+        "atera"
+      ]
+    },
+    {
+      "key": "atera_customers_list",
+      "name": "ateraCustomersList",
+      "schemaVersion": 2,
+      "title": "Lister les clients",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Atera",
+      "providerKey": "atera",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:atera_customers"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère la liste des clients Atera.",
+      "args": {
+        "title": "Lister les clients",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "page",
+            "label": "Page",
+            "description": "Index de la page (défaut : 1).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "itemsInPage",
+            "label": "Éléments par page",
+            "description": "Nombre d'éléments par page (défaut : 20, max : 50).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Clients",
+      "icon": "fa-solid fa-list",
+      "group": "Clients",
+      "tags": [
+        "liste",
+        "atera"
+      ]
+    },
+    {
+      "key": "atera_customer_search",
+      "name": "ateraCustomerSearch",
+      "schemaVersion": 2,
+      "title": "Rechercher des clients",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Atera",
+      "providerKey": "atera",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:atera_customer_search_results"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Recherche des clients par nom, domaine ou autre champ. Parcourt toutes les pages et filtre côté serveur.",
+      "args": {
+        "title": "Rechercher des clients",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "search",
+            "label": "Recherche",
+            "description": "Texte ou expression régulière à rechercher.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "select",
+            "key": "searchField",
+            "label": "Champ de recherche",
+            "description": "Dans quel champ chercher.",
+            "options": [
+              {
+                "label": "Tous les champs",
+                "value": "all"
+              },
+              {
+                "label": "Nom du client",
+                "value": "CustomerName"
+              },
+              {
+                "label": "Domaine",
+                "value": "Domain"
+              },
+              {
+                "label": "Adresse",
+                "value": "Address"
+              },
+              {
+                "label": "Ville",
+                "value": "City"
+              },
+              {
+                "label": "Téléphone",
+                "value": "Phone"
+              },
+              {
+                "label": "Notes",
+                "value": "Notes"
+              }
+            ],
+            "default": "all",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          },
+          {
+            "type": "select",
+            "key": "matchMode",
+            "label": "Mode de recherche",
+            "description": "Contient (insensible à la casse) ou expression régulière.",
+            "options": [
+              {
+                "label": "Contient",
+                "value": "contains"
+              },
+              {
+                "label": "Regex",
+                "value": "regex"
+              }
+            ],
+            "default": "contains",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Clients",
+      "icon": "fa-solid fa-magnifying-glass",
+      "group": "Clients",
+      "tags": [
+        "recherche",
+        "filtre",
+        "atera"
+      ]
+    },
+    {
+      "key": "atera_customer_find",
+      "name": "ateraCustomerFind",
+      "schemaVersion": 2,
+      "title": "Trouver un client",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Atera",
+      "providerKey": "atera",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:atera_customer_find_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Trouve le premier client correspondant à la recherche. Parcourt les pages jusqu'à trouver une correspondance.",
+      "args": {
+        "title": "Trouver un client",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "search",
+            "label": "Recherche",
+            "description": "Texte ou expression régulière à rechercher.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "select",
+            "key": "searchField",
+            "label": "Champ de recherche",
+            "description": "Dans quel champ chercher.",
+            "options": [
+              {
+                "label": "Tous les champs",
+                "value": "all"
+              },
+              {
+                "label": "Nom du client",
+                "value": "CustomerName"
+              },
+              {
+                "label": "Domaine",
+                "value": "Domain"
+              },
+              {
+                "label": "Adresse",
+                "value": "Address"
+              },
+              {
+                "label": "Ville",
+                "value": "City"
+              },
+              {
+                "label": "Téléphone",
+                "value": "Phone"
+              },
+              {
+                "label": "Notes",
+                "value": "Notes"
+              }
+            ],
+            "default": "all",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          },
+          {
+            "type": "select",
+            "key": "matchMode",
+            "label": "Mode de recherche",
+            "description": "Contient (insensible à la casse) ou expression régulière.",
+            "options": [
+              {
+                "label": "Contient",
+                "value": "contains"
+              },
+              {
+                "label": "Regex",
+                "value": "regex"
+              }
+            ],
+            "default": "contains",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Clients",
+      "icon": "fa-solid fa-magnifying-glass",
+      "group": "Clients",
+      "tags": [
+        "recherche",
+        "filtre",
+        "atera"
+      ]
+    },
+    {
+      "key": "atera_contact_create",
+      "name": "ateraContactCreate",
+      "schemaVersion": 2,
+      "title": "Créer un contact",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Atera",
+      "providerKey": "atera",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:atera_contact"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un nouveau contact dans Atera.",
+      "args": {
+        "title": "Créer un contact",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "Email",
+            "label": "Email",
+            "description": "Adresse e-mail du contact.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "CustomerID",
+            "label": "ID client",
+            "description": "Identifiant du client associé.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "CustomerName",
+            "label": "Nom du client",
+            "description": "Nom du client (alternatif à l'ID).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "Firstname",
+            "label": "Prénom",
+            "description": "Prénom du contact.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "Lastname",
+            "label": "Nom",
+            "description": "Nom de famille du contact.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "JobTitle",
+            "label": "Titre du poste",
+            "description": "Titre du poste.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "Phone",
+            "label": "Téléphone",
+            "description": "Numéro de téléphone.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Contacts",
+      "icon": "fa-solid fa-square-plus",
+      "group": "Contacts",
+      "tags": [
+        "création",
+        "atera"
+      ]
+    },
+    {
+      "key": "atera_contact_get",
+      "name": "ateraContactGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un contact",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Atera",
+      "providerKey": "atera",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:atera_contact"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère un contact par son ID.",
+      "args": {
+        "title": "Récupérer un contact",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "contactId",
+            "label": "ID contact",
+            "description": "Identifiant du contact.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Contacts",
+      "icon": "fa-solid fa-eye",
+      "group": "Contacts",
+      "tags": [
+        "lecture",
+        "atera"
+      ]
+    },
+    {
+      "key": "atera_contact_update",
+      "name": "ateraContactUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier un contact",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Atera",
+      "providerKey": "atera",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:atera_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Modifie un contact existant dans Atera.",
+      "args": {
+        "title": "Modifier un contact",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "contactId",
+            "label": "ID contact",
+            "description": "Identifiant du contact.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "Firstname",
+            "label": "Prénom",
+            "description": "Prénom.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "Lastname",
+            "label": "Nom",
+            "description": "Nom de famille.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "JobTitle",
+            "label": "Titre du poste",
+            "description": "Titre du poste.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "Phone",
+            "label": "Téléphone",
+            "description": "Numéro de téléphone.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Contacts",
+      "icon": "fa-solid fa-pen-to-square",
+      "group": "Contacts",
+      "tags": [
+        "mise-à-jour",
+        "atera"
+      ]
+    },
+    {
+      "key": "atera_contact_delete",
+      "name": "ateraContactDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un contact",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Atera",
+      "providerKey": "atera",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:atera_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Supprime un contact par son ID.",
+      "args": {
+        "title": "Supprimer un contact",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "contactId",
+            "label": "ID contact",
+            "description": "Identifiant du contact.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Contacts",
+      "icon": "fa-solid fa-trash",
+      "group": "Contacts",
+      "tags": [
+        "suppression",
+        "atera"
+      ]
+    },
+    {
+      "key": "atera_contacts_list",
+      "name": "ateraContactsList",
+      "schemaVersion": 2,
+      "title": "Lister les contacts",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Atera",
+      "providerKey": "atera",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:atera_contacts"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère la liste des contacts Atera.",
+      "args": {
+        "title": "Lister les contacts",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "page",
+            "label": "Page",
+            "description": "Index de la page (défaut : 1).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "itemsInPage",
+            "label": "Éléments par page",
+            "description": "Nombre d'éléments par page (défaut : 20, max : 50).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Contacts",
+      "icon": "fa-solid fa-list",
+      "group": "Contacts",
+      "tags": [
+        "liste",
+        "atera"
+      ]
+    },
+    {
+      "key": "atera_ticket_create",
+      "name": "ateraTicketCreate",
+      "schemaVersion": 2,
+      "title": "Créer un ticket",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Atera",
+      "providerKey": "atera",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:atera_ticket"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un nouveau ticket dans Atera.",
+      "args": {
+        "title": "Créer un ticket",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "TicketTitle",
+            "label": "Titre",
+            "description": "Titre du ticket.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "Description",
+            "label": "Description",
+            "description": "Description du ticket.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "EndUserID",
+            "label": "ID utilisateur",
+            "description": "Identifiant de l'utilisateur final.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "EndUserEmail",
+            "label": "Email utilisateur",
+            "description": "Email de l'utilisateur.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "TicketPriority",
+            "label": "Priorité",
+            "description": "Priorité (Low, Medium, High, Critical).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "TicketImpact",
+            "label": "Impact",
+            "description": "Impact (NoImpact, Minor, Major, Crisis, SiteDown, ServerIssue).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "TicketType",
+            "label": "Type",
+            "description": "Type (Incident, Problem, Request, Change).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "TicketStatus",
+            "label": "Statut",
+            "description": "Statut du ticket.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "TechnicianContactID",
+            "label": "ID technicien",
+            "description": "Identifiant du technicien.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Tickets",
+      "icon": "fa-solid fa-square-plus",
+      "group": "Tickets",
+      "tags": [
+        "création",
+        "atera"
+      ]
+    },
+    {
+      "key": "atera_ticket_get",
+      "name": "ateraTicketGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un ticket",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Atera",
+      "providerKey": "atera",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:atera_ticket"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère un ticket par son ID.",
+      "args": {
+        "title": "Récupérer un ticket",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "ticketId",
+            "label": "ID ticket",
+            "description": "Identifiant du ticket.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Tickets",
+      "icon": "fa-solid fa-eye",
+      "group": "Tickets",
+      "tags": [
+        "lecture",
+        "atera"
+      ]
+    },
+    {
+      "key": "atera_ticket_update",
+      "name": "ateraTicketUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier un ticket",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Atera",
+      "providerKey": "atera",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:atera_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Modifie un ticket existant dans Atera.",
+      "args": {
+        "title": "Modifier un ticket",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "ticketId",
+            "label": "ID ticket",
+            "description": "Identifiant du ticket.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "TicketTitle",
+            "label": "Titre",
+            "description": "Nouveau titre.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "TicketStatus",
+            "label": "Statut",
+            "description": "Nouveau statut.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "TicketPriority",
+            "label": "Priorité",
+            "description": "Priorité (Low, Medium, High, Critical).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "TicketImpact",
+            "label": "Impact",
+            "description": "Impact (NoImpact, Minor, Major, Crisis, SiteDown, ServerIssue).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "TicketType",
+            "label": "Type",
+            "description": "Type (Incident, Problem, Request, Change).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "TechnicianContactID",
+            "label": "ID technicien",
+            "description": "Identifiant du technicien.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Tickets",
+      "icon": "fa-solid fa-pen-to-square",
+      "group": "Tickets",
+      "tags": [
+        "mise-à-jour",
+        "atera"
+      ]
+    },
+    {
+      "key": "atera_ticket_delete",
+      "name": "ateraTicketDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un ticket",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Atera",
+      "providerKey": "atera",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:atera_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Supprime un ticket par son ID.",
+      "args": {
+        "title": "Supprimer un ticket",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "ticketId",
+            "label": "ID ticket",
+            "description": "Identifiant du ticket.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Tickets",
+      "icon": "fa-solid fa-trash",
+      "group": "Tickets",
+      "tags": [
+        "suppression",
+        "atera"
+      ]
+    },
+    {
+      "key": "atera_tickets_list",
+      "name": "ateraTicketsList",
+      "schemaVersion": 2,
+      "title": "Lister les tickets",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Atera",
+      "providerKey": "atera",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:atera_tickets"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère la liste des tickets Atera.",
+      "args": {
+        "title": "Lister les tickets",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "page",
+            "label": "Page",
+            "description": "Index de la page (défaut : 1).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "itemsInPage",
+            "label": "Éléments par page",
+            "description": "Nombre d'éléments par page (défaut : 20, max : 50).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "customerId",
+            "label": "ID client",
+            "description": "Filtrer par client (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "ticketStatus",
+            "label": "Statut",
+            "description": "Filtrer par statut (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Tickets",
+      "icon": "fa-solid fa-list",
+      "group": "Tickets",
+      "tags": [
+        "liste",
+        "atera"
+      ]
+    },
+    {
+      "key": "atera_ticket_add_comment",
+      "name": "ateraTicketAddComment",
+      "schemaVersion": 2,
+      "title": "Ajouter un commentaire",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Atera",
+      "providerKey": "atera",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:atera_comment_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Ajoute un commentaire à un ticket Atera.",
+      "args": {
+        "title": "Ajouter un commentaire",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "ticketId",
+            "label": "ID ticket",
+            "description": "Identifiant du ticket.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "CommentText",
+            "label": "Commentaire",
+            "description": "Texte du commentaire.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "TechnicianId",
+            "label": "ID technicien",
+            "description": "Identifiant du technicien (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "EnduserId",
+            "label": "ID utilisateur",
+            "description": "Identifiant de l'utilisateur (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "IsInternal",
+            "label": "Interne",
+            "description": "Commentaire interne (true/false).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Tickets",
+      "icon": "fa-solid fa-comment",
+      "group": "Tickets",
+      "tags": [
+        "création",
+        "atera"
+      ]
+    },
+    {
+      "key": "atera_agent_get",
+      "name": "ateraAgentGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un agent",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Atera",
+      "providerKey": "atera",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:atera_agent"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère un agent par son ID.",
+      "args": {
+        "title": "Récupérer un agent",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "agentId",
+            "label": "ID agent",
+            "description": "Identifiant de l'agent.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Agents",
+      "icon": "fa-solid fa-eye",
+      "group": "Agents",
+      "tags": [
+        "lecture",
+        "atera"
+      ]
+    },
+    {
+      "key": "atera_agents_list",
+      "name": "ateraAgentsList",
+      "schemaVersion": 2,
+      "title": "Lister les agents",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Atera",
+      "providerKey": "atera",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:atera_agents"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère la liste des agents Atera.",
+      "args": {
+        "title": "Lister les agents",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "page",
+            "label": "Page",
+            "description": "Index de la page (défaut : 1).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "itemsInPage",
+            "label": "Éléments par page",
+            "description": "Nombre d'éléments par page (défaut : 20, max : 50).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Agents",
+      "icon": "fa-solid fa-list",
+      "group": "Agents",
+      "tags": [
+        "liste",
+        "atera"
+      ]
+    },
+    {
+      "key": "atera_agent_delete",
+      "name": "ateraAgentDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un agent",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Atera",
+      "providerKey": "atera",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:atera_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Supprime un agent par son ID.",
+      "args": {
+        "title": "Supprimer un agent",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "agentId",
+            "label": "ID agent",
+            "description": "Identifiant de l'agent.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Agents",
+      "icon": "fa-solid fa-trash",
+      "group": "Agents",
+      "tags": [
+        "suppression",
+        "atera"
+      ]
+    },
+    {
+      "key": "atera_alert_get",
+      "name": "ateraAlertGet",
+      "schemaVersion": 2,
+      "title": "Récupérer une alerte",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Atera",
+      "providerKey": "atera",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:atera_alert"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère une alerte par son ID.",
+      "args": {
+        "title": "Récupérer une alerte",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "alertId",
+            "label": "ID alerte",
+            "description": "Identifiant de l'alerte.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Alertes",
+      "icon": "fa-solid fa-eye",
+      "group": "Alertes",
+      "tags": [
+        "lecture",
+        "atera"
+      ]
+    },
+    {
+      "key": "atera_alerts_list",
+      "name": "ateraAlertsList",
+      "schemaVersion": 2,
+      "title": "Lister les alertes",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Atera",
+      "providerKey": "atera",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:atera_alerts"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère la liste des alertes Atera.",
+      "args": {
+        "title": "Lister les alertes",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "page",
+            "label": "Page",
+            "description": "Index de la page (défaut : 1).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "itemsInPage",
+            "label": "Éléments par page",
+            "description": "Nombre d'éléments par page (défaut : 20, max : 50).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "alertStatus",
+            "label": "Statut",
+            "description": "Filtrer par statut (Open, Resolved, Snoozed).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Alertes",
+      "icon": "fa-solid fa-list",
+      "group": "Alertes",
+      "tags": [
+        "liste",
+        "atera"
+      ]
+    },
+    {
+      "key": "atera_alert_close",
+      "name": "ateraAlertClose",
+      "schemaVersion": 2,
+      "title": "Fermer une alerte",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Atera",
+      "providerKey": "atera",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:atera_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Résout (ferme) une alerte par son ID.",
+      "args": {
+        "title": "Fermer une alerte",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "alertId",
+            "label": "ID alerte",
+            "description": "Identifiant de l'alerte.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Alertes",
+      "icon": "fa-solid fa-circle-check",
+      "group": "Alertes",
+      "tags": [
+        "lecture",
+        "atera"
+      ]
+    },
+    {
+      "key": "atera_alerts_count",
+      "name": "ateraAlertsCount",
+      "schemaVersion": 2,
+      "title": "Compter les alertes",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Atera",
+      "providerKey": "atera",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:atera_alerts_count"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Compte les alertes Atera par statut.",
+      "args": {
+        "title": "Compter les alertes",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Alertes",
+      "icon": "fa-solid fa-hashtag",
+      "group": "Alertes",
+      "tags": [
+        "lecture",
+        "atera"
+      ]
+    },
+    {
+      "key": "atera_device_get",
+      "name": "ateraDeviceGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un appareil",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Atera",
+      "providerKey": "atera",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:atera_device"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère un appareil générique par son ID.",
+      "args": {
+        "title": "Récupérer un appareil",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "deviceId",
+            "label": "ID appareil",
+            "description": "Identifiant de l'appareil.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Appareils",
+      "icon": "fa-solid fa-eye",
+      "group": "Appareils",
+      "tags": [
+        "lecture",
+        "atera"
+      ]
+    },
+    {
+      "key": "atera_devices_list",
+      "name": "ateraDevicesList",
+      "schemaVersion": 2,
+      "title": "Lister les appareils",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Atera",
+      "providerKey": "atera",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:atera_devices"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère la liste des appareils génériques Atera.",
+      "args": {
+        "title": "Lister les appareils",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "page",
+            "label": "Page",
+            "description": "Index de la page (défaut : 1).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "itemsInPage",
+            "label": "Éléments par page",
+            "description": "Nombre d'éléments par page (défaut : 20, max : 50).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "customerId",
+            "label": "ID client",
+            "description": "Filtrer par client (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Appareils",
+      "icon": "fa-solid fa-list",
+      "group": "Appareils",
+      "tags": [
+        "liste",
+        "atera"
+      ]
+    },
+    {
+      "key": "atera_device_by_agent",
+      "name": "ateraDeviceByAgent",
+      "schemaVersion": 2,
+      "title": "Appareil par agent",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Atera",
+      "providerKey": "atera",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:atera_agents"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère les appareils liés à un agent.",
+      "args": {
+        "title": "Appareil par agent",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "customerId",
+            "label": "ID client",
+            "description": "Identifiant du client.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "page",
+            "label": "Page",
+            "description": "Index de la page.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "itemsInPage",
+            "label": "Éléments par page",
+            "description": "Nombre d'éléments par page.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Appareils",
+      "icon": "fa-solid fa-desktop",
+      "group": "Appareils",
+      "tags": [
+        "lecture",
+        "atera"
+      ]
+    },
+    {
+      "key": "atera_contract_create",
+      "name": "ateraContractCreate",
+      "schemaVersion": 2,
+      "title": "Créer un contrat",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Atera",
+      "providerKey": "atera",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:atera_contract"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un nouveau contrat dans Atera.",
+      "args": {
+        "title": "Créer un contrat",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "ContractName",
+            "label": "Nom du contrat",
+            "description": "Nom du contrat.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "CustomerID",
+            "label": "ID client",
+            "description": "Identifiant du client.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "ContractType",
+            "label": "Type",
+            "description": "Type (RetainerFlatFee, BlockHours, Hourly, RemoteMonitoring, BlockMoney, ProjectOneTimeFee, ProjectHourlyRate, OnlineBackup).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "Active",
+            "label": "Actif",
+            "description": "Contrat actif (true/false).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "date",
+            "key": "StartDate",
+            "label": "Date de début",
+            "description": "Date de début (ISO 8601).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "date",
+            "key": "EndDate",
+            "label": "Date de fin",
+            "description": "Date de fin (ISO 8601).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Contrats",
+      "icon": "fa-solid fa-square-plus",
+      "group": "Contrats",
+      "tags": [
+        "création",
+        "atera"
+      ]
+    },
+    {
+      "key": "atera_contract_get",
+      "name": "ateraContractGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un contrat",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Atera",
+      "providerKey": "atera",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:atera_contract"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère un contrat par son ID.",
+      "args": {
+        "title": "Récupérer un contrat",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "contractId",
+            "label": "ID contrat",
+            "description": "Identifiant du contrat.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Contrats",
+      "icon": "fa-solid fa-eye",
+      "group": "Contrats",
+      "tags": [
+        "lecture",
+        "atera"
+      ]
+    },
+    {
+      "key": "atera_contracts_list",
+      "name": "ateraContractsList",
+      "schemaVersion": 2,
+      "title": "Lister les contrats",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Atera",
+      "providerKey": "atera",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:atera_contracts"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère la liste des contrats Atera.",
+      "args": {
+        "title": "Lister les contrats",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "page",
+            "label": "Page",
+            "description": "Index de la page (défaut : 1).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "itemsInPage",
+            "label": "Éléments par page",
+            "description": "Nombre d'éléments par page (défaut : 20, max : 50).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Contrats",
+      "icon": "fa-solid fa-list",
+      "group": "Contrats",
+      "tags": [
+        "liste",
+        "atera"
+      ]
+    },
+    {
+      "key": "atera_contract_delete",
+      "name": "ateraContractDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un contrat",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Atera",
+      "providerKey": "atera",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:atera_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Supprime un contrat par son ID.",
+      "args": {
+        "title": "Supprimer un contrat",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "contractId",
+            "label": "ID contrat",
+            "description": "Identifiant du contrat.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Contrats",
+      "icon": "fa-solid fa-trash",
+      "group": "Contrats",
+      "tags": [
+        "suppression",
+        "atera"
+      ]
+    },
+    {
+      "key": "atera_kb_create",
+      "name": "ateraKbCreate",
+      "schemaVersion": 2,
+      "title": "Créer un article KB",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Atera",
+      "providerKey": "atera",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:atera_kb"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un nouvel article dans la base de connaissances.",
+      "args": {
+        "title": "Créer un article KB",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "KBProduct",
+            "label": "Produit",
+            "description": "Produit associé.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "KBContext",
+            "label": "Contenu",
+            "description": "Contenu de l'article.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "KBKeywords",
+            "label": "Mots-clés",
+            "description": "Mots-clés.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "KBIsPrivate",
+            "label": "Privé",
+            "description": "Article privé (true/false).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Base de connaissances",
+      "icon": "fa-solid fa-book",
+      "group": "Base de connaissances",
+      "tags": [
+        "création",
+        "atera"
+      ]
+    },
+    {
+      "key": "atera_kb_get",
+      "name": "ateraKbGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un article KB",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Atera",
+      "providerKey": "atera",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:atera_kb"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère un article de la base de connaissances par son ID.",
+      "args": {
+        "title": "Récupérer un article KB",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "kbId",
+            "label": "ID article",
+            "description": "Identifiant de l'article.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Base de connaissances",
+      "icon": "fa-solid fa-book",
+      "group": "Base de connaissances",
+      "tags": [
+        "lecture",
+        "atera"
+      ]
+    },
+    {
+      "key": "atera_kb_list",
+      "name": "ateraKbList",
+      "schemaVersion": 2,
+      "title": "Lister les articles KB",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Atera",
+      "providerKey": "atera",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:atera_kbs"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère la liste des articles de la base de connaissances.",
+      "args": {
+        "title": "Lister les articles KB",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "page",
+            "label": "Page",
+            "description": "Index de la page (défaut : 1).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "itemsInPage",
+            "label": "Éléments par page",
+            "description": "Nombre d'éléments par page (défaut : 20, max : 50).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Base de connaissances",
+      "icon": "fa-solid fa-book",
+      "group": "Base de connaissances",
+      "tags": [
+        "liste",
+        "atera"
+      ]
+    },
+    {
+      "key": "atera_department_get",
+      "name": "ateraDepartmentGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un département",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Atera",
+      "providerKey": "atera",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:atera_department"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère un département par son ID.",
+      "args": {
+        "title": "Récupérer un département",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "departmentId",
+            "label": "ID département",
+            "description": "Identifiant du département.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Départements",
+      "icon": "fa-solid fa-eye",
+      "group": "Départements",
+      "tags": [
+        "lecture",
+        "atera"
+      ]
+    },
+    {
+      "key": "atera_departments_list",
+      "name": "ateraDepartmentsList",
+      "schemaVersion": 2,
+      "title": "Lister les départements",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Atera",
+      "providerKey": "atera",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:atera_departments"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère la liste des départements Atera.",
+      "args": {
+        "title": "Lister les départements",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "page",
+            "label": "Page",
+            "description": "Index de la page (défaut : 1).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "itemsInPage",
+            "label": "Éléments par page",
+            "description": "Nombre d'éléments par page (défaut : 20, max : 50).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Départements",
+      "icon": "fa-solid fa-list",
+      "group": "Départements",
+      "tags": [
+        "liste",
+        "atera"
+      ]
+    },
+    {
+      "key": "atera_rates_get",
+      "name": "ateraRatesGet",
+      "schemaVersion": 2,
+      "title": "Lister les tarifs",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Atera",
+      "providerKey": "atera",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:atera_rates"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère la liste des produits/tarifs Atera.",
+      "args": {
+        "title": "Lister les tarifs",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "page",
+            "label": "Page",
+            "description": "Index de la page (défaut : 1).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "itemsInPage",
+            "label": "Éléments par page",
+            "description": "Nombre d'éléments par page (défaut : 20, max : 50).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Tarifs",
+      "icon": "fa-solid fa-list",
+      "group": "Tarifs",
+      "tags": [
+        "lecture",
+        "liste",
+        "atera"
+      ]
+    },
+    {
+      "key": "atera_billing_contact_get",
+      "name": "ateraBillingContactGet",
+      "schemaVersion": 2,
+      "title": "Récupérer une facture",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Atera",
+      "providerKey": "atera",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:atera_invoice"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère une facture par son numéro.",
+      "args": {
+        "title": "Récupérer une facture",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "invoiceNumber",
+            "label": "Numéro de facture",
+            "description": "Numéro de la facture.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Factures",
+      "icon": "fa-solid fa-eye",
+      "group": "Factures",
+      "tags": [
+        "lecture",
+        "atera"
+      ]
+    },
+    {
+      "key": "atera_invoice_get",
+      "name": "ateraInvoiceGet",
+      "schemaVersion": 2,
+      "title": "Lister les factures",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Atera",
+      "providerKey": "atera",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:atera_invoices"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère la liste des factures Atera.",
+      "args": {
+        "title": "Lister les factures",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "page",
+            "label": "Page",
+            "description": "Index de la page (défaut : 1).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "itemsInPage",
+            "label": "Éléments par page",
+            "description": "Nombre d'éléments par page (défaut : 20, max : 50).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Factures",
+      "icon": "fa-solid fa-list",
+      "group": "Factures",
+      "tags": [
+        "lecture",
+        "liste",
+        "atera"
+      ]
+    },
+    {
+      "key": "atera_custom_value_get",
+      "name": "ateraCustomValueGet",
+      "schemaVersion": 2,
+      "title": "Récupérer une valeur personnalisée",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Atera",
+      "providerKey": "atera",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:atera_custom_value"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère une valeur personnalisée par son ID.",
+      "args": {
+        "title": "Récupérer une valeur personnalisée",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "rowId",
+            "label": "ID valeur",
+            "description": "Identifiant de la valeur personnalisée (UUID).",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Champs personnalisés",
+      "icon": "fa-solid fa-eye",
+      "group": "Champs personnalisés",
+      "tags": [
+        "lecture",
+        "atera"
+      ]
+    },
+    {
+      "key": "atera_custom_values_list",
+      "name": "ateraCustomValuesList",
+      "schemaVersion": 2,
+      "title": "Lister les champs personnalisés",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Atera",
+      "providerKey": "atera",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:atera_custom_values"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère la liste des champs personnalisés Atera.",
+      "args": {
+        "title": "Lister les champs personnalisés",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Champs personnalisés",
+      "icon": "fa-solid fa-list",
+      "group": "Champs personnalisés",
+      "tags": [
+        "liste",
+        "atera"
+      ]
+    },
+    {
+      "key": "atera_custom_value_update",
+      "name": "ateraCustomValueUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier une valeur personnalisée",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Atera",
+      "providerKey": "atera",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:atera_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Modifie une valeur personnalisée pour un ticket.",
+      "args": {
+        "title": "Modifier une valeur personnalisée",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "ticketId",
+            "label": "ID ticket",
+            "description": "Identifiant du ticket.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "fieldName",
+            "label": "Nom du champ",
+            "description": "Nom du champ personnalisé.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "Value",
+            "label": "Valeur",
+            "description": "Nouvelle valeur.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Champs personnalisés",
+      "icon": "fa-solid fa-pen-to-square",
+      "group": "Champs personnalisés",
+      "tags": [
+        "mise-à-jour",
+        "atera"
+      ]
+    }
+  ]
+}

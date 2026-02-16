@@ -1,0 +1,1679 @@
+{
+  "repo": {
+    "name": "typeform",
+    "type": "local",
+    "label": "Typeform"
+  },
+  "variables": {
+    "tf_form": {
+      "title": "Formulaire Typeform",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du formulaire.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "title",
+          "label": "Titre",
+          "description": "Titre du formulaire.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "type",
+          "label": "Type",
+          "description": "Type du formulaire.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut (public, private).",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "language",
+          "label": "Langue",
+          "description": "Langue du formulaire.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "createdAt",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "updatedAt",
+          "label": "Date modification",
+          "description": "Date de modification.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "link",
+          "label": "Lien",
+          "description": "URL publique du formulaire.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "tf_forms": {
+      "title": "Formulaires",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 12
+          }
+        },
+        {
+          "type": "text",
+          "key": "pageCount",
+          "label": "Nombre de pages",
+          "description": "Nombre total de pages.",
+          "col": {
+            "xs": 12
+          }
+        },
+        {
+          "type": "section",
+          "title": "Formulaires",
+          "description": "Liste des formulaires",
+          "mode": "array",
+          "key": "forms",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "title",
+              "label": "Titre",
+              "description": "Titre.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "type",
+              "label": "Type",
+              "description": "Type.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "link",
+              "label": "Lien",
+              "description": "URL.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "createdAt",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "tf_response": {
+      "title": "Réponse Typeform",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "responseId",
+          "label": "ID",
+          "description": "Identifiant de la réponse.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "formId",
+          "label": "Formulaire",
+          "description": "ID du formulaire.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "landedAt",
+          "label": "Arrivée",
+          "description": "Date d'arrivée sur le formulaire.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "submittedAt",
+          "label": "Soumission",
+          "description": "Date de soumission.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "answers",
+          "label": "Réponses",
+          "description": "Réponses au format texte.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "tf_responses": {
+      "title": "Réponses",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 12
+          }
+        },
+        {
+          "type": "text",
+          "key": "pageCount",
+          "label": "Nombre de pages",
+          "description": "Nombre total de pages.",
+          "col": {
+            "xs": 12
+          }
+        },
+        {
+          "type": "section",
+          "title": "Réponses",
+          "description": "Liste des réponses",
+          "mode": "array",
+          "key": "responses",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "responseId",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "formId",
+              "label": "Formulaire",
+              "description": "Formulaire.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "landedAt",
+              "label": "Arrivée",
+              "description": "Arrivée.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "submittedAt",
+              "label": "Soumission",
+              "description": "Soumission.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "answers",
+              "label": "Réponses",
+              "description": "Réponses.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "tf_workspace": {
+      "title": "Workspace Typeform",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du workspace.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom du workspace.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "shared",
+          "label": "Partagé",
+          "description": "Workspace partagé.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "default",
+          "label": "Par défaut",
+          "description": "Workspace par défaut.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "tf_workspaces": {
+      "title": "Workspaces",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 12
+          }
+        },
+        {
+          "type": "text",
+          "key": "pageCount",
+          "label": "Nombre de pages",
+          "description": "Nombre total de pages.",
+          "col": {
+            "xs": 12
+          }
+        },
+        {
+          "type": "section",
+          "title": "Workspaces",
+          "description": "Liste des workspaces",
+          "mode": "array",
+          "key": "workspaces",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "shared",
+              "label": "Partagé",
+              "description": "Partagé.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "default",
+              "label": "Par défaut",
+              "description": "Par défaut.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "tf_theme": {
+      "title": "Thème Typeform",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du thème.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom du thème.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "font",
+          "label": "Police",
+          "description": "Police du thème.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "tf_themes": {
+      "title": "Thèmes",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 12
+          }
+        },
+        {
+          "type": "text",
+          "key": "pageCount",
+          "label": "Nombre de pages",
+          "description": "Nombre total de pages.",
+          "col": {
+            "xs": 12
+          }
+        },
+        {
+          "type": "section",
+          "title": "Thèmes",
+          "description": "Liste des thèmes",
+          "mode": "array",
+          "key": "themes",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "font",
+              "label": "Police",
+              "description": "Police.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "tf_result": {
+      "title": "Résultat",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut de l'opération.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "message",
+          "label": "Message",
+          "description": "Message de retour.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "tf_event": {
+      "title": "Événement Typeform",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "eventId",
+          "label": "ID événement",
+          "description": "Identifiant de l'événement.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "eventType",
+          "label": "Type",
+          "description": "Type d'événement.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "formId",
+          "label": "Formulaire",
+          "description": "ID du formulaire.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "responseId",
+          "label": "Réponse ID",
+          "description": "ID de la réponse.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "submittedAt",
+          "label": "Soumission",
+          "description": "Date de soumission.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "answers",
+          "label": "Réponses",
+          "description": "Réponses soumises.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "typeform",
+      "name": "Typeform",
+      "title": "Typeform",
+      "iconClass": "fa-solid fa-square-poll-horizontal",
+      "iconUrl": "https://cdn.simpleicons.org/typeform",
+      "color": "#d9d9d9",
+      "tags": [
+        "typeform",
+        "forms",
+        "survey",
+        "questionnaire"
+      ],
+      "categories": [
+        "Formulaires"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Typeform",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "personalAccessToken",
+            "label": "Personal access token",
+            "description": "Token d'accès personnel Typeform.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "secret": true
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "typeform_form_create",
+      "name": "typeformFormCreate",
+      "schemaVersion": 2,
+      "title": "Créer un formulaire",
+      "subtitle": "Formulaires",
+      "icon": "fa-solid fa-square-plus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Typeform",
+      "providerKey": "typeform",
+      "tags": [
+        "création",
+        "typeform"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:tf_form"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un nouveau formulaire Typeform.",
+      "args": {
+        "title": "Créer un formulaire",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "title",
+            "label": "Titre",
+            "description": "Titre du formulaire.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "type",
+            "label": "Type",
+            "description": "Type du formulaire (quiz, form).",
+            "col": {
+              "xs": 24
+            },
+            "default": "form"
+          },
+          {
+            "type": "text",
+            "key": "workspaceHref",
+            "label": "Workspace",
+            "description": "Lien du workspace (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Formulaires"
+    },
+    {
+      "key": "typeform_form_get",
+      "name": "typeformFormGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un formulaire",
+      "subtitle": "Formulaires",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Typeform",
+      "providerKey": "typeform",
+      "tags": [
+        "lecture",
+        "typeform"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:tf_form"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère un formulaire Typeform par son ID.",
+      "args": {
+        "title": "Récupérer un formulaire",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "formId",
+            "label": "Form ID",
+            "description": "Identifiant du formulaire.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Formulaires"
+    },
+    {
+      "key": "typeform_forms_list",
+      "name": "typeformFormsList",
+      "schemaVersion": 2,
+      "title": "Lister les formulaires",
+      "subtitle": "Formulaires",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Typeform",
+      "providerKey": "typeform",
+      "tags": [
+        "liste",
+        "typeform"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:tf_forms"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les formulaires Typeform.",
+      "args": {
+        "title": "Lister les formulaires",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "pageSize",
+            "label": "Limite",
+            "description": "Nombre de résultats par page.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "page",
+            "label": "Page",
+            "description": "Numéro de page.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "search",
+            "label": "Recherche",
+            "description": "Texte de recherche.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "workspaceId",
+            "label": "Workspace ID",
+            "description": "Filtrer par workspace.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Formulaires"
+    },
+    {
+      "key": "typeform_form_update",
+      "name": "typeformFormUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier un formulaire",
+      "subtitle": "Formulaires",
+      "icon": "fa-solid fa-pen-to-square",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Typeform",
+      "providerKey": "typeform",
+      "tags": [
+        "mise-à-jour",
+        "typeform"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:tf_form"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Met à jour un formulaire Typeform.",
+      "args": {
+        "title": "Modifier un formulaire",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "formId",
+            "label": "Form ID",
+            "description": "Identifiant du formulaire.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "title",
+            "label": "Titre",
+            "description": "Nouveau titre.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "type",
+            "label": "Type",
+            "description": "Nouveau type.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Formulaires"
+    },
+    {
+      "key": "typeform_form_delete",
+      "name": "typeformFormDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un formulaire",
+      "subtitle": "Formulaires",
+      "icon": "fa-solid fa-trash",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Typeform",
+      "providerKey": "typeform",
+      "tags": [
+        "suppression",
+        "typeform"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:tf_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Supprime un formulaire Typeform.",
+      "args": {
+        "title": "Supprimer un formulaire",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "formId",
+            "label": "Form ID",
+            "description": "Identifiant du formulaire.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Formulaires"
+    },
+    {
+      "key": "typeform_responses_list",
+      "name": "typeformResponsesList",
+      "schemaVersion": 2,
+      "title": "Lister les réponses",
+      "subtitle": "Réponses",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Typeform",
+      "providerKey": "typeform",
+      "tags": [
+        "liste",
+        "typeform"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:tf_responses"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les réponses d'un formulaire.",
+      "args": {
+        "title": "Lister les réponses",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "formId",
+            "label": "Form ID",
+            "description": "Identifiant du formulaire.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "pageSize",
+            "label": "Limite",
+            "description": "Nombre de résultats par page.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "since",
+            "label": "Depuis",
+            "description": "Date de début (ISO 8601).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "until",
+            "label": "Jusqu'à",
+            "description": "Date de fin (ISO 8601).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "after",
+            "label": "Après",
+            "description": "Token de pagination.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Réponses"
+    },
+    {
+      "key": "typeform_response_get",
+      "name": "typeformResponseGet",
+      "schemaVersion": 2,
+      "title": "Récupérer une réponse",
+      "subtitle": "Réponses",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Typeform",
+      "providerKey": "typeform",
+      "tags": [
+        "lecture",
+        "typeform"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:tf_response"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère une réponse spécifique.",
+      "args": {
+        "title": "Récupérer une réponse",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "formId",
+            "label": "Form ID",
+            "description": "Identifiant du formulaire.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "responseId",
+            "label": "Response ID",
+            "description": "Identifiant de la réponse.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Réponses"
+    },
+    {
+      "key": "typeform_response_delete",
+      "name": "typeformResponseDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer une réponse",
+      "subtitle": "Réponses",
+      "icon": "fa-solid fa-trash",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Typeform",
+      "providerKey": "typeform",
+      "tags": [
+        "suppression",
+        "typeform"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:tf_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Supprime une réponse d'un formulaire.",
+      "args": {
+        "title": "Supprimer une réponse",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "formId",
+            "label": "Form ID",
+            "description": "Identifiant du formulaire.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "responseId",
+            "label": "Response ID",
+            "description": "Identifiant de la réponse.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Réponses"
+    },
+    {
+      "key": "typeform_workspaces_list",
+      "name": "typeformWorkspacesList",
+      "schemaVersion": 2,
+      "title": "Lister les workspaces",
+      "subtitle": "Espaces de travail",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Typeform",
+      "providerKey": "typeform",
+      "tags": [
+        "liste",
+        "typeform"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:tf_workspaces"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les workspaces Typeform.",
+      "args": {
+        "title": "Lister les workspaces",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "pageSize",
+            "label": "Limite",
+            "description": "Nombre de résultats par page.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "page",
+            "label": "Page",
+            "description": "Numéro de page.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "search",
+            "label": "Recherche",
+            "description": "Texte de recherche.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Espaces de travail"
+    },
+    {
+      "key": "typeform_workspace_get",
+      "name": "typeformWorkspaceGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un workspace",
+      "subtitle": "Espaces de travail",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Typeform",
+      "providerKey": "typeform",
+      "tags": [
+        "lecture",
+        "typeform"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:tf_workspace"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère un workspace par son ID.",
+      "args": {
+        "title": "Récupérer un workspace",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "workspaceId",
+            "label": "Workspace ID",
+            "description": "Identifiant du workspace.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Espaces de travail"
+    },
+    {
+      "key": "typeform_themes_list",
+      "name": "typeformThemesList",
+      "schemaVersion": 2,
+      "title": "Lister les thèmes",
+      "subtitle": "Thèmes",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Typeform",
+      "providerKey": "typeform",
+      "tags": [
+        "liste",
+        "typeform"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:tf_themes"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les thèmes Typeform disponibles.",
+      "args": {
+        "title": "Lister les thèmes",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "pageSize",
+            "label": "Limite",
+            "description": "Nombre de résultats par page.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "page",
+            "label": "Page",
+            "description": "Numéro de page.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Thèmes"
+    },
+    {
+      "key": "typeform_images_list",
+      "name": "typeformImagesList",
+      "schemaVersion": 2,
+      "title": "Lister les images",
+      "subtitle": "Images",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Typeform",
+      "providerKey": "typeform",
+      "tags": [
+        "liste",
+        "typeform"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:tf_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les images du compte Typeform.",
+      "args": {
+        "title": "Lister les images",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Images"
+    },
+    {
+      "key": "typeform_image_upload",
+      "name": "typeformImageUpload",
+      "schemaVersion": 2,
+      "title": "Téléverser une image",
+      "subtitle": "Images",
+      "icon": "fa-solid fa-file-arrow-up",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Typeform",
+      "providerKey": "typeform",
+      "tags": [
+        "téléversement",
+        "typeform"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:tf_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Téléverse une image dans le compte Typeform.",
+      "args": {
+        "title": "Téléverser une image",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "url",
+            "label": "URL image",
+            "description": "URL de l'image à téléverser.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "fileName",
+            "label": "Nom fichier",
+            "description": "Nom du fichier image.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Images"
+    },
+    {
+      "key": "typeform_webhook_event",
+      "name": "typeformWebhookEvent",
+      "schemaVersion": 2,
+      "title": "Événement webhook",
+      "subtitle": "Événements",
+      "icon": "fa-solid fa-bolt",
+      "type": "event",
+      "nodeKind": "event",
+      "category": "Typeform",
+      "providerKey": "typeform",
+      "tags": [
+        "événement",
+        "typeform"
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:tf_event"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Déclenché lors de la soumission d'un formulaire Typeform.",
+      "args": {
+        "title": "Événement webhook",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Événements"
+    }
+  ]
+}

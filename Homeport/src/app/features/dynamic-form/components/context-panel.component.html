@@ -1,193 +1,140 @@
-<ng-template #ctxTitle>
-  <div class="card-title">
-    <span class="t">Palette & Contexte</span>
-    <span class="s">Navigation & Contrôles</span>
-  </div>
-</ng-template>
-<nz-card [nzTitle]="ctxTitle" nzSize="small" class="card">
-  <!-- Apple-like compact toolbar: icon-first with hints -->
-  <div class="icon-toolbar" role="toolbar" aria-label="Actions du builder">
-    <button nz-button nzShape="circle" nzType="default" nzSize="small" nz-tooltip nzTooltipTitle="Paramètres du formulaire"
-            (click)="selectFormSettings.emit()" aria-label="Form Settings">
-      <i class="fa-solid fa-sliders"></i>
-    </button>
-    <span class="sep"></span>
-    <button nz-button nzShape="circle" nzType="default" nzSize="small" nz-tooltip nzTooltipTitle="Ajouter une étape"
-            (click)="addStep.emit()" aria-label="Ajouter une étape">
-      <i class="fa-solid fa-list-ol"></i>
-    </button>
-    <button nz-button nzShape="circle" nzType="default" nzSize="small" nz-tooltip nzTooltipTitle="Ajouter une section"
-            (click)="addSection.emit()" [disabled]="!canAddSectionBtn" aria-label="Ajouter une section">
-      <i class="fa-solid fa-layer-group"></i>
-    </button>
-    <button nz-button nzShape="circle" nzType="default" nzSize="small" nz-tooltip nzTooltipTitle="Ajouter une section (répétable)"
-            (click)="addSectionArray.emit()" [disabled]="!canAddSectionBtn" aria-label="Ajouter une section répétable">
-      <i class="fa-solid fa-boxes-stacked"></i>
-    </button>
-    <button nz-button nzShape="circle" nzType="default" nzSize="small" nz-tooltip nzTooltipTitle="Ajouter un champ"
-            (click)="addField.emit()" [disabled]="!canAddFieldBtn" aria-label="Ajouter un champ">
-      <i class="fa-solid fa-square-plus"></i>
-    </button>
-  </div>
-
-  <div class="sub-header">
-    <div class="card-title">
-      <span class="t">Structure</span>
-      <span class="s">Étapes / Sections / Champs</span>
+<nz-card nzSize="small" class="card">
+  <ng-container *ngIf="activeTab === 'structure'">
+    <div class="sub-header">
+      <div class="card-title">
+        <span class="t">Structure</span>
+        <span class="s">Étapes / Sections / Champs</span>
+      </div>
     </div>
-  </div>
-  <div class="tree">
-    <nz-tree [nzData]="treeNodes" nzBlockNode [nzDraggable]="true"
-             (nzOnDrop)="onTreeDrop($event)"
-             (nzClick)="onTreeClick($event)"
-             [nzSelectedKeys]="treeSelectedKeys"
-             (nzExpandChange)="onTreeExpand($event)">
-      <ng-template #nzTreeTemplate="" nzTreeTemplate let-node>
-        <!-- Root -->
-        <span *ngIf="node.key==='root'; else notRoot"
-              (contextmenu)="openTreeMenu($event, menuRoot, node.key)"
-              class="tree-node-label" style="display:block">{{ node.title }}</span>
-        <ng-template #notRoot>
-          <!-- Step -->
-          <span *ngIf="node.key.startsWith('step:') && !node.isLeaf; else notStep"
-                (contextmenu)="openTreeMenu($event, menuStep, node.key)"
-                class="tree-node-label" style="display:block">{{ node.title }}</span>
-          <ng-template #notStep>
-            <!-- Section (any non-leaf that is not step/root) -->
-            <span *ngIf="!node.isLeaf; else leafField"
-                  (contextmenu)="openTreeMenu($event, menuSection, node.key)"
-                  class="tree-node-label" style="display:block">{{ node.title }}</span>
-          </ng-template>
-          <!-- Field -->
-          <ng-template #leafField>
-            <span (contextmenu)="openTreeMenu($event, menuField, node.key)"
-                  class="tree-node-label" style="display:block">{{ node.title }}</span>
+    <div class="tree">
+      <nz-tree [nzData]="treeNodes" nzBlockNode [nzDraggable]="true"
+               (nzOnDrop)="onTreeDrop($event)"
+               (nzClick)="onTreeClick($event)"
+               [nzSelectedKeys]="treeSelectedKeys"
+               (nzExpandChange)="onTreeExpand($event)">
+        <ng-template #nzTreeTemplate="" nzTreeTemplate let-node>
+          <!-- Root -->
+          <span *ngIf="node.key==='root'; else notRoot"
+                (contextmenu)="openTreeMenu($event, menuRoot, node.key)"
+                class="tree-node-label">
+            <i class="tree-node-icon" [ngClass]="iconForNode(node)"></i>
+            <span class="tree-node-text">{{ node.title }}</span>
+          </span>
+          <ng-template #notRoot>
+            <!-- Step -->
+            <span *ngIf="node.key.startsWith('step:') && !node.isLeaf; else notStep"
+                  (contextmenu)="openTreeMenu($event, menuStep, node.key)"
+                  class="tree-node-label">
+              <i class="tree-node-icon" [ngClass]="iconForNode(node)"></i>
+              <span class="tree-node-text">{{ node.title }}</span>
+            </span>
+            <ng-template #notStep>
+              <!-- Section (any non-leaf that is not step/root) -->
+              <span *ngIf="!node.isLeaf; else leafField"
+                    (contextmenu)="openTreeMenu($event, menuSection, node.key)"
+                    class="tree-node-label">
+                <i class="tree-node-icon" [ngClass]="iconForNode(node)"></i>
+                <span class="tree-node-text">{{ node.title }}</span>
+              </span>
+            </ng-template>
+            <!-- Field -->
+            <ng-template #leafField>
+              <span (contextmenu)="openTreeMenu($event, menuField, node.key)"
+                    class="tree-node-label">
+                <i class="tree-node-icon" [ngClass]="iconForNode(node)"></i>
+                <span class="tree-node-text">{{ node.title }}</span>
+              </span>
+            </ng-template>
           </ng-template>
         </ng-template>
-      </ng-template>
-    </nz-tree>
+      </nz-tree>
 
-    <!-- Menus contextuels -->
-    <nz-dropdown-menu #menuStep="nzDropdownMenu">
-      <ul nz-menu>
-        <li nz-menu-item (click)="onCtxStepAddSection()">+ Section</li>
-        <li nz-menu-item (click)="onCtxStepAddSectionArray()">+ Section Array</li>
-        <li nz-menu-item (click)="onCtxStepAddField()">+ Field (étape)</li>
-        <li nz-menu-divider></li>
-        <li nz-menu-item (click)="onCtxStepAddFieldTyped('text')">+ Text</li>
-        <li nz-menu-item (click)="onCtxStepAddFieldTyped('textarea')">+ Textarea</li>
-        <li nz-menu-item (click)="onCtxStepAddFieldTyped('number')">+ Number</li>
-        <li nz-menu-item (click)="onCtxStepAddFieldTyped('date')">+ Date</li>
-        <li nz-menu-item (click)="onCtxStepAddFieldTyped('select')">+ Select</li>
-        <li nz-menu-item (click)="onCtxStepAddFieldTyped('radio')">+ Radio</li>
-        <li nz-menu-item (click)="onCtxStepAddFieldTyped('checkbox')">+ Checkbox</li>
-        <li nz-menu-item (click)="onCtxStepAddFieldTyped('textblock')">+ Textblock</li>
-        <li nz-menu-item nzDanger (click)="onCtxStepDelete()">Supprimer l'étape</li>
-      </ul>
-    </nz-dropdown-menu>
-    <nz-dropdown-menu #menuSection="nzDropdownMenu">
-      <ul nz-menu>
-        <li nz-menu-item (click)="onCtxSectionAddSection()">+ Section</li>
-        <li nz-menu-item (click)="onCtxSectionAddSectionArray()">+ Section Array</li>
-        <li nz-menu-item (click)="onCtxSectionAddField()">+ Field</li>
-        <li nz-menu-divider></li>
-        <li nz-menu-item (click)="onCtxSectionDuplicate()">Dupliquer</li>
-        <li nz-menu-item (click)="onCtxSectionInsertBefore()">Insérer une section avant</li>
-        <li nz-menu-item (click)="onCtxSectionInsertAfter()">Insérer une section après</li>
-        <li nz-menu-item (click)="onCtxSectionAddFieldTyped('text')">+ Text</li>
-        <li nz-menu-item (click)="onCtxSectionAddFieldTyped('textarea')">+ Textarea</li>
-        <li nz-menu-item (click)="onCtxSectionAddFieldTyped('number')">+ Number</li>
-        <li nz-menu-item (click)="onCtxSectionAddFieldTyped('date')">+ Date</li>
-        <li nz-menu-item (click)="onCtxSectionAddFieldTyped('select')">+ Select</li>
-        <li nz-menu-item (click)="onCtxSectionAddFieldTyped('radio')">+ Radio</li>
-        <li nz-menu-item (click)="onCtxSectionAddFieldTyped('checkbox')">+ Checkbox</li>
-        <li nz-menu-item (click)="onCtxSectionAddFieldTyped('textblock')">+ Textblock</li>
-        <li nz-menu-item nzDanger (click)="onCtxSectionDelete()">Supprimer</li>
-      </ul>
-    </nz-dropdown-menu>
-    <nz-dropdown-menu #menuField="nzDropdownMenu">
-      <ul nz-menu>
-        <li nz-menu-item (click)="onCtxFieldDuplicate()">Dupliquer</li>
-        <li nz-menu-item (click)="onCtxFieldInsertBefore()">Insérer un field avant</li>
-        <li nz-menu-item (click)="onCtxFieldInsertAfter()">Insérer un field après</li>
-        <li nz-menu-item nzDanger (click)="onCtxFieldDelete()">Supprimer</li>
-      </ul>
-    </nz-dropdown-menu>
-    <nz-dropdown-menu #menuRoot="nzDropdownMenu">
-      <ul nz-menu>
-        <li nz-menu-item (click)="onCtxAddStep()">+ Step</li>
-        <li nz-menu-item (click)="onCtxAddSectionRoot()" [nzDisabled]="stepsMode">+ Section (racine)</li>
-        <li nz-menu-item (click)="onCtxAddSectionRootArray()" [nzDisabled]="stepsMode">+ Section Array (racine)</li>
-        <li nz-menu-item (click)="onCtxAddFieldRoot()" [nzDisabled]="stepsMode">+ Field (racine)</li>
-        <li nz-menu-divider></li>
-        <li nz-menu-item (click)="onCtxAddFieldRootTyped('text')" [nzDisabled]="stepsMode">+ Text (racine)</li>
-        <li nz-menu-item (click)="onCtxAddFieldRootTyped('textarea')" [nzDisabled]="stepsMode">+ Textarea (racine)</li>
-        <li nz-menu-item (click)="onCtxAddFieldRootTyped('number')" [nzDisabled]="stepsMode">+ Number (racine)</li>
-        <li nz-menu-item (click)="onCtxAddFieldRootTyped('date')" [nzDisabled]="stepsMode">+ Date (racine)</li>
-        <li nz-menu-item (click)="onCtxAddFieldRootTyped('select')" [nzDisabled]="stepsMode">+ Select (racine)</li>
-        <li nz-menu-item (click)="onCtxAddFieldRootTyped('radio')" [nzDisabled]="stepsMode">+ Radio (racine)</li>
-        <li nz-menu-item (click)="onCtxAddFieldRootTyped('checkbox')" [nzDisabled]="stepsMode">+ Checkbox (racine)</li>
-        <li nz-menu-item (click)="onCtxAddFieldRootTyped('textblock')" [nzDisabled]="stepsMode">+ Textblock (racine)</li>
-      </ul>
-    </nz-dropdown-menu>
-  </div>
+      <!-- Menus contextuels -->
+      <nz-dropdown-menu #menuStep="nzDropdownMenu">
+        <ul nz-menu>
+          <li nz-menu-item (click)="onCtxStepAddSection()">+ Section</li>
+          <li nz-menu-item (click)="onCtxStepAddSectionArray()">+ Section Array</li>
+          <li nz-menu-item (click)="onCtxStepAddField()">+ Field (étape)</li>
+          <li nz-menu-divider></li>
+          <li nz-menu-item (click)="onCtxStepAddFieldTyped('text')">+ Text</li>
+          <li nz-menu-item (click)="onCtxStepAddFieldTyped('textarea')">+ Textarea</li>
+          <li nz-menu-item (click)="onCtxStepAddFieldTyped('number')">+ Number</li>
+          <li nz-menu-item (click)="onCtxStepAddFieldTyped('date')">+ Date</li>
+          <li nz-menu-item (click)="onCtxStepAddFieldTyped('cron')">+ Cron</li>
+          <li nz-menu-item (click)="onCtxStepAddFieldTyped('select')">+ Select</li>
+          <li nz-menu-item (click)="onCtxStepAddFieldTyped('radio')">+ Radio</li>
+          <li nz-menu-item (click)="onCtxStepAddFieldTyped('checkbox')">+ Checkbox</li>
+          <li nz-menu-item (click)="onCtxStepAddFieldTyped('textblock')">+ Textblock</li>
+          <li nz-menu-item nzDanger (click)="onCtxStepDelete()">Supprimer l'étape</li>
+        </ul>
+      </nz-dropdown-menu>
+      <nz-dropdown-menu #menuSection="nzDropdownMenu">
+        <ul nz-menu>
+          <li nz-menu-item (click)="onCtxSectionAddSection()">+ Section</li>
+          <li nz-menu-item (click)="onCtxSectionAddSectionArray()">+ Section Array</li>
+          <li nz-menu-item (click)="onCtxSectionAddField()">+ Field</li>
+          <li nz-menu-divider></li>
+          <li nz-menu-item (click)="onCtxSectionDuplicate()">Dupliquer</li>
+          <li nz-menu-item (click)="onCtxSectionInsertBefore()">Insérer une section avant</li>
+          <li nz-menu-item (click)="onCtxSectionInsertAfter()">Insérer une section après</li>
+          <li nz-menu-item (click)="onCtxSectionAddFieldTyped('text')">+ Text</li>
+          <li nz-menu-item (click)="onCtxSectionAddFieldTyped('textarea')">+ Textarea</li>
+          <li nz-menu-item (click)="onCtxSectionAddFieldTyped('number')">+ Number</li>
+          <li nz-menu-item (click)="onCtxSectionAddFieldTyped('date')">+ Date</li>
+          <li nz-menu-item (click)="onCtxSectionAddFieldTyped('cron')">+ Cron</li>
+          <li nz-menu-item (click)="onCtxSectionAddFieldTyped('select')">+ Select</li>
+          <li nz-menu-item (click)="onCtxSectionAddFieldTyped('radio')">+ Radio</li>
+          <li nz-menu-item (click)="onCtxSectionAddFieldTyped('checkbox')">+ Checkbox</li>
+          <li nz-menu-item (click)="onCtxSectionAddFieldTyped('textblock')">+ Textblock</li>
+          <li nz-menu-item nzDanger (click)="onCtxSectionDelete()">Supprimer</li>
+        </ul>
+      </nz-dropdown-menu>
+      <nz-dropdown-menu #menuField="nzDropdownMenu">
+        <ul nz-menu>
+          <li nz-menu-item (click)="onCtxFieldDuplicate()">Dupliquer</li>
+          <li nz-menu-item (click)="onCtxFieldInsertBefore()">Insérer un field avant</li>
+          <li nz-menu-item (click)="onCtxFieldInsertAfter()">Insérer un field après</li>
+          <li nz-menu-item nzDanger (click)="onCtxFieldDelete()">Supprimer</li>
+        </ul>
+      </nz-dropdown-menu>
+      <nz-dropdown-menu #menuRoot="nzDropdownMenu">
+        <ul nz-menu>
+          <li nz-menu-item (click)="onCtxAddStep()">+ Step</li>
+          <li nz-menu-item (click)="onCtxAddSectionRoot()" [nzDisabled]="stepsMode">+ Section (racine)</li>
+          <li nz-menu-item (click)="onCtxAddSectionRootArray()" [nzDisabled]="stepsMode">+ Section Array (racine)</li>
+          <li nz-menu-item (click)="onCtxAddFieldRoot()" [nzDisabled]="stepsMode">+ Field (racine)</li>
+          <li nz-menu-divider></li>
+          <li nz-menu-item (click)="onCtxAddFieldRootTyped('text')" [nzDisabled]="stepsMode">+ Text (racine)</li>
+          <li nz-menu-item (click)="onCtxAddFieldRootTyped('textarea')" [nzDisabled]="stepsMode">+ Textarea (racine)</li>
+          <li nz-menu-item (click)="onCtxAddFieldRootTyped('number')" [nzDisabled]="stepsMode">+ Number (racine)</li>
+          <li nz-menu-item (click)="onCtxAddFieldRootTyped('date')" [nzDisabled]="stepsMode">+ Date (racine)</li>
+          <li nz-menu-item (click)="onCtxAddFieldRootTyped('cron')" [nzDisabled]="stepsMode">+ Cron (racine)</li>
+          <li nz-menu-item (click)="onCtxAddFieldRootTyped('select')" [nzDisabled]="stepsMode">+ Select (racine)</li>
+          <li nz-menu-item (click)="onCtxAddFieldRootTyped('radio')" [nzDisabled]="stepsMode">+ Radio (racine)</li>
+          <li nz-menu-item (click)="onCtxAddFieldRootTyped('checkbox')" [nzDisabled]="stepsMode">+ Checkbox (racine)</li>
+          <li nz-menu-item (click)="onCtxAddFieldRootTyped('textblock')" [nzDisabled]="stepsMode">+ Textblock (racine)</li>
+        </ul>
+      </nz-dropdown-menu>
+    </div>
+  </ng-container>
 
-  <div class="sub-header">
-    <div class="card-title">
-      <span class="t">Champs rapides</span>
-      <span class="s">Ajouter en un clic</span>
+  <ng-container *ngIf="activeTab === 'import'">
+    <div class="sub-header">
+      <div class="card-title">
+        <span class="t">Import / Export</span>
+        <span class="s">JSON du constructeur</span>
+      </div>
     </div>
-  </div>
-  <div class="icon-grid">
-    <button nz-button nzShape="circle" nzSize="small" nz-tooltip nzTooltipTitle="Texte"
-            (click)="quickAdd.emit('text')" [disabled]="!canQuickAddField" aria-label="Ajouter champ texte">
-      <i class="fa-solid fa-font"></i>
-    </button>
-    <button nz-button nzShape="circle" nzSize="small" nz-tooltip nzTooltipTitle="Zone de texte"
-            (click)="quickAdd.emit('textarea')" [disabled]="!canQuickAddField" aria-label="Ajouter zone de texte">
-      <i class="fa-solid fa-align-left"></i>
-    </button>
-    <button nz-button nzShape="circle" nzSize="small" nz-tooltip nzTooltipTitle="Nombre"
-            (click)="quickAdd.emit('number')" [disabled]="!canQuickAddField" aria-label="Ajouter nombre">
-      <i class="fa-solid fa-hashtag"></i>
-    </button>
-    <button nz-button nzShape="circle" nzSize="small" nz-tooltip nzTooltipTitle="Date"
-            (click)="quickAdd.emit('date')" [disabled]="!canQuickAddField" aria-label="Ajouter date">
-      <i class="fa-regular fa-calendar"></i>
-    </button>
-    <button nz-button nzShape="circle" nzSize="small" nz-tooltip nzTooltipTitle="Sélecteur"
-            (click)="quickAdd.emit('select')" [disabled]="!canQuickAddField" aria-label="Ajouter sélecteur">
-      <i class="fa-solid fa-caret-down"></i>
-    </button>
-    <button nz-button nzShape="circle" nzSize="small" nz-tooltip nzTooltipTitle="Radio"
-            (click)="quickAdd.emit('radio')" [disabled]="!canQuickAddField" aria-label="Ajouter radio">
-      <i class="fa-regular fa-circle-dot"></i>
-    </button>
-    <button nz-button nzShape="circle" nzSize="small" nz-tooltip nzTooltipTitle="Case à cocher"
-            (click)="quickAdd.emit('checkbox')" [disabled]="!canQuickAddField" aria-label="Ajouter checkbox">
-      <i class="fa-regular fa-square-check"></i>
-    </button>
-    <button nz-button nzShape="circle" nzSize="small" nz-tooltip nzTooltipTitle="Bloc de texte"
-            (click)="quickAdd.emit('textblock')" [disabled]="!canQuickAddField" aria-label="Ajouter bloc de texte">
-      <i class="fa-solid fa-paragraph"></i>
-    </button>
-  </div>
-
-  <div class="sub-header">
-    <div class="card-title">
-      <span class="t">Import / Export</span>
-      <span class="s">JSON du builder</span>
+    <div class="io">
+      <monaco-json-editor [value]="json" (valueChange)="jsonChange.emit($event)"></monaco-json-editor>
+      <div class="io-actions">
+        <button nz-button nzShape="circle" nz-tooltip nzTooltipTitle="Importer" nzSize="small" (click)="doImport.emit()" aria-label="Importer">
+          <i class="fa-solid fa-file-import"></i>
+        </button>
+        <button nz-button nzShape="circle" nz-tooltip nzTooltipTitle="Exporter" nzSize="small" (click)="doExport.emit()" aria-label="Exporter">
+          <i class="fa-solid fa-file-export"></i>
+        </button>
+      </div>
     </div>
-  </div>
-  <div class="io">
-    <monaco-json-editor [value]="json" (valueChange)="jsonChange.emit($event)"></monaco-json-editor>
-    <div class="io-actions">
-      <button nz-button nzShape="circle" nz-tooltip nzTooltipTitle="Importer" nzSize="small" (click)="doImport.emit()" aria-label="Importer">
-        <i class="fa-solid fa-file-import"></i>
-      </button>
-      <button nz-button nzShape="circle" nz-tooltip nzTooltipTitle="Exporter" nzSize="small" (click)="doExport.emit()" aria-label="Exporter">
-        <i class="fa-solid fa-file-export"></i>
-      </button>
-    </div>
-  </div>
+  </ng-container>
 </nz-card>

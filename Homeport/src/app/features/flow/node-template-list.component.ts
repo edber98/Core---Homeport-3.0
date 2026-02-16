@@ -47,9 +47,9 @@ import { auditTime } from 'rxjs/operators';
             <div class="avatar" *ngIf="!appFor(it); else appIcon">{{ (it.name || it.id) | slice:0:1 | uppercase }}</div>
             <ng-template #appIcon>
               <div class="app-icon" [style.background]="appFor(it)?.color || '#f3f4f6'">
-                <i *ngIf="appFor(it)?.iconClass" [class]="appFor(it)?.iconClass" [style.color]="fgColor(appFor(it)?.color)"></i>
-                <img *ngIf="!appFor(it)?.iconClass && appFor(it)?.iconUrl" [src]="appFor(it)?.iconUrl" alt="icon"/>
-                <img *ngIf="!appFor(it)?.iconClass && !appFor(it)?.iconUrl" [src]="simpleIconUrlWithColor(appFor(it)?.id || '', fgColor(appFor(it)?.color))" alt="icon"/>
+                <img *ngIf="appFor(it)?.iconUrl" [src]="appFor(it)?.iconUrl" alt="icon"/>
+                <i *ngIf="!appFor(it)?.iconUrl && appFor(it)?.iconClass" [class]="appFor(it)?.iconClass" [style.color]="fgColor(appFor(it)?.color)"></i>
+                <img *ngIf="!appFor(it)?.iconUrl && !appFor(it)?.iconClass" [src]="simpleIconUrlWithColor(appFor(it)?.id || '', fgColor(appFor(it)?.color))" alt="icon"/>
               </div>
             </ng-template>
           </div>
@@ -84,12 +84,14 @@ import { auditTime } from 'rxjs/operators';
     .actions { display:flex; align-items:center; gap:10px; flex-wrap: wrap; }
     .actions .search { width: 220px; max-width: 100%; border:1px solid #e5e7eb; border-radius: 8px; padding: 6px 10px; outline: none; }
     .actions .search:focus { border-color:#d1d5db; }
-    .actions .primary { background:#111; border-color:#111; }
+    .actions .primary { background:#1677ff; border-color:#1677ff; }
     .actions .primary[disabled] { background:#f3f4f6; border-color:#e5e7eb; color:#9ca3af; }
     /* Icon-only buttons: hide by default except search-action */
     .actions .icon-only { display:none; align-items:center; justify-content:center; padding: 6px 10px; }
     .actions .icon-only.search-action { display:inline-flex; }
     .actions .icon-only i { font-size: 14px; line-height: 1; }
+    .actions .icon-only.search-action:hover { border-color:#1677ff; color:#1677ff; }
+    .actions .with-text i { margin-right: 6px; }
     @media (max-width: 640px) {
       .page-header { flex-direction: column; align-items: stretch; }
       .actions { width:100%; flex-wrap: nowrap; }
@@ -117,9 +119,9 @@ import { auditTime } from 'rxjs/operators';
     .chip.more { background:#eef2ff; border-color:#e0e7ff; color:#3730a3; }
     .desc { color:#6b7280; font-size: 12.5px; margin-top:4px; overflow: hidden; text-overflow: ellipsis; display:-webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
     .trailing { display:flex; align-items:center; gap:8px; }
-    .icon-btn { width:36px; height:36px; display:inline-flex; align-items:center; justify-content:center; background:#fff; color:#111; border:1px solid #e5e7eb; border-radius:12px; cursor:pointer; transition: background-color .15s ease, box-shadow .15s ease, border-color .15s ease, transform .02s ease; }
+    .icon-btn { width:36px; height:36px; display:inline-flex; align-items:center; justify-content:center; background:#fff; color:#111; border:1px solid #e5e7eb; border-radius:12px; cursor:pointer; transition: background-color .15s ease, color .15s ease, box-shadow .15s ease, border-color .15s ease, transform .02s ease; }
     .icon-btn i { font-size:16px; }
-    .icon-btn:hover { border-color:#d1d5db; background-image: var(--hp-menu-hover-bg); background-color: transparent; }
+    .icon-btn:hover:not([disabled]) { border-color:#c7dbff; background: rgba(22,119,255,0.1); color:#1677ff; box-shadow: 0 4px 12px rgba(22,119,255,0.18); transform: translateY(-1px); }
     .icon-btn:active { transform: translateY(0.5px); }
     .icon-btn[disabled] { opacity: .55; cursor: not-allowed; filter: grayscale(1); background:#f5f5f5; color:#9ca3af; border-color:#e5e7eb; }
     nz-modal .form { display:flex; flex-direction:column; gap:10px; }

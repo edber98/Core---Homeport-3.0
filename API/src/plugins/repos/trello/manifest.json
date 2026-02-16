@@ -1,0 +1,7705 @@
+{
+  "repo": {
+    "name": "trello",
+    "type": "local",
+    "label": "Trello"
+  },
+  "providers": [
+    {
+      "key": "trello",
+      "name": "Trello",
+      "title": "Trello",
+      "iconClass": "fa-brands fa-trello",
+      "iconUrl": "https://images.icon-icons.com/836/PNG/512/Trello_icon-icons.com_66775.png",
+      "color": "#f2f2f2",
+      "tags": [
+        "trello",
+        "project-management",
+        "kanban"
+      ],
+      "categories": [
+        "Project Management"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Trello",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "apiKey",
+            "label": "API Key",
+            "description": "Clé API Trello. Générer sur https://trello.com/power-ups/admin",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "apiToken",
+            "label": "API Token",
+            "description": "Token d'autorisation Trello.",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "trello_board_create",
+      "name": "trelloBoardCreate",
+      "schemaVersion": 2,
+      "title": "Créer un board",
+      "subtitle": "Board",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Boards",
+      "providerKey": "trello",
+      "icon": "fa-solid fa-plus",
+      "description": "Créer un nouveau tableau Trello",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:trello_board"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Créer un board",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom du board",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Nom du tableau.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "desc",
+            "label": "Description",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Description du tableau."
+          },
+          {
+            "type": "text",
+            "key": "idOrganization",
+            "label": "ID Organisation",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID du workspace (optionnel)."
+          },
+          {
+            "type": "checkbox",
+            "key": "defaultLists",
+            "label": "Listes par défaut",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Créer les listes par défaut (To Do, Doing, Done).",
+            "default": true
+          },
+          {
+            "type": "checkbox",
+            "key": "defaultLabels",
+            "label": "Labels par défaut",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Créer les labels par défaut.",
+            "default": true
+          },
+          {
+            "type": "select",
+            "key": "prefs_permissionLevel",
+            "label": "Niveau de permission",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "default": "private",
+            "options": [
+              {
+                "label": "private",
+                "value": "private"
+              },
+              {
+                "label": "org",
+                "value": "org"
+              },
+              {
+                "label": "public",
+                "value": "public"
+              }
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Tableaux",
+      "tags": [
+        "création",
+        "trello"
+      ]
+    },
+    {
+      "key": "trello_board_get",
+      "name": "trelloBoardGet",
+      "schemaVersion": 2,
+      "title": "Obtenir un board",
+      "subtitle": "Board",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Boards",
+      "providerKey": "trello",
+      "icon": "fa-solid fa-eye",
+      "description": "Obtenir les détails d'un tableau Trello",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:trello_board"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Obtenir un board",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "idBoard",
+            "label": "ID Board",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID du tableau Trello.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "fields",
+            "label": "Champs",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Champs à retourner (séparés par virgule).",
+            "default": "all"
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Tableaux",
+      "tags": [
+        "lecture",
+        "trello"
+      ]
+    },
+    {
+      "key": "trello_board_update",
+      "name": "trelloBoardUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier un board",
+      "subtitle": "Board",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Boards",
+      "providerKey": "trello",
+      "icon": "fa-solid fa-pen",
+      "description": "Modifier un tableau Trello existant",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:trello_board"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Modifier un board",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "idBoard",
+            "label": "ID Board",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID du tableau à modifier.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Nouveau nom du tableau."
+          },
+          {
+            "type": "textarea",
+            "key": "desc",
+            "label": "Description",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Nouvelle description."
+          },
+          {
+            "type": "checkbox",
+            "key": "closed",
+            "label": "Fermé/archivé",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Archiver le tableau.",
+            "default": false
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Tableaux",
+      "tags": [
+        "mise-à-jour",
+        "trello"
+      ]
+    },
+    {
+      "key": "trello_board_lists",
+      "name": "trelloBoardLists",
+      "schemaVersion": 2,
+      "title": "Listes d'un board",
+      "subtitle": "Board",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Boards",
+      "providerKey": "trello",
+      "icon": "fa-solid fa-list",
+      "description": "Obtenir toutes les listes d'un tableau",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:trello_lists"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Listes d'un board",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "idBoard",
+            "label": "ID Board",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID du tableau.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "key": "filter",
+            "label": "Filtre",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "default": "open",
+            "options": [
+              {
+                "label": "all",
+                "value": "all"
+              },
+              {
+                "label": "open",
+                "value": "open"
+              },
+              {
+                "label": "closed",
+                "value": "closed"
+              },
+              {
+                "label": "none",
+                "value": "none"
+              }
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          },
+          {
+            "type": "text",
+            "key": "fields",
+            "label": "Champs",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Champs à retourner.",
+            "default": "all"
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Tableaux",
+      "tags": [
+        "liste",
+        "trello"
+      ]
+    },
+    {
+      "key": "trello_board_cards",
+      "name": "trelloBoardCards",
+      "schemaVersion": 2,
+      "title": "Cartes d'un board",
+      "subtitle": "Board",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Boards",
+      "providerKey": "trello",
+      "icon": "fa-solid fa-clone",
+      "description": "Obtenir toutes les cartes d'un tableau",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:trello_cards"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Cartes d'un board",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "idBoard",
+            "label": "ID Board",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID du tableau.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "fields",
+            "label": "Champs",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Champs à retourner.",
+            "default": "all"
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Tableaux",
+      "tags": [
+        "liste",
+        "trello"
+      ]
+    },
+    {
+      "key": "trello_board_members",
+      "name": "trelloBoardMembers",
+      "schemaVersion": 2,
+      "title": "Membres d'un board",
+      "subtitle": "Board",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Boards",
+      "providerKey": "trello",
+      "icon": "fa-solid fa-users",
+      "description": "Obtenir les membres d'un tableau",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:trello_members"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Membres d'un board",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "idBoard",
+            "label": "ID Board",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID du tableau.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "fields",
+            "label": "Champs",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Champs à retourner.",
+            "default": "all"
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Tableaux",
+      "tags": [
+        "liste",
+        "trello"
+      ]
+    },
+    {
+      "key": "trello_board_labels",
+      "name": "trelloBoardLabels",
+      "schemaVersion": 2,
+      "title": "Labels d'un board",
+      "subtitle": "Board",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Boards",
+      "providerKey": "trello",
+      "icon": "fa-solid fa-tags",
+      "description": "Obtenir les labels d'un tableau",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:trello_labels"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Labels d'un board",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "idBoard",
+            "label": "ID Board",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID du tableau.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "fields",
+            "label": "Champs",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Champs à retourner.",
+            "default": "all"
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Nombre maximum de labels.",
+            "default": 50
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Tableaux",
+      "tags": [
+        "liste",
+        "trello"
+      ]
+    },
+    {
+      "key": "trello_card_create",
+      "name": "trelloCardCreate",
+      "schemaVersion": 2,
+      "title": "Créer une carte",
+      "subtitle": "Card",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Cards",
+      "providerKey": "trello",
+      "icon": "fa-solid fa-plus",
+      "description": "Créer une nouvelle carte Trello",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:trello_card"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Créer une carte",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "idList",
+            "label": "ID Liste",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID de la liste ou créer la carte.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Nom de la carte.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "desc",
+            "label": "Description",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Description de la carte."
+          },
+          {
+            "type": "text",
+            "key": "pos",
+            "label": "Position",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Position: top, bottom, ou un nombre.",
+            "default": "bottom"
+          },
+          {
+            "type": "date",
+            "key": "due",
+            "label": "Date d'échéance",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Date d'échéance (ISO 8601)."
+          },
+          {
+            "type": "checkbox",
+            "key": "dueComplete",
+            "label": "Échéance complétée",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Marquer l'échéance comme complétée.",
+            "default": false
+          },
+          {
+            "type": "text",
+            "key": "idMembers",
+            "label": "IDs Membres",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "IDs des membres (séparés par virgule)."
+          },
+          {
+            "type": "text",
+            "key": "idLabels",
+            "label": "IDs Labels",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "IDs des labels (séparés par virgule)."
+          },
+          {
+            "type": "text",
+            "key": "urlSource",
+            "label": "URL Source",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "URL à attacher a la carte."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Cartes",
+      "tags": [
+        "création",
+        "trello"
+      ]
+    },
+    {
+      "key": "trello_card_get",
+      "name": "trelloCardGet",
+      "schemaVersion": 2,
+      "title": "Obtenir une carte",
+      "subtitle": "Card",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Cards",
+      "providerKey": "trello",
+      "icon": "fa-solid fa-eye",
+      "description": "Obtenir les détails d'une carte",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:trello_card"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Obtenir une carte",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "idCard",
+            "label": "ID Carte",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID de la carte.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "fields",
+            "label": "Champs",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Champs à retourner.",
+            "default": "all"
+          },
+          {
+            "type": "checkbox",
+            "key": "attachments",
+            "label": "Inclure attachments",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Inclure les pièces jointes.",
+            "default": false
+          },
+          {
+            "type": "checkbox",
+            "key": "members",
+            "label": "Inclure membres",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Inclure les membres.",
+            "default": false
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Cartes",
+      "tags": [
+        "lecture",
+        "trello"
+      ]
+    },
+    {
+      "key": "trello_card_update",
+      "name": "trelloCardUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier une carte",
+      "subtitle": "Card",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Cards",
+      "providerKey": "trello",
+      "icon": "fa-solid fa-pen",
+      "description": "Modifier une carte existante",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:trello_card"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Modifier une carte",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "idCard",
+            "label": "ID Carte",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID de la carte à modifier.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Nouveau nom de la carte."
+          },
+          {
+            "type": "textarea",
+            "key": "desc",
+            "label": "Description",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Nouvelle description."
+          },
+          {
+            "type": "checkbox",
+            "key": "closed",
+            "label": "Archivée",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Archiver/désarchiver la carte.",
+            "default": false
+          },
+          {
+            "type": "text",
+            "key": "idList",
+            "label": "ID Liste",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Déplacer vers cette liste."
+          },
+          {
+            "type": "text",
+            "key": "idBoard",
+            "label": "ID Board",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Déplacer vers ce tableau."
+          },
+          {
+            "type": "text",
+            "key": "pos",
+            "label": "Position",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Nouvelle position."
+          },
+          {
+            "type": "date",
+            "key": "due",
+            "label": "Date d'échéance",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Nouvelle date d'échéance (ISO 8601)."
+          },
+          {
+            "type": "checkbox",
+            "key": "dueComplete",
+            "label": "Échéance complétée",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "default": false
+          },
+          {
+            "type": "text",
+            "key": "idMembers",
+            "label": "IDs Membres",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "IDs des membres (séparés par virgule)."
+          },
+          {
+            "type": "text",
+            "key": "idLabels",
+            "label": "IDs Labels",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "IDs des labels (séparés par virgule)."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Cartes",
+      "tags": [
+        "mise-à-jour",
+        "trello"
+      ]
+    },
+    {
+      "key": "trello_card_delete",
+      "name": "trelloCardDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer une carte",
+      "subtitle": "Card",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Cards",
+      "providerKey": "trello",
+      "icon": "fa-solid fa-trash",
+      "description": "Supprimer une carte définitivement",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:trello_ok"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Supprimer une carte",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "idCard",
+            "label": "ID Carte",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID de la carte à supprimer.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Cartes",
+      "tags": [
+        "suppression",
+        "trello"
+      ]
+    },
+    {
+      "key": "trello_card_move",
+      "name": "trelloCardMove",
+      "schemaVersion": 2,
+      "title": "Déplacer une carte",
+      "subtitle": "Card",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Cards",
+      "providerKey": "trello",
+      "icon": "fa-solid fa-arrows-alt",
+      "description": "Déplacer une carte vers une autre liste",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:trello_card"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Déplacer une carte",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "idCard",
+            "label": "ID Carte",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID de la carte à déplacer.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "idList",
+            "label": "ID Liste destination",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID de la liste de destination.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "idBoard",
+            "label": "ID Board destination",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID du board de destination (si different)."
+          },
+          {
+            "type": "text",
+            "key": "pos",
+            "label": "Position",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Position dans la liste: top, bottom, ou nombre.",
+            "default": "bottom"
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Cartes",
+      "tags": [
+        "mise-à-jour",
+        "trello"
+      ]
+    },
+    {
+      "key": "trello_card_add_comment",
+      "name": "trelloCardAddComment",
+      "schemaVersion": 2,
+      "title": "Ajouter un commentaire",
+      "subtitle": "Card",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Cards",
+      "providerKey": "trello",
+      "icon": "fa-solid fa-comment",
+      "description": "Ajouter un commentaire à une carte",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:trello_action"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Ajouter un commentaire",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "idCard",
+            "label": "ID Carte",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID de la carte.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "text",
+            "label": "Commentaire",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Texte du commentaire.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Cartes",
+      "tags": [
+        "création",
+        "trello"
+      ]
+    },
+    {
+      "key": "trello_card_add_label",
+      "name": "trelloCardAddLabel",
+      "schemaVersion": 2,
+      "title": "Ajouter un label",
+      "subtitle": "Card",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Cards",
+      "providerKey": "trello",
+      "icon": "fa-solid fa-tag",
+      "description": "Ajouter un label à une carte",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:trello_ok"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Ajouter un label",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "idCard",
+            "label": "ID Carte",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID de la carte.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "value",
+            "label": "ID Label",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID du label à ajouter.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Cartes",
+      "tags": [
+        "création",
+        "trello"
+      ]
+    },
+    {
+      "key": "trello_card_remove_label",
+      "name": "trelloCardRemoveLabel",
+      "schemaVersion": 2,
+      "title": "Retirer un label",
+      "subtitle": "Card",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Cards",
+      "providerKey": "trello",
+      "icon": "fa-solid fa-tag",
+      "description": "Retirer un label d'une carte",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:trello_ok"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Retirer un label",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "idCard",
+            "label": "ID Carte",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID de la carte.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "idLabel",
+            "label": "ID Label",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID du label à retirer.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Cartes",
+      "tags": [
+        "suppression",
+        "trello"
+      ]
+    },
+    {
+      "key": "trello_card_add_member",
+      "name": "trelloCardAddMember",
+      "schemaVersion": 2,
+      "title": "Ajouter un membre",
+      "subtitle": "Card",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Cards",
+      "providerKey": "trello",
+      "icon": "fa-solid fa-user-plus",
+      "description": "Ajouter un membre à une carte",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:trello_ok"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Ajouter un membre",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "idCard",
+            "label": "ID Carte",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID de la carte.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "value",
+            "label": "ID Membre",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID du membre à ajouter.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Cartes",
+      "tags": [
+        "création",
+        "trello"
+      ]
+    },
+    {
+      "key": "trello_card_remove_member",
+      "name": "trelloCardRemoveMember",
+      "schemaVersion": 2,
+      "title": "Retirer un membre",
+      "subtitle": "Card",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Cards",
+      "providerKey": "trello",
+      "icon": "fa-solid fa-user-minus",
+      "description": "Retirer un membre d'une carte",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:trello_ok"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Retirer un membre",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "idCard",
+            "label": "ID Carte",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID de la carte.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "idMember",
+            "label": "ID Membre",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID du membre à retirer.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Cartes",
+      "tags": [
+        "suppression",
+        "trello"
+      ]
+    },
+    {
+      "key": "trello_card_attachments",
+      "name": "trelloCardAttachments",
+      "schemaVersion": 2,
+      "title": "Attachments d'une carte",
+      "subtitle": "Card",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Cards",
+      "providerKey": "trello",
+      "icon": "fa-solid fa-paperclip",
+      "description": "Obtenir les pièces jointes d'une carte",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:trello_attachments"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Attachments d'une carte",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "idCard",
+            "label": "ID Carte",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID de la carte.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Cartes",
+      "tags": [
+        "liste",
+        "trello"
+      ]
+    },
+    {
+      "key": "trello_card_add_attachment",
+      "name": "trelloCardAddAttachment",
+      "schemaVersion": 2,
+      "title": "Ajouter un attachment",
+      "subtitle": "Card",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Cards",
+      "providerKey": "trello",
+      "icon": "fa-solid fa-paperclip",
+      "description": "Ajouter une pièce jointe à une carte",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:trello_attachment"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Ajouter un attachment",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "idCard",
+            "label": "ID Carte",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID de la carte.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Nom de la pièce jointe."
+          },
+          {
+            "type": "text",
+            "key": "url",
+            "label": "URL",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "URL du fichier à attacher.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "mimeType",
+            "label": "Type MIME",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Type MIME du fichier."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Cartes",
+      "tags": [
+        "création",
+        "trello"
+      ]
+    },
+    {
+      "key": "trello_card_checklists",
+      "name": "trelloCardChecklists",
+      "schemaVersion": 2,
+      "title": "Checklists d'une carte",
+      "subtitle": "Card",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Cards",
+      "providerKey": "trello",
+      "icon": "fa-solid fa-tasks",
+      "description": "Obtenir les checklists d'une carte",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:trello_checklists"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Checklists d'une carte",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "idCard",
+            "label": "ID Carte",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID de la carte.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Cartes",
+      "tags": [
+        "liste",
+        "trello"
+      ]
+    },
+    {
+      "key": "trello_card_add_checklist",
+      "name": "trelloCardAddChecklist",
+      "schemaVersion": 2,
+      "title": "Ajouter une checklist",
+      "subtitle": "Card",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Cards",
+      "providerKey": "trello",
+      "icon": "fa-solid fa-tasks",
+      "description": "Ajouter une checklist à une carte",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:trello_checklist"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Ajouter une checklist",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "idCard",
+            "label": "ID Carte",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID de la carte.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Nom de la checklist."
+          },
+          {
+            "type": "text",
+            "key": "idChecklistSource",
+            "label": "ID Checklist source",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID d'une checklist à copier."
+          },
+          {
+            "type": "text",
+            "key": "pos",
+            "label": "Position",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Position: top, bottom, ou nombre."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Cartes",
+      "tags": [
+        "création",
+        "trello"
+      ]
+    },
+    {
+      "key": "trello_card_actions",
+      "name": "trelloCardActions",
+      "schemaVersion": 2,
+      "title": "Actions d'une carte",
+      "subtitle": "Card",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Cards",
+      "providerKey": "trello",
+      "icon": "fa-solid fa-history",
+      "description": "Obtenir l'historique d'actions d'une carte",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:trello_actions"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Actions d'une carte",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "idCard",
+            "label": "ID Carte",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID de la carte.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "filter",
+            "label": "Filtre",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Types d'actions à filtrer (séparés par virgule)."
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Nombre maximum d'actions.",
+            "default": 50
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Cartes",
+      "tags": [
+        "liste",
+        "trello"
+      ]
+    },
+    {
+      "key": "trello_list_create",
+      "name": "trelloListCreate",
+      "schemaVersion": 2,
+      "title": "Créer une liste",
+      "subtitle": "List",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Lists",
+      "providerKey": "trello",
+      "icon": "fa-solid fa-plus",
+      "description": "Créer une nouvelle liste dans un tableau",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:trello_list"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Créer une liste",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Nom de la liste.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "idBoard",
+            "label": "ID Board",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID du tableau ou créer la liste.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "pos",
+            "label": "Position",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Position: top, bottom, ou nombre.",
+            "default": "bottom"
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Listes",
+      "tags": [
+        "création",
+        "trello"
+      ]
+    },
+    {
+      "key": "trello_list_get",
+      "name": "trelloListGet",
+      "schemaVersion": 2,
+      "title": "Obtenir une liste",
+      "subtitle": "List",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Lists",
+      "providerKey": "trello",
+      "icon": "fa-solid fa-eye",
+      "description": "Obtenir les détails d'une liste",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:trello_list"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Obtenir une liste",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "idList",
+            "label": "ID Liste",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID de la liste.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "fields",
+            "label": "Champs",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Champs à retourner.",
+            "default": "all"
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Listes",
+      "tags": [
+        "lecture",
+        "trello"
+      ]
+    },
+    {
+      "key": "trello_list_update",
+      "name": "trelloListUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier une liste",
+      "subtitle": "List",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Lists",
+      "providerKey": "trello",
+      "icon": "fa-solid fa-pen",
+      "description": "Modifier une liste existante",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:trello_list"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Modifier une liste",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "idList",
+            "label": "ID Liste",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID de la liste à modifier.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Nouveau nom de la liste."
+          },
+          {
+            "type": "checkbox",
+            "key": "closed",
+            "label": "Archivée",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Archiver/désarchiver la liste.",
+            "default": false
+          },
+          {
+            "type": "text",
+            "key": "pos",
+            "label": "Position",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Nouvelle position."
+          },
+          {
+            "type": "checkbox",
+            "key": "subscribed",
+            "label": "Abonné",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "S'abonner à la liste.",
+            "default": false
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Listes",
+      "tags": [
+        "mise-à-jour",
+        "trello"
+      ]
+    },
+    {
+      "key": "trello_list_cards",
+      "name": "trelloListCards",
+      "schemaVersion": 2,
+      "title": "Cartes d'une liste",
+      "subtitle": "List",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Lists",
+      "providerKey": "trello",
+      "icon": "fa-solid fa-clone",
+      "description": "Obtenir toutes les cartes d'une liste",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:trello_cards"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Cartes d'une liste",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "idList",
+            "label": "ID Liste",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID de la liste.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "fields",
+            "label": "Champs",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Champs à retourner.",
+            "default": "all"
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Listes",
+      "tags": [
+        "liste",
+        "trello"
+      ]
+    },
+    {
+      "key": "trello_list_archive_cards",
+      "name": "trelloListArchiveCards",
+      "schemaVersion": 2,
+      "title": "Archiver toutes les cartes",
+      "subtitle": "List",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Lists",
+      "providerKey": "trello",
+      "icon": "fa-solid fa-archive",
+      "description": "Archiver toutes les cartes d'une liste",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:trello_ok"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Archiver toutes les cartes",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "idList",
+            "label": "ID Liste",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID de la liste.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Listes",
+      "tags": [
+        "mise-à-jour",
+        "trello"
+      ]
+    },
+    {
+      "key": "trello_list_move_cards",
+      "name": "trelloListMoveCards",
+      "schemaVersion": 2,
+      "title": "Déplacer toutes les cartes",
+      "subtitle": "List",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Lists",
+      "providerKey": "trello",
+      "icon": "fa-solid fa-arrows-alt",
+      "description": "Déplacer toutes les cartes d'une liste vers un autre board",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:trello_ok"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Déplacer toutes les cartes",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "idList",
+            "label": "ID Liste",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID de la liste source.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "idBoard",
+            "label": "ID Board destination",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID du board de destination.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Listes",
+      "tags": [
+        "mise-à-jour",
+        "trello"
+      ]
+    },
+    {
+      "key": "trello_label_create",
+      "name": "trelloLabelCreate",
+      "schemaVersion": 2,
+      "title": "Créer un label",
+      "subtitle": "Label",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Labels",
+      "providerKey": "trello",
+      "icon": "fa-solid fa-plus",
+      "description": "Créer un nouveau label",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:trello_label"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Créer un label",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Nom du label.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "key": "color",
+            "label": "Couleur",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Couleur du label.",
+            "default": "green",
+            "options": [
+              {
+                "label": "green",
+                "value": "green"
+              },
+              {
+                "label": "yellow",
+                "value": "yellow"
+              },
+              {
+                "label": "orange",
+                "value": "orange"
+              },
+              {
+                "label": "red",
+                "value": "red"
+              },
+              {
+                "label": "purple",
+                "value": "purple"
+              },
+              {
+                "label": "blue",
+                "value": "blue"
+              },
+              {
+                "label": "sky",
+                "value": "sky"
+              },
+              {
+                "label": "lime",
+                "value": "lime"
+              },
+              {
+                "label": "pink",
+                "value": "pink"
+              },
+              {
+                "label": "black",
+                "value": "black"
+              },
+              {
+                "label": "null",
+                "value": "null"
+              }
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          },
+          {
+            "type": "text",
+            "key": "idBoard",
+            "label": "ID Board",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID du tableau.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Étiquettes",
+      "tags": [
+        "création",
+        "trello"
+      ]
+    },
+    {
+      "key": "trello_label_get",
+      "name": "trelloLabelGet",
+      "schemaVersion": 2,
+      "title": "Obtenir un label",
+      "subtitle": "Label",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Labels",
+      "providerKey": "trello",
+      "icon": "fa-solid fa-eye",
+      "description": "Obtenir les détails d'un label",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:trello_label"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Obtenir un label",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "idLabel",
+            "label": "ID Label",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID du label.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "fields",
+            "label": "Champs",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Champs à retourner.",
+            "default": "all"
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Étiquettes",
+      "tags": [
+        "lecture",
+        "trello"
+      ]
+    },
+    {
+      "key": "trello_label_update",
+      "name": "trelloLabelUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier un label",
+      "subtitle": "Label",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Labels",
+      "providerKey": "trello",
+      "icon": "fa-solid fa-pen",
+      "description": "Modifier un label existant",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:trello_label"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Modifier un label",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "idLabel",
+            "label": "ID Label",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID du label à modifier.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Nouveau nom du label."
+          },
+          {
+            "type": "select",
+            "key": "color",
+            "label": "Couleur",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Nouvelle couleur.",
+            "options": [
+              {
+                "label": "green",
+                "value": "green"
+              },
+              {
+                "label": "yellow",
+                "value": "yellow"
+              },
+              {
+                "label": "orange",
+                "value": "orange"
+              },
+              {
+                "label": "red",
+                "value": "red"
+              },
+              {
+                "label": "purple",
+                "value": "purple"
+              },
+              {
+                "label": "blue",
+                "value": "blue"
+              },
+              {
+                "label": "sky",
+                "value": "sky"
+              },
+              {
+                "label": "lime",
+                "value": "lime"
+              },
+              {
+                "label": "pink",
+                "value": "pink"
+              },
+              {
+                "label": "black",
+                "value": "black"
+              },
+              {
+                "label": "null",
+                "value": "null"
+              }
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Étiquettes",
+      "tags": [
+        "mise-à-jour",
+        "trello"
+      ]
+    },
+    {
+      "key": "trello_label_delete",
+      "name": "trelloLabelDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un label",
+      "subtitle": "Label",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Labels",
+      "providerKey": "trello",
+      "icon": "fa-solid fa-trash",
+      "description": "Supprimer un label",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:trello_ok"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Supprimer un label",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "idLabel",
+            "label": "ID Label",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID du label à supprimer.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Étiquettes",
+      "tags": [
+        "suppression",
+        "trello"
+      ]
+    },
+    {
+      "key": "trello_checklist_create",
+      "name": "trelloChecklistCreate",
+      "schemaVersion": 2,
+      "title": "Créer une checklist",
+      "subtitle": "Checklist",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Checklists",
+      "providerKey": "trello",
+      "icon": "fa-solid fa-plus",
+      "description": "Créer une nouvelle checklist",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:trello_checklist"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Créer une checklist",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "idCard",
+            "label": "ID Carte",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID de la carte.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Nom de la checklist.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "pos",
+            "label": "Position",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Position: top, bottom, ou nombre."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Checklists",
+      "tags": [
+        "création",
+        "trello"
+      ]
+    },
+    {
+      "key": "trello_checklist_get",
+      "name": "trelloChecklistGet",
+      "schemaVersion": 2,
+      "title": "Obtenir une checklist",
+      "subtitle": "Checklist",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Checklists",
+      "providerKey": "trello",
+      "icon": "fa-solid fa-eye",
+      "description": "Obtenir les détails d'une checklist",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:trello_checklist"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Obtenir une checklist",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "idChecklist",
+            "label": "ID Checklist",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID de la checklist.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "fields",
+            "label": "Champs",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Champs à retourner.",
+            "default": "all"
+          },
+          {
+            "type": "checkbox",
+            "key": "checkItems",
+            "label": "Inclure items",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Inclure les items de la checklist.",
+            "default": true
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Checklists",
+      "tags": [
+        "lecture",
+        "trello"
+      ]
+    },
+    {
+      "key": "trello_checklist_delete",
+      "name": "trelloChecklistDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer une checklist",
+      "subtitle": "Checklist",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Checklists",
+      "providerKey": "trello",
+      "icon": "fa-solid fa-trash",
+      "description": "Supprimer une checklist",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:trello_ok"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Supprimer une checklist",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "idChecklist",
+            "label": "ID Checklist",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID de la checklist à supprimer.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Checklists",
+      "tags": [
+        "suppression",
+        "trello"
+      ]
+    },
+    {
+      "key": "trello_checklist_items",
+      "name": "trelloChecklistItems",
+      "schemaVersion": 2,
+      "title": "Items d'une checklist",
+      "subtitle": "Checklist",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Checklists",
+      "providerKey": "trello",
+      "icon": "fa-solid fa-list-check",
+      "description": "Obtenir les items d'une checklist",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:trello_checkitems"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Items d'une checklist",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "idChecklist",
+            "label": "ID Checklist",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID de la checklist.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "fields",
+            "label": "Champs",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Champs à retourner.",
+            "default": "all"
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Checklists",
+      "tags": [
+        "liste",
+        "trello"
+      ]
+    },
+    {
+      "key": "trello_checklist_add_item",
+      "name": "trelloChecklistAddItem",
+      "schemaVersion": 2,
+      "title": "Ajouter un item",
+      "subtitle": "Checklist",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Checklists",
+      "providerKey": "trello",
+      "icon": "fa-solid fa-plus",
+      "description": "Ajouter un item à une checklist",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:trello_checkitem"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Ajouter un item",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "idChecklist",
+            "label": "ID Checklist",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID de la checklist.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Nom de l'item.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "pos",
+            "label": "Position",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Position: top, bottom, ou nombre."
+          },
+          {
+            "type": "checkbox",
+            "key": "checked",
+            "label": "Coché",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Item coché par défaut.",
+            "default": false
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Checklists",
+      "tags": [
+        "création",
+        "trello"
+      ]
+    },
+    {
+      "key": "trello_checklist_delete_item",
+      "name": "trelloChecklistDeleteItem",
+      "schemaVersion": 2,
+      "title": "Supprimer un item",
+      "subtitle": "Checklist",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Checklists",
+      "providerKey": "trello",
+      "icon": "fa-solid fa-trash",
+      "description": "Supprimer un item d'une checklist",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:trello_ok"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Supprimer un item",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "idChecklist",
+            "label": "ID Checklist",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID de la checklist.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "idCheckItem",
+            "label": "ID Item",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID de l'item à supprimer.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Checklists",
+      "tags": [
+        "suppression",
+        "trello"
+      ]
+    },
+    {
+      "key": "trello_checklist_update_item",
+      "name": "trelloChecklistUpdateItem",
+      "schemaVersion": 2,
+      "title": "Modifier un item",
+      "subtitle": "Checklist",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Checklists",
+      "providerKey": "trello",
+      "icon": "fa-solid fa-pen",
+      "description": "Modifier un item de checklist (nom, état)",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:trello_checkitem"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Modifier un item",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "idCard",
+            "label": "ID Carte",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID de la carte.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "idChecklist",
+            "label": "ID Checklist",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID de la checklist.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "idCheckItem",
+            "label": "ID Item",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID de l'item à modifier.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Nouveau nom de l'item."
+          },
+          {
+            "type": "select",
+            "key": "state",
+            "label": "État",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "État de l'item.",
+            "options": [
+              {
+                "label": "complete",
+                "value": "complete"
+              },
+              {
+                "label": "incomplete",
+                "value": "incomplete"
+              }
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          },
+          {
+            "type": "text",
+            "key": "pos",
+            "label": "Position",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Nouvelle position."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Checklists",
+      "tags": [
+        "mise-à-jour",
+        "trello"
+      ]
+    },
+    {
+      "key": "trello_member_get",
+      "name": "trelloMemberGet",
+      "schemaVersion": 2,
+      "title": "Obtenir un membre",
+      "subtitle": "Member",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Members",
+      "providerKey": "trello",
+      "icon": "fa-solid fa-user",
+      "description": "Obtenir les détails d'un membre",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:trello_member"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Obtenir un membre",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "idMember",
+            "label": "ID Membre",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID ou nom d'utilisateur du membre (\"me\" pour soi-même).",
+            "default": "me",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "fields",
+            "label": "Champs",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Champs à retourner.",
+            "default": "all"
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Membres",
+      "tags": [
+        "lecture",
+        "trello"
+      ]
+    },
+    {
+      "key": "trello_member_boards",
+      "name": "trelloMemberBoards",
+      "schemaVersion": 2,
+      "title": "Boards d'un membre",
+      "subtitle": "Member",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Members",
+      "providerKey": "trello",
+      "icon": "fa-solid fa-th-large",
+      "description": "Obtenir les tableaux d'un membre",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:trello_boards"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Boards d'un membre",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "idMember",
+            "label": "ID Membre",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID ou nom d'utilisateur du membre.",
+            "default": "me",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "key": "filter",
+            "label": "Filtre",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "default": "all",
+            "options": [
+              {
+                "label": "all",
+                "value": "all"
+              },
+              {
+                "label": "closed",
+                "value": "closed"
+              },
+              {
+                "label": "members",
+                "value": "members"
+              },
+              {
+                "label": "open",
+                "value": "open"
+              },
+              {
+                "label": "organization",
+                "value": "organization"
+              },
+              {
+                "label": "public",
+                "value": "public"
+              },
+              {
+                "label": "starred",
+                "value": "starred"
+              }
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          },
+          {
+            "type": "text",
+            "key": "fields",
+            "label": "Champs",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Champs à retourner.",
+            "default": "all"
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Membres",
+      "tags": [
+        "liste",
+        "trello"
+      ]
+    },
+    {
+      "key": "trello_member_cards",
+      "name": "trelloMemberCards",
+      "schemaVersion": 2,
+      "title": "Cartes d'un membre",
+      "subtitle": "Member",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Members",
+      "providerKey": "trello",
+      "icon": "fa-solid fa-clone",
+      "description": "Obtenir les cartes assignées à un membre",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:trello_cards"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Cartes d'un membre",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "idMember",
+            "label": "ID Membre",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID ou nom d'utilisateur du membre.",
+            "default": "me",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "fields",
+            "label": "Champs",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Champs à retourner.",
+            "default": "all"
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Membres",
+      "tags": [
+        "liste",
+        "trello"
+      ]
+    },
+    {
+      "key": "trello_member_organizations",
+      "name": "trelloMemberOrganizations",
+      "schemaVersion": 2,
+      "title": "Organisations d'un membre",
+      "subtitle": "Member",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Members",
+      "providerKey": "trello",
+      "icon": "fa-solid fa-building",
+      "description": "Obtenir les organisations d'un membre",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:trello_orgs"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Organisations d'un membre",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "idMember",
+            "label": "ID Membre",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID ou nom d'utilisateur du membre.",
+            "default": "me",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "fields",
+            "label": "Champs",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Champs à retourner.",
+            "default": "all"
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Membres",
+      "tags": [
+        "liste",
+        "trello"
+      ]
+    },
+    {
+      "key": "trello_org_get",
+      "name": "trelloOrgGet",
+      "schemaVersion": 2,
+      "title": "Obtenir une organisation",
+      "subtitle": "Organization",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Organizations",
+      "providerKey": "trello",
+      "icon": "fa-solid fa-building",
+      "description": "Obtenir les détails d'une organisation/workspace",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:trello_org"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Obtenir une organisation",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "idOrg",
+            "label": "ID Organisation",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID de l'organisation.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "fields",
+            "label": "Champs",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Champs à retourner.",
+            "default": "all"
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Organisations",
+      "tags": [
+        "lecture",
+        "trello"
+      ]
+    },
+    {
+      "key": "trello_org_boards",
+      "name": "trelloOrgBoards",
+      "schemaVersion": 2,
+      "title": "Boards d'une organisation",
+      "subtitle": "Organization",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Organizations",
+      "providerKey": "trello",
+      "icon": "fa-solid fa-th-large",
+      "description": "Obtenir les tableaux d'une organisation",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:trello_boards"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Boards d'une organisation",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "idOrg",
+            "label": "ID Organisation",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID de l'organisation.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "key": "filter",
+            "label": "Filtre",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "default": "all",
+            "options": [
+              {
+                "label": "all",
+                "value": "all"
+              },
+              {
+                "label": "open",
+                "value": "open"
+              },
+              {
+                "label": "closed",
+                "value": "closed"
+              },
+              {
+                "label": "members",
+                "value": "members"
+              },
+              {
+                "label": "organization",
+                "value": "organization"
+              },
+              {
+                "label": "public",
+                "value": "public"
+              }
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          },
+          {
+            "type": "text",
+            "key": "fields",
+            "label": "Champs",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Champs à retourner.",
+            "default": "all"
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Organisations",
+      "tags": [
+        "liste",
+        "trello"
+      ]
+    },
+    {
+      "key": "trello_org_members",
+      "name": "trelloOrgMembers",
+      "schemaVersion": 2,
+      "title": "Membres d'une organisation",
+      "subtitle": "Organization",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Organizations",
+      "providerKey": "trello",
+      "icon": "fa-solid fa-users",
+      "description": "Obtenir les membres d'une organisation",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:trello_members"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Membres d'une organisation",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "idOrg",
+            "label": "ID Organisation",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID de l'organisation.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "fields",
+            "label": "Champs",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Champs à retourner.",
+            "default": "all"
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Organisations",
+      "tags": [
+        "liste",
+        "trello"
+      ]
+    },
+    {
+      "key": "trello_search",
+      "name": "trelloSearch",
+      "schemaVersion": 2,
+      "title": "Rechercher",
+      "subtitle": "Search",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Search",
+      "providerKey": "trello",
+      "icon": "fa-solid fa-search",
+      "description": "Rechercher dans Trello (cartes, boards, membres, orgs)",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:trello_search"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Rechercher",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "query",
+            "label": "Requete",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Texte de recherche.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "idBoards",
+            "label": "IDs Boards",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Filtrer par boards (séparés par virgule, ou 'mine')."
+          },
+          {
+            "type": "text",
+            "key": "idOrganizations",
+            "label": "IDs Organisations",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Filtrer par organisations (séparés par virgule)."
+          },
+          {
+            "type": "text",
+            "key": "modelTypes",
+            "label": "Types de modèles",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Types à chercher: actions,boards,cards,members,organizations.",
+            "default": "cards"
+          },
+          {
+            "type": "number",
+            "key": "cards_limit",
+            "label": "Limite cartes",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Nombre max. de cartes.",
+            "default": 10
+          },
+          {
+            "type": "number",
+            "key": "boards_limit",
+            "label": "Limite boards",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Nombre max. de boards.",
+            "default": 10
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Recherche",
+      "tags": [
+        "recherche",
+        "trello"
+      ]
+    },
+    {
+      "key": "trello_search_members",
+      "name": "trelloSearchMembers",
+      "schemaVersion": 2,
+      "title": "Rechercher des membres",
+      "subtitle": "Search",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Search",
+      "providerKey": "trello",
+      "icon": "fa-solid fa-user-group",
+      "description": "Rechercher des membres Trello",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:trello_members"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Rechercher des membres",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "query",
+            "label": "Requete",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Texte de recherche.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Nombre max. de résultats.",
+            "default": 8
+          },
+          {
+            "type": "text",
+            "key": "idBoard",
+            "label": "ID Board",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Filtrer par board."
+          },
+          {
+            "type": "text",
+            "key": "idOrganization",
+            "label": "ID Organisation",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Filtrer par organisation."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Recherche",
+      "tags": [
+        "recherche",
+        "trello"
+      ]
+    },
+    {
+      "key": "trello_webhook_create",
+      "name": "trelloWebhookCreate",
+      "schemaVersion": 2,
+      "title": "Créer un webhook",
+      "subtitle": "Webhook",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Webhooks",
+      "providerKey": "trello",
+      "icon": "fa-solid fa-plus",
+      "description": "Créer un webhook Trello",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:trello_webhook"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Créer un webhook",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "callbackURL",
+            "label": "URL de callback",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "URL appelée lors d'un événement.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "idModel",
+            "label": "ID Modèle",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID du modèle à surveiller (board, card, etc.).",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "description",
+            "label": "Description",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Description du webhook."
+          },
+          {
+            "type": "checkbox",
+            "key": "active",
+            "label": "Actif",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Webhook actif.",
+            "default": true
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Webhooks",
+      "tags": [
+        "création",
+        "événement",
+        "trello"
+      ]
+    },
+    {
+      "key": "trello_webhook_get",
+      "name": "trelloWebhookGet",
+      "schemaVersion": 2,
+      "title": "Obtenir un webhook",
+      "subtitle": "Webhook",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Webhooks",
+      "providerKey": "trello",
+      "icon": "fa-solid fa-eye",
+      "description": "Obtenir les détails d'un webhook",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:trello_webhook"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Obtenir un webhook",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "idWebhook",
+            "label": "ID Webhook",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID du webhook.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Webhooks",
+      "tags": [
+        "lecture",
+        "événement",
+        "trello"
+      ]
+    },
+    {
+      "key": "trello_webhook_update",
+      "name": "trelloWebhookUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier un webhook",
+      "subtitle": "Webhook",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Webhooks",
+      "providerKey": "trello",
+      "icon": "fa-solid fa-pen",
+      "description": "Modifier un webhook existant",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:trello_webhook"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Modifier un webhook",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "idWebhook",
+            "label": "ID Webhook",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID du webhook à modifier.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "callbackURL",
+            "label": "URL de callback",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Nouvelle URL de callback."
+          },
+          {
+            "type": "text",
+            "key": "idModel",
+            "label": "ID Modèle",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Nouvel ID modèle."
+          },
+          {
+            "type": "text",
+            "key": "description",
+            "label": "Description",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Nouvelle description."
+          },
+          {
+            "type": "checkbox",
+            "key": "active",
+            "label": "Actif",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Webhook actif.",
+            "default": false
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Webhooks",
+      "tags": [
+        "mise-à-jour",
+        "événement",
+        "trello"
+      ]
+    },
+    {
+      "key": "trello_webhook_delete",
+      "name": "trelloWebhookDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un webhook",
+      "subtitle": "Webhook",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Webhooks",
+      "providerKey": "trello",
+      "icon": "fa-solid fa-trash",
+      "description": "Supprimer un webhook",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:trello_ok"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Supprimer un webhook",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "idWebhook",
+            "label": "ID Webhook",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID du webhook à supprimer.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Webhooks",
+      "tags": [
+        "suppression",
+        "événement",
+        "trello"
+      ]
+    },
+    {
+      "key": "trello_action_get",
+      "name": "trelloActionGet",
+      "schemaVersion": 2,
+      "title": "Obtenir une action",
+      "subtitle": "Action",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Actions",
+      "providerKey": "trello",
+      "icon": "fa-solid fa-bolt",
+      "description": "Obtenir les détails d'une action",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:trello_action"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Obtenir une action",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "idAction",
+            "label": "ID Action",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID de l'action.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "fields",
+            "label": "Champs",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Champs à retourner.",
+            "default": "all"
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Actions",
+      "tags": [
+        "lecture",
+        "trello"
+      ]
+    },
+    {
+      "key": "trello_action_delete",
+      "name": "trelloActionDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer une action",
+      "subtitle": "Action",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Actions",
+      "providerKey": "trello",
+      "icon": "fa-solid fa-trash",
+      "description": "Supprimer une action",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:trello_ok"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Supprimer une action",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "idAction",
+            "label": "ID Action",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID de l'action à supprimer.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Actions",
+      "tags": [
+        "suppression",
+        "trello"
+      ]
+    }
+  ],
+  "variables": {
+    "trello_ok": {
+      "title": "Réponse Trello",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "description": "Succès de la requête.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Status HTTP",
+          "description": "Code de statut HTTP.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "trello_board": {
+      "title": "Board Trello",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "description": "Succès de la requête.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Status HTTP",
+          "description": "Code de statut HTTP.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Data",
+          "key": "data",
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              },
+              "description": "Identifiant unique du board."
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              },
+              "description": "Nom du board."
+            },
+            {
+              "type": "textarea",
+              "key": "desc",
+              "label": "Description",
+              "col": {
+                "xs": 24
+              },
+              "description": "Description du board."
+            },
+            {
+              "type": "checkbox",
+              "key": "closed",
+              "label": "Fermé",
+              "col": {
+                "xs": 24
+              },
+              "description": "Board archivé."
+            },
+            {
+              "type": "text",
+              "key": "idOrganization",
+              "label": "ID Organisation",
+              "col": {
+                "xs": 24
+              },
+              "description": "ID du workspace."
+            },
+            {
+              "type": "text",
+              "key": "url",
+              "label": "URL",
+              "col": {
+                "xs": 24
+              },
+              "description": "URL complète du board."
+            },
+            {
+              "type": "text",
+              "key": "shortUrl",
+              "label": "URL courte",
+              "col": {
+                "xs": 24
+              },
+              "description": "URL courte du board."
+            },
+            {
+              "type": "text",
+              "key": "shortLink",
+              "label": "Lien court",
+              "col": {
+                "xs": 24
+              },
+              "description": "Code du lien court."
+            },
+            {
+              "type": "date",
+              "key": "dateLastActivity",
+              "label": "Dernière activité",
+              "col": {
+                "xs": 24
+              },
+              "description": "Date de dernière activité."
+            },
+            {
+              "type": "checkbox",
+              "key": "starred",
+              "label": "Favoris",
+              "col": {
+                "xs": 24
+              },
+              "description": "Board marqué en favori."
+            },
+            {
+              "type": "checkbox",
+              "key": "pinned",
+              "label": "Épinglé",
+              "col": {
+                "xs": 24
+              },
+              "description": "Board épinglé."
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "trello_card": {
+      "title": "Carte Trello",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "description": "Succès de la requête.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Status HTTP",
+          "description": "Code de statut HTTP.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Data",
+          "key": "data",
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              },
+              "description": "Identifiant unique de la carte."
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              },
+              "description": "Nom de la carte."
+            },
+            {
+              "type": "textarea",
+              "key": "desc",
+              "label": "Description",
+              "col": {
+                "xs": 24
+              },
+              "description": "Description de la carte."
+            },
+            {
+              "type": "checkbox",
+              "key": "closed",
+              "label": "Fermée",
+              "col": {
+                "xs": 24
+              },
+              "description": "Carte archivée."
+            },
+            {
+              "type": "text",
+              "key": "idBoard",
+              "label": "ID Board",
+              "col": {
+                "xs": 24
+              },
+              "description": "ID du board parent."
+            },
+            {
+              "type": "text",
+              "key": "idList",
+              "label": "ID Liste",
+              "col": {
+                "xs": 24
+              },
+              "description": "ID de la liste parente."
+            },
+            {
+              "type": "text",
+              "key": "pos",
+              "label": "Position",
+              "col": {
+                "xs": 24
+              },
+              "description": "Position dans la liste."
+            },
+            {
+              "type": "date",
+              "key": "due",
+              "label": "Échéance",
+              "col": {
+                "xs": 24
+              },
+              "description": "Date d'échéance."
+            },
+            {
+              "type": "checkbox",
+              "key": "dueComplete",
+              "label": "Échéance complétée",
+              "col": {
+                "xs": 24
+              },
+              "description": "Échéance marquée comme terminée."
+            },
+            {
+              "type": "text",
+              "key": "idMembers",
+              "label": "ID Membres",
+              "col": {
+                "xs": 24
+              },
+              "description": "IDs des membres assignés."
+            },
+            {
+              "type": "text",
+              "key": "idLabels",
+              "label": "ID Labels",
+              "col": {
+                "xs": 24
+              },
+              "description": "IDs des labels."
+            },
+            {
+              "type": "text",
+              "key": "url",
+              "label": "URL",
+              "col": {
+                "xs": 24
+              },
+              "description": "URL de la carte."
+            },
+            {
+              "type": "text",
+              "key": "shortUrl",
+              "label": "URL courte",
+              "col": {
+                "xs": 24
+              },
+              "description": "URL courte de la carte."
+            },
+            {
+              "type": "text",
+              "key": "shortLink",
+              "label": "Lien court",
+              "col": {
+                "xs": 24
+              },
+              "description": "Code du lien court."
+            },
+            {
+              "type": "date",
+              "key": "dateLastActivity",
+              "label": "Dernière activité",
+              "col": {
+                "xs": 24
+              },
+              "description": "Date de dernière activité."
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "trello_list": {
+      "title": "Liste Trello",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "description": "Succès de la requête.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Status HTTP",
+          "description": "Code de statut HTTP.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Data",
+          "key": "data",
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              },
+              "description": "Identifiant unique de la liste."
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              },
+              "description": "Nom de la liste."
+            },
+            {
+              "type": "checkbox",
+              "key": "closed",
+              "label": "Fermée",
+              "col": {
+                "xs": 24
+              },
+              "description": "Liste archivée."
+            },
+            {
+              "type": "text",
+              "key": "pos",
+              "label": "Position",
+              "col": {
+                "xs": 24
+              },
+              "description": "Position dans le board."
+            },
+            {
+              "type": "text",
+              "key": "idBoard",
+              "label": "ID Board",
+              "col": {
+                "xs": 24
+              },
+              "description": "ID du board parent."
+            },
+            {
+              "type": "checkbox",
+              "key": "subscribed",
+              "label": "Abonné",
+              "col": {
+                "xs": 24
+              },
+              "description": "Abonnement à la liste."
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "trello_label": {
+      "title": "Label Trello",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "description": "Succès de la requête.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Status HTTP",
+          "description": "Code de statut HTTP.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Data",
+          "key": "data",
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              },
+              "description": "Identifiant unique du label."
+            },
+            {
+              "type": "text",
+              "key": "idBoard",
+              "label": "ID Board",
+              "col": {
+                "xs": 24
+              },
+              "description": "ID du board parent."
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              },
+              "description": "Nom du label."
+            },
+            {
+              "type": "text",
+              "key": "color",
+              "label": "Couleur",
+              "col": {
+                "xs": 24
+              },
+              "description": "Couleur du label."
+            },
+            {
+              "type": "number",
+              "key": "uses",
+              "label": "Utilisations",
+              "col": {
+                "xs": 24
+              },
+              "description": "Nombre d'utilisations."
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "trello_member": {
+      "title": "Membre Trello",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "description": "Succès de la requête.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Status HTTP",
+          "description": "Code de statut HTTP.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Data",
+          "key": "data",
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              },
+              "description": "Identifiant unique du membre."
+            },
+            {
+              "type": "text",
+              "key": "fullName",
+              "label": "Nom complet",
+              "col": {
+                "xs": 24
+              },
+              "description": "Nom complet du membre."
+            },
+            {
+              "type": "text",
+              "key": "username",
+              "label": "Nom d'utilisateur",
+              "col": {
+                "xs": 24
+              },
+              "description": "Nom d'utilisateur Trello."
+            },
+            {
+              "type": "text",
+              "key": "avatarUrl",
+              "label": "Avatar URL",
+              "col": {
+                "xs": 24
+              },
+              "description": "URL de l'avatar."
+            },
+            {
+              "type": "text",
+              "key": "initials",
+              "label": "Initiales",
+              "col": {
+                "xs": 24
+              },
+              "description": "Initiales du membre."
+            },
+            {
+              "type": "text",
+              "key": "url",
+              "label": "URL",
+              "col": {
+                "xs": 24
+              },
+              "description": "URL du profil."
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "trello_checklist": {
+      "title": "Checklist Trello",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "description": "Succès de la requête.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Status HTTP",
+          "description": "Code de statut HTTP.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Data",
+          "key": "data",
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              },
+              "description": "Identifiant unique de la checklist."
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              },
+              "description": "Nom de la checklist."
+            },
+            {
+              "type": "text",
+              "key": "idBoard",
+              "label": "ID Board",
+              "col": {
+                "xs": 24
+              },
+              "description": "ID du board."
+            },
+            {
+              "type": "text",
+              "key": "idCard",
+              "label": "ID Carte",
+              "col": {
+                "xs": 24
+              },
+              "description": "ID de la carte parente."
+            },
+            {
+              "type": "text",
+              "key": "pos",
+              "label": "Position",
+              "col": {
+                "xs": 24
+              },
+              "description": "Position dans la carte."
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "trello_checkitem": {
+      "title": "Élément de checklist",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "description": "Succès de la requête.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Status HTTP",
+          "description": "Code de statut HTTP.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Data",
+          "key": "data",
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              },
+              "description": "Identifiant unique de l'élément."
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              },
+              "description": "Nom de l'élément."
+            },
+            {
+              "type": "text",
+              "key": "state",
+              "label": "État",
+              "col": {
+                "xs": 24
+              },
+              "description": "État (complete/incomplete)."
+            },
+            {
+              "type": "text",
+              "key": "pos",
+              "label": "Position",
+              "col": {
+                "xs": 24
+              },
+              "description": "Position dans la checklist."
+            },
+            {
+              "type": "text",
+              "key": "idChecklist",
+              "label": "ID Checklist",
+              "col": {
+                "xs": 24
+              },
+              "description": "ID de la checklist parente."
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "trello_org": {
+      "title": "Organisation Trello",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "description": "Succès de la requête.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Status HTTP",
+          "description": "Code de statut HTTP.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Data",
+          "key": "data",
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              },
+              "description": "Identifiant unique de l'organisation."
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              },
+              "description": "Nom technique de l'organisation."
+            },
+            {
+              "type": "text",
+              "key": "displayName",
+              "label": "Nom affiché",
+              "col": {
+                "xs": 24
+              },
+              "description": "Nom affiché de l'organisation."
+            },
+            {
+              "type": "textarea",
+              "key": "desc",
+              "label": "Description",
+              "col": {
+                "xs": 24
+              },
+              "description": "Description de l'organisation."
+            },
+            {
+              "type": "text",
+              "key": "url",
+              "label": "URL",
+              "col": {
+                "xs": 24
+              },
+              "description": "URL de l'organisation."
+            },
+            {
+              "type": "text",
+              "key": "website",
+              "label": "Site web",
+              "col": {
+                "xs": 24
+              },
+              "description": "Site web de l'organisation."
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "trello_webhook": {
+      "title": "Webhook Trello",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "description": "Succès de la requête.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Status HTTP",
+          "description": "Code de statut HTTP.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Data",
+          "key": "data",
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              },
+              "description": "Identifiant unique du webhook."
+            },
+            {
+              "type": "text",
+              "key": "description",
+              "label": "Description",
+              "col": {
+                "xs": 24
+              },
+              "description": "Description du webhook."
+            },
+            {
+              "type": "text",
+              "key": "idModel",
+              "label": "ID Modèle",
+              "col": {
+                "xs": 24
+              },
+              "description": "ID du modèle surveillé."
+            },
+            {
+              "type": "text",
+              "key": "callbackURL",
+              "label": "URL Callback",
+              "col": {
+                "xs": 24
+              },
+              "description": "URL de rappel."
+            },
+            {
+              "type": "checkbox",
+              "key": "active",
+              "label": "Actif",
+              "col": {
+                "xs": 24
+              },
+              "description": "Webhook actif."
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "trello_action": {
+      "title": "Action Trello",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "description": "Succès de la requête.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Status HTTP",
+          "description": "Code de statut HTTP.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Data",
+          "key": "data",
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              },
+              "description": "Identifiant unique de l'action."
+            },
+            {
+              "type": "text",
+              "key": "idMemberCreator",
+              "label": "ID Créateur",
+              "col": {
+                "xs": 24
+              },
+              "description": "ID du membre créateur."
+            },
+            {
+              "type": "text",
+              "key": "type",
+              "label": "Type",
+              "col": {
+                "xs": 24
+              },
+              "description": "Type d'action."
+            },
+            {
+              "type": "date",
+              "key": "date",
+              "label": "Date",
+              "col": {
+                "xs": 24
+              },
+              "description": "Date de l'action."
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "trello_attachment": {
+      "title": "Pièce jointe Trello",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "description": "Succès de la requête.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Status HTTP",
+          "description": "Code de statut HTTP.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Data",
+          "key": "data",
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              },
+              "description": "Identifiant unique de la pièce jointe."
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              },
+              "description": "Nom de la pièce jointe."
+            },
+            {
+              "type": "text",
+              "key": "url",
+              "label": "URL",
+              "col": {
+                "xs": 24
+              },
+              "description": "URL de la pièce jointe."
+            },
+            {
+              "type": "number",
+              "key": "bytes",
+              "label": "Taille",
+              "col": {
+                "xs": 24
+              },
+              "description": "Taille en octets."
+            },
+            {
+              "type": "date",
+              "key": "date",
+              "label": "Date",
+              "col": {
+                "xs": 24
+              },
+              "description": "Date d'ajout."
+            },
+            {
+              "type": "text",
+              "key": "mimeType",
+              "label": "Type MIME",
+              "col": {
+                "xs": 24
+              },
+              "description": "Type MIME du fichier."
+            },
+            {
+              "type": "checkbox",
+              "key": "isUpload",
+              "label": "Upload",
+              "col": {
+                "xs": 24
+              },
+              "description": "Fichier uploadé."
+            },
+            {
+              "type": "text",
+              "key": "pos",
+              "label": "Position",
+              "col": {
+                "xs": 24
+              },
+              "description": "Position."
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "trello_boards": {
+      "title": "Boards Trello",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "description": "Succès de la requête.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Status HTTP",
+          "description": "Code de statut HTTP.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Boards",
+          "key": "data",
+          "mode": "array",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              },
+              "description": "Identifiant unique du board."
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              },
+              "description": "Nom du board."
+            },
+            {
+              "type": "textarea",
+              "key": "desc",
+              "label": "Description",
+              "col": {
+                "xs": 24
+              },
+              "description": "Description du board."
+            },
+            {
+              "type": "checkbox",
+              "key": "closed",
+              "label": "Fermé",
+              "col": {
+                "xs": 24
+              },
+              "description": "Board archivé."
+            },
+            {
+              "type": "text",
+              "key": "idOrganization",
+              "label": "ID Organisation",
+              "col": {
+                "xs": 24
+              },
+              "description": "ID du workspace."
+            },
+            {
+              "type": "text",
+              "key": "url",
+              "label": "URL",
+              "col": {
+                "xs": 24
+              },
+              "description": "URL complète du board."
+            },
+            {
+              "type": "text",
+              "key": "shortUrl",
+              "label": "URL courte",
+              "col": {
+                "xs": 24
+              },
+              "description": "URL courte du board."
+            },
+            {
+              "type": "text",
+              "key": "shortLink",
+              "label": "Lien court",
+              "col": {
+                "xs": 24
+              },
+              "description": "Code du lien court."
+            },
+            {
+              "type": "date",
+              "key": "dateLastActivity",
+              "label": "Dernière activité",
+              "col": {
+                "xs": 24
+              },
+              "description": "Date de dernière activité."
+            },
+            {
+              "type": "checkbox",
+              "key": "starred",
+              "label": "Favoris",
+              "col": {
+                "xs": 24
+              },
+              "description": "Board marqué en favori."
+            },
+            {
+              "type": "checkbox",
+              "key": "pinned",
+              "label": "Épinglé",
+              "col": {
+                "xs": 24
+              },
+              "description": "Board épinglé."
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "trello_cards": {
+      "title": "Cartes Trello",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "description": "Succès de la requête.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Status HTTP",
+          "description": "Code de statut HTTP.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Cartes",
+          "key": "data",
+          "mode": "array",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              },
+              "description": "Identifiant unique de la carte."
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              },
+              "description": "Nom de la carte."
+            },
+            {
+              "type": "textarea",
+              "key": "desc",
+              "label": "Description",
+              "col": {
+                "xs": 24
+              },
+              "description": "Description de la carte."
+            },
+            {
+              "type": "checkbox",
+              "key": "closed",
+              "label": "Fermée",
+              "col": {
+                "xs": 24
+              },
+              "description": "Carte archivée."
+            },
+            {
+              "type": "text",
+              "key": "idBoard",
+              "label": "ID Board",
+              "col": {
+                "xs": 24
+              },
+              "description": "ID du board parent."
+            },
+            {
+              "type": "text",
+              "key": "idList",
+              "label": "ID Liste",
+              "col": {
+                "xs": 24
+              },
+              "description": "ID de la liste parente."
+            },
+            {
+              "type": "text",
+              "key": "pos",
+              "label": "Position",
+              "col": {
+                "xs": 24
+              },
+              "description": "Position dans la liste."
+            },
+            {
+              "type": "date",
+              "key": "due",
+              "label": "Échéance",
+              "col": {
+                "xs": 24
+              },
+              "description": "Date d'échéance."
+            },
+            {
+              "type": "checkbox",
+              "key": "dueComplete",
+              "label": "Échéance complétée",
+              "col": {
+                "xs": 24
+              },
+              "description": "Échéance marquée comme terminée."
+            },
+            {
+              "type": "text",
+              "key": "idMembers",
+              "label": "ID Membres",
+              "col": {
+                "xs": 24
+              },
+              "description": "IDs des membres assignés."
+            },
+            {
+              "type": "text",
+              "key": "idLabels",
+              "label": "ID Labels",
+              "col": {
+                "xs": 24
+              },
+              "description": "IDs des labels."
+            },
+            {
+              "type": "text",
+              "key": "url",
+              "label": "URL",
+              "col": {
+                "xs": 24
+              },
+              "description": "URL de la carte."
+            },
+            {
+              "type": "text",
+              "key": "shortUrl",
+              "label": "URL courte",
+              "col": {
+                "xs": 24
+              },
+              "description": "URL courte de la carte."
+            },
+            {
+              "type": "text",
+              "key": "shortLink",
+              "label": "Lien court",
+              "col": {
+                "xs": 24
+              },
+              "description": "Code du lien court."
+            },
+            {
+              "type": "date",
+              "key": "dateLastActivity",
+              "label": "Dernière activité",
+              "col": {
+                "xs": 24
+              },
+              "description": "Date de dernière activité."
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "trello_lists": {
+      "title": "Listes Trello",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "description": "Succès de la requête.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Status HTTP",
+          "description": "Code de statut HTTP.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Listes",
+          "key": "data",
+          "mode": "array",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              },
+              "description": "Identifiant unique de la liste."
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              },
+              "description": "Nom de la liste."
+            },
+            {
+              "type": "checkbox",
+              "key": "closed",
+              "label": "Fermée",
+              "col": {
+                "xs": 24
+              },
+              "description": "Liste archivée."
+            },
+            {
+              "type": "text",
+              "key": "pos",
+              "label": "Position",
+              "col": {
+                "xs": 24
+              },
+              "description": "Position dans le board."
+            },
+            {
+              "type": "text",
+              "key": "idBoard",
+              "label": "ID Board",
+              "col": {
+                "xs": 24
+              },
+              "description": "ID du board parent."
+            },
+            {
+              "type": "checkbox",
+              "key": "subscribed",
+              "label": "Abonné",
+              "col": {
+                "xs": 24
+              },
+              "description": "Abonnement à la liste."
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "trello_labels": {
+      "title": "Labels Trello",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "description": "Succès de la requête.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Status HTTP",
+          "description": "Code de statut HTTP.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Labels",
+          "key": "data",
+          "mode": "array",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              },
+              "description": "Identifiant unique du label."
+            },
+            {
+              "type": "text",
+              "key": "idBoard",
+              "label": "ID Board",
+              "col": {
+                "xs": 24
+              },
+              "description": "ID du board parent."
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              },
+              "description": "Nom du label."
+            },
+            {
+              "type": "text",
+              "key": "color",
+              "label": "Couleur",
+              "col": {
+                "xs": 24
+              },
+              "description": "Couleur du label."
+            },
+            {
+              "type": "number",
+              "key": "uses",
+              "label": "Utilisations",
+              "col": {
+                "xs": 24
+              },
+              "description": "Nombre d'utilisations."
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "trello_members": {
+      "title": "Membres Trello",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "description": "Succès de la requête.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Status HTTP",
+          "description": "Code de statut HTTP.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Membres",
+          "key": "data",
+          "mode": "array",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              },
+              "description": "Identifiant unique du membre."
+            },
+            {
+              "type": "text",
+              "key": "fullName",
+              "label": "Nom complet",
+              "col": {
+                "xs": 24
+              },
+              "description": "Nom complet du membre."
+            },
+            {
+              "type": "text",
+              "key": "username",
+              "label": "Nom d'utilisateur",
+              "col": {
+                "xs": 24
+              },
+              "description": "Nom d'utilisateur Trello."
+            },
+            {
+              "type": "text",
+              "key": "avatarUrl",
+              "label": "Avatar URL",
+              "col": {
+                "xs": 24
+              },
+              "description": "URL de l'avatar."
+            },
+            {
+              "type": "text",
+              "key": "initials",
+              "label": "Initiales",
+              "col": {
+                "xs": 24
+              },
+              "description": "Initiales du membre."
+            },
+            {
+              "type": "text",
+              "key": "url",
+              "label": "URL",
+              "col": {
+                "xs": 24
+              },
+              "description": "URL du profil."
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "trello_checklists": {
+      "title": "Checklists Trello",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "description": "Succès de la requête.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Status HTTP",
+          "description": "Code de statut HTTP.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Checklists",
+          "key": "data",
+          "mode": "array",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              },
+              "description": "Identifiant unique de la checklist."
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              },
+              "description": "Nom de la checklist."
+            },
+            {
+              "type": "text",
+              "key": "idBoard",
+              "label": "ID Board",
+              "col": {
+                "xs": 24
+              },
+              "description": "ID du board."
+            },
+            {
+              "type": "text",
+              "key": "idCard",
+              "label": "ID Carte",
+              "col": {
+                "xs": 24
+              },
+              "description": "ID de la carte parente."
+            },
+            {
+              "type": "text",
+              "key": "pos",
+              "label": "Position",
+              "col": {
+                "xs": 24
+              },
+              "description": "Position dans la carte."
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "trello_checkitems": {
+      "title": "Éléments de checklist",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "description": "Succès de la requête.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Status HTTP",
+          "description": "Code de statut HTTP.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Éléments",
+          "key": "data",
+          "mode": "array",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              },
+              "description": "Identifiant unique de l'élément."
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              },
+              "description": "Nom de l'élément."
+            },
+            {
+              "type": "text",
+              "key": "state",
+              "label": "État",
+              "col": {
+                "xs": 24
+              },
+              "description": "État (complete/incomplete)."
+            },
+            {
+              "type": "text",
+              "key": "pos",
+              "label": "Position",
+              "col": {
+                "xs": 24
+              },
+              "description": "Position dans la checklist."
+            },
+            {
+              "type": "text",
+              "key": "idChecklist",
+              "label": "ID Checklist",
+              "col": {
+                "xs": 24
+              },
+              "description": "ID de la checklist parente."
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "trello_orgs": {
+      "title": "Organisations Trello",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "description": "Succès de la requête.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Status HTTP",
+          "description": "Code de statut HTTP.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Organisations",
+          "key": "data",
+          "mode": "array",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              },
+              "description": "Identifiant unique de l'organisation."
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              },
+              "description": "Nom technique de l'organisation."
+            },
+            {
+              "type": "text",
+              "key": "displayName",
+              "label": "Nom affiché",
+              "col": {
+                "xs": 24
+              },
+              "description": "Nom affiché de l'organisation."
+            },
+            {
+              "type": "textarea",
+              "key": "desc",
+              "label": "Description",
+              "col": {
+                "xs": 24
+              },
+              "description": "Description de l'organisation."
+            },
+            {
+              "type": "text",
+              "key": "url",
+              "label": "URL",
+              "col": {
+                "xs": 24
+              },
+              "description": "URL de l'organisation."
+            },
+            {
+              "type": "text",
+              "key": "website",
+              "label": "Site web",
+              "col": {
+                "xs": 24
+              },
+              "description": "Site web de l'organisation."
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "trello_actions": {
+      "title": "Actions Trello",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "description": "Succès de la requête.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Status HTTP",
+          "description": "Code de statut HTTP.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Actions",
+          "key": "data",
+          "mode": "array",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              },
+              "description": "Identifiant unique de l'action."
+            },
+            {
+              "type": "text",
+              "key": "idMemberCreator",
+              "label": "ID Créateur",
+              "col": {
+                "xs": 24
+              },
+              "description": "ID du membre créateur."
+            },
+            {
+              "type": "text",
+              "key": "type",
+              "label": "Type",
+              "col": {
+                "xs": 24
+              },
+              "description": "Type d'action."
+            },
+            {
+              "type": "date",
+              "key": "date",
+              "label": "Date",
+              "col": {
+                "xs": 24
+              },
+              "description": "Date de l'action."
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "trello_attachments": {
+      "title": "Pièces jointes Trello",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "description": "Succès de la requête.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Status HTTP",
+          "description": "Code de statut HTTP.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Pièces jointes",
+          "key": "data",
+          "mode": "array",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              },
+              "description": "Identifiant unique de la pièce jointe."
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              },
+              "description": "Nom de la pièce jointe."
+            },
+            {
+              "type": "text",
+              "key": "url",
+              "label": "URL",
+              "col": {
+                "xs": 24
+              },
+              "description": "URL de la pièce jointe."
+            },
+            {
+              "type": "number",
+              "key": "bytes",
+              "label": "Taille",
+              "col": {
+                "xs": 24
+              },
+              "description": "Taille en octets."
+            },
+            {
+              "type": "date",
+              "key": "date",
+              "label": "Date",
+              "col": {
+                "xs": 24
+              },
+              "description": "Date d'ajout."
+            },
+            {
+              "type": "text",
+              "key": "mimeType",
+              "label": "Type MIME",
+              "col": {
+                "xs": 24
+              },
+              "description": "Type MIME du fichier."
+            },
+            {
+              "type": "checkbox",
+              "key": "isUpload",
+              "label": "Upload",
+              "col": {
+                "xs": 24
+              },
+              "description": "Fichier uploadé."
+            },
+            {
+              "type": "text",
+              "key": "pos",
+              "label": "Position",
+              "col": {
+                "xs": 24
+              },
+              "description": "Position."
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "trello_search": {
+      "title": "Résultat de recherche Trello",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "description": "Succès de la requête.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Status HTTP",
+          "description": "Code de statut HTTP.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Data",
+          "key": "data",
+          "fields": [
+            {
+              "type": "section",
+              "title": "Cartes",
+              "key": "cards",
+              "mode": "array",
+              "array": {
+                "initialItems": 0,
+                "minItems": 0
+              },
+              "fields": [
+                {
+                  "type": "text",
+                  "key": "id",
+                  "label": "ID",
+                  "col": {
+                    "xs": 24
+                  },
+                  "description": "Identifiant unique de la carte."
+                },
+                {
+                  "type": "text",
+                  "key": "name",
+                  "label": "Nom",
+                  "col": {
+                    "xs": 24
+                  },
+                  "description": "Nom de la carte."
+                },
+                {
+                  "type": "textarea",
+                  "key": "desc",
+                  "label": "Description",
+                  "col": {
+                    "xs": 24
+                  },
+                  "description": "Description de la carte."
+                },
+                {
+                  "type": "checkbox",
+                  "key": "closed",
+                  "label": "Fermée",
+                  "col": {
+                    "xs": 24
+                  },
+                  "description": "Carte archivée."
+                },
+                {
+                  "type": "text",
+                  "key": "idBoard",
+                  "label": "ID Board",
+                  "col": {
+                    "xs": 24
+                  },
+                  "description": "ID du board parent."
+                },
+                {
+                  "type": "text",
+                  "key": "idList",
+                  "label": "ID Liste",
+                  "col": {
+                    "xs": 24
+                  },
+                  "description": "ID de la liste parente."
+                },
+                {
+                  "type": "text",
+                  "key": "pos",
+                  "label": "Position",
+                  "col": {
+                    "xs": 24
+                  },
+                  "description": "Position dans la liste."
+                },
+                {
+                  "type": "date",
+                  "key": "due",
+                  "label": "Échéance",
+                  "col": {
+                    "xs": 24
+                  },
+                  "description": "Date d'échéance."
+                },
+                {
+                  "type": "checkbox",
+                  "key": "dueComplete",
+                  "label": "Échéance complétée",
+                  "col": {
+                    "xs": 24
+                  },
+                  "description": "Échéance marquée comme terminée."
+                },
+                {
+                  "type": "text",
+                  "key": "idMembers",
+                  "label": "ID Membres",
+                  "col": {
+                    "xs": 24
+                  },
+                  "description": "IDs des membres assignés."
+                },
+                {
+                  "type": "text",
+                  "key": "idLabels",
+                  "label": "ID Labels",
+                  "col": {
+                    "xs": 24
+                  },
+                  "description": "IDs des labels."
+                },
+                {
+                  "type": "text",
+                  "key": "url",
+                  "label": "URL",
+                  "col": {
+                    "xs": 24
+                  },
+                  "description": "URL de la carte."
+                },
+                {
+                  "type": "text",
+                  "key": "shortUrl",
+                  "label": "URL courte",
+                  "col": {
+                    "xs": 24
+                  },
+                  "description": "URL courte de la carte."
+                },
+                {
+                  "type": "text",
+                  "key": "shortLink",
+                  "label": "Lien court",
+                  "col": {
+                    "xs": 24
+                  },
+                  "description": "Code du lien court."
+                },
+                {
+                  "type": "date",
+                  "key": "dateLastActivity",
+                  "label": "Dernière activité",
+                  "col": {
+                    "xs": 24
+                  },
+                  "description": "Date de dernière activité."
+                }
+              ],
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "section",
+              "title": "Boards",
+              "key": "boards",
+              "mode": "array",
+              "array": {
+                "initialItems": 0,
+                "minItems": 0
+              },
+              "fields": [
+                {
+                  "type": "text",
+                  "key": "id",
+                  "label": "ID",
+                  "col": {
+                    "xs": 24
+                  },
+                  "description": "Identifiant unique du board."
+                },
+                {
+                  "type": "text",
+                  "key": "name",
+                  "label": "Nom",
+                  "col": {
+                    "xs": 24
+                  },
+                  "description": "Nom du board."
+                },
+                {
+                  "type": "textarea",
+                  "key": "desc",
+                  "label": "Description",
+                  "col": {
+                    "xs": 24
+                  },
+                  "description": "Description du board."
+                },
+                {
+                  "type": "checkbox",
+                  "key": "closed",
+                  "label": "Fermé",
+                  "col": {
+                    "xs": 24
+                  },
+                  "description": "Board archivé."
+                },
+                {
+                  "type": "text",
+                  "key": "idOrganization",
+                  "label": "ID Organisation",
+                  "col": {
+                    "xs": 24
+                  },
+                  "description": "ID du workspace."
+                },
+                {
+                  "type": "text",
+                  "key": "url",
+                  "label": "URL",
+                  "col": {
+                    "xs": 24
+                  },
+                  "description": "URL complète du board."
+                },
+                {
+                  "type": "text",
+                  "key": "shortUrl",
+                  "label": "URL courte",
+                  "col": {
+                    "xs": 24
+                  },
+                  "description": "URL courte du board."
+                },
+                {
+                  "type": "text",
+                  "key": "shortLink",
+                  "label": "Lien court",
+                  "col": {
+                    "xs": 24
+                  },
+                  "description": "Code du lien court."
+                },
+                {
+                  "type": "date",
+                  "key": "dateLastActivity",
+                  "label": "Dernière activité",
+                  "col": {
+                    "xs": 24
+                  },
+                  "description": "Date de dernière activité."
+                },
+                {
+                  "type": "checkbox",
+                  "key": "starred",
+                  "label": "Favoris",
+                  "col": {
+                    "xs": 24
+                  },
+                  "description": "Board marqué en favori."
+                },
+                {
+                  "type": "checkbox",
+                  "key": "pinned",
+                  "label": "Épinglé",
+                  "col": {
+                    "xs": 24
+                  },
+                  "description": "Board épinglé."
+                }
+              ],
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "section",
+              "title": "Organisations",
+              "key": "organizations",
+              "mode": "array",
+              "array": {
+                "initialItems": 0,
+                "minItems": 0
+              },
+              "fields": [
+                {
+                  "type": "text",
+                  "key": "id",
+                  "label": "ID",
+                  "col": {
+                    "xs": 24
+                  },
+                  "description": "Identifiant unique de l'organisation."
+                },
+                {
+                  "type": "text",
+                  "key": "name",
+                  "label": "Nom",
+                  "col": {
+                    "xs": 24
+                  },
+                  "description": "Nom technique de l'organisation."
+                },
+                {
+                  "type": "text",
+                  "key": "displayName",
+                  "label": "Nom affiché",
+                  "col": {
+                    "xs": 24
+                  },
+                  "description": "Nom affiché de l'organisation."
+                },
+                {
+                  "type": "textarea",
+                  "key": "desc",
+                  "label": "Description",
+                  "col": {
+                    "xs": 24
+                  },
+                  "description": "Description de l'organisation."
+                },
+                {
+                  "type": "text",
+                  "key": "url",
+                  "label": "URL",
+                  "col": {
+                    "xs": 24
+                  },
+                  "description": "URL de l'organisation."
+                },
+                {
+                  "type": "text",
+                  "key": "website",
+                  "label": "Site web",
+                  "col": {
+                    "xs": 24
+                  },
+                  "description": "Site web de l'organisation."
+                }
+              ],
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "section",
+              "title": "Membres",
+              "key": "members",
+              "mode": "array",
+              "array": {
+                "initialItems": 0,
+                "minItems": 0
+              },
+              "fields": [
+                {
+                  "type": "text",
+                  "key": "id",
+                  "label": "ID",
+                  "col": {
+                    "xs": 24
+                  },
+                  "description": "Identifiant unique du membre."
+                },
+                {
+                  "type": "text",
+                  "key": "fullName",
+                  "label": "Nom complet",
+                  "col": {
+                    "xs": 24
+                  },
+                  "description": "Nom complet du membre."
+                },
+                {
+                  "type": "text",
+                  "key": "username",
+                  "label": "Nom d'utilisateur",
+                  "col": {
+                    "xs": 24
+                  },
+                  "description": "Nom d'utilisateur Trello."
+                },
+                {
+                  "type": "text",
+                  "key": "avatarUrl",
+                  "label": "Avatar URL",
+                  "col": {
+                    "xs": 24
+                  },
+                  "description": "URL de l'avatar."
+                },
+                {
+                  "type": "text",
+                  "key": "initials",
+                  "label": "Initiales",
+                  "col": {
+                    "xs": 24
+                  },
+                  "description": "Initiales du membre."
+                },
+                {
+                  "type": "text",
+                  "key": "url",
+                  "label": "URL",
+                  "col": {
+                    "xs": 24
+                  },
+                  "description": "URL du profil."
+                }
+              ],
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  }
+}

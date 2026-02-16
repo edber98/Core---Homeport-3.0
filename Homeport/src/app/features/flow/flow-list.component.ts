@@ -11,10 +11,13 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
+import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { NzSwitchModule } from 'ng-zorro-antd/switch';
 import { Subscription } from 'rxjs';
 import { auditTime } from 'rxjs/operators';
 import { UiMessageService } from '../../services/ui-message.service';
+import { TriggersBackendService, TriggerStatus } from '../../services/triggers-backend.service';
 import { environment } from '../../../environments/environment';
 
 type FlowItem = { id: string; name: string; description?: string };
@@ -22,7 +25,7 @@ type FlowItem = { id: string; name: string; description?: string };
 @Component({
   selector: 'flow-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, NzModalModule, NzButtonModule, NzInputModule, NzFormModule, NzSelectModule, NzSwitchModule, NzToolTipModule, NzPopconfirmModule],
+  imports: [CommonModule, FormsModule, NzModalModule, NzButtonModule, NzInputModule, NzFormModule, NzSelectModule, NzSwitchModule, NzToolTipModule, NzPopconfirmModule, NzDropDownModule, NzMenuModule],
   template: `
   <div class="list-page">
     <div class="container">
@@ -54,24 +57,58 @@ type FlowItem = { id: string; name: string; description?: string };
 
       <div class="empty" *ngIf="!loading && !error && filtered.length===0">Aucun élément trouvé.</div>
       <div class="grid" *ngIf="!loading && !error && filtered.length>0">
-        <div class="card" *ngFor="let it of filtered" [ngClass]="{ invalid: it.invalid }">
+        <div class="card" *ngFor="let it of filtered" [ngClass]="{ invalid: it.invalid }" (dblclick)="openEditor(it)">
           <div class="leading">
             <div class="icon-badge" aria-hidden="true"><i [class]="getIcon(it)"></i></div>
           </div>
           <div class="content">
             <div class="title-row">
               <div class="name">{{ it.name }}</div>
-              <div class="mobile-dots" [attr.title]="statusLabel(it.status) + (it.enabled ? ' • activé' : ' • désactivé')">
-                <span class="dot" [ngClass]="statusClass(it.status)"></span>
-                <span class="dot" [ngClass]="it.enabled ? 'on' : 'off'"></span>
-              </div>
-              <span class="chip" *ngIf="it.status" [ngClass]="statusClass(it.status)">{{ statusLabel(it.status) }}</span>
-              <span class="chip on" *ngIf="it.enabled">Activé</span>
-              <span class="chip off" *ngIf="!it.enabled">Désactivé</span>
               <i *ngIf="it.invalid" class="fa-solid fa-triangle-exclamation warn"
                  nz-tooltip [nzTooltipTitle]="errorTooltip(it)" aria-label="Flow invalide"></i>
             </div>
             <div class="desc" *ngIf="it.description">{{ it.description }}</div>
+          </div>
+          <div class="status-col">
+            <div class="mobile-dots" [attr.title]="statusLabel(it.status) + (it.enabled ? ' • activé' : ' • désactivé')">
+              <span class="dot" [ngClass]="statusClass(it.status)"></span>
+              <span class="dot" [ngClass]="it.enabled ? 'on' : 'off'"></span>
+            </div>
+            <span class="chip" *ngIf="it.status"
+                  [ngClass]="statusClass(it.status)"
+                  nz-dropdown
+                  [nzDropdownMenu]="statusMenu"
+                  nzTrigger="click"
+                  [nzDisabled]="updatingIds.has(it.id)"
+                  (click)="$event.stopPropagation()">
+              <span class="live-dot" *ngIf="isLive(it)"></span>
+              {{ statusLabel(it.status) }}
+            </span>
+            <span class="chip trigger-chip" *ngIf="isLive(it)">
+              <i class="fa-solid fa-tower-broadcast"></i>
+              {{ triggerInfo(it)?.eventCount || 0 }} exéc.
+            </span>
+            <nz-dropdown-menu #statusMenu="nzDropdownMenu">
+              <ul nz-menu>
+                <li nz-menu-item (click)="setStatus(it, 'draft'); $event.stopPropagation()">Brouillon</li>
+                <li nz-menu-item (click)="setStatus(it, 'test'); $event.stopPropagation()">Test</li>
+                <li nz-menu-item (click)="setStatus(it, 'production'); $event.stopPropagation()">Production</li>
+              </ul>
+            </nz-dropdown-menu>
+            <span class="chip" [ngClass]="it.enabled ? 'on' : 'off'"
+                  nz-dropdown
+                  [nzDropdownMenu]="enabledMenu"
+                  nzTrigger="click"
+                  [nzDisabled]="updatingIds.has(it.id)"
+                  (click)="$event.stopPropagation()">
+              {{ it.enabled ? 'Activé' : 'Désactivé' }}
+            </span>
+            <nz-dropdown-menu #enabledMenu="nzDropdownMenu">
+              <ul nz-menu>
+                <li nz-menu-item (click)="setEnabled(it, true); $event.stopPropagation()">Activé</li>
+                <li nz-menu-item (click)="setEnabled(it, false); $event.stopPropagation()">Désactivé</li>
+              </ul>
+            </nz-dropdown-menu>
           </div>
           <div class="trailing">
             <button class="icon-btn" (click)="openEditor(it)" title="Éditeur">
@@ -80,7 +117,7 @@ type FlowItem = { id: string; name: string; description?: string };
             <button class="icon-btn" (click)="openExecutions(it)" title="Exécutions">
               <i class="fa-solid fa-circle-play"></i>
             </button>
-            <button class="icon-btn"
+            <button class="icon-btn danger"
                     nz-popconfirm
                     [nzPopconfirmTitle]="'Supprimer ' + it.name + ' ?'"
                     nzOkText="Supprimer"
@@ -97,9 +134,9 @@ type FlowItem = { id: string; name: string; description?: string };
     </div>
 
     <!-- Create modal -->
-    <nz-modal [(nzVisible)]="createVisible" nzTitle="Nouveau flow" (nzOnCancel)="closeCreate()" [nzFooter]="null">
+    <nz-modal [(nzVisible)]="createVisible" nzTitle="Nouveau flow" nzWrapClassName="create-flow-modal" (nzOnCancel)="closeCreate()" [nzFooter]="null">
       <ng-container *nzModalContent>
-        <form nz-form nzLayout="vertical">
+        <form nz-form nzLayout="vertical" (ngSubmit)="createFlow()">
           <nz-form-item>
             <nz-form-label>Titre</nz-form-label>
             <nz-form-control>
@@ -131,8 +168,8 @@ type FlowItem = { id: string; name: string; description?: string };
             </nz-form-control>
           </nz-form-item>
           <div class="modal-actions">
-            <button nz-button (click)="closeCreate()">Annuler</button>
-            <button nz-button nzType="primary" [disabled]="!canCreate() || creating" (click)="createFlow()">Créer</button>
+            <button nz-button type="button" (click)="closeCreate()">Annuler</button>
+            <button nz-button type="submit" nzType="primary" [disabled]="!canCreate() || creating">Créer</button>
           </div>
           <div class="error" *ngIf="createError">{{ createError }}</div>
         </form>
@@ -149,10 +186,12 @@ type FlowItem = { id: string; name: string; description?: string };
     .actions { display:flex; align-items:center; gap:10px; flex-wrap: wrap; }
     .actions .search { width: 220px; max-width: 100%; border:1px solid #e5e7eb; border-radius:8px; padding:6px 10px; outline:none; }
     .actions .search:focus { border-color:#d1d5db; }
-    .actions .primary { background:#111; border-color:#111; }
+    .actions .primary { background:#1677ff; border-color:#1677ff; }
     .actions .icon-only { display:none; align-items:center; justify-content:center; padding: 6px 10px; }
     .actions .icon-only.search-action { display:inline-flex; }
     .actions .icon-only i { font-size: 14px; line-height: 1; }
+    .actions .icon-only.search-action:hover { border-color:#1677ff; color:#1677ff; }
+    .actions .with-text i { margin-right: 6px; }
     @media (max-width: 640px) {
       .page-header { flex-direction: column; align-items: stretch; }
       .actions { width:100%; flex-wrap: nowrap; }
@@ -169,7 +208,7 @@ type FlowItem = { id: string; name: string; description?: string };
     .error { color:#b42318; background:#fee4e2; border:1px solid #fecaca; padding:10px 12px; border-radius:10px; display:inline-block; }
 
     .grid { display:grid; grid-template-columns: minmax(0, 1fr); gap:16px; }
-    .card { display:flex; align-items:center; gap:14px; padding:14px 14px; border-radius:14px; cursor:pointer; min-width: 0;
+    .card { display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:14px; cursor:pointer; min-width: 0;
             background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%);
             border: 1px solid #ececec;
             box-shadow: 0 8px 24px rgba(0,0,0,0.04);
@@ -182,17 +221,21 @@ type FlowItem = { id: string; name: string; description?: string };
                            background: radial-gradient(100% 100% at 100% 0%, #f5f7ff 0%, #eaeefc 100%);
                            border: 1px solid #e5e7eb; color:#111; }
     .leading .icon-badge i { font-size: 18px; }
-    .content { flex:1 1 auto; min-width:0; }
+    .content { flex:1 1 auto; min-width:0; align-self: stretch; display:flex; flex-direction:column; justify-content:center; }
     .title-row { display:flex; align-items:center; gap:8px; min-width: 0; overflow: hidden; }
     .title-row .warn { color:#b42318; }
     .title-row .name { flex: 1 1 auto; min-width: 0; max-width: 100%; font-weight: 600; letter-spacing: -0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .title-row .chip { flex: 0 0 auto; }
+    .status-col { display:flex; align-items:center; gap:8px; flex: 0 0 auto; }
     .chip { background:#f5f5f5; border:1px solid #eaeaea; color:#444; border-radius:999px; padding:2px 8px; font-size:11px; }
     .chip.on { background:#eefcef; border-color:#dcfce7; color:#166534; }
     .chip.off { background:#fef2f2; border-color:#fee2e2; color:#991b1b; }
     .chip.status-draft { background:#f5f3ff; border-color:#e9d5ff; color:#5b21b6; }
     .chip.status-test { background:#eff6ff; border-color:#dbeafe; color:#1e3a8a; }
     .chip.status-production { background:#ecfdf5; border-color:#d1fae5; color:#065f46; }
+    .chip .live-dot { display:inline-block; width:7px; height:7px; border-radius:50%; background:#22c55e; margin-right:4px; animation: pulse-dot 1.5s ease infinite; }
+    @keyframes pulse-dot { 0%,100% { opacity:1; box-shadow:0 0 0 0 rgba(34,197,94,0.4); } 50% { opacity:0.7; box-shadow:0 0 0 4px rgba(34,197,94,0); } }
+    .chip.trigger-chip { background:#ecfdf5; border-color:#d1fae5; color:#065f46; display:inline-flex; align-items:center; gap:4px; }
+    .chip.trigger-chip i { font-size:10px; }
     /* Mobile status dots */
     .mobile-dots { display:none; align-items:center; gap:6px; margin-left: 6px; }
     .mobile-dots .dot { width:8px; height:8px; border-radius:50%; background:#9ca3af; flex: 0 0 auto; }
@@ -202,19 +245,29 @@ type FlowItem = { id: string; name: string; description?: string };
     .mobile-dots .dot.on { background:#166534; }
     .mobile-dots .dot.off { background:#991b1b; }
     @media (max-width: 640px) {
-      .title-row .chip { display: none; }
+      .status-col .chip { display: none; }
       .mobile-dots { display: inline-flex; }
     }
     .desc { color:#6b7280; font-size: 12.5px; margin-top:4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; }
     .trailing { display:flex; align-items:center; gap:8px; }
     .trailing { flex: 0 0 auto; }
-    .icon-btn { width:36px; height:36px; display:inline-flex; align-items:center; justify-content:center; background:#fff; color:#111; border:1px solid #e5e7eb; border-radius:12px; cursor:pointer; transition: background-color .15s ease, box-shadow .15s ease, border-color .15s ease, transform .02s ease; }
+    .icon-btn { width:36px; height:36px; display:inline-flex; align-items:center; justify-content:center; background:#fff; color:#111; border:1px solid #e5e7eb; border-radius:12px; cursor:pointer; transition: background-color .15s ease, color .15s ease, box-shadow .15s ease, border-color .15s ease, transform .02s ease; }
     .icon-btn i { font-size:16px; }
-    .icon-btn:hover { border-color:#d1d5db; background-image: var(--hp-menu-hover-bg); background-color: transparent; }
+    .icon-btn:hover:not([disabled]) { border-color:#c7dbff; background: rgba(22,119,255,0.1); color:#1677ff; box-shadow: 0 4px 12px rgba(22,119,255,0.18); transform: translateY(-1px); }
+    .icon-btn.danger:hover:not([disabled]) { border-color:#fecaca; background:#fee2e2; color:#b91c1c; box-shadow: 0 4px 12px rgba(239,68,68,0.18); }
     .icon-btn:active { transform: translateY(0.5px); }
 
     .grid2 { display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px; }
     .modal-actions { display:flex; justify-content:flex-end; gap:8px; margin-top:8px; }
+    :host ::ng-deep .ant-modal .ant-input:focus,
+    :host ::ng-deep .ant-modal .ant-input-focused {
+      border-color:#1677ff !important;
+      box-shadow:none;
+    }
+    :host ::ng-deep .ant-modal .ant-btn:hover:not([disabled]) {
+      border-color:#1677ff !important;
+      color:#1677ff !important;
+    }
   `]
 })
 export class FlowListComponent implements OnInit, OnDestroy {
@@ -250,9 +303,11 @@ export class FlowListComponent implements OnInit, OnDestroy {
   createError: string | null = null;
   draft: { name: string; description?: string; status?: 'draft'|'test'|'production'; enabled?: boolean } = { name: '', description: '', status: 'draft', enabled: false };
   doSearch() { this.q = (this.q || '').trim(); }
+  updatingIds = new Set<string>();
 
   private changesSub?: Subscription;
-  constructor(private route: ActivatedRoute, private router: Router, private catalog: CatalogService, private zone: NgZone, private cdr: ChangeDetectorRef, private acl: AccessControlService, private ui: UiMessageService) { }
+  activeTriggers = new Map<string, TriggerStatus>();
+  constructor(private route: ActivatedRoute, private router: Router, private catalog: CatalogService, private zone: NgZone, private cdr: ChangeDetectorRef, private acl: AccessControlService, private ui: UiMessageService, private triggersApi: TriggersBackendService) { }
 
   private autoOpened = false;
   ngOnInit() {
@@ -291,6 +346,19 @@ export class FlowListComponent implements OnInit, OnDestroy {
             console.debug('[FlowList] list', { total: list.length, byWorkspace: counts, currentWorkspace: this.acl.currentWorkspaceId() });
           } catch {}
           this.flows = list;
+          // Load active triggers for this workspace
+          try {
+            this.triggersApi.listActive(wsId!).subscribe({
+              next: (triggers) => {
+                this.zone.run(() => {
+                  this.activeTriggers.clear();
+                  for (const t of (triggers || [])) { if (t && (t as any).flowId) this.activeTriggers.set((t as any).flowId, t); }
+                  try { this.cdr.detectChanges(); } catch {}
+                });
+              },
+              error: () => {}
+            });
+          } catch {}
         });
       },
       error: () => {
@@ -322,6 +390,45 @@ export class FlowListComponent implements OnInit, OnDestroy {
 
   openEditor(item: FlowSummary) { this.router.navigate(['/flow-builder', 'editor'], { queryParams: { demo: '1', flow: item.id, center: '1' } }); }
   openExecutions(item: FlowSummary) { this.router.navigate(['/flow-builder', 'executions'], { queryParams: { demo: '1', flow: item.id } }); }
+  setStatus(item: FlowSummary, status: string) {
+    const prev = { status: item.status, enabled: item.enabled };
+    if (prev.status === status) return;
+    item.status = status as any;
+    this.updateFlowMeta(item, prev);
+  }
+  setEnabled(item: FlowSummary, enabled: boolean) {
+    const prev = { status: item.status, enabled: item.enabled };
+    if (prev.enabled === enabled) return;
+    item.enabled = !!enabled;
+    this.updateFlowMeta(item, prev);
+  }
+  private updateFlowMeta(item: FlowSummary, prev: { status: any; enabled: any }) {
+    if (this.updatingIds.has(item.id)) return;
+    this.updatingIds.add(item.id);
+    this.catalog.getFlow(item.id).subscribe({
+      next: (doc) => {
+        const updated: any = { ...doc, status: item.status, enabled: item.enabled };
+        this.catalog.saveFlow(updated).subscribe({
+          next: () => {
+            this.updatingIds.delete(item.id);
+            try { this.ui.success('Flow mis à jour'); } catch {}
+          },
+          error: () => {
+            item.status = prev.status;
+            item.enabled = prev.enabled;
+            this.updatingIds.delete(item.id);
+            this.ui.error('Échec de la mise à jour');
+          }
+        });
+      },
+      error: () => {
+        item.status = prev.status;
+        item.enabled = prev.enabled;
+        this.updatingIds.delete(item.id);
+        this.ui.error('Échec de la mise à jour');
+      }
+    });
+  }
   removeFlow(item: FlowSummary) {
     this.catalog.deleteFlow(item.id).subscribe({
       next: () => { this.ui.success('Flow supprimé'); this.load(); },
@@ -347,7 +454,7 @@ export class FlowListComponent implements OnInit, OnDestroy {
     const wsId = this.acl.currentWorkspaceId() || 'default';
     const obs = environment.useBackend
       ? this.catalog.createFlow(wsId, name, status, enabled, [], [], (this.draft.description || '').trim())
-      : this.catalog.saveFlow({ id: localId, name, description: (this.draft.description || '').trim(), status, enabled, nodes: [], edges: [], meta: {} } as any);
+      : this.catalog.saveFlow({ id: localId, name, description: (this.draft.description || '').trim(), status, enabled, nodes: [], edges: [], meta: { ui: { portOrientation: 'horizontal', alignmentHelper: { tolerance: 35, lineColor: '#D1D5DB' } } } } as any);
     obs.subscribe({
       next: (doc) => {
         this.zone.run(() => {
@@ -361,6 +468,12 @@ export class FlowListComponent implements OnInit, OnDestroy {
       },
       error: () => { this.zone.run(() => { this.creating = false; this.createError = 'Échec de la création.'; this.ui.error('Échec de la création du flow'); }); }
     });
+  }
+  isLive(it: FlowSummary): boolean {
+    return this.activeTriggers.has(it.id);
+  }
+  triggerInfo(it: FlowSummary): TriggerStatus | undefined {
+    return this.activeTriggers.get(it.id);
   }
   // Change handling moved to ngOnInit with throttle and cleanup
 }

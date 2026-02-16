@@ -1,0 +1,3423 @@
+{
+  "repo": {
+    "name": "hubspot",
+    "type": "local",
+    "label": "HubSpot"
+  },
+  "variables": {
+    "hs_contact": {
+      "title": "Contact HubSpot",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du contact.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "email",
+          "key": "email",
+          "label": "Email",
+          "description": "Adresse e-mail du contact.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "firstname",
+          "label": "Prénom",
+          "description": "Prénom du contact.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "lastname",
+          "label": "Nom",
+          "description": "Nom de famille du contact.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "tel",
+          "key": "phone",
+          "label": "Téléphone",
+          "description": "Numéro de téléphone.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "company",
+          "label": "Entreprise",
+          "description": "Entreprise associee.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "createdate",
+          "label": "Date création",
+          "description": "Date de création du contact.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "hs_contacts": {
+      "title": "Contacts",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "hasMore",
+          "label": "Page suivante",
+          "description": "Indique s'il y a une page suivante.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextAfter",
+          "label": "Curseur suivant",
+          "description": "Valeur du curseur pour récupérer la page suivante (à utiliser dans le champ 'after').",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Contacts",
+          "description": "Liste des contacts",
+          "mode": "array",
+          "key": "contacts",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant du contact.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "email",
+              "key": "email",
+              "label": "Email",
+              "description": "Adresse e-mail.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "firstname",
+              "label": "Prénom",
+              "description": "Prénom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "lastname",
+              "label": "Nom",
+              "description": "Nom de famille.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "tel",
+              "key": "phone",
+              "label": "Téléphone",
+              "description": "Téléphone.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "company",
+              "label": "Entreprise",
+              "description": "Entreprise.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "createdate",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "hs_company": {
+      "title": "Entreprise HubSpot",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant de l'entreprise.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom de l'entreprise.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "domain",
+          "label": "Domaine",
+          "description": "Domaine web.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "industry",
+          "label": "Industrie",
+          "description": "Secteur d'activite.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "tel",
+          "key": "phone",
+          "label": "Téléphone",
+          "description": "Téléphone.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "createdate",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "hs_companies": {
+      "title": "Entreprises",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "hasMore",
+          "label": "Page suivante",
+          "description": "Indique s'il y a une page suivante.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextAfter",
+          "label": "Curseur suivant",
+          "description": "Valeur du curseur pour récupérer la page suivante (à utiliser dans le champ 'after').",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Entreprises",
+          "description": "Liste des entreprises",
+          "mode": "array",
+          "key": "companies",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "domain",
+              "label": "Domaine",
+              "description": "Domaine web.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "industry",
+              "label": "Industrie",
+              "description": "Secteur.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "tel",
+              "key": "phone",
+              "label": "Téléphone",
+              "description": "Téléphone.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "createdate",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "hs_deal": {
+      "title": "Deal HubSpot",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du deal.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "dealname",
+          "label": "Nom du deal",
+          "description": "Nom du deal.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "amount",
+          "label": "Montant",
+          "description": "Montant du deal.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "pipeline",
+          "label": "Pipeline",
+          "description": "Pipeline associe.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "dealstage",
+          "label": "Étape",
+          "description": "Étape du deal.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "createdate",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "closedate",
+          "label": "Date fermeture",
+          "description": "Date de fermeture.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "hs_deals": {
+      "title": "Deals",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "hasMore",
+          "label": "Page suivante",
+          "description": "Indique s'il y a une page suivante.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextAfter",
+          "label": "Curseur suivant",
+          "description": "Valeur du curseur pour récupérer la page suivante (à utiliser dans le champ 'after').",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Deals",
+          "description": "Liste des deals",
+          "mode": "array",
+          "key": "deals",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "dealname",
+              "label": "Nom du deal",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "amount",
+              "label": "Montant",
+              "description": "Montant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "pipeline",
+              "label": "Pipeline",
+              "description": "Pipeline.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "dealstage",
+              "label": "Étape",
+              "description": "Étape.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "createdate",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "closedate",
+              "label": "Date fermeture",
+              "description": "Date de fermeture.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "hs_ticket": {
+      "title": "Ticket HubSpot",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du ticket.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "subject",
+          "label": "Sujet",
+          "description": "Sujet du ticket.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "content",
+          "label": "Contenu",
+          "description": "Contenu du ticket.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "hs_pipeline",
+          "label": "Pipeline",
+          "description": "Pipeline du ticket.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "hs_pipeline_stage",
+          "label": "Étape",
+          "description": "Étape du pipeline.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "hs_ticket_priority",
+          "label": "Priorité",
+          "description": "Priorité du ticket.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "createdate",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "hs_tickets": {
+      "title": "Tickets",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "hasMore",
+          "label": "Page suivante",
+          "description": "Indique s'il y a une page suivante.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextAfter",
+          "label": "Curseur suivant",
+          "description": "Valeur du curseur pour récupérer la page suivante (à utiliser dans le champ 'after').",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Tickets",
+          "description": "Liste des tickets",
+          "mode": "array",
+          "key": "tickets",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "subject",
+              "label": "Sujet",
+              "description": "Sujet.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "content",
+              "label": "Contenu",
+              "description": "Contenu.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "hs_pipeline",
+              "label": "Pipeline",
+              "description": "Pipeline.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "hs_pipeline_stage",
+              "label": "Étape",
+              "description": "Étape.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "hs_ticket_priority",
+              "label": "Priorité",
+              "description": "Priorité.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "createdate",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "hs_engagement": {
+      "title": "Engagement HubSpot",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant de l'engagement.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "type",
+          "label": "Type",
+          "description": "Type d'engagement (note, task, meeting, call).",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "body",
+          "label": "Contenu",
+          "description": "Contenu de l'engagement.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "timestamp",
+          "label": "Horodatage",
+          "description": "Horodatage de l'engagement.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "createdate",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "hs_pipeline": {
+      "title": "Pipeline HubSpot",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du pipeline.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "label",
+          "label": "Label",
+          "description": "Nom du pipeline.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "displayOrder",
+          "label": "Ordre",
+          "description": "Ordre d'affichage.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "stages",
+          "label": "Étapes",
+          "description": "Étapes du pipeline (texte).",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "hs_pipelines": {
+      "title": "Pipelines",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Pipelines",
+          "description": "Liste des pipelines",
+          "mode": "array",
+          "key": "pipelines",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "label",
+              "label": "Label",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "displayOrder",
+              "label": "Ordre",
+              "description": "Ordre.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "stages",
+              "label": "Étapes",
+              "description": "Étapes.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "hs_stages": {
+      "title": "Étapes",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Étapes",
+          "description": "Liste des etapes",
+          "mode": "array",
+          "key": "stages",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "label",
+              "label": "Label",
+              "description": "Nom de l'etape.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "displayOrder",
+              "label": "Ordre",
+              "description": "Ordre d'affichage.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "hs_owner": {
+      "title": "Proprietaire HubSpot",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du proprietaire.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "email",
+          "key": "email",
+          "label": "Email",
+          "description": "Adresse e-mail.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "firstName",
+          "label": "Prénom",
+          "description": "Prénom.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "lastName",
+          "label": "Nom",
+          "description": "Nom de famille.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "hs_owners": {
+      "title": "Proprietaires",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "hasMore",
+          "label": "Page suivante",
+          "description": "Indique s'il y a une page suivante.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextAfter",
+          "label": "Curseur suivant",
+          "description": "Valeur du curseur pour récupérer la page suivante (à utiliser dans le champ 'after').",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Proprietaires",
+          "description": "Liste des proprietaires",
+          "mode": "array",
+          "key": "owners",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "email",
+              "key": "email",
+              "label": "Email",
+              "description": "Email.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "firstName",
+              "label": "Prénom",
+              "description": "Prénom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "lastName",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "hs_result": {
+      "title": "Résultat",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut de l'operation.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "message",
+          "label": "Message",
+          "description": "Message de retour.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "hubspot",
+      "name": "HubSpot",
+      "title": "HubSpot",
+      "iconClass": "fa-solid fa-handshake",
+      "iconUrl": "https://www.svgrepo.com/show/306208/hubspot.svg",
+      "color": "#FF7A59",
+      "tags": [
+        "hubspot",
+        "crm",
+        "sales",
+        "marketing"
+      ],
+      "categories": [
+        "CRM"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants HubSpot",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "accessToken",
+            "label": "Access Token",
+            "description": "Token d'acces prive HubSpot (Private App).",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "hubspot_contact_create",
+      "name": "hubspotContactCreate",
+      "schemaVersion": 2,
+      "title": "Créer un contact",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "HubSpot",
+      "providerKey": "hubspot",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:hs_contact"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un nouveau contact dans HubSpot.",
+      "args": {
+        "title": "Créer un contact",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "email",
+            "key": "email",
+            "label": "Email",
+            "description": "Adresse e-mail du contact.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "firstname",
+            "label": "Prénom",
+            "description": "Prénom du contact.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "lastname",
+            "label": "Nom",
+            "description": "Nom de famille du contact.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "tel",
+            "key": "phone",
+            "label": "Téléphone",
+            "description": "Numéro de téléphone.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "company",
+            "label": "Entreprise",
+            "description": "Nom de l'entreprise.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Contacts",
+      "icon": "fa-solid fa-square-plus",
+      "group": "Contacts",
+      "tags": [
+        "création",
+        "hubspot"
+      ]
+    },
+    {
+      "key": "hubspot_contact_get",
+      "name": "hubspotContactGet",
+      "schemaVersion": 2,
+      "title": "Obtenir un contact",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "HubSpot",
+      "providerKey": "hubspot",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:hs_contact"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère un contact HubSpot par son ID.",
+      "args": {
+        "title": "Obtenir un contact",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "contactId",
+            "label": "Contact ID",
+            "description": "Identifiant du contact.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Contacts",
+      "icon": "fa-solid fa-eye",
+      "group": "Contacts",
+      "tags": [
+        "lecture",
+        "hubspot"
+      ]
+    },
+    {
+      "key": "hubspot_contact_update",
+      "name": "hubspotContactUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier un contact",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "HubSpot",
+      "providerKey": "hubspot",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:hs_contact"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Met a jour un contact existant dans HubSpot.",
+      "args": {
+        "title": "Modifier un contact",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "contactId",
+            "label": "Contact ID",
+            "description": "Identifiant du contact.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "email",
+            "key": "email",
+            "label": "Email",
+            "description": "Nouvelle adresse e-mail.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "firstname",
+            "label": "Prénom",
+            "description": "Nouveau prénom.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "lastname",
+            "label": "Nom",
+            "description": "Nouveau nom.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "tel",
+            "key": "phone",
+            "label": "Téléphone",
+            "description": "Nouveau téléphone.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Contacts",
+      "icon": "fa-solid fa-pen-to-square",
+      "group": "Contacts",
+      "tags": [
+        "mise-à-jour",
+        "hubspot"
+      ]
+    },
+    {
+      "key": "hubspot_contact_delete",
+      "name": "hubspotContactDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un contact",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "HubSpot",
+      "providerKey": "hubspot",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:hs_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Supprime un contact HubSpot.",
+      "args": {
+        "title": "Supprimer un contact",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "contactId",
+            "label": "Contact ID",
+            "description": "Identifiant du contact a supprimer.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Contacts",
+      "icon": "fa-solid fa-trash",
+      "group": "Contacts",
+      "tags": [
+        "suppression",
+        "hubspot"
+      ]
+    },
+    {
+      "key": "hubspot_contact_search",
+      "name": "hubspotContactSearch",
+      "schemaVersion": 2,
+      "title": "Rechercher des contacts",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "HubSpot",
+      "providerKey": "hubspot",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:hs_contacts"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Recherche des contacts HubSpot par mot-cle.",
+      "args": {
+        "title": "Rechercher des contacts",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "query",
+            "label": "Recherche",
+            "description": "Terme de recherche.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre max de résultats (defaut 10).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Contacts",
+      "icon": "fa-solid fa-magnifying-glass",
+      "group": "Contacts",
+      "tags": [
+        "recherche",
+        "hubspot"
+      ]
+    },
+    {
+      "key": "hubspot_contacts_list",
+      "name": "hubspotContactsList",
+      "schemaVersion": 2,
+      "title": "Lister les contacts",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "HubSpot",
+      "providerKey": "hubspot",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:hs_contacts"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les contacts HubSpot avec pagination.",
+      "args": {
+        "title": "Lister les contacts",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre de résultats (defaut 10).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "after",
+            "label": "Curseur (after)",
+            "description": "Curseur de pagination.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Contacts",
+      "icon": "fa-solid fa-list",
+      "group": "Contacts",
+      "tags": [
+        "liste",
+        "hubspot"
+      ]
+    },
+    {
+      "key": "hubspot_company_create",
+      "name": "hubspotCompanyCreate",
+      "schemaVersion": 2,
+      "title": "Créer une entreprise",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "HubSpot",
+      "providerKey": "hubspot",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:hs_company"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée une nouvelle entreprise dans HubSpot.",
+      "args": {
+        "title": "Créer une entreprise",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nom de l'entreprise.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "domain",
+            "label": "Domaine",
+            "description": "Domaine web de l'entreprise.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "industry",
+            "label": "Industrie",
+            "description": "Secteur d'activite.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "tel",
+            "key": "phone",
+            "label": "Téléphone",
+            "description": "Téléphone de l'entreprise.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Entreprises",
+      "icon": "fa-solid fa-square-plus",
+      "group": "Entreprises",
+      "tags": [
+        "création",
+        "hubspot"
+      ]
+    },
+    {
+      "key": "hubspot_company_get",
+      "name": "hubspotCompanyGet",
+      "schemaVersion": 2,
+      "title": "Obtenir une entreprise",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "HubSpot",
+      "providerKey": "hubspot",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:hs_company"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère une entreprise HubSpot par son ID.",
+      "args": {
+        "title": "Obtenir une entreprise",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "companyId",
+            "label": "Company ID",
+            "description": "Identifiant de l'entreprise.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Entreprises",
+      "icon": "fa-solid fa-eye",
+      "group": "Entreprises",
+      "tags": [
+        "lecture",
+        "hubspot"
+      ]
+    },
+    {
+      "key": "hubspot_company_update",
+      "name": "hubspotCompanyUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier une entreprise",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "HubSpot",
+      "providerKey": "hubspot",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:hs_company"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Met a jour une entreprise existante dans HubSpot.",
+      "args": {
+        "title": "Modifier une entreprise",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "companyId",
+            "label": "Company ID",
+            "description": "Identifiant de l'entreprise.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nouveau nom.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "domain",
+            "label": "Domaine",
+            "description": "Nouveau domaine.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "industry",
+            "label": "Industrie",
+            "description": "Nouveau secteur.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Entreprises",
+      "icon": "fa-solid fa-pen-to-square",
+      "group": "Entreprises",
+      "tags": [
+        "mise-à-jour",
+        "hubspot"
+      ]
+    },
+    {
+      "key": "hubspot_company_delete",
+      "name": "hubspotCompanyDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer une entreprise",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "HubSpot",
+      "providerKey": "hubspot",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:hs_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Supprime une entreprise HubSpot.",
+      "args": {
+        "title": "Supprimer une entreprise",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "companyId",
+            "label": "Company ID",
+            "description": "Identifiant de l'entreprise a supprimer.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Entreprises",
+      "icon": "fa-solid fa-trash",
+      "group": "Entreprises",
+      "tags": [
+        "suppression",
+        "hubspot"
+      ]
+    },
+    {
+      "key": "hubspot_company_search",
+      "name": "hubspotCompanySearch",
+      "schemaVersion": 2,
+      "title": "Rechercher des entreprises",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "HubSpot",
+      "providerKey": "hubspot",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:hs_companies"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Recherche des entreprises HubSpot par mot-cle.",
+      "args": {
+        "title": "Rechercher des entreprises",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "query",
+            "label": "Recherche",
+            "description": "Terme de recherche.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre max de résultats (defaut 10).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Entreprises",
+      "icon": "fa-solid fa-magnifying-glass",
+      "group": "Entreprises",
+      "tags": [
+        "recherche",
+        "hubspot"
+      ]
+    },
+    {
+      "key": "hubspot_companies_list",
+      "name": "hubspotCompaniesList",
+      "schemaVersion": 2,
+      "title": "Lister les entreprises",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "HubSpot",
+      "providerKey": "hubspot",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:hs_companies"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les entreprises HubSpot avec pagination.",
+      "args": {
+        "title": "Lister les entreprises",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre de résultats (defaut 10).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "after",
+            "label": "Curseur (after)",
+            "description": "Curseur de pagination.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Entreprises",
+      "icon": "fa-solid fa-list",
+      "group": "Entreprises",
+      "tags": [
+        "liste",
+        "hubspot"
+      ]
+    },
+    {
+      "key": "hubspot_deal_create",
+      "name": "hubspotDealCreate",
+      "schemaVersion": 2,
+      "title": "Créer un deal",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "HubSpot",
+      "providerKey": "hubspot",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:hs_deal"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un nouveau deal dans HubSpot.",
+      "args": {
+        "title": "Créer un deal",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "dealname",
+            "label": "Nom du deal",
+            "description": "Nom du deal.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "amount",
+            "label": "Montant",
+            "description": "Montant du deal.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "pipeline",
+            "label": "Pipeline",
+            "description": "Identifiant du pipeline.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "dealstage",
+            "label": "Étape",
+            "description": "Identifiant de l'etape du deal.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Deals",
+      "icon": "fa-solid fa-handshake",
+      "group": "Deals",
+      "tags": [
+        "création",
+        "hubspot"
+      ]
+    },
+    {
+      "key": "hubspot_deal_get",
+      "name": "hubspotDealGet",
+      "schemaVersion": 2,
+      "title": "Obtenir un deal",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "HubSpot",
+      "providerKey": "hubspot",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:hs_deal"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère un deal HubSpot par son ID.",
+      "args": {
+        "title": "Obtenir un deal",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "dealId",
+            "label": "Deal ID",
+            "description": "Identifiant du deal.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Deals",
+      "icon": "fa-solid fa-eye",
+      "group": "Deals",
+      "tags": [
+        "lecture",
+        "hubspot"
+      ]
+    },
+    {
+      "key": "hubspot_deal_update",
+      "name": "hubspotDealUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier un deal",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "HubSpot",
+      "providerKey": "hubspot",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:hs_deal"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Met a jour un deal existant dans HubSpot.",
+      "args": {
+        "title": "Modifier un deal",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "dealId",
+            "label": "Deal ID",
+            "description": "Identifiant du deal.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "dealname",
+            "label": "Nom du deal",
+            "description": "Nouveau nom.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "amount",
+            "label": "Montant",
+            "description": "Nouveau montant.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "dealstage",
+            "label": "Étape",
+            "description": "Nouvelle etape.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Deals",
+      "icon": "fa-solid fa-pen-to-square",
+      "group": "Deals",
+      "tags": [
+        "mise-à-jour",
+        "hubspot"
+      ]
+    },
+    {
+      "key": "hubspot_deal_delete",
+      "name": "hubspotDealDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un deal",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "HubSpot",
+      "providerKey": "hubspot",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:hs_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Supprime un deal HubSpot.",
+      "args": {
+        "title": "Supprimer un deal",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "dealId",
+            "label": "Deal ID",
+            "description": "Identifiant du deal a supprimer.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Deals",
+      "icon": "fa-solid fa-trash",
+      "group": "Deals",
+      "tags": [
+        "suppression",
+        "hubspot"
+      ]
+    },
+    {
+      "key": "hubspot_deal_search",
+      "name": "hubspotDealSearch",
+      "schemaVersion": 2,
+      "title": "Rechercher des deals",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "HubSpot",
+      "providerKey": "hubspot",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:hs_deals"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Recherche des deals HubSpot par mot-cle.",
+      "args": {
+        "title": "Rechercher des deals",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "query",
+            "label": "Recherche",
+            "description": "Terme de recherche.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre max de résultats (defaut 10).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Deals",
+      "icon": "fa-solid fa-magnifying-glass",
+      "group": "Deals",
+      "tags": [
+        "recherche",
+        "hubspot"
+      ]
+    },
+    {
+      "key": "hubspot_deals_list",
+      "name": "hubspotDealsList",
+      "schemaVersion": 2,
+      "title": "Lister les deals",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "HubSpot",
+      "providerKey": "hubspot",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:hs_deals"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les deals HubSpot avec pagination.",
+      "args": {
+        "title": "Lister les deals",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre de résultats (defaut 10).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "after",
+            "label": "Curseur (after)",
+            "description": "Curseur de pagination.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Deals",
+      "icon": "fa-solid fa-list",
+      "group": "Deals",
+      "tags": [
+        "liste",
+        "hubspot"
+      ]
+    },
+    {
+      "key": "hubspot_ticket_create",
+      "name": "hubspotTicketCreate",
+      "schemaVersion": 2,
+      "title": "Créer un ticket",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "HubSpot",
+      "providerKey": "hubspot",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:hs_ticket"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un nouveau ticket dans HubSpot.",
+      "args": {
+        "title": "Créer un ticket",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "subject",
+            "label": "Sujet",
+            "description": "Sujet du ticket.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "content",
+            "label": "Contenu",
+            "description": "Description du ticket.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "hs_pipeline",
+            "label": "Pipeline",
+            "description": "Identifiant du pipeline.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "hs_pipeline_stage",
+            "label": "Étape",
+            "description": "Identifiant de l'etape du pipeline.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "hs_ticket_priority",
+            "label": "Priorité",
+            "description": "Priorité du ticket (LOW, MEDIUM, HIGH).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Tickets",
+      "icon": "fa-solid fa-square-plus",
+      "group": "Tickets",
+      "tags": [
+        "création",
+        "hubspot"
+      ]
+    },
+    {
+      "key": "hubspot_ticket_get",
+      "name": "hubspotTicketGet",
+      "schemaVersion": 2,
+      "title": "Obtenir un ticket",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "HubSpot",
+      "providerKey": "hubspot",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:hs_ticket"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère un ticket HubSpot par son ID.",
+      "args": {
+        "title": "Obtenir un ticket",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "ticketId",
+            "label": "Ticket ID",
+            "description": "Identifiant du ticket.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Tickets",
+      "icon": "fa-solid fa-eye",
+      "group": "Tickets",
+      "tags": [
+        "lecture",
+        "hubspot"
+      ]
+    },
+    {
+      "key": "hubspot_ticket_update",
+      "name": "hubspotTicketUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier un ticket",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "HubSpot",
+      "providerKey": "hubspot",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:hs_ticket"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Met a jour un ticket existant dans HubSpot.",
+      "args": {
+        "title": "Modifier un ticket",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "ticketId",
+            "label": "Ticket ID",
+            "description": "Identifiant du ticket.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "subject",
+            "label": "Sujet",
+            "description": "Nouveau sujet.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "content",
+            "label": "Contenu",
+            "description": "Nouveau contenu.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "hs_pipeline_stage",
+            "label": "Étape",
+            "description": "Nouvelle etape du pipeline.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Tickets",
+      "icon": "fa-solid fa-pen-to-square",
+      "group": "Tickets",
+      "tags": [
+        "mise-à-jour",
+        "hubspot"
+      ]
+    },
+    {
+      "key": "hubspot_ticket_delete",
+      "name": "hubspotTicketDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un ticket",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "HubSpot",
+      "providerKey": "hubspot",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:hs_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Supprime un ticket HubSpot.",
+      "args": {
+        "title": "Supprimer un ticket",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "ticketId",
+            "label": "Ticket ID",
+            "description": "Identifiant du ticket a supprimer.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Tickets",
+      "icon": "fa-solid fa-trash",
+      "group": "Tickets",
+      "tags": [
+        "suppression",
+        "hubspot"
+      ]
+    },
+    {
+      "key": "hubspot_tickets_list",
+      "name": "hubspotTicketsList",
+      "schemaVersion": 2,
+      "title": "Lister les tickets",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "HubSpot",
+      "providerKey": "hubspot",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:hs_tickets"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les tickets HubSpot avec pagination.",
+      "args": {
+        "title": "Lister les tickets",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre de résultats (defaut 10).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "after",
+            "label": "Curseur (after)",
+            "description": "Curseur de pagination.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Tickets",
+      "icon": "fa-solid fa-list",
+      "group": "Tickets",
+      "tags": [
+        "liste",
+        "hubspot"
+      ]
+    },
+    {
+      "key": "hubspot_note_create",
+      "name": "hubspotNoteCreate",
+      "schemaVersion": 2,
+      "title": "Créer une note",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "HubSpot",
+      "providerKey": "hubspot",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:hs_engagement"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée une note (engagement) dans HubSpot.",
+      "args": {
+        "title": "Créer une note",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "hs_note_body",
+            "label": "Contenu",
+            "description": "Corps de la note.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "date",
+            "key": "hs_timestamp",
+            "label": "Horodatage",
+            "description": "Horodatage ISO (optionnel, defaut: maintenant).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "contactId",
+            "label": "Contact ID",
+            "description": "Identifiant du contact a associer.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "dealId",
+            "label": "Deal ID",
+            "description": "Identifiant du deal a associer.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Notes",
+      "icon": "fa-solid fa-note-sticky",
+      "group": "Notes",
+      "tags": [
+        "création",
+        "hubspot"
+      ]
+    },
+    {
+      "key": "hubspot_task_create",
+      "name": "hubspotTaskCreate",
+      "schemaVersion": 2,
+      "title": "Créer une tâche",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "HubSpot",
+      "providerKey": "hubspot",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:hs_engagement"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée une tâche (engagement) dans HubSpot.",
+      "args": {
+        "title": "Créer une tâche",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "hs_task_subject",
+            "label": "Sujet",
+            "description": "Sujet de la tâche.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "hs_task_body",
+            "label": "Description",
+            "description": "Description de la tâche.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "hs_task_status",
+            "label": "Statut",
+            "description": "Statut de la tâche (NOT_STARTED, IN_PROGRESS, COMPLETED).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "date",
+            "key": "hs_timestamp",
+            "label": "Horodatage",
+            "description": "Horodatage ISO (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Tâches",
+      "icon": "fa-solid fa-square-check",
+      "group": "Tâches",
+      "tags": [
+        "création",
+        "hubspot"
+      ]
+    },
+    {
+      "key": "hubspot_meeting_create",
+      "name": "hubspotMeetingCreate",
+      "schemaVersion": 2,
+      "title": "Créer une réunion",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "HubSpot",
+      "providerKey": "hubspot",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:hs_engagement"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée une réunion (engagement) dans HubSpot.",
+      "args": {
+        "title": "Créer une réunion",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "hs_meeting_title",
+            "label": "Titre",
+            "description": "Titre de la réunion.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "hs_meeting_body",
+            "label": "Description",
+            "description": "Description de la réunion.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "hs_meeting_start_time",
+            "label": "Début",
+            "description": "Heure de début ISO.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "hs_meeting_end_time",
+            "label": "Fin",
+            "description": "Heure de fin ISO.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Réunions",
+      "icon": "fa-solid fa-calendar-check",
+      "group": "Réunions",
+      "tags": [
+        "création",
+        "hubspot"
+      ]
+    },
+    {
+      "key": "hubspot_call_create",
+      "name": "hubspotCallCreate",
+      "schemaVersion": 2,
+      "title": "Créer un appel",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "HubSpot",
+      "providerKey": "hubspot",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:hs_engagement"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un appel (engagement) dans HubSpot.",
+      "args": {
+        "title": "Créer un appel",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "hs_call_title",
+            "label": "Titre",
+            "description": "Titre de l'appel.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "hs_call_body",
+            "label": "Description",
+            "description": "Description de l'appel.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "hs_call_duration",
+            "label": "Durée (ms)",
+            "description": "Durée de l'appel en millisecondes.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "hs_call_direction",
+            "label": "Direction",
+            "description": "Direction (INBOUND, OUTBOUND).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Appels",
+      "icon": "fa-solid fa-phone",
+      "group": "Appels",
+      "tags": [
+        "création",
+        "hubspot"
+      ]
+    },
+    {
+      "key": "hubspot_pipelines_list",
+      "name": "hubspotPipelinesList",
+      "schemaVersion": 2,
+      "title": "Lister les pipelines",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "HubSpot",
+      "providerKey": "hubspot",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:hs_pipelines"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les pipelines HubSpot pour un type d'objet.",
+      "args": {
+        "title": "Lister les pipelines",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "select",
+            "key": "objectType",
+            "label": "Type d'objet",
+            "description": "Type d'objet (deals ou tickets).",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "options": [
+              {
+                "label": "Deals",
+                "value": "deals"
+              },
+              {
+                "label": "Tickets",
+                "value": "tickets"
+              }
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Pipelines",
+      "icon": "fa-solid fa-list",
+      "group": "Pipelines",
+      "tags": [
+        "liste",
+        "hubspot"
+      ]
+    },
+    {
+      "key": "hubspot_pipeline_stages_list",
+      "name": "hubspotPipelineStagesList",
+      "schemaVersion": 2,
+      "title": "Lister les etapes d'un pipeline",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "HubSpot",
+      "providerKey": "hubspot",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:hs_stages"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les etapes d'un pipeline HubSpot.",
+      "args": {
+        "title": "Lister les etapes d'un pipeline",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "select",
+            "key": "objectType",
+            "label": "Type d'objet",
+            "description": "Type d'objet (deals ou tickets).",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "options": [
+              {
+                "label": "Deals",
+                "value": "deals"
+              },
+              {
+                "label": "Tickets",
+                "value": "tickets"
+              }
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          },
+          {
+            "type": "text",
+            "key": "pipelineId",
+            "label": "Pipeline ID",
+            "description": "Identifiant du pipeline.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Pipelines",
+      "icon": "fa-solid fa-list-ol",
+      "group": "Pipelines",
+      "tags": [
+        "liste",
+        "hubspot"
+      ]
+    },
+    {
+      "key": "hubspot_owners_list",
+      "name": "hubspotOwnersList",
+      "schemaVersion": 2,
+      "title": "Lister les proprietaires",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "HubSpot",
+      "providerKey": "hubspot",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:hs_owners"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les proprietaires (owners) HubSpot.",
+      "args": {
+        "title": "Lister les proprietaires",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre de résultats (defaut 100).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "after",
+            "label": "Curseur (after)",
+            "description": "Curseur de pagination.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "email",
+            "key": "email",
+            "label": "Email",
+            "description": "Filtrer par adresse e-mail.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Propriétaires",
+      "icon": "fa-solid fa-users",
+      "group": "Propriétaires",
+      "tags": [
+        "liste",
+        "hubspot"
+      ]
+    }
+  ]
+}

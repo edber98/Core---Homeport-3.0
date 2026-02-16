@@ -11,6 +11,10 @@ module.exports = function(){
     limit = Math.max(1, Math.min(200, Number(limit) || 100));
     page = Math.max(1, Number(page) || 1);
     const { q, sort } = req.query;
+    // Hide providers when all their repos are disabled
+    const PluginRepo = require('../../db/models/plugin-repo.model');
+    const enabledRepos = await PluginRepo.find({ enabled: true }).select('_id').lean();
+    const enabledIds = new Set(enabledRepos.map(r => String(r._id)));
     const query = { enabled: true };
     if (q) {
       const rx = { $regex: String(q), $options: 'i' };
@@ -21,7 +25,14 @@ module.exports = function(){
       const [field, dir] = String(sort).split(':');
       if (field) sortObj = { [field]: (dir === 'desc' ? -1 : 1) };
     }
-    const list = await Provider.find(query)
+    const list = await Provider.find({
+        ...query,
+        $or: [
+          { repos: { $exists: false } },
+          { repos: { $size: 0 } },
+          { repos: { $in: [...enabledIds] } },
+        ]
+      })
       .sort(sortObj)
       .skip((page - 1) * limit)
       .limit(limit)
@@ -68,7 +79,7 @@ module.exports = function(){
           const f = await Flow.findById(it.flowId);
           if (f) { f.enabled = false; await f.save(); }
           await Run.updateMany({ flowId: it.flowId, status: 'running' }, { $set: { status: 'cancelled', finishedAt: new Date() } });
-          await Notification.create({ companyId: it.companyId, workspaceId: it.workspaceId, entityType: 'flow', entityId: it.flowId, severity: 'critical', code: 'provider_update_invalid', message: `Flow disabled due to provider '${key}' update`, details: { errors: it.errors }, link: `/flows/${it.flowId}/editor` });
+          await Notification.create({ companyId: it.companyId, workspaceId: it.workspaceId, entityType: 'flow', entityId: it.flowId, severity: 'critical', code: 'provider_update_invalid', message: `Flow désactivé suite à la mise à jour du provider '${key}'`, details: { errors: it.errors }, link: `/flows/${it.flowId}/editor` });
         }
       }
     }

@@ -21,9 +21,9 @@ import { DynamicForm } from '../../modules/dynamic-form/dynamic-form';
           <div class="card-title left"><span class="t">Credential</span><span class="s">{{ d.name }}</span></div>
         </div>
         <div class="actions">
-          <button nz-button class="apple-btn" (click)="openProvider()"><i class="fa-regular fa-eye"></i><span class="label">App</span></button>
-          <button nz-button class="apple-btn" nzType="primary" (click)="edit()" [disabled]="!canEdit"><i class="fa-regular fa-pen-to-square"></i><span class="label">Édition</span></button>
-          <button nz-button class="apple-btn" (click)="duplicate()" [disabled]="!canEdit"><i class="fa-regular fa-copy"></i><span class="label">Dupliquer</span></button>
+          <button type="button" class="icon-ghost" (click)="openProvider()" title="App"><i class="fa-regular fa-eye"></i></button>
+          <button type="button" class="icon-ghost" (click)="edit()" [disabled]="!canEdit" title="Édition"><i class="fa-regular fa-pen-to-square"></i></button>
+          <button type="button" class="icon-ghost" (click)="duplicate()" [disabled]="!canEdit" title="Dupliquer"><i class="fa-regular fa-copy"></i></button>
         </div>
       </div>
       <div class="content" *ngIf="provider as p">
@@ -53,8 +53,9 @@ import { DynamicForm } from '../../modules/dynamic-form/dynamic-form';
     .header .left { display:flex; align-items:left; gap:0px; }
     .icon-btn.back { width:32px; height:32px; display:inline-flex; align-items:center; justify-content:center; border:0; background:transparent; border-radius:8px; cursor:pointer; }
     .actions { display:flex; gap:8px; }
-    .apple-btn[disabled] { opacity: .55; filter: grayscale(1); cursor: not-allowed; }
-    @media (max-width: 640px) { .apple-btn .label { display:none; } }
+    .icon-ghost { border:0; background:transparent; padding:6px; border-radius:8px; display:inline-flex; align-items:center; justify-content:center; color:#111; cursor:pointer; }
+    .icon-ghost[disabled] { opacity:.5; cursor:not-allowed; }
+    .icon-ghost:hover { background:#f5f5f5; }
     .card-title { display:flex; flex-direction:column; }
     .card-title .t { font-weight:600; font-size:14px; }
     .card-title .s { font-size:12px; color:#64748b; }

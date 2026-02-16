@@ -30,7 +30,7 @@
 
 <nz-layout class="full-height">
   <!-- Sider (desktop) -->
-  <nz-sider *ngIf="showSider" [nzCollapsible]="true" [(nzCollapsed)]="siderCollapsed" [nzCollapsedWidth]="80" [nzTheme]="'light'" class="border-right-primary" nzWidth="220px">
+  <nz-sider *ngIf="showSider" [nzCollapsible]="true" [(nzCollapsed)]="siderCollapsed" (nzCollapsedChange)="onSiderCollapsedChange($event)" [nzCollapsedWidth]="80" [nzTheme]="'light'" class="border-right-primary" nzWidth="220px">
     <div class="logo" [class.collapsed]="siderCollapsed">
       <img src="/imgs/logo.png" alt="Kinn" />
       <span class="brand-text">Kinn</span>
@@ -95,7 +95,8 @@
           <nz-option *ngFor="let u of acl.users()" [nzValue]="u.id" [nzLabel]="u.name"></nz-option>
         </nz-select> -->
         <!-- Workspace switcher (only accessible ones) -->
-<!--         <nz-select
+        <nz-select
+          *ngIf="accessibleWorkspaces.length > 1"
           class="ws-switcher"
           [ngModel]="selectedWorkspaceId"
           (ngModelChange)="onWorkspaceChange($event)"
@@ -103,10 +104,12 @@
           nzShowSearch
           nzBorderless
           [nzDropdownMatchSelectWidth]="false"
-          [nzDisabled]="false"
           nzPlaceHolder="Workspace">
           <nz-option *ngFor="let w of accessibleWorkspaces" [nzValue]="w.id" [nzLabel]="w.name"></nz-option>
-        </nz-select> -->
+        </nz-select>
+        <button nz-button class="hdr-btn ai-btn" (click)="toggleAi()" title="Assistant IA">
+          <span nz-icon nzType="robot" nzTheme="outline"></span>
+        </button>
         <button nz-button class="hdr-btn" nz-popover [nzPopoverTrigger]="'click'" (click)="openNotificationsPopover()" [nzPopoverPlacement]="'bottomRight'" [nzPopoverOverlayClassName]="'hdr-popover'" [nzPopoverContent]="notifTpl" title="Notifications">
           <nz-badge [nzCount]="notifUnreadCount" [nzOverflowCount]="99" [nzShowZero]="false">
             <i class="fa-regular fa-bell"></i>
@@ -165,17 +168,6 @@
   <ng-container *nzModalContent>
   <div class="cmd-modal">
     <div class="section">
-      <div class="section-title">Créer un workflow par IA</div>
-      <textarea nz-input [(ngModel)]="ccPrompt" [disabled]="ccBusy" rows="3" placeholder="Décrivez le workflow (ex: Lire emails entrants, filtrer par sujet, envoyer une notification)…"></textarea>
-      <div class="btn-row" style="margin-top:8px;">
-        <button nz-button nzType="primary" (click)="startQuickFlow()" [disabled]="!ccPrompt || ccBusy"><i class="fa-solid fa-wand-magic-sparkles"></i> Générer</button>
-        <button nz-button (click)="stopQuickFlow()" *ngIf="ccBusy">Stop</button>
-      </div>
-      <div class="chat-box" #ccScroller *ngIf="ccBusy || (ccStreamingParts && ccStreamingParts.length)">
-        <div class="bubble assistant"><div class="txt rich"><chat-renderer [parts]="ccStreamingParts"></chat-renderer></div></div>
-      </div>
-    </div>
-    <div class="section">
       <div class="section-title">Activité récente</div>
       <div class="activity" *ngFor="let a of activities">
         <span class="dot" [class.success]="a.state==='success'" [class.running]="a.state==='running'"></span>
@@ -217,16 +209,24 @@
 <!-- Notifications popover template -->
 <ng-template #notifTpl>
   <div class="notif-panel">
-    <div class="notif-header">Notifications</div>
+    <div class="notif-header">
+      <span>Notifications</span>
+      <button nz-button nzSize="small" nzType="link" (click)="ackAllNotifications()" *ngIf="notifUnreadCount > 0">Tout marquer comme lu</button>
+    </div>
     <div class="notif-list" *ngIf="!notifLoading; else notifLoadingTpl">
-      <div class="notif-item" *ngFor="let n of notifications" [class.unread]="!n.acknowledged" (click)="openNotification(n)">
+      <div class="notif-item" *ngFor="let n of notifications.slice(0, 5)" [class.unread]="!n.acknowledged" (click)="openNotification(n)">
+        <div class="notif-sev-icon" [ngClass]="n.severity || 'info'">
+          <i *ngIf="(n.severity || 'info') === 'info'" class="fa-solid fa-circle-info"></i>
+          <i *ngIf="n.severity === 'warning'" class="fa-solid fa-triangle-exclamation"></i>
+          <i *ngIf="n.severity === 'error' || n.severity === 'critical'" class="fa-solid fa-circle-exclamation"></i>
+        </div>
         <div class="meta">
           <div class="title">{{ n.title }}</div>
           <div class="desc">{{ n.desc }}</div>
         </div>
         <div class="actions">
-          <button nz-button nzSize="small" class="mini" (click)="ackNotification(n); $event.stopPropagation()" [disabled]="n.acknowledged">Lu</button>
-          <button nz-button nzSize="small" class="mini" (click)="deleteNotification(n); $event.stopPropagation()"><i class="fa-regular fa-trash-can"></i></button>
+          <button nz-button nzSize="small" nzType="text" (click)="ackNotification(n); $event.stopPropagation()" [disabled]="n.acknowledged" title="Marquer comme lu"><i class="fa-regular fa-envelope-open"></i></button>
+          <button nz-button nzSize="small" nzType="text" (click)="deleteNotification(n); $event.stopPropagation()" title="Supprimer"><i class="fa-regular fa-trash-can"></i></button>
         </div>
       </div>
       <div class="empty" *ngIf="notifications.length===0">Aucune notification</div>
@@ -234,9 +234,8 @@
     <ng-template #notifLoadingTpl>
       <div class="notif-loading">Chargement…</div>
     </ng-template>
-    <div class="notif-footer"><a [routerLink]="'/flows'">Voir tout</a></div>
+    <div class="notif-footer"><a [routerLink]="'/notifications'">Voir toutes les notifications</a></div>
   </div>
-  
 </ng-template>
 
 <!-- Profile dropdown menu -->
@@ -246,7 +245,16 @@
     <li nz-menu-item [routerLink]="'/forms'">Mes formulaires</li>
     <li nz-menu-item [routerLink]="'/flows'">Mes flows</li>
     <li nz-menu-item [routerLink]="'/change-password'">Changer le mot de passe</li>
+    <li nz-menu-item (click)="openOnboarding()">
+      <span nz-icon nzType="setting" nzTheme="outline"></span> Assistant de configuration
+    </li>
     <li nz-menu-divider></li>
     <li nz-menu-item (click)="logout()">Déconnexion</li>
   </ul>
 </nz-dropdown-menu>
+
+<!-- AI Panel (global drawer) -->
+<ai-panel></ai-panel>
+
+<!-- AI Onboarding dialog (opened from profile menu) -->
+<ai-onboarding-dialog></ai-onboarding-dialog>

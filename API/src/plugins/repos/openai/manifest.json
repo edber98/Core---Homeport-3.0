@@ -1,0 +1,1378 @@
+{
+  "repo": {
+    "name": "openai",
+    "type": "local",
+    "label": "OpenAI"
+  },
+  "variables": {
+    "llm_text": {
+      "title": "Réponse (texte)",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "textarea",
+          "key": "text",
+          "label": "Texte",
+          "description": "Texte généré par le modèle.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "ai_memory": {
+      "title": "Mémoire AI",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "array",
+          "key": "texts",
+          "label": "Texts",
+          "description": "Liste de textes mémorisés.",
+          "col": {
+            "xs": 24
+          },
+          "item": {
+            "type": "text",
+            "key": "_",
+            "label": "Texte",
+            "description": "Entrée texte de la mémoire."
+          }
+        },
+        {
+          "type": "number",
+          "key": "dimensions",
+          "label": "Dimensions",
+          "description": "Dimension des vecteurs d’embedding.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "vectorsCount",
+          "label": "# Vectors",
+          "description": "Nombre de vecteurs stockés.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "ai_vectors": {
+      "title": "Vecteurs (embeddings)",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "number",
+          "key": "vectorsCount",
+          "label": "# Vectors",
+          "description": "Nombre de vecteurs générés.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "dimensions",
+          "label": "Dimensions",
+          "description": "Dimension des vecteurs.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "vectors",
+          "label": "Vectors (JSON)",
+          "description": "Vecteurs encodés en JSON (tableau de nombres).",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "image_result": {
+      "title": "Image générée",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "file",
+          "key": "file",
+          "label": "Fichier",
+          "description": "Référence au fichier image généré.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "url",
+          "key": "url",
+          "label": "URL",
+          "description": "URL de l'image (si disponible).",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "revised_prompt",
+          "label": "Prompt révisé",
+          "description": "Prompt révisé par le modèle (si disponible).",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "ai_tool": {
+      "title": "Outil (LangChain)",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom lisible de l’outil.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "description",
+          "label": "Description",
+          "description": "Description fonctionnelle de l’outil.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "schema",
+          "label": "Paramètres (JSON Schema)",
+          "description": "Schéma JSON des paramètres de l’outil.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "openai",
+      "name": "OpenAI",
+      "title": "OpenAI",
+      "iconClass": "fa-brands fa-openai",
+      "iconUrl": "https://assets.streamlinehq.com/image/private/w_240,h_240,ar_1/f_auto/v1/icons/technology/openai_1-moa3pqsiii7l4dkheifi8.png/openai_1-gv7rd0u7lcncyfalyjodt.png?_a=DATAg1AAZAA0",
+      "color": "#10A37F",
+      "tags": [
+        "ai",
+        "llm"
+      ],
+      "categories": [
+        "AI"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Identifiants OpenAI",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "apiKey",
+            "label": "API Key",
+            "description": "Clé API OpenAI.",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "baseUrl",
+            "label": "Base URL (optionnel)",
+            "description": "URL alternative de l’API (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "organization",
+            "label": "Organization (optionnel)",
+            "description": "ID d’organisation OpenAI (si requis).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "defaultModel",
+            "label": "Modèle par défaut",
+            "description": "Modèle utilisé par défaut.",
+            "col": {
+              "xs": 24
+            },
+            "default": "gpt-4o-mini"
+          }
+        ]
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "openai_chat_completion",
+      "name": "openaiChatCompletion",
+      "schemaVersion": 2,
+      "title": "Complétion de chat",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AI",
+      "providerKey": "openai",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:llm_text"
+        }
+      ],
+      "description": "Générer une complétion de chat (messages System/User)",
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Complétion de chat",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Modèle",
+            "description": "Identifiant du modèle (ex.: gpt-4o-mini).",
+            "col": {
+              "xs": 24
+            },
+            "default": "gpt-4o-mini"
+          },
+          {
+            "type": "textarea",
+            "key": "system",
+            "label": "Système",
+            "description": "Contexte système (instructions).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "prompt",
+            "label": "Prompt (User)",
+            "description": "Message utilisateur / consigne.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "temperature",
+            "label": "Température",
+            "description": "Créativité de la génération (0-2).",
+            "col": {
+              "xs": 24
+            },
+            "default": 0.7
+          },
+          {
+            "type": "number",
+            "key": "maxTokens",
+            "label": "Max tokens",
+            "description": "Limite de tokens de sortie.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "subtitle": "Complétions",
+      "icon": "fa-solid fa-message",
+      "group": "Complétions",
+      "tags": [
+        "openai"
+      ]
+    },
+    {
+      "key": "openai_memory_static",
+      "name": "openaiMemoryStatic",
+      "schemaVersion": 2,
+      "title": "Mémoire (statique)",
+      "type": "memory",
+      "nodeKind": "memory",
+      "category": "AI",
+      "providerKey": "openai",
+      "outputHandles": [
+        {
+          "id": "memory",
+          "name": "Memory",
+          "type": "ai_memory",
+          "schema": "$var:ai_memory"
+        }
+      ],
+      "description": "Définir une mémoire statique (texte)",
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Mémoire (statique)",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "text",
+            "label": "Texte de mémoire",
+            "description": "Contenu texte stocké dans la mémoire.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      },
+      "subtitle": "Mémoire",
+      "icon": "fa-solid fa-box-archive",
+      "group": "Mémoire",
+      "tags": [
+        "openai"
+      ]
+    },
+    {
+      "key": "openai_memory_merge",
+      "name": "openaiMemoryMerge",
+      "schemaVersion": 2,
+      "title": "Mémoire (fusion)",
+      "type": "memory",
+      "nodeKind": "memory",
+      "category": "AI",
+      "providerKey": "openai",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "Memory",
+          "type": "ai_memory",
+          "accepts": [
+            "ai_memory"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "memory",
+          "name": "Memory",
+          "type": "ai_memory",
+          "schema": "$var:ai_memory"
+        }
+      ],
+      "description": "Fusionner ou relayer des mémoires AI",
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Mémoire (fusion)",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "checkbox",
+            "key": "dedupe",
+            "label": "Supprimer doublons",
+            "description": "Déduplique les textes similaires.",
+            "col": {
+              "xs": 24
+            },
+            "default": true
+          }
+        ]
+      },
+      "subtitle": "Mémoire",
+      "icon": "fa-solid fa-boxes-stacked",
+      "group": "Mémoire",
+      "tags": [
+        "openai"
+      ]
+    },
+    {
+      "key": "openai_tool_define",
+      "name": "openaiToolDefine",
+      "schemaVersion": 2,
+      "title": "Outil (LangChain)",
+      "type": "tool_ai",
+      "nodeKind": "tool_ai",
+      "category": "AI",
+      "providerKey": "openai",
+      "outputHandles": [
+        {
+          "id": "tool",
+          "name": "Tool",
+          "type": "ai_tool",
+          "schema": "$var:ai_tool"
+        }
+      ],
+      "description": "Définir un outil LangChain (nom, description, schéma)",
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Outil (LangChain)",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom de l'outil",
+            "description": "Nom unique et lisible de l’outil.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "description",
+            "label": "Description",
+            "description": "Description de l’outil et de son usage.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "parameters",
+            "label": "Paramètres (JSON Schema)",
+            "description": "Schéma JSON des paramètres.",
+            "col": {
+              "xs": 24
+            },
+            "default": "{}"
+          }
+        ]
+      },
+      "subtitle": "Outils",
+      "icon": "fa-solid fa-screwdriver-wrench",
+      "group": "Outils",
+      "tags": [
+        "openai"
+      ]
+    },
+    {
+      "key": "openai_embeddings",
+      "name": "openaiEmbeddings",
+      "schemaVersion": 2,
+      "title": "Embeddings",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AI",
+      "providerKey": "openai",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "ai_vector",
+          "schema": "$var:ai_vectors"
+        }
+      ],
+      "description": "Générer des vecteurs d’embedding",
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Embeddings",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Modèle",
+            "description": "Modèle d’embeddings (ex.: text-embedding-3-small).",
+            "col": {
+              "xs": 24
+            },
+            "default": "text-embedding-3-small"
+          },
+          {
+            "type": "textarea",
+            "key": "input",
+            "label": "Texte (ou JSON array)",
+            "description": "Texte unique ou tableau JSON de textes.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      },
+      "subtitle": "Embeddings",
+      "icon": "fa-solid fa-vector-square",
+      "group": "Embeddings",
+      "tags": [
+        "openai"
+      ]
+    },
+    {
+      "key": "openai_image_generate",
+      "name": "openaiImageGenerate",
+      "schemaVersion": 2,
+      "title": "Générer une image",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AI",
+      "providerKey": "openai",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:image_result"
+        }
+      ],
+      "description": "Générer une image à partir d'un prompt",
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Générer une image",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "select",
+            "key": "model",
+            "label": "Modèle",
+            "description": "Modèle de génération d'image.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "GPT Image 1",
+                "value": "gpt-image-1"
+              },
+              {
+                "label": "DALL-E 3",
+                "value": "dall-e-3"
+              },
+              {
+                "label": "DALL-E 2",
+                "value": "dall-e-2"
+              }
+            ],
+            "default": "gpt-image-1",
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "prompt",
+            "label": "Prompt",
+            "description": "Description de l’image souhaitée.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "key": "size",
+            "label": "Taille",
+            "description": "Taille de sortie de l'image.",
+            "col": {
+              "xs": 12
+            },
+            "options": [
+              {
+                "label": "1024x1024 (carré)",
+                "value": "1024x1024"
+              },
+              {
+                "label": "1536x1024 (paysage)",
+                "value": "1536x1024"
+              },
+              {
+                "label": "1024x1536 (portrait)",
+                "value": "1024x1536"
+              },
+              {
+                "label": "Auto",
+                "value": "auto"
+              }
+            ],
+            "default": "1024x1024",
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          },
+          {
+            "type": "select",
+            "key": "quality",
+            "label": "Qualité",
+            "description": "Qualité de l'image générée.",
+            "col": {
+              "xs": 12
+            },
+            "options": [
+              {
+                "label": "Auto",
+                "value": "auto"
+              },
+              {
+                "label": "Basse",
+                "value": "low"
+              },
+              {
+                "label": "Moyenne",
+                "value": "medium"
+              },
+              {
+                "label": "Haute",
+                "value": "high"
+              }
+            ],
+            "default": "auto",
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          }
+        ]
+      },
+      "subtitle": "Images",
+      "icon": "fa-solid fa-image",
+      "group": "Images",
+      "tags": [
+        "création",
+        "openai"
+      ]
+    },
+    {
+      "key": "openai_memory_embed",
+      "name": "openaiMemoryEmbed",
+      "schemaVersion": 2,
+      "title": "Mémoire (embeddings)",
+      "type": "memory",
+      "nodeKind": "memory",
+      "category": "AI",
+      "providerKey": "openai",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "Text",
+          "type": "text",
+          "accepts": [
+            "text"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "memory",
+          "name": "Memory",
+          "type": "ai_memory",
+          "schema": "$var:ai_memory"
+        }
+      ],
+      "description": "Indexer un texte en vecteurs (embeddings)",
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Mémoire (embeddings)",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "text",
+            "label": "Texte (si non fourni en entrée)",
+            "description": "Texte à indexer si non fourni par l’entrée.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Modèle d'embeddings",
+            "description": "Modèle utilisé pour l’indexation.",
+            "col": {
+              "xs": 24
+            },
+            "default": "text-embedding-3-small"
+          }
+        ]
+      },
+      "subtitle": "Mémoire",
+      "icon": "fa-solid fa-vector-square",
+      "group": "Mémoire",
+      "tags": [
+        "openai"
+      ]
+    },
+    {
+      "key": "openai_agent",
+      "name": "openaiAgent",
+      "schemaVersion": 2,
+      "title": "Agent OpenAI",
+      "type": "agent",
+      "nodeKind": "agent",
+      "category": "AI",
+      "providerKey": "openai",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:llm_text"
+        }
+      ],
+      "linkedHandles": [
+        {
+          "id": "tools",
+          "name": "Tools",
+          "type": "ai_tool",
+          "multiple": true,
+          "accepts": [
+            "ai_tool"
+          ]
+        },
+        {
+          "id": "memory",
+          "name": "Memory",
+          "type": "ai_memory",
+          "multiple": true,
+          "accepts": [
+            "ai_memory"
+          ]
+        }
+      ],
+      "description": "Agent OpenAI consommant Memory/Tools",
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Agent OpenAI",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Modèle",
+            "description": "Identifiant du modèle (ex.: gpt-4o-mini).",
+            "col": {
+              "xs": 24
+            },
+            "default": "gpt-4o-mini"
+          },
+          {
+            "type": "textarea",
+            "key": "system",
+            "label": "Système",
+            "description": "Contexte système pour l’agent.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "prompt",
+            "label": "Prompt",
+            "description": "Instruction de départ pour l’utilisateur.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "temperature",
+            "label": "Température",
+            "description": "Créativité de la génération (0-2).",
+            "col": {
+              "xs": 24
+            },
+            "default": 0.7
+          }
+        ]
+      },
+      "subtitle": "Agent",
+      "icon": "fa-solid fa-robot",
+      "group": "Agent",
+      "tags": [
+        "openai"
+      ]
+    },
+    {
+      "key": "openai_classify",
+      "name": "openaiClassify",
+      "schemaVersion": 2,
+      "title": "Classifier un texte",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AI",
+      "providerKey": "openai",
+      "output_array_field": "categories",
+      "outputSchema": [
+        {
+          "key": "category",
+          "type": "text",
+          "label": "Catégorie"
+        },
+        {
+          "key": "confidence",
+          "type": "number",
+          "label": "Confiance"
+        },
+        {
+          "key": "explanation",
+          "type": "textarea",
+          "label": "Explication"
+        }
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "description": "Classifier un texte dans une catégorie via OpenAI",
+      "authorize_catch_error": true,
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Classifier un texte",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "select",
+            "key": "model",
+            "label": "Modèle",
+            "description": "Modèle OpenAI à utiliser.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "GPT-4o",
+                "value": "gpt-4o"
+              },
+              {
+                "label": "GPT-4o mini",
+                "value": "gpt-4o-mini"
+              },
+              {
+                "label": "GPT-4 Turbo",
+                "value": "gpt-4-turbo"
+              },
+              {
+                "label": "o1",
+                "value": "o1"
+              },
+              {
+                "label": "o1-mini",
+                "value": "o1-mini"
+              }
+            ],
+            "default": "gpt-4o",
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "system",
+            "label": "Système",
+            "description": "Instructions système (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "text",
+            "label": "Texte à classifier",
+            "description": "Le texte que le modèle doit classifier.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "section",
+            "title": "Catégories",
+            "key": "categories",
+            "mode": "array",
+            "array": {
+              "initialItems": 2,
+              "minItems": 2,
+              "controls": {
+                "add": {
+                  "kind": "text",
+                  "text": "Ajouter une catégorie"
+                },
+                "remove": {
+                  "kind": "icon"
+                }
+              }
+            },
+            "fields": [
+              {
+                "type": "text",
+                "key": "name",
+                "label": "Nom",
+                "col": {
+                  "xs": 12
+                },
+                "validators": [
+                  {
+                    "type": "required"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "key": "description",
+                "label": "Description",
+                "col": {
+                  "xs": 12
+                }
+              },
+              {
+                "type": "text",
+                "key": "_id",
+                "label": "ID",
+                "col": {
+                  "xs": 24
+                },
+                "visibleIf": {
+                  "==": [
+                    {
+                      "var": "name"
+                    },
+                    "__never_visible__"
+                  ]
+                }
+              }
+            ],
+            "col": {
+              "xs": 24
+            },
+            "description": "Les catégories de classification.",
+            "grid": {
+              "gutter": 16
+            },
+            "ui": {
+              "layout": "vertical"
+            }
+          }
+        ]
+      },
+      "subtitle": "Classification",
+      "group": "Classification",
+      "tags": [
+        "openai",
+        "classification",
+        "ai"
+      ]
+    },
+    {
+      "key": "openai_extract",
+      "name": "openaiExtract",
+      "schemaVersion": 2,
+      "title": "Extraire des données",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AI",
+      "providerKey": "openai",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload"
+        }
+      ],
+      "description": "Extraire des données structurées d'un contenu via OpenAI",
+      "output_schema_field": "extraction_schema",
+      "authorize_catch_error": true,
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Extraire des données",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "select",
+            "key": "model",
+            "label": "Modèle",
+            "description": "Modèle OpenAI à utiliser.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "GPT-4o",
+                "value": "gpt-4o"
+              },
+              {
+                "label": "GPT-4o mini",
+                "value": "gpt-4o-mini"
+              },
+              {
+                "label": "GPT-4 Turbo",
+                "value": "gpt-4-turbo"
+              },
+              {
+                "label": "o1",
+                "value": "o1"
+              },
+              {
+                "label": "o1-mini",
+                "value": "o1-mini"
+              }
+            ],
+            "default": "gpt-4o",
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "system",
+            "label": "Système",
+            "description": "Instructions système (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "content",
+            "label": "Contenu à analyser",
+            "description": "Le contenu dont extraire les données.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "file",
+            "key": "image",
+            "label": "Image (optionnel)",
+            "description": "Image pour extraction (optionnel).",
+            "col": {
+              "xs": 24
+            },
+            "file": {
+              "accept": "image/*",
+              "maxSize": 20971520,
+              "multiple": false,
+              "maxCount": 1,
+              "lifecycle": "execution",
+              "preview": true,
+              "dragDrop": true,
+              "listType": "picture",
+              "buttonText": "Choisir une image",
+              "hint": "PNG, JPEG, GIF, WebP"
+            },
+            "expression": {
+              "allow": true,
+              "inline": true
+            }
+          },
+          {
+            "type": "schema_builder",
+            "key": "extraction_schema",
+            "label": "Schéma d'extraction",
+            "description": "Définir les champs à extraire.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      },
+      "subtitle": "Extraction",
+      "group": "Extraction",
+      "tags": [
+        "openai",
+        "extraction",
+        "ai"
+      ]
+    },
+    {
+      "key": "openai_vision",
+      "name": "openaiVision",
+      "schemaVersion": 2,
+      "title": "Analyser une image",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AI",
+      "providerKey": "openai",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:llm_text"
+        }
+      ],
+      "description": "Analyser une image avec un prompt via OpenAI",
+      "authorize_catch_error": true,
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Analyser une image",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "select",
+            "key": "model",
+            "label": "Modèle",
+            "description": "Modèle OpenAI à utiliser.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "GPT-4o",
+                "value": "gpt-4o"
+              },
+              {
+                "label": "GPT-4o mini",
+                "value": "gpt-4o-mini"
+              }
+            ],
+            "default": "gpt-4o",
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "system",
+            "label": "Système",
+            "description": "Instructions système (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "prompt",
+            "label": "Prompt",
+            "description": "Question ou instruction sur l'image.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "file",
+            "key": "image",
+            "label": "Image",
+            "description": "Image à analyser.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "file": {
+              "accept": "image/*",
+              "maxSize": 20971520,
+              "multiple": false,
+              "maxCount": 1,
+              "lifecycle": "execution",
+              "preview": true,
+              "dragDrop": true,
+              "listType": "picture",
+              "buttonText": "Choisir une image",
+              "hint": "PNG, JPEG, GIF, WebP"
+            },
+            "expression": {
+              "allow": true,
+              "inline": true
+            }
+          }
+        ]
+      },
+      "subtitle": "Vision",
+      "group": "Vision",
+      "tags": [
+        "openai",
+        "vision",
+        "ai"
+      ]
+    }
+  ]
+}

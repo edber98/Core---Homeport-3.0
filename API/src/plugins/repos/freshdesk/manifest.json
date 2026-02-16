@@ -1,0 +1,2644 @@
+{
+  "repo": {
+    "name": "freshdesk",
+    "type": "local",
+    "label": "Freshdesk"
+  },
+  "variables": {
+    "fd_ticket": {
+      "title": "Ticket Freshdesk",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du ticket.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "subject",
+          "label": "Sujet",
+          "description": "Sujet du ticket.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "description",
+          "label": "Description",
+          "description": "Description du ticket.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut du ticket.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "priority",
+          "label": "Priorité",
+          "description": "Priorité du ticket.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "source",
+          "label": "Source",
+          "description": "Source du ticket.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "requesterId",
+          "label": "Demandeur ID",
+          "description": "Identifiant du demandeur.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "createdAt",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "fd_tickets": {
+      "title": "Tickets",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Tickets",
+          "description": "Liste des tickets",
+          "mode": "array",
+          "key": "tickets",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "subject",
+              "label": "Sujet",
+              "description": "Sujet.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "priority",
+              "label": "Priorité",
+              "description": "Priorité.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "createdAt",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "fd_contact": {
+      "title": "Contact Freshdesk",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du contact.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom complet.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "email",
+          "key": "email",
+          "label": "Email",
+          "description": "Adresse e-mail.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "tel",
+          "key": "phone",
+          "label": "Téléphone",
+          "description": "Téléphone.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "companyId",
+          "label": "Entreprise ID",
+          "description": "Identifiant de l entreprise.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "createdAt",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "fd_contacts": {
+      "title": "Contacts",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Contacts",
+          "description": "Liste des contacts",
+          "mode": "array",
+          "key": "contacts",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "email",
+              "key": "email",
+              "label": "Email",
+              "description": "Email.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "tel",
+              "key": "phone",
+              "label": "Téléphone",
+              "description": "Téléphone.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "createdAt",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "fd_company": {
+      "title": "Entreprise Freshdesk",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom de l entreprise.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "description",
+          "label": "Description",
+          "description": "Description.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "domains",
+          "label": "Domaines",
+          "description": "Noms de domaine.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "createdAt",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "fd_companies": {
+      "title": "Entreprises",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Entreprises",
+          "description": "Liste des entreprises",
+          "mode": "array",
+          "key": "companies",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "description",
+              "label": "Description",
+              "description": "Description.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "createdAt",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "fd_agent": {
+      "title": "Agent Freshdesk",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom de l agent.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "email",
+          "key": "email",
+          "label": "Email",
+          "description": "Adresse e-mail.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "active",
+          "label": "Actif",
+          "description": "Agent actif.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "type",
+          "label": "Type",
+          "description": "Type d agent.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "fd_agents": {
+      "title": "Agents",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Agents",
+          "description": "Liste des agents",
+          "mode": "array",
+          "key": "agents",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "email",
+              "key": "email",
+              "label": "Email",
+              "description": "Email.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "active",
+              "label": "Actif",
+              "description": "Actif.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "fd_group": {
+      "title": "Groupe Freshdesk",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom du groupe.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "description",
+          "label": "Description",
+          "description": "Description.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "createdAt",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "fd_groups": {
+      "title": "Groupes",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Groupes",
+          "description": "Liste des groupes",
+          "mode": "array",
+          "key": "groups",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "description",
+              "label": "Description",
+              "description": "Description.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "createdAt",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "fd_note": {
+      "title": "Note Freshdesk",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "body",
+          "label": "Contenu",
+          "description": "Contenu de la note.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "private",
+          "label": "Privé",
+          "description": "Note privée.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "createdAt",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "fd_notes": {
+      "title": "Notes",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Notes",
+          "description": "Liste des notes",
+          "mode": "array",
+          "key": "notes",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "body",
+              "label": "Contenu",
+              "description": "Contenu.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "private",
+              "label": "Privé",
+              "description": "Privé.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "createdAt",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "fd_result": {
+      "title": "Résultat",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut de l opération.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "message",
+          "label": "Message",
+          "description": "Message de retour.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "fd_event": {
+      "title": "Événement Freshdesk",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "event",
+          "label": "Événement",
+          "description": "Type d événement.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "ticketId",
+          "label": "Ticket ID",
+          "description": "Identifiant du ticket.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "date",
+          "label": "Date",
+          "description": "Date de l événement.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "freshdesk",
+      "name": "Freshdesk",
+      "title": "Freshdesk",
+      "iconClass": "fa-solid fa-life-ring",
+      "iconUrl": "https://images.icon-icons.com/2699/PNG/512/freshdesk_logo_icon_170121.png",
+      "color": "#a1f8d7",
+      "tags": [
+        "freshdesk",
+        "support",
+        "helpdesk",
+        "tickets"
+      ],
+      "categories": [
+        "Support"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Freshdesk",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "domain",
+            "label": "Domaine",
+            "description": "Domaine Freshdesk (ex: monentreprise).",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "apiKey",
+            "label": "Clé API",
+            "description": "Clé API Freshdesk.",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "fd_ticket_create",
+      "name": "fdTicketCreate",
+      "schemaVersion": 2,
+      "title": "Créer un ticket",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Freshdesk",
+      "providerKey": "freshdesk",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:fd_ticket"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un nouveau ticket Freshdesk.",
+      "args": {
+        "title": "Créer un ticket",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "subject",
+            "label": "Sujet",
+            "description": "Sujet du ticket.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "description",
+            "label": "Description",
+            "description": "Description du ticket (HTML).",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "email",
+            "key": "email",
+            "label": "Email",
+            "description": "Email du demandeur.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "key": "priority",
+            "label": "Priorité",
+            "description": "Priorité du ticket.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "Basse",
+                "value": "1"
+              },
+              {
+                "label": "Moyenne",
+                "value": "2"
+              },
+              {
+                "label": "Haute",
+                "value": "3"
+              },
+              {
+                "label": "Urgente",
+                "value": "4"
+              }
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          },
+          {
+            "type": "select",
+            "key": "status",
+            "label": "Statut",
+            "description": "Statut du ticket.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "Ouvert",
+                "value": "2"
+              },
+              {
+                "label": "En attente",
+                "value": "3"
+              },
+              {
+                "label": "Résolu",
+                "value": "4"
+              },
+              {
+                "label": "Fermé",
+                "value": "5"
+              }
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "tags",
+            "label": "Tags",
+            "description": "Tags séparés par des virgules.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Tickets",
+      "icon": "fa-solid fa-square-plus",
+      "tags": [
+        "création",
+        "freshdesk"
+      ],
+      "group": "Tickets"
+    },
+    {
+      "key": "fd_ticket_get",
+      "name": "fdTicketGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un ticket",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Freshdesk",
+      "providerKey": "freshdesk",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:fd_ticket"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère un ticket Freshdesk par son ID.",
+      "args": {
+        "title": "Récupérer un ticket",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "ticketId",
+            "label": "Ticket ID",
+            "description": "Identifiant du ticket.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Tickets",
+      "icon": "fa-solid fa-eye",
+      "tags": [
+        "lecture",
+        "freshdesk"
+      ],
+      "group": "Tickets"
+    },
+    {
+      "key": "fd_ticket_update",
+      "name": "fdTicketUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier un ticket",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Freshdesk",
+      "providerKey": "freshdesk",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:fd_ticket"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Met à jour un ticket Freshdesk.",
+      "args": {
+        "title": "Modifier un ticket",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "ticketId",
+            "label": "Ticket ID",
+            "description": "Identifiant du ticket.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "subject",
+            "label": "Sujet",
+            "description": "Nouveau sujet.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "select",
+            "key": "priority",
+            "label": "Priorité",
+            "description": "Nouvelle priorité.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "Basse",
+                "value": "1"
+              },
+              {
+                "label": "Moyenne",
+                "value": "2"
+              },
+              {
+                "label": "Haute",
+                "value": "3"
+              },
+              {
+                "label": "Urgente",
+                "value": "4"
+              }
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          },
+          {
+            "type": "select",
+            "key": "status",
+            "label": "Statut",
+            "description": "Nouveau statut.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "Ouvert",
+                "value": "2"
+              },
+              {
+                "label": "En attente",
+                "value": "3"
+              },
+              {
+                "label": "Résolu",
+                "value": "4"
+              },
+              {
+                "label": "Fermé",
+                "value": "5"
+              }
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          },
+          {
+            "type": "text",
+            "key": "assigneeId",
+            "label": "Assigné ID",
+            "description": "ID de l agent assigné.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Tickets",
+      "icon": "fa-solid fa-pen-to-square",
+      "tags": [
+        "mise-à-jour",
+        "freshdesk"
+      ],
+      "group": "Tickets"
+    },
+    {
+      "key": "fd_ticket_delete",
+      "name": "fdTicketDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un ticket",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Freshdesk",
+      "providerKey": "freshdesk",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:fd_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Supprime un ticket Freshdesk.",
+      "args": {
+        "title": "Supprimer un ticket",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "ticketId",
+            "label": "Ticket ID",
+            "description": "Identifiant du ticket.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Tickets",
+      "icon": "fa-solid fa-trash",
+      "tags": [
+        "suppression",
+        "freshdesk"
+      ],
+      "group": "Tickets"
+    },
+    {
+      "key": "fd_tickets_list",
+      "name": "fdTicketsList",
+      "schemaVersion": 2,
+      "title": "Lister les tickets",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Freshdesk",
+      "providerKey": "freshdesk",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:fd_tickets"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les tickets Freshdesk.",
+      "args": {
+        "title": "Lister les tickets",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "page",
+            "label": "Page",
+            "description": "Numéro de page.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "perPage",
+            "label": "Par page",
+            "description": "Nombre par page (défaut 30).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Tickets",
+      "icon": "fa-solid fa-list",
+      "tags": [
+        "liste",
+        "freshdesk"
+      ],
+      "group": "Tickets"
+    },
+    {
+      "key": "fd_ticket_search",
+      "name": "fdTicketSearch",
+      "schemaVersion": 2,
+      "title": "Rechercher des tickets",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Freshdesk",
+      "providerKey": "freshdesk",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:fd_tickets"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Recherche des tickets Freshdesk.",
+      "args": {
+        "title": "Rechercher des tickets",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "query",
+            "label": "Recherche",
+            "description": "Requête de recherche Freshdesk.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Tickets",
+      "icon": "fa-solid fa-magnifying-glass",
+      "tags": [
+        "recherche",
+        "freshdesk"
+      ],
+      "group": "Tickets"
+    },
+    {
+      "key": "fd_contact_create",
+      "name": "fdContactCreate",
+      "schemaVersion": 2,
+      "title": "Créer un contact",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Freshdesk",
+      "providerKey": "freshdesk",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:fd_contact"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un nouveau contact Freshdesk.",
+      "args": {
+        "title": "Créer un contact",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nom complet.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "email",
+            "key": "email",
+            "label": "Email",
+            "description": "Adresse e-mail.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "tel",
+            "key": "phone",
+            "label": "Téléphone",
+            "description": "Téléphone.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "companyId",
+            "label": "Entreprise ID",
+            "description": "ID de l entreprise.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Contacts",
+      "icon": "fa-solid fa-square-plus",
+      "tags": [
+        "création",
+        "freshdesk"
+      ],
+      "group": "Contacts"
+    },
+    {
+      "key": "fd_contact_get",
+      "name": "fdContactGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un contact",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Freshdesk",
+      "providerKey": "freshdesk",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:fd_contact"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère un contact Freshdesk.",
+      "args": {
+        "title": "Récupérer un contact",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "contactId",
+            "label": "Contact ID",
+            "description": "Identifiant du contact.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Contacts",
+      "icon": "fa-solid fa-eye",
+      "tags": [
+        "lecture",
+        "freshdesk"
+      ],
+      "group": "Contacts"
+    },
+    {
+      "key": "fd_contact_update",
+      "name": "fdContactUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier un contact",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Freshdesk",
+      "providerKey": "freshdesk",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:fd_contact"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Met à jour un contact Freshdesk.",
+      "args": {
+        "title": "Modifier un contact",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "contactId",
+            "label": "Contact ID",
+            "description": "Identifiant du contact.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nouveau nom.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "email",
+            "key": "email",
+            "label": "Email",
+            "description": "Nouvel email.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "tel",
+            "key": "phone",
+            "label": "Téléphone",
+            "description": "Nouveau téléphone.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Contacts",
+      "icon": "fa-solid fa-pen-to-square",
+      "tags": [
+        "mise-à-jour",
+        "freshdesk"
+      ],
+      "group": "Contacts"
+    },
+    {
+      "key": "fd_contacts_list",
+      "name": "fdContactsList",
+      "schemaVersion": 2,
+      "title": "Lister les contacts",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Freshdesk",
+      "providerKey": "freshdesk",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:fd_contacts"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les contacts Freshdesk.",
+      "args": {
+        "title": "Lister les contacts",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "page",
+            "label": "Page",
+            "description": "Numéro de page.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "perPage",
+            "label": "Par page",
+            "description": "Nombre par page.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Contacts",
+      "icon": "fa-solid fa-list",
+      "tags": [
+        "liste",
+        "freshdesk"
+      ],
+      "group": "Contacts"
+    },
+    {
+      "key": "fd_company_create",
+      "name": "fdCompanyCreate",
+      "schemaVersion": 2,
+      "title": "Créer une entreprise",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Freshdesk",
+      "providerKey": "freshdesk",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:fd_company"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée une nouvelle entreprise Freshdesk.",
+      "args": {
+        "title": "Créer une entreprise",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nom de l entreprise.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "description",
+            "label": "Description",
+            "description": "Description.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "domains",
+            "label": "Domaines",
+            "description": "Noms de domaine (séparés par virgules).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Entreprises",
+      "icon": "fa-solid fa-square-plus",
+      "tags": [
+        "création",
+        "freshdesk"
+      ],
+      "group": "Entreprises"
+    },
+    {
+      "key": "fd_company_get",
+      "name": "fdCompanyGet",
+      "schemaVersion": 2,
+      "title": "Récupérer une entreprise",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Freshdesk",
+      "providerKey": "freshdesk",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:fd_company"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère une entreprise Freshdesk.",
+      "args": {
+        "title": "Récupérer une entreprise",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "companyId",
+            "label": "Entreprise ID",
+            "description": "Identifiant de l entreprise.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Entreprises",
+      "icon": "fa-solid fa-eye",
+      "tags": [
+        "lecture",
+        "freshdesk"
+      ],
+      "group": "Entreprises"
+    },
+    {
+      "key": "fd_companies_list",
+      "name": "fdCompaniesList",
+      "schemaVersion": 2,
+      "title": "Lister les entreprises",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Freshdesk",
+      "providerKey": "freshdesk",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:fd_companies"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les entreprises Freshdesk.",
+      "args": {
+        "title": "Lister les entreprises",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "page",
+            "label": "Page",
+            "description": "Numéro de page.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Entreprises",
+      "icon": "fa-solid fa-list",
+      "tags": [
+        "liste",
+        "freshdesk"
+      ],
+      "group": "Entreprises"
+    },
+    {
+      "key": "fd_agent_get",
+      "name": "fdAgentGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un agent",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Freshdesk",
+      "providerKey": "freshdesk",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:fd_agent"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère un agent Freshdesk.",
+      "args": {
+        "title": "Récupérer un agent",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "agentId",
+            "label": "Agent ID",
+            "description": "Identifiant de l agent.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Agents",
+      "icon": "fa-solid fa-user",
+      "tags": [
+        "lecture",
+        "freshdesk"
+      ],
+      "group": "Agents"
+    },
+    {
+      "key": "fd_agents_list",
+      "name": "fdAgentsList",
+      "schemaVersion": 2,
+      "title": "Lister les agents",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Freshdesk",
+      "providerKey": "freshdesk",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:fd_agents"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les agents Freshdesk.",
+      "args": {
+        "title": "Lister les agents",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "page",
+            "label": "Page",
+            "description": "Numéro de page.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Agents",
+      "icon": "fa-solid fa-users",
+      "tags": [
+        "liste",
+        "freshdesk"
+      ],
+      "group": "Agents"
+    },
+    {
+      "key": "fd_group_get",
+      "name": "fdGroupGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un groupe",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Freshdesk",
+      "providerKey": "freshdesk",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:fd_group"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère un groupe Freshdesk.",
+      "args": {
+        "title": "Récupérer un groupe",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "groupId",
+            "label": "Groupe ID",
+            "description": "Identifiant du groupe.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Groupes",
+      "icon": "fa-solid fa-users",
+      "tags": [
+        "lecture",
+        "freshdesk"
+      ],
+      "group": "Groupes"
+    },
+    {
+      "key": "fd_groups_list",
+      "name": "fdGroupsList",
+      "schemaVersion": 2,
+      "title": "Lister les groupes",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Freshdesk",
+      "providerKey": "freshdesk",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:fd_groups"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les groupes Freshdesk.",
+      "args": {
+        "title": "Lister les groupes",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Groupes",
+      "icon": "fa-solid fa-users",
+      "tags": [
+        "liste",
+        "freshdesk"
+      ],
+      "group": "Groupes"
+    },
+    {
+      "key": "fd_note_create",
+      "name": "fdNoteCreate",
+      "schemaVersion": 2,
+      "title": "Ajouter une note",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Freshdesk",
+      "providerKey": "freshdesk",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:fd_note"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Ajoute une note à un ticket Freshdesk.",
+      "args": {
+        "title": "Ajouter une note",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "ticketId",
+            "label": "Ticket ID",
+            "description": "Identifiant du ticket.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "body",
+            "label": "Contenu",
+            "description": "Contenu de la note.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "key": "private",
+            "label": "Privé",
+            "description": "Note privée ou publique.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "Privé",
+                "value": "true"
+              },
+              {
+                "label": "Publique",
+                "value": "false"
+              }
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Notes",
+      "icon": "fa-solid fa-comment",
+      "tags": [
+        "création",
+        "freshdesk"
+      ],
+      "group": "Notes"
+    },
+    {
+      "key": "fd_notes_list",
+      "name": "fdNotesList",
+      "schemaVersion": 2,
+      "title": "Lister les notes",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Freshdesk",
+      "providerKey": "freshdesk",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:fd_notes"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les notes d un ticket Freshdesk.",
+      "args": {
+        "title": "Lister les notes",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "ticketId",
+            "label": "Ticket ID",
+            "description": "Identifiant du ticket.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Notes",
+      "icon": "fa-solid fa-comments",
+      "tags": [
+        "liste",
+        "freshdesk"
+      ],
+      "group": "Notes"
+    },
+    {
+      "key": "fd_time_entry_create",
+      "name": "fdTimeEntryCreate",
+      "schemaVersion": 2,
+      "title": "Créer une entrée de temps",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Freshdesk",
+      "providerKey": "freshdesk",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:fd_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée une entrée de temps sur un ticket Freshdesk.",
+      "args": {
+        "title": "Créer une entrée de temps",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "ticketId",
+            "label": "Ticket ID",
+            "description": "Identifiant du ticket.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "timeSpent",
+            "label": "Temps passé",
+            "description": "Temps passé (ex: 01:30).",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "note",
+            "label": "Note",
+            "description": "Note associée.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Temps",
+      "icon": "fa-solid fa-clock",
+      "tags": [
+        "création",
+        "freshdesk"
+      ],
+      "group": "Temps"
+    },
+    {
+      "key": "fd_time_entries_list",
+      "name": "fdTimeEntriesList",
+      "schemaVersion": 2,
+      "title": "Lister les entrées de temps",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Freshdesk",
+      "providerKey": "freshdesk",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:fd_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les entrées de temps d un ticket Freshdesk.",
+      "args": {
+        "title": "Lister les entrées de temps",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "ticketId",
+            "label": "Ticket ID",
+            "description": "Identifiant du ticket.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Temps",
+      "icon": "fa-solid fa-clock",
+      "tags": [
+        "liste",
+        "freshdesk"
+      ],
+      "group": "Temps"
+    },
+    {
+      "key": "fd_satisfaction_list",
+      "name": "fdSatisfactionList",
+      "schemaVersion": 2,
+      "title": "Lister les notes de satisfaction",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Freshdesk",
+      "providerKey": "freshdesk",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:fd_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les notes de satisfaction Freshdesk.",
+      "args": {
+        "title": "Lister les notes de satisfaction",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "page",
+            "label": "Page",
+            "description": "Numéro de page.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Satisfaction",
+      "icon": "fa-solid fa-star",
+      "tags": [
+        "liste",
+        "freshdesk"
+      ],
+      "group": "Satisfaction"
+    },
+    {
+      "key": "fd_webhook_event",
+      "name": "fdWebhookEvent",
+      "schemaVersion": 2,
+      "title": "Événement webhook Freshdesk",
+      "type": "event",
+      "nodeKind": "event",
+      "category": "Freshdesk",
+      "providerKey": "freshdesk",
+      "subtitle": "Événements",
+      "icon": "fa-solid fa-bolt",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:fd_event"
+        }
+      ],
+      "description": "Déclenché lors d un événement webhook Freshdesk.",
+      "args": {
+        "title": "Événement webhook Freshdesk",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "select",
+            "key": "eventType",
+            "label": "Type d événement",
+            "description": "Type d événement à surveiller.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "Ticket créé",
+                "value": "ticket_created"
+              },
+              {
+                "label": "Ticket mis à jour",
+                "value": "ticket_updated"
+              },
+              {
+                "label": "Note ajoutée",
+                "value": "note_added"
+              },
+              {
+                "label": "Contact créé",
+                "value": "contact_created"
+              }
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "événement",
+        "freshdesk"
+      ],
+      "group": "Événements"
+    }
+  ]
+}

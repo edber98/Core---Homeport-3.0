@@ -1,0 +1,1358 @@
+{
+  "repo": {
+    "name": "anthropic",
+    "type": "local",
+    "label": "Anthropic Claude"
+  },
+  "variables": {
+    "anthropic_message": {
+      "title": "Message Anthropic",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du message.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "model",
+          "label": "Modèle",
+          "description": "Modèle utilisé.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "role",
+          "label": "Rôle",
+          "description": "Rôle de la réponse.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "text",
+          "label": "Texte",
+          "description": "Contenu texte de la réponse.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "stopReason",
+          "label": "Raison d'arrêt",
+          "description": "Raison de fin de génération.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "inputTokens",
+          "label": "Tokens entrée",
+          "description": "Nombre de tokens en entrée.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "outputTokens",
+          "label": "Tokens sortie",
+          "description": "Nombre de tokens en sortie.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "anthropic_messages": {
+      "title": "Messages Anthropic",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Messages",
+          "description": "Liste des messages",
+          "mode": "array",
+          "key": "messages",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "model",
+              "label": "Modèle",
+              "description": "Modèle.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "text",
+              "label": "Texte",
+              "description": "Contenu.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "anthropic_model": {
+      "title": "Modèle Anthropic",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du modèle.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "displayName",
+          "label": "Nom",
+          "description": "Nom d'affichage du modèle.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "createdAt",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "type",
+          "label": "Type",
+          "description": "Type du modèle.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "anthropic_models": {
+      "title": "Modèles Anthropic",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Modèles",
+          "description": "Liste des modèles",
+          "mode": "array",
+          "key": "models",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "displayName",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "createdAt",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "type",
+              "label": "Type",
+              "description": "Type.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "anthropic_result": {
+      "title": "Résultat Anthropic",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant de la ressource.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "text",
+          "label": "Texte",
+          "description": "Contenu texte du résultat.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "inputTokens",
+          "label": "Tokens entrée",
+          "description": "Tokens en entrée.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "anthropic",
+      "name": "Anthropic",
+      "title": "Anthropic Claude",
+      "iconClass": "fa-solid fa-brain",
+      "iconUrl": "https://registry.npmmirror.com/@lobehub/icons-static-png/latest/files/dark/claude-color.png",
+      "color": "#ffd3c5",
+      "tags": [
+        "ai",
+        "llm"
+      ],
+      "categories": [
+        "AI"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Identifiants Anthropic",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "apiKey",
+            "label": "API Key",
+            "description": "Clé API Anthropic.",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "baseUrl",
+            "label": "Base URL (optionnel)",
+            "description": "URL alternative de l'API (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "defaultModel",
+            "label": "Modèle par défaut",
+            "description": "Modèle utilisé par défaut.",
+            "col": {
+              "xs": 24
+            },
+            "default": "claude-sonnet-4-5-20250929"
+          }
+        ]
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "anthropic_create_message",
+      "name": "anthropicCreateMessage",
+      "schemaVersion": 2,
+      "title": "Créer un message",
+      "subtitle": "Messages",
+      "icon": "fa-solid fa-message",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AI",
+      "providerKey": "anthropic",
+      "tags": [
+        "création",
+        "anthropic"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:anthropic_message"
+        }
+      ],
+      "description": "Générer une réponse via l'API Messages d'Anthropic.",
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Créer un message",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Modèle",
+            "description": "Identifiant du modèle (ex.: claude-sonnet-4-5-20250929).",
+            "col": {
+              "xs": 24
+            },
+            "default": "claude-sonnet-4-5-20250929"
+          },
+          {
+            "type": "textarea",
+            "key": "system",
+            "label": "Système",
+            "description": "Instructions système.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "prompt",
+            "label": "Prompt (User)",
+            "description": "Message utilisateur.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "messages",
+            "label": "Messages (JSON)",
+            "description": "Tableau JSON de messages (optionnel, remplace le prompt).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "maxTokens",
+            "label": "Max tokens",
+            "description": "Limite de tokens de sortie.",
+            "col": {
+              "xs": 24
+            },
+            "default": 1024
+          },
+          {
+            "type": "number",
+            "key": "temperature",
+            "label": "Température",
+            "description": "Créativité de la génération (0-1).",
+            "col": {
+              "xs": 24
+            },
+            "default": 0.7
+          },
+          {
+            "type": "number",
+            "key": "topP",
+            "label": "Top P",
+            "description": "Nucleus sampling (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "group": "Messages"
+    },
+    {
+      "key": "anthropic_create_message_stream",
+      "name": "anthropicCreateMessageStream",
+      "schemaVersion": 2,
+      "title": "Créer un message (stream)",
+      "subtitle": "Messages",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AI",
+      "providerKey": "anthropic",
+      "tags": [
+        "création",
+        "anthropic"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:anthropic_result"
+        }
+      ],
+      "description": "Générer une réponse en streaming via Anthropic.",
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Créer un message (stream)",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Modèle",
+            "description": "Identifiant du modèle.",
+            "col": {
+              "xs": 24
+            },
+            "default": "claude-sonnet-4-5-20250929"
+          },
+          {
+            "type": "textarea",
+            "key": "system",
+            "label": "Système",
+            "description": "Instructions système.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "prompt",
+            "label": "Prompt (User)",
+            "description": "Message utilisateur.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "messages",
+            "label": "Messages (JSON)",
+            "description": "Tableau JSON de messages (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "maxTokens",
+            "label": "Max tokens",
+            "description": "Limite de tokens.",
+            "col": {
+              "xs": 24
+            },
+            "default": 1024
+          },
+          {
+            "type": "number",
+            "key": "temperature",
+            "label": "Température",
+            "description": "Créativité (0-1).",
+            "col": {
+              "xs": 24
+            },
+            "default": 0.7
+          }
+        ]
+      },
+      "group": "Messages"
+    },
+    {
+      "key": "anthropic_create_message_tools",
+      "name": "anthropicCreateMessageTools",
+      "schemaVersion": 2,
+      "title": "Créer un message (tools)",
+      "subtitle": "Messages",
+      "icon": "fa-solid fa-screwdriver-wrench",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AI",
+      "providerKey": "anthropic",
+      "tags": [
+        "création",
+        "anthropic"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:anthropic_message"
+        }
+      ],
+      "description": "Générer une réponse avec appel d'outils (tool use).",
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Créer un message (tools)",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Modèle",
+            "description": "Identifiant du modèle.",
+            "col": {
+              "xs": 24
+            },
+            "default": "claude-sonnet-4-5-20250929"
+          },
+          {
+            "type": "textarea",
+            "key": "system",
+            "label": "Système",
+            "description": "Instructions système.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "prompt",
+            "label": "Prompt (User)",
+            "description": "Message utilisateur.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "messages",
+            "label": "Messages (JSON)",
+            "description": "Tableau JSON de messages (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "tools",
+            "label": "Outils (JSON)",
+            "description": "Tableau JSON des outils disponibles.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "maxTokens",
+            "label": "Max tokens",
+            "description": "Limite de tokens.",
+            "col": {
+              "xs": 24
+            },
+            "default": 1024
+          },
+          {
+            "type": "number",
+            "key": "temperature",
+            "label": "Température",
+            "description": "Créativité (0-1).",
+            "col": {
+              "xs": 24
+            },
+            "default": 0.7
+          }
+        ]
+      },
+      "group": "Messages"
+    },
+    {
+      "key": "anthropic_create_message_vision",
+      "name": "anthropicCreateMessageVision",
+      "schemaVersion": 2,
+      "title": "Créer un message (vision)",
+      "subtitle": "Messages",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AI",
+      "providerKey": "anthropic",
+      "tags": [
+        "création",
+        "anthropic"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:anthropic_message"
+        }
+      ],
+      "description": "Analyser une image avec un prompt via Anthropic.",
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Créer un message (vision)",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Modèle",
+            "description": "Identifiant du modèle.",
+            "col": {
+              "xs": 24
+            },
+            "default": "claude-sonnet-4-5-20250929"
+          },
+          {
+            "type": "textarea",
+            "key": "system",
+            "label": "Système",
+            "description": "Instructions système.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "prompt",
+            "label": "Prompt",
+            "description": "Question ou instruction sur l'image.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "imageUrl",
+            "label": "URL de l'image",
+            "description": "URL publique ou données base64 de l'image.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "key": "mediaType",
+            "label": "Type média",
+            "description": "Type MIME de l'image.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "PNG",
+                "value": "image/png"
+              },
+              {
+                "label": "JPEG",
+                "value": "image/jpeg"
+              },
+              {
+                "label": "GIF",
+                "value": "image/gif"
+              },
+              {
+                "label": "WebP",
+                "value": "image/webp"
+              }
+            ],
+            "default": "image/png",
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          },
+          {
+            "type": "number",
+            "key": "maxTokens",
+            "label": "Max tokens",
+            "description": "Limite de tokens.",
+            "col": {
+              "xs": 24
+            },
+            "default": 1024
+          },
+          {
+            "type": "number",
+            "key": "temperature",
+            "label": "Température",
+            "description": "Créativité (0-1).",
+            "col": {
+              "xs": 24
+            },
+            "default": 0.7
+          }
+        ]
+      },
+      "group": "Messages"
+    },
+    {
+      "key": "anthropic_list_models",
+      "name": "anthropicListModels",
+      "schemaVersion": 2,
+      "title": "Lister les modèles",
+      "subtitle": "Modèles",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AI",
+      "providerKey": "anthropic",
+      "tags": [
+        "liste",
+        "anthropic"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:anthropic_models"
+        }
+      ],
+      "description": "Récupérer la liste des modèles disponibles.",
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Lister les modèles",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre maximum de résultats.",
+            "col": {
+              "xs": 24
+            },
+            "default": 20
+          }
+        ]
+      },
+      "group": "Modèles"
+    },
+    {
+      "key": "anthropic_get_model",
+      "name": "anthropicGetModel",
+      "schemaVersion": 2,
+      "title": "Récupérer un modèle",
+      "subtitle": "Modèles",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AI",
+      "providerKey": "anthropic",
+      "tags": [
+        "lecture",
+        "anthropic"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:anthropic_model"
+        }
+      ],
+      "description": "Récupérer les détails d'un modèle par son ID.",
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Récupérer un modèle",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "modelId",
+            "label": "Model ID",
+            "description": "Identifiant du modèle.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      },
+      "group": "Modèles"
+    },
+    {
+      "key": "anthropic_count_tokens",
+      "name": "anthropicCountTokens",
+      "schemaVersion": 2,
+      "title": "Compter les tokens",
+      "subtitle": "Tokens",
+      "icon": "fa-solid fa-hashtag",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AI",
+      "providerKey": "anthropic",
+      "tags": [
+        "lecture",
+        "anthropic"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:anthropic_result"
+        }
+      ],
+      "description": "Compter les tokens d'un message avant envoi.",
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Compter les tokens",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Modèle",
+            "description": "Identifiant du modèle.",
+            "col": {
+              "xs": 24
+            },
+            "default": "claude-sonnet-4-5-20250929"
+          },
+          {
+            "type": "textarea",
+            "key": "system",
+            "label": "Système",
+            "description": "Instructions système (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "prompt",
+            "label": "Prompt",
+            "description": "Message à compter.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "messages",
+            "label": "Messages (JSON)",
+            "description": "Tableau JSON de messages (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "group": "Tokens"
+    },
+    {
+      "key": "anthropic_classify",
+      "name": "anthropicClassify",
+      "schemaVersion": 2,
+      "title": "Classifier un texte",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AI",
+      "providerKey": "anthropic",
+      "output_array_field": "categories",
+      "outputSchema": [
+        {
+          "key": "category",
+          "type": "text",
+          "label": "Catégorie"
+        },
+        {
+          "key": "confidence",
+          "type": "number",
+          "label": "Confiance"
+        },
+        {
+          "key": "explanation",
+          "type": "textarea",
+          "label": "Explication"
+        }
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "description": "Classifier un texte dans une catégorie via Anthropic",
+      "authorize_catch_error": true,
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Classifier un texte",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "select",
+            "key": "model",
+            "label": "Modèle",
+            "description": "Modèle Anthropic à utiliser.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "Claude Sonnet 4.5",
+                "value": "claude-sonnet-4-5-20250929"
+              },
+              {
+                "label": "Claude Opus 4",
+                "value": "claude-opus-4-0-20250514"
+              },
+              {
+                "label": "Claude Haiku 3.5",
+                "value": "claude-haiku-3-5-20241022"
+              }
+            ],
+            "default": "claude-sonnet-4-5-20250929",
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "system",
+            "label": "Système",
+            "description": "Instructions système (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "text",
+            "label": "Texte à classifier",
+            "description": "Le texte que le modèle doit classifier.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "section",
+            "title": "Catégories",
+            "key": "categories",
+            "mode": "array",
+            "array": {
+              "initialItems": 2,
+              "minItems": 2,
+              "controls": {
+                "add": {
+                  "kind": "text",
+                  "text": "Ajouter une catégorie"
+                },
+                "remove": {
+                  "kind": "icon"
+                }
+              }
+            },
+            "fields": [
+              {
+                "type": "text",
+                "key": "name",
+                "label": "Nom",
+                "col": {
+                  "xs": 12
+                },
+                "validators": [
+                  {
+                    "type": "required"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "key": "description",
+                "label": "Description",
+                "col": {
+                  "xs": 12
+                }
+              },
+              {
+                "type": "text",
+                "key": "_id",
+                "label": "ID",
+                "col": {
+                  "xs": 24
+                },
+                "visibleIf": {
+                  "==": [
+                    {
+                      "var": "name"
+                    },
+                    "__never_visible__"
+                  ]
+                }
+              }
+            ],
+            "col": {
+              "xs": 24
+            },
+            "description": "Les catégories de classification.",
+            "grid": {
+              "gutter": 16
+            },
+            "ui": {
+              "layout": "vertical"
+            }
+          }
+        ]
+      },
+      "subtitle": "Classification",
+      "group": "Classification",
+      "tags": [
+        "anthropic",
+        "classification",
+        "ai"
+      ]
+    },
+    {
+      "key": "anthropic_extract",
+      "name": "anthropicExtract",
+      "schemaVersion": 2,
+      "title": "Extraire des données",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AI",
+      "providerKey": "anthropic",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload"
+        }
+      ],
+      "description": "Extraire des données structurées d'un contenu via Anthropic",
+      "output_schema_field": "extraction_schema",
+      "authorize_catch_error": true,
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Extraire des données",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "select",
+            "key": "model",
+            "label": "Modèle",
+            "description": "Modèle Anthropic à utiliser.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "Claude Sonnet 4.5",
+                "value": "claude-sonnet-4-5-20250929"
+              },
+              {
+                "label": "Claude Opus 4",
+                "value": "claude-opus-4-0-20250514"
+              },
+              {
+                "label": "Claude Haiku 3.5",
+                "value": "claude-haiku-3-5-20241022"
+              }
+            ],
+            "default": "claude-sonnet-4-5-20250929",
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "system",
+            "label": "Système",
+            "description": "Instructions système (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "content",
+            "label": "Contenu à analyser",
+            "description": "Le contenu dont extraire les données.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "file",
+            "key": "image",
+            "label": "Image (optionnel)",
+            "description": "Image pour extraction (optionnel).",
+            "col": {
+              "xs": 24
+            },
+            "file": {
+              "accept": "image/*",
+              "maxSize": 20971520,
+              "multiple": false,
+              "maxCount": 1,
+              "lifecycle": "execution",
+              "preview": true,
+              "dragDrop": true,
+              "listType": "picture",
+              "buttonText": "Choisir une image",
+              "hint": "PNG, JPEG, GIF, WebP"
+            },
+            "expression": {
+              "allow": true,
+              "inline": true
+            }
+          },
+          {
+            "type": "schema_builder",
+            "key": "extraction_schema",
+            "label": "Schéma d'extraction",
+            "description": "Définir les champs à extraire.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      },
+      "subtitle": "Extraction",
+      "group": "Extraction",
+      "tags": [
+        "anthropic",
+        "extraction",
+        "ai"
+      ]
+    }
+  ]
+}

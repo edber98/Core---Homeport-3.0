@@ -1,0 +1,1738 @@
+{
+  "repo": {
+    "name": "twilio",
+    "type": "local",
+    "label": "Twilio"
+  },
+  "providers": [
+    {
+      "key": "twilio",
+      "name": "Twilio",
+      "title": "Twilio",
+      "iconClass": "fa-solid fa-phone",
+      "color": "#ffb5be",
+      "tags": [
+        "twilio",
+        "sms",
+        "voice",
+        "phone",
+        "verify"
+      ],
+      "categories": [
+        "Communication"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Twilio",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "accountSid",
+            "label": "Account SID",
+            "description": "Identifiant du compte Twilio (commence par AC).",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "authToken",
+            "label": "Auth token",
+            "description": "Jeton d'authentification Twilio.",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "iconUrl": "https://cdn.simpleicons.org/twilio"
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "twilio_send_sms",
+      "name": "twilioSendSms",
+      "schemaVersion": 2,
+      "title": "Envoyer un SMS",
+      "subtitle": "SMS",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SMS",
+      "providerKey": "twilio",
+      "icon": "fa-solid fa-comment-sms",
+      "description": "Envoyer un SMS via Twilio",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:twilio_sms"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Envoyer un SMS",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "tel",
+            "key": "to",
+            "label": "Destinataire",
+            "description": "Numéro de téléphone du destinataire (format E.164).",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "tel",
+            "key": "from",
+            "label": "Expéditeur",
+            "description": "Numéro Twilio ou Messaging Service SID.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "body",
+            "label": "Message",
+            "description": "Contenu du SMS.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "status_callback",
+            "label": "URL de callback",
+            "description": "URL pour recevoir les mises à jour de statut.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "envoi",
+        "twilio"
+      ],
+      "group": "SMS"
+    },
+    {
+      "key": "twilio_list_sms",
+      "name": "twilioListSms",
+      "schemaVersion": 2,
+      "title": "Lister les SMS",
+      "subtitle": "SMS",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SMS",
+      "providerKey": "twilio",
+      "icon": "fa-solid fa-list",
+      "description": "Lister les SMS du compte Twilio",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:twilio_sms_list"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Lister les SMS",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "tel",
+            "key": "to",
+            "label": "Destinataire (filtre)",
+            "description": "Filtrer par numéro de destinataire.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "tel",
+            "key": "from",
+            "label": "Expéditeur (filtre)",
+            "description": "Filtrer par numéro d'expéditeur.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "page_size",
+            "label": "Taille de page",
+            "description": "Nombre de résultats par page.",
+            "col": {
+              "xs": 24
+            },
+            "default": 20
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "liste",
+        "twilio"
+      ],
+      "group": "SMS"
+    },
+    {
+      "key": "twilio_create_call",
+      "name": "twilioCreateCall",
+      "schemaVersion": 2,
+      "title": "Créer un appel",
+      "subtitle": "Appels",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Appels",
+      "providerKey": "twilio",
+      "icon": "fa-solid fa-phone-volume",
+      "description": "Initier un appel vocal via Twilio",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:twilio_call"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Créer un appel",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "tel",
+            "key": "to",
+            "label": "Destinataire",
+            "description": "Numéro de téléphone du destinataire (format E.164).",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "tel",
+            "key": "from",
+            "label": "Expéditeur",
+            "description": "Numéro Twilio pour l'appel.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "url",
+            "label": "URL TwiML",
+            "description": "URL retournant du TwiML pour contrôler l'appel.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "twiml",
+            "label": "TwiML en ligne",
+            "description": "Instructions TwiML directes (ex: <Response><Say>Bonjour</Say></Response>).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "status_callback",
+            "label": "URL de callback",
+            "description": "URL pour recevoir les mises à jour de statut.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "création",
+        "twilio"
+      ],
+      "group": "Appels"
+    },
+    {
+      "key": "twilio_get_call",
+      "name": "twilioGetCall",
+      "schemaVersion": 2,
+      "title": "Obtenir un appel",
+      "subtitle": "Appels",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Appels",
+      "providerKey": "twilio",
+      "icon": "fa-solid fa-phone",
+      "description": "Obtenir les détails d'un appel par son SID",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:twilio_call"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Obtenir un appel",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "call_sid",
+            "label": "SID de l'appel",
+            "description": "Identifiant SID de l'appel.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "lecture",
+        "twilio"
+      ],
+      "group": "Appels"
+    },
+    {
+      "key": "twilio_list_calls",
+      "name": "twilioListCalls",
+      "schemaVersion": 2,
+      "title": "Lister les appels",
+      "subtitle": "Appels",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Appels",
+      "providerKey": "twilio",
+      "icon": "fa-solid fa-list-ul",
+      "description": "Lister les appels du compte Twilio",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:twilio_calls"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Lister les appels",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "tel",
+            "key": "to",
+            "label": "Destinataire (filtre)",
+            "description": "Filtrer par numéro de destinataire.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "tel",
+            "key": "from",
+            "label": "Expéditeur (filtre)",
+            "description": "Filtrer par numéro d'expéditeur.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "select",
+            "key": "status",
+            "label": "Statut (filtre)",
+            "description": "Filtrer par statut d'appel.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "En file d'attente",
+                "value": "queued"
+              },
+              {
+                "label": "En sonnerie",
+                "value": "ringing"
+              },
+              {
+                "label": "En cours",
+                "value": "in-progress"
+              },
+              {
+                "label": "Terminé",
+                "value": "completed"
+              },
+              {
+                "label": "Occupé",
+                "value": "busy"
+              },
+              {
+                "label": "Échoué",
+                "value": "failed"
+              },
+              {
+                "label": "Pas de réponse",
+                "value": "no-answer"
+              }
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          },
+          {
+            "type": "number",
+            "key": "page_size",
+            "label": "Taille de page",
+            "description": "Nombre de résultats par page.",
+            "col": {
+              "xs": 24
+            },
+            "default": 20
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "liste",
+        "twilio"
+      ],
+      "group": "Appels"
+    },
+    {
+      "key": "twilio_list_phone_numbers",
+      "name": "twilioListPhoneNumbers",
+      "schemaVersion": 2,
+      "title": "Lister les numéros",
+      "subtitle": "Numéros",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Numéros de téléphone",
+      "providerKey": "twilio",
+      "icon": "fa-solid fa-phone-flip",
+      "description": "Lister les numéros de téléphone du compte Twilio",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:twilio_phones"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Lister les numéros",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "page_size",
+            "label": "Taille de page",
+            "description": "Nombre de résultats par page.",
+            "col": {
+              "xs": 24
+            },
+            "default": 20
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "liste",
+        "twilio"
+      ],
+      "group": "Numéros"
+    },
+    {
+      "key": "twilio_get_phone_number",
+      "name": "twilioGetPhoneNumber",
+      "schemaVersion": 2,
+      "title": "Obtenir un numéro",
+      "subtitle": "Numéros",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Numéros de téléphone",
+      "providerKey": "twilio",
+      "icon": "fa-solid fa-phone",
+      "description": "Obtenir les détails d'un numéro par son SID",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:twilio_phone"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Obtenir un numéro",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "phone_sid",
+            "label": "SID du numéro",
+            "description": "Identifiant SID du numéro de téléphone.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "lecture",
+        "twilio"
+      ],
+      "group": "Numéros"
+    },
+    {
+      "key": "twilio_get_message",
+      "name": "twilioGetMessage",
+      "schemaVersion": 2,
+      "title": "Obtenir un message",
+      "subtitle": "Messages",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Messages",
+      "providerKey": "twilio",
+      "icon": "fa-solid fa-envelope-open-text",
+      "description": "Obtenir les détails d'un message par son SID",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:twilio_message"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Obtenir un message",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "message_sid",
+            "label": "SID du message",
+            "description": "Identifiant SID du message.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "lecture",
+        "twilio"
+      ],
+      "group": "Messages"
+    },
+    {
+      "key": "twilio_delete_message",
+      "name": "twilioDeleteMessage",
+      "schemaVersion": 2,
+      "title": "Supprimer un message",
+      "subtitle": "Messages",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Messages",
+      "providerKey": "twilio",
+      "icon": "fa-solid fa-trash",
+      "description": "Supprimer un message par son SID",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:twilio_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Supprimer un message",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "message_sid",
+            "label": "SID du message",
+            "description": "Identifiant SID du message à supprimer.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "suppression",
+        "twilio"
+      ],
+      "group": "Messages"
+    },
+    {
+      "key": "twilio_create_verify_service",
+      "name": "twilioCreateVerifyService",
+      "schemaVersion": 2,
+      "title": "Créer un service Verify",
+      "subtitle": "Vérification",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Vérification",
+      "providerKey": "twilio",
+      "icon": "fa-solid fa-shield-check",
+      "description": "Créer un service de vérification Twilio Verify",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:twilio_verify"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Créer un service Verify",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "friendly_name",
+            "label": "Nom du service",
+            "description": "Nom convivial du service de vérification.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "code_length",
+            "label": "Longueur du code",
+            "description": "Longueur du code de vérification (4-10).",
+            "col": {
+              "xs": 24
+            },
+            "default": 6
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "création",
+        "twilio"
+      ],
+      "group": "Vérification"
+    },
+    {
+      "key": "twilio_create_verification",
+      "name": "twilioCreateVerification",
+      "schemaVersion": 2,
+      "title": "Envoyer une vérification",
+      "subtitle": "Vérification",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Vérification",
+      "providerKey": "twilio",
+      "icon": "fa-solid fa-paper-plane",
+      "description": "Envoyer un code de vérification via SMS ou appel",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:twilio_verify"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Envoyer une vérification",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "service_sid",
+            "label": "SID du service",
+            "description": "Identifiant SID du service Verify.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "to",
+            "label": "Destinataire",
+            "description": "Numéro de téléphone ou adresse courriel.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "key": "channel",
+            "label": "Canal",
+            "description": "Canal de livraison du code.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "options": [
+              {
+                "label": "SMS",
+                "value": "sms"
+              },
+              {
+                "label": "Appel vocal",
+                "value": "call"
+              },
+              {
+                "label": "Courriel",
+                "value": "email"
+              },
+              {
+                "label": "WhatsApp",
+                "value": "whatsapp"
+              }
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "envoi",
+        "twilio"
+      ],
+      "group": "Vérification"
+    },
+    {
+      "key": "twilio_check_verification",
+      "name": "twilioCheckVerification",
+      "schemaVersion": 2,
+      "title": "Vérifier un code",
+      "subtitle": "Vérification",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Vérification",
+      "providerKey": "twilio",
+      "icon": "fa-solid fa-check-circle",
+      "description": "Vérifier un code de vérification soumis",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:twilio_verify"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Vérifier un code",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "service_sid",
+            "label": "SID du service",
+            "description": "Identifiant SID du service Verify.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "to",
+            "label": "Destinataire",
+            "description": "Numéro de téléphone ou adresse courriel vérifiée.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "code",
+            "label": "Code",
+            "description": "Code de vérification soumis par l'utilisateur.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "lecture",
+        "twilio"
+      ],
+      "group": "Vérification"
+    },
+    {
+      "key": "twilio_phone_lookup",
+      "name": "twilioPhoneLookup",
+      "schemaVersion": 2,
+      "title": "Rechercher un numéro",
+      "subtitle": "Recherche",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Recherche",
+      "providerKey": "twilio",
+      "icon": "fa-solid fa-magnifying-glass",
+      "description": "Rechercher des informations sur un numéro de téléphone",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:twilio_lookup"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Rechercher un numéro",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "tel",
+            "key": "phone_number",
+            "label": "Numéro de téléphone",
+            "description": "Numéro à rechercher (format E.164, ex: +14155552671).",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "fields",
+            "label": "Champs supplémentaires",
+            "description": "Champs à inclure (ex: caller_name,line_type_intelligence).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "recherche",
+        "twilio"
+      ],
+      "group": "Recherche"
+    },
+    {
+      "key": "twilio_webhook_event",
+      "name": "twilioWebhookEvent",
+      "schemaVersion": 2,
+      "title": "Événement webhook",
+      "subtitle": "Événements",
+      "type": "event",
+      "nodeKind": "event",
+      "category": "Événements",
+      "providerKey": "twilio",
+      "icon": "fa-solid fa-bolt",
+      "description": "Déclenchement via webhook Twilio entrant",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:twilio_event"
+        }
+      ],
+      "args": {
+        "title": "Événement webhook",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Chemin d'endpoint",
+            "description": "Chemin d'URL pour recevoir les webhooks.",
+            "col": {
+              "xs": 24
+            },
+            "default": "/twilio"
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "événement",
+        "twilio"
+      ],
+      "group": "Événements"
+    }
+  ],
+  "variables": {
+    "twilio_sms": {
+      "title": "SMS Twilio",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "sid",
+          "label": "SID",
+          "description": "Identifiant SID du message.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "tel",
+          "key": "from",
+          "label": "Expéditeur",
+          "description": "Numéro de l'expéditeur.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "tel",
+          "key": "to",
+          "label": "Destinataire",
+          "description": "Numéro du destinataire.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "body",
+          "label": "Contenu",
+          "description": "Contenu du message.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut du message.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "date_created",
+          "label": "Date de création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "direction",
+          "label": "Direction",
+          "description": "Direction (inbound/outbound).",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "twilio_sms_list": {
+      "title": "Liste SMS Twilio",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "description": "Succès de la requête.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "data",
+          "label": "Données (tableau)",
+          "description": "Tableau de messages SMS.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "twilio_call": {
+      "title": "Appel Twilio",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "sid",
+          "label": "SID",
+          "description": "Identifiant SID de l'appel.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "tel",
+          "key": "from",
+          "label": "Expéditeur",
+          "description": "Numéro de l'appelant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "tel",
+          "key": "to",
+          "label": "Destinataire",
+          "description": "Numéro de l'appelé.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut de l'appel.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "duration",
+          "label": "Durée",
+          "description": "Durée de l'appel en secondes.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "direction",
+          "label": "Direction",
+          "description": "Direction de l'appel.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "date_created",
+          "label": "Date de création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "twilio_calls": {
+      "title": "Appels Twilio",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "description": "Succès de la requête.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "data",
+          "label": "Données (tableau)",
+          "description": "Tableau d'appels.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "twilio_phone": {
+      "title": "Numéro Twilio",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "sid",
+          "label": "SID",
+          "description": "Identifiant SID du numéro.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "tel",
+          "key": "phone_number",
+          "label": "Numéro",
+          "description": "Numéro de téléphone.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "friendly_name",
+          "label": "Nom convivial",
+          "description": "Nom convivial du numéro.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "capabilities",
+          "label": "Capacités",
+          "description": "Capacités du numéro (voice, SMS, MMS).",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "twilio_phones": {
+      "title": "Numéros Twilio",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "description": "Succès de la requête.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "data",
+          "label": "Données (tableau)",
+          "description": "Tableau de numéros.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "twilio_message": {
+      "title": "Message Twilio",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "sid",
+          "label": "SID",
+          "description": "Identifiant SID du message.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "tel",
+          "key": "from",
+          "label": "Expéditeur",
+          "description": "Numéro de l'expéditeur.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "tel",
+          "key": "to",
+          "label": "Destinataire",
+          "description": "Numéro du destinataire.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "body",
+          "label": "Contenu",
+          "description": "Contenu du message.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut du message.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "num_media",
+          "label": "Nombre de médias",
+          "description": "Nombre de médias attachés.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "twilio_verify": {
+      "title": "Vérification Twilio",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "sid",
+          "label": "SID",
+          "description": "Identifiant SID.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut de la vérification.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "to",
+          "label": "Destinataire",
+          "description": "Destinataire de la vérification.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "channel",
+          "label": "Canal",
+          "description": "Canal de livraison (sms, call, email).",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "checkbox",
+          "key": "valid",
+          "label": "Valide",
+          "description": "Indique si la vérification est valide.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "twilio_lookup": {
+      "title": "Recherche Twilio",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "tel",
+          "key": "phone_number",
+          "label": "Numéro",
+          "description": "Numéro au format E.164.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "country_code",
+          "label": "Code pays",
+          "description": "Code ISO du pays.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "national_format",
+          "label": "Format national",
+          "description": "Numéro au format national.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "checkbox",
+          "key": "valid",
+          "label": "Valide",
+          "description": "Numéro valide.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "caller_name",
+          "label": "Nom de l'appelant",
+          "description": "Informations sur le nom de l'appelant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "line_type_intelligence",
+          "label": "Type de ligne",
+          "description": "Informations sur le type de ligne.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "twilio_result": {
+      "title": "Résultat Twilio",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut de l'opération.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "message",
+          "label": "Message",
+          "description": "Message de résultat.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "twilio_event": {
+      "title": "Événement Twilio",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "message_sid",
+          "label": "SID du message/appel",
+          "description": "Identifiant SID du message ou de l'appel.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "tel",
+          "key": "from",
+          "label": "Expéditeur",
+          "description": "Numéro de l'expéditeur.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "tel",
+          "key": "to",
+          "label": "Destinataire",
+          "description": "Numéro du destinataire.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "body",
+          "label": "Contenu",
+          "description": "Contenu du message.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut de l'événement.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "direction",
+          "label": "Direction",
+          "description": "Direction du message/appel.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "account_sid",
+          "label": "Account SID",
+          "description": "Identifiant du compte.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "num_media",
+          "label": "Nombre de médias",
+          "description": "Nombre de médias attachés.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  }
+}

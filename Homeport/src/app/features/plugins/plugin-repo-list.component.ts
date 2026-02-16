@@ -23,7 +23,9 @@ import { PluginReposBackendService, PluginRepoDto } from '../../services/plugin-
         <div class="actions">
           <input [(ngModel)]="q" (keyup.enter)="reload()" placeholder="Rechercher" class="search"/>
           <button nz-button class="primary" (click)="reloadRepos()">Recharger</button>
-          <button nz-button nzType="primary" class="primary" (click)="create()">Nouveau</button>
+          <button nz-button nzType="primary" class="primary with-text create-btn" (click)="create()">
+            <i class="fa-solid fa-plus"></i> Nouveau
+          </button>
         </div>
       </div>
       <div class="loading" *ngIf="loading">
@@ -40,7 +42,7 @@ import { PluginReposBackendService, PluginRepoDto } from '../../services/plugin-
           <div class="trailing">
             <nz-switch [(ngModel)]="r.enabled" (ngModelChange)="toggle(r, $event)" nz-tooltip nzTooltipTitle="Activer/Désactiver"></nz-switch>
             <button nz-button nzType="default" class="icon-btn" (click)="edit(r); $event.stopPropagation()"><i class="fa-regular fa-pen-to-square"></i></button>
-            <button nz-button nzType="default" class="icon-btn" (click)="del(r); $event.stopPropagation()" [disabled]="isBuiltin(r)" nz-tooltip nzTooltipTitle="Supprimer"><i class="fa-regular fa-trash-can"></i></button>
+            <button nz-button nzType="default" class="icon-btn danger" (click)="del(r); $event.stopPropagation()" [disabled]="isBuiltin(r)" nz-tooltip nzTooltipTitle="Supprimer"><i class="fa-regular fa-trash-can"></i></button>
           </div>
         </div>
         <div class="empty" *ngIf="!repos.length">Aucun dépôt.</div>
@@ -56,6 +58,9 @@ import { PluginReposBackendService, PluginRepoDto } from '../../services/plugin-
     .page-header p { margin:4px 0 0; color:#6b7280; }
     .search { width: 220px; border:1px solid #e5e7eb; border-radius:8px; padding:6px 10px; }
     .page-header .actions{ display:flex; align-items:center; gap:8px; }
+    .page-header .actions .create-btn { background:#1677ff; border-color:#1677ff; }
+    .page-header .actions .primary:hover { border-color:#1677ff; color:#1677ff; }
+    .page-header .actions .with-text i { margin-right: 6px; }
     .grid { display:grid; grid-template-columns: 1fr; gap:10px; }
     .card { display:flex; align-items:center; gap:10px; padding:12px; border-radius:12px; background:#fff; border:1px solid #ececec; cursor:pointer; }
     .content { flex:1; min-width:0; }
@@ -67,7 +72,10 @@ import { PluginReposBackendService, PluginRepoDto } from '../../services/plugin-
     .badge.err{ background:#fef2f2; color:#991b1b; border-color:#fecaca; }
     .desc { color:#6b7280; font-size:12px; }
     .trailing { display:flex; align-items:center; gap:8px; }
-    .icon-btn { width:32px; height:32px; display:inline-flex; align-items:center; justify-content:center; border:1px solid #e5e7eb; border-radius:10px; background:#fff; }
+    .icon-btn { width:32px; height:32px; display:inline-flex; align-items:center; justify-content:center; border:1px solid #e5e7eb; border-radius:10px; background:#fff; transition: background-color .15s ease, color .15s ease, box-shadow .15s ease, border-color .15s ease, transform .02s ease; }
+    .icon-btn:hover:not([disabled]) { border-color:#c7dbff; background: rgba(22,119,255,0.1); color:#1677ff; box-shadow: 0 4px 12px rgba(22,119,255,0.18); transform: translateY(-1px); }
+    .icon-btn.danger:hover:not([disabled]) { border-color:#fecaca; background:#fee2e2; color:#b91c1c; box-shadow: 0 4px 12px rgba(239,68,68,0.18); }
+    :host ::ng-deep .ant-switch-checked { background-color: #1677ff; }
     .empty { color:#9ca3af; }
     .skeleton-grid { display:grid; grid-template-columns: 1fr; gap:10px; }
     .skeleton-card { height:56px; border-radius:12px; border:1px solid #ececec; background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%); position:relative; overflow:hidden; }

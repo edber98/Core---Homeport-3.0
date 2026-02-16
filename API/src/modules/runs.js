@@ -5,10 +5,14 @@ const { randomUUID } = require('crypto');
 const { broadcast } = require('../realtime/ws');
 const { broadcastRun } = require('../realtime/socketio');
 
+function isResultError(result){
+  return !!(result && typeof result === 'object' && (result.ok === false || result.error != null));
+}
+
 module.exports = function(store){
   const r = express.Router();
   // Public route to start a run if Start Form is public
-  r.post('/public/flows/:flowId/runs', (req, res) => {
+  r.post('/public/flows/:flowId/runs', async (req, res) => {
     try { console.log('[api][public-run][mem] start', req.params.flowId, 'payload:', JSON.stringify(req.body?.payload)); } catch {}
     const { flowId } = req.params; const flow = store.flows.get(flowId);
     if (!flow) return res.apiError(404, 'flow_not_found', 'Flow not found');
@@ -22,10 +26,23 @@ module.exports = function(store){
       const m = start?.data?.model || {};
       if (!m || !m.startFormPublic) return res.apiError(403, 'form_not_public', 'Start form is not public');
       if (flow.enabled === false) return res.apiError(409, 'flow_disabled', 'Flow is disabled');
+      try {
+        const { validateFlowTemplates } = require('../utils/validate');
+        const tv = await validateFlowTemplates(flow.graph || flow);
+        if (!tv.ok) {
+          console.warn(`[runs][mem] pre-exec validation failed flowId=${flowId} errors:`, JSON.stringify(tv.errors));
+          return res.apiError(409, 'flow_template_invalid',
+            'Flow uses deleted or outdated templates', { errors: tv.errors });
+        }
+      } catch (e) {
+        console.error('[runs][mem] pre-exec validation error:', e?.message || e);
+      }
       const ws = store.workspaces.get(flow.workspaceId);
       const runId = randomUUID();
       const now = new Date();
-      const run = { id: runId, flowId, workspaceId: ws?.id, companyId: ws?.companyId, status: 'running', events: [], attempts: [], result: null, startedAt: now, finishedAt: null, durationMs: null };
+    let graphSnapshot = {};
+    try { graphSnapshot = JSON.parse(JSON.stringify(flow.graph || flow)); } catch { graphSnapshot = flow.graph || {}; }
+    const run = { id: runId, flowId, workspaceId: ws?.id, companyId: ws?.companyId, status: 'running', events: [], attempts: [], result: null, startedAt: now, finishedAt: null, durationMs: null, graph: graphSnapshot };
       store.runs.set(runId, run);
       res.status(201).json({ success: true, data: { id: runId, status: run.status }, requestId: req.requestId, ts: Date.now() });
       (async () => {
@@ -87,10 +104,23 @@ module.exports = function(store){
       console.warn(`[runs][mem] start: flow disabled flowId=${flowId} workspaceId=${ws.id} companyId=${ws.companyId} reqUser=${req.user?.id} reqId=${req.requestId}`);
       return res.apiError(409, 'flow_disabled', 'Flow is disabled', { flowId, workspaceId: ws.id, enabled: flow.enabled });
     }
+    try {
+      const { validateFlowTemplates } = require('../utils/validate');
+      const tv = await validateFlowTemplates(flow.graph || flow);
+      if (!tv.ok) {
+        console.warn(`[runs][mem] pre-exec validation failed flowId=${flowId} errors:`, JSON.stringify(tv.errors));
+        return res.apiError(409, 'flow_template_invalid',
+          'Flow uses deleted or outdated templates', { errors: tv.errors });
+      }
+    } catch (e) {
+      console.error('[runs][mem] pre-exec validation error:', e?.message || e);
+    }
     console.log(`[runs][mem] start: flowId=${flowId} enabled=${flow.enabled !== false} ws=${ws.id} user=${req.user?.id} reqId=${req.requestId}`);
     const runId = randomUUID();
     const now = new Date();
-    const run = { id: runId, flowId, workspaceId: ws.id, companyId: ws.companyId, status: 'running', events: [], attempts: [], result: null, startedAt: now, finishedAt: null, durationMs: null };
+    let graphSnapshot = {};
+    try { graphSnapshot = JSON.parse(JSON.stringify(flow.graph || flow)); } catch { graphSnapshot = flow.graph || {}; }
+    const run = { id: runId, flowId, workspaceId: ws.id, companyId: ws.companyId, status: 'running', events: [], attempts: [], result: null, startedAt: now, finishedAt: null, durationMs: null, graph: graphSnapshot };
     store.runs.set(runId, run);
     res.status(201).json({ success: true, data: { id: runId, status: run.status }, requestId: req.requestId, ts: Date.now() });
     console.log(`[runs][mem] created run: id=${runId} flowId=${flowId} status=${run.status} reqId=${req.requestId}`);
@@ -111,22 +141,36 @@ module.exports = function(store){
               const nid = String(ev.nodeId || '');
               const last = run.attempts.slice().reverse().find(a => String(a.nodeId) === nid && !a.finishedAt);
               if (last){
-                last.status = 'success'; last.finishedAt = ev.finishedAt || new Date().toISOString(); last.durationMs = ev.durationMs; last.argsPost = ev.argsPost; last.input = ev.input; last.result = ev.result;
+                last.status = isResultError(ev.result) ? 'error' : 'success';
+                last.finishedAt = ev.finishedAt || new Date().toISOString();
+                last.durationMs = ev.durationMs; last.argsPost = ev.argsPost; last.input = ev.input; last.result = ev.result;
               } else {
-                run.attempts.push({ runId, nodeId: nid, attempt: 1, status: 'success', startedAt: ev.startedAt, finishedAt: ev.finishedAt, durationMs: ev.durationMs, argsPre: ev.argsPre, argsPost: ev.argsPost, input: ev.input, result: ev.result });
+                const status = isResultError(ev.result) ? 'error' : 'success';
+                run.attempts.push({ runId, nodeId: nid, attempt: 1, status, startedAt: ev.startedAt, finishedAt: ev.finishedAt, durationMs: ev.durationMs, argsPre: ev.argsPre, argsPost: ev.argsPost, input: ev.input, result: ev.result });
               }
             }
           } catch {}
           try { broadcast(String(runId), ev); } catch {}
           try { broadcastRun(String(runId), ev); } catch {}
           try { if (ev && ev.type) console.log(`[runs][mem] event: runId=${runId} type=${ev.type}`); } catch {}
-        });
+        }, { shouldCancel: () => store.cancelledRuns.has(runId) || run.status === 'cancelled' });
         run.status = 'success';
         run.result = run.events[run.events.length - 1]?.data?.payload ?? null;
         run.finishedAt = new Date();
         try { run.durationMs = run.startedAt ? (run.finishedAt.getTime() - new Date(run.startedAt).getTime()) : null; } catch {}
         console.log(`[runs][mem] completed: runId=${runId} status=${run.status}`);
       } catch (e) {
+        if (String(e && e.message) === '__CANCELLED__'){
+          run.status = 'cancelled';
+          const ev = { ts: Date.now(), type: 'run.cancelled', reason: 'user_request' };
+          run.events.push(ev);
+          try { broadcast(String(runId), ev); } catch {}
+          try { broadcastRun(String(runId), ev); } catch {}
+          run.finishedAt = new Date();
+          try { run.durationMs = run.startedAt ? (run.finishedAt.getTime() - new Date(run.startedAt).getTime()) : null; } catch {}
+          console.warn(`[runs][mem] cancelled during run: runId=${runId}`);
+          return;
+        }
         run.status = 'error';
         const ev = { ts: Date.now(), type: 'run.failed', error: e.message };
         run.events.push(ev);
@@ -144,6 +188,25 @@ module.exports = function(store){
     if (!run) return res.apiError(404, 'run_not_found', 'Run not found');
     const ws = store.workspaces.get(run.workspaceId); if (!ws || ws.companyId !== req.user.companyId) return res.status(404).json({ error: 'run not found' });
     res.apiOk(run);
+  });
+
+  // Stats by flow for memory store
+  r.get('/flows/:flowId/runs/stats', (req, res) => {
+    const { flowId } = req.params;
+    const flow = store.flows.get(flowId);
+    if (!flow) return res.apiError(404, 'flow_not_found', 'Flow not found');
+    const ws = store.workspaces.get(flow.workspaceId); if (!ws || ws.companyId !== req.user.companyId) return res.status(404).json({ error: 'flow not found' });
+    const list = [...store.runs.values()].filter(r => r.flowId === flowId);
+    const stats = { total: 0, running: 0, success: 0, error: 0, cancelled: 0, timed_out: 0, avgDurationMs: null };
+    let durSum = 0, durCount = 0;
+    for (const r of list){
+      stats.total++;
+      const st = String(r.status || '').toLowerCase();
+      if (stats.hasOwnProperty(st)) stats[st]++;
+      const d = Number(r.durationMs || 0); if (d > 0) { durSum += d; durCount++; }
+    }
+    stats.avgDurationMs = durCount ? Math.round(durSum / durCount) : null;
+    res.apiOk(stats);
   });
 
   r.get('/runs/:runId/stream', (req, res) => {
@@ -185,12 +248,17 @@ module.exports = function(store){
     req.on('close', () => { console.log(`[runs][mem] stream closed: runId=${runId} reqId=${req.requestId}`); });
   });
 
-  // Cancel a run (best-effort): mark as cancelled
+  // Cancel a run (cooperative): mark as cancelled and signal engine
   r.post('/runs/:runId/cancel', (req, res) => {
     const { runId } = req.params; const run = store.runs.get(runId);
     if (!run) return res.apiError(404, 'run_not_found', 'Run not found');
     const ws = store.workspaces.get(run.workspaceId); if (!ws || ws.companyId !== req.user.companyId) return res.status(404).json({ error: 'run not found' });
+    // Signal cancellation for engine loop
+    store.cancelledRuns.add(runId);
+    // If already running, proactively mark as cancelled to update UI instantly
     run.status = 'cancelled';
+    run.finishedAt = new Date();
+    try { run.durationMs = run.startedAt ? (run.finishedAt.getTime() - new Date(run.startedAt).getTime()) : null; } catch {}
     const ev = { ts: Date.now(), type: 'run.cancelled', reason: 'user_request' };
     run.events.push(ev);
     try { broadcast(String(runId), ev); } catch {}

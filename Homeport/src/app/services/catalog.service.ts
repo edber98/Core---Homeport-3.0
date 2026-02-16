@@ -6,6 +6,7 @@ import { ProvidersBackendService } from './providers-backend.service';
 import { NodeTemplatesBackendService } from './node-templates-backend.service';
 import { CredentialsBackendService } from './credentials-backend.service';
 import { FlowsBackendService } from './flows-backend.service';
+import { FormsBackendService } from './forms-backend.service';
 
 export type FlowStatus = 'draft' | 'test' | 'production';
 export type FlowSummary = { id: string; name: string; description?: string; status?: FlowStatus; enabled?: boolean; invalid?: boolean; validationErrors?: any[] };
@@ -16,12 +17,15 @@ export type FormDoc = { id: string; name: string; schema?: any; description?: st
 
 export type NodeTemplate = {
   id: string;
-  type: 'start' | 'start_form' | 'event' | 'endpoint' | 'function' | 'condition' | 'loop' | 'end' | 'flow';
+  type: 'start' | 'start_form' | 'event' | 'endpoint' | 'function' | 'condition' | 'loop' | 'end' | 'flow' | 'agent' | 'tool_ai' | 'memory' | 'router' | 'choice';
+  nodeKind?: string;        // optional: backend kind (v2)
+  schemaVersion?: number;   // optional: manifest schema version
   name: string;           // technical identifier (no spaces)
   // UI/metadata
   title?: string;         // display title on node
   subtitle?: string;      // display subtitle (category/app)
   icon?: string;          // optional icon class for node card
+  iconUrl?: string;       // optional icon URL (PNG/SVG) for node card
   category?: string;      // fonctionnel (Email, Docs, Calendar...)
   appId?: string;         // logiciel / intégration (ex: 'gmail')
   tags?: string[];        // recherche libre
@@ -29,6 +33,11 @@ export type NodeTemplate = {
   description?: string;
   // Behavior and configuration
   args?: any;
+  // v2 handles
+  inputHandles?: Array<{ id: string; name: string; type: string; multiple?: boolean; accepts?: string[] }>;
+  outputHandles?: Array<{ id: string; name: string; type: string; multiple?: boolean; arrayField?: string; schema?: any }>;
+  linkedHandles?: Array<{ id: string; name: string; type: string; multiple?: boolean; accepts?: string[] }>;
+  // legacy v1 (deprecated)
   output?: string[];
   authorize_catch_error?: boolean;
   // New: allows a node to expose a "skip error" behavior (runtime will ignore errors)
@@ -38,12 +47,16 @@ export type NodeTemplate = {
   allowWithoutCredentials?: boolean;
   // Condition-specific
   output_array_field?: string;
+  // Extract-specific: output schema derived from this context field
+  output_schema_field?: string;
+  outputSchema?: any[];
 };
 
 export type AppProvider = {
   id: string;             // ex: 'gmail'
   name: string;           // ex: 'Gmail'
   title?: string;         // affichage alternatif
+  order?: number;         // ordre d'affichage optionnel
   iconClass?: string;     // ex: 'fa-brands fa-google'
   iconUrl?: string;       // PNG/SVG
   color?: string;         // brand color
@@ -75,6 +88,7 @@ export class CatalogService {
     private templatesApi: NodeTemplatesBackendService,
     private credsApi: CredentialsBackendService,
     private flowsApi: FlowsBackendService,
+    private formsApi: FormsBackendService,
   ) { if (!environment.useBackend) this.ensureSeed(); }
 
   // ===== Public API (Flows)
@@ -104,7 +118,7 @@ export class CatalogService {
         enabled: !!f.enabled,
         nodes: (f as any).graph?.nodes || [],
         edges: (f as any).graph?.edges || [],
-        meta: {}
+        meta: (f as any).settings || (f as any).meta || {}
       } as FlowDoc)));
     }
     const doc = this.load<FlowDoc | null>(this.FLOW_DOC_KEY + id, null);
@@ -113,7 +127,7 @@ export class CatalogService {
   saveFlow(doc: FlowDoc, force = false): Observable<FlowDoc> {
     if (environment.useBackend) {
       if (!doc?.id) return throwError(() => new Error('Missing id'));
-      const payload = { name: doc.name, description: doc.description, status: (doc as any).status, enabled: (doc as any).enabled, graph: { nodes: doc.nodes || [], edges: doc.edges || [] } } as any;
+      const payload = { name: doc.name, description: doc.description, status: (doc as any).status, enabled: (doc as any).enabled, graph: { nodes: doc.nodes || [], edges: doc.edges || [] }, settings: (doc as any).meta || {} } as any;
       return this.flowsApi.update(doc.id, payload, force).pipe(map(() => doc));
     }
     if (!doc?.id) return throwError(() => new Error('Missing id'));
@@ -139,7 +153,7 @@ export class CatalogService {
       const doc: FlowDoc = { id, name, description, status: status as any, enabled, nodes, edges };
       return this.saveFlow(doc);
     }
-    const payload = { name, description, status, enabled, graph: { nodes, edges } } as any;
+    const payload = { name, description, status, enabled, graph: { nodes, edges }, settings: { ui: { portOrientation: 'horizontal', alignmentHelper: { tolerance: 35, lineColor: '#D1D5DB' } } } } as any;
     // If user requested enabled at creation time, pass force=1 so backend honors enabled even for empty/invalid graphs
     return this.flowsApi.create(wsId, payload, !!enabled).pipe(map((f: any) => ({
       id: String((f && (f.id || f._id)) || ''),
@@ -153,12 +167,36 @@ export class CatalogService {
   }
 
   // ===== Public API (Forms)
-  listForms(): Observable<FormSummary[]> { return of(this.load<FormSummary[]>(this.FORM_LIST_KEY, [])).pipe(delay(CatalogService.LATENCY)); }
+  listForms(wsId?: string): Observable<FormSummary[]> {
+    if (environment.useBackend) {
+      const workspaceId = wsId || '';
+      if (!workspaceId) return of([]);
+      return this.formsApi.list(workspaceId, { page: 1, limit: 200 }).pipe(map(list => (list || []).map(f => ({
+        id: f.id,
+        name: f.name,
+        description: (f as any).description || '',
+      } as FormSummary))));
+    }
+    return of(this.load<FormSummary[]>(this.FORM_LIST_KEY, [])).pipe(delay(CatalogService.LATENCY));
+  }
   getForm(id: string): Observable<FormDoc> {
+    if (environment.useBackend) {
+      return this.formsApi.get(id).pipe(map(f => ({
+        id: f.id,
+        name: f.name,
+        description: (f as any).description || '',
+        schema: (f as any).schema || {},
+      } as FormDoc)));
+    }
     const doc = this.load<FormDoc | null>(this.FORM_DOC_KEY + id, null);
     return doc ? of(doc).pipe(delay(CatalogService.LATENCY)) : throwError(() => new Error('Form not found'));
   }
   saveForm(doc: FormDoc): Observable<FormDoc> {
+    if (environment.useBackend) {
+      if (!doc?.id) return throwError(() => new Error('Missing id'));
+      const payload = { name: doc.name, description: doc.description, schema: doc.schema || {} } as any;
+      return this.formsApi.update(doc.id, payload).pipe(map(() => doc));
+    }
     if (!doc?.id) return throwError(() => new Error('Missing id'));
     this.save(this.FORM_DOC_KEY + doc.id, doc);
     const list = this.load<FormSummary[]>(this.FORM_LIST_KEY, []);
@@ -168,33 +206,60 @@ export class CatalogService {
     this.save(this.FORM_LIST_KEY, list);
     return of(doc).pipe(delay(CatalogService.LATENCY));
   }
+  createForm(wsId: string, name: string, description: string = '', schema: any = {}): Observable<FormDoc> {
+    if (!environment.useBackend) {
+      const id = (name || 'form') + '-' + Date.now().toString(36);
+      const doc: FormDoc = { id, name, description, schema };
+      return this.saveForm(doc);
+    }
+    const payload = { name, description, schema } as any;
+    return this.formsApi.create(wsId, payload).pipe(map((f: any) => ({
+      id: String((f && (f.id || f._id)) || ''),
+      name: f?.name || name,
+      description: (f as any)?.description || description || '',
+      schema: (f as any)?.schema || schema,
+    } as FormDoc)));
+  }
+  transferForm(formId: string, destWorkspaceId: string): Observable<boolean> {
+    if (environment.useBackend) {
+      return this.formsApi.update(formId, { workspaceId: destWorkspaceId }).pipe(map(() => true));
+    }
+    try { (window as any).acl?.setResourceWorkspace?.('form', formId, destWorkspaceId); } catch {}
+    return of(true);
+  }
 
   // ===== Public API (Node Templates)
   listNodeTemplates(): Observable<NodeTemplate[]> {
     if (environment.useBackend) {
-      return this.templatesApi.list({ page: 1, limit: 500 }).pipe(map(list => (list || []).map(t => {
+      return this.templatesApi.list({ page: 1, limit: 2000 }).pipe(map(list => (list || []).map(t => {
         const sanitize = (s: string) => (String(s || '').trim().replace(/\s+/g, '_'));
         const nameNoSpace = sanitize(t.name || t.key);
         const tpl: NodeTemplate = {
           id: t.key,
-          type: t.type as any,
+          type: ((t.nodeKind || t.type) as any),
           // technical identifier used by runtime (no spaces)
           name: nameNoSpace,
           // UI metadata
           title: t.title || t.name || t.key,
           subtitle: t.subtitle || t.appName || t.providerKey || undefined,
           icon: t.icon,
+          iconUrl: (t as any).iconUrl,
           description: t.description,
           category: t.category,
           appId: t.providerKey || undefined,
           tags: t.tags || [],
           group: t.group,
           args: t.args,
+          inputHandles: t.inputHandles as any,
+          outputHandles: t.outputHandles as any,
+          linkedHandles: (t as any).linkedHandles as any,
           output: t.output,
           authorize_catch_error: t.authorize_catch_error,
           authorize_skip_error: t.authorize_skip_error,
           allowWithoutCredentials: !!t.allowWithoutCredentials,
           output_array_field: t.output_array_field,
+          output_schema_field: (t as any).output_schema_field,
+          outputSchema: (t as any).outputSchema,
         };
         return tpl;
       })));
@@ -217,18 +282,26 @@ export class CatalogService {
         title: tpl.title,
         subtitle: tpl.subtitle,
         icon: tpl.icon,
+        iconUrl: (tpl as any).iconUrl,
         description: tpl.description,
         tags: tpl.tags,
         group: tpl.group,
         type: tpl.type,
+        nodeKind: tpl.type,
+        schemaVersion: 2,
         category: tpl.category,
         providerKey: tpl.appId,
         args: tpl.args,
-        output: tpl.output,
+        inputHandles: tpl.inputHandles,
+        outputHandles: tpl.outputHandles,
+        linkedHandles: (tpl as any).linkedHandles,
+        output: undefined,
         authorize_catch_error: tpl.authorize_catch_error,
         authorize_skip_error: tpl.authorize_skip_error,
         allowWithoutCredentials: tpl.allowWithoutCredentials,
         output_array_field: tpl.output_array_field,
+        output_schema_field: (tpl as any).output_schema_field,
+        outputSchema: (tpl as any).outputSchema,
       };
       return this.templatesApi.update(tpl.id, body, force).pipe(map(() => tpl));
     }
@@ -255,6 +328,7 @@ export class CatalogService {
         id: p.key,
         name: p.name,
         title: p.title || p.name,
+        order: (p as any).order,
         iconClass: p.iconClass,
         iconUrl: p.iconUrl,
         color: p.color,
@@ -308,11 +382,11 @@ export class CatalogService {
   // ===== Public API (Credentials)
   listCredentials(workspaceId?: string, providerId?: string): Observable<CredentialSummary[]> {
     if (environment.useBackend && workspaceId) {
-      return this.credsApi.list(workspaceId, { page: 1, limit: 200 }).pipe(map(list => (list || []).filter(c => !providerId || c.providerKey === providerId).map(c => ({
-        id: c.id,
-        name: c.name,
-        providerId: c.providerKey,
-        workspaceId: c.workspaceId,
+      return this.credsApi.list(workspaceId, { page: 1, limit: 200 }).pipe(map(list => (list || []).filter((c: any) => !providerId || String((c as any).providerKey || '') === String(providerId)).map((c: any) => ({
+        id: String(((c as any).id ?? (c as any)._id) || ''),
+        name: String((c as any).name || ''),
+        providerId: String((c as any).providerKey || ''),
+        workspaceId: String((c as any).workspaceId || ''),
       } as CredentialSummary))));
     }
     const list = this.load<CredentialSummary[]>(this.CRED_LIST_KEY, []);
@@ -349,8 +423,19 @@ export class CatalogService {
   saveCredential(doc: CredentialDoc): Observable<CredentialDoc> {
     if (!doc?.id) {
       if (environment.useBackend) {
-        // Create (id optional)
-        return this.credsApi.create(doc.workspaceId, { name: doc.name, providerKey: doc.providerId, values: doc.values }).pipe(map(() => doc));
+        // Create on backend: return server-created id and echo the rest
+        return this.credsApi.create(doc.workspaceId, { name: doc.name, providerKey: doc.providerId, values: doc.values }).pipe(
+          map((resp: any) => {
+            const d = (resp && (resp.data || resp)) || {};
+            return {
+              id: String(d.id || ''),
+              name: String(d.name || doc.name || ''),
+              providerId: String(d.providerKey || doc.providerId || ''),
+              workspaceId: String(d.workspaceId || doc.workspaceId || ''),
+              values: doc.values || {}
+            } as CredentialDoc;
+          })
+        );
       }
       return throwError(() => new Error('Missing id'));
     }
@@ -385,6 +470,17 @@ export class CatalogService {
     const next = list.filter(x => x.id !== id);
     this.save(this.FLOW_LIST_KEY, next);
     try { localStorage.removeItem(this.FLOW_DOC_KEY + id); } catch {}
+    return of(true).pipe(delay(CatalogService.LATENCY));
+  }
+
+  deleteForm(id: string): Observable<boolean> {
+    if (environment.useBackend) {
+      return this.formsApi.delete(id).pipe(map(() => true));
+    }
+    const list = this.load<FormSummary[]>(this.FORM_LIST_KEY, []);
+    const next = list.filter(x => x.id !== id);
+    this.save(this.FORM_LIST_KEY, next);
+    try { localStorage.removeItem(this.FORM_DOC_KEY + id); } catch {}
     return of(true).pipe(delay(CatalogService.LATENCY));
   }
 
@@ -501,7 +597,9 @@ export class CatalogService {
 
   // ===== Helpers (seed, storage)
   private ensureSeed(force = false) {
+    // No frontend seeds: all data must come from backend plugins.
     try {
+      return;
       if (force || !this.load<any>(this.FLOW_LIST_KEY, null)) {
         const flows: FlowSummary[] = [
           { id: 'demo-1', name: 'Demo: Envoi d\'email', description: 'Start → SendMail' },
@@ -511,10 +609,13 @@ export class CatalogService {
         // Seed demo graphs (with minimal template objects for preview/labels)
         const startTpl: any = {
           id: 'tmpl_start', type: 'start', name: 'Start', title: 'Start', subtitle: 'Trigger', category: 'Core',
+          outputHandles: [ { id: 'ok', name: 'Success', type: 'payload' } ],
           args: { title: 'Configuration spécifique', ui: { layout: 'vertical' }, fields: [ { type: 'checkbox', key: 'allowParentInput', label: "Autoriser l'injection depuis un flow parent", col: { xs: 24 }, default: false } ] }
         };
         const sendTpl: any = {
-          id: 'tmpl_sendmail', type: 'function', name: 'SendMail', title: 'Send mail', subtitle: 'Gmail', category: 'Email', output: ['Success'], authorize_catch_error: true, authorize_skip_error: true,
+          id: 'tmpl_sendmail', type: 'function', nodeKind: 'function', schemaVersion: 2, name: 'SendMail', title: 'Send mail', subtitle: 'Gmail', category: 'Email',
+          inputHandles: [ { id: 'in', name: 'In', type: 'payload', accepts: ['payload','any'] } ],
+          outputHandles: [ { id: 'ok', name: 'Success', type: 'payload' } ], authorize_catch_error: true, authorize_skip_error: true,
           args: {
             title: 'Send mail', ui: { layout: 'vertical' }, fields: [
               { type: 'text', key: 'dest', label: 'Destinataire', col: { xs: 24, sm: 24, md: 24, lg: 24, xl: 24 }, default: '', expression: { allow: true }, validators: [{ type: 'required' }] },
@@ -525,7 +626,9 @@ export class CatalogService {
           }
         };
         const httpTpl: any = {
-          id: 'tmpl_http', type: 'function', name: 'HTTP Request', title: 'HTTP Request', subtitle: 'Call API', category: 'HTTP', output: ['Success'], authorize_catch_error: true, authorize_skip_error: true,
+          id: 'tmpl_http', type: 'function', nodeKind: 'function', schemaVersion: 2, name: 'HTTP Request', title: 'HTTP Request', subtitle: 'Call API', category: 'HTTP',
+          inputHandles: [ { id: 'in', name: 'In', type: 'payload', accepts: ['payload','any'] } ],
+          outputHandles: [ { id: 'ok', name: 'Success', type: 'payload' } ], authorize_catch_error: true, authorize_skip_error: true,
           args: { title: 'HTTP Request', ui: { layout: 'vertical' }, fields: [
             { type: 'text', key: 'url', label: 'URL', col: { xs: 24 }, default: '', expression: { allow: true }, validators: [{ type: 'required' }] },
             { type: 'select', key: 'method', label: 'Method', options: [{label:'GET',value:'GET'},{label:'POST',value:'POST'},{label:'PUT',value:'PUT'},{label:'DELETE',value:'DELETE'}], col: { xs: 24 }, default: '', validators: [{ type: 'required' }] },
@@ -572,7 +675,7 @@ export class CatalogService {
           { id: 'n_send', type: 'html-template', point: { x: 120, y: 260 }, data: { model: { id: 'n_send', name: 'SendMail', template: sendTpl.id, templateObj: sendTpl, context: {}, templateChecksum: argsChecksum(sendTpl.args), templateFeatureSig: featureChecksum(sendTpl) } } },
         ];
         const d1Edges: any[] = [
-          { id: 'n_start->n_send:out:', type: 'template', source: 'n_start', target: 'n_send', sourceHandle: 'out', targetHandle: null, edgeLabels: { center: { type: 'html-template', data: { text: 'Succes' } } }, data: { strokeWidth: 2, color: '#b1b1b7' }, markers: { end: { type: 'arrow-closed', color: '#b1b1b7' } } }
+          { id: 'n_start->n_send:ok:in', type: 'template', source: 'n_start', target: 'n_send', sourceHandle: 'ok', targetHandle: 'in', edgeLabels: { center: { type: 'html-template', data: { text: 'Success' } } }, data: { strokeWidth: 2, color: '#b1b1b7' }, markers: { end: { type: 'arrow-closed', color: '#b1b1b7' } } }
         ];
         this.save(this.FLOW_DOC_KEY + 'demo-1', { id: 'demo-1', name: flows[0].name, description: flows[0].description, nodes: d1Nodes, edges: d1Edges, meta: { demo: true } });
 
@@ -583,8 +686,8 @@ export class CatalogService {
           { id: 'n_cond', type: 'html-template', point: { x: 100, y: 430 }, data: { model: { id: 'n_cond', name: 'Condition', template: condTpl.id, templateObj: condTpl, context: { items: [{ _id: 'ok', name: 'OK' }, { _id: 'ko', name: 'KO' }] }, templateChecksum: argsChecksum(condTpl.args), templateFeatureSig: featureChecksum(condTpl) } } },
         ];
         const d2Edges: any[] = [
-          { id: 'n_start->n_http:out:', type: 'template', source: 'n_start', target: 'n_http', sourceHandle: 'out', targetHandle: null, edgeLabels: { center: { type: 'html-template', data: { text: 'Succes' } } }, data: { strokeWidth: 2, color: '#b1b1b7' }, markers: { end: { type: 'arrow-closed', color: '#b1b1b7' } } },
-          { id: 'n_http->n_cond:0:', type: 'template', source: 'n_http', target: 'n_cond', sourceHandle: '0', targetHandle: null, edgeLabels: { center: { type: 'html-template', data: { text: 'Success' } } }, data: { strokeWidth: 2, color: '#b1b1b7' }, markers: { end: { type: 'arrow-closed', color: '#b1b1b7' } } },
+          { id: 'n_start->n_http:ok:in', type: 'template', source: 'n_start', target: 'n_http', sourceHandle: 'ok', targetHandle: 'in', edgeLabels: { center: { type: 'html-template', data: { text: 'Success' } } }, data: { strokeWidth: 2, color: '#b1b1b7' }, markers: { end: { type: 'arrow-closed', color: '#b1b1b7' } } },
+          { id: 'n_http->n_cond:ok:', type: 'template', source: 'n_http', target: 'n_cond', sourceHandle: 'ok', targetHandle: null, edgeLabels: { center: { type: 'html-template', data: { text: 'Success' } } }, data: { strokeWidth: 2, color: '#b1b1b7' }, markers: { end: { type: 'arrow-closed', color: '#b1b1b7' } } },
         ];
         this.save(this.FLOW_DOC_KEY + 'demo-2', { id: 'demo-2', name: flows[1].name, description: flows[1].description, nodes: d2Nodes, edges: d2Edges, meta: { demo: true } });
       }
@@ -621,7 +724,19 @@ export class CatalogService {
         const tpls: NodeTemplate[] = [
           { id: 'tmpl_start', type: 'start', name: 'Start', category: 'Core', description: 'Début du flow', args: { title: 'Configuration spécifique', ui: { layout: 'vertical' }, fields: [ { type: 'checkbox', key: 'allowParentInput', label: "Autoriser l'injection depuis un flow parent", col: { xs: 24 }, default: false } ] } },
           { id: 'tmpl_condition', type: 'condition', name: 'Condition', category: 'Logic', description: 'Branches multiples via items', args: { "title": "Nouveau formulaire", "fields": [{ "type": "section", "title": "Les conditions", "mode": "array", "key": "items", "array": { "initialItems": 1, "minItems": 0, "controls": { "add": { "kind": "text", "text": "Ajouter" }, "remove": { "kind": "text", "text": "Supprimer" } } }, "fields": [{ "type": "text", "key": "name", "label": "Name", "col": { "xs": 24, "sm": 24, "md": 12, "lg": 12, "xl": 12 }, "default": "", "expression": { "allow": true } }, { "type": "text", "key": "condtion", "label": "Condtion", "col": { "xs": 24, "sm": 24, "md": 12, "lg": 12, "xl": 12 }, "default": "", "expression": { "allow": true } }, { "type": "text", "key": "_id", "label": "Id invisible", "col": { "xs": 24, "sm": 24, "md": 12, "lg": 12, "xl": 12 }, "default": "", "visibleIf": { "==": [{ "var": "name" }, "admin_id_viewer"] } }], "col": { "xs": 24, "sm": 24, "md": 24, "lg": 24, "xl": 24 }, "description": "Choisir les conditions", "grid": { "gutter": 16 }, "ui": { "layout": "vertical" } }] } },
-          { id: 'tmpl_loop', type: 'loop', name: 'Loop', category: 'Core', description: 'Itération' },
+          { id: 'tmpl_loop', type: 'loop', name: 'Loop', category: 'Core', description: 'Itération',
+            inputHandles: [ { id: 'in', name: 'In', type: 'payload', accepts: ['payload','any'] }, { id: 'items', name: 'Items', type: 'payload', multiple: true, accepts: ['payload','any'] } ],
+            outputHandles: [ { id: 'after', name: 'After', type: 'payload' }, { id: 'each', name: 'Each', type: 'payload' } ],
+            args: { title: 'Loop', ui: { layout: 'vertical', labelsOnTop: true }, fields: [
+              { type: 'text', key: 'itemsArg', label: 'Tableau ou chemin (JSON/chemin)', expression: { allow: true }, col: { xs: 24 } },
+              { type: 'text', key: 'elementExpr', label: "Mapper l'élément (optionnel)", expression: { allow: true }, col: { xs: 24 } },
+              { type: 'text', key: 'itemVar', label: 'Nom de la variable élément', default: 'item', col: { xs: 12 } },
+              { type: 'text', key: 'indexVar', label: 'Nom de la variable index', default: 'index', col: { xs: 12 } },
+              { type: 'checkbox', key: 'perItemPayload', label: 'Définir payload = élément pour la branche', default: true, col: { xs: 24 } },
+              { type: 'select', key: 'resultMode', label: 'Résultat final', options: [ { label: 'Collecter tous les payloads', value: 'collect' }, { label: 'Conserver le dernier payload', value: 'last' } ], default: 'collect', col: { xs: 24 } },
+              { type: 'number', key: 'maxIterations', label: 'Itérations max', default: 1000, col: { xs: 24 } }
+            ] }
+          },
           { id: 'tmpl_action', type: 'function', name: 'Action', category: 'Core', description: 'Étape générique', output: ['Success'], authorize_catch_error: true, authorize_skip_error: true },
           {
             id: 'tmpl_sendmail', type: 'function', name: 'SendMail', category: 'Email', appId: 'gmail', description: 'Envoyer un email via Gmail', args: {
@@ -848,12 +963,12 @@ export class CatalogService {
               }
             }, output: ['Success'], authorize_catch_error: true, tags: ['email', 'gmail'], group: 'Functions'
           },
-          { id: 'tmpl_http', type: 'function', name: 'HTTP Request', category: 'HTTP', description: 'Appeler une API HTTP', output: ['Success'], authorize_catch_error: true, authorize_skip_error: true, tags: ['http', 'api'], group: 'Functions' },
-          { id: 'tmpl_slack_post', type: 'function', name: 'Slack Post', category: 'Chat', appId: 'slack', description: 'Poster un message Slack', output: ['Success'], authorize_catch_error: true, authorize_skip_error: true, tags: ['slack', 'chat'], group: 'Functions' },
-          { id: 'tmpl_delay', type: 'function', name: 'Delay', category: 'Core', description: 'Attendre un délai', output: ['Success'], authorize_catch_error: true, authorize_skip_error: true, tags: ['time', 'delay'], group: 'Functions' },
-          { id: 'tmpl_math_add', type: 'function', name: 'Math Add', category: 'Math', description: 'Additionner', output: ['Success'], tags: ['math'], group: 'Functions' },
-          { id: 'tmpl_text_upper', type: 'function', name: 'Text Uppercase', category: 'Text', description: 'Mettre en majuscules', output: ['Success'], tags: ['text'], group: 'Functions' },
-          { id: 'tmpl_pdf', type: 'function', name: 'PDF', category: 'Docs', appId: 'pdf', description: 'Générer un PDF', output: ['Success'], tags: ['pdf', 'document'], group: 'Functions' },
+          { id: 'tmpl_http', type: 'function', nodeKind: 'function', schemaVersion: 2, name: 'HTTP Request', category: 'HTTP', description: 'Appeler une API HTTP', inputHandles: [ { id: 'in', name: 'In', type: 'payload', accepts: ['payload','any'] } ], outputHandles: [ { id: 'ok', name: 'Success', type: 'payload' } ], authorize_catch_error: true, authorize_skip_error: true, tags: ['http', 'api'], group: 'Functions' },
+          { id: 'tmpl_slack_post', type: 'function', nodeKind: 'function', schemaVersion: 2, name: 'Slack Post', category: 'Chat', appId: 'slack', description: 'Poster un message Slack', inputHandles: [ { id: 'in', name: 'In', type: 'payload', accepts: ['payload','any'] } ], outputHandles: [ { id: 'ok', name: 'Success', type: 'payload' } ], authorize_catch_error: true, authorize_skip_error: true, tags: ['slack', 'chat'], group: 'Functions' },
+          { id: 'tmpl_delay', type: 'function', nodeKind: 'function', schemaVersion: 2, name: 'Delay', category: 'Core', description: 'Attendre un délai', inputHandles: [ { id: 'in', name: 'In', type: 'payload', accepts: ['payload','any'] } ], outputHandles: [ { id: 'ok', name: 'Success', type: 'payload' } ], authorize_catch_error: true, authorize_skip_error: true, tags: ['time', 'delay'], group: 'Functions' },
+          { id: 'tmpl_math_add', type: 'function', nodeKind: 'function', schemaVersion: 2, name: 'Math Add', category: 'Math', description: 'Additionner', inputHandles: [ { id: 'in', name: 'In', type: 'payload', accepts: ['payload','any'] } ], outputHandles: [ { id: 'ok', name: 'Success', type: 'payload' } ], tags: ['math'], group: 'Functions' },
+          { id: 'tmpl_text_upper', type: 'function', nodeKind: 'function', schemaVersion: 2, name: 'Text Uppercase', category: 'Text', description: 'Mettre en majuscules', inputHandles: [ { id: 'in', name: 'In', type: 'payload', accepts: ['payload','any'] } ], outputHandles: [ { id: 'ok', name: 'Success', type: 'payload' } ], tags: ['text'], group: 'Functions' },
+          { id: 'tmpl_pdf', type: 'function', nodeKind: 'function', schemaVersion: 2, name: 'PDF', category: 'Docs', appId: 'pdf', description: 'Générer un PDF', inputHandles: [ { id: 'in', name: 'In', type: 'payload', accepts: ['payload','any'] } ], outputHandles: [ { id: 'ok', name: 'Success', type: 'payload' } ], tags: ['pdf', 'document'], group: 'Functions' },
         ];
         // Add Gmail event trigger (Recevoir un mail)
         try {
@@ -903,7 +1018,7 @@ export class CatalogService {
 
         // Add workflow (subflow) template at seed time
         try {
-          (tpls as any).push({ id: 'tmpl_call_flow', type: 'flow', name: 'Call Flow', category: 'Workflow', description: 'Appeler un sous-flow', output: ['Success'], authorize_catch_error: true, authorize_skip_error: true, args: { title: 'Call Flow', ui: { layout: 'vertical', labelsOnTop: true }, fields: [{ type: 'text', key: 'flowId', label: 'Flow ID', col: { xs: 24 }, disabledIf: true }] } } as any);
+          (tpls as any).push({ id: 'tmpl_call_flow', type: 'flow', nodeKind: 'flow', schemaVersion: 2, name: 'Call Flow', category: 'Workflow', description: 'Appeler un sous-flow', inputHandles: [ { id: 'in', name: 'In', type: 'payload', accepts: ['payload','any'] } ], outputHandles: [ { id: 'ok', name: 'Success', type: 'payload' } ], authorize_catch_error: true, authorize_skip_error: true, args: { title: 'Call Flow', ui: { layout: 'vertical', labelsOnTop: true }, fields: [{ type: 'text', key: 'flowId', label: 'Flow ID', col: { xs: 24 }, disabledIf: true }] } } as any);
         } catch {}
         this.save(this.TPL_LIST_KEY, tpls);
       }

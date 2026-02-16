@@ -21,10 +21,17 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
   template: `
   <div class="editor">
     <div class="header">
-      <div class="card-title left"><span class="t">App / Provider</span><span class="s">Créer / Éditer</span></div>
+      <div class="left">
+        <button type="button" class="icon-btn back" (click)="back()" title="Retour"><i class="fa-solid fa-arrow-left"></i></button>
+        <div class="card-title left">
+          <span class="t">App</span>
+          <span class="s">{{ form?.value?.title || form?.value?.name || 'Nouveau' }}</span>
+        </div>
+      </div>
       <div class="actions">
-        <button nz-button class="apple-btn" (click)="back()"><i nz-icon nzType="arrow-left"></i><span class="label">Retour</span></button>
-        <button nz-button class="apple-btn" nzType="primary" [disabled]="form.invalid || saving" (click)="save()"><i nz-icon nzType="save"></i><span class="label">Enregistrer</span></button>
+        <button type="button" class="icon-ghost" (click)="save()" [disabled]="form.invalid || saving" aria-label="Enregistrer">
+          <i nz-icon nzType="save"></i>
+        </button>
       </div>
     </div>
     <form [formGroup]="form" class="form" nz-form nzLayout="vertical">
@@ -59,9 +66,9 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
           <nz-form-label>Aperçu</nz-form-label>
           <nz-form-control>
             <div class="icon" [style.background]="form.value.color || '#f3f4f6'">
-              <i *ngIf="form.value.iconClass" [class]="form.value.iconClass" [style.color]="fgColor"></i>
-              <img *ngIf="!form.value.iconClass && form.value.iconUrl" [src]="form.value.iconUrl" alt="icon"/>
-              <img *ngIf="!form.value.iconClass && !form.value.iconUrl && form.value.id" [src]="simpleIconUrl(form.value.id, fgColor)" alt="icon"/>
+              <img *ngIf="form.value.iconUrl" [src]="form.value.iconUrl" alt="icon"/>
+              <i *ngIf="!form.value.iconUrl && form.value.iconClass" [class]="form.value.iconClass" [style.color]="fgColor"></i>
+              <img *ngIf="!form.value.iconUrl && !form.value.iconClass && form.value.id" [src]="simpleIconUrl(form.value.id, fgColor)" alt="icon"/>
             </div>
           </nz-form-control>
         </nz-form-item>
@@ -86,7 +93,7 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
       </div>
 
       <div *ngIf="form.value.hasCredentials" class="span-2 creds-block" style="margin-top:10px;">
-        <div class="card-title" style="margin-bottom:6px;"><span class="t">Credentials</span><span class="s">Schéma (JSON) + aperçu + Form Builder</span></div>
+        <div class="ins-section-header"><div class="card-title"><span class="t">Credentials</span><span class="s">Schéma (JSON) + aperçu + Form Builder</span></div></div>
         <div class="args-controls">
           <label nz-checkbox formControlName="fb_preset_tpl" nz-tooltip="Vertical + colonnes 24 + expressions activées par défaut">Appliquer preset (Form Builder)</label>
           <label nz-checkbox formControlName="show_creds_json" nz-tooltip="Afficher/masquer l’éditeur JSON">Afficher JSON (Monaco)</label>
@@ -122,11 +129,18 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
   `,
   styles: [`
     .editor { padding: 12px; max-width: 920px; margin: 0 auto; }
-    .header { display:flex; align-items:center; justify-content:space-between; margin-bottom: 10px; }
+    .header { display:flex; align-items:center; justify-content:space-between; margin-bottom: 12px; }
+    .header .left { display:flex; align-items:left; gap:0px; }
     .header .actions { display:flex; gap:8px; }
-    .card-title { display:flex; flex-direction:column; }
+    .card-title, .ts { display:flex; flex-direction:column; }
     .card-title .t { font-weight:600; font-size:14px; }
     .card-title .s { font-size:12px; color:#64748b; }
+    .icon-btn.back { width:32px; height:32px; display:inline-flex; align-items:center; justify-content:center; border:0; background:transparent; border-radius:8px; cursor:pointer; }
+    .icon-btn.back:hover { background:#f3f4f6; }
+    .icon-ghost { border:0; background:transparent; padding:6px; border-radius:8px; display:inline-flex; align-items:center; justify-content:center; color:#111; cursor:pointer; }
+    .icon-ghost[disabled] { opacity:.5; cursor:not-allowed; }
+    .icon-ghost:hover { background:#f5f5f5; }
+    .ins-section-header { display:flex; justify-content:flex-start; padding:6px 0 8px; margin:12px 0 8px; border-bottom:1px solid #E2E1E4; }
     .grid { display:grid; gap:8px; }
     .grid.cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .grid .span-2 { grid-column: span 2; }

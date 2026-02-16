@@ -14,6 +14,14 @@ const FlowSchema = new Schema({
   status: { type: String, enum: ['draft','test','production'], default: 'draft' },
   enabled: { type: Boolean, default: true },
   graph: { type: GraphSchema, default: () => ({ nodes: [], edges: [] }) },
+  // UI/editor settings (orientation, helpers, etc.)
+  settings: { type: Schema.Types.Mixed, default: {} },
+  // Production trigger fields
+  deployedAt:    { type: Date, default: null },
+  lastDeployedAt: { type: Date, default: null },
+  triggerType:   { type: String, enum: ['subscription','webhook','polling', null], default: null },
+  triggerNodeId: { type: String, default: null },
+  webhookToken:  { type: String, default: null, index: true, sparse: true },
   // Validation snapshot to surface in UI lists
   invalid: { type: Boolean, default: false },
   validationErrors: { type: [Schema.Types.Mixed], default: [] },

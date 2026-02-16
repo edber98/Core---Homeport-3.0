@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiClientService } from './api-client.service';
-import { environment } from '../../environments/environment';
+import { apiBase } from '../shared/api-base';
 import { AuthTokenService } from './auth-token.service';
 
 export interface BackendRun {
@@ -28,20 +28,29 @@ export class RunsBackendService {
     return this.api.post<any>(`/api/flows/${encodeURIComponent(flowId)}/runs`, { payload });
   }
   get(runId: string, params?: { populate?: '0'|'1' }): Observable<BackendRun> { return this.api.get<BackendRun>(`/api/runs/${encodeURIComponent(runId)}`, params); }
-  getWith(runId: string, include: Array<'attempts'|'events'> = []): Observable<BackendRun> {
+  getWith(runId: string, include: Array<'attempts'|'events'|'meta'|'graph'|'settings'> = []): Observable<BackendRun> {
     const p: any = {};
     if (include && include.length) p.include = include.join(',');
     return this.api.get<BackendRun>(`/api/runs/${encodeURIComponent(runId)}`, p);
   }
   cancel(runId: string): Observable<any> { return this.api.post<any>(`/api/runs/${encodeURIComponent(runId)}/cancel`, {}); }
-  listByFlow(flowId: string, params?: { status?: string; page?: number; limit?: number; q?: string; sort?: string }): Observable<BackendRun[]> {
+  listByFlow(flowId: string, params?: { status?: string; page?: number; offset?: number; limit?: number; q?: string; sort?: string }): Observable<BackendRun[]> {
     return this.api.get<BackendRun[]>(`/api/flows/${encodeURIComponent(flowId)}/runs`, params);
   }
   listByWorkspace(wsId: string, params?: { flowId?: string; status?: string; page?: number; limit?: number; q?: string; sort?: string }): Observable<BackendRun[]> {
     return this.api.get<BackendRun[]>(`/api/workspaces/${encodeURIComponent(wsId)}/runs`, params);
   }
+  statsByFlow(flowId: string): Observable<any> {
+    return this.api.get<any>(`/api/flows/${encodeURIComponent(flowId)}/runs/stats`);
+  }
   preview(flowId: string, targetNodeId: string, payload: any): Observable<{ nodeId: string; msgIn?: any; payload?: any }> {
     return this.api.post<{ nodeId: string; msgIn?: any; payload?: any }>(`/api/flows/${encodeURIComponent(flowId)}/preview`, { targetNodeId, payload });
+  }
+  simulateMsg(flowId: string, targetNodeId: string, mode: 'engine'|'engine_split'|'all'|'default' = 'engine', opts?: { runId?: string|null; graph?: any }): Observable<{ targetNodeId?: string; scenarios: Array<{ id: string; index: number; label: string; msgIn: any; argsPre?: any; argsPost?: any; path?: { edges?: Array<{ sourceId: string; targetId: string; sourceHandle?: string }> }; trace?: Array<{ nodeId: string; kind?: string; startedAt?: string; finishedAt?: string; handlesUsed?: string[]; resultPreview?: Array<{ key: string; type: string }>; outputsCount?: number }>; match?: { exec?: boolean; handleId?: string; handleLabel?: string } }> }> {
+    const body: any = { targetNodeId, mode };
+    if (opts && opts.runId) body.runId = opts.runId; // Optionnel: si fourni, le backend comparera à l'exécution donnée
+    if (opts && opts.graph && typeof opts.graph === 'object') body.graph = opts.graph; // Graph override: simulate against unsaved graph
+    return this.api.post<{ targetNodeId?: string; scenarios: Array<{ id: string; index: number; label: string; msgIn: any; argsPre?: any; argsPost?: any; path?: { edges?: Array<{ sourceId: string; targetId: string; sourceHandle?: string }> }; trace?: Array<{ nodeId: string; kind?: string; startedAt?: string; finishedAt?: string; handlesUsed?: string[]; resultPreview?: Array<{ key: string; type: string }>; outputsCount?: number }>; match?: { exec?: boolean; handleId?: string; handleLabel?: string } }> }>(`/api/flows/${encodeURIComponent(flowId)}/simulate-msg`, body);
   }
   testNode(flowId: string, nodeId: string, msg: any): Observable<any> {
     return this.api.post<any>(`/api/flows/${encodeURIComponent(flowId)}/test-node`, { nodeId, msg });
@@ -49,9 +58,9 @@ export class RunsBackendService {
 
   // Open an SSE stream for a given runId and emit parsed LiveEvents
   stream(runId: string): { source: EventSource, on: (cb: (ev: any) => void) => void, close: () => void } {
-    const base = environment.apiBaseUrl.replace(/\/$/, '');
+    const base = apiBase();
     const token = this.auth.token;
-    const url = `${base}/api/runs/${encodeURIComponent(runId)}/stream${token ? `?token=${encodeURIComponent(token)}` : ''}`;
+    const url = `${base}/runs/${encodeURIComponent(runId)}/stream${token ? `?token=${encodeURIComponent(token)}` : ''}`;
     const source = new EventSource(url);
     // Basic logs for debugging SSE lifecycle
     try { console.log('[frontend][sse] open', { runId, url }); } catch {}
@@ -66,7 +75,7 @@ export class RunsBackendService {
         }
       };
       // Support both generic 'live' channel and typed events from engine
-      const types = ['live','run.status','node.started','node.status','node.done','node.result','edge.taken','run.failed','error'];
+      const types = ['live','run.status','node.started','node.status','node.done','node.result','node.log','edge.taken','run.failed','error'];
       types.forEach(t => source.addEventListener(t, handler as any));
       // Fallback default message
       source.onmessage = handler as any;
@@ -82,9 +91,9 @@ export class RunsBackendService {
   }
   getAdhoc(runId: string): Observable<BackendRun> { return this.api.get<BackendRun>(`/api/test/runs/${encodeURIComponent(runId)}`); }
   streamAdhoc(runId: string): { source: EventSource, on: (cb: (ev: any) => void) => void, close: () => void } {
-    const base = environment.apiBaseUrl.replace(/\/$/, '');
+    const base = apiBase();
     const token = this.auth.token;
-    const url = `${base}/api/test/runs/${encodeURIComponent(runId)}/stream${token ? `?token=${encodeURIComponent(token)}` : ''}`;
+    const url = `${base}/test/runs/${encodeURIComponent(runId)}/stream${token ? `?token=${encodeURIComponent(token)}` : ''}`;
     const source = new EventSource(url);
     const on = (cb: (ev: any) => void) => {
       const handler = (evt: MessageEvent) => { try { const parsed = JSON.parse(evt.data); cb(parsed); } catch {} };

@@ -1,134 +1,270 @@
 <div class="builder">
   <!-- Reusable left panel content (desktop + drawer) -->
   <ng-template #leftPanelContent>
-    <df-context-panel
-      [treeNodes]="treeNodes"
-      [treeSelectedKeys]="treeSelectedKeys"
-      [stepsMode]="isStepsMode"
-      [canAddSectionBtn]="canAddSectionBtn()"
-      [canAddFieldBtn]="canAddFieldBtn()"
-      [canQuickAddField]="canQuickAddField"
-      [json]="json"
-      (selectFormSettings)="select(schema)"
-      (addStep)="addStep()"
-      (addSection)="addSectionFromToolbar()"
-      (addSectionArray)="addArraySectionFromToolbar()"
-      (addField)="addFieldFromToolbar()"
-      (treeDrop)="onTreeDrop($event)"
-      (treeClick)="onTreeSelect([$event])"
-      (treeExpand)="onTreeExpand({ node: { key: $event.key }, isExpanded: $event.expanded })"
-      (ctxAddStep)="ctxAddStep()"
-      (ctxAddSectionRoot)="ctxAddSectionRoot()"
-      (ctxAddSectionRootArray)="ctxAddSectionRootArray()"
-      (ctxAddFieldRoot)="ctxAddFieldRoot()"
-      (ctxAddFieldRootTyped)="ctxAddFieldRootTyped($event.type)"
-      (ctxStepAddSection)="dropdownKey=$event.key; ctxAddSection()"
-      (ctxStepAddSectionArray)="dropdownKey=$event.key; ctxAddSectionArray()"
-      (ctxStepAddField)="dropdownKey=$event.key; ctxAddFieldToStep()"
-      (ctxStepAddFieldTyped)="dropdownKey=$event.key; addFieldAtStepTyped($event.type)"
-      (ctxStepDelete)="dropdownKey=$event.key; ctxDeleteStep()"
-      (ctxSectionAddSection)="dropdownKey=$event.key; ctxAddSectionInside()"
-      (ctxSectionAddSectionArray)="dropdownKey=$event.key; ctxAddSectionInsideArray()"
-      (ctxSectionAddField)="dropdownKey=$event.key; ctxAddFieldToSection()"
-      (ctxSectionAddFieldTyped)="dropdownKey=$event.key; ctxAddFieldToSectionTyped($event.type)"
-      (ctxSectionDelete)="dropdownKey=$event.key; ctxDeleteSection()"
-      (ctxSectionDuplicate)="dropdownKey=$event.key; ctxDuplicateSection()"
-      (ctxSectionInsertBefore)="dropdownKey=$event.key; ctxInsertSectionBefore()"
-      (ctxSectionInsertAfter)="dropdownKey=$event.key; ctxInsertSectionAfter()"
-      (ctxFieldDelete)="dropdownKey=$event.key; ctxDeleteField()"
-      (ctxFieldDuplicate)="dropdownKey=$event.key; ctxDuplicateField()"
-      (ctxFieldInsertBefore)="dropdownKey=$event.key; ctxInsertFieldBefore()"
-      (ctxFieldInsertAfter)="dropdownKey=$event.key; ctxInsertFieldAfter()"
-      (quickAdd)="quickAdd($any($event))"
-      (jsonChange)="json=$event"
-      (doImport)="import()"
-      (doExport)="export()"
-    ></df-context-panel>
+    <div class="left-panel">
+      <ng-template #paletteTitle>
+        <div class="card-title">
+          <span class="t">Palette & Contexte</span>
+          <span class="s">Création &amp; organisation</span>
+        </div>
+      </ng-template>
+      <nz-card [nzTitle]="paletteTitle" nzSize="small" class="card left-panel-card">
+        <div class="actions-top">
+          <button nz-button nzType="default" nzSize="small" class="form-settings-btn"
+                  (click)="select(schema)" aria-label="Paramètres du formulaire">
+            <i class="fa-solid fa-sliders"></i>
+            <span>Paramètres du formulaire</span>
+          </button>
+        </div>
+        <div class="left-panel-title">Actions</div>
+        <div class="actions-grid">
+          <button nz-button nzType="default" nzSize="small"
+                  (click)="addStep()" aria-label="Ajouter une étape">
+            <i class="fa-solid fa-list-ol"></i>
+            <span class="quick-label">Étape</span>
+          </button>
+          <button nz-button nzType="default" nzSize="small"
+                  (click)="addSectionFromToolbar()" [disabled]="!canAddSectionBtn()" aria-label="Ajouter une section">
+            <i class="fa-solid fa-layer-group"></i>
+            <span class="quick-label">Section</span>
+          </button>
+          <button nz-button nzType="default" nzSize="small"
+                  (click)="addArraySectionFromToolbar()" [disabled]="!canAddSectionBtn()" aria-label="Ajouter une section répétable">
+            <i class="fa-solid fa-boxes-stacked"></i>
+            <span class="quick-label quick-label--stack">Section<span class="quick-label-sub">(tableau)</span></span>
+          </button>
+          <button nz-button nzType="default" nzSize="small"
+                  (click)="addFieldFromToolbar()" [disabled]="!canAddFieldBtn()" aria-label="Ajouter un champ">
+            <i class="fa-solid fa-square-plus"></i>
+            <span class="quick-label">Champ</span>
+          </button>
+        </div>
+        <div class="left-panel-title quick-title">Champs rapides</div>
+        <div class="quick-grid">
+          <button nz-button nzSize="small"
+                  (click)="quickAdd('text')" [disabled]="!canQuickAddField" aria-label="Ajouter champ texte">
+            <i class="fa-solid fa-font"></i>
+            <span class="quick-label">Texte</span>
+          </button>
+          <button nz-button nzSize="small"
+                  (click)="quickAdd('textarea')" [disabled]="!canQuickAddField" aria-label="Ajouter zone de texte">
+            <i class="fa-solid fa-align-left"></i>
+            <span class="quick-label">Zone</span>
+          </button>
+          <button nz-button nzSize="small"
+                  (click)="quickAdd('number')" [disabled]="!canQuickAddField" aria-label="Ajouter nombre">
+            <i class="fa-solid fa-hashtag"></i>
+            <span class="quick-label">Nombre</span>
+          </button>
+          <button nz-button nzSize="small"
+                  (click)="quickAdd('date')" [disabled]="!canQuickAddField" aria-label="Ajouter date">
+            <i class="fa-regular fa-calendar"></i>
+            <span class="quick-label">Date</span>
+          </button>
+          <button nz-button nzSize="small"
+                  (click)="quickAdd('cron')" [disabled]="!canQuickAddField" aria-label="Ajouter cron">
+            <i class="fa-regular fa-clock"></i>
+            <span class="quick-label">Cron</span>
+          </button>
+          <button nz-button nzSize="small"
+                  (click)="quickAdd('select')" [disabled]="!canQuickAddField" aria-label="Ajouter sélecteur">
+            <i class="fa-solid fa-caret-down"></i>
+            <span class="quick-label">Select</span>
+          </button>
+          <button nz-button nzSize="small"
+                  (click)="quickAdd('radio')" [disabled]="!canQuickAddField" aria-label="Ajouter radio">
+            <i class="fa-regular fa-circle-dot"></i>
+            <span class="quick-label">Radio</span>
+          </button>
+          <button nz-button nzSize="small"
+                  (click)="quickAdd('checkbox')" [disabled]="!canQuickAddField" aria-label="Ajouter checkbox">
+            <i class="fa-regular fa-square-check"></i>
+            <span class="quick-label">Case</span>
+          </button>
+          <button nz-button nzSize="small"
+                  (click)="quickAdd('file')" [disabled]="!canQuickAddField" aria-label="Ajouter fichier">
+            <i class="fa-solid fa-file-arrow-up"></i>
+            <span class="quick-label">Fichier</span>
+          </button>
+          <button nz-button nzSize="small"
+                  (click)="quickAdd('textblock')" [disabled]="!canQuickAddField" aria-label="Ajouter bloc de texte">
+            <i class="fa-solid fa-paragraph"></i>
+            <span class="quick-label">Bloc</span>
+          </button>
+          <button nz-button nzSize="small"
+                  (click)="quickAdd('schema_builder')" [disabled]="!canQuickAddField" aria-label="Ajouter schéma">
+            <i class="fa-solid fa-table-columns"></i>
+            <span class="quick-label">Schéma</span>
+          </button>
+          <button nz-button nzSize="small"
+                  (click)="quickAdd('tags')" [disabled]="!canQuickAddField" aria-label="Ajouter liste de tags">
+            <i class="fa-solid fa-tags"></i>
+            <span class="quick-label">Tags</span>
+          </button>
+          <button nz-button nzSize="small"
+                  (click)="quickAdd('email')" [disabled]="!canQuickAddField" aria-label="Ajouter email">
+            <i class="fa-solid fa-envelope"></i>
+            <span class="quick-label">Email</span>
+          </button>
+          <button nz-button nzSize="small"
+                  (click)="quickAdd('tel')" [disabled]="!canQuickAddField" aria-label="Ajouter téléphone">
+            <i class="fa-solid fa-phone"></i>
+            <span class="quick-label">Tél</span>
+          </button>
+          <button nz-button nzSize="small"
+                  (click)="quickAdd('color')" [disabled]="!canQuickAddField" aria-label="Ajouter couleur">
+            <i class="fa-solid fa-palette"></i>
+            <span class="quick-label">Couleur</span>
+          </button>
+        </div>
+      </nz-card>
 
-    <ng-template #scenariosTitle>
-      <div class="card-title">
-        <span class="t">Scénarios de test</span>
-        <span class="s">Préremplissage & Simulation</span>
+      <nav class="left-tabs" role="tablist" aria-label="Sections du panneau gauche">
+        <button type="button" class="tab" role="tab" [class.active]="leftTab === 'structure'" [attr.aria-selected]="leftTab === 'structure'" (click)="leftTab = 'structure'">Structure</button>
+        <button type="button" class="tab" role="tab" [class.active]="leftTab === 'import'" [attr.aria-selected]="leftTab === 'import'" (click)="leftTab = 'import'">Import/export</button>
+        <button type="button" class="tab" role="tab" [class.active]="leftTab === 'scenarios'" [attr.aria-selected]="leftTab === 'scenarios'" (click)="leftTab = 'scenarios'">Scénarios</button>
+        <button type="button" class="tab" role="tab" [class.active]="leftTab === 'context'" [attr.aria-selected]="leftTab === 'context'" (click)="leftTab = 'context'">Contexte</button>
+      </nav>
+
+      <div class="left-tab-content">
+        <df-context-panel
+          *ngIf="leftTab === 'structure' || leftTab === 'import'"
+          [treeNodes]="treeNodes"
+          [treeSelectedKeys]="treeSelectedKeys"
+          [stepsMode]="isStepsMode"
+          [canAddSectionBtn]="canAddSectionBtn()"
+          [canAddFieldBtn]="canAddFieldBtn()"
+          [json]="json"
+          [activeTab]="leftTab"
+          (selectFormSettings)="select(schema)"
+          (addStep)="addStep()"
+          (addSection)="addSectionFromToolbar()"
+          (addSectionArray)="addArraySectionFromToolbar()"
+          (addField)="addFieldFromToolbar()"
+          (treeDrop)="onTreeDrop($event)"
+          (treeClick)="onTreeSelect([$event])"
+          (treeExpand)="onTreeExpand({ node: { key: $event.key }, isExpanded: $event.expanded })"
+          (ctxAddStep)="ctxAddStep()"
+          (ctxAddSectionRoot)="ctxAddSectionRoot()"
+          (ctxAddSectionRootArray)="ctxAddSectionRootArray()"
+          (ctxAddFieldRoot)="ctxAddFieldRoot()"
+          (ctxAddFieldRootTyped)="ctxAddFieldRootTyped($event.type)"
+          (ctxStepAddSection)="dropdownKey=$event.key; ctxAddSection()"
+          (ctxStepAddSectionArray)="dropdownKey=$event.key; ctxAddSectionArray()"
+          (ctxStepAddField)="dropdownKey=$event.key; ctxAddFieldToStep()"
+          (ctxStepAddFieldTyped)="dropdownKey=$event.key; addFieldAtStepTyped($event.type)"
+          (ctxStepDelete)="dropdownKey=$event.key; ctxDeleteStep()"
+          (ctxSectionAddSection)="dropdownKey=$event.key; ctxAddSectionInside()"
+          (ctxSectionAddSectionArray)="dropdownKey=$event.key; ctxAddSectionInsideArray()"
+          (ctxSectionAddField)="dropdownKey=$event.key; ctxAddFieldToSection()"
+          (ctxSectionAddFieldTyped)="dropdownKey=$event.key; ctxAddFieldToSectionTyped($event.type)"
+          (ctxSectionDelete)="dropdownKey=$event.key; ctxDeleteSection()"
+          (ctxSectionDuplicate)="dropdownKey=$event.key; ctxDuplicateSection()"
+          (ctxSectionInsertBefore)="dropdownKey=$event.key; ctxInsertSectionBefore()"
+          (ctxSectionInsertAfter)="dropdownKey=$event.key; ctxInsertSectionAfter()"
+          (ctxFieldDelete)="dropdownKey=$event.key; ctxDeleteField()"
+          (ctxFieldDuplicate)="dropdownKey=$event.key; ctxDuplicateField()"
+          (ctxFieldInsertBefore)="dropdownKey=$event.key; ctxInsertFieldBefore()"
+          (ctxFieldInsertAfter)="dropdownKey=$event.key; ctxInsertFieldAfter()"
+          (jsonChange)="json=$event"
+          (doImport)="import()"
+          (doExport)="export()"
+        ></df-context-panel>
+
+        <ng-container *ngIf="leftTab === 'scenarios'">
+          <ng-template #scenariosTitle>
+            <div class="sub-header left-tab-title">
+              <div class="card-title">
+                <span class="t">Scénarios de test</span>
+                <span class="s">Préremplissage & Simulation</span>
+              </div>
+            </div>
+          </ng-template>
+          <nz-card [nzTitle]="scenariosTitle" nzSize="small" class="card md left-tab-card no-title-pad">
+            <nz-collapse nzGhost>
+              <nz-collapse-panel nzHeader="Hypothèses de test" [nzActive]="true">
+                <ng-container *ngIf="scenarios?.length; else noItems1">
+                  <div style="display:flex; flex-direction:column; gap:6px;">
+                    <div *ngFor="let sc of scenarios" style="display:flex; align-items:center; gap:8px;">
+                      <span style="font-weight:600;">{{ sc.label }}</span>
+                      <span style="color:#64748b; font-size:12px;">{{ sc.description }}</span>
+                      <span style="flex:1"></span>
+                      <button nz-button nzSize="small" nz-tooltip nzTooltipTitle="Appliquer" (click)="applyScenario(sc)"><i class="fa-solid fa-play"></i></button>
+                    </div>
+                  </div>
+                </ng-container>
+                <ng-template #noItems1><div style="color:#64748b; font-size:12px;">Aucun élément.</div></ng-template>
+              </nz-collapse-panel>
+              <nz-collapse-panel nzHeader="Cas du formulaire (variations)" [nzActive]="true">
+                <ng-container *ngIf="scenariosAll?.length; else noItems2">
+                  <div style="display:flex; flex-direction:column; gap:6px;">
+                    <div *ngFor="let sc of scenariosAll" style="display:flex; align-items:center; gap:8px;">
+                      <span style="font-weight:600;">{{ sc.label }}</span>
+                      <span style="color:#64748b; font-size:12px;">{{ sc.description }}</span>
+                      <span style="flex:1"></span>
+                      <button nz-button nzSize="small" nz-tooltip nzTooltipTitle="Remplir" (click)="applyScenarioAll(sc)"><i class="fa-solid fa-wand-magic-sparkles"></i></button>
+                    </div>
+                  </div>
+                </ng-container>
+                <ng-template #noItems2><div style="color:#64748b; font-size:12px;">Aucun élément.</div></ng-template>
+              </nz-collapse-panel>
+              <nz-collapse-panel nzHeader="Formulaire entier" [nzActive]="true">
+                <ng-container *ngIf="formScenarios?.length; else noItems3">
+                  <div class="scenario-list">
+                    <div *ngFor="let sc of formScenarios" class="scenario-item">
+                      <div class="scenario-item__head">
+                        <span class="scenario-item__title">{{ sc.label }}</span>
+                        <button nz-button nzSize="small" nz-tooltip nzTooltipTitle="Remplir" (click)="applyFormScenario(sc)"><i class="fa-solid fa-wand-magic-sparkles"></i></button>
+                      </div>
+                      <div class="scenario-item__desc">{{ sc.description }}</div>
+                    </div>
+                  </div>
+                </ng-container>
+                <ng-template #noItems3><div style="color:#64748b; font-size:12px;">Aucun élément.</div></ng-template>
+              </nz-collapse-panel>
+              <nz-collapse-panel nzHeader="Conditions & Simulation" [nzActive]="true">
+                <div class="scenario-sim-toggle">
+                  <label class="scenario-sim-toggle__row">
+                    <span>Activer la simulation</span>
+                    <nz-switch [(ngModel)]="previewUseSim" [ngModelOptions]="{standalone:true}"></nz-switch>
+                  </label>
+                  <button nz-button nzSize="small" class="scenario-sim-toggle__reset" (click)="resetSimulation()">Réinitialiser</button>
+                </div>
+              </nz-collapse-panel>
+              <nz-collapse-panel nzHeader="Contrôles" [nzActive]="true">
+                <div *ngIf="!issues.length" style="color:#64748b; font-size:12px;">Aucun problème détecté.</div>
+                <ul *ngIf="issues.length" style="margin:0; padding-left:16px;">
+                  <li *ngFor="let it of issues" [style.color]="it.level==='blocker' ? '#b91c1c' : it.level==='error' ? '#dc2626' : '#b45309'" style="margin-bottom:6px;">
+                    <strong *ngIf="it.level==='blocker'">[Bloquant]</strong>
+                    <strong *ngIf="it.level==='error'">[Erreur]</strong>
+                    <strong *ngIf="it.level==='warning'">[Attention]</strong>
+                    <span> {{ it.message }} </span>
+                    <ng-container *ngIf="it.actions?.length">
+                      <button *ngFor="let a of it.actions" nz-button nzSize="small" style="margin-left:6px;" (click)="a.run()">{{ a.label }}</button>
+                    </ng-container>
+                  </li>
+                </ul>
+              </nz-collapse-panel>
+            </nz-collapse>
+          </nz-card>
+        </ng-container>
+
+        <ng-container *ngIf="leftTab === 'context'">
+          <ng-template #ctxJsonTitle>
+            <div class="sub-header left-tab-title">
+              <div class="card-title">
+                <span class="t">Contexte (ctx)</span>
+                <span class="s">Expressions json/$json, env/$env…</span>
+              </div>
+            </div>
+          </ng-template>
+          <nz-card [nzTitle]="ctxJsonTitle" nzSize="small" class="card mt left-tab-card no-title-pad">
+            <monaco-json-editor [value]="ctxJson" (valueChange)="onCtxChange($event)" [height]="180"></monaco-json-editor>
+            <div style="color:#64748b; font-size:12px; margin-top:6px;">Ce JSON est passé à l'aperçu comme contexte des expressions (json/$json, env/$env, node/$node, now).</div>
+          </nz-card>
+        </ng-container>
       </div>
-    </ng-template>
-    <nz-card [nzTitle]="scenariosTitle" nzSize="small" class="card md">
-      <nz-collapse nzGhost>
-        <nz-collapse-panel nzHeader="Hypothèses de test" [nzActive]="true">
-          <ng-container *ngIf="scenarios?.length; else noItems1">
-            <div style="display:flex; flex-direction:column; gap:6px;">
-              <div *ngFor="let sc of scenarios" style="display:flex; align-items:center; gap:8px;">
-                <span style="font-weight:600;">{{ sc.label }}</span>
-                <span style="color:#64748b; font-size:12px;">{{ sc.description }}</span>
-                <span style="flex:1"></span>
-                <button nz-button nzSize="small" nz-tooltip nzTooltipTitle="Appliquer" (click)="applyScenario(sc)"><i class="fa-solid fa-play"></i></button>
-              </div>
-            </div>
-          </ng-container>
-          <ng-template #noItems1><div style="color:#64748b; font-size:12px;">Aucun élément.</div></ng-template>
-        </nz-collapse-panel>
-        <nz-collapse-panel nzHeader="Cas du formulaire (variations)" [nzActive]="true">
-          <ng-container *ngIf="scenariosAll?.length; else noItems2">
-            <div style="display:flex; flex-direction:column; gap:6px;">
-              <div *ngFor="let sc of scenariosAll" style="display:flex; align-items:center; gap:8px;">
-                <span style="font-weight:600;">{{ sc.label }}</span>
-                <span style="color:#64748b; font-size:12px;">{{ sc.description }}</span>
-                <span style="flex:1"></span>
-                <button nz-button nzSize="small" nz-tooltip nzTooltipTitle="Remplir" (click)="applyScenarioAll(sc)"><i class="fa-solid fa-wand-magic-sparkles"></i></button>
-              </div>
-            </div>
-          </ng-container>
-          <ng-template #noItems2><div style="color:#64748b; font-size:12px;">Aucun élément.</div></ng-template>
-        </nz-collapse-panel>
-        <nz-collapse-panel nzHeader="Formulaire entier" [nzActive]="true">
-          <ng-container *ngIf="formScenarios?.length; else noItems3">
-            <div style="display:flex; flex-direction:column; gap:6px;">
-              <div *ngFor="let sc of formScenarios" style="display:flex; align-items:center; gap:8px;">
-                <span style="font-weight:600;">{{ sc.label }}</span>
-                <span style="color:#64748b; font-size:12px;">{{ sc.description }}</span>
-                <span style="flex:1"></span>
-                <button nz-button nzSize="small" nz-tooltip nzTooltipTitle="Remplir" (click)="applyFormScenario(sc)"><i class="fa-solid fa-wand-magic-sparkles"></i></button>
-              </div>
-            </div>
-          </ng-container>
-          <ng-template #noItems3><div style="color:#64748b; font-size:12px;">Aucun élément.</div></ng-template>
-        </nz-collapse-panel>
-        <nz-collapse-panel nzHeader="Conditions & Simulation" [nzActive]="true">
-          <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
-            <label style="display:flex; align-items:center; gap:6px;">
-              <span>Activer la simulation</span>
-              <nz-switch [(ngModel)]="previewUseSim" [ngModelOptions]="{standalone:true}"></nz-switch>
-            </label>
-            <button nz-button nzSize="small" (click)="resetSimulation()">Réinitialiser</button>
-          </div>
-        </nz-collapse-panel>
-        <nz-collapse-panel nzHeader="Contrôles" [nzActive]="true">
-          <div *ngIf="!issues.length" style="color:#64748b; font-size:12px;">Aucun problème détecté.</div>
-          <ul *ngIf="issues.length" style="margin:0; padding-left:16px;">
-            <li *ngFor="let it of issues" [style.color]="it.level==='blocker' ? '#b91c1c' : it.level==='error' ? '#dc2626' : '#b45309'" style="margin-bottom:6px;">
-              <strong *ngIf="it.level==='blocker'">[Bloquant]</strong>
-              <strong *ngIf="it.level==='error'">[Erreur]</strong>
-              <strong *ngIf="it.level==='warning'">[Attention]</strong>
-              <span> {{ it.message }} </span>
-              <ng-container *ngIf="it.actions?.length">
-                <button *ngFor="let a of it.actions" nz-button nzSize="small" style="margin-left:6px;" (click)="a.run()">{{ a.label }}</button>
-              </ng-container>
-            </li>
-          </ul>
-        </nz-collapse-panel>
-      </nz-collapse>
-    </nz-card>
-
-
-    <ng-template #ctxJsonTitle>
-      <div class="card-title">
-        <span class="t">Contexte (ctx)</span>
-        <span class="s">Expressions json/$json, env/$env…</span>
-      </div>
-    </ng-template>
-    <nz-card [nzTitle]="ctxJsonTitle" nzSize="small" class="card mt">
-      <monaco-json-editor [value]="ctxJson" (valueChange)="onCtxChange($event)" [height]="180"></monaco-json-editor>
-      <div style="color:#64748b; font-size:12px; margin-top:6px;">Ce JSON est passé à l'aperçu comme contexte des expressions (json/$json, env/$env, node/$node, now).</div>
-    </nz-card>
+    </div>
   </ng-template>
 
   <!-- PALETTE / CONTEXTE -->
@@ -149,20 +285,17 @@
         <button nz-button nzSize="small" class="apple-btn" (click)="mobileAddField()" nz-tooltip [nzTooltipTitle]="!isMobile ? 'Ajouter un champ' : null" [nzTooltipTrigger]="'hover'" aria-label="Ajouter un champ">
           <i class="fa-solid fa-square-plus"></i>
         </button>
+        <button nz-button nzSize="small" class="apple-btn" (click)="addStep()" nz-tooltip [nzTooltipTitle]="!isMobile ? 'Ajouter une étape' : null" [nzTooltipTrigger]="'hover'" aria-label="Ajouter une étape">
+          <i class="fa-solid fa-list-ol"></i>
+        </button>
         <span class="sep"></span>
-        <button nz-button nzSize="small" class="apple-btn" (click)="undo()" [disabled]="!canUndo" nz-tooltip [nzTooltipTitle]="!isMobile ? 'Annuler' : null" [nzTooltipTrigger]="'hover'" aria-label="Annuler">
-          ↺
-        </button>
-        <button nz-button nzSize="small" class="apple-btn" (click)="redo()" [disabled]="!canRedo" nz-tooltip [nzTooltipTitle]="!isMobile ? 'Rétablir' : null" [nzTooltipTrigger]="'hover'" aria-label="Rétablir">
-          ↻
-        </button>
         <button nz-button nzSize="small" [ngClass]="{'apple-btn': !editMode}" [nzType]="editMode ? 'primary' : 'default'" (click)="mobileToggleEdit()" nz-tooltip [nzTooltipTitle]="!isMobile ? 'Mode édition' : null" [nzTooltipTrigger]="'hover'" aria-label="Basculer édition">
           <i class="fa-solid fa-pen-to-square"></i>
         </button>
-        <button nz-button nzSize="small" class="apple-btn" (click)="saveSchema()" nz-tooltip [nzTooltipTitle]="!isMobile ? 'Sauvegarder' : null" [nzTooltipTrigger]="'hover'" aria-label="Sauvegarder">
-          <i class="fa-solid fa-floppy-disk"></i>
-        </button>
         <span class="flex-spacer"></span>
+        <button nz-button nzSize="small" class="apple-btn" (click)="aiChatOpen = !aiChatOpen" nz-tooltip [nzTooltipTitle]="!isMobile ? 'Assistant IA' : null" [nzTooltipTrigger]="'hover'" aria-label="Ouvrir l'assistant IA">
+          <i class="fa-solid fa-message"></i>
+        </button>
         <button nz-button nzSize="small" class="apple-btn" (click)="openPanel('right', $event)" [disabled]="!selected" nz-tooltip [nzTooltipTitle]="!isMobile ? 'Inspector' : null" [nzTooltipTrigger]="'hover'" aria-label="Panneau droit">
           <i class="fa-solid fa-sliders"></i>
         </button>
@@ -171,7 +304,7 @@
     <ng-template #previewTitle>
       <div class="card-title">
         <span class="t">Aperçu éditable</span>
-        <span class="s">Navigation & Contrôles</span>
+        <span class="s">Rendu du formulaire</span>
       </div>
       
     </ng-template>
@@ -205,9 +338,14 @@
       <!-- History controls centered -->
       <div class="history-bar">
         <div class="hb-left">
-          <button nz-button nzSize="small" (click)="undo()" [disabled]="!canUndo" nz-tooltip nzTooltipTitle="Annuler" aria-label="Annuler">↺</button>
-          <button nz-button nzSize="small" (click)="redo()" [disabled]="!canRedo" nz-tooltip nzTooltipTitle="Rétablir" aria-label="Rétablir">↻</button>
+          <button nz-button nzSize="small" class="icon-btn" (click)="undo()" [disabled]="!canUndo" nz-tooltip nzTooltipTitle="Annuler" aria-label="Annuler">
+            <i class="fa-solid fa-rotate-left"></i>
+          </button>
+          <button nz-button nzSize="small" class="icon-btn" (click)="redo()" [disabled]="!canRedo" nz-tooltip nzTooltipTitle="Rétablir" aria-label="Rétablir">
+            <i class="fa-solid fa-rotate-right"></i>
+          </button>
         </div>
+        <span class="divider" aria-hidden="true"></span>
         <div class="hb-mid">
           <button nz-button nzSize="small" [nzType]="editMode ? 'primary' : 'default'" class="hb-mode-btn"
                   (click)="toggleEditMode()" nz-tooltip nzTooltipTitle="Mode édition">
@@ -227,8 +365,9 @@
             </nz-select>
           </span>
         </div>
+        <span class="divider" aria-hidden="true"></span>
         <div class="hb-right">
-          <button nz-button nzSize="small" nz-tooltip nzTooltipTitle="Sauvegarder" (click)="saveSchema()" aria-label="Sauvegarder">
+          <button class="icon-btn" (click)="saveSchema()" title="Sauvegarder" aria-label="Sauvegarder">
             <i class="fa-solid fa-floppy-disk"></i>
           </button>
         </div>
@@ -341,56 +480,33 @@
       </ng-container>
     </nz-card>
 
-    <!-- Floating AI Chat Popover Trigger + persistent popover -->
-    <button nz-button nzType="primary" class="ai-chat-fab" (click)="aiChatOpen = !aiChatOpen" aria-label="Ouvrir l'assistant IA">
-      <i class="fa-solid fa-message"></i>
-    </button>
-    <div class="ai-chat-backdrop" [class.open]="aiChatOpen" (click)="aiChatOpen=false"></div>
-    <div class="ai-chat-popover" [class.open]="aiChatOpen" (click)="$event.stopPropagation()">
-      <df-ai-chat (close)="aiChatOpen=false" (schemaGenerated)="applyAiSchema($event)"></df-ai-chat>
-    </div>
   </div>
+
+  
 
   <!-- INSPECTOR template for reuse (desktop + drawer) -->
   <ng-template #rightPanelContent>
     <ng-template #inspectorTitle>
       <div class="card-title">
-        <span class="t">Inspector</span>
-        <span class="s">Propriétés & Styles</span>
+        <span class="t">Inspecteur</span>
+        <span class="s">Propriétés &amp; Styles</span>
       </div>
     </ng-template>
     <nz-card [nzTitle]="inspectorTitle" nzSize="small" class="card no-chrome" *ngIf="selected">
-      <nz-tabs nzSize="small" class="inspector-tabs">
-        <!-- PROPS OBJET -->
-        <nz-tab nzTitle="Propriétés" *ngIf="selected !== schema">
-          <form nz-form [formGroup]="inspector" class="inspector-form" nzLayout="vertical">
-            <!-- STEP -->
-            <ng-container *ngIf="isStep(selected)">
-              <inspector-step [group]="inspector"></inspector-step>
-            </ng-container>
-
-            <!-- SECTION -->
-            <ng-container *ngIf="isSection(selected)">
-              <inspector-section [group]="inspector" (openTitleStyle)="openTitleStyleEditor()" (openDescStyle)="openDescStyleEditor()" (openCondition)="openConditionBuilder('visibleIf')"></inspector-section>
-            </ng-container>
-
-            <!-- FIELD -->
-            <ng-container *ngIf="isField(selected)">
-              <inspector-field [group]="inspector" (openOptions)="openOptionsBuilder()" (openCondition)="openConditionBuilder($event)"></inspector-field>
-            </ng-container>
-          </form>
-        </nz-tab>
-
-        <!-- FORM SETTINGS (UI + SUMMARY) -->
-        <nz-tab nzTitle="Customisations" *ngIf="selected === schema">
-          <inspector-form-settings [group]="inspector" [hasSections]="hasSections"></inspector-form-settings>
-        </nz-tab>
-
-        <!-- APERCU JSON -->
-        <nz-tab nzTitle="Paramètres">
-          <pre class="json">{{ schema | json }}</pre>
-        </nz-tab>
-      </nz-tabs>
+      <ng-container *ngIf="selected === schema; else inspectorProps">
+        <inspector-form-settings [group]="inspector" [hasSections]="hasSections"></inspector-form-settings>
+      </ng-container>
+      <ng-template #inspectorProps>
+        <ng-container *ngIf="isStep(selected)">
+          <inspector-step [group]="inspector" (openCondition)="openConditionBuilder('visibleIf')"></inspector-step>
+        </ng-container>
+        <ng-container *ngIf="isSection(selected)">
+          <inspector-section [group]="inspector" (openTitleStyle)="openTitleStyleEditor()" (openDescStyle)="openDescStyleEditor()" (openCondition)="openConditionBuilder('visibleIf')"></inspector-section>
+        </ng-container>
+        <ng-container *ngIf="isField(selected)">
+          <inspector-field [group]="inspector" [keyDuplicateMessage]="duplicateKeyMessage()" (openOptions)="openOptionsBuilder()" (openCondition)="openConditionBuilder($event)"></inspector-field>
+        </ng-container>
+      </ng-template>
     </nz-card>
   </ng-template>
 
@@ -425,16 +541,34 @@
   </ng-container>
 </nz-modal>
 
-<nz-modal [(nzVisible)]="conditionModalVisible" nzTitle="Condition Builder" [nzWidth]="960" (nzOnCancel)="cancelCondition()" (nzOnOk)="saveCondition()">
+<nz-modal [(nzVisible)]="conditionModalVisible" nzTitle="Condition Builder" [nzWidth]="1120" [nzWrapClassName]="'condition-builder-modal'" [nzOkType]="'primary'" (nzOnCancel)="cancelCondition()" (nzOnOk)="saveCondition()">
   <ng-container *nzModalContent>
-    <condition-builder [group]="conditionForm" [inputFieldKeys]="inputFieldKeys"
-                      (addConditionRow)="addConditionRow()"
-                      (addConditionGroup)="addConditionGroup()"
-                      (removeConditionRow)="removeConditionRow($event)"
-                      (changeCondKind)="changeCondKind($event.index, $event.kind)"
-                      (addSubRule)="addSubRule($event)"
-                      (addSubGroup)="addSubGroup($event)"
-                      (removeSubAt)="removeSubAt($event.index, $event.subIndex)"></condition-builder>
+    <div class="condition-modal" [class.no-json]="!conditionJsonVisible">
+      <div class="condition-modal__toolbar">
+        <button type="button" nz-button nzSize="small" class="apple-btn" [attr.aria-pressed]="conditionJsonVisible" (click)="conditionJsonVisible = !conditionJsonVisible">
+          <i class="fa-solid fa-code"></i>
+          <span class="label">{{ conditionJsonVisible ? 'Masquer JSON' : 'Afficher JSON' }}</span>
+        </button>
+      </div>
+      <div class="condition-modal__content">
+        <div class="condition-modal__builder">
+          <condition-builder [group]="conditionForm" [inputFieldKeys]="inputFieldKeys"
+                            (addConditionRow)="addConditionRow()"
+                            (addConditionGroup)="addConditionGroup()"
+                            (removeConditionRow)="removeConditionRow($event)"
+                            (changeCondKind)="changeCondKind($event.index, $event.kind)"
+                            (addSubRule)="addSubRule($event)"
+                            (addSubGroup)="addSubGroup($event)"
+                            (addNestedRule)="addNestedRule($event.index, $event.subIndex)"
+                            (addNestedGroup)="addNestedGroup($event.index, $event.subIndex)"
+                            (removeSubAt)="removeSubAt($event.index, $event.subIndex)"></condition-builder>
+        </div>
+        <aside class="condition-modal__preview" aria-label="JSON preview">
+          <div class="condition-modal__title">JSON</div>
+          <pre class="condition-modal__json">{{ conditionJsonPreview }}</pre>
+        </aside>
+      </div>
+    </div>
   </ng-container>
 </nz-modal>
 
@@ -447,6 +581,12 @@
       <app-json-schema-viewer [data]="submitResult" [editable]="false" [editMode]="false" [initialMode]="'JSON'"></app-json-schema-viewer>
     </ng-container>
   </nz-modal>
+
+<!-- AI FAB button -->
+<button nz-button nzShape="circle" nzType="primary" class="ai-chat-fab"
+  (click)="openAiPanel()" aria-label="Assistant IA" nz-tooltip nzTooltipTitle="Assistant IA">
+  <i class="fa-solid fa-wand-magic-sparkles"></i>
+</button>
 
 <!-- Responsive drawers (mobile) -->
 <nz-drawer [nzVisible]="leftDrawer" (nzOnClose)="leftDrawer=false" nzPlacement="left" [nzWidth]="360" [nzBodyStyle]="{padding:'0'}" [nzClosable]="false">

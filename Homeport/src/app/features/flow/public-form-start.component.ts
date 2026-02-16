@@ -9,6 +9,7 @@ import { CatalogService } from '../../services/catalog.service';
 import { RunsBackendService } from '../../services/runs-backend.service';
 import { ApiClientService } from '../../services/api-client.service';
 import { AuthTokenService } from '../../services/auth-token.service';
+import { apiBase } from '../../shared/api-base';
 
 @Component({
   standalone: true,
@@ -173,8 +174,8 @@ export class PublicFormStartComponent {
   private trackPublicRunSSE() {
     if (!this.runId) { this.error = 'Run introuvable'; this.running = false; this.done = true; return; }
     try {
-      const base = (window as any)?.env?.apiBaseUrl || (location.origin.replace(/\/$/, ''));
-      const url = `${base}/api/public/runs/${encodeURIComponent(this.runId)}/stream`;
+      // Utiliser apiBase() (origin + suffix en prod, env.apiBaseUrl en dev)
+      const url = `${apiBase()}/public/runs/${encodeURIComponent(this.runId)}/stream`;
       const es = new EventSource(url);
       es.addEventListener('live', (evt: MessageEvent) => {
         try {
@@ -298,7 +299,15 @@ export class PublicFormStartComponent {
         if (s === 'running') st = 'running';
         if (s === 'success') st = 'success';
         if (s === 'error') st = 'error';
-      } else if (type === 'node.result' || type === 'node.done') st = 'success';
+      } else if (type === 'node.result' || type === 'node.done') {
+        const result = ev?.data?.result ?? ev?.result;
+        const explicitStatus = String(ev?.data?.status || ev?.status || '').toLowerCase();
+        st = explicitStatus === 'error'
+          ? 'error'
+          : (explicitStatus === 'success'
+            ? 'success'
+            : (result && typeof result === 'object' && (result.ok === false || result.error != null)) ? 'error' : 'success');
+      }
       else if (type === 'node.started') st = 'running';
       if (!st) return;
       if (!this.flowNodeTitleMap && this.auth.token) {

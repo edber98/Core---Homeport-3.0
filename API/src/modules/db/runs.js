@@ -8,10 +8,41 @@ const Attempt = require('../../db/models/attempt.model');
 const AttemptCounter = require('../../db/models/attempt-counter.model');
 const RunEvent = require('../../db/models/run-event.model');
 const { runFlow } = require('../../engine');
-const { broadcast } = require('../../realtime/ws');
+const { broadcast, cleanup: wsCleanup } = require('../../realtime/ws');
 const { broadcastRun } = require('../../realtime/socketio');
+const { createFilesHelper } = require('../../services/file-storage');
+const { waitForOneEvent } = require('../../services/triggers/wait-for-one-event');
+
+function isResultError(result){
+  return !!(result && typeof result === 'object' && (result.ok === false || result.error != null));
+}
+
+// ── Truncate deeply nested objects to prevent oversized RunEvents ──
+const MAX_STR = 8000;       // max chars per string value
+const MAX_ARR = 50;          // max items per array
+const MAX_DEPTH = 8;         // max nesting depth
+function truncateDeep(val, depth) {
+  if (depth === undefined) depth = 0;
+  if (val == null) return val;
+  if (depth > MAX_DEPTH) return '[…depth]';
+  if (typeof val === 'string') return val.length > MAX_STR ? val.slice(0, MAX_STR) + '…[tronqué]' : val;
+  if (Array.isArray(val)) {
+    const sliced = val.length > MAX_ARR ? val.slice(0, MAX_ARR) : val;
+    const out = sliced.map(function(v) { return truncateDeep(v, depth + 1); });
+    if (val.length > MAX_ARR) out.push('…[' + (val.length - MAX_ARR) + ' de plus]');
+    return out;
+  }
+  if (typeof val === 'object') {
+    const out = {};
+    for (const k of Object.keys(val)) { out[k] = truncateDeep(val[k], depth + 1); }
+    return out;
+  }
+  return val;
+}
 
 module.exports = function(){
+  // Cooperative cancellation registry for DB-backed runs
+  const cancelled = new Set();
   const r = express.Router();
   // Public: start a run if the Start node exposes a public form
   r.post('/public/flows/:flowId/runs', async (req, res) => {
@@ -34,8 +65,34 @@ module.exports = function(){
       const m = start?.data?.model || {};
       if (!m || !m.startFormPublic) return res.apiError(403, 'form_not_public', 'Start form is not public');
       if (flow.enabled === false) return res.apiError(409, 'flow_disabled', 'Flow is disabled');
+      try {
+        const { validateFlowTemplates } = require('../../utils/validate');
+        const tv = await validateFlowTemplates(flow.graph || flow);
+        if (!tv.ok) {
+          console.warn(`[runs][db] pre-exec validation failed flowId=${String(flow._id)} errors:`, JSON.stringify(tv.errors));
+          try {
+            const Notification = require('../../db/models/notification.model');
+            await Notification.create({
+              companyId: ws.companyId, workspaceId: ws._id,
+              entityType: 'flow', entityId: String(flow._id),
+              severity: 'critical', code: 'flow_template_invalid',
+              message: `Exécution bloquée: ${tv.errors.length} problème(s) de template`,
+              details: { errors: tv.errors },
+              link: `/flows/${String(flow._id)}/editor`
+            });
+          } catch {}
+          return res.apiError(409, 'flow_template_invalid',
+            'Flow uses deleted or outdated templates', { errors: tv.errors });
+        }
+      } catch (e) {
+        console.error('[runs] pre-exec validation error:', e?.message || e);
+      }
       const now = new Date();
-      const run = await Run.create({ flowId: flow._id, workspaceId: ws._id, companyId: ws.companyId, status: 'running', events: [], result: null, finalPayload: null, startedAt: now });
+      // Snapshot graph and settings (meta) at execution time
+      let graphSnapshot = {};
+      try { graphSnapshot = JSON.parse(JSON.stringify(flow.graph || flow)); } catch { graphSnapshot = flow.graph || {}; }
+      const metaSnapshot = flow.settings || {};
+      const run = await Run.create({ flowId: flow._id, workspaceId: ws._id, companyId: ws.companyId, status: 'running', events: [], result: null, finalPayload: null, startedAt: now, graph: graphSnapshot, meta: metaSnapshot });
       res.status(201).json({ success: true, data: { id: String(run._id), status: run.status }, requestId: req.requestId, ts: Date.now() });
       (async () => {
         try {
@@ -58,7 +115,8 @@ module.exports = function(){
               return { id: String(cred._id), providerKey: cred.providerKey, values };
             } catch { return null; }
           };
-          await runFlow(flow.graph || flow, { now: new Date(), getCredentials }, initialMsg, async (ev) => {
+          const filesHelperPublic = createFilesHelper({ workspaceId: ws._id, companyId: ws.companyId, runId: run._id });
+          await runFlow(flow.graph || flow, { now: new Date(), getCredentials, files: filesHelperPublic }, initialMsg, async (ev) => {
             const ts = new Date();
             let seq = 0;
             if (ev.type === 'run.started'){
@@ -74,20 +132,22 @@ module.exports = function(){
               if (!att) {
                 const ctr = await AttemptCounter.findOneAndUpdate({ runId: run._id, nodeId }, { $inc: { seq: 1 } }, { upsert: true, new: true });
                 usedAttempt = Math.max(1, Number(ctr?.seq || 1));
-                att = await Attempt.findOneAndUpdate({ runId: run._id, nodeId, attempt: usedAttempt }, { $setOnInsert: { status: 'running', kind: ev.kind || undefined, templateKey: ev.templateKey || undefined, startedAt, argsPre: ev.argsPre, argsPost: ev.argsPost, input: ev.input, branchId, msgIn: ev.msgIn } }, { upsert: true, new: true });
+                att = await Attempt.findOneAndUpdate({ runId: run._id, nodeId, attempt: usedAttempt }, { $setOnInsert: { status: 'running', kind: ev.kind || undefined, templateKey: ev.templateKey || undefined, startedAt, argsPre: ev.argsPre, argsPost: ev.argsPost, input: truncateDeep(ev.input), branchId, msgIn: truncateDeep(ev.msgIn) } }, { upsert: true, new: true });
               }
-              await RunEvent.create({ runId: run._id, type: 'node.status', nodeId, attemptId: att._id, exec: usedAttempt, branchId, seq: ++seq, data: { status: 'running', startedAt, msgIn: ev.msgIn, input: ev.input, argsPre: ev.argsPre, argsPost: ev.argsPost }, ts });
+              await RunEvent.create({ runId: run._id, type: 'node.status', nodeId, attemptId: att._id, exec: usedAttempt, branchId, seq: ++seq, data: { status: 'running', startedAt, msgIn: truncateDeep(ev.msgIn), input: truncateDeep(ev.input), argsPre: ev.argsPre, argsPost: ev.argsPost }, ts });
           }
           if (ev.type === 'node.done'){
             const nodeId = String(ev.nodeId || '');
             const branchId = String(ev.branchId || '');
             let att = await Attempt.findOne({ runId: run._id, nodeId, branchId, finishedAt: { $exists: false } }).sort({ attempt: -1 });
             const finishedAt = ev.finishedAt ? new Date(ev.finishedAt) : ts;
+            const status = isResultError(ev.result) ? 'error' : 'success';
+            const errMsg = isResultError(ev.result) ? (ev.result && ev.result.error ? String(ev.result.error) : 'error') : undefined;
             if (att){
-              att.status = 'success'; att.finishedAt = finishedAt; att.durationMs = typeof ev.durationMs === 'number' ? ev.durationMs : (att.startedAt ? (finishedAt.getTime() - new Date(att.startedAt).getTime()) : undefined);
-              att.argsPost = ev.argsPost; att.input = ev.input; att.msgIn = ev.msgIn; att.msgOut = ev.msgOut; att.result = ev.result; await att.save();
-              await RunEvent.create({ runId: run._id, type: 'node.result', nodeId, attemptId: att._id, exec: att.attempt, branchId, seq: ++seq, data: { input: ev.input, argsPre: ev.argsPre, result: ev.result, argsPost: ev.argsPost, msgIn: ev.msgIn, msgOut: ev.msgOut, durationMs: att.durationMs, finishedAt }, ts });
-              await RunEvent.create({ runId: run._id, type: 'node.status', nodeId, attemptId: att._id, exec: att.attempt, branchId, seq: ++seq, data: { status: 'success', finishedAt, durationMs: att.durationMs }, ts });
+              att.status = status; att.finishedAt = finishedAt; att.durationMs = typeof ev.durationMs === 'number' ? ev.durationMs : (att.startedAt ? (finishedAt.getTime() - new Date(att.startedAt).getTime()) : undefined);
+              att.argsPost = ev.argsPost; att.input = truncateDeep(ev.input); att.msgIn = truncateDeep(ev.msgIn); att.msgOut = truncateDeep(ev.msgOut); att.result = truncateDeep(ev.result); await att.save();
+              await RunEvent.create({ runId: run._id, type: 'node.result', nodeId, attemptId: att._id, exec: att.attempt, branchId, seq: ++seq, data: { input: truncateDeep(ev.input), argsPre: ev.argsPre, result: truncateDeep(ev.result), argsPost: ev.argsPost, msgIn: truncateDeep(ev.msgIn), msgOut: truncateDeep(ev.msgOut), durationMs: att.durationMs, finishedAt }, ts });
+              await RunEvent.create({ runId: run._id, type: 'node.status', nodeId, attemptId: att._id, exec: att.attempt, branchId, seq: ++seq, data: { status, finishedAt, durationMs: att.durationMs, error: errMsg }, ts });
             }
           }
           if (ev.type === 'edge.taken'){
@@ -163,9 +223,35 @@ module.exports = function(){
       console.warn(`[runs][db] start: flow disabled flowId=${fid} enabled=${flow.enabled} ws=${flow.workspaceId} user=${req.user?.id} reqId=${req.requestId}`);
       return res.apiError(409, 'flow_disabled', 'Flow is disabled', { flowId: String(flow._id), workspaceId: String(ws._id), enabled: flow.enabled });
     }
+    try {
+      const { validateFlowTemplates } = require('../../utils/validate');
+      const tv = await validateFlowTemplates(flow.graph || flow);
+      if (!tv.ok) {
+        console.warn(`[runs][db] pre-exec validation failed flowId=${fid} errors:`, JSON.stringify(tv.errors));
+        try {
+          const Notification = require('../../db/models/notification.model');
+          await Notification.create({
+            companyId: ws.companyId, workspaceId: ws._id,
+            entityType: 'flow', entityId: String(flow._id),
+            severity: 'critical', code: 'flow_template_invalid',
+            message: `Exécution bloquée: ${tv.errors.length} problème(s) de template`,
+            details: { errors: tv.errors },
+            link: `/flows/${String(flow._id)}/editor`
+          });
+        } catch {}
+        return res.apiError(409, 'flow_template_invalid',
+          'Flow uses deleted or outdated templates', { errors: tv.errors });
+      }
+    } catch (e) {
+      console.error('[runs] pre-exec validation error:', e?.message || e);
+    }
     console.log(`[runs][db] start: flowId=${fid} ws=${flow.workspaceId} user=${req.user?.id} reqId=${req.requestId}`);
     const now = new Date();
-    const run = await Run.create({ flowId: flow._id, workspaceId: ws._id, companyId: ws.companyId, status: 'running', events: [], result: null, finalPayload: null, startedAt: now });
+    // Persist an exact snapshot of the flow graph used for execution
+    let graphSnapshot = {};
+    try { graphSnapshot = JSON.parse(JSON.stringify(flow.graph || flow)); } catch { graphSnapshot = flow.graph || {}; }
+    const metaSnapshot = flow.settings || {};
+    const run = await Run.create({ flowId: flow._id, workspaceId: ws._id, companyId: ws.companyId, status: 'running', events: [], result: null, finalPayload: null, startedAt: now, graph: graphSnapshot, meta: metaSnapshot });
     res.status(201).json({ success: true, data: { id: String(run._id), status: run.status }, requestId: req.requestId, ts: Date.now() });
     console.log(`[runs][db] created run: id=${String(run._id)} flowId=${String(flow._id)} status=${run.status} reqId=${req.requestId}`);
 
@@ -191,7 +277,19 @@ module.exports = function(){
             return { id: String(cred._id), providerKey: cred.providerKey, values };
           } catch { return null; }
         };
-        await runFlow(flow.graph || flow, { now: new Date(), getCredentials }, initialMsg, async (ev) => {
+        const filesHelper = createFilesHelper({ workspaceId: ws._id, companyId: ws.companyId, runId: run._id, uploadedBy: req.user?.id || '' });
+        // waitForEvent: for test/dev runs, start a temporary trigger and wait for 1 real event
+        const waitForEvent = async (eventNode) => {
+          // Resolve credentials for the event node
+          const creds = await getCredentials(eventNode);
+          const credValues = (creds && creds.values != null) ? creds.values : (creds || {});
+          // Broadcast a waiting status so the frontend knows we're listening
+          const waitPkt = { type: 'node.status', nodeId: eventNode.id || eventNode.data?.id, data: { status: 'waiting', message: 'En attente d\'un événement...' } };
+          broadcast(String(run._id), waitPkt);
+          broadcastRun(String(run._id), waitPkt);
+          return waitForOneEvent(eventNode, credValues, { timeoutMs: 120000, flow });
+        };
+        await runFlow(flow.graph || flow, { now: new Date(), getCredentials, files: filesHelper, waitForEvent }, initialMsg, async (ev) => {
           const ts = new Date();
           // Translate engine ev -> LiveEvents and persist
           if (ev.type === 'run.started'){
@@ -214,28 +312,30 @@ module.exports = function(){
               usedAttempt = Math.max(1, Number(ctr?.seq || 1));
               att = await Attempt.findOneAndUpdate(
                 { runId: run._id, nodeId, attempt: usedAttempt },
-                { $setOnInsert: { status: 'running', kind: ev.kind || undefined, templateKey: ev.templateKey || undefined, startedAt, argsPre: ev.argsPre, argsPost: ev.argsPost, input: ev.input, branchId, msgIn: ev.msgIn } },
+                { $setOnInsert: { status: 'running', kind: ev.kind || undefined, templateKey: ev.templateKey || undefined, startedAt, argsPre: ev.argsPre, argsPost: ev.argsPost, input: truncateDeep(ev.input), branchId, msgIn: truncateDeep(ev.msgIn) } },
                 { upsert: true, new: true }
               );
             } else {
               const set = {};
-              if (ev.msgIn && (att.msgIn == null)) set.msgIn = ev.msgIn;
-              if (ev.input != null && (att.input == null)) set.input = ev.input;
+              if (ev.msgIn && (att.msgIn == null)) set.msgIn = truncateDeep(ev.msgIn);
+              if (ev.input != null && (att.input == null)) set.input = truncateDeep(ev.input);
               if (ev.argsPost != null && (att.argsPost == null)) set.argsPost = ev.argsPost;
               if (Object.keys(set).length) { try { await Attempt.updateOne({ _id: att._id }, { $set: set }); } catch {} }
             }
-            await RunEvent.create({ runId: run._id, type: 'node.status', nodeId, attemptId: att._id, exec: usedAttempt, branchId, seq: ++seq, data: { status: 'running', startedAt, msgIn: ev.msgIn, input: ev.input, argsPre: ev.argsPre, argsPost: ev.argsPost }, ts });
+            await RunEvent.create({ runId: run._id, type: 'node.status', nodeId, attemptId: att._id, exec: usedAttempt, branchId, seq: ++seq, data: { status: 'running', startedAt, msgIn: truncateDeep(ev.msgIn), input: truncateDeep(ev.input), argsPre: ev.argsPre, argsPost: ev.argsPost }, ts });
           }
           if (ev.type === 'node.done'){
             const nodeId = String(ev.nodeId || '');
             const branchId = String(ev.branchId || '');
             let att = await Attempt.findOne({ runId: run._id, nodeId, branchId, finishedAt: { $exists: false } }).sort({ attempt: -1 });
             const finishedAt = ev.finishedAt ? new Date(ev.finishedAt) : ts;
+            const status = isResultError(ev.result) ? 'error' : 'success';
+            const errMsg = isResultError(ev.result) ? (ev.result && ev.result.error ? String(ev.result.error) : 'error') : undefined;
             if (att){
-              att.status = 'success'; att.finishedAt = finishedAt; att.durationMs = typeof ev.durationMs === 'number' ? ev.durationMs : (att.startedAt ? (finishedAt.getTime() - new Date(att.startedAt).getTime()) : undefined);
-              att.argsPost = ev.argsPost; att.input = ev.input; att.msgIn = ev.msgIn; att.msgOut = ev.msgOut; att.result = ev.result; await att.save();
-              await RunEvent.create({ runId: run._id, type: 'node.result', nodeId, attemptId: att._id, exec: att.attempt, branchId, seq: ++seq, data: { input: ev.input, argsPre: ev.argsPre, result: ev.result, argsPost: ev.argsPost, msgIn: ev.msgIn, msgOut: ev.msgOut, durationMs: att.durationMs, finishedAt }, ts });
-              await RunEvent.create({ runId: run._id, type: 'node.status', nodeId, attemptId: att._id, exec: att.attempt, branchId, seq: ++seq, data: { status: 'success', finishedAt, durationMs: att.durationMs }, ts });
+              att.status = status; att.finishedAt = finishedAt; att.durationMs = typeof ev.durationMs === 'number' ? ev.durationMs : (att.startedAt ? (finishedAt.getTime() - new Date(att.startedAt).getTime()) : undefined);
+              att.argsPost = ev.argsPost; att.input = truncateDeep(ev.input); att.msgIn = truncateDeep(ev.msgIn); att.msgOut = truncateDeep(ev.msgOut); att.result = truncateDeep(ev.result); await att.save();
+              await RunEvent.create({ runId: run._id, type: 'node.result', nodeId, attemptId: att._id, exec: att.attempt, branchId, seq: ++seq, data: { input: truncateDeep(ev.input), argsPre: ev.argsPre, result: truncateDeep(ev.result), argsPost: ev.argsPost, msgIn: truncateDeep(ev.msgIn), msgOut: truncateDeep(ev.msgOut), durationMs: att.durationMs, finishedAt }, ts });
+              await RunEvent.create({ runId: run._id, type: 'node.status', nodeId, attemptId: att._id, exec: att.attempt, branchId, seq: ++seq, data: { status, finishedAt, durationMs: att.durationMs, error: errMsg }, ts });
             } else {
               // fallback: create completed attempt
               const ctr = await AttemptCounter.findOneAndUpdate(
@@ -246,11 +346,11 @@ module.exports = function(){
               const nextAttempt = Math.max(1, Number(ctr?.seq || 1));
               att = await Attempt.findOneAndUpdate(
                 { runId: run._id, nodeId, attempt: nextAttempt },
-                { $setOnInsert: { status: 'success', branchId, startedAt: ev.startedAt ? new Date(ev.startedAt) : undefined, finishedAt, durationMs: ev.durationMs, argsPre: ev.argsPre, argsPost: ev.argsPost, input: ev.input, msgIn: ev.msgIn, msgOut: ev.msgOut, result: ev.result } },
+                { $setOnInsert: { status, branchId, startedAt: ev.startedAt ? new Date(ev.startedAt) : undefined, finishedAt, durationMs: ev.durationMs, argsPre: ev.argsPre, argsPost: ev.argsPost, input: truncateDeep(ev.input), msgIn: truncateDeep(ev.msgIn), msgOut: truncateDeep(ev.msgOut), result: truncateDeep(ev.result) } },
                 { upsert: true, new: true }
               );
-              await RunEvent.create({ runId: run._id, type: 'node.result', nodeId, attemptId: att._id, exec: att.attempt, branchId, seq: ++seq, data: { input: ev.input, argsPre: ev.argsPre, result: ev.result, argsPost: ev.argsPost, msgIn: ev.msgIn, msgOut: ev.msgOut, durationMs: att.durationMs, finishedAt }, ts });
-              await RunEvent.create({ runId: run._id, type: 'node.status', nodeId, attemptId: att._id, exec: att.attempt, branchId, seq: ++seq, data: { status: 'success', finishedAt, durationMs: att.durationMs }, ts });
+              await RunEvent.create({ runId: run._id, type: 'node.result', nodeId, attemptId: att._id, exec: att.attempt, branchId, seq: ++seq, data: { input: truncateDeep(ev.input), argsPre: ev.argsPre, result: truncateDeep(ev.result), argsPost: ev.argsPost, msgIn: truncateDeep(ev.msgIn), msgOut: truncateDeep(ev.msgOut), durationMs: att.durationMs, finishedAt }, ts });
+              await RunEvent.create({ runId: run._id, type: 'node.status', nodeId, attemptId: att._id, exec: att.attempt, branchId, seq: ++seq, data: { status, finishedAt, durationMs: att.durationMs, error: errMsg }, ts });
             }
           }
           if (ev.type === 'node.skipped'){
@@ -272,6 +372,9 @@ module.exports = function(){
           if (ev.type === 'edge.taken'){
             await RunEvent.create({ runId: run._id, type: 'edge.taken', seq: ++seq, data: { sourceId: ev.sourceId, targetId: ev.targetId }, ts });
           }
+          if (ev.type === 'node.log'){
+            await RunEvent.create({ runId: run._id, type: 'node.log', nodeId: String(ev.nodeId || ''), branchId: String(ev.branchId || ''), seq: ++seq, data: { text: ev.text || '' }, ts });
+          }
           // broadcast Live-like messages for frontend
           const livePackets = [];
           if (ev.type === 'run.started') livePackets.push({ type: 'run.status', run: { status: 'running' } });
@@ -287,44 +390,81 @@ module.exports = function(){
             try {
               const nodeId = String(ev.nodeId || '');
               const att = await Attempt.findOne({ runId: run._id, nodeId }).sort({ attempt: -1 }).lean();
-              livePackets.push({ type: 'node.result', nodeId, exec: att?.attempt, data: { input: ev.input, argsPre: ev.argsPre, argsPost: ev.argsPost, result: ev.result, msgIn: ev.msgIn, msgOut: ev.msgOut, durationMs: ev.durationMs, startedAt: ev.startedAt, finishedAt: ev.finishedAt } });
-              livePackets.push({ type: 'node.status', nodeId, exec: att?.attempt, data: { status: 'success', finishedAt: ev.finishedAt, durationMs: ev.durationMs } });
+              const status = isResultError(ev.result) ? 'error' : 'success';
+              const errMsg = isResultError(ev.result) ? (ev.result && ev.result.error ? String(ev.result.error) : 'error') : undefined;
+              livePackets.push({ type: 'node.result', nodeId, exec: att?.attempt, data: { input: truncateDeep(ev.input), argsPre: ev.argsPre, argsPost: ev.argsPost, result: truncateDeep(ev.result), msgIn: truncateDeep(ev.msgIn), msgOut: truncateDeep(ev.msgOut), durationMs: ev.durationMs, startedAt: ev.startedAt, finishedAt: ev.finishedAt } });
+              livePackets.push({ type: 'node.status', nodeId, exec: att?.attempt, data: { status, finishedAt: ev.finishedAt, durationMs: ev.durationMs, error: errMsg } });
             } catch {
-              livePackets.push({ type: 'node.result', nodeId: ev.nodeId, data: { input: ev.input, argsPre: ev.argsPre, argsPost: ev.argsPost, result: ev.result, msgIn: ev.msgIn, msgOut: ev.msgOut, durationMs: ev.durationMs, startedAt: ev.startedAt, finishedAt: ev.finishedAt } });
+              livePackets.push({ type: 'node.result', nodeId: ev.nodeId, data: { input: truncateDeep(ev.input), argsPre: ev.argsPre, argsPost: ev.argsPost, result: truncateDeep(ev.result), msgIn: truncateDeep(ev.msgIn), msgOut: truncateDeep(ev.msgOut), durationMs: ev.durationMs, startedAt: ev.startedAt, finishedAt: ev.finishedAt } });
             }
           }
           if (ev.type === 'edge.taken') livePackets.push({ type: 'edge.taken', data: { sourceId: ev.sourceId, targetId: ev.targetId } });
+          if (ev.type === 'node.log') livePackets.push({ type: 'node.log', nodeId: String(ev.nodeId || ''), data: { text: ev.text || '' } });
           if (ev.type === 'run.completed') livePackets.push({ type: 'run.status', run: { status: 'success', result: ev.payload } });
           for (const pkt of livePackets){ broadcast(String(run._id), pkt); broadcastRun(String(run._id), pkt); }
           try { if (ev && ev.type) console.log(`[runs][db] event: runId=${String(run._id)} type=${ev.type}`); } catch {}
           if (ev.type === 'run.completed') finalMsg = ev; // capture full payload
-        });
+        }, { shouldCancel: () => cancelled.has(String(run._id)) });
         const doc = await Run.findById(run._id);
         doc.status = 'success';
         doc.result = finalMsg?.payload ?? null;
         doc.finalPayload = doc.result;
         doc.finishedAt = new Date();
         doc.durationMs = doc.startedAt ? (doc.finishedAt.getTime() - doc.startedAt.getTime()) : undefined;
-        doc.msg = finalMsg || null;
+        doc.msg = truncateDeep(finalMsg) || null;
         await doc.save();
         try { await RunEvent.create({ runId: run._id, type: 'run.status', seq: ++seq, data: { status: 'success', result: doc.result }, ts: new Date() }); } catch {}
         console.log(`[runs][db] completed: runId=${String(run._id)} status=${doc.status}`);
+        // Cleanup: free WS listeners and cancelled flag for this run
+        cancelled.delete(String(run._id));
+        setTimeout(() => wsCleanup(String(run._id)), 5000);
       } catch (e) {
-        const doc = await Run.findById(run._id);
-        doc.status = 'error';
-        doc.finishedAt = new Date();
-        doc.durationMs = doc.startedAt ? (doc.finishedAt.getTime() - doc.startedAt.getTime()) : undefined;
-        await doc.save();
-        // Allocate next sequence safely to avoid duplicate key on (runId, seq)
-        let last = await RunEvent.findOne({ runId: run._id }).sort({ seq: -1 }).lean();
-        const nextSeq = (last && typeof last.seq === 'number' ? last.seq : 0) + 1;
-        await RunEvent.create({ runId: run._id, type: 'run.status', seq: nextSeq, data: { status: 'error', error: e && e.message ? e.message : String(e) }, ts: new Date() });
-        const pkt = { type: 'run.status', run: { status: 'error', error: e && e.message ? e.message : String(e) } };
-        broadcast(String(run._id), pkt);
-        broadcastRun(String(run._id), pkt);
-        console.error(`[runs][db] failed: runId=${String(run._id)} error=${e && e.message ? e.message : e}`);
+        if (String(e && e.message) === '__CANCELLED__') {
+          // Mark last open attempt as cancelled for better node badge
+          try {
+            const lastOpen = await Attempt.findOne({ runId: run._id, finishedAt: { $exists: false } }).sort({ startedAt: -1 });
+            if (lastOpen) {
+              const now = new Date();
+              lastOpen.status = 'cancelled'; lastOpen.finishedAt = now; lastOpen.durationMs = lastOpen.startedAt ? (now.getTime() - new Date(lastOpen.startedAt).getTime()) : undefined; await lastOpen.save();
+              // Ensure a node.status cancelled event exists
+              let lastEvt = await RunEvent.findOne({ runId: run._id }).sort({ seq: -1 }).lean();
+              const seqC = (lastEvt && typeof lastEvt.seq === 'number' ? lastEvt.seq : 0) + 1;
+              await RunEvent.create({ runId: run._id, type: 'node.status', nodeId: lastOpen.nodeId, attemptId: lastOpen._id, exec: lastOpen.attempt, branchId: lastOpen.branchId, seq: seqC, data: { status: 'cancelled', finishedAt: now, durationMs: lastOpen.durationMs }, ts: now });
+            }
+          } catch {}
+          const doc = await Run.findById(run._id);
+          doc.status = 'cancelled';
+          doc.finishedAt = new Date();
+          doc.durationMs = doc.startedAt ? (doc.finishedAt.getTime() - doc.startedAt.getTime()) : undefined;
+          await doc.save();
+          let last = await RunEvent.findOne({ runId: run._id }).sort({ seq: -1 }).lean();
+          const nextSeq = (last && typeof last.seq === 'number' ? last.seq : 0) + 1;
+          await RunEvent.create({ runId: run._id, type: 'run.status', seq: nextSeq, data: { status: 'cancelled' }, ts: new Date() });
+          const pkt = { type: 'run.status', run: { status: 'cancelled' } };
+          broadcast(String(run._id), pkt);
+          broadcastRun(String(run._id), pkt);
+          console.warn(`[runs][db] cancelled during run: runId=${String(run._id)}`);
+          cancelled.delete(String(run._id));
+          setTimeout(() => wsCleanup(String(run._id)), 5000);
+        } else {
+          const doc = await Run.findById(run._id);
+          doc.status = 'error';
+          doc.finishedAt = new Date();
+          doc.durationMs = doc.startedAt ? (doc.finishedAt.getTime() - doc.startedAt.getTime()) : undefined;
+          await doc.save();
+          // Allocate next sequence safely to avoid duplicate key on (runId, seq)
+          let last = await RunEvent.findOne({ runId: run._id }).sort({ seq: -1 }).lean();
+          const nextSeq = (last && typeof last.seq === 'number' ? last.seq : 0) + 1;
+          await RunEvent.create({ runId: run._id, type: 'run.status', seq: nextSeq, data: { status: 'error', error: e && e.message ? e.message : String(e) }, ts: new Date() });
+          const pkt = { type: 'run.status', run: { status: 'error', error: e && e.message ? e.message : String(e) } };
+          broadcast(String(run._id), pkt);
+          broadcastRun(String(run._id), pkt);
+          console.error(`[runs][db] failed: runId=${String(run._id)} error=${e && e.message ? e.message : e}`);
+          cancelled.delete(String(run._id));
+          setTimeout(() => wsCleanup(String(run._id)), 5000);
+        }
       }
-    })();
+      })();
   });
 
   // Preview: execute predecessors only and return msgIn for a target node (no persistence)
@@ -378,7 +518,7 @@ module.exports = function(){
       if (!node) return res.apiError(404, 'node_not_found', 'Node not found');
       const tObj = (node.data && node.data.model && node.data.model.templateObj) || node.model?.templateObj || {};
       const tmplKey = String(node.data?.model?.template || tObj?.template?.id || tObj?.template?.name || tObj?.id || '').replace(/^tmpl_/,'');
-      const buildEvalContext = (initialContext, msgObj) => ({ ...initialContext, msg: msgObj, payload: msgObj.payload });
+      const buildEvalContext = (initialContext, msgObj) => ({ ...initialContext, msg: msgObj, payload: msgObj.payload, _nodes: msgObj._nodes });
       const deepRender = (obj, evalCtx) => {
         if (obj == null) return obj;
         if (typeof obj === 'string') return evaluateTemplateDetailed(obj, evalCtx).text;
@@ -413,6 +553,11 @@ module.exports = function(){
           }
         }
       } catch {}
+      // Attach file storage helper for test-node too
+      try {
+        const testFilesHelper = createFilesHelper({ workspaceId: ws._id, companyId: ws.companyId });
+        optsForFn = { ...(optsForFn || {}), files: testFilesHelper };
+      } catch {}
       if (!fn) result = { error: `No handler for template '${tmplKey}'` };
       else { try { result = await fn({ id: nodeId, model: node.data?.model || node.model }, msg, inputs, optsForFn); } catch (e) { result = { error: e && e.message ? e.message : String(e) }; } }
       const msgOut = JSON.parse(JSON.stringify(msg || {}));
@@ -440,16 +585,61 @@ module.exports = function(){
         const out = { ...rp };
         if (include.includes('attempts')) out.attempts = await Attempt.find({ runId: run._id }).sort({ startedAt: 1 }).lean();
         if (include.includes('events')) out.events = await RunEvent.find({ runId: run._id }).sort({ seq: 1 }).lean();
-        return res.apiOk(out);
+        try { return res.apiOk(out); } catch (e) {
+          if (e instanceof RangeError) { delete out.graph; delete out.events; out._truncated = true; return res.apiOk(out); }
+          throw e;
+        }
       }
-      return res.apiOk(rp);
+      try { return res.apiOk(rp); } catch (e) {
+        if (e instanceof RangeError) { delete rp.graph; rp._truncated = true; return res.apiOk(rp); }
+        throw e;
+      }
     }
     const base = { id: String(run._id), flowId: String(run.flowId), workspaceId: String(run.workspaceId), companyId: String(run.companyId), status: run.status, result: run.result, finalPayload: run.finalPayload, startedAt: run.startedAt, finishedAt: run.finishedAt, durationMs: run.durationMs };
     if (include.length){
+      if (include.includes('graph')) base.graph = run.graph;
       if (include.includes('attempts')) base.attempts = await Attempt.find({ runId: run._id }).sort({ startedAt: 1 }).lean();
       if (include.includes('events')) base.events = await RunEvent.find({ runId: run._id }).sort({ seq: 1 }).lean();
+      if (include.includes('meta')) base.meta = run.meta || undefined;
+      if (include.includes('settings')) base.settings = run.settings || undefined;
     }
-    res.apiOk(base);
+    try {
+      res.apiOk(base);
+    } catch (e) {
+      if (e instanceof RangeError) {
+        // Response too large — retry without graph
+        delete base.graph;
+        delete base.events;
+        base._truncated = true;
+        res.apiOk(base);
+      } else {
+        throw e;
+      }
+    }
+  });
+
+  // KPIs for a flow: counts per status and average duration
+  r.get('/flows/:flowId/runs/stats', async (req, res) => {
+    const { Types } = require('mongoose');
+    const fid = String(req.params.flowId);
+    let flow = null;
+    if (Types.ObjectId.isValid(fid)) flow = await Flow.findById(fid);
+    if (!flow) flow = await Flow.findOne({ id: fid });
+    if (!flow) return res.apiError(404, 'flow_not_found', 'Flow not found');
+    const ws = await Workspace.findById(flow.workspaceId);
+    if (!ws || String(ws.companyId) !== req.user.companyId) return res.apiError(404, 'flow_not_found', 'Flow not found');
+    const docs = await Run.find({ flowId: flow._id }).lean();
+    const stats = { total: 0, running: 0, success: 0, error: 0, cancelled: 0, timed_out: 0, avgDurationMs: null };
+    let durSum = 0, durCount = 0;
+    for (const r of docs){
+      stats.total++;
+      const st = String(r.status || '').toLowerCase();
+      if (stats.hasOwnProperty(st)) stats[st]++;
+      const d = Number(r.durationMs || 0);
+      if (d > 0) { durSum += d; durCount++; }
+    }
+    stats.avgDurationMs = durCount ? Math.round(durSum / durCount) : null;
+    return res.apiOk(stats);
   });
 
   r.get('/runs/:runId/stream', async (req, res) => {
@@ -477,14 +667,23 @@ module.exports = function(){
       if (doc0) sendLive({ type: 'run.status', runId: String(run._id), seq: lastSeq, run: { status: doc0.status, startedAt: doc0.startedAt, finishedAt: doc0.finishedAt, durationMs: doc0.durationMs } });
     } catch {}
 
+    const streamStart = Date.now();
+    const MAX_STREAM_MS = 10 * 60 * 1000; // 10 min max to prevent infinite polling
     const interval = setInterval(async () => {
+      // Safety: close stream if it's been open too long
+      if (Date.now() - streamStart > MAX_STREAM_MS) {
+        clearInterval(interval);
+        try { sendLive({ type: 'run.status', runId: String(run._id), run: { status: 'timed_out' } }); } catch {}
+        try { res.end(); } catch {}
+        return;
+      }
       const doc = await Run.findById(run._id).lean();
       if (!doc) { clearInterval(interval); try{ res.end(); }catch{} return; }
       const news = await RunEvent.find({ runId: run._id, seq: { $gt: lastSeq } }).sort({ seq: 1 }).lean();
       for (const ev of news){ sendLive(ev); lastSeq = Math.max(lastSeq, ev.seq || 0); }
       // heartbeat with current status and timings
       sendLive({ type: 'run.status', runId: String(run._id), seq: lastSeq, run: { status: doc.status, startedAt: doc.startedAt, finishedAt: doc.finishedAt, durationMs: doc.durationMs } });
-      if (doc.status === 'success' || doc.status === 'error'){
+      if (doc.status === 'success' || doc.status === 'error' || doc.status === 'cancelled' || doc.status === 'timed_out'){
         clearInterval(interval);
         try{ res.end(); }catch{}
       }
@@ -515,11 +714,22 @@ module.exports = function(){
     let sortObj = { createdAt: -1 };
     if (sort) { const [f,d] = String(sort).split(':'); if (f) sortObj = { [f]: (d==='asc'?1:-1) }; }
     const list = await Run.find(findQ).sort(sortObj).skip(offset).limit(limit).lean();
+    const runIds = list.map(r => r._id);
+    const aggAttempts = await Attempt.aggregate([
+      { $match: { runId: { $in: runIds } } },
+      { $group: { _id: '$runId', count: { $sum: 1 } } }
+    ]);
+    const aggEvents = await RunEvent.aggregate([
+      { $match: { runId: { $in: runIds } } },
+      { $group: { _id: '$runId', count: { $sum: 1 } } }
+    ]);
+    const mapAttempts = new Map(aggAttempts.map(d => [String(d._id), d.count]));
+    const mapEvents = new Map(aggEvents.map(d => [String(d._id), d.count]));
     res.apiOk(list.map(r => ({
       id: String(r._id), flowId: String(r.flowId), workspaceId: String(r.workspaceId), status: r.status,
       startedAt: r.startedAt, finishedAt: r.finishedAt, durationMs: r.durationMs, finalPayload: r.finalPayload,
-      eventsCount: Array.isArray(r.events) ? r.events.length : 0,
-      nodesExecuted: Array.isArray(r.events) ? r.events.filter(ev => ev && ev.type === 'node.done').length : 0,
+      nodesExecuted: mapAttempts.get(String(r._id)) || 0,
+      eventsCount: mapEvents.get(String(r._id)) || 0,
     })));
   });
 
@@ -543,11 +753,22 @@ module.exports = function(){
     let sortObj = { createdAt: -1 };
     if (sort) { const [f,d] = String(sort).split(':'); if (f) sortObj = { [f]: (d==='asc'?1:-1) }; }
     const list = await Run.find(findQ).sort(sortObj).skip(offset).limit(limit).lean();
+    const runIds = list.map(r => r._id);
+    const aggAttempts = await Attempt.aggregate([
+      { $match: { runId: { $in: runIds } } },
+      { $group: { _id: '$runId', count: { $sum: 1 } } }
+    ]);
+    const aggEvents = await RunEvent.aggregate([
+      { $match: { runId: { $in: runIds } } },
+      { $group: { _id: '$runId', count: { $sum: 1 } } }
+    ]);
+    const mapAttempts = new Map(aggAttempts.map(d => [String(d._id), d.count]));
+    const mapEvents = new Map(aggEvents.map(d => [String(d._id), d.count]));
     res.apiOk(list.map(r => ({
       id: String(r._id), flowId: String(r.flowId), workspaceId: String(r.workspaceId), status: r.status,
       startedAt: r.startedAt, finishedAt: r.finishedAt, durationMs: r.durationMs, finalPayload: r.finalPayload,
-      eventsCount: Array.isArray(r.events) ? r.events.length : 0,
-      nodesExecuted: Array.isArray(r.events) ? r.events.filter(ev => ev && ev.type === 'node.done').length : 0,
+      nodesExecuted: mapAttempts.get(String(r._id)) || 0,
+      eventsCount: mapEvents.get(String(r._id)) || 0,
     })));
   });
 
@@ -560,7 +781,7 @@ module.exports = function(){
     const { flowId } = req.query;
     const q = { workspaceId: ws._id };
     if (flowId) q.flowId = flowId;
-    const last = await Run.findOne(q).sort({ createdAt: -1 }).lean();
+    const last = await Run.findOne(q).sort({ createdAt: -1 }).select('-graph -msg -events -attempts').lean();
     res.apiOk(last || null);
   });
 
@@ -573,6 +794,7 @@ module.exports = function(){
     const ws = await Workspace.findById(run.workspaceId);
     if (!ws || String(ws.companyId) !== req.user.companyId) return res.apiError(404, 'run_not_found', 'Run not found');
     if (['success','error','cancelled','timed_out'].includes(run.status)) return res.apiOk(run);
+    cancelled.add(String(run._id));
     run.status = 'cancelled';
     run.finishedAt = new Date();
     run.durationMs = run.startedAt ? (run.finishedAt.getTime() - run.startedAt.getTime()) : undefined;

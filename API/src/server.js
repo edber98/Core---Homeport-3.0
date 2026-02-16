@@ -22,11 +22,27 @@ try { require('./realtime/socketio').attach(server); } catch {}
       await seedMongoIfEmpty();
       // Then clone/update repos from env and reload registry
       try { const { ensureReposFromEnv } = require('./plugins/bootstrap'); await ensureReposFromEnv(); } catch (e) { try { console.error('[backend] plugin bootstrap failed:', e.message); } catch {} }
+      // Ensure Tool metadata exists for frontend rendering
+      try { const { seedToolsIfMissing } = require('./bootstrap/seed-tools'); await seedToolsIfMissing(); } catch (e) { try { console.error('[backend] seed tools failed:', e.message); } catch {} }
+      // Start file cleanup cron
+      try { const { startCleanupCron } = require('./services/file-cleanup'); startCleanupCron(); } catch (e) { try { console.error('[backend] file cleanup cron failed:', e.message); } catch {} }
+      // Start trigger manager — restore production flows
+      try { const { triggerManager } = require('./services/trigger-manager'); await triggerManager.startAll(); } catch (e) { try { console.error('[backend] trigger manager failed:', e.message); } catch {} }
     } catch (e) {
       console.error('[backend] DB init failed:', e.message);
     }
   }
   server.listen(PORT, () => {
     console.log(`[backend] listening on http://localhost:${PORT}`);
+    try { const env = require('./config/env'); console.log(`[backend] AI provider: ${env.AI_PROVIDER} (${env.AI_MODEL})`); } catch {}
   });
 })();
+
+// Graceful shutdown
+const _shutdownHandler = async (signal) => {
+  console.log(`[backend] ${signal} received, shutting down...`);
+  try { const { triggerManager } = require('./services/trigger-manager'); await triggerManager.shutdown(); } catch {}
+  process.exit(0);
+};
+process.on('SIGTERM', () => _shutdownHandler('SIGTERM'));
+process.on('SIGINT', () => _shutdownHandler('SIGINT'));

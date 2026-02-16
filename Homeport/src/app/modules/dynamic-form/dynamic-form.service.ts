@@ -10,7 +10,7 @@ export interface FieldValidator {
     message?: string;
 }
 
-export type FieldTypeInput = 'text' | 'textarea' | 'number' | 'select' | 'radio' | 'checkbox' | 'date';
+export type FieldTypeInput = 'text' | 'textarea' | 'number' | 'select' | 'radio' | 'checkbox' | 'date' | 'cron' | 'file' | 'schema_builder' | 'tags' | 'email' | 'tel' | 'color';
 export type FieldType = FieldTypeInput | 'textblock' | 'section' | 'section_array';
 
 export interface FieldConfigCommon {
@@ -19,6 +19,27 @@ export interface FieldConfigCommon {
     placeholder?: string;
     description?: string;
     options?: { label: string; value: any }[]; // select/radio
+    cron?: {
+        type?: 'linux' | 'spring';
+        size?: 'large' | 'small' | 'default';
+        borderless?: boolean;
+        collapseDisable?: boolean;
+    };
+    file?: {
+        accept?: string;
+        maxSize?: number;
+        multiple?: boolean;
+        maxCount?: number;
+        lifecycle?: 'temp' | 'execution' | 'permanent';
+        preview?: boolean;
+        dragDrop?: boolean;
+        listType?: 'text' | 'picture' | 'picture-card';
+        buttonText?: string;
+        hint?: string;
+    };
+    tags?: {
+        itemType?: 'text' | 'number';
+    };
     default?: any;
     validators?: FieldValidator[];
     visibleIf?: JSONVal;
@@ -143,6 +164,11 @@ export interface SummaryConfig {
 
 export interface FormSchema {
     title?: string;
+    description?: string;
+    displayTitle?: boolean;
+    displayDescription?: boolean;
+    centerTitle?: boolean;
+    centerDescription?: boolean;
     ui?: FormUI;
     steps?: StepConfig[];
     fields?: FieldConfig[];
@@ -161,9 +187,47 @@ export class DynamicFormService {
 
     constructor(private fb: FormBuilder) { }
 
+    normalizeSpacing(style?: Record<string, any>): Record<string, any> {
+        const out: Record<string, any> = { ...(style || {}) };
+        const toPx = (v: any) => (typeof v === 'number' && !isNaN(v)) ? `${v}px` : v;
+        const keys = ['margin', 'marginTop', 'marginRight', 'marginBottom', 'marginLeft', 'padding', 'paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft'];
+        keys.forEach((k) => {
+            if (out[k] != null && out[k] !== '') out[k] = toPx(out[k]);
+        });
+        return out;
+    }
+
+    fieldContainerStyle(field: FieldConfig, ui?: FormUI): Record<string, any> {
+        const fromUi = (ui as any)?.itemStyle ?? {};
+        const fromField = (field as any)?.itemStyle ?? {};
+        const merged = this.normalizeSpacing({ ...fromUi, ...fromField });
+        const out: Record<string, any> = {};
+        if (!('margin' in merged) && !('marginBottom' in merged)) out['marginBottom'] = '16px';
+        if (!('padding' in merged) && !('paddingTop' in merged)) out['paddingTop'] = '4px';
+        if (!('padding' in merged) && !('paddingBottom' in merged)) out['paddingBottom'] = '4px';
+        const style = { ...out, ...merged };
+        if (field.type === 'textblock') {
+            return {
+                ...style,
+                margin: 0,
+                marginTop: 0,
+                marginRight: 0,
+                marginBottom: 0,
+                marginLeft: 0,
+                padding: 0,
+                paddingTop: 0,
+                paddingRight: 0,
+                paddingBottom: 0,
+                paddingLeft: 0
+            };
+        }
+        return style;
+    }
+
     buildForm(schema: FormSchema, initialValue?: Record<string, any>): FormGroup {
         const controls: Record<string, FormControl> = {};
-        for (const f of this.collectFields(schema)) {
+        const collected = this.collectFields(schema);
+        for (const f of collected) {
             if (!isInputField(f)) continue;
             const v = this.initialValueForField(f, initialValue);
             controls[f.key] = this.fb.control(v, this.mapValidators(f.validators || []));
@@ -213,7 +277,11 @@ export class DynamicFormService {
                 case 'select':
                 case 'radio':
                 case 'date': return null;
-                default: return ''; // text / textarea
+                case 'file': return null;
+                case 'schema_builder': return null;
+                case 'tags': return [];
+                case 'color': return '#1677ff';
+                default: return ''; // text / textarea / email / tel
             }
         }
         return v;
@@ -313,7 +381,8 @@ export class DynamicFormService {
             select: '—',
             radio: '—',
             checkbox: 'Non',
-            date: '—'
+            date: '—',
+            file: '—'
         };
         if (raw === undefined || raw === null || raw === '') {
             return emptyByType[field.type] ?? '—';
@@ -336,6 +405,22 @@ export class DynamicFormService {
             } catch {
                 return String(raw);
             }
+        }
+
+        // tags
+        if (field.type === 'tags') {
+            if (Array.isArray(raw)) return raw.join(', ');
+            return String(raw);
+        }
+
+        // file
+        if (field.type === 'file') {
+            if (Array.isArray(raw)) return `${raw.length} fichier${raw.length > 1 ? 's' : ''}`;
+            if (raw && typeof raw === 'object' && raw._type === 'fileRef') {
+                const size = raw.size ? this.formatFileSize(raw.size) : '';
+                return size ? `${raw.name} (${size})` : raw.name;
+            }
+            return String(raw);
         }
 
         // number/text/textarea
@@ -455,6 +540,13 @@ export class DynamicFormService {
             case '<=': return val(args[0]) <= val(args[1]);
             default: return true;
         }
+    }
+
+    private formatFileSize(bytes: number): string {
+        if (bytes < 1024) return `${bytes} B`;
+        if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+        if (bytes < 1024 * 1024 * 1024) return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+        return `${(bytes / (1024 * 1024 * 1024)).toFixed(1)} GB`;
     }
 
     // Exposé publiquement pour que les composants avancés (p.ex. array) puissent créer des contrôles

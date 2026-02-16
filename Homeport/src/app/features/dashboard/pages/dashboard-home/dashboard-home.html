@@ -2,117 +2,247 @@
   <div class="page-header">
     <div class="card-title left">
       <span class="t">Tableau de bord</span>
-      <span class="s">Vue d’ensemble</span>
+      <span class="s">Vue d'ensemble</span>
     </div>
     <div class="actions">
-      <button nz-button class="apple-btn icon" title="Rafraîchir"><i class="fa-solid fa-rotate-right"></i></button>
-      <button nz-button class="apple-btn icon" title="Exporter"><i class="fa-regular fa-cloud-arrow-down"></i></button>
-      <button nz-button class="apple-btn icon" title="Données de test" (click)="loadDemoData()"><i class="fa-solid fa-flask"></i></button>
-      <button nz-button class="apple-btn icon" title="Vider" (click)="clearData()"><i class="fa-solid fa-eraser"></i></button>
+      <button nz-button class="apple-btn icon" title="Rafraîchir" (click)="refresh()"><i class="fa-solid fa-rotate-right"></i></button>
     </div>
   </div>
 
-  <div class="grid kpis">
-    <div class="card kpi">
-      <div class="k-head">
-        <div class="k-title">Exécutions</div>
-        <div class="k-value">{{ executions[executions.length - 1] || 0 }}</div>
-      </div>
-      <div class="chart-wrap-sm">
-        <mini-area-chart [data]="executions" [width]="220" [height]="48" stroke="#111"></mini-area-chart>
-        <div class="empty center" *ngIf="(executions?.length||0)===0">Aucune donnée</div>
-      </div>
-    </div>
-    <div class="card kpi">
-      <div class="k-head">
-        <div class="k-title">Erreurs</div>
-        <div class="k-value">{{ errors[errors.length - 1] || 0 }}</div>
-      </div>
-      <div class="chart-wrap-sm">
-        <mini-area-chart [data]="errors" [width]="220" [height]="48" stroke="#444"></mini-area-chart>
-        <div class="empty center" *ngIf="(errors?.length||0)===0">Aucune donnée</div>
-      </div>
-    </div>
-    <div class="card kpi">
-      <div class="k-head">
-        <div class="k-title">Latence</div>
-        <div class="k-value">{{ (avgLatencyMs[avgLatencyMs.length - 1] || 0) | number:'1.0-0' }} ms</div>
-      </div>
-      <div class="chart-wrap-sm center">
-        <donut-chart *ngIf="(avgLatencyMs?.length||0)>0" [value]="avgLatencyMs[avgLatencyMs.length - 1] || 0" [total]="latencyTotal" [size]="56" [thickness]="6" color="#111"></donut-chart>
-        <div class="empty center" *ngIf="(avgLatencyMs?.length||0)===0">Aucune donnée</div>
-      </div>
-    </div>
-    <div class="card kpi">
-      <div class="k-head">
-        <div class="k-title">Nœuds actifs</div>
-        <div class="k-value">{{ activeNodes }}</div>
-      </div>
-      <div class="chart-wrap-sm">
-        <mini-bar-chart [data]="[activeNodes]" [width]="220" [height]="48" color="#222"></mini-bar-chart>
-        <div class="empty center" *ngIf="!activeNodes">Aucune donnée</div>
-      </div>
-    </div>
+  <!-- Loading -->
+  <div class="loading-wrap" *ngIf="loading && !data">
+    <nz-spin nzSimple></nz-spin>
   </div>
 
-  <div class="grid main">
-    <div class="card span-2">
-      <div class="card-title left"><span class="t">Exécutions</span><span class="s">Derniers points</span></div>
-      <div class="chart-wrap-lg">
-        <mini-area-chart [data]="executions" [width]="640" [height]="160" stroke="#111" [strokeWidth]="2"></mini-area-chart>
-        <div class="empty center" *ngIf="(executions?.length||0)===0">Aucune donnée</div>
-      </div>
-    </div>
-    <div class="card top-acts">
-      <div class="card-title left"><span class="t">Top activités</span><span class="s">Dernière période</span></div>
-      <div class="channels">
-        <div class="row" *ngFor="let c of channels">
-          <div class="name">{{ c.label }}</div>
-          <div class="val">{{ c.value }}</div>
-          <mini-bar-chart class="mini" [data]="[c.value/8, c.value/5, c.value/10, c.value/7]" [width]="160" [height]="30" color="#111"></mini-bar-chart>
+  <ng-container *ngIf="data">
+    <!-- KPIs row 1 -->
+    <div class="grid kpis">
+      <div class="card kpi">
+        <div class="k-head">
+          <div class="k-title">Flows</div>
+          <div class="k-value">{{ data.kpis.totalFlows }}</div>
         </div>
-        <div class="empty fixed" *ngIf="(channels?.length||0)===0">Aucune donnée</div>
+        <div class="k-sub">{{ data.kpis.activeFlows }} en production</div>
       </div>
-    </div>
-  
+      <div class="card kpi">
+        <div class="k-head">
+          <div class="k-title">Exécutions (30j)</div>
+          <div class="k-value">{{ data.kpis.totalRuns }}</div>
+        </div>
+        <div class="k-sub">{{ data.kpis.runningRuns }} en cours</div>
+      </div>
+      <div class="card kpi">
+        <div class="k-head">
+          <div class="k-title">Taux de succès</div>
+          <div class="k-value">{{ successRate }}%</div>
+        </div>
+        <div class="k-sub">{{ data.kpis.successRuns }} succès · {{ data.kpis.errorRuns }} erreurs</div>
+      </div>
+      <div class="card kpi">
+        <div class="k-head">
+          <div class="k-title">Erreurs (30j)</div>
+          <div class="k-value err-value">{{ data.kpis.errorRuns }}</div>
+        </div>
+        <div class="k-sub">{{ data.kpis.totalCredentials }} identifiants</div>
+      </div>
     </div>
 
-  <div style="margin-top: 13px" class="grid bottom">
-    <div class="card">
-      <div class="card-title left"><span class="t">Top fonctions</span><span class="s">ratio err/succ & avg</span></div>
-      <div class="functions">
-        <div class="hdr">
-          <div class="c name">Fonction</div>
-          <div class="c s">Succès</div>
-          <div class="c e">Erreurs</div>
-          <div class="c r" nz-tooltip="Erreurs / Succès">Err/Succ</div>
-          <div class="c a">Avg (ms)</div>
+    <!-- KPIs row 2: Duration -->
+    <div class="grid kpis-duration">
+      <div class="card kpi">
+        <div class="k-head">
+          <div class="k-title">Durée moyenne</div>
+          <div class="k-value">{{ formatDuration(data.kpis.avgDurationMs) }}</div>
         </div>
-        <div class="row" *ngFor="let f of functions">
-          <div class="c name">{{ f.name }}</div>
-          <div class="metrics">
-            <div class="c s"><span class="pill succ">{{ f.success }}</span></div>
-            <div class="c e"><span class="pill err">{{ f.error }}</span></div>
-            <div class="c r"><span class="pill ratio">{{ errSuccRatio(f) }}</span></div>
-            <div class="c a"><span class="pill avg">{{ f.avgMs | number:'1.0-0' }}</span></div>
-          </div>
+        <div class="k-sub">30 derniers jours</div>
+      </div>
+      <div class="card kpi">
+        <div class="k-head">
+          <div class="k-title">Durée min</div>
+          <div class="k-value">{{ formatDuration(data.kpis.minDurationMs) }}</div>
         </div>
-        <div class="empty" *ngIf="(functions?.length||0)===0">Aucune donnée</div>
+        <div class="k-sub">Exécution la plus rapide</div>
+      </div>
+      <div class="card kpi">
+        <div class="k-head">
+          <div class="k-title">Durée max</div>
+          <div class="k-value">{{ formatDuration(data.kpis.maxDurationMs) }}</div>
+        </div>
+        <div class="k-sub">Exécution la plus longue</div>
       </div>
     </div>
-    <div class="card">
-      <div class="card-title left"><span class="t">Activité récente</span><span class="s">Aujourd’hui</span></div>
-      <div class="activity">
-        <div class="item" *ngFor="let a of activity">
-          <i [class]="a.icon"></i>
-          <div class="meta">
-            <div class="title">{{ a.title }}</div>
-            <div class="time">{{ a.time }}</div>
-          </div>
-          <button nz-button class="apple-btn icon" title="Voir"><i class="fa-regular fa-eye"></i></button>
+
+    <!-- Heatmap (full width) -->
+    <div class="grid one-col">
+      <div class="card">
+        <div class="card-title left"><span class="t">Activité (12 derniers mois)</span></div>
+        <div class="chart-wrap-lg">
+          <heatmap-chart [data]="data.runsTrend"></heatmap-chart>
         </div>
-        <div class="empty" *ngIf="(activity?.length||0)===0">Aucune donnée</div>
       </div>
     </div>
+
+    <!-- AI Chat + Tokens KPI -->
+    <div class="grid ai-tokens-row">
+      <div class="card ai-card">
+        <div class="ai-header">
+          <div class="ai-icon-wrap"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+          <div>
+            <div class="ai-title">Assistant IA</div>
+            <div class="ai-subtitle">Posez une question sur vos workflows</div>
+          </div>
+        </div>
+        <div class="ai-input-row">
+          <nz-input-group [nzPrefix]="aiPrefixTpl" [nzSuffix]="aiSuffixTpl" nzSize="large" class="ai-input-group">
+            <input nz-input [(ngModel)]="aiInput" placeholder="Ex : Quels flows ont des erreurs ?" (keydown.enter)="sendAiMessage()" class="ai-input" />
+          </nz-input-group>
+          <ng-template #aiPrefixTpl>
+            <button nz-button nzType="text" nzSize="small" nzShape="circle"
+              [class.mic-recording]="audioService.recording()"
+              (click)="toggleMic()"
+              [nz-tooltip]="audioService.recording() ? 'Arrêter l\'enregistrement' : 'Dicter un message'">
+              <i class="fa-solid" [class.fa-microphone]="!audioService.recording()" [class.fa-stop]="audioService.recording()"></i>
+            </button>
+          </ng-template>
+          <ng-template #aiSuffixTpl>
+            <button nz-button nzType="primary" nzSize="small" nzShape="circle" (click)="sendAiMessage()" [disabled]="!aiInput.trim()">
+              <i class="fa-solid fa-paper-plane"></i>
+            </button>
+          </ng-template>
+        </div>
+        <div class="ai-recording-bar" *ngIf="audioService.recording()">
+          <span class="rec-dot"></span>
+          <span>Enregistrement en cours… {{ audioService.recordingDuration() }}s</span>
+        </div>
+        <div class="ai-transcribing" *ngIf="audioService.transcribing()">
+          <nz-spin nzSimple nzSize="small"></nz-spin>
+          <span>Transcription…</span>
+        </div>
+        <div class="ai-hints">
+          <nz-tag class="ai-hint" (click)="aiInput = 'Résumé de mes workflows'; sendAiMessage()"><i class="fa-solid fa-list-check"></i> Résumé workflows</nz-tag>
+          <nz-tag class="ai-hint" (click)="aiInput = 'Quels flows ont des erreurs ?'; sendAiMessage()"><i class="fa-solid fa-triangle-exclamation"></i> Erreurs récentes</nz-tag>
+          <nz-tag class="ai-hint" (click)="aiInput = 'Crée-moi un workflow'; sendAiMessage()"><i class="fa-solid fa-plus"></i> Créer un workflow</nz-tag>
+        </div>
+      </div>
+      <div class="card token-card">
+        <div class="token-icon-wrap"><i class="fa-solid fa-microchip"></i></div>
+        <div class="token-main">
+          <div class="token-value">{{ formatTokens(data.kpis.aiTokensTotal) }}</div>
+          <div class="token-label">Tokens IA (30j)</div>
+        </div>
+        <div class="token-breakdown">
+          <div class="token-row">
+            <span class="token-dot in"></span>
+            <span class="token-row-label">Entrée</span>
+            <span class="token-row-value">{{ formatTokens(data.kpis.aiTokensInput) }}</span>
+          </div>
+          <div class="token-row">
+            <span class="token-dot out"></span>
+            <span class="token-row-label">Sortie</span>
+            <span class="token-row-value">{{ formatTokens(data.kpis.aiTokensOutput) }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Top flows + Top Node Templates -->
+    <div class="grid two-cols">
+      <div class="card">
+        <div class="card-title left"><span class="t">Flows les plus exécutés</span><span class="s">30 derniers jours</span></div>
+        <div class="list-rows" *ngIf="data.topFlows.length > 0">
+          <div class="list-row clickable" *ngFor="let f of data.topFlows" (click)="goFlow(f.flowId)">
+            <div class="row-main">
+              <div class="row-name">{{ f.name }}</div>
+              <div class="row-detail">
+                <nz-tag style="margin:0;font-size:10px" nzColor="default">{{ f.runCount }} exec.</nz-tag>
+                <nz-tag style="margin:0;font-size:10px" nzColor="green">{{ f.successCount }} succès</nz-tag>
+                <nz-tag *ngIf="f.errorCount > 0" style="margin:0;font-size:10px" nzColor="red">{{ f.errorCount }} erreurs</nz-tag>
+              </div>
+            </div>
+            <div class="row-right muted">{{ formatDuration(f.avgDurationMs) }}</div>
+          </div>
+        </div>
+        <div class="empty-section" *ngIf="data.topFlows.length === 0">Aucune exécution</div>
+      </div>
+      <div class="card" *ngIf="data.topNodeTemplates.length > 0">
+        <div class="card-title left"><span class="t">Nœuds les plus utilisés</span><span class="s">Répartition dans les flows</span></div>
+        <div class="list-rows">
+          <div class="list-row tpl-row" *ngFor="let t of data.topNodeTemplates; let i = index">
+            <div class="tpl-icon" [style.background]="t.color || '#f3f4f6'">
+              <img *ngIf="t.iconUrl" [src]="t.iconUrl" alt="icon"/>
+              <i *ngIf="!t.iconUrl" class="fa-solid fa-cube" style="color:#1677ff;font-size:12px"></i>
+            </div>
+            <nz-tag [nzColor]="tagColors[i % tagColors.length]" class="tpl-tag">{{ t.name }}</nz-tag>
+            <div class="tpl-spacer"></div>
+            <nz-badge [nzCount]="t.count" [nzOverflowCount]="9999" [nzStyle]="{ backgroundColor: tagColors[i % tagColors.length] }"></nz-badge>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Production flows + Recent runs -->
+    <div class="grid two-cols">
+      <div class="card">
+        <div class="card-title left"><span class="t">En production</span><span class="s">Flows déployés</span></div>
+        <div class="list-rows" *ngIf="data.productionFlows.length > 0">
+          <div class="list-row clickable" *ngFor="let f of data.productionFlows" (click)="goFlow(f.flowId)">
+            <div class="row-main">
+              <div class="row-name">{{ f.name }}</div>
+              <div class="row-detail">
+                <nz-tag [nzColor]="'blue'" style="margin:0;font-size:10px">{{ triggerLabel(f.triggerType) }}</nz-tag>
+                <nz-tag *ngIf="f.lastRunStatus" [nzColor]="statusColor(f.lastRunStatus)" style="margin:0;font-size:10px">{{ statusLabel(f.lastRunStatus) }}</nz-tag>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="empty-section" *ngIf="data.productionFlows.length === 0">Aucun flow en production</div>
+      </div>
+      <div class="card">
+        <div class="card-title left"><span class="t">Exécutions récentes</span></div>
+        <div class="list-rows" *ngIf="data.recentRuns.length > 0">
+          <div class="list-row clickable" *ngFor="let r of data.recentRuns" (click)="goRun(r)">
+            <div class="row-status-dot" [style.background]="r.status === 'success' ? '#52c41a' : r.status === 'error' ? '#f5222d' : r.status === 'running' ? '#1677ff' : '#d9d9d9'"></div>
+            <div class="row-main">
+              <div class="row-name">{{ r.flowName }}</div>
+              <div class="row-detail">
+                <span>{{ statusLabel(r.status) }}</span>
+                <span *ngIf="r.durationMs" class="muted">· {{ formatDuration(r.durationMs) }}</span>
+              </div>
+            </div>
+            <div class="row-right muted">{{ relativeTime(r.startedAt) }}</div>
+          </div>
+        </div>
+        <div class="empty-section" *ngIf="data.recentRuns.length === 0">Aucune exécution</div>
+      </div>
+    </div>
+
+    <!-- Notifications -->
+    <div class="grid one-col">
+      <div class="card">
+        <div class="card-title left notif-header">
+          <div><span class="t">Notifications</span><span class="s">Non lues</span></div>
+          <button nz-button nzType="text" nzSize="small" (click)="ackAllNotifications()" *ngIf="data.recentNotifications.length > 0" class="ack-btn">
+            Tout marquer comme lu
+          </button>
+        </div>
+        <div class="list-rows" *ngIf="data.recentNotifications.length > 0">
+          <div class="list-row" *ngFor="let n of data.recentNotifications" (click)="goNotif(n)" [class.clickable]="!!n.link">
+            <div class="row-status-dot" [style.background]="n.severity === 'error' || n.severity === 'critical' ? '#f5222d' : n.severity === 'warning' ? '#faad14' : '#1677ff'"></div>
+            <div class="row-main">
+              <div class="row-name">{{ n.code }}</div>
+              <div class="row-detail notif-msg">{{ n.message }}</div>
+            </div>
+            <div class="row-right muted">{{ relativeTime(n.createdAt) }}</div>
+          </div>
+        </div>
+        <div class="empty-section" *ngIf="data.recentNotifications.length === 0">Aucune notification</div>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- Empty state when no data and not loading -->
+  <div class="empty-state" *ngIf="!data && !loading">
+    <nz-empty nzNotFoundContent="Impossible de charger les données"></nz-empty>
+    <button nz-button nzType="primary" (click)="refresh()" style="margin-top: 12px">Réessayer</button>
   </div>
 </div>

@@ -38,7 +38,8 @@ function loadEnvOnce(envPath) {
     global[key] = true;
     try {
       const hasOpenAI = !!(process.env.OPENAI_API_KEY || process.env.OPENAI_KEY || process.env.OPENAI_APIKEY);
-      console.log('[env] loaded .env OPENAI_KEY:', hasOpenAI ? 'present' : 'absent');
+      const hasAnthropic = !!process.env.ANTHROPIC_API_KEY;
+      console.log('[env] loaded .env OPENAI_KEY:', hasOpenAI ? 'present' : 'absent', '| ANTHROPIC_KEY:', hasAnthropic ? 'present' : 'absent');
     } catch {}
   } catch {}
 }

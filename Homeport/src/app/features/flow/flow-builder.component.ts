@@ -1,10 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, ViewChild, HostListener, NgZone, ChangeDetectorRef } from '@angular/core';
+import { Component, ElementRef, ViewChild, HostListener, NgZone, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { Vflow, Edge, Connection, ConnectionSettings } from 'ngx-vflow';
+import { backAwareCurve } from './edge-curves';
 import { MonacoJsonEditorComponent } from '../dynamic-form/components/monaco-json-editor.component';
-import { FlowAdvancedEditorDialogComponent } from './advanced-editor/flow-advanced-editor-dialog.component';
+import { FlowNodeSettingsDialogComponent } from './node-settings-dialog.component';
+import { FlowNodeSettingsV2DialogComponent } from './node-settings-v2-dialog.component';
 import { FormsModule } from '@angular/forms';
 import { FlowHistoryService } from './flow-history.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
@@ -25,23 +27,29 @@ import { FlowPaletteService } from './flow-palette.service';
 import { FlowGraphService } from './flow-graph.service';
 import { FlowBuilderUtilsService } from './flow-builder-utils.service';
 import { FlowPalettePanelComponent } from './palette/flow-palette-panel.component';
-import { FlowInspectorPanelComponent } from './inspector/flow-inspector-panel.component';
 import { FlowRunService } from '../../services/flow-run.service';
 import { FlowPathHighlightService } from '../../services/flow-path-highlight.service';
+import { LayoutBackendService } from '../../services/layout-backend.service';
 import { RunsBackendService } from '../../services/runs-backend.service';
 import { FlowSharedStateService } from '../../services/flow-shared-state.service';
-import { FlowHistoryTimelineComponent } from './history/flow-history-timeline.component';
-import { FlowAiChatComponent } from './components/ai-flow-chat.component';
+import { FlowRightPanelComponent } from './panels/flow-right-panel.component';
+import { TriggersBackendService, TriggerStatus } from '../../services/triggers-backend.service';
+import { SpotlightAddNodeComponent } from './components/spotlight-add-node.component';
 import { environment } from '../../../environments/environment';
+import { NodeCardHeaderComponent } from '../../shared/node-card-header.component';
+import { VflowSafariForeignObjectPatchDirective } from './flow-builder.directive';
+import { NodeExecResultDialogComponent } from './node-exec-result-dialog.component';
+import { AiService } from '../ai/ai.service';
 
 @Component({
   selector: 'flow-builder',
   standalone: true,
-  imports: [CommonModule, FormsModule, DragDropModule, NzToolTipModule, NzPopoverModule, NzDrawerModule, NzButtonModule, NzModalModule, NzInputModule, NzSelectModule, NzFormModule, Vflow, FlowAdvancedEditorDialogComponent, FlowPalettePanelComponent, FlowInspectorPanelComponent, FlowHistoryTimelineComponent, FlowAiChatComponent],
+  imports: [CommonModule,VflowSafariForeignObjectPatchDirective, FormsModule, DragDropModule, NzToolTipModule, NzPopoverModule, NzDrawerModule, NzButtonModule, NzModalModule, NzInputModule, NzSelectModule, NzFormModule, Vflow, FlowNodeSettingsDialogComponent, FlowNodeSettingsV2DialogComponent, FlowPalettePanelComponent, FlowRightPanelComponent, NodeCardHeaderComponent, SpotlightAddNodeComponent, NodeExecResultDialogComponent],
   templateUrl: './flow-builder.component.html',
   styleUrl: './flow-builder.component.scss'
 })
 export class FlowBuilderComponent {
+  
   // Palette configurable (peut évoluer vers un service)
   private DRAFT_KEY_PREFIX = 'flow.draft.';
   private lastSavedChecksum: string | null = null;
@@ -52,7 +60,11 @@ export class FlowBuilderComponent {
 
   nodes: any[] = [];
   edges: Edge[] = [];
-  connectionSettings: ConnectionSettings = {};
+  connectionSettings: ConnectionSettings = {
+    type: 'template',
+    curve: backAwareCurve,
+    validator: (c) => this.validateConnection(c)
+  };
   private errorNodes = new Set<string>();
 
   @ViewChild('flowHost', { static: false }) flowHost?: ElementRef<HTMLElement>;
@@ -60,6 +72,7 @@ export class FlowBuilderComponent {
   // Drop zone host is the canvas host element
 
   selection: any = null;
+  selectionList: any[] = [];
   inspectorTab: 'settings' | 'json' = 'settings';
   get selectedNode() { return this.selection; }
   get selectedModel() { return this.selection?.data?.model || null; }
@@ -71,6 +84,25 @@ export class FlowBuilderComponent {
   advancedCtx: any = {};
   advancedInjectedInput: any = null;
   advancedInjectedOutput: any = null;
+  // Separate buffers for merging ctx: scenario msgIn and execution msgIn
+  private advancedScenarioMsgIn: any = null;
+  private advancedExecMsgIn: any = null;
+
+  private recomputeAdvancedCtx() {
+    try {
+      const scenario = (this.advancedScenarioMsgIn && typeof this.advancedScenarioMsgIn === 'object') ? this.advancedScenarioMsgIn : {};
+      const exec = (this.advancedExecMsgIn && typeof this.advancedExecMsgIn === 'object') ? this.advancedExecMsgIn : {};
+      // Execution ctx overrides scenario for overlapping keys; shallow is enough (nodeId-level keys)
+      this.advancedCtx = { ...scenario, ...exec };
+      try {
+        const id = String(this.selectedModel?.id || '');
+        console.log('[builder][ctx] recomputeAdvancedCtx', { nodeId: id, scenarioKeys: Object.keys(scenario), execKeys: Object.keys(exec), mergedKeys: Object.keys(this.advancedCtx || {}) });
+      } catch {}
+    } catch { /* keep previous advancedCtx */ }
+  }
+  // Simulation scenarios for dialog
+  advancedSimScenarios: Array<{ id: string; index: number; label: string; msgIn: any }> | null = null;
+  advancedSimScenarioIdx: number = 0;
   builderMode: 'test'|'prod' = 'test';
   lastRun: any = null;
   currentRun: any = null;
@@ -87,8 +119,195 @@ export class FlowBuilderComponent {
   private backendAttemptSeq: string[] = [];
   private lastOverlayPairs = new Set<string>();
   private backendRunStatus: 'idle'|'running'|'done' = 'idle';
+  // Streaming log text per node (from opts.log() in handlers)
+  nodeLogText = new Map<string, string>();
+  nodeLogOld = new Map<string, string>();
+  nodeLogNew = new Map<string, string>();
+  nodeLogAnimCycle = new Map<string, number>();
+  nodeLogExpanded = new Set<string>();
+  nodeLogScrollLocked = new Set<string>();
+  onLogBubbleWheel(ev: WheelEvent, nodeId: string) {
+    ev.stopPropagation(); // prevent vflow zoom
+    const bubble = ((ev.target as HTMLElement)?.closest?.('.node-log-bubble') || ev.target) as HTMLElement;
+    if (!bubble) return;
+    setTimeout(() => {
+      try {
+        const atBottom = bubble.scrollTop + bubble.clientHeight >= bubble.scrollHeight - 6;
+        if (atBottom) this.nodeLogScrollLocked.delete(nodeId);
+        else this.nodeLogScrollLocked.add(nodeId);
+      } catch {}
+    }, 30);
+  }
+  // Control whether exec badges are shown on nodes
+  private showExecBadges = false;
+  // Snapshot of selected run (from backend) for right panel
+  currentRunMeta: { id?: string; status?: string; startedAt?: string; finishedAt?: string } | null = null;
+  // Recent local runs (fallback list)
+  recentRuns: Array<{ id?: string; status?: string; startedAt?: string; finishedAt?: string }> = [];
+  private runsPage = 1;
+  private runsLimit = 20;
+  runsHasMore = true;
+  private runsLoading = false;
   // AI Chat popover visibility
   aiChatOpen = false;
+  rightPanelOpen = false;
+  leftPanelOpen = false;
+  // Transient animation flags for newly added nodes
+  spawnAnimNodes = new Set<string>();
+  spawnLiteAnimNodes = new Set<string>();
+  private isIOSSafari = false;
+  // When performing programmatic alignment, avoid immediate drag-final snapshot
+  private lastAlignAt = 0;
+  private suppressMoveSnapshotUntil = 0;
+  private suppressNextMoveSnapshot = false;
+  removingNodes = new Set<string>();
+  removingLiteNodes = new Set<string>();
+  private pendingRemoveTimers: Record<string, any> = {};
+  
+
+  private scheduleRemove(ids: Set<string>, reason: string = 'nodes.removed') {
+    try {
+      const toRemove = Array.from(ids).filter(id => !!id);
+      if (!toRemove.length) return;
+      // Do not auto-delete linked AI chats on node removal to preserve undo/restore
+      toRemove.forEach(id => {
+        const key = String(id);
+        if (this.isIOSSafari) this.removingLiteNodes.add(key); else this.removingNodes.add(key);
+        if (this.pendingRemoveTimers[key]) return;
+        this.pendingRemoveTimers[key] = setTimeout(() => {
+          delete this.pendingRemoveTimers[key];
+          this.nodes = this.nodes.filter(n => String(n.id) !== key);
+          this.edges = this.edges.filter(e => String(e.source) !== key && String(e.target) !== key);
+          this.errorNodes.delete(key);
+          if (this.isIOSSafari) this.removingLiteNodes.delete(key); else this.removingNodes.delete(key);
+          try { this.cdr.detectChanges(); } catch {}
+          this.recomputeErrorPropagation();
+        }, 260);
+      });
+      this.selection = null; this.selectionList = [];
+      this.pushState(reason);
+      this.recomputeValidation();
+    } catch {}
+  }
+  private triggerSpawnAnim(id: string) {
+    try {
+      const key = String(id);
+      if (this.isIOSSafari) {
+        this.spawnLiteAnimNodes.add(key);
+        setTimeout(() => { this.spawnLiteAnimNodes.delete(key); try { this.cdr.detectChanges(); } catch {} }, 700);
+      } else {
+        this.spawnAnimNodes.add(key);
+        setTimeout(() => { this.spawnAnimNodes.delete(key); try { this.cdr.detectChanges(); } catch {} }, 1100);
+      }
+    } catch {}
+  }
+  private panelsStateKey(): string {
+    const fid = this.currentFlowId || 'adhoc';
+    return `flow.ui.panels.${fid}`;
+  }
+  private savePanelsState() {
+    try {
+      const payload = { left: !!this.leftPanelOpen, right: !!this.rightPanelOpen };
+      localStorage.setItem(this.panelsStateKey(), JSON.stringify(payload));
+    } catch {}
+  }
+  private restorePanelsState() {
+    try {
+      const raw = localStorage.getItem(this.panelsStateKey());
+      if (!raw) return;
+      const obj = JSON.parse(raw);
+      if (typeof obj?.left === 'boolean') this.leftPanelOpen = obj.left;
+      if (typeof obj?.right === 'boolean') this.rightPanelOpen = obj.right;
+    } catch {}
+  }
+  // Ports orientation (inputs/outputs placement)
+  portOrientation: 'vertical' | 'horizontal' = 'horizontal';
+  // Alignment helper guidelines (visual lines)
+  alignmentHelper: boolean | { tolerance: number; lineColor: string } = false;
+  // Optional grid snapping (magnetic)
+  snapGrid: [number, number] | null = null;
+  get snapGridInput(): [number, number] { return (this.snapGrid || [0, 0]) as any; }
+  // Dots background, light grey
+  flowBackground: any = { type: 'dots', gap: 25, color: '#D4D8E0', size: 1.6, backgroundColor: '#F5F7FA' };
+
+  togglePortOrientation() {
+    this.portOrientation = this.portOrientation === 'vertical' ? 'horizontal' : 'vertical';
+    try { this.message.info(`Orientation: ${this.portOrientation}`); } catch {}
+    // After switching orientation, temporarily hide assist on all outputs
+    try { this.primeAssistDelayAllNodes(420); } catch {}
+    
+    // Persist and refresh placement/viewport
+    try { this.updateSharedGraph(); this.saveDraft(); this.saveLocalUiMeta(); } catch {}
+    // Force UI refresh so handles reposition without user interaction
+    try {
+      this.forceViewRefresh('toggle-orientation');
+    } catch {}
+    try { setTimeout(() => { this.centerFlow(); this.forceViewRefresh('toggle-orientation-post-center'); }, 0); } catch {}
+  }
+
+  get alignmentHelperInput(): any {
+    if (!this.alignmentHelper) return false;
+    if (typeof this.alignmentHelper === 'object') return this.alignmentHelper;
+    // default settings when enabled via boolean
+    return { tolerance: 35, lineColor: '#D1D5DB' };
+  }
+
+  toggleAlignmentHelper() {
+    try {
+      const enabled = !!this.alignmentHelper;
+      this.alignmentHelper = enabled ? false : { tolerance: 35, lineColor: '#D1D5DB' };
+      try { this.message.info(this.alignmentHelper ? 'Aides d\'alignement: activées' : 'Aides d\'alignement: désactivées'); } catch {}
+      this.updateSharedGraph();
+      this.saveDraft();
+      this.saveLocalUiMeta();
+      this.forceViewRefresh('toggle-alignment-helper');
+    } catch {}
+  }
+
+  toggleSnapGrid() {
+    try {
+      this.snapGrid = this.snapGrid ? null : [8, 8];
+      try { this.message.info(this.snapGrid ? 'Grille magnétique: activée' : 'Grille magnétique: désactivée'); } catch {}
+      this.updateSharedGraph();
+      this.saveDraft();
+      this.saveLocalUiMeta();
+      this.forceViewRefresh('toggle-snap-grid');
+    } catch {}
+  }
+
+  // Compute vertical offset (px) for horizontal handles so that multiple are centered
+  horizHandleTop(index: number, count: number): number {
+    try {
+      const center = 35; // px (middle of a 70px visual height)
+      const gap = 16;    // px between handles
+      const start = center - ((count - 1) * gap) / 2;
+      return Math.round(start + index * gap);
+    } catch { return 23; }
+  }
+  
+  get nodesView(): any[] {
+    try {
+ /*      if (this.portOrientation === 'horizontal') {
+        // Force a fixed visual height for anchoring handles: 70 units
+        return (this.nodes || []).map(n => ({ ...n, height: 70 }));
+      } */
+      return this.nodes || [];
+    } catch { return this.nodes || []; }
+  }
+  private forceViewRefresh(_reason: string) {
+    try {
+      // Bump inputs for Vflow (new array refs)
+      this.nodes = [...(this.nodes || [])];
+      this.edges = [...(this.edges || [])];
+      // Kick Angular CD
+      try { this.cdr.detectChanges(); } catch {}
+      // Nudge viewport listeners so internals recalc
+      const vs: any = this.flow?.viewportService;
+      try { this.suppressNodesRemovedUntil = Date.now() + 400; } catch {}
+      try { vs?.triggerViewportChangeEvent?.('end'); } catch {}
+    } catch { }
+  }
+  // (Horizontal handle vertical centering uses ngx-vflow hctx.point().y)
   // Derived pairs builder for overlay (does not mutate base edges)
   private buildOverlayPairs(): Set<string> {
     const pairs = new Set<string>();
@@ -120,7 +339,9 @@ export class FlowBuilderComponent {
       if (this._cachedRenderedEdges && this._cachedRenderedEdgesBaseRef === base && this._cachedRenderedPairsKey === key) {
         return this._cachedRenderedEdges;
       }
-      const next = pairs.size === 0 ? base : this.pathSvc.decorateEdges(base, pairs);
+      const decorated = pairs.size === 0 ? base : this.pathSvc.decorateEdges(base, pairs);
+      // Ensure all edges use the dynamic curve strategy (backward-aware)
+      const next = (decorated || []).map(e => ({ ...e, curve: (backAwareCurve as any) }));
       this._cachedRenderedEdges = next;
       this._cachedRenderedEdgesBaseRef = base;
       this._cachedRenderedPairsKey = key;
@@ -151,24 +372,32 @@ export class FlowBuilderComponent {
     return `flow.startPayload.${fid}`;
   }
 
-  // Load AI-generated graph from chat
+  // Load AI-generated graph from chat, with confirmation
   applyAiGraph(g: any) {
     try {
-      try { console.log('[ai-flow][applyAiGraph][received]', g); } catch {}
       const nodes = Array.isArray(g?.nodes) ? g.nodes : [];
       const edges = Array.isArray(g?.edges) ? g.edges : [];
-      this.nodes = nodes as any[];
-      this.edges = edges as any[];
-      this.lastSavedChecksum = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled });
-      this.updateSharedGraph();
-      this.history.reset(this.snapshot()); this.updateTimelineCaches(); this.persistHistory();
-      this.recomputeValidation();
-      // Center the viewport on the loaded graph (like frontend initial centering)
-      try {
-        // Delay to allow DOM to render node sizes before centering
-        setTimeout(() => this.centerFlow(), 0);
-      } catch {}
-      try { this.message.success('Workflow chargé depuis l\'assistant IA'); } catch {}
+      const curN = (this.nodes || []).length, curE = (this.edges || []).length;
+      const nextN = nodes.length, nextE = edges.length;
+      const content = `Le chargement AI propose ${nextN} nœuds et ${nextE} arêtes (actuel: ${curN}/${curE}). Appliquer ces changements ?`;
+      this.modal.confirm({
+        nzTitle: 'Charger le graphe proposé',
+        nzContent: content,
+        nzOkText: 'Appliquer',
+        nzCancelText: 'Annuler',
+        nzOnOk: () => {
+          try { console.log('[ai-flow][applyAiGraph][confirmed]', { nextN, nextE }); } catch {}
+          this.nodes = nodes as any[];
+          this.edges = edges as any[];
+          this.lastSavedChecksum = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, portOrientation: this.portOrientation, alignmentHelper: this.alignmentHelper, snapGrid: this.snapGrid });
+          this.updateSharedGraph();
+          this.history.reset(this.snapshot()); this.updateTimelineCaches(); this.persistHistory();
+          this.recomputeValidation();
+          try { setTimeout(() => this.centerFlow(), 0); } catch {}
+          try { this.message.success('Workflow chargé depuis l\'assistant IA'); } catch {}
+        },
+        nzOnCancel: () => { try { console.log('[ai-flow][applyAiGraph][cancelled]'); } catch {} }
+      });
     } catch {
       try { this.message.error('Graphe IA invalide'); } catch {}
     }
@@ -196,6 +425,67 @@ export class FlowBuilderComponent {
       localStorage.setItem(this.startPayloadKey(), JSON.stringify(wrapped));
     } catch {}
   }
+  private triggerSpawnForNodes(ids: string[]) {
+    try { ids.forEach(id => this.triggerSpawnAnim(id)); } catch {}
+  }
+
+  private applyFlowMeta(meta: any) {
+    try {
+      const ui = meta && typeof meta === 'object' ? ((meta as any).ui || (meta as any).builder || (meta as any).flow || {}) : {};
+      const ori = String((ui as any).portOrientation || (ui as any).portsOrientation || '').toLowerCase();
+      if (ori === 'horizontal' || ori === 'vertical') {
+        this.portOrientation = ori as any;
+        
+        // Ensure UI updates immediately when meta applies
+        try { this.forceViewRefresh('apply-flow-meta'); } catch {}
+        try { setTimeout(() => { this.centerFlow(); this.forceViewRefresh('apply-flow-meta-post-center'); }, 0); } catch {}
+      }
+      // Fallback to local UI meta for orientation when not defined on server
+      if (!(ori === 'horizontal' || ori === 'vertical')) {
+        const lm = this.readLocalUiMeta();
+        const lo = String(lm?.portOrientation || '').toLowerCase();
+        if (lo === 'horizontal' || lo === 'vertical') this.portOrientation = lo as any;
+      }
+      // alignmentHelper (boolean | string | settings)
+      try {
+        const ah = (ui as any).alignmentHelper;
+        if (ah && typeof ah === 'object') {
+          const tol = Number(ah.tolerance);
+          const col = String(ah.lineColor || '#D1D5DB');
+          this.alignmentHelper = { tolerance: isFinite(tol) && tol > 0 ? tol : 6, lineColor: col };
+        } else if (typeof ah === 'boolean') {
+          this.alignmentHelper = ah ? { tolerance: 6, lineColor: '#D1D5DB' } : false;
+        } else if (typeof ah === 'string') {
+          const s = ah.toLowerCase();
+          const on = ['1','true','yes','on'].includes(s);
+          this.alignmentHelper = on ? { tolerance: 6, lineColor: '#D1D5DB' } : false;
+        } else {
+          // Default at creation: enable alignment helper when not specified
+          this.alignmentHelper = { tolerance: 35, lineColor: '#D1D5DB' };
+        }
+      } catch {}
+      // Fallback to local meta for helper/grid when not in server settings
+      try {
+        const lm = this.readLocalUiMeta();
+        if (lm && typeof lm === 'object') {
+          if (lm.alignmentHelper != null && (ui as any).alignmentHelper == null) this.alignmentHelper = lm.alignmentHelper;
+          if (Array.isArray(lm.snapGrid) && (ui as any).snapGrid == null) this.snapGrid = [Number(lm.snapGrid[0]), Number(lm.snapGrid[1])] as any;
+        }
+      } catch {}
+      // snapGrid ([x,y] or disabled)
+      try {
+        const sg = (ui as any).snapGrid;
+        if (Array.isArray(sg) && sg.length === 2) {
+          const x = Number(sg[0]); const y = Number(sg[1]);
+          if (isFinite(x) && isFinite(y) && x > 0 && y > 0) this.snapGrid = [x, y];
+        } else {
+          this.snapGrid = null;
+        }
+      } catch {}
+      // Mirror to local meta after applying
+      try { this.saveLocalUiMeta(); } catch {}
+    } catch {}
+  }
   private toastTimer: any;
   private applyingHistory = false;
   private ignoreEventsUntil = 0;
@@ -205,6 +495,7 @@ export class FlowBuilderComponent {
   private skipStartFormPromptOnce = false;
   previewLoading = false;
   outputLoading = false;
+  layoutLoading = false;
   testStatus: 'idle'|'running'|'success'|'error' = 'idle';
   testStartedAt: number | null = null;
   testDurationMs: number | null = null;
@@ -234,6 +525,26 @@ export class FlowBuilderComponent {
     } catch { return false; }
   }
 
+  // Add-node-from-handle modal state
+  addNodeVisible = false;
+  addNodeQuery = '';
+  addNodeSourceId: string | null = null;
+  addNodeSourceHandle: string | null = null;
+  addNodeContentVisible = false;
+  // Mode Assistant IA (Spotlight → conversation) et état de thread temporaire
+  addNodeAiMode = false;
+  addNodeAiThreadId: string | null = null;
+  private addNodeAiApplied = false;
+  addNodeCandidates: any[] = [];
+  addNodeActiveIdx: number = -1;
+  addNodeGroups: { title: string; items: any[]; appId?: string; appColor?: string; appIconClass?: string; appIconUrl?: string }[] = [];
+  private scrollActiveIntoView() {
+    try {
+      const el = document.querySelector('.add-node-modal .results .item.active') as HTMLElement | null;
+      if (el && typeof el.scrollIntoView === 'function') el.scrollIntoView({ block: 'nearest' });
+    } catch {}
+  }
+
   // Lightweight tooltip state for output handles
   tipVisible = false;
   tipText = '';
@@ -244,6 +555,7 @@ export class FlowBuilderComponent {
   zoomDisplay = 1;
   private viewportSub?: Subscription;
   zoomPercent = 100;
+  
 
 
   // Context menu state
@@ -270,8 +582,26 @@ export class FlowBuilderComponent {
     private modal: NzModalService,
     private router: Router,
     private pathSvc: FlowPathHighlightService,
+    private layoutApi: LayoutBackendService,
+    private triggersApi: TriggersBackendService,
+    public aiService: AiService,
   ) { }
   isMobile = false;
+  // Phones (<=768px wide). Tablets (coarse pointer but wider) are treated as non-phone.
+  isPhone = false;
+  // Width-based responsive flag (<= 1280px): use drawers and single-column grid
+  isTabletOrBelow = false;
+
+  // Whether a run is currently in progress (backend or local)
+  isRunBusy(): boolean {
+    try {
+      if (this.backendRunStatus === 'running') return true;
+      if (this.testStatus === 'running') return true;
+      const l = this.lastRun; if (l && l.status === 'running') return true;
+      return false;
+    } catch { return false; }
+  }
+  private lastTabletFlag = false;
   // Apps map for provider grouping/logo
   private appsMap = new Map<string, AppProvider>();
   // Responsive drawers (mobile/tablet)
@@ -285,7 +615,7 @@ export class FlowBuilderComponent {
     this.prepOpenDrawer = true;
     try { this.cdr.detectChanges(); } catch { }
     setTimeout(() => {
-      if (where === 'left') this.leftDrawer = true; else this.rightDrawer = true;
+      if (where === 'left') this.leftDrawer = true; else { this.rightDrawer = true; if (!this.recentRuns || this.recentRuns.length === 0) this.fetchRuns(true); }
       this.updateGlobalBlockers();
       this.prepOpenDrawer = false;
       try { this.cdr.detectChanges(); } catch { }
@@ -298,6 +628,8 @@ export class FlowBuilderComponent {
   // Global blockers to prevent vflow/CDK from handling events when a drawer is open (iOS fix)
   private blockersActive = false;
   private teardownBlockers: Array<() => void> = [];
+  private dbgListeners: Array<() => void> = [];
+  debugGestures = false;
   // Neutralize global blockers (dev page works without them). Keep API but no-op.
   private enableGlobalBlockers() { /* no-op */ }
   private disableGlobalBlockers() { /* no-op */ }
@@ -316,6 +648,12 @@ export class FlowBuilderComponent {
   currentFlowStatus: 'draft'|'test'|'production' = 'draft';
   currentFlowEnabled: boolean = false;
 
+  // Production trigger state
+  triggerStatus: TriggerStatus | null = null;
+  deploying = false;
+  undeploying = false;
+  get isProduction(): boolean { return this.currentFlowStatus === 'production' && !!this.triggerStatus?.active; }
+
   // Long-press detection for mobile context menu
   private lpTimer: any = null;
   private lpStartX = 0;
@@ -326,6 +664,11 @@ export class FlowBuilderComponent {
   private lpFired = false;
   private readonly lpDelay = 520; // ms
   private readonly lpMoveThresh = 10; // px
+  // Double-tap detection for opening config dialog on mobile
+  private lastTapAt = 0;
+  private readonly dtThresh = 350; // ms between taps
+  // Explicit toggle for marquee selection (mobile/tablet)
+  marqueeMode: boolean = false;
   private allTemplates: any[] = [];
   private allowedTplIds = new Set<string>();
   private allFlows: { id: string; name: string; description?: string }[] = [];
@@ -334,19 +677,35 @@ export class FlowBuilderComponent {
   // Pending Dynamic Form return session (apply after flow graph is loaded)
   private pendingFbSession: string | null = null;
   private pendingFbNodeId: string | null = null;
+  // Pending Schema Builder return session (select node + open dialog so schema_builder recovers)
+  private pendingSbSession: string | null = null;
+  private pendingSbNodeId: string | null = null;
 
   // Removed event interceptors to align with working dev playground
 
   ngOnInit() {
+    // Detect iOS/iPadOS Safari early (animation fallback)
+    try {
+      const nav: any = (typeof navigator !== 'undefined') ? navigator : {};
+      const agent: string = String(nav.userAgent || '').toLowerCase();
+      const platform: string = String((nav.platform || '')).toLowerCase();
+      const maxTP: number = Number((nav.maxTouchPoints || 0));
+      const isIOSDevice = /iphone|ipod|ipad/.test(agent) || (platform === 'macintel' && maxTP > 1);
+      // Safari uniquement (exclut Chrome/Edge/Firefox iOS: CriOS/FxiOS/EdgiOS, etc.)
+      const isMobileSafari = /safari/.test(agent) && !/crios|fxios|edgios|opios|chrome|opr|android/.test(agent);
+      this.isIOSSafari = !!(isIOSDevice && isMobileSafari);
+    } catch { this.isIOSSafari = false; }
     // Debug helpers removed
     // Subscribe run streams (builder live panel)
     try {
       (this.runner as any).runs$?.subscribe((rs: any[]) => {
         this.lastRun = rs && rs.length ? rs[0] : null;
         this.currentRun = rs.find(r => r.status === 'running') || null;
+        // Keep backend list managed by fetchRuns(); runner list used only for last/current
       });
     } catch {}
     this.updateIsMobile();
+    this.initAiIntegration();
     // Open specific run in editor if ?run is provided
     try {
       this.route.queryParamMap.subscribe(qp => {
@@ -363,7 +722,10 @@ export class FlowBuilderComponent {
               this.currentFlowName = doc?.name || this.currentFlowName;
               this.currentFlowDesc = doc?.description || this.currentFlowDesc;
               this.nodes = (doc?.nodes || []);
+              try { this.primeAssistDelayAllNodes(480); this.cdr.detectChanges(); } catch {}
+              
               this.edges = (doc?.edges || []);
+              this.applyFlowMeta((doc as any).meta || {});
               this.loadingFlowDoc = false;
               if (runId) this.openRunSnapshotInEditor(runId);
               try { this.cdr.detectChanges(); } catch {}
@@ -375,6 +737,12 @@ export class FlowBuilderComponent {
         }
         // Defer Dynamic Form session application until after the flow is loaded
         if (fbSession) { this.pendingFbSession = fbSession; this.pendingFbNodeId = qp.get('node'); }
+        const sbSession = qp.get('sbSession');
+        if (sbSession) { this.pendingSbSession = sbSession; this.pendingSbNodeId = qp.get('node'); }
+        // If flow already loaded (same ID, component reused), apply sbSession immediately
+        if (sbSession && flowId && this.currentFlowId && String(this.currentFlowId) === String(flowId) && this.nodes?.length) {
+          this.applySchemaBuilderFromSession(sbSession);
+        }
       });
     } catch {}
     try {
@@ -416,9 +784,44 @@ export class FlowBuilderComponent {
               this.suppressGraphEventsUntil = Date.now() + 1200;
               this.suppressNodesRemovedUntil = Date.now() + 1500;
               this.log('flow.load.swap', { nodes: (doc.nodes||[]).length, edges: (doc.edges||[]).length });
-              this.nodes = (doc.nodes || []) as any[];
+            // Preserve Start Form schema if we just imported and a backend refresh arrives late
+            try {
+              const incoming = (doc.nodes || []) as any[];
+              const prev = (this.nodes || []) as any[];
+              const byId = new Map(prev.map(n => [String(n.id), n]));
+              const merged = incoming.map(n => {
+                const id = String(n?.id || '');
+                const old = byId.get(id);
+                if (!old) return n;
+                try {
+                  const oldM = old?.data?.model || {};
+                  const newM = n?.data?.model || {};
+                  const ty = String(newM?.templateObj?.type || '').toLowerCase();
+                  if (ty === 'start' || ty === 'start_form') {
+                    const want = oldM.startFormSchema;
+                    const has = newM.startFormSchema;
+                    const oldAt = Number(oldM.startFormAppliedAt || 0);
+                    const newAt = Number(newM.startFormAppliedAt || 0);
+                    const preferOld = oldAt && (!newAt || oldAt > newAt);
+                    const diff = JSON.stringify(has || null) !== JSON.stringify(want || null);
+                    if ((preferOld || (oldM?.startFormSchema && diff))) {
+                      const mergedModel = { ...newM, startFormSchema: want, startFormEnabled: true, startFormAppliedAt: oldAt || newAt || Date.now() };
+                      const nn = { ...n, data: { ...n.data, model: mergedModel } };
+                      try { console.log('[flow-builder] preserve startFormSchema on flow refresh', { id, preferOld, oldAt, newAt, diff }); } catch {}
+                      return nn;
+                    }
+                  }
+                } catch {}
+                return n;
+              });
+              this.nodes = merged as any[];
+              try { console.log('[flow-builder] flow refresh merged nodes'); } catch {}
+            } catch { this.nodes = (doc.nodes || []) as any[]; }
+            try { this.primeAssistDelayAllNodes(480); this.cdr.detectChanges(); } catch {}
+              
               this.edges = (doc.edges || []) as any;
-              this.lastSavedChecksum = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled });
+              this.applyFlowMeta((doc as any).meta || {});
+              this.lastSavedChecksum = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, portOrientation: this.portOrientation, alignmentHelper: this.alignmentHelper, snapGrid: this.snapGrid });
               this.updateSharedGraph();
               if (!this.openingRunId) this.tryRestoreDraft(flowId);
               const hydrated = this.tryHydrateHistory();
@@ -426,17 +829,25 @@ export class FlowBuilderComponent {
             }
           } finally {
             this.loadingFlowDoc = false;
+            // Load trigger status for production flows
+            try { this.loadTriggerStatus(); } catch {}
             // Extend suppression window a bit after render to avoid initial remove glitches
             this.suppressNodesRemovedUntil = Math.max(this.suppressNodesRemovedUntil, Date.now() + 1200);
             try { this.cdr.detectChanges(); } catch { }
-            // Center the view (not a node) if requested or if no saved zoom exists
+            // Center the view after panels are closed and layout is ready
             try {
               const hasSavedZoom = !!localStorage.getItem('flow.zoom');
-              if (centerActive || !hasSavedZoom) { setTimeout(() => this.centerFlow(), 0); }
-            } catch { if (centerActive) setTimeout(() => this.centerFlow(), 0); }
+              // Restore panel open state from last session before centering
+              this.restorePanelsState();
+              this.savePanelsState();
+              // If right panel was restored open, ensure recent runs are fetched
+              try { if (this.rightPanelOpen && (!this.recentRuns || this.recentRuns.length === 0)) this.fetchRuns(true); } catch {}
+              if (centerActive || !hasSavedZoom) { this.scheduleCenterIfRequested(true, true); }
+            } catch { if (centerActive) this.scheduleCenterIfRequested(true); }
             // Apply pending Dynamic Form session (if any) once nodes are available
             try {
               const sess = this.pendingFbSession || this.route.snapshot.queryParamMap.get('fbSession');
+              try { console.log('[flow-builder] pending session check', { sess, pending: this.pendingFbSession, qp: this.route.snapshot.queryParamMap.get('fbSession') }); } catch {}
               if (sess) {
                 this.applyStartFormSchemaFromSession(sess);
                 this.pendingFbSession = null;
@@ -447,7 +858,24 @@ export class FlowBuilderComponent {
                   delete q.fbSession;
                   this.router.navigate([], { queryParams: q, replaceUrl: true });
                 } catch {}
+              } else {
+                // Fallback: if URL param got lost (browser back, latency), try last session marker for this node
+                try {
+                  const nodeId = this.route.snapshot.queryParamMap.get('node') || undefined;
+                  const key = nodeId ? ('formbuilder.lastSessionForNode.' + nodeId) : null;
+                  const last = key ? localStorage.getItem(key) : null;
+                  try { console.log('[flow-builder] fallback lastSessionForNode', { nodeId, key, last }); } catch {}
+                  if (last) {
+                    this.applyStartFormSchemaFromSession(last);
+                    try { if (key) localStorage.removeItem(key); } catch {}
+                  }
+                } catch {}
               }
+            } catch {}
+            // Apply pending Schema Builder session (select node + open dialog)
+            try {
+              const sbSess = this.pendingSbSession || this.route.snapshot.queryParamMap.get('sbSession');
+              if (sbSess) this.applySchemaBuilderFromSession(sbSess);
             } catch {}
             // If we are opening a specific run, re-apply backend highlights after any flow swap
             try { if (this.openingRunId && this.backendEdgesTaken && this.backendEdgesTaken.size) this.applyBackendEdgeHighlights(); } catch {}
@@ -477,6 +905,7 @@ export class FlowBuilderComponent {
         if (!fid) return;
         if (fid === this.currentFlowId) return;
         this.currentFlowId = fid;
+        this.updateAiContext();
         this.loadingFlowDoc = true;
         this.catalog.getFlow(fid).subscribe(doc => this.zone.run(() => {
           try {
@@ -485,9 +914,42 @@ export class FlowBuilderComponent {
               this.currentFlowDesc = doc.description || '';
               this.currentFlowStatus = (doc as any).status || 'draft';
               this.currentFlowEnabled = !!(doc as any).enabled;
-              this.nodes = (doc.nodes || []) as any[];
+              try {
+                const incoming = (doc.nodes || []) as any[];
+                const prev = (this.nodes || []) as any[];
+                const byId = new Map(prev.map(n => [String(n.id), n]));
+                const merged = incoming.map(n => {
+                  const id = String(n?.id || '');
+                  const old = byId.get(id);
+                  if (!old) return n;
+                  try {
+                    const oldM = old?.data?.model || {};
+                    const newM = n?.data?.model || {};
+                    const ty = String(newM?.templateObj?.type || '').toLowerCase();
+                    if (ty === 'start' || ty === 'start_form') {
+                      const want = oldM.startFormSchema;
+                      const has = newM.startFormSchema;
+                      const oldAt = Number(oldM.startFormAppliedAt || 0);
+                      const newAt = Number(newM.startFormAppliedAt || 0);
+                      const preferOld = oldAt && (!newAt || oldAt > newAt);
+                      const diff = JSON.stringify(has || null) !== JSON.stringify(want || null);
+                      if ((preferOld || (oldM?.startFormSchema && diff))) {
+                        const mergedModel = { ...newM, startFormSchema: want, startFormEnabled: true, startFormAppliedAt: oldAt || newAt || Date.now() };
+                        const nn = { ...n, data: { ...n.data, model: mergedModel } };
+                        try { console.log('[flow-builder] preserve startFormSchema on flow refresh', { id, preferOld, oldAt, newAt, diff }); } catch {}
+                        return nn;
+                      }
+                    }
+                  } catch {}
+                  return n;
+                });
+                this.nodes = merged as any[];
+                try { console.log('[flow-builder] flow refresh merged nodes (route change)'); } catch {}
+              } catch { this.nodes = (doc.nodes || []) as any[]; }
+              try { this.primeAssistDelayAllNodes(480); this.cdr.detectChanges(); } catch {}
               this.edges = (doc.edges || []) as any;
-              this.lastSavedChecksum = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled });
+              this.applyFlowMeta((doc as any).meta || {});
+              this.lastSavedChecksum = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, portOrientation: this.portOrientation, alignmentHelper: this.alignmentHelper, snapGrid: this.snapGrid });
               this.updateSharedGraph();
               if (!this.openingRunId) this.tryRestoreDraft(fid);
               const hydrated = this.tryHydrateHistory();
@@ -496,12 +958,12 @@ export class FlowBuilderComponent {
           } finally {
             this.loadingFlowDoc = false;
             try { this.cdr.detectChanges(); } catch { }
-            // Center the view (not a node) if requested or if no saved zoom exists
+            // Center the view after panels are closed and layout is ready
             try {
               const centerParam = this.route.snapshot.queryParamMap.get('center');
-              const centerActive = !!centerParam && ['1','true','yes','on'].includes(String(centerParam).toLowerCase());
+              const centerActive2 = !!centerParam && ['1','true','yes','on'].includes(String(centerParam).toLowerCase());
               const hasSavedZoom = !!localStorage.getItem('flow.zoom');
-              if (centerActive || !hasSavedZoom) { setTimeout(() => this.centerFlow(), 0); }
+              if (centerActive2 || !hasSavedZoom) { this.scheduleCenterIfRequested(true); }
             } catch {}
             // Apply pending Dynamic Form session (if any) once nodes are available
             try {
@@ -531,6 +993,11 @@ export class FlowBuilderComponent {
               this.applyStartFormSchemaFromSession(fbSession);
               try { const q: any = { ...Object.fromEntries(pm.keys.map(k => [k, pm.get(k)]) as any) }; delete q.fbSession; this.router.navigate([], { queryParams: q, replaceUrl: true }); } catch {}
             }
+            // Apply pending Schema Builder session (select node + open dialog)
+            try {
+              const sbSess2 = this.pendingSbSession || pm.get('sbSession');
+              if (sbSess2) this.applySchemaBuilderFromSession(sbSess2);
+            } catch {}
           }
         }));
       });
@@ -548,11 +1015,228 @@ export class FlowBuilderComponent {
     this.recomputeValidation();
     try { window.addEventListener('beforeunload', this.beforeUnloadHandler as any); } catch {}
   }
+  
+  private dbg(label: string, ev: any) {
+    if (!this.debugGestures) return;
+    try {
+      const tgt = ev?.target as HTMLElement | null;
+      const path = (ev && (ev.composedPath ? ev.composedPath() : [])) || [];
+      const p0 = path && path.length ? path[0] : null;
+      const info = {
+        t: Date.now(),
+        label,
+        type: ev?.type,
+        touches: ev?.touches ? ev.touches.length : undefined,
+        changed: ev?.changedTouches ? ev.changedTouches.length : undefined,
+        pointerType: (ev as any)?.pointerType,
+        defaultPrevented: !!ev?.defaultPrevented,
+        target: tgt ? { tag: tgt.tagName, cls: tgt.className } : null,
+        path0: p0 && (p0 as any).tagName ? { tag: (p0 as any).tagName, cls: (p0 as any).className } : null,
+      };
+      // gesture debug disabled
+    } catch {}
+  }
+  private installGestureDebugListeners() {
+    if (!this.debugGestures) return;
+    try {
+      const host = this.flowHost?.nativeElement as HTMLElement | undefined;
+      const vflowEl = host ? (host.querySelector('vflow') as HTMLElement | null) : null;
+      const add = (el: EventTarget | null | undefined, type: string, label: string, capture: boolean) => {
+        if (!el) return;
+        const fn = (e: Event) => this.dbg(label, e);
+        (el as any).addEventListener(type, fn, { capture, passive: false });
+        this.dbgListeners.push(() => { try { (el as any).removeEventListener(type, fn, { capture }); } catch {} });
+      };
+      const types = ['touchstart','touchmove','touchend','touchcancel','pointerdown','pointerup','click','dblclick','contextmenu'];
+      const targets: Array<{ el: any; name: string }> = [
+        { el: document, name: 'doc' },
+        { el: window, name: 'win' },
+        { el: host, name: 'host' },
+        { el: vflowEl, name: 'vflow' }
+      ];
+      for (const t of targets) {
+        for (const ty of types) { add(t.el, ty, `${t.name}.capture.${ty}`, true); add(t.el, ty, `${t.name}.bubble.${ty}`, false); }
+      }
+      // Document capture listener for diagnostics only (no-op)
+      this.globalTouchEndDetect = (_e: TouchEvent) => { /* no-op: double-tap disabled */ };
+      document.addEventListener('touchend', this.globalTouchEndDetect as any, { capture: true, passive: true } as any);
+      this.dbgListeners.push(() => { try { document.removeEventListener('touchend', this.globalTouchEndDetect as any, { capture: true } as any); } catch {} });
+      // gesture debug disabled
+    } catch {}
+  }
+  // ── AI integration ──
+  private aiSub?: Subscription;
+
+  /** Subscribe to AI side events (graph patches, snapshots, args) */
+  private initAiIntegration() {
+    this.aiSub = this.aiService.sideEvents$.subscribe(ev => {
+      try {
+        this.zone.run(() => this.handleAiSideEvent(ev));
+      } catch (e) { console.error('[flow-builder] ai event error:', e); }
+    });
+  }
+
+  private handleAiSideEvent(ev: any) {
+    console.log('[ai-side-event]', ev.type, ev);
+    switch (ev.type) {
+      case 'snapshot':
+        if (ev.graph) {
+          // Suppress transient remove events (ngx-vflow fires edges.removed/nodes.removed
+          // when arrays are replaced — same pattern as auto-layout)
+          const until = Date.now() + 900;
+          this.suppressNodesRemovedUntil = until;
+          this.suppressGraphEventsUntil = until;
+          this.suppressRemoveUntil = until;
+
+          console.log('[ai-side-event] snapshot: applying', (ev.graph.nodes||[]).length, 'nodes,', (ev.graph.edges||[]).length, 'edges');
+          this.nodes = Array.isArray(ev.graph.nodes) ? [...ev.graph.nodes] : [];
+          this.edges = Array.isArray(ev.graph.edges) ? [...ev.graph.edges] : [];
+          this.updateSharedGraph();
+          this.pushState('ai.snapshot');
+          this.recomputeValidation();
+          this.updateAiContext();
+          this.cdr.detectChanges();
+          console.log('[ai-side-event] snapshot: done, nodes=', this.nodes.length, 'edges=', this.edges.length);
+        }
+        break;
+      case 'patch':
+        if (Array.isArray(ev.ops)) {
+          // Suppress transient remove events during patch too
+          const patchUntil = Date.now() + 900;
+          this.suppressNodesRemovedUntil = patchUntil;
+          this.suppressGraphEventsUntil = patchUntil;
+          this.suppressRemoveUntil = patchUntil;
+
+          for (const op of ev.ops) {
+            try {
+              console.log('[ai-side-event] patch op:', op.op, op.path, op.value?.id || '');
+              if (op.op === 'add' && op.path === '/nodes/-' && op.value) {
+                this.nodes = [...this.nodes, op.value];
+                console.log('[ai-side-event] patch: added node', op.value.id, '→ total nodes=', this.nodes.length);
+              } else if (op.op === 'add' && op.path === '/edges/-' && op.value) {
+                this.edges = [...this.edges, op.value];
+                console.log('[ai-side-event] patch: added edge', op.value.id, '→ total edges=', this.edges.length);
+              } else if (op.op === 'replace' && op.path?.startsWith('/nodes/')) {
+                const parts = op.path.split('/').filter(Boolean); // ['nodes', '1', ...deepPath]
+                const idx = parseInt(parts[1], 10);
+                if (!isNaN(idx) && idx < this.nodes.length) {
+                  if (parts.length === 2 && op.value) {
+                    // Full node replacement: /nodes/{idx}
+                    const updated = [...this.nodes];
+                    const oldId = updated[idx]?.id;
+                    updated[idx] = op.value;
+                    this.nodes = updated;
+                    console.log('[ai-side-event] patch: replaced node at idx', idx, 'old=', oldId, 'new=', op.value.id);
+                  } else if (parts.length > 2) {
+                    // Deep path replacement: /nodes/{idx}/data/model/description etc.
+                    const updated = [...this.nodes];
+                    const node = { ...updated[idx] };
+                    let target: any = node;
+                    const deepParts = parts.slice(2);
+                    for (let i = 0; i < deepParts.length - 1; i++) {
+                      if (target[deepParts[i]] && typeof target[deepParts[i]] === 'object') {
+                        target[deepParts[i]] = { ...target[deepParts[i]] };
+                        target = target[deepParts[i]];
+                      } else {
+                        target[deepParts[i]] = {};
+                        target = target[deepParts[i]];
+                      }
+                    }
+                    target[deepParts[deepParts.length - 1]] = op.value;
+                    updated[idx] = node;
+                    this.nodes = updated;
+                    console.log('[ai-side-event] patch: deep-replaced', op.path, 'on node', node.id);
+                  }
+                }
+              } else if (op.op === 'remove' && op.path?.startsWith('/nodes/')) {
+                const idx = parseInt(op.path.split('/')[2], 10);
+                if (!isNaN(idx) && idx < this.nodes.length) {
+                  const removed = this.nodes[idx];
+                  const updated = [...this.nodes];
+                  updated.splice(idx, 1);
+                  this.nodes = updated;
+                  console.log('[ai-side-event] patch: removed node at idx', idx, 'id=', removed?.id);
+                }
+              } else if (op.op === 'remove' && op.path?.startsWith('/edges/')) {
+                const idx = parseInt(op.path.split('/')[2], 10);
+                if (!isNaN(idx) && idx < this.edges.length) {
+                  const removed = this.edges[idx];
+                  const updated = [...this.edges];
+                  updated.splice(idx, 1);
+                  this.edges = updated;
+                  console.log('[ai-side-event] patch: removed edge at idx', idx, 'id=', removed?.id);
+                }
+              }
+            } catch (e) { console.error('[ai-side-event] patch op error:', e); }
+          }
+          this.updateSharedGraph();
+          this.pushState('ai.patch');
+          this.recomputeValidation();
+          this.updateAiContext();
+          this.cdr.detectChanges();
+          console.log('[ai-side-event] patch: done, nodes=', this.nodes.length, 'edges=', this.edges.length);
+        }
+        break;
+      case 'args':
+        if (ev.nodeId) {
+          const node = (this.nodes || []).find((n: any) => String(n.id) === String(ev.nodeId));
+          if (node) {
+            node.data = node.data || {};
+            node.data.model = node.data.model || {};
+            node.data.model.context = { ...(node.data.model.context || {}), ...(ev.args || {}) };
+            this.pushState('ai.args');
+            this.recomputeValidation();
+            this.updateAiContext();
+            this.cdr.detectChanges();
+          }
+        }
+        break;
+      case 'desc':
+        if (ev.nodeId) {
+          const node = (this.nodes || []).find((n: any) => String(n.id) === String(ev.nodeId));
+          if (node?.data?.model) {
+            node.data.model.description = ev.description || '';
+            this.cdr.detectChanges();
+          }
+        }
+        break;
+      case 'flow.created':
+        // AI created a flow — handled gracefully (no-op in builder context)
+        break;
+    }
+  }
+
+  /** Update AI page context when flowId or graph changes */
+  private updateAiContext() {
+    if (this.currentFlowId) {
+      this.aiService.setPageContext({
+        page: 'flow-builder',
+        flowId: this.currentFlowId,
+        graph: { nodes: this.nodes, edges: this.edges },
+      });
+    }
+  }
+
+  openAiPanel() {
+    this.aiService.openWithContext({ page: 'flow-builder', flowId: this.currentFlowId || undefined });
+  }
+
   ngOnDestroy() {
     try { window.removeEventListener('beforeunload', this.beforeUnloadHandler as any); } catch {}
     try { this.viewportSub?.unsubscribe(); } catch { }
     // If leaving builder without unsaved changes, clear persisted snapshots/drafts
     try { if (!this.hasUnsavedChanges()) this.purgeDraft(); } catch {}
+    // Remove marquee global capture listeners
+    try {
+      if (this.canvasGlobalDown) document.removeEventListener('pointerdown', this.canvasGlobalDown as any, true as any);
+      if (this.canvasGlobalMove) document.removeEventListener('pointermove', this.canvasGlobalMove as any, true as any);
+      if (this.canvasGlobalUp) document.removeEventListener('pointerup', this.canvasGlobalUp as any, true as any);
+    } catch {}
+    try { (this.dbgListeners || []).forEach(teardown => teardown()); this.dbgListeners = []; } catch {}
+    // Cleanup AI subscription
+    try { this.aiSub?.unsubscribe(); } catch {}
+    // Reset AI page context
+    try { this.aiService.setPageContext({ page: 'other' }); } catch {}
   }
 
   private loadFlowsForWorkspace(){
@@ -572,18 +1256,59 @@ export class FlowBuilderComponent {
     return;
   };
   private draftKey(flowId: string) { return this.DRAFT_KEY_PREFIX + (flowId || 'adhoc'); }
-  private computeChecksum(obj: any): string { try { return JSON.stringify(obj); } catch { return ''; } }
+  private computeChecksum(obj: any): string {
+    try {
+      const sanitizeNode = (n: any) => {
+        const id = String(n?.id ?? '');
+        const point = n?.point && typeof n.point === 'object' ? { x: Math.round(Number(n.point.x) || 0), y: Math.round(Number(n.point.y) || 0) } : undefined;
+        // Keep only model for checksum; strip runtime decorations (exec badges, counts, transient UI)
+        const model = n?.data?.model != null ? n.data.model : undefined;
+        return point ? { id, point, data: model != null ? { model } : {} } : { id, data: model != null ? { model } : {} };
+      };
+      const sanitizeEdge = (e: any) => {
+        return {
+          id: e?.id != null ? String(e.id) : undefined,
+          source: e?.source != null ? String(e.source) : undefined,
+          target: e?.target != null ? String(e.target) : undefined,
+          sourceHandle: (e as any)?.sourceHandle != null ? String((e as any).sourceHandle) : undefined,
+          targetHandle: (e as any)?.targetHandle != null ? String((e as any).targetHandle) : undefined,
+        };
+      };
+      const clean = {
+        nodes: Array.isArray(obj?.nodes) ? (obj.nodes as any[]).map(sanitizeNode) : [],
+        edges: Array.isArray(obj?.edges) ? (obj.edges as any[]).map(sanitizeEdge) : [],
+        name: obj?.name ?? undefined,
+        desc: obj?.desc ?? undefined,
+        status: obj?.status ?? undefined,
+        enabled: !!obj?.enabled,
+        portOrientation: obj?.portOrientation ?? undefined,
+        alignmentHelper: obj?.alignmentHelper ?? undefined,
+        snapGrid: obj?.snapGrid ?? undefined,
+      };
+      return JSON.stringify(clean);
+    } catch { return ''; }
+  }
   private saveDraft() {
     const fid = this.currentFlowId || '';
     if (!fid) return;
-    const current = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled });
+    const current = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, portOrientation: this.portOrientation, alignmentHelper: this.alignmentHelper, snapGrid: this.snapGrid });
     // Keep draft only if it differs from backend; otherwise clear it to avoid noise
     if (current !== (this.lastSavedChecksum || '')) {
-      const draft = { nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, ts: Date.now(), serverChecksum: this.lastSavedChecksum };
+      const draft = { nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, portOrientation: this.portOrientation, alignmentHelper: this.alignmentHelper, snapGrid: this.snapGrid, ts: Date.now(), serverChecksum: this.lastSavedChecksum };
       try { localStorage.setItem(this.draftKey(fid), JSON.stringify(draft)); } catch {}
     } else {
       try { localStorage.removeItem(this.draftKey(fid)); } catch {}
     }
+  }
+  private uiMetaKey(): string { const fid = this.currentFlowId || 'adhoc'; return `flow.ui.meta.${fid}`; }
+  private saveLocalUiMeta() {
+    try {
+      const v = { portOrientation: this.portOrientation, alignmentHelper: this.alignmentHelper, snapGrid: this.snapGrid };
+      localStorage.setItem(this.uiMetaKey(), JSON.stringify(v));
+    } catch {}
+  }
+  private readLocalUiMeta(): any {
+    try { const raw = localStorage.getItem(this.uiMetaKey()); return raw ? JSON.parse(raw) : null; } catch { return null; }
   }
   private tryRestoreDraft(flowId: string) {
     try {
@@ -601,12 +1326,20 @@ export class FlowBuilderComponent {
       this.currentFlowDesc = draft.desc || this.currentFlowDesc;
       this.currentFlowStatus = draft.status || this.currentFlowStatus;
       this.currentFlowEnabled = !!draft.enabled;
+      if (draft.portOrientation === 'horizontal' || draft.portOrientation === 'vertical') this.portOrientation = draft.portOrientation;
+      if (typeof draft.alignmentHelper === 'boolean') this.alignmentHelper = draft.alignmentHelper ? { tolerance: 6, lineColor: '#D1D5DB' } : false;
+      else if (draft.alignmentHelper && typeof draft.alignmentHelper === 'object') {
+        const tol = Number((draft.alignmentHelper as any).tolerance);
+        const col = String((draft.alignmentHelper as any).lineColor || '#D1D5DB');
+        this.alignmentHelper = { tolerance: isFinite(tol) && tol > 0 ? tol : 6, lineColor: col };
+      }
+      if (Array.isArray(draft.snapGrid) && draft.snapGrid.length === 2) this.snapGrid = [Number(draft.snapGrid[0]), Number(draft.snapGrid[1])] as any;
       this.nodes = (draft.nodes || []) as any[];
       this.edges = (draft.edges || []) as any;
     } catch {}
   }
   hasUnsavedChanges(): boolean {
-    const current = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled });
+    const current = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, portOrientation: this.portOrientation, alignmentHelper: this.alignmentHelper, snapGrid: this.snapGrid });
     return current !== (this.lastSavedChecksum || '');
   }
   get canSave(): boolean { return !!this.currentFlowId && this.hasUnsavedChanges(); }
@@ -655,6 +1388,15 @@ export class FlowBuilderComponent {
       return '';
     } catch { return ''; }
   }
+  miniIconUrl(it: any): string {
+    try {
+      const tpl = it?.template || {};
+      if (tpl?.iconUrl) return String(tpl.iconUrl);
+      const ic = tpl?.icon;
+      if (ic && typeof ic === 'string' && /^https?:\/\//i.test(ic)) return ic;
+      return '';
+    } catch { return ''; }
+  }
   simpleIconUrl(id: string): string { return id ? `https://cdn.simpleicons.org/${encodeURIComponent(id)}` : ''; }
   typeIconClass(tpl: any): string {
     const type = String(tpl?.type || '').toLowerCase();
@@ -682,6 +1424,10 @@ export class FlowBuilderComponent {
     } catch { return ''; }
   }
 
+  getAppById(id?: string|null): AppProvider | undefined {
+    try { const key = String(id || '').trim(); return key ? this.appsMap.get(key) : undefined; } catch { return undefined; }
+  }
+
   // Map NodeTemplate list to palette display items
 
 
@@ -695,6 +1441,132 @@ export class FlowBuilderComponent {
     } catch { }
     // Initial update
     this.updateZoomDisplay();
+    // iOS/Safari: ensure first paint applies HTML transforms
+    try { setTimeout(() => { this.forceViewRefresh('afterViewInit'); }, 0); } catch {}
+    try { setTimeout(() => this.installGestureDebugListeners(), 0); } catch {}
+
+    // Attach global capture listeners for marquee selection to preempt vflow pan/zoom
+    try {
+      const host = this.flowHost?.nativeElement;
+      if (host) {
+        this.canvasGlobalDown = (ev: PointerEvent) => {
+          try {
+            // When marqueeMode is enabled, capture touch/mouse to start selection and block vflow pan/zoom
+            const pt: any = (ev as any).pointerType;
+            const inside = host.contains(ev.target as Node);
+            if (!inside) return;
+            // If explicit multi-select mode is on and not hitting UI/node, start immediately
+            if (this.marqueeMode) {
+              const e: any = ev as any;
+              if (this.isEventOnUiControls(e) || this.isEventOnNode(e)) return;
+              ev.preventDefault(); ev.stopPropagation();
+              this.selectionBoxStart = { x: ev.clientX, y: ev.clientY };
+              this.selectionBoxRect = { left: ev.clientX, top: ev.clientY, width: 0, height: 0 };
+              try { this.cdr.detectChanges(); } catch {}
+              return;
+            }
+            // Desktop fallback (mouse right or modifiers)
+            const ctrl = !!ev.ctrlKey, meta = !!ev.metaKey, alt = !!ev.altKey;
+            const isRight = ev.button === 2;
+            if (pt && pt !== 'mouse') return;
+            if (!(ctrl || meta || alt || isRight)) return;
+            const target = ev.target as HTMLElement;
+            if (!ctrl && !meta && !alt && target?.closest && target.closest('.node-card')) return;
+            ev.preventDefault(); ev.stopPropagation();
+            this.selectionBoxStart = { x: ev.clientX, y: ev.clientY };
+            this.selectionBoxRect = { left: ev.clientX, top: ev.clientY, width: 0, height: 0 };
+            try { this.cdr.detectChanges(); } catch {}
+          } catch {}
+        };
+        this.canvasGlobalMove = (ev: PointerEvent) => {
+          try {
+            // When drawing a marquee, eat events to block vflow pan/zoom
+            if (!this.selectionBoxStart) return;
+            if (!host.contains(ev.target as Node)) return;
+            ev.preventDefault(); ev.stopPropagation();
+            const sx = this.selectionBoxStart.x, sy = this.selectionBoxStart.y;
+            const cx = ev.clientX, cy = ev.clientY;
+            const left = Math.min(sx, cx), top = Math.min(sy, cy);
+            const width = Math.abs(cx - sx), height = Math.abs(cy - sy);
+            this.selectionBoxRect = { left, top, width, height };
+            // debug logs removed
+            // Live-update selection while dragging when rect has a visible size
+            try {
+              if (width >= 2 && height >= 2) {
+                const tl = this.flow?.documentPointToFlowPoint?.({ x: left, y: top });
+                const br = this.flow?.documentPointToFlowPoint?.({ x: left + width, y: top + height });
+                if (tl && br) {
+                  const minx = Math.min((tl as any).x, (br as any).x), maxx = Math.max((tl as any).x, (br as any).x);
+                  const miny = Math.min((tl as any).y, (br as any).y), maxy = Math.max((tl as any).y, (br as any).y);
+                  const models: any[] = this.flow?.nodeModels?.() || [];
+                  const ids: string[] = [];
+                  for (const m of models) {
+                    try {
+                      const gp = m?.globalPoint?.();
+                      const sz = m?.size?.();
+                      const id = String(m?.rawNode?.id ?? '');
+                      if (!gp || !sz || !id) continue;
+                      const nx1 = gp.x, ny1 = gp.y, nx2 = gp.x + Number(sz.width || 0), ny2 = gp.y + Number(sz.height || 0);
+                      const overlap = !(nx2 < minx || nx1 > maxx || ny2 < miny || ny1 > maxy);
+                      if (overlap) ids.push(id);
+                    } catch {}
+                  }
+                  const idsSet = new Set(ids);
+                  this.selectionList = (this.nodes || []).filter(n => idsSet.has(String(n.id)));
+                  this.selection = this.selectionList[0] || null;
+                  try { this.setVflowSelectedIds(ids); } catch {}
+                }
+              }
+            } catch {}
+            try { this.cdr.detectChanges(); } catch {}
+          } catch {}
+        };
+        this.canvasGlobalUp = (ev: PointerEvent) => {
+          try {
+            // End any ongoing connect gesture
+            try { this.onConnectEnd(); } catch {}
+            const hadStart = !!this.selectionBoxStart;
+            if (!hadStart) return;
+            if (!host.contains(ev.target as Node)) return;
+            ev.preventDefault(); ev.stopPropagation();
+            const rect = this.selectionBoxRect;
+            this.selectionBoxStart = null;
+            this.selectionBoxRect = null;
+            if (!rect || rect.width < 2 || rect.height < 2) { try { this.cdr.detectChanges(); } catch {}; return; }
+            const tl = this.flow?.documentPointToFlowPoint?.({ x: rect.left, y: rect.top });
+            const br = this.flow?.documentPointToFlowPoint?.({ x: rect.left + rect.width, y: rect.top + rect.height });
+            if (!tl || !br) { try { this.cdr.detectChanges(); } catch {}; return; }
+            const minx = Math.min((tl as any).x, (br as any).x), maxx = Math.max((tl as any).x, (br as any).x);
+            const miny = Math.min((tl as any).y, (br as any).y), maxy = Math.max((tl as any).y, (br as any).y);
+            const models: any[] = this.flow?.nodeModels?.() || [];
+            const ids: string[] = [];
+            for (const m of models) {
+              try {
+                const gp = m?.globalPoint?.();
+                const sz = m?.size?.();
+                const id = String(m?.rawNode?.id ?? '');
+                if (!gp || !sz || !id) continue;
+                const nx1 = gp.x, ny1 = gp.y, nx2 = gp.x + Number(sz.width || 0), ny2 = gp.y + Number(sz.height || 0);
+                const overlap = !(nx2 < minx || nx1 > maxx || ny2 < miny || ny1 > maxy);
+                if (overlap) ids.push(id);
+              } catch {}
+            }
+            const idsSet = new Set(ids);
+            this.selectionList = (this.nodes || []).filter(n => idsSet.has(String(n.id)));
+            this.selection = this.selectionList[0] || null;
+            try { this.editJson = this.selection ? JSON.stringify(this.selectedModel, null, 2) : ''; } catch { this.editJson = ''; }
+            // debug logs removed
+            try { this.setVflowSelectedIds(ids); } catch {}
+            try { this.cdr.detectChanges(); } catch {}
+            // Auto-disable marquee mode after completing selection
+            if (this.marqueeMode) { this.marqueeMode = false; }
+          } catch {}
+        };
+        document.addEventListener('pointerdown', this.canvasGlobalDown as any, { capture: true, passive: false } as any);
+        document.addEventListener('pointermove', this.canvasGlobalMove as any, { capture: true, passive: false } as any);
+        document.addEventListener('pointerup', this.canvasGlobalUp as any, { capture: true, passive: false } as any);
+      }
+    } catch {}
   }
 
   @HostListener('window:resize') onResize() { this.updateIsMobile(); }
@@ -702,9 +1574,130 @@ export class FlowBuilderComponent {
     try {
       // Consider coarse pointer or small viewport as mobile
       const coarse = (window.matchMedia && window.matchMedia('(pointer: coarse)').matches) || false;
-      const small = typeof window !== 'undefined' ? window.innerWidth <= 768 : false;
+      const width = typeof window !== 'undefined' ? window.innerWidth : 1920;
+      const small = width <= 768;
+      this.isPhone = small;
       this.isMobile = coarse || small;
+      // Treat widths below a "large desktop" as tablet-or-below to avoid grid on 1281..1535px tablets
+      const isDesktop = (width >= 1536) && !coarse;
+      const flag = !isDesktop;
+      this.isTabletOrBelow = flag;
+      // Normalize panel states when crossing the breakpoint to avoid double-tap feeling
+      if (flag !== this.lastTabletFlag) {
+        if (flag) { this.leftPanelOpen = false; this.rightPanelOpen = false; }
+        // Always close drawers when leaving small to large to reset UX
+        if (!flag) { this.leftDrawer = false; this.rightDrawer = false; }
+        this.lastTabletFlag = flag;
+      }
+      if (this.isMobile) {
+        try { setTimeout(() => this.forceViewRefresh('mobile-viewport-change'), 0); } catch {}
+      }
     } catch { this.isMobile = false; }
+  }
+
+  // Unified toggle handlers for FABs
+  toggleLeftPanel() {
+    try {
+      if (this.isTabletOrBelow) {
+        this.leftPanelOpen = false; this.rightPanelOpen = false; // ensure desktop panels are closed
+        this.openMobilePanel('left');
+      } else {
+        this.leftPanelOpen = !this.leftPanelOpen;
+        this.savePanelsState();
+      }
+    } catch {}
+  }
+  toggleRightPanel() {
+    try {
+      if (this.isTabletOrBelow) {
+        this.leftPanelOpen = false; this.rightPanelOpen = false; // ensure desktop panels are closed
+        this.openMobilePanel('right');
+        if (!this.recentRuns || this.recentRuns.length === 0) this.fetchRuns(true);
+      } else {
+        this.rightPanelOpen = !this.rightPanelOpen;
+        if (this.rightPanelOpen && (!this.recentRuns || this.recentRuns.length === 0)) this.fetchRuns(true);
+        this.savePanelsState();
+      }
+    } catch {}
+  }
+
+  // Right panel advanced actions from consolidated component
+  onClearRun() {
+    try {
+      // Stop and clear UI references; backend may still keep history
+      this.stopLastRun();
+      this.backendRunId = null;
+      this.backendRunStatus = 'idle';
+      this.showExecBadges = false;
+      this.backendNodeStats = new Map();
+      this.backendNodeAttempts = new Map();
+      this.backendEdgesTaken.clear();
+      this.backendAttemptSeq = [];
+      this.lastRun = null;
+      this.currentRun = null;
+      this.currentRunMeta = null;
+      // Clear node badges
+      try {
+        (this.nodes || []).forEach(n => {
+          if (n?.data) { delete (n.data as any).execStatus; delete (n.data as any).execCount; }
+        });
+      } catch {}
+      // Remove run from URL
+      try {
+        const qp = this.route.snapshot.queryParamMap;
+        const q: any = { ...Object.fromEntries(qp.keys.map(k => [k, qp.get(k)]) as any) };
+        delete q.run;
+        this.router.navigate([], { queryParams: q, replaceUrl: true });
+      } catch {}
+      this.forceViewRefresh('clear-run');
+      try { this.message.info('Exécution effacée'); } catch {}
+    } catch {}
+  }
+  onRestartRun() {
+    try {
+      this.onClearRun();
+      // Relaunch with current builderMode
+      this.showExecBadges = true;
+      this.runFlow();
+    } catch {}
+  }
+  onSelectRun(runId: string) {
+    try {
+      if (!runId) return;
+      this.showExecBadges = true;
+      // Update URL with ?run= and open snapshot
+      const qp = this.route.snapshot.queryParamMap;
+      const q: any = { ...Object.fromEntries(qp.keys.map(k => [k, qp.get(k)]) as any), run: runId };
+      this.router.navigate([], { queryParams: q, replaceUrl: true });
+      this.openRunSnapshotInEditor(runId);
+    } catch {}
+  }
+  reloadFlowOnly() {
+    try {
+      const fid = this.currentFlowId || '';
+      if (!fid) return;
+      this.loadingFlowDoc = true;
+      this.catalog.getFlow(fid).subscribe({
+        next: (doc) => {
+          this.nodes = (doc?.nodes || []);
+          try { this.primeAssistDelayAllNodes(480); this.cdr.detectChanges(); } catch {}
+          this.edges = (doc?.edges || []);
+          this.applyFlowMeta((doc as any).meta || {});
+          this.loadingFlowDoc = false;
+          // Do not select any run; clear backend state
+          this.currentRunMeta = null;
+          this.backendRunId = null;
+          this.backendRunStatus = 'idle';
+          this.showExecBadges = false;
+          this.backendNodeStats = new Map();
+          this.backendNodeAttempts = new Map();
+          this.backendEdgesTaken.clear();
+          this.backendAttemptSeq = [];
+          try { this.cdr.detectChanges(); } catch {}
+        },
+        error: () => { this.loadingFlowDoc = false; }
+      });
+    } catch { this.loadingFlowDoc = false; }
   }
 
 
@@ -726,6 +1719,7 @@ export class FlowBuilderComponent {
   // Execution stats: expose last status/count for badges
   nodeExecStatus(id: string): { count: number; lastStatus?: string } | null {
     try {
+      if (!this.showExecBadges) return null;
       // Prefer backend overlay attempts if present
       const arr = this.backendNodeAttempts.get(String(id));
       if (arr && arr.length) {
@@ -818,13 +1812,371 @@ export class FlowBuilderComponent {
   inputId(tmpl: any): string | null {
     if (!tmpl) return null;
     const ty = String(tmpl.type || '').toLowerCase();
-    return (ty === 'start' || ty === 'start_form' || ty === 'event' || ty === 'endpoint') ? null : 'in';
+    if (ty === 'start' || ty === 'start_form' || ty === 'event' || ty === 'endpoint') return null;
+    if (Array.isArray(tmpl.inputHandles) && tmpl.inputHandles.length) return String(tmpl.inputHandles[0].id || 'in');
+    return 'in';
+  }
+  isTriggerTemplate(tmpl: any): boolean {
+    try {
+      const ty = String((tmpl && tmpl.type) || '').toLowerCase();
+      return ty === 'start' || ty === 'start_form' || ty === 'event' || ty === 'endpoint';
+    } catch { return false; }
+  }
+  hasInputHandles(tmpl: any): boolean {
+    try { return Array.isArray(tmpl?.inputHandles) && tmpl.inputHandles.length > 0; } catch { return false; }
   }
   outputIds(model: any): string[] { return this.graph.outputIds(model, this.edges); }
 
   getOutputName(model: any, idxOrId: number | string): string { return this.graph.getOutputName(model, idxOrId); }
+  getInputName(model: any, id: string): string { return this.graph.getInputName(model, id); }
+  private _linkCache = new Map<string, { sig: string; links: Array<{ id: string; name: string; type: string }> }>();
+  linkHandlesForNode(nodeId: string, model: any): Array<{ id: string; name: string; type: string }> {
+    try {
+      const tmpl = model?.templateObj || {};
+      const linksArr: any[] = Array.isArray((tmpl as any).linkedHandles) ? (tmpl as any).linkedHandles : [];
+      const arr: any[] = linksArr.length ? linksArr : (Array.isArray(tmpl.outputHandles) ? (tmpl.outputHandles as any[]).filter((h:any)=> Array.isArray(h?.accepts)) : []);
+      const sig = JSON.stringify(arr);
+      const key = String(nodeId);
+      const cached = this._linkCache.get(key);
+      if (cached && cached.sig === sig) return cached.links;
+      const links = arr
+        .filter((h:any) => Array.isArray(h?.accepts))
+        .map((h:any) => ({ id: String(h.id), name: h.name || h.id, type: h.type || 'any' }));
+      this._linkCache.set(key, { sig, links });
+      return links;
+    } catch { return []; }
+  }
   hasPredecessor(nodeId?: string | null): boolean {
     try { const id = String(nodeId || ''); if (!id) return false; return (this.edges || []).some(e => String(e.target) === id); } catch { return false; }
+  }
+
+  // Check if an output handle already has an outgoing edge
+  isOutputConnected(nodeId: string, handleId: string): boolean {
+    try { return (this.edges || []).some(e => String(e.source) === String(nodeId) && String((e as any).sourceHandle || '') === String(handleId)); } catch { return false; }
+  }
+
+  // Pick the first available output handle for a node (unconnected)
+  private firstFreeOutputHandle(node: any): string | null {
+    try {
+      const nodeId = String(node?.id || '');
+      const model = node?.data?.model || {};
+      const tpl = model?.templateObj || {};
+      const outFromLinked = (this.linkHandlesForNode(nodeId, model) || []).map(h => String(h?.id || ''));
+      const outFromTpl = Array.isArray((tpl as any).outputHandles) ? (tpl.outputHandles as any[]).map((h:any)=>String(h?.id||'')) : [];
+      const outFromGraph = (this.outputIds(model) || []).map(id => String(id||''));
+      const fallbacks = ['ok','out','default'];
+      const order = Array.from(new Set([ ...outFromLinked, ...outFromTpl, ...outFromGraph, ...fallbacks ] )).filter(Boolean);
+      for (const id of order) { if (!this.isOutputConnected(nodeId, id)) return id; }
+      return null;
+    } catch { return null; }
+  }
+
+  // Open modal to pick a node template and connect from given handle
+  openAddNodeFromHandle(nodeId: string, handleId: string, ev?: Event) {
+    try { if (ev) { ev.stopPropagation(); ev.preventDefault(); } } catch {}
+    // Always reset AI mode when opening palette fresh
+    this.addNodeAiMode = false; this.addNodeAiThreadId = null; this.addNodeAiApplied = false;
+    this.addNodeSourceId = String(nodeId);
+    this.addNodeSourceHandle = String(handleId);
+    this.addNodeQuery = '';
+    this.rebuildAddNodeCandidates();
+    this.addNodeActiveIdx = this.addNodeCandidates.length ? 0 : -1;
+    this.addNodeContentVisible = true;
+    this.addNodeVisible = true;
+  }
+  closeAddNodeModal() { this.addNodeVisible = false; this.addNodeContentVisible = false; this.addNodeSourceId = null; this.addNodeSourceHandle = null; this.addNodeQuery = ''; }
+  closeAddNodeModalWithCleanup() {
+    try {
+      const shouldDelete = this.addNodeAiMode && !this.addNodeAiApplied && this.addNodeAiThreadId;
+      if (shouldDelete) { /* chat cleanup removed */ }
+    } catch {}
+    this.addNodeAiMode = false; this.addNodeAiThreadId = null; this.addNodeAiApplied = false;
+    this.closeAddNodeModal();
+  }
+  onAddNodeQueryChange(v: string) { this.addNodeQuery = (v || ''); if (!this.addNodeAiMode) { this.rebuildAddNodeCandidates(); this.addNodeActiveIdx = this.addNodeCandidates.length ? 0 : -1; setTimeout(()=>this.scrollActiveIntoView(),0); } }
+  private rebuildAddNodeCandidates() {
+    try {
+      const q = (this.addNodeQuery || '').trim().toLowerCase();
+      const items = (this.items || []);
+      const standalone = !this.addNodeSourceId || !this.addNodeSourceHandle;
+      // When opening standalone (empty graph), only show triggers: start/start_form
+      // When opened from a source handle, exclude start-like templates
+      const base = standalone
+        ? items.filter(it => this.isStartLike(this.normalizeTemplate(it?.template)))
+        : items.filter(it => !this.isStartLike(this.normalizeTemplate(it?.template)));
+      const filtered = q ? base.filter(it => {
+        try {
+          const tpl = this.normalizeTemplate(it?.template);
+          const appId = String((tpl as any)?.appId || (tpl as any)?.app?._id || '').trim();
+          const app = appId ? this.appsMap.get(appId) : undefined;
+          const hay = `${it?.label || ''} ${tpl?.title || ''} ${tpl?.subtitle || ''} ${tpl?.category || ''} ${app?.name || ''} ${app?.title || ''} ${appId}`.toLowerCase();
+          return hay.includes(q);
+        } catch { return true; }
+      }) : base;
+      this.addNodeCandidates = filtered.slice(0, 200);
+      // Build groups to reuse the exact left-panel style in modal
+      this.addNodeGroups = this.paletteSvc.buildGroups(this.addNodeCandidates, this.addNodeQuery, this.appsMap) || [];
+    } catch { this.addNodeCandidates = []; }
+  }
+  onAddNodeKeydown(ev: KeyboardEvent) {
+    try {
+      if (ev.key === 'ArrowDown') {
+        ev.preventDefault();
+        if (this.addNodeCandidates.length) {
+          this.addNodeActiveIdx = Math.min(this.addNodeCandidates.length - 1, Math.max(0, this.addNodeActiveIdx + 1));
+          this.scrollActiveIntoView();
+        }
+        return;
+      }
+      if (ev.key === 'ArrowUp') {
+        ev.preventDefault();
+        if (this.addNodeCandidates.length) {
+          this.addNodeActiveIdx = Math.max(0, (this.addNodeActiveIdx < 0 ? 0 : this.addNodeActiveIdx - 1));
+          this.scrollActiveIntoView();
+        }
+        return;
+      }
+      if (ev.key === 'Enter') {
+        ev.preventDefault();
+        this.onSubmitAddNodeSearch();
+        return;
+      }
+      if (ev.key === 'Escape') {
+        ev.preventDefault();
+        this.closeAddNodeModal();
+        return;
+      }
+    } catch {}
+  }
+  onAddNodeItemHover(i: number) { this.addNodeActiveIdx = i; }
+  onAddNodeItemClick(it: any) { this.pickTemplateForAdd(it); }
+  // Enter/exit AI chat mode for Spotlight
+  private enterAddNodeAiMode(initialPrompt: string) {
+    try {
+      this.addNodeAiMode = true;
+      this.addNodeAiApplied = false;
+      // Create a temporary chat thread; delete if canceled without apply
+      const flowId = this.currentFlowId || '';
+      const sel = this.selection || null;
+      const nodeName = String(sel?.data?.model?.name || sel?.data?.model?.templateObj?.title || sel?.id || 'Node');
+      const title = `[spotlight] Add Node • ${nodeName}`;
+      if (flowId) {
+        // AI chat creation removed
+        this.addNodeAiThreadId = null;
+        try { this.cdr.detectChanges(); } catch {}
+      }
+      this.addNodeContentVisible = true;
+      this.addNodeVisible = true;
+    } catch { this.addNodeAiMode = true; this.addNodeVisible = true; }
+  }
+  onCloseAiMode() { this.closeAddNodeModalWithCleanup(); }
+  buildSeedGraphForAi(): any {
+    try {
+      // Minify payload for SSE URL: strip heavy templateObj and runtime props
+      const nodes = (this.nodes || []).map(n => {
+        const m: any = (n as any)?.data?.model || {};
+        const minimalModel: any = {
+          id: String(m?.id || n.id || ''),
+          name: m?.name || undefined,
+          template: m?.template || (m?.templateObj?.id) || undefined,
+          // Only pass lightweight context; omit description and templateObj
+          context: m?.context || undefined,
+        };
+        return {
+          id: String(n.id),
+          type: String((n as any).type || 'html-template'),
+          point: { x: (n as any).point?.x || 0, y: (n as any).point?.y || 0 },
+          data: { model: minimalModel }
+        } as any;
+      });
+      const edges = (this.edges || []).map((e:any) => ({
+        id: String(e.id || ''),
+        type: e.type,
+        source: String(e.source),
+        target: String(e.target),
+        sourceHandle: String((e as any).sourceHandle || ''),
+        targetHandle: String((e as any).targetHandle || '')
+      }));
+      return { nodes, edges };
+    } catch { return { nodes: [], edges: [] }; }
+  }
+  onAiNodeGraphGenerated(graph: any) {
+    try {
+      const seed = this.buildSeedGraphForAi();
+      const seedIds = new Set((seed.nodes||[]).map((n:any)=>String(n.id)));
+      const newNodes = (graph?.nodes || []).filter((n:any) => !seedIds.has(String(n.id)));
+      const newEdges = (graph?.edges || []).filter((e:any) => !(seed.edges||[]).some((se:any)=> String(se.id||'')===String(e.id||'')));
+      if (newNodes.length !== 1) { try { this.message?.warning?.('La proposition IA doit ajouter exactement un nœud.'); } catch {} return; }
+      const nn = newNodes[0];
+      const tpl = nn?.data?.model?.templateObj || nn?.data?.templateObj || null;
+      if (!tpl) { try { this.message?.warning?.('Proposition IA invalide (template manquant).'); } catch {} return; }
+      const args = nn?.data?.model?.context || nn?.data?.context || {};
+      const desc = nn?.data?.model?.description || nn?.data?.description || '';
+      const fromId = String(this.addNodeSourceId || '');
+      const edgeFromSource = (newEdges || []).find((e:any)=> String(e.source)===fromId);
+      const outHandle = edgeFromSource ? String(edgeFromSource.sourceHandle || '') : (this.firstFreeOutputHandle(this.selection || null) || 'out');
+      this.addNodeSourceHandle = outHandle || this.addNodeSourceHandle;
+      // Apply immediately without confirmation
+      const beforeIds = new Set((this.nodes || []).map(n => String(n.id)));
+      this.pickTemplateForAdd(tpl);
+      const created = (this.nodes || []).find(n => !beforeIds.has(String(n.id)));
+      if (created) {
+        try {
+          const m = created.data.model || {};
+          m.context = JSON.parse(JSON.stringify(args || {}));
+          m.description = String(desc || '');
+          // Propagate credentialId from AI-proposed node if present
+          try {
+            const credId = (nn && nn.data && nn.data.model && nn.data.model.credentialId) ? nn.data.model.credentialId : (nn && nn.data && nn.data.credentialId ? nn.data.credentialId : null);
+            if (credId) (m as any).credentialId = credId;
+          } catch {}
+          if (this.addNodeAiThreadId) (m as any).aiChatThreadId = this.addNodeAiThreadId;
+          created.data.model = m;
+          this.pushState('node.ai.create');
+          this.recomputeValidation();
+          try { this.cdr.detectChanges(); } catch {}
+        } catch {}
+      }
+      this.addNodeAiApplied = true;
+      // AI chat append removed
+      // Fully cleanup AI state so next open shows palette, not conversation
+      this.closeAddNodeModalWithCleanup();
+    } catch {}
+  }
+  onSpotlightPick(it: any) {
+    // If item is null => Enter pressed with no result: treat as IA prompt
+    if (!it) { this.onSubmitAddNodeSearch(); return; }
+    // If we have a source handle, connect from it; otherwise create a first node at center
+    if (this.addNodeSourceId && this.addNodeSourceHandle) this.pickTemplateForAdd(it);
+    else this.pickTemplateForCreate(it);
+  }
+  onSubmitAddNodeSearch() {
+    try {
+      const idx = this.addNodeActiveIdx;
+      if (this.addNodeCandidates.length > 0) {
+        const it = (idx >= 0 && idx < this.addNodeCandidates.length) ? this.addNodeCandidates[idx] : this.addNodeCandidates[0];
+        this.pickTemplateForAdd(it);
+      } else {
+        // No match => enter AI chat mode and bootstrap with current query
+        const prompt = (this.addNodeQuery || '').trim();
+        try { console.log('[flow-builder] add-node AI prompt requested', { prompt, sourceId: this.addNodeSourceId, sourceHandle: this.addNodeSourceHandle }); } catch {}
+        this.enterAddNodeAiMode(prompt);
+      }
+    } catch { this.closeAddNodeModal(); }
+  }
+  pickTemplateForAdd(it: any) {
+    try {
+      const sourceId = String(this.addNodeSourceId || '');
+      const handleId = String(this.addNodeSourceHandle || '');
+      if (!sourceId || !handleId) { this.closeAddNodeModal(); return; }
+      const source = (this.nodes || []).find(n => String(n.id) === sourceId);
+      const templateObj = this.normalizeTemplate(it?.template || it);
+      const newId = this.generateNodeId(templateObj, templateObj?.name || templateObj?.title);
+      // Compute placement near source
+      const center = { x: Number(source?.point?.x || 0), y: Number(source?.point?.y || 0) };
+      const point = this.computeNewNodePosition(source || null, center);
+      // Build model similar to external drop
+      const preCtx = (templateObj as any)?.__preContext || null;
+      const nodeModel = {
+        id: newId,
+        name: templateObj?.name || templateObj?.title || templateObj?.type || 'Node',
+        template: templateObj?.id || null,
+        templateObj,
+        context: (() => { try { return preCtx ? { ...preCtx } : {}; } catch { return {}; } })(),
+        templateChecksum: this.fbUtils.argsChecksum(templateObj?.args || {}),
+        templateFeatureSig: this.fbUtils.featureChecksum(templateObj)
+      } as any;
+      const vNode = { id: newId, point, type: 'html-template', data: { model: nodeModel } };
+      this.nodes = [...this.nodes, vNode];
+      this.primeAssistDelayForNode(newId);
+      this.triggerSpawnAnim(newId);
+      // Connect new node to source handle
+      const targetHandle = this.inputId(templateObj) || 'in';
+      const labelText = this.computeEdgeLabel(sourceId, handleId);
+      const isErr = (handleId === 'err') || this.errorNodes.has(String(sourceId));
+      const edge: Edge = {
+        type: 'template',
+        id: `${sourceId}->${newId}:${handleId}:${targetHandle}`,
+        source: sourceId as any,
+        target: newId as any,
+        sourceHandle: handleId as any,
+        targetHandle: targetHandle as any,
+        curve: backAwareCurve as any,
+        edgeLabels: { center: { type: 'html-template', data: { text: labelText } } },
+        data: isErr ? { error: true, strokeWidth: 1, color: '#f759ab' } : { strokeWidth: 2, color: '#b1b1b7' },
+        markers: { end: { type: 'arrow-closed', color: isErr ? '#f759ab' : '#b1b1b7' } }
+      } as any;
+      this.edges = [...this.edges, edge];
+      this.recomputeErrorPropagation();
+      this.pushState('add.node.from.handle');
+      this.closeAddNodeModal();
+      // Center on the newly added node (keep current zoom) after it renders
+      try { this.centerOnNodeWhenReady(newId, undefined); } catch {}
+      // Refresh view so handles/labels update
+      try { this.forceViewRefresh('add-node-from-handle'); } catch {}
+    } catch { this.closeAddNodeModal(); }
+  }
+  // Open add-node assistant without a source handle (empty graph)
+  openAddNodeStandalone() {
+    try {
+      // Reset AI mode to ensure palette is shown
+      this.addNodeAiMode = false; this.addNodeAiThreadId = null; this.addNodeAiApplied = false;
+      this.addNodeSourceId = null;
+      this.addNodeSourceHandle = null;
+      this.addNodeQuery = '';
+      this.rebuildAddNodeCandidates();
+      this.addNodeActiveIdx = this.addNodeCandidates.length ? 0 : -1;
+      this.addNodeContentVisible = true;
+      this.addNodeVisible = true;
+    } catch {}
+  }
+  // Create a first node at the viewport center (no connection)
+  private pickTemplateForCreate(it: any) {
+    try {
+      const templateObj = this.normalizeTemplate(it?.template || it);
+      const newId = this.generateNodeId(templateObj, templateObj?.name || templateObj?.title);
+      // Place at world origin (0,0) for the first node
+      const point = { x: 0, y: 0 };
+      const preCtx = (templateObj as any)?.__preContext || null;
+      const nodeModel = {
+        id: newId,
+        name: templateObj?.name || templateObj?.title || templateObj?.type || 'Node',
+        template: templateObj?.id || null,
+        templateObj,
+        context: (() => { try { return preCtx ? { ...preCtx } : {}; } catch { return {}; } })(),
+        templateChecksum: this.fbUtils.argsChecksum(templateObj?.args || {}),
+        templateFeatureSig: this.fbUtils.featureChecksum(templateObj)
+      } as any;
+      const vNode = { id: newId, point, type: 'html-template', data: { model: nodeModel } };
+      this.nodes = [...this.nodes, vNode];
+      this.primeAssistDelayForNode(newId);
+      this.triggerSpawnAnim(newId);
+      this.pushState('add.first.node');
+      this.closeAddNodeModal();
+      // Center on the new node and zoom to 1 for a perfect initial view (after it's rendered)
+      try { this.centerOnNodeWhenReady(newId, 100); } catch {}
+      try { this.forceViewRefresh('add-first-node'); } catch {}
+    } catch { this.closeAddNodeModal(); }
+  }
+
+  // Ensure node is in DOM before centering (prevents centering on stale bounds)
+  private centerOnNodeWhenReady(nodeId: string, setZoomPercent?: number, timeoutMs: number = 800) {
+    try {
+      const start = Date.now();
+      const attempt = () => {
+        try {
+          const el = this.flowHost?.nativeElement?.querySelector(`.node-card[data-node-id=\"${CSS.escape(nodeId)}\"]`) as HTMLElement | null;
+          const ok = !!(el && el.getBoundingClientRect && el.getBoundingClientRect().width > 0 && el.getBoundingClientRect().height > 0);
+          if (ok) {
+            this.centerOnNodeId(nodeId);
+            if (typeof setZoomPercent === 'number') this.applyZoomPercent(setZoomPercent);
+            return;
+          }
+        } catch {}
+        if (Date.now() - start < timeoutMs) { setTimeout(attempt, 50); } else { try { this.centerOnNodeId(nodeId); if (typeof setZoomPercent === 'number') this.applyZoomPercent(setZoomPercent); } catch {} }
+      };
+      setTimeout(attempt, 0);
+    } catch { try { this.centerOnNodeId(nodeId); if (typeof setZoomPercent === 'number') this.applyZoomPercent(setZoomPercent); } catch {} }
   }
   onExternalDrop(event: any) {
     // logs disabled
@@ -875,12 +2227,31 @@ export class FlowBuilderComponent {
       name: templateObj?.name || templateObj?.title || templateObj?.type || 'Node',
       template: templateObj?.id || null,
       templateObj,
-      context: preCtx ? { ...preCtx } : {},
+      context: (() => {
+        const base = preCtx ? { ...preCtx } : {};
+        try {
+          const ty = String(templateObj?.type || '').toLowerCase();
+          if (ty === 'condition') {
+            const field = String((templateObj as any)?.output_array_field || 'items');
+            const arr = Array.isArray((base as any)[field]) ? (base as any)[field] : [];
+            if (arr.length === 0) {
+              // Initialize with a single default branch and a stable id
+              const cid = 'cid_' + Math.random().toString(36).slice(2);
+              (base as any)[field] = [{ _id: cid, name: 'Condition 1', condition: '' }];
+            }
+          }
+        } catch {}
+        return base;
+      })(),
       templateChecksum: this.fbUtils.argsChecksum(templateObj?.args || {}),
       templateFeatureSig: this.fbUtils.featureChecksum(templateObj)
     };
     const vNode = { id: newId, point, type: 'html-template', data: { model: nodeModel } };
     this.nodes = [...this.nodes, vNode];
+    this.primeAssistDelayForNode(newId);
+    this.triggerSpawnAnim(newId);
+    try { this.suppressNodesRemovedUntil = Date.now() + 600; } catch {}
+    
     // If start-like, auto-connect to best target
     if (isStartLike) {
       const target = this.findBestTargetNodeForStart(point.x, point.y + 200) || this.findBestTargetNodeForStart(point.x + 1, point.y + 200);
@@ -893,6 +2264,7 @@ export class FlowBuilderComponent {
           sourceHandle: 'out',
           // Target of a start/start_form is a regular node input
           targetHandle: 'in' as any,
+          curve: backAwareCurve as any,
           edgeLabels: { center: { type: 'html-template', data: { text: this.computeEdgeLabel(newId, 'out') } } },
           data: { strokeWidth: 2, color: '#b1b1b7' },
           markers: { end: { type: 'arrow-closed', color: '#b1b1b7' } }
@@ -902,6 +2274,8 @@ export class FlowBuilderComponent {
     }
     this.pushState('drop.node');
     this.recomputeValidation();
+    // Mobile fix: force refresh to apply HTML node transform after drop
+    try { if (this.isMobile) setTimeout(() => this.forceViewRefresh('drop-node-mobile'), 0); } catch {}
   }
   private normalizeTemplate(t: any) { return this.fbUtils.normalizeTemplate(t); }
   private computeDropPoint(ev: any) {
@@ -914,6 +2288,8 @@ export class FlowBuilderComponent {
   }
   onConnect(c: Connection) {
     // logs disabled
+    // Anchor correctness: do NOT animate or show assist at connect-time; we keep it hidden
+    // during drag/hover and let connected handles stay hidden (no fade-out) to avoid flicker.
     const labelText = this.computeEdgeLabel(c.source, c.sourceHandle);
     const isErr = (c.sourceHandle === 'err') || this.errorNodes.has(String(c.source));
     if (isErr) this.errorNodes.add(String(c.target));
@@ -926,6 +2302,7 @@ export class FlowBuilderComponent {
         target: c.target,
         sourceHandle: c.sourceHandle,
         targetHandle: c.targetHandle,
+        curve: backAwareCurve as any,
         edgeLabels: { center: { type: 'html-template', data: { text: labelText } } },
         data: isErr ? { error: true, strokeWidth: 1, color: '#f759ab' } : { strokeWidth: 2, color: '#b1b1b7' },
         markers: { end: { type: 'arrow-closed', color: isErr ? '#f759ab' : '#b1b1b7' } }
@@ -944,6 +2321,8 @@ export class FlowBuilderComponent {
     // After edge deletion, recompute error branch propagation
     this.recomputeErrorPropagation();
     this.pushState('delete.edge');
+    // Make assist for freed source handle appear promptly
+    try { this.primeAssistForHandle(String(edge.source), String((edge as any).sourceHandle || 'out'), 0); this.cdr.detectChanges(); } catch {}
   }
   onDeleteEdgeClick(ev: MouseEvent, edge: Edge) {
     try { ev.preventDefault(); ev.stopPropagation(); } catch { }
@@ -1006,6 +2385,7 @@ export class FlowBuilderComponent {
       'edges.removed': { type: 'Cleanup', color: '#9ca3af' },
       'edges.detached.final': { type: 'Detach', color: '#f59e0b' },
       'node.position.final': { type: 'Move', color: '#f59e0b' },
+      'nodes.position.final': { type: 'Move', color: '#f59e0b' },
       'inspector.saveJson': { type: 'Edit', color: '#8b5cf6' },
       'dialog.modelCommit.final': { type: 'Edit', color: '#8b5cf6' },
     };
@@ -1094,6 +2474,9 @@ export class FlowBuilderComponent {
     };
     const vNode = { id: newId, point: pos, type: 'html-template', data: { model: nodeModel } };
     this.nodes = [...this.nodes, vNode];
+    this.triggerSpawnAnim(newId);
+    this.primeAssistDelayForNode(newId);
+    try { this.suppressNodesRemovedUntil = Date.now() + 600; } catch {}
     // Auto-connect logic
     if (isStartLike) {
       const target = this.findBestTargetNodeForStart(pos.x, pos.y + 200) || this.findBestTargetNodeForStart(worldCenter.x, worldCenter.y);
@@ -1105,6 +2488,7 @@ export class FlowBuilderComponent {
           target: target.id as any,
           sourceHandle: 'out',
           targetHandle: 'in' as any,
+          curve: backAwareCurve as any,
           edgeLabels: { center: { type: 'html-template', data: { text: this.computeEdgeLabel(newId, 'out') } } },
           data: { strokeWidth: 2, color: '#b1b1b7' },
           markers: { end: { type: 'arrow-closed', color: '#b1b1b7' } }
@@ -1133,6 +2517,7 @@ export class FlowBuilderComponent {
             target: newId,
             sourceHandle: handle,
             targetHandle: 'in' as any,
+            curve: backAwareCurve as any,
             edgeLabels: { center: { type: 'html-template', data: { text: labelText } } } as any,
             data: isErr ? { error: true, strokeWidth: 1, color: '#f759ab' } : { strokeWidth: 2, color: '#b1b1b7' },
             markers: { end: { type: 'arrow-closed', color: isErr ? '#f759ab' : '#b1b1b7' } } as any
@@ -1150,6 +2535,8 @@ export class FlowBuilderComponent {
       this.pushState('palette.click.add');
       this.recomputeValidation();
     }
+    // Mobile fix: nudge Vflow HTML node positioning after node insertion
+    try { if (this.isMobile) setTimeout(() => this.forceViewRefresh('palette-add-mobile'), 0); } catch {}
   }
   // (removed) delegation handler
   // findBestSourceNode now provided by FlowBuilderUtilsService
@@ -1203,18 +2590,40 @@ export class FlowBuilderComponent {
     } catch { return null; }
   }
   private computeNewNodePosition(source: any | null, center: { x: number; y: number }): { x: number; y: number } {
-    if (!source) return { x: center.x - 90, y: center.y + 80 };
     try {
-      // Align below source node with a comfortable vertical gap
+      const horizontal = this.portOrientation === 'horizontal';
+      if (!source) {
+        // Place relative to center depending on orientation
+        return horizontal
+          ? { x: center.x + 120, y: center.y }
+          : { x: center.x - 90, y: center.y + 80 };
+      }
       const vp = this.flow?.viewportService?.readableViewport();
       const el = this.flowHost?.nativeElement?.querySelector(`.node-card[data-node-id=\"${CSS.escape(source.id)}\"]`) as HTMLElement | null;
       let w = 180, h = 100;
-      if (el && vp) { const r = el.getBoundingClientRect(); if (r && r.width && r.height) { w = r.width / (vp.zoom || 1); h = r.height / (vp.zoom || 1); } }
-      const gap = 60;
-      const x = (source.point?.x || 0);
-      const y = (source.point?.y || 0) + h + gap;
-      return { x, y };
-    } catch { return { x: center.x - 90, y: center.y + 80 }; }
+      if (el && vp) {
+        const r = el.getBoundingClientRect();
+        if (r && r.width && r.height) { w = r.width / (vp.zoom || 1); h = r.height / (vp.zoom || 1); }
+      }
+      // Increase spacing so the new node is a bit further from the source
+      const gap = 100;
+      if (horizontal) {
+        // Place to the right of the source on the same row
+        const x = (source.point?.x || 0) + w + gap;
+        const y = (source.point?.y || 0);
+        return { x, y };
+      } else {
+        // Default: place below the source
+        const x = (source.point?.x || 0);
+        const y = (source.point?.y || 0) + h + gap;
+        return { x, y };
+      }
+    } catch {
+      // Fallback a bit further too
+      return this.portOrientation === 'horizontal'
+        ? { x: center.x + 160, y: center.y }
+        : { x: center.x - 90, y: center.y + 120 };
+    }
   }
   isDragging(item: any): boolean { try { const key = String(item?.template?.id || item?.label || ''); return key ? this.draggingPalette.has(key) : false; } catch { return false; } }
 
@@ -1224,13 +2633,38 @@ export class FlowBuilderComponent {
     try { ev.preventDefault(); ev.stopPropagation(); } catch { }
     this.openCtxMenuAt(ev.clientX, ev.clientY, node);
   }
+  
   private openCtxMenuAt(x: number, y: number, node: any) {
+    try { this.selectionBoxStart = null; this.selectionBoxRect = null; this.marqueePrimed = false; } catch {}
+    // Clamp within viewport so menu is always visible (mobile corners esp.)
+    const vw = (typeof window !== 'undefined') ? window.innerWidth : 1024;
+    const vh = (typeof window !== 'undefined') ? window.innerHeight : 768;
+    const margin = 8; const estW = 260; const estH = 320;
+    let px = x, py = y;
+    if (px + estW > vw - margin) px = Math.max(margin, vw - estW - margin);
+    if (py + estH > vh - margin) py = Math.max(margin, vh - estH - margin);
     this.ctxMenuVisible = true;
-    this.ctxMenuX = x;
-    this.ctxMenuY = y;
+    this.ctxMenuX = px;
+    this.ctxMenuY = py;
     this.ctxMenuTarget = node;
-    try { this.selectItem(node); } catch { }
+    try {
+      const count = (this.selectionList || []).length;
+      if (count <= 1) {
+        // If zero or a different single selection, switch to the node under the menu
+        if (count === 0 || String(this.selectionList[0]?.id) !== String(node?.id)) {
+          this.selectionList = [node];
+          this.selection = node;
+          try { this.setVflowSelectedIds([node.id]); } catch {}
+          try { this.editJson = this.selection ? JSON.stringify(this.selectedModel, null, 2) : ''; } catch { this.editJson = ''; }
+        }
+      }
+      // If multiple selection exists, keep it as-is (group actions will apply)
+    } catch { }
   }
+
+  // (removed) absolute positioning helper for inputs (vertical) — not needed
+
+  // (removed) input nudge — using node width to influence spacing instead
   // Run selected node in test mode and show I/O in dialog wings
   onTestSelectedNode() {
     try {
@@ -1243,11 +2677,15 @@ export class FlowBuilderComponent {
           import('./start-form-modal.component').then(mod => {
             const ref = this.modal.create({ nzTitle: 'Remplir le formulaire', nzContent: mod.StartFormModalComponent as any, nzFooter: null, nzWidth: 720 });
             const inst: any = ref.getContentComponent();
-            try { inst.schema = m?.startFormSchema || { title: 'Formulaire', fields: [] }; inst.value = {}; } catch {}
+            try {
+              const ctx = m?.context;
+              const schema = (ctx && (Array.isArray(ctx.fields) || Array.isArray(ctx.steps))) ? ctx : (m?.startFormSchema || { title: 'Formulaire', fields: [] });
+              inst.schema = schema; inst.value = {};
+            } catch {}
             const sub = inst.submitted.subscribe((val: any) => {
               try { sub.unsubscribe(); } catch {}
               ref.close();
-              this.advancedInjectedInput = val; this.advancedCtx = val || {};
+              this.advancedInjectedInput = val; this.advancedExecMsgIn = val || {}; this.recomputeAdvancedCtx();
               // Après saisie, exécuter directement (la sauvegarde a déjà été confirmée en amont)
               this._doTestNodeBackend(m, isStart, this.advancedInjectedInput || {});
             });
@@ -1268,7 +2706,8 @@ export class FlowBuilderComponent {
     try {
       // Prepare UI: input ready, output loading until result
       this.advancedInjectedInput = input;
-      this.advancedCtx = this.advancedInjectedInput || {};
+      this.advancedExecMsgIn = this.advancedInjectedInput || {};
+      this.recomputeAdvancedCtx();
       this.previewLoading = false;
       this.outputLoading = true;
       this.testStatus = 'running'; this.testStartedAt = Date.now(); this.testDurationMs = null;
@@ -1284,7 +2723,8 @@ export class FlowBuilderComponent {
         const nodeOut = last?.result;
         this.advancedInjectedOutput = nodeOut ?? null;
       }
-      this.advancedCtx = this.advancedInjectedInput || {};
+      this.advancedExecMsgIn = this.advancedInjectedInput || {};
+      this.recomputeAdvancedCtx();
       this.testDurationMs = Math.round(t1 - t0);
       this.testStatus = 'success';
       this.outputLoading = false;
@@ -1318,7 +2758,8 @@ export class FlowBuilderComponent {
     if (environment.useBackend && this.currentFlowId) {
       // Prepare UI: input ready, output loading until result
       this.advancedInjectedInput = msgIn;
-      this.advancedCtx = this.advancedInjectedInput || {};
+      this.advancedExecMsgIn = this.advancedInjectedInput || {};
+      this.recomputeAdvancedCtx();
       this.previewLoading = false;
       this.outputLoading = true;
       this.testStatus = 'running'; this.testStartedAt = Date.now(); this.testDurationMs = null;
@@ -1332,7 +2773,8 @@ export class FlowBuilderComponent {
           } else {
             this.advancedInjectedOutput = resp?.msgOut ?? resp?.result ?? null;
           }
-          this.advancedCtx = this.advancedInjectedInput || {};
+          this.advancedExecMsgIn = this.advancedInjectedInput || {};
+          this.recomputeAdvancedCtx();
           this.testDurationMs = this.testDurationMs ?? Math.round(t1 - t0);
           this.testStatus = 'success';
           this.outputLoading = false;
@@ -1373,14 +2815,16 @@ export class FlowBuilderComponent {
           this.runsApi.preview(this.currentFlowId!, nodeId, p).subscribe({
             next: (resp) => {
               this.advancedInjectedInput = (resp && (resp as any).msgIn) || {};
-              this.advancedCtx = this.advancedInjectedInput || {};
+              this.advancedExecMsgIn = this.advancedInjectedInput || {};
+              this.recomputeAdvancedCtx();
               try { this.cdr.detectChanges(); } catch {}
             },
             error: () => {
               // Fallback to local simulation
               const injected = this.runPredecessorsAndGetResult(nodeId);
               this.advancedInjectedInput = injected;
-              this.advancedCtx = this.advancedInjectedInput || {};
+              this.advancedExecMsgIn = this.advancedInjectedInput || {};
+              this.recomputeAdvancedCtx();
               try { this.cdr.detectChanges(); } catch {}
             },
             complete: () => { this.previewLoading = false; try { this.cdr.detectChanges(); } catch {} }
@@ -1390,7 +2834,8 @@ export class FlowBuilderComponent {
       } else {
         const injected = this.runPredecessorsAndGetResult(nodeId);
         this.advancedInjectedInput = injected;
-        this.advancedCtx = this.advancedInjectedInput || {};
+        this.advancedExecMsgIn = this.advancedInjectedInput || {};
+        this.recomputeAdvancedCtx();
         try { this.cdr.detectChanges(); } catch {}
       }
     } catch {}
@@ -1405,9 +2850,9 @@ export class FlowBuilderComponent {
       nzOkText: 'Sauvegarder et exécuter',
       nzCancelText: 'Annuler',
       nzOnOk: () => new Promise<void>((resolve) => {
-        this.catalog.saveFlow({ id: this.currentFlowId!, name: this.currentFlowName || 'Flow', description: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, nodes: this.nodes as any, edges: this.edges as any, meta: {} } as any, true).subscribe({
+        this.catalog.saveFlow({ id: this.currentFlowId!, name: this.currentFlowName || 'Flow', description: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, nodes: this.nodes as any, edges: this.edges as any, meta: { ui: { portOrientation: this.portOrientation, alignmentHelper: this.alignmentHelper } } } as any, true).subscribe({
           next: () => {
-            this.lastSavedChecksum = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled });
+              this.lastSavedChecksum = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, portOrientation: this.portOrientation, alignmentHelper: this.alignmentHelper, snapGrid: this.snapGrid });
             try { this.updateSharedGraph(); this.saveDraft(); this.persistHistory(); } catch {}
             try { this.cdr.detectChanges(); } catch {}
             action();
@@ -1492,12 +2937,320 @@ export class FlowBuilderComponent {
   onNodeTouchEnd() {
     if (!this.isMobile) return;
     try { if (this.lpTimer) clearTimeout(this.lpTimer); } catch { }
-    this.lpTimer = null; this.lpTarget = null; this.lpFired = false;
+    this.lpTimer = null;
+    // If long-press already fired, do nothing further
+    const now = Date.now();
+    const dx = Math.abs(this.lpCurX - this.lpStartX);
+    const dy = Math.abs(this.lpCurY - this.lpStartY);
+    const isTap = dx <= this.lpMoveThresh && dy <= this.lpMoveThresh;
+    if (!this.lpFired && isTap) {
+      if (now - this.lastTapAt <= this.dtThresh) {
+        const node = this.lpTarget;
+        this.lastTapAt = 0;
+        this.lpTarget = null; this.lpFired = false;
+        if (node) {
+          // Open configuration dialog on double-tap
+          try { this.zone.run(() => { this.selectItem(node); this.openAdvancedEditorV2(); }); } catch {}
+          return;
+        }
+      } else {
+        this.lastTapAt = now;
+      }
+    }
+    this.lpTarget = null; this.lpFired = false;
   }
   onNodeDoubleClick(ev: MouseEvent, node: any) {
     try { ev.preventDefault(); ev.stopPropagation(); } catch {}
     try { this.selectItem(node); } catch {}
-    this.openAdvancedEditor();
+    this.openAdvancedEditorV2();
+  }
+
+  // Auto-layout the entire graph via backend (ELK)
+  onBackendAutoLayout() {
+    try {
+      if (this.layoutLoading) return;
+      if (environment.useBackend !== true) { try { this.message.warning('Backend requis pour l\'auto-placement'); } catch {}; return; }
+      // Snapshot current selection to restore it after layout
+      const prevSelIds = this.selectionIds();
+      const prevSelSet = new Set(prevSelIds);
+      const graph = {
+        nodes: (this.nodes || []).map(n => ({ id: String(n.id), data: { model: (n as any)?.data?.model } })),
+        edges: (this.edges || []).map(e => ({ id: e.id, source: String(e.source), target: String(e.target), sourceHandle: (e as any).sourceHandle, targetHandle: (e as any).targetHandle }))
+      };
+      this.layoutLoading = true; try { this.cdr.detectChanges(); } catch {}
+      const gapX = this.portOrientation === 'horizontal' ? 360 : 260;
+      const gapY = this.portOrientation === 'horizontal' ? 160 : 160;
+      // Include description line hints to ELK so it can increase node height accordingly
+      const descLines: Record<string, number> = {};
+      try {
+        for (const n of (this.nodes || [])) {
+          const id = String((n as any)?.id || ''); if (!id) continue;
+          const model: any = (n as any)?.data?.model || {};
+          if (model?.hide_description === true) continue;
+          const d: string = String(model?.description || '').trim();
+          if (!d) continue;
+          // Estimate wrapped lines for 223px width at ~12px font
+          const wrap = (s: string) => {
+            const len = s.length; const per = 36; // approx chars per line
+            return Math.max(1, Math.ceil(len / per));
+          };
+          const parts = d.split(/\n/);
+          const rawLines = parts.map(wrap).reduce((a, b) => a + b, 0);
+          const maxLines = (model?.expand_description === true) ? 12 : 3;
+          const lines = Math.min(rawLines, maxLines);
+          if (lines > 0) descLines[id] = lines;
+        }
+      } catch {}
+      this.layoutApi.layoutGraph(graph, this.portOrientation, { width: 223, height: 110, gapX, gapY, descLines: Object.keys(descLines).length ? descLines : undefined, includeDescriptions: true }).subscribe({
+        next: (resp: any) => {
+          this.zone.run(() => {
+            try {
+              const positions = (resp && (resp.positions || (resp.data && resp.data.positions))) || {};
+              const keys = positions ? Object.keys(positions) : [];
+              if (!keys.length) { try { this.message.warning('Auto-placement: aucune position renvoyée'); } catch {}; return; }
+              // Suppress transient graph events while applying
+              const until = Date.now() + 900;
+              this.suppressNodesRemovedUntil = until as any;
+              this.suppressGraphEventsUntil = until as any;
+              this.suppressRemoveUntil = until as any;
+
+              const map = new Map<string, { x: number; y: number }>();
+              keys.forEach(k => { const p = (positions as any)[k]; if (p && typeof p.x === 'number' && typeof p.y === 'number') map.set(String(k), { x: Math.round(p.x), y: Math.round(p.y) }); });
+              // Create a fresh array so Vflow diff can reconcile by id without detach
+              const updated = (this.nodes || []).map(n => {
+                const id = String(n.id);
+                const p = map.get(id);
+                return p ? { ...n, point: { x: p.x, y: p.y } } : n;
+              });
+              this.nodes = updated;
+              this.updateSharedGraph();
+              this.pushState('auto.layout.backend');
+              // Après auto-layout, primer un délai d'assistance pour éviter toute re-mesure avec décos visibles
+              try { this.primeAssistDelayAllNodes(480); } catch {}
+              // Restore selection in ngx-vflow and our state
+              try {
+                const list = (this.nodes || []).filter(n => prevSelSet.has(String(n.id)));
+                this.selectionList = list;
+                this.selection = list[0] || null;
+                this.selectIdsWithRetry(prevSelIds, 6, 80);
+                try { this.editJson = this.selection ? JSON.stringify(this.selectedModel, null, 2) : ''; } catch { this.editJson = ''; }
+              } catch {}
+              this.forceViewRefresh('auto-layout-apply');
+              setTimeout(() => this.centerFlow(), 0);
+            } catch {}
+          });
+        },
+        error: (e) => { try { const er = this.normalizeApiError(e); this.message.error(er?.message || 'Échec de l\'auto-placement'); } catch {} },
+        complete: () => { this.layoutLoading = false; try { this.cdr.detectChanges(); } catch {} }
+      });
+    } catch {}
+  }
+
+  // Tooltip for bottom-bar auto-layout button
+  autoLayoutTooltip(): string {
+    try {
+      const count = (this.selectionList?.length || 0);
+      if (count > 1) return 'Auto-placer la sélection (backend)';
+      return 'Auto-placer (backend)';
+    } catch { return 'Auto-placer (backend)'; }
+  }
+
+  // Click handler decides between global vs selection-only
+  onAutoLayoutClick() {
+    try {
+      if ((this.selectionList?.length || 0) > 1) { this.onBackendAutoLayoutSelection(); }
+      else { this.onBackendAutoLayout(); }
+    } catch { this.onBackendAutoLayout(); }
+  }
+
+  // Auto-layout only the current selection (multi-selection), keeping others fixed
+  onBackendAutoLayoutSelection() {
+    try {
+      if (this.layoutLoading) return;
+      if (environment.useBackend !== true) { try { this.message.warning('Backend requis pour l\'auto-placement'); } catch {}; return; }
+      const ids = this.selectionIds();
+      if (!ids.length || ids.length < 2) { this.onBackendAutoLayout(); return; }
+      const idSet = new Set(ids.map(String));
+      const subNodes = (this.nodes || []).filter(n => idSet.has(String(n.id))).map(n => ({ id: String(n.id), data: { model: (n as any)?.data?.model } }));
+      const subEdges = (this.edges || []).filter((e: any) => idSet.has(String(e.source)) && idSet.has(String(e.target))).map((e: any) => ({ id: String(e.id||''), source: String(e.source), target: String(e.target), sourceHandle: e.sourceHandle, targetHandle: e.targetHandle }));
+      if (!subNodes.length) return;
+      const graph = { nodes: subNodes, edges: subEdges } as any;
+      this.layoutLoading = true; try { this.cdr.detectChanges(); } catch {}
+      const gapX = this.portOrientation === 'horizontal' ? 360 : 260;
+      const gapY = this.portOrientation === 'horizontal' ? 160 : 160;
+      // description lines for selected only
+      const descLines: Record<string, number> = {};
+      try {
+        for (const n of subNodes) {
+          const id = String((n as any)?.id || ''); if (!id) continue;
+          const model: any = (n as any)?.data?.model || {};
+          if (model?.hide_description === true) continue;
+          const d: string = String(model?.description || '').trim();
+          if (!d) continue;
+          const wrap = (s: string) => { const len = s.length; const per = 36; return Math.max(1, Math.ceil(len / per)); };
+          const parts = d.split(/\n/);
+          const rawLines = parts.map(wrap).reduce((a, b) => a + b, 0);
+          const maxLines = (model?.expand_description === true) ? 12 : 3;
+          const lines = Math.min(rawLines, maxLines);
+          if (lines > 0) descLines[id] = lines;
+        }
+      } catch {}
+      this.layoutApi.layoutGraph(graph, this.portOrientation, { width: 223, height: 110, gapX, gapY, descLines: Object.keys(descLines).length ? descLines : undefined, includeDescriptions: true }).subscribe({
+        next: (resp: any) => {
+          this.zone.run(() => {
+            try {
+              const positions = (resp && (resp.positions || (resp.data && resp.data.positions))) || {};
+              const keys = positions ? Object.keys(positions) : [];
+              if (!keys.length) { try { this.message.warning('Auto-placement: aucune position pour la sélection'); } catch {}; return; }
+
+              // Compute anchor: keep selection group near its previous bounding-box center
+              const vp = this.flow?.viewportService?.readableViewport() || { zoom: 1 } as any;
+              const measure = (id: string) => {
+                let w = 223, h = 110;
+                try {
+                  const el = this.flowHost?.nativeElement?.querySelector(`.node-card[data-node-id=\"${CSS.escape(String(id))}\"]`) as HTMLElement | null;
+                  if (el) { const r = el.getBoundingClientRect(); if (r && r.width && r.height) { w = r.width / (vp.zoom || 1); h = r.height / (vp.zoom || 1); } }
+                } catch {}
+                return { w, h };
+              };
+              // Old bbox
+              let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+              for (const nid of ids) {
+                const n = this.nodes.find(nn => String(nn.id) === String(nid)); if (!n) continue;
+                const p = n?.point || { x: 0, y: 0 };
+                const sz = measure(String(nid));
+                const x1 = p.x, y1 = p.y, x2 = p.x + sz.w, y2 = p.y + sz.h;
+                if (x1 < minX) minX = x1; if (y1 < minY) minY = y1;
+                if (x2 > maxX) maxX = x2; if (y2 > maxY) maxY = y2;
+              }
+              if (!Number.isFinite(minX) || !Number.isFinite(minY) || !Number.isFinite(maxX) || !Number.isFinite(maxY)) return;
+              const oldCx = (minX + maxX) / 2; const oldCy = (minY + maxY) / 2;
+              // New bbox (from backend positions)
+              let nMinX = Infinity, nMinY = Infinity, nMaxX = -Infinity, nMaxY = -Infinity;
+              for (const k of keys) {
+                const p = (positions as any)[k]; const sz = measure(String(k));
+                const x1 = p.x, y1 = p.y, x2 = p.x + sz.w, y2 = p.y + sz.h;
+                if (x1 < nMinX) nMinX = x1; if (y1 < nMinY) nMinY = y1;
+                if (x2 > nMaxX) nMaxX = x2; if (y2 > nMaxY) nMaxY = y2;
+              }
+              const newCx = (nMinX + nMaxX) / 2; const newCy = (nMinY + nMaxY) / 2;
+              const dx = Math.round(oldCx - newCx); const dy = Math.round(oldCy - newCy);
+
+              // Prepare collision set of unselected nodes
+              const other = (this.nodes || []).filter(n => !idSet.has(String(n.id)));
+              const othersBB = other.map(n => {
+                const sz = measure(String(n.id));
+                return { id: String(n.id), x1: (n.point?.x||0), y1: (n.point?.y||0), x2: (n.point?.x||0) + sz.w, y2: (n.point?.y||0) + sz.h };
+              });
+              const overlaps = (a: {x1:number,y1:number,x2:number,y2:number}, b: {x1:number,y1:number,x2:number,y2:number}) => !(a.x2 <= b.x1 || a.x1 >= b.x2 || a.y2 <= b.y1 || a.y1 >= b.y2);
+
+              // Map new positions with initial anchoring
+              const mapped = new Map<string, { x: number; y: number; w: number; h: number }>();
+              for (const k of keys) {
+                const p = (positions as any)[k]; const sz = measure(String(k));
+                mapped.set(String(k), { x: Math.round(p.x + dx), y: Math.round(p.y + dy), w: sz.w, h: sz.h });
+              }
+              // If any overlap with others, shift selection group down until clear (limited iterations)
+              const step = 20; let iter = 0;
+              const bboxOf = (m: Map<string, {x:number;y:number;w:number;h:number}>) => {
+                let a=Infinity,b=Infinity,c=-Infinity,d=-Infinity; for (const v of m.values()){ const x1=v.x,y1=v.y,x2=v.x+v.w,y2=v.y+v.h; if(x1<a)a=x1; if(y1<b)b=y1; if(x2>c)c=x2; if(y2>d)d=y2; } return {x1:a,y1:b,x2:c,y2:d};
+              };
+              while (iter < 200) {
+                const bbSel = bboxOf(mapped);
+                const hit = othersBB.some(o => overlaps(bbSel, o));
+                if (!hit) break;
+                for (const [k,v] of mapped.entries()) mapped.set(k, { ...v, y: v.y + step });
+                iter++;
+              }
+
+              // Suppress transient graph events while applying only to selected nodes
+              const until = Date.now() + 900;
+              this.suppressNodesRemovedUntil = until as any;
+              this.suppressGraphEventsUntil = until as any;
+              this.suppressRemoveUntil = until as any;
+              // Apply only to selected nodes
+              const map = new Map<string, { x: number; y: number }>();
+              for (const [k,v] of mapped.entries()) map.set(String(k), { x: v.x, y: v.y });
+              const updated = (this.nodes || []).map(n => {
+                const id = String(n.id); const p = map.get(id);
+                return p ? { ...n, point: { x: p.x, y: p.y } } : n;
+              });
+              this.nodes = updated;
+              this.updateSharedGraph();
+              this.pushState('auto.layout.backend.selection');
+              // Mark as programmatic align-like move to suppress pointerup snapshot flush
+              this.lastAlignAt = Date.now();
+              this.suppressMoveSnapshotUntil = this.lastAlignAt + 1200;
+              this.suppressNextMoveSnapshot = true;
+              try { this.draggingNodes.clear(); this.pendingPositions = {} as any; } catch {}
+              try { this.primeAssistDelayAllNodes(480); } catch {}
+              // Restore selection list + vflow selection
+              try {
+                const list = (this.nodes || []).filter(n => idSet.has(String(n.id)));
+                this.selectionList = list;
+                this.selection = list[0] || null;
+                this.selectIdsWithRetry(Array.from(idSet), 6, 80);
+                try { this.editJson = this.selection ? JSON.stringify(this.selectedModel, null, 2) : ''; } catch { this.editJson = ''; }
+              } catch {}
+              this.forceViewRefresh('auto-layout-selection-apply');
+            } catch {}
+          });
+        },
+        error: (e) => { try { const er = this.normalizeApiError(e); this.message.error(er?.message || 'Échec de l\'auto-placement de la sélection'); } catch {} },
+        complete: () => { this.layoutLoading = false; try { this.cdr.detectChanges(); } catch {} }
+      });
+    } catch {}
+  }
+
+  // Context menu hooks for selection actions
+  ctxAutoLayoutSelection() { this.closeCtxMenu(); this.onBackendAutoLayoutSelection(); }
+  ctxCenterZoomSelection() { this.closeCtxMenu(); this.centerZoomOnSelection(); }
+
+  // Center and zoom to fit current selection with a max zoom cap
+  centerZoomOnSelection(maxZoom: number = 1.6) {
+    try {
+      const list = Array.isArray(this.selectionList) ? this.selectionList : (this.selection ? [this.selection] : []);
+      const ids = list.filter(n => n && !(n as any).source && (n as any).id).map(n => String((n as any).id));
+      if (!ids.length) return;
+      const vs: any = this.flow?.viewportService; if (!vs || !this.flowHost?.nativeElement) return;
+      const vp = this.flow.viewportService.readableViewport();
+      const rect = this.flowHost.nativeElement.getBoundingClientRect();
+      const zoom = vp.zoom || 1;
+      // Measure world bbox of selection
+      let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+      const measure = (id: string) => {
+        let w = 223, h = 110;
+        try {
+          const el = this.flowHost?.nativeElement?.querySelector(`.node-card[data-node-id=\"${CSS.escape(String(id))}\"]`) as HTMLElement | null;
+          if (el) { const r = el.getBoundingClientRect(); if (r && r.width && r.height) { w = r.width / zoom; h = r.height / zoom; } }
+        } catch {}
+        return { w, h };
+      };
+      for (const nid of ids) {
+        const n = this.nodes.find(nn => String(nn.id) === String(nid)); if (!n) continue;
+        const p = n?.point || { x: 0, y: 0 };
+        const sz = measure(String(nid));
+        const x1 = p.x, y1 = p.y, x2 = p.x + sz.w, y2 = p.y + sz.h;
+        if (x1 < minX) minX = x1; if (y1 < minY) minY = y1;
+        if (x2 > maxX) maxX = x2; if (y2 > maxY) maxY = y2;
+      }
+      if (!Number.isFinite(minX) || !Number.isFinite(minY) || !Number.isFinite(maxX) || !Number.isFinite(maxY)) return;
+      const worldW = Math.max(60, maxX - minX);
+      const worldH = Math.max(60, maxY - minY);
+      const pad = 0.10; // 10% padding
+      const targetZoomW = (rect.width * (1 - pad)) / worldW;
+      const targetZoomH = (rect.height * (1 - pad)) / worldH;
+      let newZoom = Math.min(targetZoomW, targetZoomH);
+      newZoom = Math.max(0.05, Math.min(maxZoom, newZoom));
+      // Center at bbox center
+      const cx = (minX + maxX) / 2; const cy = (minY + maxY) / 2;
+      const centerScreenX = rect.width / 2; const centerScreenY = rect.height / 2;
+      const x = centerScreenX - (cx * newZoom);
+      const y = centerScreenY - (cy * newZoom);
+      vs.writableViewport.set({ changeType: 'absolute', state: { zoom: newZoom, x, y }, duration: 200 });
+      try { vs.triggerViewportChangeEvent?.('end'); } catch {}
+      this.updateZoomDisplay();
+    } catch {}
   }
 
   // Dialog attempt helpers
@@ -1506,6 +3259,58 @@ export class FlowBuilderComponent {
     if (!id) return [];
     return (this.backendNodeAttempts.get(id) || []).slice();
   }
+  // Exposé au template: dernier attempt pour un nœud (argsPre/argsPost)
+  getLastAttemptFor(nodeId?: string): { argsPre?: any; argsPost?: any } | null {
+    try {
+      const id = String(nodeId || this.selectedModel?.id || '');
+      if (!id) return null;
+      const arr = this.backendNodeAttempts.get(id) || [];
+      if (!arr.length) return null;
+      const last = arr[arr.length - 1];
+      return { argsPre: (last as any).argsPre, argsPost: (last as any).argsPost };
+    } catch { return null; }
+  }
+
+  // Exec result dialog state
+  execResultOpen = false;
+  execResultNodeId: string | null = null;
+
+  onExecBadgeClick(ev: MouseEvent, nodeId: string) {
+    ev.stopPropagation();
+    const atts = this.backendNodeAttempts.get(nodeId);
+    if (!atts || !atts.length) return;
+    this.execResultNodeId = nodeId;
+    this.execResultOpen = true;
+  }
+
+  closeExecResult() {
+    this.execResultOpen = false;
+    this.execResultNodeId = null;
+  }
+
+  get execResultAttempts(): any[] {
+    if (!this.execResultNodeId) return [];
+    return (this.backendNodeAttempts.get(this.execResultNodeId) || []).slice();
+  }
+
+  get execResultTemplate(): any {
+    if (!this.execResultNodeId) return null;
+    const node = (this.nodes || []).find((n: any) => String(n.id) === String(this.execResultNodeId));
+    return node?.data?.model?.templateObj || null;
+  }
+
+  get execResultModel(): any {
+    if (!this.execResultNodeId) return null;
+    const node = (this.nodes || []).find((n: any) => String(n.id) === String(this.execResultNodeId));
+    return node?.data?.model || null;
+  }
+
+  get execResultTitle(): string {
+    const tpl = this.execResultTemplate;
+    const model = this.execResultModel;
+    return tpl?.title || model?.name || 'Résultat';
+  }
+
   private groupExecCounts(atts: any[]): Map<number, number> {
     const m = new Map<number, number>();
     for (const a of atts) { const e = Number(a.exec); if (!Number.isFinite(e)) continue; m.set(e, (m.get(e) || 0) + 1); }
@@ -1534,21 +3339,31 @@ export class FlowBuilderComponent {
   private applyStartFormSchemaFromSession(session: string | null) {
     if (!session) return;
     try {
+      try { console.log('[flow-builder] applyStartFormSchemaFromSession: session=', session); } catch {}
       const raw = localStorage.getItem('formbuilder.session.' + session);
-      if (!raw) return;
+      if (!raw) { try { console.warn('[flow-builder] no session payload in localStorage'); } catch {} return; }
       const schema = JSON.parse(raw);
+      try { console.log('[flow-builder] session schema keys', Object.keys(schema || {})); } catch {}
       let m = this.selectedModel;
       if (!m) {
         try {
           const nodeId = this.pendingFbNodeId || this.route.snapshot.queryParamMap.get('node');
+          try { console.log('[flow-builder] pendingFbNodeId/route node param', { pending: this.pendingFbNodeId, qp: this.route.snapshot.queryParamMap.get('node') }); } catch {}
           if (nodeId) {
             const node = this.nodes.find(n => String(n.id) === String(nodeId));
             if (node) { this.selectItem(node); m = node.data?.model || null; }
           }
         } catch {}
       }
-      if (!m) return;
-      const newModel = { ...m, startFormEnabled: true, context: schema };
+      if (!m) { try { console.warn('[flow-builder] no selected model to apply session to'); } catch {} return; }
+      const newModel: any = { ...m, startFormEnabled: true, startFormSchema: schema };
+      // If context currently contains a schema (fields/steps), clear it so UI uses startFormSchema
+      try {
+        const cx = newModel.context;
+        const hadCtxSchema = !!(cx && (Array.isArray(cx.fields) || Array.isArray(cx.steps)));
+        if (hadCtxSchema) newModel.context = {};
+        console.log('[flow-builder] applying to model', { id: newModel.id, clearedContext: hadCtxSchema, startFormFields: Array.isArray(schema?.fields) ? schema.fields.length : null, startFormSteps: Array.isArray(schema?.steps) ? schema.steps.length : null });
+      } catch {}
       this.onAdvancedModelChange(newModel);
       this.onAdvancedModelCommitted(newModel);
       // Re-sélectionner le nœud et rouvrir la boîte de dialogue pour permettre de tester/remplir immédiatement
@@ -1557,12 +3372,76 @@ export class FlowBuilderComponent {
         const node = this.nodes.find(n => String(n.id) === id);
         if (node) {
           this.selectItem(node);
-          setTimeout(() => this.openAdvancedEditor(), 0);
+          setTimeout(() => this.openAdvancedEditorV2(), 0);
         }
       } catch {}
       // Do not auto-save the flow here; let the user decide to save
       try { localStorage.removeItem('formbuilder.session.' + session); } catch {}
       try { this.message.success('Formulaire importé dans le nœud'); } catch { this.showToast('Formulaire importé'); }
+    } catch {}
+  }
+  /** Apply Schema Builder session: same pattern as applyStartFormSchemaFromSession — apply schema to model context, commit, and reopen dialog */
+  private applySchemaBuilderFromSession(session: string | null): void {
+    if (!session) return;
+    try {
+      const raw = localStorage.getItem('formbuilder.session.' + session);
+      if (!raw) { try { console.warn('[flow-builder] sbSession: no payload in localStorage for', session); } catch {} return; }
+      const schema = JSON.parse(raw);
+      if (!schema || typeof schema !== 'object') return;
+      // Find or select the target node
+      let m = this.selectedModel;
+      if (!m) {
+        const nodeId = this.pendingSbNodeId || this.route.snapshot.queryParamMap.get('node');
+        if (nodeId) {
+          const node = this.nodes.find(n => String(n.id) === String(nodeId));
+          if (node) { this.selectItem(node); m = node.data?.model || null; }
+        }
+      }
+      if (!m) { try { console.warn('[flow-builder] sbSession: no model to apply to'); } catch {} return; }
+      // Find the schema_builder field key in the template args
+      const args = m.templateObj?.args;
+      const fields = args?.fields || [];
+      const findSbField = (arr: any[]): any => {
+        for (const f of arr) {
+          if (f.type === 'schema_builder') return f;
+          if ((f.type === 'section' || f.type === 'section_array') && Array.isArray(f.children)) {
+            const found = findSbField(f.children);
+            if (found) return found;
+          }
+        }
+        return null;
+      };
+      const sbField = findSbField(fields);
+      const fieldKey = sbField?.key || 'extraction_schema'; // fallback key
+      // Apply schema to model context (same approach as startFormSchema)
+      const newContext = { ...(m.context || {}) };
+      newContext[fieldKey] = schema;
+      const newModel: any = { ...m, context: newContext };
+      this.onAdvancedModelChange(newModel);
+      this.onAdvancedModelCommitted(newModel);
+      // Re-select node and reopen dialog (same as start_form)
+      try {
+        const id = String(newModel.id || '');
+        const node = this.nodes.find(n => String(n.id) === id);
+        if (node) {
+          this.selectItem(node);
+          setTimeout(() => this.openAdvancedEditorV2(), 0);
+        }
+      } catch {}
+      // Cleanup localStorage
+      try { localStorage.removeItem('formbuilder.session.' + session); } catch {}
+      try { localStorage.removeItem('schema_builder.active_session'); } catch {}
+      try { localStorage.removeItem('formbuilder.return.' + session); } catch {}
+      this.pendingSbSession = null;
+      this.pendingSbNodeId = null;
+      // Clean sbSession from URL
+      try {
+        const qp = this.route.snapshot.queryParamMap;
+        const q: any = { ...Object.fromEntries(qp.keys.map(k => [k, qp.get(k)]) as any) };
+        delete q.sbSession;
+        this.router.navigate([], { queryParams: q, replaceUrl: true });
+      } catch {}
+      try { this.message.success('Schéma importé dans le nœud'); } catch { this.showToast('Schéma importé'); }
     } catch {}
   }
   private resolveAttemptForSelection(nodeId?: string): any | null {
@@ -1665,7 +3544,13 @@ export class FlowBuilderComponent {
   onDialogInputChange(v: any) {
     try {
       this.advancedInjectedInput = v;
-      this.advancedCtx = v || {};
+      // Treat injected input from Settings V2 as scenario msgIn
+      this.advancedScenarioMsgIn = v || {};
+      this.recomputeAdvancedCtx();
+      try {
+        const id = String(this.selectedModel?.id || '');
+        console.log('[builder][settings-v2] injectedInputChange', { nodeId: id, keys: Object.keys(this.advancedCtx || {}) });
+      } catch {}
     } catch {}
   }
   private recomputeSelectedAttemptIdxForNode(id: string) {
@@ -1688,7 +3573,9 @@ export class FlowBuilderComponent {
       this.advancedInjectedInput = att?.msgIn ?? att?.input ?? (isStart ? (this.getStartPayload().payload || {}) : null);
       this.advancedInjectedOutput = att?.msgOut ?? att?.result ?? (isStart ? (this.getStartPayload().payload || {}) : null);
       this.advancedAttemptEvents = (att?.events || []).slice().sort((a:any,b:any)=> new Date(a?.createdAt||0).getTime() - new Date(b?.createdAt||0).getTime());
-      this.advancedCtx = this.advancedInjectedInput || {};
+      // Set execution ctx buffer and recompute merged ctx with scenario
+      this.advancedExecMsgIn = this.advancedInjectedInput || {};
+      this.recomputeAdvancedCtx();
       // Output loader should reflect current attempt status
       try {
         const st = (att && (att.status as any)) || null;
@@ -1743,8 +3630,13 @@ export class FlowBuilderComponent {
   ctxOpenAdvancedAndInspector() {
     if (!this.ctxMenuTarget) return;
     try { this.selectItem(this.ctxMenuTarget); } catch { }
-    this.openAdvancedEditor();
+    this.openAdvancedEditorV2();
     this.closeCtxMenu();
+  }
+  ctxOpenSimulation() {
+    const tgt = this.ctxMenuTarget; this.closeCtxMenu();
+    const fid = this.currentFlowId || '';
+    try { if (tgt && (tgt as any).id && fid) this.router.navigate(['/flow-builder','simulation'], { queryParams: { flow: fid, node: (tgt as any).id }, queryParamsHandling: 'merge' }); } catch {}
   }
   ctxDuplicateTarget() {
     const tgt = this.ctxMenuTarget;
@@ -1760,32 +3652,185 @@ export class FlowBuilderComponent {
       }
       const newId = this.generateNodeId(node?.data?.model?.templateObj, node?.data?.model?.name || node?.data?.model?.templateObj?.name || node?.data?.model?.templateObj?.title);
       const newPoint = { x: (node.point?.x ?? 0) + 40, y: (node.point?.y ?? 0) + 40 };
-      const model = JSON.parse(JSON.stringify(node.data?.model || {}));
+      const oldModel = node.data?.model || {};
+      const model = JSON.parse(JSON.stringify(oldModel || {}));
       model.id = newId;
+      // Reset AI chat/args state on duplication
+      try { delete (model as any).aiChatThreadId; } catch {}
+      try { delete (model as any).aiArgsHistory; } catch {}
       // Adjust name to indicate duplication (non-bloquant)
       try { if (model?.name) model.name = String(model.name) + ' (copy)'; } catch { }
-      // For condition nodes: regenerate stable _id for items to avoid handle collisions
+      // For condition/multi-output nodes: regenerate stable _id for items to avoid handle collisions
       try {
         const tmpl = model?.templateObj || {};
-        if (tmpl?.type === 'condition') {
+        if (tmpl?.type === 'condition' || !!tmpl?.output_array_field) {
           const field = tmpl.output_array_field || 'items';
           const used = this.collectAllConditionHandleIds();
+          // Build old->new handle id mapping by index
+          const oldArr = (oldModel?.context && Array.isArray(oldModel.context[field])) ? oldModel.context[field] : [];
           const arr = (model?.context && Array.isArray(model.context[field])) ? model.context[field] : [];
+          const handleMap: Record<string,string> = {};
           for (const it of arr) {
             if (it && typeof it === 'object') {
               let id = '';
               do { id = 'cid_' + Math.random().toString(36).slice(2); } while (used.has(id));
+              const idx = arr.indexOf(it);
+              handleMap[String(oldArr?.[idx]?._id || '')] = id;
               it._id = id; used.add(id);
             }
           }
+          // Else mapping
+          const oldElseId = (oldModel?.context?.else && oldModel.context.else._id) ? String(oldModel.context.else._id) : '';
+          if (model?.context?.else && model.context.else._id) {
+            let eid = '';
+            do { eid = 'else_' + Math.random().toString(36).slice(2); } while (used.has(eid));
+            handleMap[oldElseId] = eid;
+            model.context.else._id = eid; used.add(eid);
+          }
+          // Duplicate outgoing edges from original node with remapped sourceHandle
+          const newEdges: any[] = [];
+          for (const e of (this.edges || [])) {
+            if (String((e as any).source) === String(node.id)) {
+              const ne = JSON.parse(JSON.stringify(e));
+              ne.source = newId;
+              if (ne.sourceHandle && handleMap[String(ne.sourceHandle)]) ne.sourceHandle = handleMap[String(ne.sourceHandle)];
+              try {
+                const sh = String(ne.sourceHandle || '');
+                const th = String(ne.targetHandle || '');
+                ne.id = `${ne.source}->${ne.target}:${sh}:${th}`;
+              } catch {}
+              newEdges.push(ne);
+            }
+          }
+          if (newEdges.length) this.edges = [...this.edges, ...newEdges];
         }
       } catch { }
       const vNode = { id: newId, point: newPoint, type: node.type, data: { ...node.data, model } };
       this.nodes = [...this.nodes, vNode];
+      try { this.triggerSpawnAnim(newId); } catch {}
+      try { this.triggerSpawnAnim(newId); } catch {}
+      try { this.suppressNodesRemovedUntil = Date.now() + 600; } catch {}
+      // After duplicate (single), select only the new node and clear any previous selection
+      this.selectionList = [vNode as any];
       this.selection = vNode as any;
+      try { this.cdr.detectChanges(); } catch {}
+      try { this.selectIdsWithRetry([newId]); } catch {}
+      try { this.editJson = this.selection ? JSON.stringify(this.selectedModel, null, 2) : ''; } catch { this.editJson = ''; }
       this.history.push(this.snapshot());
       this.recomputeValidation();
     } catch { }
+  }
+
+  // Duplicate the whole current selection, preserving internal connections
+  ctxDuplicateGroup() {
+    this.closeCtxMenu();
+    try {
+      const sels = Array.isArray(this.selectionList) ? this.selectionList.slice() : [];
+      const ids = sels.map(n => String(n?.id)).filter(Boolean);
+      const idSet = new Set(ids);
+      if (ids.length < 2) { this.ctxDuplicateTarget(); return; }
+      // Build id remap and compute offset
+      const bbox = { minx: Infinity, miny: Infinity };
+      for (const n of sels) { const p = n?.point || { x:0, y:0 }; bbox.minx = Math.min(bbox.minx, p.x||0); bbox.miny = Math.min(bbox.miny, p.y||0); }
+      const dx = 60, dy = 60;
+      const idMap = new Map<string,string>();
+      for (const n of sels) {
+        const tpl = n?.data?.model?.templateObj;
+        // Skip triggers
+        if (this.isStartLike(tpl)) continue;
+        const newId = this.generateNodeId(tpl, n?.data?.model?.name || tpl?.name || tpl?.title);
+        idMap.set(String(n.id), newId);
+      }
+      const usedCondIds = this.collectAllConditionHandleIds();
+      // Prepare per-node condition handle remapping: oldId -> (oldHandle -> newHandle)
+      const condHandleMap = new Map<string, Map<string,string>>();
+      const newNodes: any[] = [];
+      for (const n of sels) {
+        const oldId = String(n.id);
+        const newId = idMap.get(oldId);
+        if (!newId) continue; // skipped (e.g., start)
+        const oldM = n?.data?.model || {};
+        const m = JSON.parse(JSON.stringify(oldM || {}));
+        m.id = newId;
+        // Reset AI chat/args state on group duplication
+        try { delete (m as any).aiChatThreadId; } catch {}
+        try { delete (m as any).aiArgsHistory; } catch {}
+        // Rename for copy UX
+        try { if (m?.name) m.name = String(m.name) + ' (copy)'; } catch {}
+        // Condition: avoid branch id collisions
+        try {
+          const tt = m?.templateObj?.type;
+          if (tt === 'condition') {
+            const field = m?.templateObj?.output_array_field || 'items';
+            const arr = (m?.context && Array.isArray(m.context[field])) ? m.context[field] : [];
+            const oldArr = (oldM?.context && Array.isArray(oldM.context[field])) ? oldM.context[field] : [];
+            const map = new Map<string,string>();
+            for (const it of arr) {
+              if (it && typeof it === 'object') {
+                let cid = '';
+                do { cid = 'cid_' + Math.random().toString(36).slice(2); } while (usedCondIds.has(cid));
+                const idx = arr.indexOf(it);
+                const old = String(oldArr?.[idx]?._id || '');
+                if (old) map.set(old, cid);
+                it._id = cid; usedCondIds.add(cid);
+              }
+            }
+            if (m?.context?.else && m.context.else._id) {
+              let eid = '';
+              do { eid = 'else_' + Math.random().toString(36).slice(2); } while (usedCondIds.has(eid));
+              const oldElse = (oldM?.context?.else && oldM.context.else._id) ? String(oldM.context.else._id) : '';
+              if (oldElse) map.set(oldElse, eid);
+              m.context.else._id = eid; usedCondIds.add(eid);
+            }
+            condHandleMap.set(oldId, map);
+          }
+        } catch {}
+        const p = n?.point || { x:0, y:0 };
+        const vNode = { id: newId, point: { x: p.x + dx, y: p.y + dy }, type: n.type, data: { ...n.data, model: m } };
+        newNodes.push(vNode);
+      }
+      if (newNodes.length) {
+        this.nodes = [...this.nodes, ...newNodes];
+      }
+      // Clone internal edges
+      const newEdges: any[] = [];
+      for (const e of (this.edges || [])) {
+        const s = String((e as any).source || '');
+        const t = String((e as any).target || '');
+        if (idSet.has(s) && idSet.has(t)) {
+          const ns = idMap.get(s); const nt = idMap.get(t);
+          if (ns && nt) {
+            const ne = JSON.parse(JSON.stringify(e));
+            ne.source = ns; ne.target = nt;
+            // Remap condition handles on source side
+            const map = condHandleMap.get(s);
+            if (map && ne.sourceHandle && map.get(String(ne.sourceHandle))) ne.sourceHandle = map.get(String(ne.sourceHandle));
+            try {
+              const sh = String((ne as any).sourceHandle || '');
+              const th = String((ne as any).targetHandle || '');
+              ne.id = `${ns}->${nt}:${sh}:${th}`;
+            } catch {}
+            newEdges.push(ne);
+          }
+        }
+      }
+      if (newEdges.length) {
+        this.edges = [...this.edges, ...newEdges];
+      }
+      // Select newly created nodes
+      this.selectionList = newNodes;
+      this.selection = newNodes[0] || null;
+      try { this.cdr.detectChanges(); } catch {}
+      try { this.selectIdsWithRetry(newNodes.map(n => n.id)); } catch {}
+      try { this.editJson = this.selection ? JSON.stringify(this.selectedModel, null, 2) : ''; } catch { this.editJson = ''; }
+      this.pushState('duplicate.group');
+      this.recomputeValidation();
+    } catch {}
+  }
+
+  ctxDeleteGroup() {
+    this.closeCtxMenu();
+    try { this.onDeleteMany(); } catch {}
   }
 
   private collectAllConditionHandleIds(): Set<string> {
@@ -1834,9 +3879,10 @@ export class FlowBuilderComponent {
       const argsMismatch = !!(stored && current && stored !== current);
       const list = this.allTemplates || [];
       const tpl = list.find((t: any) => String(t?.id) === String(tplId));
-      const storedFeat = String((model && (model as any).templateFeatureSig) != null ? (model as any).templateFeatureSig : '00');
+      const storedFeat = String((model as any).templateFeatureSig ?? '');
       const currentFeat = this.fbUtils.featureChecksum(tpl);
-      const featMismatch = !!(storedFeat && currentFeat && storedFeat !== currentFeat);
+      // Legacy 2-char → skip (will update on next save)
+      const featMismatch = !!(storedFeat && storedFeat.length > 2 && currentFeat && storedFeat !== currentFeat);
       return argsMismatch || featMismatch;
     } catch { return false; }
   }
@@ -1872,9 +3918,9 @@ export class FlowBuilderComponent {
         const currentTpl = (this.allTemplates || []).find((t: any) => String(t?.id) === String(tplId));
         const current = this.fbUtils.argsChecksum(currentTpl?.args || {});
         if (stored && current && stored !== current) return true;
-        const storedFeat = String((model && (model as any).templateFeatureSig) != null ? (model as any).templateFeatureSig : '00');
+        const storedFeat = String((model as any).templateFeatureSig ?? '');
         const currentFeat = this.fbUtils.featureChecksum(currentTpl);
-        if (storedFeat && currentFeat && storedFeat !== currentFeat) return true;
+        if (storedFeat && storedFeat.length > 2 && currentFeat && storedFeat !== currentFeat) return true;
       } catch { }
       // Credentials requirement
       try {
@@ -1903,8 +3949,10 @@ export class FlowBuilderComponent {
           if (m?.catch_error && m?.skip_error) return true; // mutually exclusive
         } catch { }
         if (schema) {
-          const fields: FieldConfig[] = this.dfs.flattenAllInputFields(schema) as any;
-          const missing = fields.filter((f: any) => Array.isArray(f?.validators) && f.validators.some((v: any) => v?.type === 'required'))
+          // Do not consider fields inside section arrays; only validate top-level/section fields
+          const fields: FieldConfig[] = this.dfs.collectFields(schema) as any;
+          const missing = fields
+            .filter((f: any) => Array.isArray(f?.validators) && f.validators.some((v: any) => v?.type === 'required'))
             .filter((f: any) => {
               const v = (m?.context || {})[f.key];
               return v == null || v === '';
@@ -1912,7 +3960,8 @@ export class FlowBuilderComponent {
           if (missing.length) return true;
         }
       } catch { }
-      return false;
+      // If any validation issue exists for this node (e.g., section array items), still show badge
+      try { return (this.validationIssues || []).some(it => it.nodeId === id); } catch { return false; }
     } catch { return false; }
   }
   private recomputeValidation() {
@@ -1931,11 +3980,12 @@ export class FlowBuilderComponent {
           const stored = String(model?.templateChecksum || '');
           const current = this.fbUtils.argsChecksum(currentTpl?.args || {});
           if (stored && current && stored !== current) issues.push({ kind: 'node', nodeId: id, message: `Le template ${tpl} a changé (arguments). Vérifier ce nœud.` });
-          const storedFeat = String((model && (model as any).templateFeatureSig) != null ? (model as any).templateFeatureSig : '00');
+          const storedFeat = String((model as any).templateFeatureSig ?? '');
           const currentFeat = this.fbUtils.featureChecksum(currentTpl);
-          if (storedFeat && currentFeat && storedFeat !== currentFeat) issues.push({ kind: 'node', nodeId: id, message: `Le template ${tpl} a changé (options). Vérifier ce nœud.` });
+          if (storedFeat && storedFeat.length > 2 && currentFeat && storedFeat !== currentFeat)
+            issues.push({ kind: 'node', nodeId: id, message: `Le template ${tpl} a changé (structure). Vérifier ce nœud.` });
         } catch { }
-        // Credentials and form validation
+        // Credentials and form validation + condition-specific checks
         try {
           const model: any = n?.data?.model || {};
           if (model?.invalid === true) {
@@ -1959,9 +4009,12 @@ export class FlowBuilderComponent {
           if (model?.skip_error && !t?.authorize_skip_error) issues.push({ kind: 'node', nodeId: id, message: `Option skip_error non autorisée par le template.` });
           if (model?.catch_error && model?.skip_error) issues.push({ kind: 'node', nodeId: id, message: `Options catch et skip ne peuvent pas être activées ensemble.` });
           const schema: any = model?.templateObj?.args || null;
+          // Generic required-fields check (applies to all types), but ignores fields inside section arrays
           if (schema) {
-            const fields: FieldConfig[] = this.dfs.flattenAllInputFields(schema) as any;
-            const missing = fields.filter((f: any) => Array.isArray(f?.validators) && f.validators.some((v: any) => v?.type === 'required'))
+            // Do not consider fields inside section arrays (array items are validated by their own logic)
+            const fields: FieldConfig[] = this.dfs.collectFields(schema) as any;
+            const missing = fields
+              .filter((f: any) => Array.isArray(f?.validators) && f.validators.some((v: any) => v?.type === 'required'))
               .filter((f: any) => {
                 const v = (model?.context || {})[f.key];
                 return v == null || v === '';
@@ -1969,6 +4022,34 @@ export class FlowBuilderComponent {
               .map((f: any) => f.label || f.key || 'Champ requis');
             if (missing.length) issues.push({ kind: 'node', nodeId: id, message: `Champs requis manquants: ${missing.join(', ')}` });
           }
+          // Condition-specific validation: array of items with name + expression/condition
+          try {
+            const ttype = String(model?.templateObj?.type || '').toLowerCase();
+            if (ttype === 'condition') {
+              const field = String(model?.templateObj?.output_array_field || 'items');
+              const arr: any[] = (model?.context && Array.isArray(model.context[field])) ? model.context[field] : [];
+              if (!Array.isArray(arr) || arr.length === 0) {
+                issues.push({ kind: 'node', nodeId: id, message: `Condition: aucune branche définie (ajoutez au moins une condition).` });
+              } else {
+                arr.forEach((it, idx) => {
+                  const num = idx + 1;
+                  if (!it || typeof it !== 'object') {
+                    issues.push({ kind: 'node', nodeId: id, message: `Condition #${num}: élément invalide` });
+                    return;
+                  }
+                  const name = String(it.name || '').trim();
+                  const expr = String((it.expression ?? it.condition) || '').trim();
+                  if (!name) issues.push({ kind: 'node', nodeId: id, message: `Condition #${num}: nom manquant` });
+                  if (!expr) issues.push({ kind: 'node', nodeId: id, message: `Condition #${num}: expression manquante` });
+                });
+              }
+              // Else optional: if present, must have an id
+              const elseId = (model?.context?.else && (model as any).context.else._id) ? String((model as any).context.else._id) : (model?.context?.elseId ? String(model.context.elseId) : '');
+              if (model?.context?.else || model?.context?.elseId) {
+                if (!elseId) issues.push({ kind: 'node', nodeId: id, message: `Condition: "Else" activé sans identifiant (_id) — impossible de le relier.` });
+              }
+            }
+          } catch {}
         } catch { }
         // TODO: required-fields validation, only after node dialog opened at least once
         // if (this.openedNodeConfig.has(id)) { ... }
@@ -1993,16 +4074,13 @@ export class FlowBuilderComponent {
         this.edges = this.edges.filter(e => e !== tgt);
         this.pushState('delete.edge');
       } else {
-        const id = (tgt as any).id;
-        this.nodes = this.nodes.filter(n => n.id !== id);
-        this.edges = this.edges.filter(e => e.source !== id && e.target !== id);
-        this.errorNodes.delete(String(id));
-        this.pushState('nodes.removed');
+        const id = String((tgt as any).id || '');
+        if (id) {
+          // Remove directly; orphan chat cleanup will run on save
+          this.scheduleRemove(new Set([id]), 'ctx.delete.node');
+        }
       }
-      this.selection = null;
-      // Context deletions may affect error branches
-      this.recomputeErrorPropagation();
-      this.recomputeValidation();
+      // scheduleRemove handles selection clearing, recompute and history
     } catch { }
   }
   ctxCenterTarget() {
@@ -2014,12 +4092,186 @@ export class FlowBuilderComponent {
       this.centerOnNodeId(nodeId);
     } catch { }
   }
+  ctxCenterSelection() {
+    this.closeCtxMenu();
+    try { this.centerOnSelection(); } catch { }
+  }
+
+  ctxAlignSelection(dir: 'horizontal' | 'vertical') {
+    try {
+      this.closeCtxMenu();
+      const listRaw = Array.isArray(this.selectionList) ? this.selectionList.slice() : [];
+      if (listRaw.length < 2) return;
+      // Resolve to our canonical nodes array, preserving the original order
+      const byId = new Map((this.nodes || []).map(n => [String(n.id), n] as const));
+      const list = listRaw.map(n => byId.get(String((n as any)?.id))!).filter(Boolean);
+      if (list.length < 2) return;
+      const anchor = list[0];
+      if (!anchor || !anchor.point) return;
+
+      // Build quick lookup for node sizes via Vflow models
+      const sizes = new Map<string, { width: number; height: number }>();
+      try {
+        const models: any[] = this.flow?.nodeModels?.() || [];
+        for (const m of models) {
+          try {
+            const id = String(m?.rawNode?.id ?? '');
+            const sz = m?.size?.();
+            if (id && sz && isFinite(Number(sz.width)) && isFinite(Number(sz.height))) {
+              sizes.set(id, { width: Number(sz.width), height: Number(sz.height) });
+            }
+          } catch {}
+        }
+      } catch {}
+
+      const getSize = (id: any) => {
+        const sid = String(id);
+        return sizes.get(sid) || { width: 180, height: 100 };
+      };
+
+      // Partition relative to anchor and compute a reasonable gap (average of positive gaps)
+      const others = list.filter(n => String(n.id) !== String(anchor.id));
+      const anchorSize = getSize(anchor.id);
+      let rightOrBottom: any[] = [];
+      let leftOrTop: any[] = [];
+      if (dir === 'horizontal') {
+        rightOrBottom = others.filter(n => Number(n?.point?.x ?? 0) >= Number(anchor?.point?.x ?? 0)).sort((a,b) => (a.point?.x||0) - (b.point?.x||0));
+        leftOrTop = others.filter(n => Number(n?.point?.x ?? 0) < Number(anchor?.point?.x ?? 0)).sort((a,b) => (b.point?.x||0) - (a.point?.x||0));
+      } else {
+        rightOrBottom = others.filter(n => Number(n?.point?.y ?? 0) >= Number(anchor?.point?.y ?? 0)).sort((a,b) => (a.point?.y||0) - (b.point?.y||0));
+        leftOrTop = others.filter(n => Number(n?.point?.y ?? 0) < Number(anchor?.point?.y ?? 0)).sort((a,b) => (b.point?.y||0) - (a.point?.y||0));
+      }
+
+      // Compute average positive gap from current layout
+      const consecutive = (arr: any[], axis: 'x'|'y') => arr.map(n => ({ id: n.id, x: Number(n.point?.x||0), y: Number(n.point?.y||0), ...getSize(n.id) }));
+      let gaps: number[] = [];
+      if (dir === 'horizontal') {
+        const seq = consecutive([anchor, ...rightOrBottom].sort((a,b) => a.point.x - b.point.x), 'x');
+        for (let i=1;i<seq.length;i++) { const prev = seq[i-1]; const cur = seq[i]; const g = cur.x - (prev.x + prev.width); if (g>0) gaps.push(g); }
+        const seqL = consecutive([anchor, ...leftOrTop].sort((a,b) => a.point.x - b.point.x), 'x');
+        for (let i=1;i<seqL.length;i++) { const prev = seqL[i-1]; const cur = seqL[i]; const g = cur.x - (prev.x + prev.width); if (g>0) gaps.push(g); }
+      } else {
+        const seq = consecutive([anchor, ...rightOrBottom].sort((a,b) => a.point.y - b.point.y), 'y');
+        for (let i=1;i<seq.length;i++) { const prev = seq[i-1]; const cur = seq[i]; const g = cur.y - (prev.y + prev.height); if (g>0) gaps.push(g); }
+        const seqT = consecutive([anchor, ...leftOrTop].sort((a,b) => a.point.y - b.point.y), 'y');
+        for (let i=1;i<seqT.length;i++) { const prev = seqT[i-1]; const cur = seqT[i]; const g = cur.y - (prev.y + prev.height); if (g>0) gaps.push(g); }
+      }
+      const avg = (arr: number[]) => arr.length ? Math.round(arr.reduce((a,b)=>a+b,0)/arr.length) : 0;
+      let gap = avg(gaps);
+      if (!isFinite(gap) || gap <= 0) gap = 60; // sensible default
+
+      const newPos: Record<string, { x: number; y: number }> = {};
+      const ax = Number(anchor?.point?.x || 0); const ay = Number(anchor?.point?.y || 0);
+      newPos[String(anchor.id)] = { x: ax, y: ay };
+      if (dir === 'horizontal') {
+        // Place to the right
+        let curX = ax + anchorSize.width + gap;
+        for (const n of rightOrBottom) {
+          const s = getSize(n.id);
+          newPos[String(n.id)] = { x: curX, y: ay };
+          curX += s.width + gap;
+        }
+        // Place to the left
+        let curLeftX = ax - gap;
+        for (const n of leftOrTop) {
+          const s = getSize(n.id);
+          const nx = curLeftX - s.width;
+          newPos[String(n.id)] = { x: nx, y: ay };
+          curLeftX = nx - gap;
+        }
+      } else {
+        // Place below
+        let curY = ay + anchorSize.height + gap;
+        for (const n of rightOrBottom) {
+          const s = getSize(n.id);
+          newPos[String(n.id)] = { x: ax, y: curY };
+          curY += s.height + gap;
+        }
+        // Place above
+        let curTopY = ay - gap;
+        for (const n of leftOrTop) {
+          const s = getSize(n.id);
+          const ny = curTopY - s.height;
+          newPos[String(n.id)] = { x: ax, y: ny };
+          curTopY = ny - gap;
+        }
+      }
+
+      const idsSet = new Set(list.map(n => String(n.id)));
+      let changed = false;
+      const next = (this.nodes || []).map(n => {
+        const id = String(n?.id ?? '');
+        if (!idsSet.has(id)) return n;
+        const p = newPos[id];
+        if (!p) return n;
+        const cx = Number(n?.point?.x ?? NaN);
+        const cy = Number(n?.point?.y ?? NaN);
+        const nx = Number.isFinite(p.x) ? p.x : cx;
+        const ny = Number.isFinite(p.y) ? p.y : cy;
+        if (!isFinite(cx) || !isFinite(cy) || nx !== cx || ny !== cy) { changed = true; return { ...n, point: { x: nx, y: ny } }; }
+        return n;
+      });
+      if (changed) {
+        // Prevent accidental graph removal reactions during batch update
+        try {
+          const until = Date.now() + 900;
+          this.suppressNodesRemovedUntil = until as any;
+          this.suppressGraphEventsUntil = until as any;
+          this.suppressRemoveUntil = until as any;
+        } catch {}
+        this.nodes = next;
+        try { this.cdr.detectChanges(); } catch {}
+        try { this.selectIdsWithRetry(Array.from(idsSet), 6, 80); } catch {}
+        // Mark recent align to suppress trailing pointerup snapshot
+        this.lastAlignAt = Date.now();
+        this.suppressMoveSnapshotUntil = this.lastAlignAt + 1200;
+        this.suppressNextMoveSnapshot = true;
+        // Clear transient drag caches so we don't reapply stale positions
+        try { this.draggingNodes.clear(); } catch {}
+        try { this.pendingPositions = {} as any; } catch {}
+        this.pushState('nodes.aligned.' + dir);
+        // Après alignement programmatique, primer l'assist sur les nœuds concernés pour laisser vflow stabiliser les ancres
+        try { Array.from(idsSet).forEach(id => this.primeAssistDelayForNode(String(id), 420)); this.cdr.detectChanges(); } catch {}
+      }
+    } catch {}
+  }
 
   onSelected(ev: any) {
-    // ngx-vflow peut renvoyer une entité ou une liste; on normalise
-    const item = Array.isArray(ev) ? ev[0] : ev;
-    this.selection = item || null;
+    // Vflow may emit single entity or array of entities
+    // If we are dragging and we have an app-managed multi-selection, ignore vflow deselection
+    try {
+      const dragging = this.draggingNodes && this.draggingNodes.size > 0;
+      const guard = dragging || this.dragIntentActive || (Date.now() < this.dragLockSelectionUntil);
+      if (guard && ((this.selectionList?.length || 0) > 1 || (this.dragIntentIds?.length || 0) > 1)) {
+        const ids = (this.dragIntentActive && this.dragIntentIds.length) ? this.dragIntentIds : this.selectionIds();
+        try { this.log('sel.onSelected.guard', { dragging, intent: this.dragIntentActive, ids }); } catch {}
+        try { if (ids.length) this.setVflowSelectedIds(ids); } catch {}
+        return;
+      }
+    } catch {}
+    const list = Array.isArray(ev) ? ev : (ev ? [ev] : []);
+    this.selectionList = list;
+    this.selection = list.length ? list[0] : null;
     try { this.editJson = this.selection ? JSON.stringify(this.selectedModel, null, 2) : ''; } catch { this.editJson = ''; }
+  }
+
+  onComponentNodeEvent(ev: any) {
+    try {
+      const dragging = this.draggingNodes && this.draggingNodes.size > 0;
+      const arr = (ev && (ev.selected || ev.selection || ev.nodes)) ? (ev.selected || ev.selection || ev.nodes) : null;
+      const guard = dragging || this.dragIntentActive || (Date.now() < this.dragLockSelectionUntil);
+      if (guard && ((this.selectionList?.length || 0) > 1 || (this.dragIntentIds?.length || 0) > 1)) {
+        const ids = (this.dragIntentActive && this.dragIntentIds.length) ? this.dragIntentIds : this.selectionIds();
+        try { this.log('sel.onComponentNodeEvent.guard', { dragging, intent: this.dragIntentActive, ids }); } catch {}
+        try { if (ids.length) this.setVflowSelectedIds(ids); } catch {}
+        return;
+      }
+      if (Array.isArray(arr)) {
+        this.selectionList = arr as any[];
+        this.selection = this.selectionList[0] || null;
+        try { this.editJson = this.selection ? JSON.stringify(this.selectedModel, null, 2) : ''; } catch { this.editJson = ''; }
+      }
+    } catch {}
   }
 
   selectItem(changes: any) {
@@ -2028,6 +4280,78 @@ export class FlowBuilderComponent {
       this.selection = changes;
       try { this.editJson = this.selection ? JSON.stringify(this.selectedModel, null, 2) : ''; } catch { this.editJson = ''; }
     }
+  }
+
+  onNodeClick(ev: MouseEvent, ctx: any) {
+    try {
+      const node = ctx?.node;
+      if (!node) return;
+      const id = String(node.id);
+      const has = (this.selectionList || []).some(n => String(n?.id) === id);
+      const shift = !!(ev.shiftKey);
+      if (shift) {
+        // Toggle selection in our app state
+        if (has) {
+          this.selectionList = (this.selectionList || []).filter(n => String(n?.id) !== id);
+          if (this.selection && String(this.selection.id) === id) {
+            this.selection = this.selectionList[0] || null;
+          }
+        } else {
+          this.selectionList = [...(this.selectionList || []), node];
+          this.selection = this.selection || node;
+        }
+      } else {
+        // Single select
+        this.selectionList = [node];
+        this.selection = node;
+      }
+      try { this.editJson = this.selection ? JSON.stringify(this.selectedModel, null, 2) : ''; } catch { this.editJson = ''; }
+      // Sync selection to vflow so multi-drag works and emits .many
+      try { this.setVflowSelectedIds((this.selectionList || []).map(n => n.id)); } catch {}
+      ev.stopPropagation();
+    } catch {}
+  }
+  onCanvasClick(ev: MouseEvent) {
+    try {
+      const target = ev.target as HTMLElement;
+      // Ignore clicks originating from node cards
+      if (target && target.closest && target.closest('.node-card')) return;
+      this.selectionList = [];
+      this.selection = null;
+      this.editJson = '';
+    } catch {}
+  }
+
+  onDeleteMany() {
+    try {
+      const ids = new Set((this.selectionList || []).map(x => String(x?.id)).filter(Boolean));
+      if (!ids.size) return;
+      // Avoid deleting start nodes via batch
+      const safeIds = new Set(Array.from(ids).filter(id => !this.isStartLike(this.nodes.find(n => String(n.id)===id)?.data?.model?.templateObj)));
+      if (!safeIds.size) return;
+      this.scheduleRemove(safeIds, 'nodes.removed.many');
+    } catch {}
+  }
+
+  private backupChatThenRemove(ids: Set<string>, reason: string) {
+    // AI chat backup removed - proceed directly to remove
+    this.scheduleRemove(ids, reason);
+  }
+
+  private async restoreNodeChatsIfNeeded() {
+    // AI chat restore removed - no-op
+  }
+
+    onInspectorOpenSingle(nodeId: string) {
+    try {
+      const sel = (this.nodes || []).find(n => String(n.id) === String(nodeId));
+      if (!sel) return;
+      this.selection = sel;
+      this.selectionList = [sel];
+      try { this.editJson = JSON.stringify(this.selectedModel, null, 2); } catch { this.editJson = ''; }
+      try { this.setVflowSelectedIds([nodeId]); } catch {}
+      this.openAdvancedEditorV2();
+    } catch {}
   }
 
   openAdvancedEditor() {
@@ -2063,6 +4387,31 @@ export class FlowBuilderComponent {
             const att = this.resolveAttemptForSelection(nodeId);
             this.outputLoading = att?.status === 'running';
           } catch { this.outputLoading = false; }
+          // Also fetch simulation scenarios for comparison (always)
+          try {
+            if (!isStart && nodeId && this.hasPredecessor(nodeId) && this.currentFlowId) {
+              this.previewLoading = true;
+              this.runsApi.simulateMsg(
+                this.currentFlowId,
+                nodeId,
+                'engine_split',
+                this.hasUnsavedChanges() ? { runId: this.backendRunId, graph: { nodes: JSON.parse(JSON.stringify(this.nodes || [])), edges: JSON.parse(JSON.stringify(this.edges || [])) } } : { runId: this.backendRunId }
+              ).subscribe({
+                next: (resp) => {
+                  try {
+                    const scenarios = Array.isArray((resp as any)?.scenarios) ? (resp as any).scenarios : [];
+                    console.log('[builder][simulateMsg][V1 open] runId=%s scenarios=%d matches=%o', this.backendRunId, scenarios.length, scenarios.map((s:any,i:number)=>({ i, exec: !!s?.match?.exec, handle: s?.match?.handleLabel })));
+                  } catch {}
+                  const scenarios = Array.isArray((resp as any)?.scenarios) ? (resp as any).scenarios : [];
+                  this.advancedSimScenarios = scenarios;
+                  this.advancedSimScenarioIdx = 0;
+                  try { this.cdr.detectChanges(); } catch {}
+                },
+                error: () => {},
+                complete: () => { this.previewLoading = false; try { this.cdr.detectChanges(); } catch {} }
+              });
+            }
+          } catch {}
         } else {
           // No attempts yet for this node in current run
           this.advancedAttemptEvents = [];
@@ -2073,6 +4422,29 @@ export class FlowBuilderComponent {
         }
       } else {
         this.advancedInjectedInput = isStart ? (this.getStartPayload().payload || {}) : this.computePrevPayload(nodeId);
+        // Try backend simulation to propose scenarios
+        this.advancedSimScenarios = null; this.advancedSimScenarioIdx = 0;
+        if (!isStart && nodeId && this.hasPredecessor(nodeId) && this.currentFlowId) {
+          this.previewLoading = true;
+          this.runsApi.simulateMsg(this.currentFlowId, nodeId, 'engine_split', { runId: this.backendRunId }).subscribe({
+            next: (resp) => {
+              try {
+                const scenarios = Array.isArray((resp as any)?.scenarios) ? (resp as any).scenarios : [];
+                console.log('[builder][simulateMsg][V1 no attempts] runId=%s scenarios=%d matches=%o', this.backendRunId, scenarios.length, scenarios.map((s:any,i:number)=>({ i, exec: !!s?.match?.exec, handle: s?.match?.handleLabel })));
+              } catch {}
+              const scenarios = Array.isArray((resp as any)?.scenarios) ? (resp as any).scenarios : [];
+              this.advancedSimScenarios = scenarios;
+              this.advancedSimScenarioIdx = 0;
+              if (scenarios.length > 0) {
+                this.advancedInjectedInput = scenarios[0].msgIn || {};
+              }
+              this.advancedCtx = this.advancedInjectedInput || {};
+              try { this.cdr.detectChanges(); } catch {}
+            },
+            error: () => { /* keep local fallback */ },
+            complete: () => { this.previewLoading = false; try { this.cdr.detectChanges(); } catch {} }
+          });
+        }
         // Important: clear any stale output when opening on a non-start node (no attempt yet)
         this.advancedInjectedOutput = isStart ? (this.getStartPayload().payload || {}) : null;
         this.advancedAttemptEvents = [];
@@ -2084,6 +4456,48 @@ export class FlowBuilderComponent {
       this.advancedCtx = this.advancedInjectedInput || {};
     } catch { this.advancedInjectedInput = null; this.advancedCtx = {}; }
     this.advancedOpen = true;
+    /* portal handled inside dialog component */
+  }
+  onSimScenarioIdxChange(idx: number) {
+    try {
+      this.advancedSimScenarioIdx = Number(idx || 0);
+      const sc = (this.advancedSimScenarios || [])[this.advancedSimScenarioIdx];
+      if (sc) {
+        this.advancedInjectedInput = sc.msgIn || {};
+        this.advancedCtx = this.advancedInjectedInput || {};
+      }
+      try { this.cdr.detectChanges(); } catch {}
+    } catch {}
+  }
+  reloadSimulationForSelected() {
+    try {
+      const nodeId = this.selectedModel?.id;
+      if (!nodeId || !this.currentFlowId) return;
+      this.previewLoading = true;
+      this.runsApi.simulateMsg(
+        this.currentFlowId,
+        nodeId,
+        'engine_split',
+        this.hasUnsavedChanges() ? { runId: this.backendRunId, graph: { nodes: JSON.parse(JSON.stringify(this.nodes || [])), edges: JSON.parse(JSON.stringify(this.edges || [])) } } : { runId: this.backendRunId }
+      ).subscribe({
+        next: (resp) => {
+          try {
+            const scenarios = Array.isArray((resp as any)?.scenarios) ? (resp as any).scenarios : [];
+            console.log('[builder][simulateMsg][reload V1] runId=%s scenarios=%d matches=%o', this.backendRunId, scenarios.length, scenarios.map((s:any,i:number)=>({ i, exec: !!s?.match?.exec, handle: s?.match?.handleLabel })));
+          } catch {}
+          const scenarios = Array.isArray((resp as any)?.scenarios) ? (resp as any).scenarios : [];
+          this.advancedSimScenarios = scenarios;
+          this.advancedSimScenarioIdx = 0;
+          if (scenarios.length > 0) { this.advancedInjectedInput = scenarios[0].msgIn || {}; }
+          this.advancedCtx = this.advancedInjectedInput || {};
+          try { this.cdr.detectChanges(); } catch {}
+        },
+        error: (e) => {
+          try { this.message.error('Simulation impossible: ' + (e?.error?.message || 'vérifiez les branches/conditions')); } catch {}
+        },
+        complete: () => { this.previewLoading = false; try { this.cdr.detectChanges(); } catch {} }
+      });
+    } catch {}
   }
   onStartPayloadChange(v: any) {
     this.setStartPayload(v);
@@ -2100,34 +4514,215 @@ export class FlowBuilderComponent {
       setTimeout(() => this.runFlow(), 0);
     }
   }
-  closeAdvancedEditor() { this.advancedOpen = false; }
-  onAdvancedModelChange(m: any) {
-    // Apply the model to the selected node and refresh
-    if (!m?.id) return;
-    const oldModel = (this.nodes.find(n => n.id === this.selection?.id)?.data?.model) || this.selectedModel;
-    this.nodes = this.nodes.map(n => n.id === this.selection?.id ? ({ ...n, data: { ...n.data, model: m } }) : n);
-    this.selection = this.nodes.find(n => n.id === m.id) || this.selection;
-    // Stabilize condition ids then reconcile edges
-    const stable = this.fbUtils.ensureStableConditionIds(oldModel, m);
-    const res = this.fbUtils.reconcileEdgesForNode(stable, oldModel, this.edges, (sid, h) => this.computeEdgeLabel(sid, h));
-    this.edges = res.edges as any;
-    // Ne pas pousser dans l’historique ici; on attend l’événement "committed"
-    this.recomputeValidation();
+  private pendingAdvancedModel: any = null;
+  advancedDialogModel(): any {
+    try {
+      const sel = this.selectedModel;
+      const pending = this.pendingAdvancedModel;
+      const selType = String(sel?.templateObj?.type || '').toLowerCase();
+      if (pending && sel && String(pending.id) === String(sel.id) && selType === 'start_form') return pending;
+      return sel;
+    } catch {
+      return this.selectedModel;
+    }
   }
-  onAdvancedModelCommitted(m: any) {
+  closeAdvancedEditor() {
+    const m = this.pendingAdvancedModel;
+    this.advancedOpen = false;
+    /* portal handled inside dialog component */
+    try { if (m && m.id) this.onAdvancedModelCommitted(m); } catch {}
+    this.pendingAdvancedModel = null;
+  }
+  // V2 dialog state & handlers
+  advancedV2Open = false;
+  openAdvancedEditorV2() {
+    // Ensure only one dialog at a time
+    this.advancedOpen = false;
+    // Prefill input from previous node last result (like v1), and fetch simulation scenarios
+    try {
+      const nodeId = this.selectedModel?.id;
+      const isStart = String(this.selectedModel?.templateObj?.type || '').toLowerCase() === 'start';
+      const hasPrev = (this.edges || []).some(e => String(e.target) === String(nodeId));
+      // If no predecessor, keep empty input
+      this.advancedInjectedInput = hasPrev ? (isStart ? (this.getStartPayload().payload || {}) : this.computePrevPayload(nodeId)) : {};
+      // Si une exécution backend est sélectionnée, initialiser les tentatives/événements comme en V1
+      if (this.backendRunId && nodeId) {
+        const arr = this.backendNodeAttempts.get(String(nodeId)) || [];
+        if (arr.length > 0) {
+          if (this.advancedSelectedExec == null && arr[arr.length - 1].exec != null) this.advancedSelectedExec = Number(arr[arr.length - 1].exec);
+          try {
+            const sameExec = arr.filter(a => Number(a.exec) === Number(this.advancedSelectedExec ?? arr[arr.length - 1].exec));
+            const idx = sameExec.length ? (sameExec.length - 1) : 0;
+            this.advancedOccurByNode.set(String(nodeId), idx);
+          } catch {}
+          this.recomputeAttemptExecOptionsFor(nodeId);
+          this.recomputeAttemptOptionsFor(nodeId);
+          this.recomputeExecCountAndOccIndex(nodeId);
+          this.advancedSelectedAttemptIdx = arr.length - 1;
+          this.refreshDialogIOFromSelection();
+          try {
+            const att = this.resolveAttemptForSelection(nodeId);
+            this.outputLoading = att?.status === 'running';
+          } catch { this.outputLoading = false; }
+        } else {
+          this.advancedAttemptEvents = [];
+          this.recomputeAttemptExecOptionsFor(nodeId);
+          this.recomputeAttemptOptionsFor(nodeId);
+          this.recomputeExecCountAndOccIndex(nodeId);
+          this.refreshDialogIOFromSelection();
+        }
+      }
+      // Always try backend simulation to propose scenarios (engine_split)
+      this.advancedSimScenarios = null; this.advancedSimScenarioIdx = 0;
+      if (!isStart && nodeId && this.hasPredecessor(nodeId) && this.currentFlowId) {
+        this.previewLoading = true;
+        this.runsApi.simulateMsg(
+          this.currentFlowId,
+          nodeId,
+          'engine_split',
+          this.hasUnsavedChanges() ? { runId: this.backendRunId, graph: { nodes: JSON.parse(JSON.stringify(this.nodes || [])), edges: JSON.parse(JSON.stringify(this.edges || [])) } } : { runId: this.backendRunId }
+        ).subscribe({
+          next: (resp) => {
+            try {
+              const scenarios = Array.isArray((resp as any)?.scenarios) ? (resp as any).scenarios : [];
+              console.log('[builder][simulateMsg][V2 open] runId=%s scenarios=%d matches=%o', this.backendRunId, scenarios.length, scenarios.map((s:any,i:number)=>({ i, exec: !!s?.match?.exec, handle: s?.match?.handleLabel })));
+            } catch {}
+            const scenarios = Array.isArray((resp as any)?.scenarios) ? (resp as any).scenarios : [];
+            this.advancedSimScenarios = scenarios;
+            this.advancedSimScenarioIdx = 0;
+            if (scenarios.length > 0) {
+              this.advancedInjectedInput = scenarios[0].msgIn || {};
+            }
+            this.advancedCtx = this.advancedInjectedInput || {};
+            try { this.cdr.detectChanges(); } catch {}
+          },
+          error: () => { /* keep local fallback */ },
+          complete: () => { this.previewLoading = false; try { this.cdr.detectChanges(); } catch {} }
+        });
+      } else {
+        this.advancedCtx = this.advancedInjectedInput || {};
+      }
+    } catch { this.advancedInjectedInput = {}; this.advancedCtx = {}; }
+    this.advancedV2Open = true;
+    // Store editing node ID so schema_builder can build a proper return URL
+    try { localStorage.setItem('flow_builder.editing_node', String(this.selectedModel?.id || '')); } catch {}
+    try { this.cdr.detectChanges(); } catch {}
+  }
+  closeAdvancedEditorV2() {
+    const m = this.pendingAdvancedModel;
+    this.advancedV2Open = false;
+    try { if (m && m.id) this.onAdvancedModelCommitted(m); } catch {}
+    this.pendingAdvancedModel = null;
+  }
+  ctxOpenAdvancedV2AndInspector() {
+    if (!this.ctxMenuTarget) return;
+    try { this.selectItem(this.ctxMenuTarget); } catch { }
+    this.openAdvancedEditorV2();
+    this.closeCtxMenu();
+  }
+  onRequestLoadAttempts() {
+    try {
+      const runId = this.backendRunId; const nodeId = String(this.selectedModel?.id || '');
+      if (!runId || !nodeId) return;
+      this.runsApi.getWith(runId, ['attempts','events']).subscribe({
+        next: (r: any) => {
+          try {
+            const attempts = Array.isArray(r?.attempts) ? r.attempts : [];
+            const events = Array.isArray(r?.events) ? r.events : [];
+            const nodeAttempts = attempts.filter((a: any) => String(a?.nodeId) === nodeId);
+            const mapped = nodeAttempts.map((a: any) => ({
+              exec: a.attempt,
+              status: a.status,
+              startedAt: a.startedAt,
+              finishedAt: a.finishedAt,
+              durationMs: a.durationMs,
+              input: a.input, argsPre: a.argsPre, argsPost: a.argsPost,
+              result: a.result, msgIn: a.msgIn, msgOut: a.msgOut,
+              events: Array.isArray(a.events) ? a.events : []
+            }));
+            this.backendNodeAttempts.set(nodeId, mapped);
+            // Optionnel: garder un aperçu d'events globaux pour la timeline (non requis ici)
+            // Sélection logique similaire à V1: dernier essai par défaut
+            if (mapped.length > 0) {
+              this.advancedSelectedExec = Number(mapped[mapped.length - 1].exec);
+              this.advancedOccurByNode.set(nodeId, 0);
+            }
+            this.recomputeAttemptExecOptionsFor(nodeId);
+            this.recomputeAttemptOptionsFor(nodeId);
+            this.recomputeExecCountAndOccIndex(nodeId);
+            this.refreshDialogIOFromSelection();
+            try { this.cdr.detectChanges(); } catch {}
+          } catch {}
+        },
+        error: () => {},
+      });
+    } catch {}
+  }
+  onAdvancedModelChange(m: any) {
+    // Ne pas muter le graph pendant l'édition pour éviter les boucles et suppressions d'edges.
+    // Appliquer uniquement à la clôture (onAdvancedModelCommitted) ou via saveSelectedJson.
     if (!m?.id) return;
+    // Ne pas écraser le ctx (provenant de la simulation msgIn) avec les valeurs du formulaire
+    // Garder advancedCtx tel quel; le formulaire met à jour model.context uniquement
+    // Cache the latest in-dialog model for final commit on close
+    try { this.pendingAdvancedModel = m; } catch {}
+  }
+  private _advCommitGuard = false;
+  onAdvancedModelCommitted(m: any) {
+    if (!m?.id || this._advCommitGuard) return;
+    this._advCommitGuard = true;
     try { this.openedNodeConfig.add(String(m.id)); } catch { }
+    // Normalize else_enabled and stabilize
     const oldModel = (this.nodes.find(n => n.id === m.id)?.data?.model) || null;
+    try {
+      const ty = String(m?.templateObj?.type || '').toLowerCase();
+      if (ty === 'condition') {
+        const en = !!(m?.context?.else_enabled);
+        if (en) {
+          const cur = (m.context || {});
+          const has = cur.else && typeof cur.else === 'object' && cur.else._id;
+          if (!has) { m.context = { ...cur, else: { _id: `else_${m.id}` } }; }
+        } else { if (m?.context) { delete m.context.else; delete (m.context as any).elseId; } }
+      }
+    } catch {}
     const stable = this.fbUtils.ensureStableConditionIds(oldModel, m);
+    // Short-circuit if condition/multi-output outputs did not change to avoid re-renders/deselection loops
+    try {
+      const ty = String(stable?.templateObj?.type || '').toLowerCase();
+      const hasOutputArray = !!stable?.templateObj?.output_array_field;
+      if (ty === 'condition' || hasOutputArray) {
+        const before = this.fbUtils.getConditionItemsFull(oldModel).map(it => it.id);
+        const after = this.fbUtils.getConditionItemsFull(stable).map(it => it.id);
+        const same = before.length === after.length && before.every((v, i) => String(v) === String(after[i]));
+        if (same && this.advancedOpen) {
+          // No structural change (only names/fields edited). While dialog is open, avoid mutating nodes to prevent focus/selection churn.
+          this._advCommitGuard = false;
+          return;
+        }
+      }
+    } catch {}
+    // Persist stabilized model on node
+    this.nodes = this.nodes.map(n => n.id === stable.id ? ({ ...n, data: { ...n.data, model: stable } }) : n);
+    // Realign current selection to the updated node reference so bindings receive the new model
+    try {
+      const updated = this.nodes.find(n => n.id === stable.id) || null;
+      if (updated) {
+        this.selection = updated;
+        try { this.editJson = JSON.stringify(this.selectedModel, null, 2); } catch { this.editJson = ''; }
+      }
+    } catch {}
     const res = this.fbUtils.reconcileEdgesForNode(stable, oldModel, this.edges, (sid, h) => this.computeEdgeLabel(sid, h));
     if (res.deletedEdgeIds?.length) {
       res.deletedEdgeIds.forEach(id => this.allowedRemovedEdgeIds.add(id));
       setTimeout(() => { res.deletedEdgeIds.forEach(id => this.allowedRemovedEdgeIds.delete(id)); }, 600);
     }
     this.edges = res.edges as any;
+    // If condition outputs changed (items/else), give handles a moment before assist shows
+    try { this.primeAssistDelayForNode(String(stable.id), 420); this.cdr.detectChanges(); } catch {}
 
     this.pushState('dialog.modelCommit.final');
     this.recomputeValidation();
+    this._advCommitGuard = false;
   }
 
   saveSelectedJson() {
@@ -2137,6 +4732,18 @@ export class FlowBuilderComponent {
       if (!parsed || !parsed.id) return;
       // Remplace le model du nœud dans la liste pour déclencher le re-render
       const oldModel = (this.nodes.find(n => n.id === this.selection!.id)?.data?.model) || this.selectedModel;
+      // Normalize else_enabled for conditions then stabilize
+      try {
+        const ty = String(parsed?.templateObj?.type || '').toLowerCase();
+        if (ty === 'condition') {
+          const en = !!(parsed?.context?.else_enabled);
+          if (en) {
+            const cur = (parsed.context || {});
+            const has = cur.else && typeof cur.else === 'object' && cur.else._id;
+            if (!has) { parsed.context = { ...cur, else: { _id: `else_${parsed.id}` } }; }
+          } else { if (parsed?.context) { delete parsed.context.else; delete (parsed.context as any).elseId; } }
+        }
+      } catch {}
       const stable = this.fbUtils.ensureStableConditionIds(oldModel, parsed);
       this.nodes = this.nodes.map(n => n.id === this.selection!.id ? ({ ...n, data: { ...n.data, model: stable } }) : n);
       // Met à jour la sélection en mémoire
@@ -2148,6 +4755,7 @@ export class FlowBuilderComponent {
         setTimeout(() => { res.deletedEdgeIds.forEach(id => this.allowedRemovedEdgeIds.delete(id)); }, 600);
       }
       this.edges = res.edges as any;
+      try { this.primeAssistDelayForNode(String(stable.id), 420); this.cdr.detectChanges(); } catch {}
       this.pushState('inspector.saveJson');
       this.recomputeValidation();
     } catch { }
@@ -2165,17 +4773,9 @@ export class FlowBuilderComponent {
       this.pushState('delete.edge');
     } else {
       // selected a node
-      const id = sel.id;
-      this.nodes = this.nodes.filter(n => n.id !== id);
-      this.edges = this.edges.filter(e => e.source !== id && e.target !== id);
-      this.errorNodes.delete(String(id));
-      // Record deletion of one or more nodes
-      this.pushState('nodes.removed');
+      const id = String(sel.id);
+      this.backupChatThenRemove(new Set([id]), 'delete.node');
     }
-    this.selection = null;
-    // Deletion may change error-branch reachability
-    this.recomputeErrorPropagation();
-    this.recomputeValidation();
   }
 
   private findBestTargetNodeForStart(wx: number, wy: number): any | null {
@@ -2258,10 +4858,34 @@ export class FlowBuilderComponent {
   }
   centerOnSelection() {
     try {
-      const sel = this.selection;
-      const nodeId = (sel && !(sel as any).source && (sel as any).id) ? String((sel as any).id) : '';
-      if (!nodeId) return; // only nodes supported
-      this.centerOnNodeId(nodeId);
+      const list = Array.isArray(this.selectionList) ? this.selectionList : (this.selection ? [this.selection] : []);
+      const ids = list.filter(n => n && !(n as any).source && (n as any).id).map(n => String((n as any).id));
+      if (!ids.length) return;
+      if (ids.length === 1) { this.centerOnNodeId(ids[0]); return; }
+      this.centerOnNodeIds(ids);
+    } catch { }
+  }
+  private centerOnNodeIds(nodeIds: string[]) {
+    try {
+      if (!nodeIds || !nodeIds.length) return;
+      const vp = this.flow?.viewportService?.readableViewport() || { zoom: 1 };
+      let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+      for (const nid of nodeIds) {
+        const n = this.nodes.find(nn => String(nn.id) === String(nid)); if (!n) continue;
+        const p = n?.point || { x: 0, y: 0 };
+        let w = 180, h = 100;
+        try {
+          const el = this.flowHost?.nativeElement?.querySelector(`.node-card[data-node-id=\"${CSS.escape(String(nid))}\"]`) as HTMLElement | null;
+          if (el) { const r = el.getBoundingClientRect(); if (r && r.width && r.height) { w = r.width / (vp.zoom || 1); h = r.height / (vp.zoom || 1); } }
+        } catch {}
+        const x1 = p.x, y1 = p.y, x2 = p.x + w, y2 = p.y + h;
+        if (x1 < minX) minX = x1; if (y1 < minY) minY = y1;
+        if (x2 > maxX) maxX = x2; if (y2 > maxY) maxY = y2;
+      }
+      if (!Number.isFinite(minX) || !Number.isFinite(minY) || !Number.isFinite(maxX) || !Number.isFinite(maxY)) return;
+      const cx = (minX + maxX) / 2;
+      const cy = (minY + maxY) / 2;
+      this.centerViewportOnWorldPoint(cx, cy, 250);
     } catch { }
   }
 
@@ -2325,20 +4949,92 @@ export class FlowBuilderComponent {
   }
 
   // Placeholder actions for save and run
+  saveForLeave(): Promise<boolean> {
+    return new Promise<boolean>((resolve) => {
+      try {
+        if (!this.currentFlowId) {
+          try { this.message.warning('Aucun flow associé'); } catch { this.showToast('Aucun flow associé'); }
+          resolve(false);
+          return;
+        }
+        const doc = { id: this.currentFlowId, name: this.currentFlowName || 'Flow', description: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, nodes: this.nodes as any, edges: this.edges as any, meta: { ui: { portOrientation: this.portOrientation, alignmentHelper: this.alignmentHelper } } } as any;
+        this.catalog.saveFlow(doc).subscribe({
+          next: () => {
+            try { this.message.success('Flow sauvegardé'); } catch { this.showToast('Flow sauvegardé'); }
+            this.lastSavedChecksum = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, portOrientation: this.portOrientation, alignmentHelper: this.alignmentHelper, snapGrid: this.snapGrid });
+            try {
+              this.updateSharedGraph();
+              this.saveDraft();
+              this.persistHistory();
+            } catch {}
+            try { this.cdr.detectChanges(); } catch {}
+            resolve(true);
+          },
+          error: (e) => {
+            const apiErr = this.normalizeApiError(e);
+            const code = String(apiErr?.code || '');
+            if (code === 'flow_invalid') {
+              const errors = Array.isArray(apiErr?.details?.errors) ? apiErr.details.errors : [];
+              const warnings = Array.isArray(apiErr?.details?.warnings) ? apiErr.details.warnings : [];
+              const fmt = (it: any) => {
+                const c = it?.code || 'error';
+                const msg = it?.message ? `: ${it.message}` : '';
+                const detNode = it?.details?.nodeId ? ` (nœud ${it.details.nodeId})` : '';
+                const detEdge = it?.details?.edge ? ` (arête ${it.details.edge})` : '';
+                const detProv = it?.details?.providerKey ? ` [${it.details.providerKey}]` : '';
+                const detKey = it?.details?.key ? ` [${it.details.key}]` : '';
+                const detField = it?.details?.field ? ` [${it.details.field}]` : '';
+                return `• ${c}${msg}${detNode}${detEdge}${detProv}${detKey}${detField}`;
+              };
+              const listErr = errors.map(fmt).join('<br/>') || '• Erreurs inconnues';
+              const listWarn = warnings.length ? ('<br/><br/><b>Avertissements</b><br/>' + warnings.map(fmt).join('<br/>')) : '';
+              this.modal.confirm({
+                nzTitle: 'Flow invalide',
+                nzContent: `Le flow contient des erreurs de validation.<br/><br/><b>Erreurs</b><br/>${listErr}${listWarn}<br/><br/>Forcer la sauvegarde, désactiver le flow et créer une notification ?`,
+                nzOkText: 'Forcer', nzOkDanger: true, nzCancelText: 'Annuler',
+                nzOnOk: () => this.catalog.saveFlow({ ...(doc as any), meta: { ...(doc as any).meta, ui: { ...(doc as any)?.meta?.ui, portOrientation: this.portOrientation, alignmentHelper: this.alignmentHelper } } }, true).subscribe({
+                  next: () => {
+                    try { this.message.warning('Flow forcé et désactivé'); } catch { this.showToast('Flow forcé et désactivé'); }
+                    this.lastSavedChecksum = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, portOrientation: this.portOrientation, alignmentHelper: this.alignmentHelper, snapGrid: this.snapGrid });
+                    try { this.updateSharedGraph(); this.saveDraft(); this.persistHistory(); } catch {}
+                    resolve(true);
+                  },
+                  error: () => {
+                    try { this.message.error('Échec de la sauvegarde'); } catch { this.showToast('Échec de la sauvegarde'); }
+                    resolve(false);
+                  }
+                }),
+                nzOnCancel: () => resolve(false)
+              });
+            } else {
+              try { this.message.error(apiErr?.message || 'Échec de la sauvegarde'); } catch { this.showToast(apiErr?.message || 'Échec de la sauvegarde'); }
+              resolve(false);
+            }
+          },
+        });
+      } catch {
+        try { this.message.error('Échec de la sauvegarde'); } catch { this.showToast('Échec de la sauvegarde'); }
+        resolve(false);
+      }
+    });
+  }
+
   saveFlow() {
     try {
       if (this.currentFlowId) {
-        this.catalog.saveFlow({ id: this.currentFlowId, name: this.currentFlowName || 'Flow', description: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, nodes: this.nodes as any, edges: this.edges as any, meta: {} } as any).subscribe({
+        this.catalog.saveFlow({ id: this.currentFlowId, name: this.currentFlowName || 'Flow', description: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, nodes: this.nodes as any, edges: this.edges as any, meta: { ui: { portOrientation: this.portOrientation, alignmentHelper: this.alignmentHelper } } } as any).subscribe({
           next: () => {
             try { this.message.success('Flow sauvegardé'); } catch { this.showToast('Flow sauvegardé'); }
             // Mettre à jour la référence serveur (checksum) pour refléter l’état sauvegardé
-            this.lastSavedChecksum = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled });
+            this.lastSavedChecksum = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, portOrientation: this.portOrientation, alignmentHelper: this.alignmentHelper, snapGrid: this.snapGrid });
             // Mettre à jour le snapshot partagé et le draft local afin que le bouton Sauvegarder se désactive
             try {
               this.updateSharedGraph();
               this.saveDraft(); // efface le draft si identique à la version serveur
               this.persistHistory();
             } catch {}
+            // Cleanup orphan chats now that the graph is saved
+            try { this.cleanupOrphanChatsAfterSave(); } catch {}
             try { this.cdr.detectChanges(); } catch {}
           },
           error: (e) => {
@@ -2363,10 +5059,11 @@ export class FlowBuilderComponent {
                 nzTitle: 'Flow invalide',
                 nzContent: `Le flow contient des erreurs de validation.<br/><br/><b>Erreurs</b><br/>${listErr}${listWarn}<br/><br/>Forcer la sauvegarde, désactiver le flow et créer une notification ?`,
                 nzOkText: 'Forcer', nzOkDanger: true, nzCancelText: 'Annuler',
-                nzOnOk: () => this.catalog.saveFlow({ id: this.currentFlowId!, name: this.currentFlowName || 'Flow', description: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, nodes: this.nodes as any, edges: this.edges as any, meta: {} } as any, true).subscribe({ next: () => {
+                nzOnOk: () => this.catalog.saveFlow({ id: this.currentFlowId!, name: this.currentFlowName || 'Flow', description: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, nodes: this.nodes as any, edges: this.edges as any, meta: { ui: { portOrientation: this.portOrientation, alignmentHelper: this.alignmentHelper } } } as any, true).subscribe({ next: () => {
                   try { this.message.warning('Flow forcé et désactivé'); } catch { this.showToast('Flow forcé et désactivé'); }
-                  this.lastSavedChecksum = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled });
+              this.lastSavedChecksum = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, portOrientation: this.portOrientation, alignmentHelper: this.alignmentHelper, snapGrid: this.snapGrid });
                   try { this.updateSharedGraph(); this.saveDraft(); this.persistHistory(); } catch {}
+                  try { this.cleanupOrphanChatsAfterSave(); } catch {}
                 } })
               });
             } else {
@@ -2379,7 +5076,15 @@ export class FlowBuilderComponent {
       }
     } catch { try { this.message.error('Échec de la sauvegarde'); } catch { this.showToast('Échec de la sauvegarde'); } }
   }
+  private cleanupOrphanChatsAfterSave() {
+    // AI chat cleanup removed - no-op
+  }
   runFlow() {
+
+    if (!this.currentFlowEnabled) {
+      try { this.message.error('Flow désactivé. Activez-le avant de lancer.'); } catch { this.showToast('Flow désactivé'); }
+      return;
+    }
     const snap = this.snapshot();
     // Always update the shared graph snapshot (used by the executions page)
     this.shared.setGraph({ nodes: snap.nodes, edges: snap.edges, id: this.currentFlowId || undefined, name: this.currentFlowName, description: this.currentFlowDesc });
@@ -2454,18 +5159,56 @@ export class FlowBuilderComponent {
         return;
       }
       const launch = () => {
+        this.showExecBadges = true;
         const p = this.getStartPayload();
         this.runsApi.start(this.currentFlowId!, (p && (p as any).payload) ?? null).subscribe({
           next: (r: any) => {
             try { this.message.success('Exécution backend démarrée'); } catch { this.showToast('Exécution backend démarrée'); }
             try {
               const runId = r?.id || r?.data?.id || r?.runId;
-              if (runId) this.openBackendStream(runId);
+              if (runId) {
+                // Préselectionner l'exécution en cours dans "Exécutions récentes"
+                const startedAtIso = new Date().toISOString();
+                try {
+                  this.recentRuns = [{ id: runId, status: 'running', startedAt: startedAtIso }, ...(this.recentRuns || [])];
+                  this.currentRunMeta = { id: runId, status: 'running', startedAt: startedAtIso, finishedAt: undefined as any } as any;
+                } catch {}
+                // Ajoute ?run= dans l'URL sans relancer les chargements
+                try {
+                  const qp = this.route.snapshot.queryParamMap;
+                  const q: any = { ...Object.fromEntries(qp.keys.map(k => [k, qp.get(k)]) as any), run: runId };
+                  this.router.navigate([], { queryParams: q, replaceUrl: true });
+                } catch {}
+                this.openBackendStream(runId);
+                try { this.cdr.detectChanges(); } catch {}
+              }
             } catch {}
           },
           error: (e) => {
             const err = this.normalizeApiError(e);
-            try { this.message.error(err?.message || 'Échec du démarrage backend'); } catch { this.showToast(err?.message || 'Échec du démarrage backend'); }
+            const code = String(err?.code || '');
+            if (code === 'flow_template_invalid' || code === 'flow_disabled') {
+              const errors = Array.isArray(err?.details?.errors) ? err.details.errors : [];
+              if (errors.length) {
+                const fmt = (it: any) => {
+                  const c = it?.code || 'error';
+                  const msg = it?.message ? `: ${it.message}` : '';
+                  const detNode = it?.details?.nodeId ? ` (nœud ${it.details.nodeId})` : '';
+                  const detField = it?.details?.field ? ` [${it.details.field}]` : '';
+                  const detKey = it?.details?.templateKey ? ` [${it.details.templateKey}]` : '';
+                  return `• ${c}${msg}${detNode}${detField}${detKey}`;
+                };
+                const listErr = errors.map(fmt).join('<br/>');
+                this.modal.error({
+                  nzTitle: 'Exécution impossible',
+                  nzContent: `Le flow ne peut pas être exécuté.<br/><br/>${listErr}`,
+                });
+              } else {
+                try { this.message.error(err?.message || 'Exécution impossible'); } catch { this.showToast(err?.message || 'Exécution impossible'); }
+              }
+            } else {
+              try { this.message.error(err?.message || 'Échec du démarrage backend'); } catch { this.showToast(err?.message || 'Échec du démarrage backend'); }
+            }
           }
         });
       };
@@ -2475,7 +5218,7 @@ export class FlowBuilderComponent {
 
     // Local run fallback (dev playground)
     try { this.message.info(`Lancement local (${this.builderMode})…`); } catch { this.showToast(`Lancement local (${this.builderMode})…`); }
-    try { this.runner.run({ nodes: snap.nodes, edges: snap.edges }, this.builderMode, this.getStartPayload(), this.currentFlowId || 'adhoc'); } catch {}
+    try { this.showExecBadges = true; this.runner.run({ nodes: snap.nodes, edges: snap.edges }, this.builderMode, this.getStartPayload(), this.currentFlowId || 'adhoc'); } catch {}
   }
 
   private openBackendStream(runId: string) {
@@ -2488,6 +5231,9 @@ export class FlowBuilderComponent {
     this.backendAttemptSeq = [];
     this.lastOverlayPairs = new Set();
     this.backendRunStatus = 'idle';
+    this.nodeLogText.clear(); this.nodeLogOld.clear(); this.nodeLogNew.clear(); this.nodeLogAnimCycle.clear();
+    this.nodeLogExpanded.clear();
+    this.nodeLogScrollLocked.clear();
     // Reset dialog badge + logs for a fresh run
     this.testStatus = 'idle';
     this.testStartedAt = null;
@@ -2504,6 +5250,19 @@ export class FlowBuilderComponent {
       const type = ev?.type as string;
       if (!type) return;
       // LiveEvent mapping
+      if (type === 'run.cancelled') {
+        // Mark global run as done and update current running node badge as cancelled
+        this.backendRunStatus = 'done';
+        try {
+          for (const [nid, arr] of this.backendNodeAttempts.entries()) {
+            const last = arr[arr.length - 1];
+            if (last && last.status === 'running') { last.status = 'cancelled'; this.updateNodeVisual(nid); }
+          }
+        } catch {}
+        try { this.cdr.detectChanges(); } catch {}
+        try { s.close(); } catch {}
+        return;
+      }
       if (type === 'run.status') {
         const st = ev?.run?.status || ev?.data?.status;
         const was = this.backendRunStatus;
@@ -2534,9 +5293,31 @@ export class FlowBuilderComponent {
             try { this.cdr.detectChanges(); } catch {}
           }
           this.backendRunStatus = 'running';
+          try {
+            if (this.currentRunMeta && this.currentRunMeta.id) this.currentRunMeta = { ...this.currentRunMeta, status: 'running' };
+          } catch {}
         } else if (st === 'success' || st === 'error' || st === 'cancelled' || st === 'timed_out') {
           this.backendRunStatus = 'done';
+          this.testStatus = 'idle';
+          this.testStartedAt = null;
+          this.testDurationMs = null;
           try { s.close(); } catch {}
+          // Update right panel meta and recent runs list
+          try {
+            const rid = String(runId);
+            const finishedAt = ev?.run?.finishedAt || ev?.data?.finishedAt || new Date().toISOString();
+            if (this.currentRunMeta && this.currentRunMeta.id === rid) this.currentRunMeta = { ...this.currentRunMeta, status: st, finishedAt } as any;
+            const idx = (this.recentRuns || []).findIndex(r => String(r.id) === rid);
+            if (idx >= 0) {
+              const cur = this.recentRuns[idx];
+              const upd = { ...cur, status: st, finishedAt } as any;
+              this.recentRuns = [
+                ...this.recentRuns.slice(0, idx),
+                upd,
+                ...this.recentRuns.slice(idx + 1)
+              ];
+            }
+          } catch {}
           // Keep snapshot of attempts but stop further updates
           if (this.advancedOpen) {
             this.previewLoading = false; this.outputLoading = false;
@@ -2553,6 +5334,7 @@ export class FlowBuilderComponent {
             } catch {}
           }
         }
+        try { this.cdr.detectChanges(); } catch {}
         return;
       }
       if (type === 'node.status') {
@@ -2563,6 +5345,8 @@ export class FlowBuilderComponent {
           const cur = this.backendNodeStats.get(nid) || { count: 0 } as any;
           cur.lastStatus = st as any;
           this.backendNodeStats.set(nid, cur);
+          // Clear streaming log when node finishes
+          if (st === 'success' || st === 'error' || st === 'cancelled') { this.nodeLogText.delete(nid); this.nodeLogOld.delete(nid); this.nodeLogNew.delete(nid); this.nodeLogAnimCycle.delete(nid); this.nodeLogExpanded.delete(nid); this.nodeLogScrollLocked.delete(nid); }
           // Track per-node attempts by (nodeId, exec)
           let arr = this.backendNodeAttempts.get(nid) || [];
           let at = arr.find(a => a.exec === exec);
@@ -2642,11 +5426,18 @@ export class FlowBuilderComponent {
         const nid = String(ev.nodeId || '');
         if (nid) {
           const exec = (ev as any)?.exec ?? ev?.data?.exec;
+          const result = (ev?.data?.result ?? (ev as any)?.result) as any;
+          const explicitStatus = String((ev as any)?.data?.status || (ev as any)?.status || '').toLowerCase();
+          const nextStatus = explicitStatus === 'error'
+            ? 'error'
+            : (explicitStatus === 'success'
+              ? 'success'
+              : (result && typeof result === 'object' && (result.ok === false || result.error != null)) ? 'error' : 'success');
           // Update per-node attempt I/O and status for this exec
           let arr = this.backendNodeAttempts.get(nid) || [];
           let at = arr.find(a => a.exec === exec);
           if (!at) { at = { exec }; arr = [...arr, at]; this.backendNodeAttempts.set(nid, arr); }
-          at.status = 'success';
+          at.status = nextStatus;
           at.input = ev.data?.input ?? at.input;
           at.argsPre = ev.data?.argsPre ?? at.argsPre;
           at.argsPost = ev.data?.argsPost ?? at.argsPost;
@@ -2670,7 +5461,7 @@ export class FlowBuilderComponent {
               type: 'node.result',
               nodeId: nid,
               exec,
-              status: 'success',
+              status: nextStatus,
               createdAt: ev?.data?.finishedAt || new Date().toISOString(),
               data: { result: ev?.result ?? ev?.data?.result, msgOut: ev?.data?.msgOut, durationMs: ev?.data?.durationMs }
             });
@@ -2678,7 +5469,7 @@ export class FlowBuilderComponent {
           // Update quick stats (count is attempts length)
           const cur = this.backendNodeStats.get(nid) || { count: 0 } as any;
           cur.count = (this.backendNodeAttempts.get(nid)?.length || 0);
-          cur.lastStatus = 'success';
+          cur.lastStatus = nextStatus;
           this.backendNodeStats.set(nid, cur);
           this.updateNodeVisual(nid);
           if (this.selectedModel && String(this.selectedModel.id) === nid) {
@@ -2701,7 +5492,7 @@ export class FlowBuilderComponent {
               // Prefer attempt timestamps for badge
               try { this.testStartedAt = at?.startedAt ? Date.parse(at.startedAt as any) : this.testStartedAt; } catch {}
               this.testDurationMs = Number.isFinite(dur) ? dur : (at?.durationMs != null ? Number(at.durationMs) : (this.testStartedAt ? (Date.now() - this.testStartedAt) : null));
-              this.testStatus = 'success';
+              this.testStatus = nextStatus as any;
             }
             // Regardless of exec filter, the node finished; ensure loader is off
             this.outputLoading = false;
@@ -2709,6 +5500,30 @@ export class FlowBuilderComponent {
           // Edge path was updated on node.status running; nothing else to do here
         }
         try { this.cdr.detectChanges(); } catch {}
+        return;
+      }
+      if (type === 'node.log') {
+        const nid = String(ev.nodeId || (ev as any)?.data?.nodeId || '');
+        const text = (ev as any)?.data?.text ?? (ev as any)?.text ?? '';
+        if (nid) {
+          if (text) {
+            const prev = this.nodeLogText.get(nid) || '';
+            if (text.startsWith(prev)) {
+              this.nodeLogOld.set(nid, prev);
+              this.nodeLogNew.set(nid, text.substring(prev.length));
+            } else {
+              this.nodeLogOld.set(nid, '');
+              this.nodeLogNew.set(nid, text);
+            }
+            this.nodeLogAnimCycle.set(nid, ((this.nodeLogAnimCycle.get(nid) || 0) + 1) % 2);
+            this.nodeLogText.set(nid, text);
+          } else {
+            this.nodeLogText.delete(nid); this.nodeLogOld.delete(nid); this.nodeLogNew.delete(nid); this.nodeLogAnimCycle.delete(nid);
+          }
+        }
+        try { this.cdr.detectChanges(); } catch {}
+        // Smooth auto-scroll expanded bubbles to bottom (skip if user scrolled up)
+        setTimeout(() => { try { document.querySelectorAll('.node-log-bubble.expanded').forEach(el => { const id = (el as HTMLElement).dataset['nodeId'] || ''; if (!this.nodeLogScrollLocked.has(id)) el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' }); }); } catch {} }, 0);
         return;
       }
       // Catch-all: append other node-scoped events to attempt logs in real-time
@@ -2781,9 +5596,11 @@ export class FlowBuilderComponent {
     this.openingRunId = runId;
     this.backendRunId = runId; // allow dialogs to read attempts even without SSE
     this.backendRunStatus = 'idle';
+    this.showExecBadges = true;
     // Load attempts + events snapshot (for historic runs) and open SSE if still running
     this.runsApi.getWith(runId, ['attempts','events']).subscribe({
       next: (r: any) => {
+        this.currentRunMeta = { id: runId, status: (r?.status || 'idle'), startedAt: (r?.startedAt || r?.createdAt || null), finishedAt: (r?.finishedAt || null) } as any;
         // Reset state
         this.backendNodeStats = new Map();
         this.backendNodeAttempts = new Map();
@@ -2848,7 +5665,140 @@ export class FlowBuilderComponent {
       error: () => { this.openBackendStream(runId); }
     });
   }
-  stopLastRun() { if (this.lastRun) try { this.runner.cancel(this.lastRun.runId); } catch {} }
+  private fetchRuns(reset = false) {
+    try {
+      const fid = this.currentFlowId || '';
+      if (!fid || this.runsLoading) return;
+      if (reset) { this.runsPage = 1; this.recentRuns = []; this.runsHasMore = true; }
+      this.runsLoading = true;
+      const offset = Math.max(0, (this.runsPage - 1) * this.runsLimit);
+      this.runsApi.listByFlow(fid, { offset, limit: this.runsLimit, sort: '-startedAt' }).subscribe({
+        next: (list) => this.zone.run(() => {
+          const arr = Array.isArray(list) ? list : [];
+          const mapped = arr.map(r => ({ id: (r as any).id, status: (r as any).status, startedAt: (r as any).startedAt, finishedAt: (r as any).finishedAt }));
+          const existing = new Set((this.recentRuns || []).map(r => String(r?.id || '')));
+          const deduped = mapped.filter(r => !existing.has(String(r?.id || '')));
+          const merged = [...this.recentRuns, ...deduped];
+          const toTs = (d: any) => {
+            const v = Date.parse(String(d || ''));
+            return Number.isFinite(v) ? v : 0;
+          };
+          this.recentRuns = merged.sort((a, b) => toTs(b?.startedAt) - toTs(a?.startedAt));
+          this.runsHasMore = arr.length >= this.runsLimit;
+          if (arr.length >= this.runsLimit) this.runsPage += 1;
+          this.runsLoading = false;
+        }),
+        error: () => this.zone.run(() => { this.runsLoading = false; })
+      });
+    } catch { this.runsLoading = false; }
+  }
+  onLoadMoreRuns() {
+    if (!this.runsHasMore || this.runsLoading) return;
+    this.fetchRuns(false);
+  }
+  // no search field per request
+  stopLastRun() {
+    try {
+      // Prefer cancelling backend run if active
+      if (this.backendRunId && this.backendRunStatus === 'running') {
+        this.runsApi.cancel(this.backendRunId).subscribe({ next: () => {
+          try { this.message.info('Arrêt demandé'); } catch { this.showToast('Arrêt demandé'); }
+        }, error: () => {
+          try { this.message.error("Échec de l'arrêt"); } catch { this.showToast("Échec de l'arrêt"); }
+        } });
+        return;
+      }
+    } catch {}
+    if (this.lastRun) try { this.runner.cancel(this.lastRun.runId); } catch {}
+  }
+
+  // ── Production trigger management ──────────────────
+  loadTriggerStatus() {
+    if (!this.currentFlowId) return;
+    this.triggersApi.getStatus(this.currentFlowId).subscribe({
+      next: (st) => { this.zone.run(() => { this.triggerStatus = st; try { this.cdr.detectChanges(); } catch {} }); },
+      error: () => { this.triggerStatus = null; }
+    });
+  }
+
+  deployFlow() {
+    if (!this.currentFlowId || this.deploying) return;
+    // Save first, then deploy
+    const doDeploy = () => {
+      this.deploying = true;
+      this.triggersApi.deploy(this.currentFlowId!).subscribe({
+        next: (res) => {
+          this.zone.run(() => {
+            this.deploying = false;
+            this.currentFlowStatus = 'production';
+            this.loadTriggerStatus();
+            this.triggersApi.notifyStatusChanged(this.currentFlowId!);
+            const msg = res.webhookUrl
+              ? `Déployé ! URL webhook : ${res.webhookUrl}`
+              : `Déployé en production (${res.triggerType})`;
+            try { this.message.success(msg); } catch { this.showToast(msg); }
+            // Show webhook URL in a modal if available
+            if (res.webhookUrl) {
+              this.modal.info({
+                nzTitle: 'URL Webhook',
+                nzContent: `<p>Configurez ce lien dans le service externe :</p><code style="word-break:break-all;user-select:all">${res.webhookUrl}</code>`,
+                nzOkText: 'OK',
+              });
+            }
+            try { this.cdr.detectChanges(); } catch {}
+          });
+        },
+        error: (e) => {
+          this.zone.run(() => {
+            this.deploying = false;
+            const err = this.normalizeApiError(e);
+            try { this.message.error(err.message || 'Échec du déploiement'); } catch { this.showToast('Échec du déploiement'); }
+            try { this.cdr.detectChanges(); } catch {}
+          });
+        }
+      });
+    };
+
+    if (this.hasUnsavedChanges()) {
+      this._saveIfNeededThen(() => doDeploy());
+    } else {
+      doDeploy();
+    }
+  }
+
+  undeployFlow() {
+    if (!this.currentFlowId || this.undeploying) return;
+    this.modal.confirm({
+      nzTitle: 'Arrêter la production ?',
+      nzContent: 'Le trigger sera coupé et le flow ne recevra plus d\'événements.',
+      nzOkText: 'Arrêter',
+      nzOkDanger: true,
+      nzCancelText: 'Annuler',
+      nzOnOk: () => {
+        this.undeploying = true;
+        this.triggersApi.undeploy(this.currentFlowId!).subscribe({
+          next: () => {
+            this.zone.run(() => {
+              this.undeploying = false;
+              this.currentFlowStatus = 'draft';
+              this.triggerStatus = null;
+              this.triggersApi.notifyStatusChanged(this.currentFlowId!);
+              try { this.message.success('Production arrêtée'); } catch { this.showToast('Production arrêtée'); }
+              try { this.cdr.detectChanges(); } catch {}
+            });
+          },
+          error: (e) => {
+            this.zone.run(() => {
+              this.undeploying = false;
+              const err = this.normalizeApiError(e);
+              try { this.message.error(err.message || 'Échec'); } catch { this.showToast('Échec'); }
+              try { this.cdr.detectChanges(); } catch {}
+            });
+          }
+        });
+      }
+    });
+  }
 
 
   private showToast(msg: string) {
@@ -2856,6 +5806,9 @@ export class FlowBuilderComponent {
     if (this.toastTimer) clearTimeout(this.toastTimer);
     this.toastTimer = setTimeout(() => { this.toastMsg = ''; }, 1800);
   }
+  // Track whether pointer is over the canvas area to scope shortcuts
+  canvasHot = false;
+  shortcutsOpen = false;
 
   // Normalize API error from either envelope unwrap or HttpErrorResponse
   private normalizeApiError(e: any): { code?: string; message?: string; details?: any } {
@@ -2879,15 +5832,244 @@ export class FlowBuilderComponent {
     const tag = (target?.tagName || '').toLowerCase();
     const isInput = tag === 'input' || tag === 'textarea' || tag === 'select' || (target?.isContentEditable ?? false);
     if (isInput) return;
-    const cmd = ev.metaKey || ev.ctrlKey;
-    if (!cmd) return;
-    if (ev.key.toLowerCase() === 'z' && !ev.shiftKey) {
-      ev.preventDefault();
-      this.undo();
-    } else if ((ev.key.toLowerCase() === 'z' && ev.shiftKey) || ev.key.toLowerCase() === 'y') {
-      ev.preventDefault();
-      this.redo();
+    // Quand un éditeur avancé (V1 ou V2) est ouvert, laisser les raccourcis système par défaut
+    if (this.advancedOpen || this.advancedV2Open) {
+      if (ev.key === 'Escape') {
+        ev.preventDefault();
+        try { if (this.advancedV2Open) this.closeAdvancedEditorV2(); else this.closeAdvancedEditor(); } catch {}
+      }
+      return;
     }
+    // Désactiver tous les raccourcis du builder quand le Spotlight est ouvert (palette ou conversation)
+    if (this.addNodeVisible) {
+      if (ev.key === 'Escape') {
+        ev.preventDefault();
+        try { this.closeAddNodeModalWithCleanup(); } catch {}
+      }
+      return;
+    }
+    const cmd = ev.metaKey || ev.ctrlKey;
+    if (cmd) {
+      if (this.addNodeVisible) {
+        const keyBlock = ev.key.toLowerCase();
+        if (keyBlock === 'c' || keyBlock === 'x' || keyBlock === 'v') { ev.preventDefault(); return; }
+      }
+      const key = ev.key.toLowerCase();
+      if (key === 'c') {
+        if (this.hasSelection()) { ev.preventDefault(); this.copySelection(false); }
+        return;
+      }
+      if (key === 'x') {
+        if (this.hasSelection()) { ev.preventDefault(); this.copySelection(true); }
+        return;
+      }
+      if (key === 'v') {
+        ev.preventDefault(); this.pasteFromClipboard(); return;
+      }
+      if (key === 'z' && !ev.shiftKey) {
+        ev.preventDefault();
+        this.undo();
+      } else if ((key === 'z' && ev.shiftKey) || key === 'y') {
+        ev.preventDefault();
+        this.redo();
+      }
+      return;
+    }
+    // Non-modifier shortcuts when canvas is hot/focused
+    const k = ev.key.toLowerCase();
+    if (this.canvasHot) {
+      // Alignment shortcuts for multi-selection
+      if ((this.selectionList?.length || 0) > 1) {
+        if (k === 'h') { ev.preventDefault(); try { this.ctxAlignSelection('horizontal'); } catch {} return; }
+        if (k === 'v') { ev.preventDefault(); try { this.ctxAlignSelection('vertical'); } catch {} return; }
+      }
+      // P → toggle right panel (parameters)
+      if (k === 'p') { ev.preventDefault(); this.toggleRightPanel(); return; }
+      // N → toggle left panel (nodes/palette)
+      if (k === 'n') { ev.preventDefault(); this.toggleLeftPanel(); return; }
+      if (k === 'r') {
+        ev.preventDefault();
+        this.toggleAlignmentHelper();
+        return;
+      }
+      if (k === 's') { ev.preventDefault(); this.saveFlow(); return; }
+      if (k === 'd') { ev.preventDefault(); this.onClearRun(); return; }
+    }
+    // Space — open add-node spotlight from first available output of single selection
+    if (!this.advancedOpen && !this.advancedV2Open) {
+      const keyIsSpace = (ev.code === 'Space') || (ev.key === ' ' || ev.key === 'Spacebar');
+      if (keyIsSpace) {
+        try {
+          const list = (this.selectionList && this.selectionList.length) ? this.selectionList : (this.selection ? [this.selection] : []);
+          if (list.length === 1) {
+            const node = list[0];
+            const handleId = this.firstFreeOutputHandle(node);
+            if (handleId) { ev.preventDefault(); ev.stopPropagation(); this.openAddNodeFromHandle(String(node.id), String(handleId)); return; }
+          }
+        } catch {}
+      }
+    }
+    if (ev.key === 'Escape') {
+      if (this.advancedOpen) { ev.preventDefault(); this.closeAdvancedEditor(); return; }
+    }
+    if ((ev.key === 'Delete' || ev.key === 'Backspace') && (this.selection || (this.selectionList && this.selectionList.length))) {
+      ev.preventDefault();
+      if ((this.selectionList || []).length > 1) { this.onDeleteMany(); }
+      else { this.deleteSelected(); }
+    }
+  }
+
+  private hasSelection(): boolean {
+    try { return !!(this.selection || (this.selectionList && this.selectionList.length)); } catch { return false; }
+  }
+  private selectionIds(): string[] {
+    try {
+      const list = Array.isArray(this.selectionList) && this.selectionList.length ? this.selectionList : (this.selection ? [this.selection] : []);
+      return list.map(n => String(n?.id)).filter(Boolean);
+    } catch { return []; }
+  }
+  private buildClipboardPayload(ids: string[]) {
+    const idSet = new Set(ids);
+    const nodes = (this.nodes || []).filter(n => idSet.has(String(n.id)));
+    // Preserve full edge metadata like in duplicate: curve, labels, data, markers
+    const edgesFull = (this.edges || []).filter((e: any) => idSet.has(String(e.source)) && idSet.has(String(e.target)))
+      .map((e: any) => ({
+        id: String(e.id || ''),
+        type: e.type,
+        source: String(e.source),
+        target: String(e.target),
+        sourceHandle: (e as any).sourceHandle,
+        targetHandle: (e as any).targetHandle,
+        curve: (e as any).curve,
+        edgeLabels: (e as any).edgeLabels,
+        data: (e as any).data,
+        markers: (e as any).markers
+      }));
+    // Normalize payload to be portable between flows
+    const out = {
+      kind: 'homeport.flow.selection',
+      version: 1,
+      createdAt: Date.now(),
+      nodes: nodes.map(n => {
+        try {
+          const data = JSON.parse(JSON.stringify(n.data || {}));
+          const m = data?.model;
+          if (m) { try { delete m.aiChatThreadId; } catch {}; try { delete m.aiArgsHistory; } catch {}; }
+          return { id: String(n.id), point: { x: n.point?.x||0, y: n.point?.y||0 }, type: n.type, data };
+        } catch {
+          return { id: String(n.id), point: { x: n.point?.x||0, y: n.point?.y||0 }, type: n.type, data: n.data };
+        }
+      }),
+      edges: edgesFull
+    } as any;
+    return out;
+  }
+  private async writeClipboardText(text: string) {
+    try { await navigator.clipboard.writeText(text); return true; } catch { try { localStorage.setItem('flow.clipboard', text); return true; } catch { return false; } }
+  }
+  private async readClipboardText(): Promise<string|null> {
+    try { const t = await navigator.clipboard.readText(); if (t && t.trim()) return t; } catch {}
+    try { const t = localStorage.getItem('flow.clipboard'); if (t && t.trim()) return t; } catch {}
+    return null;
+  }
+  async copySelection(cut = false) {
+    try {
+      const ids = this.selectionIds(); if (!ids.length) return;
+      const payload = this.buildClipboardPayload(ids);
+      const ok = await this.writeClipboardText(JSON.stringify(payload));
+      if (ok) {
+        try { this.message.success(cut ? 'Sélection coupée' : 'Sélection copiée'); } catch { this.showToast(cut ? 'Coupé' : 'Copié'); }
+        if (cut) {
+          if (ids.length > 1) this.onDeleteMany(); else this.deleteSelected();
+        }
+      } else {
+        try { this.message.error('Impossible de copier'); } catch { this.showToast('Copie impossible'); }
+      }
+    } catch {}
+  }
+  async pasteFromClipboard() {
+    try {
+      const text = await this.readClipboardText();
+      if (!text) { try { this.message.warning('Presse-papiers vide'); } catch {} return; }
+      let data: any = null; try { data = JSON.parse(text); } catch {}
+      if (!data || data.kind !== 'homeport.flow.selection' || !Array.isArray(data.nodes)) { try { this.message.warning('Contenu presse-papiers non reconnu'); } catch {} return; }
+      const srcNodes: any[] = data.nodes || [];
+      const srcEdges: any[] = Array.isArray(data.edges) ? data.edges : [];
+      // Compute offset: shift pasted selection by 60,60 or center if empty canvas
+      const dx = 60, dy = 60;
+      // Build id map and create nodes
+      const idMap = new Map<string,string>();
+      const usedCondIds = this.collectAllConditionHandleIds();
+      const condHandleMap = new Map<string, Map<string,string>>();
+      const newNodes: any[] = [];
+      for (const n of srcNodes) {
+        const tpl = n?.data?.model?.templateObj;
+        if (this.isStartLike(tpl)) continue; // never paste start-like duplicates
+        const newId = this.generateNodeId(tpl, n?.data?.model?.name || tpl?.name || tpl?.title);
+        idMap.set(String(n.id), newId);
+        const oldM = n?.data?.model || {};
+        const m = JSON.parse(JSON.stringify(oldM || {}));
+        m.id = newId;
+        // Reset AI chat/args state on paste
+        try { delete (m as any).aiChatThreadId; } catch {}
+        try { delete (m as any).aiArgsHistory; } catch {}
+        // Condition/multi-output branch id remap
+        try {
+          const tt = m?.templateObj?.type;
+          if (tt === 'condition' || !!m?.templateObj?.output_array_field) {
+            const field = m?.templateObj?.output_array_field || 'items';
+            const arr = (m?.context && Array.isArray(m.context[field])) ? m.context[field] : [];
+            const oldArr = (oldM?.context && Array.isArray(oldM.context[field])) ? oldM.context[field] : [];
+            const map = new Map<string,string>();
+            for (const it of arr) {
+              if (it && typeof it === 'object') {
+                let cid = '';
+                do { cid = 'cid_' + Math.random().toString(36).slice(2); } while (usedCondIds.has(cid));
+                const idx = arr.indexOf(it);
+                const old = String(oldArr?.[idx]?._id || ''); if (old) map.set(old, cid);
+                it._id = cid; usedCondIds.add(cid);
+              }
+            }
+            if (m?.context?.else && m.context.else._id) {
+              let eid = '';
+              do { eid = 'else_' + Math.random().toString(36).slice(2); } while (usedCondIds.has(eid));
+              const oldElse = (oldM?.context?.else && oldM.context.else._id) ? String(oldM.context.else._id) : '';
+              if (oldElse) map.set(oldElse, eid);
+              m.context.else._id = eid; usedCondIds.add(eid);
+            }
+            condHandleMap.set(String(n.id), map);
+          }
+        } catch {}
+        const p = n?.point || { x:0, y:0 };
+        const vNode = { id: newId, point: { x: p.x + dx, y: p.y + dy }, type: n.type, data: { ...n.data, model: m } };
+        newNodes.push(vNode);
+      }
+      if (newNodes.length) {
+        this.nodes = [...this.nodes, ...newNodes];
+        this.triggerSpawnForNodes(newNodes.map(n => String(n.id)));
+      }
+      // Edges
+      const newEdges: any[] = [];
+      for (const e of srcEdges) {
+        const s = String(e.source||''); const t = String(e.target||'');
+        const ns = idMap.get(s); const nt = idMap.get(t);
+        if (!ns || !nt) continue;
+        const ne = JSON.parse(JSON.stringify(e));
+        ne.source = ns; ne.target = nt;
+        const map = condHandleMap.get(s);
+        if (map && ne.sourceHandle && map.get(String(ne.sourceHandle))) ne.sourceHandle = map.get(String(ne.sourceHandle));
+        try { const sh = String(ne.sourceHandle||''); const th = String(ne.targetHandle||''); ne.id = `${ne.source}->${ne.target}:${sh}:${th}`; } catch {}
+        newEdges.push(ne);
+      }
+      if (newEdges.length) this.edges = [...this.edges, ...newEdges];
+      // Select pasted nodes and push history
+      this.selectionList = newNodes; this.selection = newNodes[0] || null;
+      try { this.cdr.detectChanges(); } catch {}
+      try { this.selectIdsWithRetry(newNodes.map(n => n.id)); } catch {}
+      this.pushState('paste.group');
+      this.recomputeValidation();
+      try { this.message.success(`Collé (${newNodes.length} nœuds)`); } catch { this.showToast('Collé'); }
+    } catch {}
   }
 
   private snapshot() {
@@ -2899,7 +6081,7 @@ export class FlowBuilderComponent {
       description: this.currentFlowDesc || undefined,
     } as any;
     try {
-      const current = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled });
+      const current = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, portOrientation: this.portOrientation, alignmentHelper: this.alignmentHelper, snapGrid: this.snapGrid });
       snap.currentChecksum = current;
       snap.serverChecksum = this.lastSavedChecksum;
     } catch {}
@@ -2907,6 +6089,22 @@ export class FlowBuilderComponent {
   }
   private updateSharedGraph() {
     try { this.shared.setGraph(this.snapshot() as any); } catch {}
+  }
+  private scheduleCenterIfRequested(centerActive: boolean, preservePanels = false) {
+    try {
+      if (!centerActive) return;
+      const prev = { left: this.leftPanelOpen, right: this.rightPanelOpen };
+      if (!preservePanels) {
+        this.leftPanelOpen = false; this.rightPanelOpen = false;
+        this.onLeftDrawerClose(); this.onRightDrawerClose();
+        try { this.cdr.detectChanges(); } catch {}
+      }
+      setTimeout(() => {
+        try { this.centerFlow(); } catch {}
+        if (!preservePanels) { this.leftPanelOpen = prev.left; this.rightPanelOpen = prev.right; this.savePanelsState(); }
+        try { this.cdr.detectChanges(); } catch {}
+      }, 60);
+    } catch {}
   }
   private historyKey(): string {
     const fid = this.currentFlowId || 'adhoc';
@@ -3020,6 +6218,27 @@ export class FlowBuilderComponent {
       this.onHandleMove(ev);
     } catch { this.tipVisible = false; }
   }
+  // Input handle tooltip helpers
+  onInputEnter(ev: MouseEvent, model: any, inputId: string) {
+    try {
+      const txt = this.getInputName(model, inputId) || '';
+      this.tipText = txt;
+      this.tipVisible = !!txt;
+      this.tipError = false;
+      this.onHandleMove(ev);
+    } catch { this.tipVisible = false; }
+  }
+  onInputPointerOver(ev: PointerEvent, model: any, inputId: string) {
+    try {
+      // Pendant un drag de connexion, certains navigateurs envoient pointerover sur le magnet plutôt que mouseenter.
+      // Synchroniser le tooltip ici aussi.
+      const txt = this.getInputName(model, inputId) || '';
+      this.tipText = txt;
+      this.tipVisible = !!txt;
+      this.tipError = false;
+      this.onHandleMove(ev as any);
+    } catch { this.tipVisible = false; }
+  }
   onHandleMove(ev: MouseEvent) {
     try {
       // Offset a bit from cursor
@@ -3029,23 +6248,363 @@ export class FlowBuilderComponent {
   }
   onHandleLeave() { this.tipVisible = false; }
 
+  // Global pointer move handler during connection to detect hovered input magnet and show tooltip
+  private docPointerMove: ((ev: PointerEvent) => void) | null = null;
+  private onConnectPointerMove(ev: PointerEvent) {
+    try {
+      if (!this.connectingEdge) return;
+      const x = ev.clientX, y = ev.clientY;
+      const host: HTMLElement | undefined = this.flowHost?.nativeElement as any;
+      if (!host) return;
+      const circles = host.querySelectorAll('circle[data-input-id]');
+      let bestEl: Element | null = null;
+      let bestD2 = Infinity;
+      const TH = 22; // px rayon de détection
+      circles.forEach((el: any) => {
+        try {
+          const r = el.getBoundingClientRect();
+          const cx = r.left + r.width / 2; const cy = r.top + r.height / 2;
+          const dx = x - cx, dy = y - cy; const d2 = dx*dx + dy*dy;
+          if (d2 <= TH*TH && d2 < bestD2) { bestEl = el as Element; bestD2 = d2; }
+        } catch {}
+      });
+      if (bestEl) {
+        const el: any = bestEl as any;
+        const name = String(el?.dataset?.inputName || '');
+        if (name) { this.tipText = name; this.tipVisible = true; this.tipError = false; this.tipX = x + 8; this.tipY = y + 8; }
+        else { this.tipVisible = false; }
+      } else {
+        this.tipVisible = false;
+      }
+    } catch {}
+  }
+
+  // Invalid-connect overlay (ban) UX
+  connectingEdge = false;
+  private connectingSource: { nodeId: string; handleId: string } | null = null;
+  banVisible = false;
+  banX = 0;
+  banY = 0;
+  onConnectStartFrom(nodeId: string, handleId: string) {
+    try {
+      this.connectingEdge = true;
+      this.connectingSource = { nodeId: String(nodeId), handleId: String(handleId) };
+      // Force immediate DOM update so assist elements are removed before Vflow reads bbox
+      try { this.cdr.detectChanges(); } catch {}
+      // Installer un suivi global du pointeur pour afficher le tooltip sur inputs (magnet)
+      try {
+        if (!this.docPointerMove) {
+          this.docPointerMove = (ev: PointerEvent) => this.onConnectPointerMove(ev);
+          document.addEventListener('pointermove', this.docPointerMove as any, true);
+        }
+      } catch {}
+    } catch {}
+  }
+  onConnectEnd() {
+    try { this.connectingEdge = false; this.connectingSource = null; this.banVisible = false; this.tipVisible = false; if (this.docPointerMove) { document.removeEventListener('pointermove', this.docPointerMove as any, true); this.docPointerMove = null; } } catch {}
+  }
+  onTargetEnter(ev: MouseEvent, isValid: boolean) {
+    try { if (this.connectingEdge && !isValid) { this.banVisible = true; this.onTargetMove(ev, isValid); } } catch {}
+  }
+  onTargetMove(ev: MouseEvent, isValid: boolean) {
+    try { if (this.connectingEdge && !isValid) { this.banX = ev.clientX + 12; this.banY = ev.clientY + 12; this.banVisible = true; } else { this.banVisible = false; } } catch {}
+  }
+  onTargetLeave() { try { this.banVisible = false; } catch {} }
+
+  // Is user currently dragging a connection from this exact handle?
+  isConnectingFrom(nodeId: string, handleId: string): boolean {
+    try { return !!this.connectingEdge && !!this.connectingSource && String(this.connectingSource.nodeId) === String(nodeId) && String(this.connectingSource.handleId) === String(handleId); } catch { return false; }
+  }
+
+  // Pre-hide assist when hovering a source handle so bbox equals the circle only
+  private hoverSource: { nodeId: string; handleId: string } | null = null;
+  onOutputHandleEnter(nodeId: string, handleId: string) {
+    try {
+      // Trigger a short out animation for the assist (directional),
+      // then mark hover so template hides assist instantly for anchor safety.
+      this.startAssistCloseOnHover(String(nodeId), String(handleId), 140);
+      this.hoverSource = { nodeId: String(nodeId), handleId: String(handleId) };
+    } catch {}
+  }
+  onOutputHandleLeave(nodeId: string, handleId: string) {
+    try { if (this.hoverSource && String(this.hoverSource.nodeId) === String(nodeId) && String(this.hoverSource.handleId) === String(handleId)) this.hoverSource = null; } catch {}
+  }
+  isHoveringFrom(nodeId: string, handleId: string): boolean {
+    try { return !!this.hoverSource && String(this.hoverSource.nodeId) === String(nodeId) && String(this.hoverSource.handleId) === String(handleId); } catch { return false; }
+  }
+
+  // Assist delayed activation to let Vflow anchor compute from circle-only at first frame
+  private assistReadyAt = new Map<string, number>();
+  private assistDelayMs = 280;
+  private keyForAssist(nodeId: string, handleId: string): string { return `${nodeId}::${handleId}`; }
+  // Returns true only after a per-handle delay; on first call schedules readiness in ~280ms.
+  isAssistReady(nodeId: string, handleId: string): boolean {
+    try {
+      const k = this.keyForAssist(String(nodeId), String(handleId));
+      let t = this.assistReadyAt.get(k);
+      if (!t) { t = Date.now() + this.assistDelayMs; this.assistReadyAt.set(k, t); }
+      return Date.now() >= (t || 0);
+    } catch { return false; }
+  }
+  // Helper to prime delay for all outputs of a newly inserted node
+  private primeAssistDelayForNode(nodeId: string, ms?: number) {
+    try {
+      const node = (this.nodes || []).find(n => String(n.id) === String(nodeId));
+      const outs = this.outputIds(node?.data?.model) || [];
+      const until = Date.now() + (Number.isFinite(ms as any) ? Number(ms) : this.assistDelayMs);
+      outs.forEach(h => this.assistReadyAt.set(this.keyForAssist(String(nodeId), String(h)), until));
+    } catch {}
+  }
+  private primeAssistDelayAllNodes(ms?: number) {
+    try {
+      const until = Date.now() + (Number.isFinite(ms as any) ? Number(ms) : this.assistDelayMs);
+      for (const n of (this.nodes || [])) {
+        const outs = this.outputIds(n?.data?.model) || [];
+        outs.forEach(h => this.assistReadyAt.set(this.keyForAssist(String(n.id), String(h)), until));
+      }
+    } catch {}
+  }
+
+  private primeAssistForHandle(nodeId: string, handleId: string, ms?: number) {
+    try { this.assistReadyAt.set(this.keyForAssist(String(nodeId), String(handleId)), Date.now() + (Number.isFinite(ms as any) ? Number(ms) : 0)); } catch {}
+  }
+
+  // Fade-out support for assist (line + '+') without breaking anchor.
+  // Use only in non-drag scenarios (after connect/delete/commit). During drag/hover, we hide instantly.
+  private assistFadingUntil = new Map<string, number>();
+  private startAssistFade(nodeId: string, handleId: string, ms: number = 160) {
+    try {
+      const k = this.keyForAssist(String(nodeId), String(handleId));
+      const until = Date.now() + Math.max(80, ms);
+      this.assistFadingUntil.set(k, until);
+      setTimeout(() => { try { this.assistFadingUntil.delete(k); this.cdr.detectChanges(); } catch {} }, Math.max(80, ms) + 10);
+    } catch {}
+  }
+  isAssistFading(nodeId: string, handleId: string): boolean {
+    try { const t = this.assistFadingUntil.get(this.keyForAssist(String(nodeId), String(handleId))) || 0; return Date.now() < t; } catch { return false; }
+  }
+
+  // Close-on-hover animation: show a brief directional out animation when the mouse enters
+  // the circle before drag starts. On pointerdown we still hide instantly for anchor safety.
+  private assistClosingUntil = new Map<string, number>();
+  private startAssistCloseOnHover(nodeId: string, handleId: string, ms: number = 140) {
+    try {
+      const k = this.keyForAssist(String(nodeId), String(handleId));
+      const until = Date.now() + Math.max(80, ms);
+      this.assistClosingUntil.set(k, until);
+      setTimeout(() => { try { this.assistClosingUntil.delete(k); this.cdr.detectChanges(); } catch {} }, Math.max(80, ms) + 10);
+    } catch {}
+  }
+  isAssistClosing(nodeId: string, handleId: string): boolean {
+    try { const t = this.assistClosingUntil.get(this.keyForAssist(String(nodeId), String(handleId))) || 0; return Date.now() < t; } catch { return false; }
+  }
+
+  // (Removed assist-down connection spoofing to ensure edges always start from the handle circle)
+
+  // Compute preview validity while dragging from a source handle
+  canConnectPreview(targetNodeId: string, targetHandleId: string): boolean {
+    try {
+      if (!this.connectingEdge || !this.connectingSource) return false;
+      const c: Connection = {
+        source: this.connectingSource.nodeId,
+        sourceHandle: this.connectingSource.handleId,
+        target: String(targetNodeId),
+        targetHandle: String(targetHandleId)
+      } as any;
+      return this.validateConnection(c);
+    } catch { return false; }
+  }
+
   // Change handlers from ngx-vflow
   private posDebounceTimer: any;
   private draggingNodes = new Set<string>();
   private pendingPositions: Record<string, { x: number; y: number }> = {};
   private zoomUpdateTimer: any;
+  isSelected(id: any): boolean { try { const sid = String(id); return (this.selectionList || []).some(n => String(n?.id) === sid); } catch { return false; } }
+  // Selection box UI state (viewport coords)
+  selectionBoxStart: { x: number; y: number } | null = null;
+  selectionBoxRect: { left: number; top: number; width: number; height: number } | null = null;
+  // Canvas long-press to start marquee (mobile)
+  private canvasLpTimer: any = null;
+  private canvasLpStartX = 0;
+  private canvasLpStartY = 0;
+  private canvasLpCurX = 0;
+  private canvasLpCurY = 0;
+  private canvasLpFired = false;
+  private readonly canvasLpDelay = 520; // ms
+  private readonly canvasLpMoveThresh = 12; // px for long-press stability
+  private readonly canvasDtMoveThresh = 24; // px tolerance between double-taps
+  private canvasLastTapAt = 0;
+  private canvasLastTapX = 0;
+  private canvasLastTapY = 0;
+  private readonly canvasDtThresh = 350; // ms
+  private canvasTapCandidate = false;
+  private marqueePrimed = false; // double-tap activated marquee awaiting drag
+  private isEventOnNode(ev: Event): boolean {
+    try {
+      const target = ev.target as HTMLElement | null;
+      if (!target) return false;
+      if (target.closest && target.closest('.node-card')) return true;
+      const anyEv: any = ev as any;
+      const path: any[] = (anyEv.composedPath && anyEv.composedPath()) || [];
+      return path.some(el => el && el.classList && el.classList.contains && el.classList.contains('node-card'));
+    } catch { return false; }
+  }
+  private isEventOnUiControls(ev: Event): boolean {
+    try {
+      const anyEv: any = ev as any;
+      const path: any[] = (anyEv.composedPath && anyEv.composedPath()) || [];
+      const classes = ['panel-toggle-fab','bottom-bar','left-bar','ctx-menu','ai-chat-fab','ai-chat-popover','ant-drawer','ios-safe-drawer','right-panel','left-panel'];
+      for (const el of path) {
+        const he = el as HTMLElement;
+        if (!he || !he.classList) continue;
+        for (const cls of classes) { if (he.classList.contains(cls)) return true; }
+        const tag = he.tagName?.toUpperCase?.() || '';
+        if (['BUTTON','INPUT','SELECT','TEXTAREA','LABEL'].includes(tag)) { if (!he.closest('.canvas-host')) return true; }
+      }
+      return false;
+    } catch { return false; }
+  }
+  // Press explosion feedback
+  explosionVisible = false;
+  explosionX = 0;
+  explosionY = 0;
+  private explosionTimer: any = null;
+  private triggerExplosion(x: number, y: number) {
+    try {
+      this.explosionX = x; this.explosionY = y; this.explosionVisible = false;
+      // next tick to restart animation
+      setTimeout(() => {
+        this.explosionVisible = true;
+        try { this.cdr.detectChanges(); } catch {}
+        if (this.explosionTimer) clearTimeout(this.explosionTimer);
+        this.explosionTimer = setTimeout(() => { this.explosionVisible = false; try { this.cdr.detectChanges(); } catch {} }, 600);
+      }, 0);
+    } catch {}
+  }
+
+  // Global capture listeners to beat d3-zoom
+  private canvasGlobalDown?: (ev: PointerEvent) => void;
+  private canvasGlobalMove?: (ev: PointerEvent) => void;
+  private canvasGlobalUp?: (ev: PointerEvent) => void;
+  private globalTouchEndDetect?: (ev: TouchEvent) => void;
+  private isCoarsePointer(): boolean {
+    try { return !!(window.matchMedia && window.matchMedia('(pointer: coarse)').matches) || (navigator as any)?.maxTouchPoints > 0; } catch { return false; }
+  }
+  // Drag-intent state to guard vflow selection churn at drag start
+  private dragIntentActive = false;
+  private dragIntentIds: string[] = [];
+  private dragIntentTimer: any = null;
+  private dragLockSelectionUntil = 0;
+  onNodePointerDown(ev: PointerEvent, node: any) {
+    try {
+      const ids = this.selectionIds();
+      const multi = (ids.length || 0) > 1;
+      const id = String(node?.id || '');
+      if (!id) return;
+      // Only guard if the pointer-down is on a node already in selection OR we have multi-selection
+      const inSel = ids.includes(id);
+      if (multi || inSel) {
+        this.dragIntentActive = true;
+        this.dragIntentIds = ids;
+        try { this.log('sel.drag.intent.start', { ids }); } catch {}
+        if (this.dragIntentTimer) clearTimeout(this.dragIntentTimer);
+        this.dragIntentTimer = setTimeout(() => { this.dragIntentActive = false; this.dragIntentIds = []; try { this.log('sel.drag.intent.expire'); } catch {} }, 1600);
+        // Force vflow to reflect full selection before it starts its internal drag logic
+        try { if (ids.length) { this.setVflowSelectedIds(ids); this.selectIdsWithRetry(ids, 3, 40); } } catch {}
+        this.dragLockSelectionUntil = Date.now() + 1200;
+      }
+    } catch {}
+  }
+  private dragSelectionSyncTimer: any = null;
+  private beginDragSelectionSync() {
+    try {
+      if (this.dragSelectionSyncTimer) { clearInterval(this.dragSelectionSyncTimer); this.dragSelectionSyncTimer = null; }
+      const apply = () => {
+        try {
+          const ids = (this.dragIntentActive && this.dragIntentIds.length) ? this.dragIntentIds : this.selectionIds();
+          if (ids.length) { this.setVflowSelectedIds(ids); }
+        } catch {}
+      };
+      apply();
+      this.dragSelectionSyncTimer = setInterval(apply, 120);
+    } catch {}
+  }
+  private endDragSelectionSync() {
+    try { if (this.dragSelectionSyncTimer) { clearInterval(this.dragSelectionSyncTimer); this.dragSelectionSyncTimer = null; } } catch {}
+  }
+  // Force vflow to reflect our app-managed selection (so multi-drag works and emits .many)
+  private setVflowSelectedIds(ids: string[]) {
+    try {
+      const flowAny: any = this.flow as any;
+      const nodeModels = flowAny?.nodeModels?.();
+      if (!Array.isArray(nodeModels)) return;
+      const want = new Set((ids || []).map(id => String(id)));
+      for (const m of nodeModels) {
+        try {
+          const id = String(m?.rawNode?.id ?? '');
+          const sel = want.has(id);
+          if (m?.selected && typeof m.selected.set === 'function') m.selected.set(sel);
+        } catch {}
+      }
+    } catch {}
+  }
+  // Ensure Vflow reflects selection even if view updates are pending
+  private selectIdsWithRetry(ids: string[], attempts = 4, delay = 50) {
+    try { this.setVflowSelectedIds(ids); } catch {}
+    let left = Math.max(0, attempts - 1);
+    const tick = () => {
+      try { this.setVflowSelectedIds(ids); } catch {}
+      if (left-- > 0) setTimeout(tick, delay);
+    };
+    setTimeout(tick, delay);
+  }
+  toggleMarqueeMode() {
+    try {
+      this.marqueeMode = !this.marqueeMode;
+      // Clear any pending long-press timer/state when toggling
+      if (this.canvasLpTimer) { clearTimeout(this.canvasLpTimer); this.canvasLpTimer = null; }
+      this.canvasLpFired = false;
+      this.selectionBoxStart = null;
+      this.selectionBoxRect = null;
+      try { this.cdr.detectChanges(); } catch {}
+    } catch {}
+  }
+  
   onNodePositionChange(change: any) {
-    // logs disabled
     if (this.isIgnoring()) { return; }
     const id = change?.id;
     const pt = change?.to?.point || change?.point || change?.to;
     if (!id || !pt) { return; }
-    const before = this.nodes.find(n => n.id === id);
-
+    const wasEmptyDrag = this.draggingNodes.size === 0;
     // Cache the last known point; do not mutate nodes during drag
     this.pendingPositions[String(id)] = { x: pt.x, y: pt.y };
     // Mark drag in progress; final apply happens on pointerup/cancel
     this.draggingNodes.add(String(id));
+    // Hide assist for this node outputs while position settles (prevents anchor bbox flicker)
+    try { this.primeAssistDelayForNode(String(id), 420); } catch {}
+    // If vflow deselected during drag start, reassert our selection in vflow
+    if (wasEmptyDrag) { this.beginDragSelectionSync(); }
+  }
+
+  // Many nodes moved at once (multi-select drag, helper alignment moves)
+  onNodesPositionMany(changes: any[]) {
+    if (this.isIgnoring()) { return; }
+    if (!Array.isArray(changes) || !changes.length) return;
+    const wasEmptyDrag = this.draggingNodes.size === 0;
+    for (const c of changes) {
+      try {
+        const id = String(c?.id || '');
+        const pt = c?.to?.point || c?.point || c?.to;
+        if (!id || !pt) continue;
+        this.pendingPositions[id] = { x: pt.x, y: pt.y };
+        this.draggingNodes.add(id);
+        try { this.primeAssistDelayForNode(String(id), 420); } catch {}
+      } catch {}
+    }
+    // debug logs removed
+    // If vflow deselected during drag start, reassert our selection in vflow
+    if (wasEmptyDrag) { this.beginDragSelectionSync(); }
   }
 
   onWheel(_ev: WheelEvent) {
@@ -3053,21 +6612,367 @@ export class FlowBuilderComponent {
     this.zoomUpdateTimer = setTimeout(() => this.zone.run(() => this.updateZoomDisplay()), 80);
   }
 
+  // Right-click drag selection box on canvas (outside nodes)
+  onCanvasMouseDown(ev: MouseEvent) {
+    try {
+      if (this.ctxMenuVisible) return;
+      if (this.isEventOnUiControls(ev)) return;
+      // When explicit marquee mode is enabled, start immediately regardless of modifier/right button
+      if (this.marqueeMode && !this.isEventOnNode(ev)) {
+        ev.preventDefault(); ev.stopPropagation();
+        this.selectionBoxStart = { x: ev.clientX, y: ev.clientY };
+        this.selectionBoxRect = { left: ev.clientX, top: ev.clientY, width: 0, height: 0 };
+        try { this.cdr.detectChanges(); } catch {}
+        return;
+      }
+      // Only start marquee via mouse on desktop (ignore touch)
+      const anyEv: any = ev as any; if (anyEv?.pointerType && anyEv.pointerType !== 'mouse') return;
+      const ctrl = !!ev.ctrlKey;
+      const isRight = ev.button === 2;
+      if (!ctrl && !isRight) return;
+      const target = ev.target as HTMLElement;
+      if (!ctrl && target && target.closest && target.closest('.node-card')) return;
+      ev.preventDefault(); ev.stopPropagation();
+      this.selectionBoxStart = { x: ev.clientX, y: ev.clientY };
+      this.selectionBoxRect = { left: ev.clientX, top: ev.clientY, width: 0, height: 0 };
+    } catch {}
+  }
+  onCanvasMouseMove(ev: MouseEvent) {
+    try {
+      if (this.ctxMenuVisible) return;
+      if (this.isEventOnUiControls(ev)) return;
+      if (!this.selectionBoxStart) return;
+      ev.preventDefault(); ev.stopPropagation();
+      const sx = this.selectionBoxStart.x, sy = this.selectionBoxStart.y;
+      const cx = ev.clientX, cy = ev.clientY;
+      const left = Math.min(sx, cx), top = Math.min(sy, cy);
+      const width = Math.abs(cx - sx), height = Math.abs(cy - sy);
+      this.selectionBoxRect = { left, top, width, height };
+      // Live selection for the local path as well
+      try {
+        if (width >= 2 && height >= 2) {
+          const tl = this.flow?.documentPointToFlowPoint?.({ x: left, y: top });
+          const br = this.flow?.documentPointToFlowPoint?.({ x: left + width, y: top + height });
+          if (tl && br) {
+            const minx = Math.min((tl as any).x, (br as any).x), maxx = Math.max((tl as any).x, (br as any).x);
+            const miny = Math.min((tl as any).y, (br as any).y), maxy = Math.max((tl as any).y, (br as any).y);
+            const models: any[] = this.flow?.nodeModels?.() || [];
+            const ids: string[] = [];
+            for (const m of models) {
+              try {
+                const gp = m?.globalPoint?.();
+                const sz = m?.size?.();
+                const id = String(m?.rawNode?.id ?? '');
+                if (!gp || !sz || !id) continue;
+                const nx1 = gp.x, ny1 = gp.y, nx2 = gp.x + Number(sz.width || 0), ny2 = gp.y + Number(sz.height || 0);
+                const overlap = !(nx2 < minx || nx1 > maxx || ny2 < miny || ny1 > maxy);
+                if (overlap) ids.push(id);
+              } catch {}
+            }
+            const idsSet = new Set(ids);
+            this.selectionList = (this.nodes || []).filter(n => idsSet.has(String(n.id)));
+            this.selection = this.selectionList[0] || null;
+            try { this.setVflowSelectedIds(ids); } catch {}
+          }
+        }
+      } catch {}
+    } catch {}
+  }
+  onCanvasMouseUp(ev: MouseEvent) {
+    try {
+      if (this.ctxMenuVisible) return;
+      if (this.isEventOnUiControls(ev)) return;
+      if (!this.selectionBoxStart) return;
+      ev.preventDefault(); ev.stopPropagation();
+      const rect = this.selectionBoxRect;
+      this.selectionBoxStart = null;
+      this.selectionBoxRect = null;
+      this.marqueePrimed = false;
+      if (!rect || rect.width < 2 || rect.height < 2) { try { this.cdr.detectChanges(); } catch {}; return; }
+      const tl = this.flow?.documentPointToFlowPoint?.({ x: rect.left, y: rect.top });
+      const br = this.flow?.documentPointToFlowPoint?.({ x: rect.left + rect.width, y: rect.top + rect.height });
+      if (!tl || !br) { try { this.cdr.detectChanges(); } catch {}; return; }
+      const minx = Math.min((tl as any).x, (br as any).x), maxx = Math.max((tl as any).x, (br as any).x);
+      const miny = Math.min((tl as any).y, (br as any).y), maxy = Math.max((tl as any).y, (br as any).y);
+      const models: any[] = this.flow?.nodeModels?.() || [];
+      const ids: string[] = [];
+      for (const m of models) {
+        try {
+          const gp = m?.globalPoint?.();
+          const sz = m?.size?.();
+          const id = String(m?.rawNode?.id ?? '');
+          if (!gp || !sz || !id) continue;
+          const nx1 = gp.x, ny1 = gp.y, nx2 = gp.x + Number(sz.width || 0), ny2 = gp.y + Number(sz.height || 0);
+          const overlap = !(nx2 < minx || nx1 > maxx || ny2 < miny || ny1 > maxy);
+          if (overlap) ids.push(id);
+        } catch {}
+      }
+      const idsSet = new Set(ids);
+      this.selectionList = (this.nodes || []).filter(n => idsSet.has(String(n.id)));
+      this.selection = this.selectionList[0] || null;
+      try { this.editJson = this.selection ? JSON.stringify(this.selectedModel, null, 2) : ''; } catch { this.editJson = ''; }
+      try { this.setVflowSelectedIds(ids); } catch {}
+      try { this.cdr.detectChanges(); } catch {}
+    } catch {}
+  }
+
+  // Use native contextmenu from long-press (mobile) to start marquee on canvas only
+  onCanvasContextMenu(ev: MouseEvent) {
+    try {
+      this.dbg('onCanvasContextMenu', ev);
+      // Ignore if a UI control or a node
+      if (this.isEventOnUiControls(ev)) return;
+      if (this.isEventOnNode(ev)) return;
+      // Prefer mobile/coarse pointers; on desktop, right-click drag is handled elsewhere
+      if (!this.isCoarsePointer()) return;
+      // Only act when explicit marquee mode is enabled
+      if (!this.marqueeMode) return;
+      ev.preventDefault(); ev.stopPropagation();
+      // Start marquee from press point and mark as fired so touchmove extends it
+      const x = (ev as MouseEvent).clientX, y = (ev as MouseEvent).clientY;
+      this.selectionBoxStart = { x, y };
+      this.selectionBoxRect = { left: x, top: y, width: 0, height: 0 };
+      this.canvasLpFired = true;
+      this.triggerExplosion(x, y);
+      try { this.cdr.detectChanges(); } catch {}
+    } catch {}
+  }
+
+  // Mobile: long-press on canvas to emulate right-click marquee (or explicit toggle marqueeMode)
+  onCanvasTouchStart(ev: TouchEvent) {
+    try {
+      this.dbg('onCanvasTouchStart', ev);
+      if (this.ctxMenuVisible) return;
+      if (this.isEventOnUiControls(ev)) return;
+      if (!ev.touches || ev.touches.length !== 1) return;
+      const t = ev.touches[0];
+      // Ignore touches starting inside a node to keep node long-press behavior
+      if (this.isEventOnNode(ev)) return;
+      // If marquee mode explicitly enabled, start immediately (mobile/tablet)
+      if (this.marqueeMode && this.isCoarsePointer()) {
+        ev.preventDefault(); ev.stopPropagation();
+        this.canvasLpStartX = this.canvasLpCurX = t.clientX; this.canvasLpStartY = this.canvasLpCurY = t.clientY;
+        this.selectionBoxStart = { x: this.canvasLpStartX, y: this.canvasLpStartY };
+        this.selectionBoxRect = { left: this.canvasLpStartX, top: this.canvasLpStartY, width: 0, height: 0 };
+        this.canvasLpFired = true;
+        this.triggerExplosion(this.canvasLpStartX, this.canvasLpStartY);
+        return;
+      }
+      this.canvasLpStartX = this.canvasLpCurX = t.clientX; this.canvasLpStartY = this.canvasLpCurY = t.clientY;
+      this.canvasLpFired = false;
+      this.canvasTapCandidate = false;
+      if (this.canvasLpTimer) clearTimeout(this.canvasLpTimer);
+      this.canvasLpTimer = setTimeout(() => {
+        const dx = Math.abs(this.canvasLpCurX - this.canvasLpStartX);
+        const dy = Math.abs(this.canvasLpCurY - this.canvasLpStartY);
+        if (dx <= this.canvasLpMoveThresh && dy <= this.canvasLpMoveThresh) {
+          // Start marquee selection like right-click drag
+          this.selectionBoxStart = { x: this.canvasLpStartX, y: this.canvasLpStartY };
+          this.selectionBoxRect = { left: this.canvasLpStartX, top: this.canvasLpStartY, width: 0, height: 0 };
+          this.canvasLpFired = true;
+          this.triggerExplosion(this.canvasLpStartX, this.canvasLpStartY);
+        }
+      }, this.canvasLpDelay);
+    } catch {}
+  }
+  onCanvasTouchMove(ev: TouchEvent) {
+    try {
+      this.dbg('onCanvasTouchMove', ev);
+      if (this.ctxMenuVisible) return;
+      if (!ev.touches || ev.touches.length !== 1) return;
+      const t = ev.touches[0];
+      this.canvasLpCurX = t.clientX; this.canvasLpCurY = t.clientY;
+      const dx = Math.abs(this.canvasLpCurX - this.canvasLpStartX);
+      const dy = Math.abs(this.canvasLpCurY - this.canvasLpStartY);
+      if (!this.canvasLpFired) {
+        if (dx > this.canvasLpMoveThresh || dy > this.canvasLpMoveThresh) { if (this.canvasLpTimer) { clearTimeout(this.canvasLpTimer); this.canvasLpTimer = null; } }
+        return;
+      }
+      ev.preventDefault(); ev.stopPropagation();
+      const sx = this.selectionBoxStart?.x ?? this.canvasLpStartX;
+      const sy = this.selectionBoxStart?.y ?? this.canvasLpStartY;
+      const cx = this.canvasLpCurX, cy = this.canvasLpCurY;
+      const left = Math.min(sx, cx), top = Math.min(sy, cy);
+      const width = Math.abs(cx - sx), height = Math.abs(cy - sy);
+      this.selectionBoxRect = { left, top, width, height };
+      // Live selection while dragging
+      try {
+        if (width >= 2 && height >= 2) {
+          const tl = this.flow?.documentPointToFlowPoint?.({ x: left, y: top });
+          const br = this.flow?.documentPointToFlowPoint?.({ x: left + width, y: top + height });
+          if (tl && br) {
+            const minx = Math.min((tl as any).x, (br as any).x), maxx = Math.max((tl as any).x, (br as any).x);
+            const miny = Math.min((tl as any).y, (br as any).y), maxy = Math.max((tl as any).y, (br as any).y);
+            const models: any[] = this.flow?.nodeModels?.() || [];
+            const ids: string[] = [];
+            for (const m of models) {
+              try {
+                const gp = m?.globalPoint?.();
+                const sz = m?.size?.();
+                const id = String(m?.rawNode?.id ?? '');
+                if (!gp || !sz || !id) continue;
+                const nx1 = gp.x, ny1 = gp.y, nx2 = gp.x + Number(sz.width || 0), ny2 = gp.y + Number(sz.height || 0);
+                const overlap = !(nx2 < minx || nx1 > maxx || ny2 < miny || ny1 > maxy);
+                if (overlap) ids.push(id);
+              } catch {}
+            }
+            const idsSet = new Set(ids);
+            this.selectionList = (this.nodes || []).filter(n => idsSet.has(String(n.id)));
+            this.selection = this.selectionList[0] || null;
+            try { this.setVflowSelectedIds(ids); } catch {}
+          }
+        }
+      } catch {}
+    } catch {}
+  }
+  onCanvasTouchEnd(ev: TouchEvent) {
+    try {
+      this.dbg('onCanvasTouchEnd', ev);
+      if (this.ctxMenuVisible) return;
+      const wasFired = this.canvasLpFired;
+      if (this.canvasLpTimer) { clearTimeout(this.canvasLpTimer); this.canvasLpTimer = null; }
+      if (!wasFired) { this.canvasLpFired = false; this.canvasTapCandidate = false; return; }
+      ev.preventDefault(); ev.stopPropagation();
+      const rect = this.selectionBoxRect;
+      this.canvasLpFired = false;
+      // No double-tap mode: finalize only if we have a real rect
+      this.canvasTapCandidate = false;
+      this.selectionBoxStart = null;
+      this.selectionBoxRect = null;
+      if (!rect || rect.width < 2 || rect.height < 2) { try { this.cdr.detectChanges(); } catch {}; return; }
+      const tl = this.flow?.documentPointToFlowPoint?.({ x: rect.left, y: rect.top });
+      const br = this.flow?.documentPointToFlowPoint?.({ x: rect.left + rect.width, y: rect.top + rect.height });
+      if (!tl || !br) { try { this.cdr.detectChanges(); } catch {}; return; }
+      const minx = Math.min((tl as any).x, (br as any).x), maxx = Math.max((tl as any).x, (br as any).x);
+      const miny = Math.min((tl as any).y, (br as any).y), maxy = Math.max((tl as any).y, (br as any).y);
+      const models: any[] = this.flow?.nodeModels?.() || [];
+      const ids: string[] = [];
+      for (const m of models) {
+        try {
+          const gp = m?.globalPoint?.();
+          const sz = m?.size?.();
+          const id = String(m?.rawNode?.id ?? '');
+          if (!gp || !sz || !id) continue;
+          const nx1 = gp.x, ny1 = gp.y, nx2 = gp.x + Number(sz.width || 0), ny2 = gp.y + Number(sz.height || 0);
+          const overlap = !(nx2 < minx || nx1 > maxx || ny2 < miny || ny1 > maxy);
+          if (overlap) ids.push(id);
+        } catch {}
+      }
+      const idsSet = new Set(ids);
+      this.selectionList = (this.nodes || []).filter(n => idsSet.has(String(n.id)));
+      this.selection = this.selectionList[0] || null;
+      try { this.editJson = this.selection ? JSON.stringify(this.selectedModel, null, 2) : ''; } catch { this.editJson = ''; }
+      try { this.setVflowSelectedIds(ids); } catch {}
+      try { this.cdr.detectChanges(); } catch {}
+    } catch {}
+  }
+
+  // Desktop-style dblclick on canvas to start marquee (helps some Android browsers too)
+  onCanvasDblClick(ev: MouseEvent) {
+    try {
+      this.dbg('onCanvasDblClick', ev);
+      // Only if the dblclick occurred outside any node
+      if (this.ctxMenuVisible) return;
+      // Also bail if event path hits UI controls
+      if (this.isEventOnUiControls(ev)) return;
+      if (this.isEventOnNode(ev)) return;
+      // On iPad/Safari dblclick exists: use it to toggle marquee mode and start selection
+      this.marqueeMode = true;
+      const x = ev.clientX, y = ev.clientY;
+      this.selectionBoxStart = { x, y };
+      this.selectionBoxRect = { left: x, top: y, width: 0, height: 0 };
+      ev.preventDefault(); ev.stopPropagation();
+    } catch {}
+  }
+
+  // Document-level: improve double-tap detection on mobile browsers
+  @HostListener('document:touchend', ['$event'])
+  onDocumentTouchEnd(ev: TouchEvent) {
+    try {
+      this.dbg('onDocumentTouchEnd', ev);
+      if (this.ctxMenuVisible) return;
+      const t = (ev.changedTouches && ev.changedTouches[0]) || null;
+      if (!t) return;
+      const x = t.clientX, y = t.clientY;
+      // Only consider taps inside the canvas host bounds
+      const host = this.flowHost?.nativeElement as HTMLElement | undefined;
+      if (!host) return;
+      const r = host.getBoundingClientRect();
+      if (x < r.left || x > r.right || y < r.top || y > r.bottom) return;
+      // Ignore if tap ended on a node
+      if (this.isEventOnNode(ev)) return;
+      const now = Date.now();
+      // Double-tap mode disabled
+    } catch {}
+  }
+
   @HostListener('document:pointerup')
   @HostListener('document:pointercancel')
   onPointerUp() {
     if (this.isIgnoring()) return;
+    // If a programmatic alignment just occurred, skip this automatic move snapshot
+    const now = Date.now();
+    if (this.suppressNextMoveSnapshot || (this.lastAlignAt && (now - this.lastAlignAt) < 900) || (now < this.suppressMoveSnapshotUntil)) {
+      this.draggingNodes.clear();
+      this.pendingPositions = {} as any;
+      this.suppressNextMoveSnapshot = false;
+      this.endDragSelectionSync();
+      this.dragIntentActive = false; this.dragIntentIds = []; if (this.dragIntentTimer) { clearTimeout(this.dragIntentTimer); this.dragIntentTimer = null; }
+      return;
+    }
     if (!this.draggingNodes.size) return;
     const ids = Array.from(this.draggingNodes);
-    // logs disabled
-    const posMap = this.pendingPositions;
-    this.nodes = this.nodes.map(n => (posMap[n.id] ? ({ ...n, point: { x: posMap[n.id].x, y: posMap[n.id].y } }) : n));
-    this.draggingNodes.clear();
-    this.pendingPositions = {} as any;
-    this.pushState('node.position.final');
-    // Suppress spurious nodes.removed events that may follow a move
-    this.suppressNodesRemovedUntil = Date.now() + 400;
+    this.endDragSelectionSync();
+    this.dragIntentActive = false; this.dragIntentIds = []; if (this.dragIntentTimer) { clearTimeout(this.dragIntentTimer); this.dragIntentTimer = null; }
+    // Delay a bit so Vflow can finalize helper adjustments before we read positions
+    setTimeout(() => {
+      const updated: Record<string, { x: number; y: number }> = {};
+      for (const id of ids) {
+        try {
+          const node = this.flow?.getNode?.(id) || (isFinite(Number(id)) ? this.flow?.getNode?.(Number(id) as any) : null);
+          if (node && node.point && typeof node.point.x === 'number' && typeof node.point.y === 'number') {
+            updated[id] = { x: node.point.x, y: node.point.y };
+          }
+        } catch {}
+      }
+      // Fallback to pending cache for any id we couldn't read from Vflow
+      for (const id of ids) {
+        
+        if (/* !updated[id] && */ this.pendingPositions[id]) {
+
+          updated[id] = { ...this.pendingPositions[id] };
+      
+        }
+        else {
+          // debug logs removed
+        }
+      }
+      // Apply only if there is an actual change to limit re-renders that may block clicks
+      let changed = false;
+      const next = this.nodes.map(n => {
+        const u = updated[n.id];
+        if (!u) return n;
+        const cx = Number(n?.point?.x ?? NaN);
+        const cy = Number(n?.point?.y ?? NaN);
+        if (!isFinite(cx) || !isFinite(cy) || u.x !== cx || u.y !== cy) {
+          changed = true;
+          return { ...n, point: { x: u.x, y: u.y } };
+        }
+        return n;
+      });
+      if (changed) {
+        this.nodes = next;
+        try { this.cdr.detectChanges(); } catch {}
+      }
+      this.draggingNodes.clear();
+      this.pendingPositions = {} as any;
+      const reason = ids.length > 1 ? 'nodes.position.final' : 'node.position.final';
+      this.pushState(reason);
+      this.suppressNodesRemovedUntil = Date.now() + 400;
+    }, 240);
   }
+
+  
 
   onNodesRemoved(changes: any[]) {
     if (this.isIgnoring()) { return; }
@@ -3077,18 +6982,9 @@ export class FlowBuilderComponent {
       const ids = new Set((changes || []).map(c => c?.id).filter(Boolean));
       if (Date.now() < this.suppressNodesRemovedUntil) { this.log('nodes.removed.ignored.window', { until: this.suppressNodesRemovedUntil }); return; }
       if (!ids.size) return;
-      const beforeNodes = this.nodes.length;
-      const beforeEdges = this.edges.length;
       this.log('nodes.removed', { ids: Array.from(ids) });
-      this.nodes = this.nodes.filter(n => !ids.has(n.id));
-      this.edges = this.edges.filter(e => !ids.has(String(e.source)) && !ids.has(String(e.target)));
-      const changed = (this.nodes.length !== beforeNodes) || (this.edges.length !== beforeEdges);
-      ids.forEach(id => this.errorNodes.delete(String(id)));
-      if (changed) {
-        // Removal can break error paths: recompute error propagation
-        this.recomputeErrorPropagation();
-        this.pushState('nodes.removed');
-      }
+      // Remove directly; orphan chats will be cleaned up on save
+      this.scheduleRemove(ids, 'nodes.removed');
     } catch { }
   }
   onEdgesRemoved(changes: any[]) {
@@ -3101,14 +6997,15 @@ export class FlowBuilderComponent {
       this.log('edges.removed', { ids: Array.from(removedIds) });
       const nextEdges: Edge[] = [];
       let changed = false;
+      const removedList: Edge[] = [] as any;
       for (const e of this.edges) {
         if (!removedIds.has(e.id as any)) { nextEdges.push(e); continue; }
         const isAllowedDeletion = this.allowedRemovedEdgeIds.has(e.id as any);
-        if (isAllowedDeletion) { changed = true; continue; }
+        if (isAllowedDeletion) { changed = true; removedList.push(e); continue; }
         // Only remove if one of the endpoints no longer exists; otherwise ignore (likely a transient detach while reattaching)
         const hasSource = this.nodes.some(n => n.id === e.source);
         const hasTarget = this.nodes.some(n => n.id === e.target);
-        if (!hasSource || !hasTarget) { changed = true; continue; }
+        if (!hasSource || !hasTarget) { changed = true; removedList.push(e); continue; }
         // Keep the edge; will be restored visually
         nextEdges.push(e);
       }
@@ -3117,6 +7014,13 @@ export class FlowBuilderComponent {
         // Any change in edges can affect error-branch propagation
         this.recomputeErrorPropagation();
         this.pushState('edges.removed');
+        // Prime assist for freed handles so the + reappears promptly
+        try {
+          for (const e of removedList) {
+            this.primeAssistForHandle(String(e.source), String((e as any).sourceHandle || 'out'), 0);
+          }
+          this.cdr.detectChanges();
+        } catch {}
       }
     } catch { }
   }
@@ -3174,7 +7078,9 @@ export class FlowBuilderComponent {
     try {
       if (!this.previewBaseline) this.previewBaseline = this.snapshot();
       this.beginApplyingHistory(400);
-      this.suppressGraphEventsUntil = Date.now() + 800;
+      const now = Date.now();
+      this.suppressGraphEventsUntil = now + 800;
+      this.suppressNodesRemovedUntil = now + 1200;
       this.nodes = JSON.parse(JSON.stringify(s.nodes || []));
       this.edges = JSON.parse(JSON.stringify(s.edges || []));
       this.recomputeErrorPropagation();
@@ -3186,7 +7092,9 @@ export class FlowBuilderComponent {
     try {
       const s = this.previewBaseline; this.previewBaseline = null;
       this.beginApplyingHistory(200);
-      this.suppressGraphEventsUntil = Date.now() + 600;
+      const now = Date.now();
+      this.suppressGraphEventsUntil = now + 600;
+      this.suppressNodesRemovedUntil = now + 900;
       this.nodes = JSON.parse(JSON.stringify(s.nodes || []));
       this.edges = JSON.parse(JSON.stringify(s.edges || []));
       this.recomputeErrorPropagation();
@@ -3208,20 +7116,17 @@ export class FlowBuilderComponent {
         const meta = metas[origIndex];
         if (meta) { const t = this.formatTime(meta.ts); const d = this.describeReason(meta.reason); loadedMsg = `Snapshot chargé • ${t} • ${d.type} – ${d.message}`; }
       } catch { }
-      let cur = this.snapshot();
-      const steps = Math.max(0, Number(index) || 0);
-      for (let i = 0; i < steps; i++) {
-        const next = this.history.undo(cur);
-        if (!next) break;
-        cur = next;
-      }
-      this.nodes = cur.nodes; this.edges = cur.edges as any;
+      const uiIndex = Math.max(0, Number(index) || 0);
+      const origIndex = Math.max(0, (this.history.pastCount() - 1) - uiIndex);
+      const snap = this.history.getPastAt(origIndex);
+      if (!snap) return;
+      this.nodes = snap.nodes; this.edges = snap.edges as any;
       this.recomputeErrorPropagation();
       try { this.cdr.detectChanges(); } catch { }
-      try { this.history.push(this.snapshot(), 'restore', true); } catch { }
+      try { this.history.pushRestore(this.snapshot(), 'restore'); } catch { }
       try { this.updateTimelineCaches(); } catch { }
       try {
-        if (!loadedMsg) loadedMsg = steps > 0 ? `Snapshot chargé (undo ×${steps})` : 'Snapshot courant';
+        if (!loadedMsg) loadedMsg = uiIndex > 0 ? `Snapshot chargé (undo ×${uiIndex})` : 'Snapshot courant';
         this.message.success(loadedMsg);
       } catch { this.showToast(loadedMsg || 'Snapshot chargé'); }
     } catch { }
@@ -3239,20 +7144,16 @@ export class FlowBuilderComponent {
         const meta = metas[uiIndex];
         if (meta) { const t = this.formatTime(meta.ts); const d = this.describeReason(meta.reason); loadedMsg = `Snapshot chargé • ${t} • ${d.type} – ${d.message}`; }
       } catch { }
-      let cur = this.snapshot();
-      const steps = Math.max(0, index + 1); // index 0 = next redo
-      for (let i = 0; i < steps; i++) {
-        const next = this.history.redo(cur);
-        if (!next) break;
-        cur = next;
-      }
-      this.nodes = cur.nodes; this.edges = cur.edges as any;
+      const uiIndex = Math.max(0, Number(index) || 0);
+      const snap = this.history.getFutureAt(uiIndex);
+      if (!snap) return;
+      this.nodes = snap.nodes; this.edges = snap.edges as any;
       this.recomputeErrorPropagation();
       try { this.cdr.detectChanges(); } catch { }
-      try { this.history.push(this.snapshot(), 'restore', true); } catch { }
+      try { this.history.pushRestore(this.snapshot(), 'restore'); } catch { }
       try { this.updateTimelineCaches(); } catch { }
       try {
-        if (!loadedMsg) loadedMsg = `Snapshot chargé (redo ×${steps})`;
+        if (!loadedMsg) loadedMsg = `Snapshot chargé (redo ×${uiIndex + 1})`;
         this.message.success(loadedMsg);
       } catch { this.showToast(loadedMsg || 'Snapshot chargé'); }
     } catch { }
@@ -3317,5 +7218,96 @@ export class FlowBuilderComponent {
       if (input) input.value = '';
     };
     reader.readAsText(file);
+  }
+  // v2 typing — validate connections by handle types
+  private getHandleType(nodeId: string, handleId: string, direction: 'source'|'target'): string | null {
+    try {
+      const n = this.nodes.find((nn: any) => String(nn.id) === String(nodeId));
+      const tpl = (n?.data?.model?.templateObj) || (n?.data?.model) || {};
+      const arr = direction === 'source' ? (tpl.outputHandles || []) : (tpl.inputHandles || []);
+      const h = (arr as any[]).find((hh: any) => String(hh?.id) === String(handleId));
+      // Fallbacks: default handles when none are declared in template
+      if (!h) {
+        // Default source handle (e.g., start/out): assume any
+        if (direction === 'source') return 'any';
+        // Default target handle 'in' when no inputHandles defined
+        if (direction === 'target' && String(handleId) === 'in') return 'any';
+      }
+      return h?.type || 'any';
+    } catch { return null; }
+  }
+  private getHandleDef(nodeId: string, handleId: string, direction: 'source'|'target'): any | null {
+    try {
+      const n = this.nodes.find((nn: any) => String(nn.id) === String(nodeId));
+      const tpl = (n?.data?.model?.templateObj) || (n?.data?.model) || {};
+      const arr = direction === 'source' ? (tpl.outputHandles || []) : (tpl.inputHandles || []);
+      const h = (arr as any[]).find((hh: any) => String(hh?.id) === String(handleId));
+      return h || null;
+    } catch { return null; }
+  }
+  private validateConnection(c: Connection): boolean {
+    try {
+      const sourceId = String(c.source);
+      const targetId = String(c.target);
+      const sourceHandle = String(c.sourceHandle || '');
+      const targetHandle = String(c.targetHandle || '');
+      if (!sourceId || !targetId) return false;
+
+      const sType = this.getHandleType(sourceId, sourceHandle, 'source') || 'any';
+
+      // Resolve target template and kind
+      const tNode = this.nodes.find((nn: any) => String(nn.id) === targetId);
+      const tpl = (tNode?.data?.model?.templateObj) || (tNode?.data?.model) || {};
+      const nodeKind = String(tpl?.type || tpl?.nodeKind || '').toLowerCase();
+
+      // Triggers: never accept inputs (start / event / start_form / endpoint)
+      if (nodeKind === 'start' || nodeKind === 'start_form' || nodeKind === 'event' || nodeKind === 'endpoint') return false;
+
+      // Accepts list on input handle (primary path)
+      let accepts: string[] = [];
+      const ih = (tpl.inputHandles || []).find((hh: any) => String(hh?.id) === targetHandle);
+      if (ih && Array.isArray((ih as any)?.accepts)) accepts = (ih as any).accepts;
+
+      // If no explicit input accepts, check linkedHandles for a match
+      if (!accepts.length) {
+        const links = Array.isArray((tpl as any).linkedHandles) ? (tpl as any).linkedHandles : [];
+        const lh = links.find((hh:any) => String(hh?.id) === targetHandle);
+        if (lh && Array.isArray(lh.accepts)) accepts = lh.accepts;
+      }
+
+      // Default target 'in' with no explicit inputHandles: treat as accepts:any
+      if (!accepts.length && targetHandle === 'in' && !(Array.isArray(tpl.inputHandles) && tpl.inputHandles.length)) {
+        accepts = ['any'];
+      }
+
+      // Decision: allow if source is any OR target accepts any OR target accepts the source type
+      if (sType === 'any' || accepts.includes('any') || accepts.includes(sType)) {
+        // Enforce multiplicity (fan-out/fan-in)
+        // Source multiplicity (outputHandles)
+        let sMultiple = true;
+        try { const sDef = this.getHandleDef(sourceId, sourceHandle, 'source'); sMultiple = (sDef?.multiple !== false); } catch {}
+        if (!sMultiple) {
+          const existingOut = (this.edges || []).filter((e: any) => String(e.source) === sourceId && String(e.sourceHandle || '') === sourceHandle).length;
+          if (existingOut >= 1) return false;
+        }
+        // Target multiplicity (inputHandles or linkedHandles)
+        let tMultiple = true;
+        try {
+          const tNode2 = this.nodes.find((nn: any) => String(nn.id) === targetId);
+          const tpl2 = (tNode2?.data?.model?.templateObj) || (tNode2?.data?.model) || {};
+          const ih2 = (tpl2.inputHandles || []).find((hh: any) => String(hh?.id) === targetHandle);
+          const links2 = Array.isArray((tpl2 as any).linkedHandles) ? (tpl2 as any).linkedHandles : [];
+          const lh2 = links2.find((hh:any) => String(hh?.id) === targetHandle);
+          const def = ih2 || lh2;
+          if (def && def.multiple === false) tMultiple = false;
+        } catch {}
+        if (!tMultiple) {
+          const existingIn = (this.edges || []).filter((e: any) => String(e.target) === targetId && String(e.targetHandle || '') === targetHandle).length;
+          if (existingIn >= 1) return false;
+        }
+        return true;
+      }
+      return false;
+    } catch { return false; }
   }
 }

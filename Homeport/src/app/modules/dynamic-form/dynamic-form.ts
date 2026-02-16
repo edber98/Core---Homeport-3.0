@@ -260,7 +260,19 @@ export class DynamicForm implements OnInit, OnChanges {
   get ui() { return this.schema.ui; }
   get containerStyle() { return this.schema.ui?.containerStyle || {}; }
   get actionsStyle() { return this.schema.ui?.actions?.actionsStyle || {}; }
-  get buttonStyle() { return this.schema.ui?.actions?.buttonStyle || {}; }
+  get buttonStyle() {
+    const base = this.schema.ui?.actions?.buttonStyle || {};
+    const out: any = { ...base };
+    const isZero = (v: any) => v === 0 || v === '0' || v === '0px';
+    const hasPadding = ('padding' in out) && !isZero(out.padding);
+    const hasLeft = ('paddingLeft' in out) && !isZero(out.paddingLeft);
+    const hasRight = ('paddingRight' in out) && !isZero(out.paddingRight);
+    if (!hasPadding && !hasLeft && !hasRight) {
+      out.paddingLeft = '10px';
+      out.paddingRight = '10px';
+    }
+    return out;
+  }
   get showReset() { return !!this.schema.ui?.actions?.showReset; }
   // Hide cancel button as requested; keep only Reset/Submit
   get showCancel() { return false; }
@@ -355,6 +367,10 @@ export class DynamicForm implements OnInit, OnChanges {
   // ===== Résumé (getters)
   get summaryEnabled(): boolean { return !!this.schema.summary?.enabled; }
   get summaryTitle(): string { return this.schema.summary?.title || 'Résumé'; }
+  get showTitle(): boolean { return (this.schema?.displayTitle ?? true) && !!this.schema?.title; }
+  get showDescription(): boolean { return (this.schema?.displayDescription ?? true) && !!this.schema?.description; }
+  get titleAlign(): string | null { return this.schema?.centerTitle ? 'center' : null; }
+  get descriptionAlign(): string | null { return this.schema?.centerDescription ? 'center' : null; }
   get realStepsCount(): number { return this.visibleSteps.length; }
   get summaryIndex(): number { return this.realStepsCount + (this.summaryEnabled ? 1 : 0) - 1; }
   get summaryModel() {

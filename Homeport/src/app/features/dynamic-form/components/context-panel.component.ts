@@ -10,11 +10,12 @@ import { FormsModule } from '@angular/forms';
 import { MonacoJsonEditorComponent } from './monaco-json-editor.component';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
+import { NzTabsModule } from 'ng-zorro-antd/tabs';
 
 @Component({
   selector: 'df-context-panel',
   standalone: true,
-  imports: [CommonModule, FormsModule, NzCardModule, NzButtonModule, NzDividerModule, NzTreeModule, NzDropDownModule, NzMenuModule, NzInputModule, NzToolTipModule, MonacoJsonEditorComponent],
+  imports: [CommonModule, FormsModule, NzCardModule, NzButtonModule, NzDividerModule, NzTreeModule, NzDropDownModule, NzMenuModule, NzInputModule, NzToolTipModule, NzTabsModule, MonacoJsonEditorComponent],
   templateUrl: './context-panel.component.html',
   styleUrls: ['./context-panel.component.scss']
 })
@@ -24,8 +25,8 @@ export class ContextPanelComponent {
   @Input() stepsMode = false;
   @Input() canAddSectionBtn = true;
   @Input() canAddFieldBtn = true;
-  @Input() canQuickAddField = true;
   @Input() json = '';
+  @Input() activeTab: 'structure' | 'import' = 'structure';
 
   @Output() selectFormSettings = new EventEmitter<void>();
   @Output() addStep = new EventEmitter<void>();
@@ -65,13 +66,38 @@ export class ContextPanelComponent {
   @Output() ctxFieldInsertBefore = new EventEmitter<{ key: string }>();
   @Output() ctxFieldInsertAfter = new EventEmitter<{ key: string }>();
 
-  @Output() quickAdd = new EventEmitter<string>();
   @Output() jsonChange = new EventEmitter<string>();
   @Output() doImport = new EventEmitter<void>();
   @Output() doExport = new EventEmitter<void>();
 
   currentCtxKey: string | null = null;
   constructor(private dropdown: NzContextMenuService) {}
+
+  iconForNode(node: any): string {
+    const type = node?.origin?.type ?? node?.type;
+    switch (type) {
+      case 'root': return 'fa-solid fa-sliders';
+      case 'step': return 'fa-solid fa-list-ol';
+      case 'section': return 'fa-solid fa-layer-group';
+      case 'section_array': return 'fa-solid fa-boxes-stacked';
+      case 'text': return 'fa-solid fa-font';
+      case 'textarea': return 'fa-solid fa-align-left';
+      case 'number': return 'fa-solid fa-hashtag';
+      case 'date': return 'fa-regular fa-calendar';
+      case 'cron': return 'fa-regular fa-clock';
+      case 'select': return 'fa-solid fa-caret-down';
+      case 'radio': return 'fa-regular fa-circle-dot';
+      case 'checkbox': return 'fa-regular fa-square-check';
+      case 'email': return 'fa-solid fa-envelope';
+      case 'tel': return 'fa-solid fa-phone';
+      case 'color': return 'fa-solid fa-palette';
+      case 'file': return 'fa-solid fa-file-arrow-up';
+      case 'tags': return 'fa-solid fa-tags';
+      case 'schema_builder': return 'fa-solid fa-table-columns';
+      case 'textblock': return 'fa-solid fa-paragraph';
+      default: return 'fa-solid fa-square-plus';
+    }
+  }
 
   onTreeClick(evt: any) {
     const key = evt?.node?.key as string | undefined;

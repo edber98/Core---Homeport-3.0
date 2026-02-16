@@ -1,0 +1,17 @@
+<div class="schema-builder">
+  <div class="schema-header">
+    <span class="schema-count" *ngIf="fieldCount">{{ fieldCount }} champ{{ fieldCount > 1 ? 's' : '' }}</span>
+    <span class="schema-count" *ngIf="!fieldCount">Aucun champ</span>
+    <button nz-button nzType="link" nzSize="small" (click)="openFormBuilder()" nz-tooltip="Ouvrir l'éditeur de formulaire">
+      <i class="fa-solid fa-up-right-from-square"></i> Éditeur complet
+    </button>
+  </div>
+  <div class="schema-form-preview" *ngIf="formSchema && fieldCount">
+    <ng-container #previewContainer></ng-container>
+  </div>
+  <div *ngIf="!formSchema || !fieldCount" class="schema-empty">
+    <button nz-button nzType="dashed" nzSize="small" (click)="openFormBuilder()" class="schema-add-btn">
+      <i class="fa-solid fa-plus"></i> Créer le schéma
+    </button>
+  </div>
+</div>

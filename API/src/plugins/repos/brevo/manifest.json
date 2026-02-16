@@ -1,0 +1,2453 @@
+{
+  "repo": {
+    "name": "brevo",
+    "type": "local",
+    "label": "Brevo"
+  },
+  "variables": {
+    "brevo_contact": {
+      "title": "Contact Brevo",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du contact.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "email",
+          "key": "email",
+          "label": "Email",
+          "description": "Adresse e-mail du contact.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "firstName",
+          "label": "Prénom",
+          "description": "Prénom du contact.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "lastName",
+          "label": "Nom",
+          "description": "Nom de famille du contact.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "tel",
+          "key": "phone",
+          "label": "Téléphone",
+          "description": "Numéro de téléphone.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "createdAt",
+          "label": "Date création",
+          "description": "Date de création du contact.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "brevo_contacts": {
+      "title": "Contacts",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Total",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Contacts",
+          "description": "Liste des contacts",
+          "mode": "array",
+          "key": "contacts",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "email",
+              "key": "email",
+              "label": "Email",
+              "description": "Adresse e-mail.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "firstName",
+              "label": "Prénom",
+              "description": "Prénom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "lastName",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "tel",
+              "key": "phone",
+              "label": "Téléphone",
+              "description": "Téléphone.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "createdAt",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "brevo_list": {
+      "title": "Liste Brevo",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant de la liste.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom de la liste.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "totalSubscribers",
+          "label": "Abonnés",
+          "description": "Nombre total d abonnés.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "folderId",
+          "label": "Dossier ID",
+          "description": "Identifiant du dossier.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "createdAt",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "brevo_lists": {
+      "title": "Listes",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Total",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Listes",
+          "description": "Liste des listes de contacts",
+          "mode": "array",
+          "key": "lists",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "totalSubscribers",
+              "label": "Abonnés",
+              "description": "Nombre d abonnés.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "folderId",
+              "label": "Dossier ID",
+              "description": "Dossier.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "createdAt",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "brevo_campaign": {
+      "title": "Campagne Brevo",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant de la campagne.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom de la campagne.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "subject",
+          "label": "Sujet",
+          "description": "Sujet de la campagne.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut de la campagne.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "type",
+          "label": "Type",
+          "description": "Type de campagne.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "createdAt",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "scheduledAt",
+          "label": "Date planifiée",
+          "description": "Date d envoi planifiée.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "brevo_campaigns": {
+      "title": "Campagnes",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Total",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Campagnes",
+          "description": "Liste des campagnes",
+          "mode": "array",
+          "key": "campaigns",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "subject",
+              "label": "Sujet",
+              "description": "Sujet.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "type",
+              "label": "Type",
+              "description": "Type.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "createdAt",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "brevo_email": {
+      "title": "E-mail transactionnel",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "messageId",
+          "label": "Message ID",
+          "description": "Identifiant du message envoyé.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut de l envoi.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "brevo_template": {
+      "title": "Template Brevo",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du template.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom du template.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "subject",
+          "label": "Sujet",
+          "description": "Sujet du template.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "htmlContent",
+          "label": "Contenu HTML",
+          "description": "Contenu HTML du template.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "createdAt",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "brevo_templates": {
+      "title": "Templates",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Total",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Templates",
+          "description": "Liste des templates",
+          "mode": "array",
+          "key": "templates",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "subject",
+              "label": "Sujet",
+              "description": "Sujet.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "createdAt",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "brevo_sender": {
+      "title": "Expéditeur Brevo",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "email",
+          "key": "email",
+          "label": "Email",
+          "description": "Adresse e-mail.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "active",
+          "label": "Actif",
+          "description": "Statut actif.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "brevo_senders": {
+      "title": "Expéditeurs",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Expéditeurs",
+          "description": "Liste des expéditeurs",
+          "mode": "array",
+          "key": "senders",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "email",
+              "key": "email",
+              "label": "Email",
+              "description": "Email.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "active",
+              "label": "Actif",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "brevo_result": {
+      "title": "Résultat",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut de l opération.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "message",
+          "label": "Message",
+          "description": "Message de retour.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "brevo_event": {
+      "title": "Événement Brevo",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "event",
+          "label": "Événement",
+          "description": "Type d événement.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "email",
+          "key": "email",
+          "label": "Email",
+          "description": "Adresse e-mail concernée.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "date",
+          "label": "Date",
+          "description": "Date de l événement.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "messageId",
+          "label": "Message ID",
+          "description": "Identifiant du message.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "subject",
+          "label": "Sujet",
+          "description": "Sujet du message.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "brevo",
+      "name": "Brevo",
+      "title": "Brevo",
+      "iconClass": "fa-solid fa-paper-plane",
+      "iconUrl": "https://s3-eu-west-1.amazonaws.com/tpd/logos/64673af70acf8e2ffe4a4d29/0x0.png",
+      "color": "#7dd4b8",
+      "tags": [
+        "brevo",
+        "email",
+        "marketing",
+        "sendinblue"
+      ],
+      "categories": [
+        "Marketing"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Brevo",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "apiKey",
+            "label": "Clé API",
+            "description": "Clé API Brevo (v3).",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "brevo_contact_create",
+      "name": "brevoContactCreate",
+      "schemaVersion": 2,
+      "title": "Créer un contact",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Brevo",
+      "providerKey": "brevo",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:brevo_contact"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un nouveau contact dans Brevo.",
+      "args": {
+        "title": "Créer un contact",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "email",
+            "key": "email",
+            "label": "Email",
+            "description": "Adresse e-mail du contact.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "firstName",
+            "label": "Prénom",
+            "description": "Prénom du contact.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "lastName",
+            "label": "Nom",
+            "description": "Nom de famille.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "tel",
+            "key": "phone",
+            "label": "Téléphone",
+            "description": "Numéro de téléphone.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "attributes",
+            "label": "Attributs (JSON)",
+            "description": "Attributs supplémentaires en JSON.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Contacts",
+      "icon": "fa-solid fa-square-plus",
+      "tags": [
+        "création",
+        "brevo"
+      ],
+      "group": "Contacts"
+    },
+    {
+      "key": "brevo_contact_get",
+      "name": "brevoContactGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un contact",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Brevo",
+      "providerKey": "brevo",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:brevo_contact"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère un contact Brevo par email ou ID.",
+      "args": {
+        "title": "Récupérer un contact",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "identifier",
+            "label": "Identifiant",
+            "description": "Email ou ID du contact.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Contacts",
+      "icon": "fa-solid fa-eye",
+      "tags": [
+        "lecture",
+        "brevo"
+      ],
+      "group": "Contacts"
+    },
+    {
+      "key": "brevo_contact_update",
+      "name": "brevoContactUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier un contact",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Brevo",
+      "providerKey": "brevo",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:brevo_contact"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Met à jour un contact existant dans Brevo.",
+      "args": {
+        "title": "Modifier un contact",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "email",
+            "key": "email",
+            "label": "Email",
+            "description": "Email du contact à modifier.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "firstName",
+            "label": "Prénom",
+            "description": "Nouveau prénom.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "lastName",
+            "label": "Nom",
+            "description": "Nouveau nom.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "tel",
+            "key": "phone",
+            "label": "Téléphone",
+            "description": "Nouveau téléphone.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "attributes",
+            "label": "Attributs (JSON)",
+            "description": "Attributs à mettre à jour (JSON).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Contacts",
+      "icon": "fa-solid fa-pen-to-square",
+      "tags": [
+        "mise-à-jour",
+        "brevo"
+      ],
+      "group": "Contacts"
+    },
+    {
+      "key": "brevo_contact_delete",
+      "name": "brevoContactDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un contact",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Brevo",
+      "providerKey": "brevo",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:brevo_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Supprime un contact de Brevo.",
+      "args": {
+        "title": "Supprimer un contact",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "identifier",
+            "label": "Identifiant",
+            "description": "Email ou ID du contact.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Contacts",
+      "icon": "fa-solid fa-trash",
+      "tags": [
+        "suppression",
+        "brevo"
+      ],
+      "group": "Contacts"
+    },
+    {
+      "key": "brevo_contacts_list",
+      "name": "brevoContactsList",
+      "schemaVersion": 2,
+      "title": "Lister les contacts",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Brevo",
+      "providerKey": "brevo",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:brevo_contacts"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les contacts Brevo.",
+      "args": {
+        "title": "Lister les contacts",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre de résultats (défaut 50).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "offset",
+            "label": "Décalage",
+            "description": "Décalage de pagination.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Contacts",
+      "icon": "fa-solid fa-list",
+      "tags": [
+        "liste",
+        "brevo"
+      ],
+      "group": "Contacts"
+    },
+    {
+      "key": "brevo_contacts_import",
+      "name": "brevoContactsImport",
+      "schemaVersion": 2,
+      "title": "Importer des contacts",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Brevo",
+      "providerKey": "brevo",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:brevo_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Importe des contacts dans Brevo.",
+      "args": {
+        "title": "Importer des contacts",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "listIds",
+            "label": "IDs de listes",
+            "description": "IDs de listes (séparés par des virgules).",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "jsonBody",
+            "label": "Données JSON",
+            "description": "Corps JSON de l import.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Contacts",
+      "icon": "fa-solid fa-file-arrow-up",
+      "tags": [
+        "importation",
+        "brevo"
+      ],
+      "group": "Contacts"
+    },
+    {
+      "key": "brevo_list_create",
+      "name": "brevoListCreate",
+      "schemaVersion": 2,
+      "title": "Créer une liste",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Brevo",
+      "providerKey": "brevo",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:brevo_list"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée une nouvelle liste de contacts Brevo.",
+      "args": {
+        "title": "Créer une liste",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nom de la liste.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "folderId",
+            "label": "Dossier ID",
+            "description": "Identifiant du dossier parent.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Listes",
+      "icon": "fa-solid fa-square-plus",
+      "tags": [
+        "création",
+        "brevo"
+      ],
+      "group": "Listes"
+    },
+    {
+      "key": "brevo_list_get",
+      "name": "brevoListGet",
+      "schemaVersion": 2,
+      "title": "Récupérer une liste",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Brevo",
+      "providerKey": "brevo",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:brevo_list"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère les détails d une liste Brevo.",
+      "args": {
+        "title": "Récupérer une liste",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "listId",
+            "label": "Liste ID",
+            "description": "Identifiant de la liste.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Listes",
+      "icon": "fa-solid fa-eye",
+      "tags": [
+        "lecture",
+        "brevo"
+      ],
+      "group": "Listes"
+    },
+    {
+      "key": "brevo_lists_list",
+      "name": "brevoListsList",
+      "schemaVersion": 2,
+      "title": "Lister les listes",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Brevo",
+      "providerKey": "brevo",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:brevo_lists"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les listes de contacts Brevo.",
+      "args": {
+        "title": "Lister les listes",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre de résultats (défaut 10).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "offset",
+            "label": "Décalage",
+            "description": "Décalage de pagination.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Listes",
+      "icon": "fa-solid fa-list",
+      "tags": [
+        "liste",
+        "brevo"
+      ],
+      "group": "Listes"
+    },
+    {
+      "key": "brevo_list_add_contacts",
+      "name": "brevoListAddContacts",
+      "schemaVersion": 2,
+      "title": "Ajouter des contacts à une liste",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Brevo",
+      "providerKey": "brevo",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:brevo_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Ajoute des contacts à une liste Brevo.",
+      "args": {
+        "title": "Ajouter des contacts à une liste",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "listId",
+            "label": "Liste ID",
+            "description": "Identifiant de la liste.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "emails",
+            "label": "Emails",
+            "description": "Emails des contacts.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Listes",
+      "icon": "fa-solid fa-user-plus",
+      "tags": [
+        "mise-à-jour",
+        "brevo"
+      ],
+      "group": "Listes"
+    },
+    {
+      "key": "brevo_campaign_create",
+      "name": "brevoCampaignCreate",
+      "schemaVersion": 2,
+      "title": "Créer une campagne",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Brevo",
+      "providerKey": "brevo",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:brevo_campaign"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée une nouvelle campagne e-mail Brevo.",
+      "args": {
+        "title": "Créer une campagne",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nom de la campagne.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "subject",
+            "label": "Sujet",
+            "description": "Sujet de la campagne.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "sender_name",
+            "label": "Nom expéditeur",
+            "description": "Nom de l expéditeur.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "email",
+            "key": "sender_email",
+            "label": "Email expéditeur",
+            "description": "Email de l expéditeur.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "listIds",
+            "label": "IDs de listes",
+            "description": "IDs de listes destinataires.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "htmlContent",
+            "label": "Contenu HTML",
+            "description": "Contenu HTML de la campagne.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "templateId",
+            "label": "Template ID",
+            "description": "ID du template à utiliser.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Campagnes",
+      "icon": "fa-solid fa-square-plus",
+      "tags": [
+        "création",
+        "brevo"
+      ],
+      "group": "Campagnes"
+    },
+    {
+      "key": "brevo_campaign_get",
+      "name": "brevoCampaignGet",
+      "schemaVersion": 2,
+      "title": "Récupérer une campagne",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Brevo",
+      "providerKey": "brevo",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:brevo_campaign"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère les détails d une campagne Brevo.",
+      "args": {
+        "title": "Récupérer une campagne",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "campaignId",
+            "label": "Campagne ID",
+            "description": "Identifiant de la campagne.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Campagnes",
+      "icon": "fa-solid fa-eye",
+      "tags": [
+        "lecture",
+        "brevo"
+      ],
+      "group": "Campagnes"
+    },
+    {
+      "key": "brevo_campaigns_list",
+      "name": "brevoCampaignsList",
+      "schemaVersion": 2,
+      "title": "Lister les campagnes",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Brevo",
+      "providerKey": "brevo",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:brevo_campaigns"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les campagnes e-mail Brevo.",
+      "args": {
+        "title": "Lister les campagnes",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre de résultats (défaut 10).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "offset",
+            "label": "Décalage",
+            "description": "Décalage de pagination.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "select",
+            "key": "status",
+            "label": "Statut",
+            "description": "Filtrer par statut.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "Brouillon",
+                "value": "draft"
+              },
+              {
+                "label": "Envoyée",
+                "value": "sent"
+              },
+              {
+                "label": "En file",
+                "value": "queued"
+              },
+              {
+                "label": "Archivée",
+                "value": "archive"
+              }
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Campagnes",
+      "icon": "fa-solid fa-list",
+      "tags": [
+        "liste",
+        "brevo"
+      ],
+      "group": "Campagnes"
+    },
+    {
+      "key": "brevo_campaign_send_test",
+      "name": "brevoCampaignSendTest",
+      "schemaVersion": 2,
+      "title": "Envoyer un test de campagne",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Brevo",
+      "providerKey": "brevo",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:brevo_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Envoie un e-mail test d une campagne.",
+      "args": {
+        "title": "Envoyer un test de campagne",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "campaignId",
+            "label": "Campagne ID",
+            "description": "Identifiant de la campagne.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "emailTo",
+            "label": "Destinataires test",
+            "description": "Emails des destinataires test.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Campagnes",
+      "icon": "fa-solid fa-paper-plane",
+      "tags": [
+        "envoi",
+        "brevo"
+      ],
+      "group": "Campagnes"
+    },
+    {
+      "key": "brevo_campaign_send_now",
+      "name": "brevoCampaignSendNow",
+      "schemaVersion": 2,
+      "title": "Envoyer une campagne",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Brevo",
+      "providerKey": "brevo",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:brevo_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Envoie immédiatement une campagne Brevo.",
+      "args": {
+        "title": "Envoyer une campagne",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "campaignId",
+            "label": "Campagne ID",
+            "description": "Identifiant de la campagne.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Campagnes",
+      "icon": "fa-solid fa-paper-plane",
+      "tags": [
+        "envoi",
+        "brevo"
+      ],
+      "group": "Campagnes"
+    },
+    {
+      "key": "brevo_transactional_send",
+      "name": "brevoTransactionalSend",
+      "schemaVersion": 2,
+      "title": "Envoyer un e-mail transactionnel",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Brevo",
+      "providerKey": "brevo",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:brevo_email"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Envoie un e-mail transactionnel via Brevo.",
+      "args": {
+        "title": "Envoyer un e-mail transactionnel",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "email",
+            "key": "to_email",
+            "label": "Destinataire email",
+            "description": "Adresse e-mail du destinataire.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "to_name",
+            "label": "Destinataire nom",
+            "description": "Nom du destinataire.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "email",
+            "key": "sender_email",
+            "label": "Expéditeur email",
+            "description": "Email de l expéditeur.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "sender_name",
+            "label": "Expéditeur nom",
+            "description": "Nom de l expéditeur.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "subject",
+            "label": "Sujet",
+            "description": "Sujet de l e-mail.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "htmlContent",
+            "label": "Contenu HTML",
+            "description": "Contenu HTML de l e-mail.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "templateId",
+            "label": "Template ID",
+            "description": "ID du template (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Emails transactionnels",
+      "icon": "fa-solid fa-envelope",
+      "tags": [
+        "envoi",
+        "brevo"
+      ],
+      "group": "Emails transactionnels"
+    },
+    {
+      "key": "brevo_smtp_stats",
+      "name": "brevoSmtpStats",
+      "schemaVersion": 2,
+      "title": "Statistiques SMTP",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Brevo",
+      "providerKey": "brevo",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:brevo_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère les statistiques SMTP Brevo.",
+      "args": {
+        "title": "Statistiques SMTP",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "date",
+            "key": "startDate",
+            "label": "Date début",
+            "description": "Date de début (YYYY-MM-DD).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "date",
+            "key": "endDate",
+            "label": "Date fin",
+            "description": "Date de fin (YYYY-MM-DD).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Statistiques",
+      "icon": "fa-solid fa-chart-line",
+      "tags": [
+        "lecture",
+        "brevo"
+      ],
+      "group": "Statistiques"
+    },
+    {
+      "key": "brevo_templates_list",
+      "name": "brevoTemplatesList",
+      "schemaVersion": 2,
+      "title": "Lister les templates",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Brevo",
+      "providerKey": "brevo",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:brevo_templates"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les templates e-mail Brevo.",
+      "args": {
+        "title": "Lister les templates",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre de résultats (défaut 50).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "offset",
+            "label": "Décalage",
+            "description": "Décalage de pagination.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Templates",
+      "icon": "fa-solid fa-list",
+      "tags": [
+        "liste",
+        "brevo"
+      ],
+      "group": "Templates"
+    },
+    {
+      "key": "brevo_template_get",
+      "name": "brevoTemplateGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un template",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Brevo",
+      "providerKey": "brevo",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:brevo_template"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère les détails d un template Brevo.",
+      "args": {
+        "title": "Récupérer un template",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "templateId",
+            "label": "Template ID",
+            "description": "Identifiant du template.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Templates",
+      "icon": "fa-solid fa-eye",
+      "tags": [
+        "lecture",
+        "brevo"
+      ],
+      "group": "Templates"
+    },
+    {
+      "key": "brevo_senders_list",
+      "name": "brevoSendersList",
+      "schemaVersion": 2,
+      "title": "Lister les expéditeurs",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Brevo",
+      "providerKey": "brevo",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:brevo_senders"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les expéditeurs configurés dans Brevo.",
+      "args": {
+        "title": "Lister les expéditeurs",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Expéditeurs",
+      "icon": "fa-solid fa-users",
+      "tags": [
+        "liste",
+        "brevo"
+      ],
+      "group": "Expéditeurs"
+    },
+    {
+      "key": "brevo_webhook_event",
+      "name": "brevoWebhookEvent",
+      "schemaVersion": 2,
+      "title": "Événement webhook Brevo",
+      "type": "event",
+      "nodeKind": "event",
+      "category": "Brevo",
+      "providerKey": "brevo",
+      "subtitle": "Événements",
+      "icon": "fa-solid fa-bolt",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:brevo_event"
+        }
+      ],
+      "description": "Déclenché lors d un événement webhook Brevo.",
+      "args": {
+        "title": "Événement webhook Brevo",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "select",
+            "key": "eventType",
+            "label": "Type d événement",
+            "description": "Type d événement à surveiller.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "E-mail envoyé",
+                "value": "sent"
+              },
+              {
+                "label": "E-mail ouvert",
+                "value": "opened"
+              },
+              {
+                "label": "Clic",
+                "value": "click"
+              },
+              {
+                "label": "Rebond dur",
+                "value": "hard_bounce"
+              },
+              {
+                "label": "Rebond souple",
+                "value": "soft_bounce"
+              },
+              {
+                "label": "Désabonnement",
+                "value": "unsubscribed"
+              }
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "événement",
+        "brevo"
+      ],
+      "group": "Événements"
+    }
+  ]
+}

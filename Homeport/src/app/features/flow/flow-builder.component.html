@@ -1,7 +1,9 @@
-<div class="flow-builder" cdkDropListGroup>
+<div class="flow-builder" cdkDropListGroup [class.desktop]="!isTabletOrBelow"
+  [class.right-panel-open]="!isTabletOrBelow && rightPanelOpen"
+  [class.left-panel-open]="!isTabletOrBelow && leftPanelOpen">
   <!-- Reusable left panel content (desktop + drawer) -->
   <ng-template #leftPanelContent let-mode="mode">
-    <flow-palette-panel [mode]="mode" [groups]="paletteGroups" [query]="paletteQuery" [isMobile]="isMobile"
+    <flow-palette-panel [mode]="'outside'" [groups]="paletteGroups" [query]="paletteQuery" [isMobile]="isMobile"
       [dndDisabled]="dndDisabled" [trackGroupFn]="trackGroup" [trackItemFn]="trackItem"
       [miniIconClassFn]="miniIconClass.bind(this)" [simpleIconUrlFn]="simpleIconUrl.bind(this)" [typeIconClassFn]="typeIconClass.bind(this)"
       [isItemDisabledFn]="isPaletteItemDisabled.bind(this)" [isDraggingFn]="isDragging.bind(this)"
@@ -11,44 +13,49 @@
   </ng-template>
 
   <!-- Desktop left panel -->
-  <ng-container *ngIf="!isMobile" [ngTemplateOutlet]="leftPanelContent"
-    [ngTemplateOutletContext]="{ mode: 'outside' }"></ng-container>
+  <div class="left-panel" *ngIf="!isMobile" [class.closed]="!leftPanelOpen">
+    <ng-container [ngTemplateOutlet]="leftPanelContent"
+      [ngTemplateOutletContext]="{ mode: 'outside' }"></ng-container>
+  </div>
 
   <section class="canvas">
     <!-- Removed canvas-shield interceptors to avoid event conflicts on mobile -->
-    <!-- Floating buttons (mobile/tablet) -->
-    <div class="fb-fab-left">
-      <button nz-button nzSize="small" class="apple-btn" (click)="openMobilePanel('left')"
-        (touchstart)="openMobilePanel('left'); $event.preventDefault(); $event.stopPropagation()" nz-tooltip
-        [nzTooltipTitle]="!isMobile ? 'Palette' : null" [nzTooltipTrigger]="'hover'" aria-label="Panneau gauche">
-        <i class="fa-solid fa-bars"></i>
-      </button>
-    </div>
-    <div class="fb-fab-right">
-      <button nz-button nzSize="small" class="apple-btn" (click)="openMobilePanel('right')"
-        (touchstart)="openMobilePanel('right'); $event.preventDefault(); $event.stopPropagation()"
-        [disabled]="!selectedNode" nz-tooltip [nzTooltipTitle]="!isMobile ? 'Inspector' : null"
-        [nzTooltipTrigger]="'hover'" aria-label="Panneau droit">
-        <i class="fa-solid fa-sliders"></i>
-      </button>
-    </div>
-    <div class="canvas-host" #flowHost cdkDropList id="canvasList" [cdkDropListData]="nodes"
+    <!-- Desktop-style panel toggle FABs: visible on all sizes; open drawers on narrow screens -->
+    <div class="canvas-host" #flowHost cdkDropList id="canvasList" [cdkDropListData]="nodes" (click)="onCanvasClick($event)" (mouseenter)="canvasHot=true" (mouseleave)="canvasHot=false"
       [cdkDropListDisabled]="dndDisabled" [class.disabled]="leftDrawer || rightDrawer"
       (cdkDropListEntered)="onDragEnter($event)" (cdkDropListExited)="onDragLeave($event)"
-      (dragover)="onDragOver($event)" (wheel)="onWheel($event)" (cdkDropListDropped)="onExternalDrop($event)">
+      (dragover)="onDragOver($event)" (wheel)="onWheel($event)" (cdkDropListDropped)="onExternalDrop($event)"
+      (contextmenu)="onCanvasContextMenu($event)" (mousedown)="onCanvasMouseDown($event)" (mousemove)="onCanvasMouseMove($event)" (mouseup)="onCanvasMouseUp($event)" (dblclick)="onCanvasDblClick($event)"
+      (touchstart)="onCanvasTouchStart($event)" (touchmove)="onCanvasTouchMove($event)" (touchend)="onCanvasTouchEnd($event)" (touchcancel)="onCanvasTouchEnd($event)">
       <!-- Loading overlay during flow document fetch -->
       <div class="loading-overlay" *ngIf="loadingFlowDoc">
         <div class="spinner"></div>
         <div class="text">Chargement du flow…</div>
       </div>
-      <vflow view="auto" background="#EEF0F4" [entitiesSelectable]="true" [minZoom]="0.05" [maxZoom]="3" [nodes]="nodes"
+      <!-- Empty-graph starter: centered create card to open Spotlight assistant -->
+      <div class="empty-starter" *ngIf="!loadingFlowDoc && (nodes?.length || 0) === 0">
+        <button type="button" class="starter-card" (click)="openAddNodeStandalone()">
+          <div class="ico">+</div>
+          <div class="title">Créer le premier nœud</div>
+          <div class="hint">Cliquez pour ouvrir l’assistant</div>
+        </button>
+      </div>
+  <vflow view="auto" [background]="flowBackground" [entitiesSelectable]="true" [minZoom]="0.05" [maxZoom]="3" [nodes]="nodesView" [alignmentHelper]="alignmentHelperInput" [snapGrid]="snapGridInput" [keyboardShortcuts]="{ multiSelection: ['ShiftLeft', 'ShiftRight'] }"
         [edges]="renderedEdges" [connection]="connectionSettings" (onConnect)="onConnect($event)"
-        (selected)="onSelected($event)" (onNodesChange.position.single)="onNodePositionChange($event)"
+        (onComponentNodeEvent)="onComponentNodeEvent($event)" (onNodesChange.position.single)="onNodePositionChange($event)" (onNodesChange.position.many)="onNodesPositionMany($event)"
         (onNodesChange.remove.many)="onNodesRemoved($event)" (onEdgesChange.remove)="onEdgesRemoved($event)"
-        (onEdgesChange.detached)="onEdgesDetached($event)" #flow>
+        (onEdgesChange.detached)="onEdgesDetached($event)" #flow
+        (touchstart)="onCanvasTouchStart($event)" (touchmove)="onCanvasTouchMove($event)" (touchend)="onCanvasTouchEnd($event)" (touchcancel)="onCanvasTouchEnd($event)" (dblclick)="onCanvasDblClick($event)" (contextmenu)="onCanvasContextMenu($event)">
+        <ng-template let-ctx connection>
+          @if (ctx.path(); as p) {
+            <svg:g>
+              <svg:path fill="none" [attr.d]="p" [attr.marker-end]="ctx.marker()" stroke="#b1b1b7" stroke-width="2" />
+            </svg:g>
+          }
+        </ng-template>
         <ng-template let-ctx edge>
           <svg:g customTemplateEdge>
-            <svg:path fill="none" [attr.d]="ctx.path()"
+            <svg:path fill="none" [attr.d]="ctx.path()" 
               [attr.stroke-width]="ctx.edge.data?.error ? 2 : (ctx.edge.data?.strokeWidth || 2)"
               [attr.stroke]="ctx.edge.data?.error ? '#f759ab' : (ctx.edge.data?.color || '#b1b1b7')"
               [attr.marker-end]="ctx.markerEnd()" />
@@ -66,62 +73,241 @@
             </button>
           </div>
         </ng-template>
-        <ng-template let-ctx nodeHtml>
-          <div class="node-card" [attr.data-node-id]="ctx.node.id"
-            [ngClass]="{ 'select-node': selection?.id === ctx.node.id, 'error-branch': isNodeInError(ctx.node.id), 'hard-error': isNodeHardError(ctx.node.id) }"
-            (click)="selectItem(ctx.node)" (dblclick)="onNodeDoubleClick($event, ctx.node)" (contextmenu)="onNodeContextMenu($event, ctx.node)"
+        <ng-template  let-ctx nodeHtml>
+
+          <div class="node-card"  [attr.data-node-id]="ctx.node.id"
+            [ngClass]="{ 'select-node': isSelected(ctx.node.id), 'error-branch': isNodeInError(ctx.node.id), 'hard-error': isNodeHardError(ctx.node.id), 'horizontal': portOrientation === 'horizontal', 'spawn': spawnAnimNodes.has(ctx.node.id), 'spawn-lite': spawnLiteAnimNodes.has(ctx.node.id), 'removing': removingNodes.has(ctx.node.id), 'removing-lite': removingLiteNodes.has(ctx.node.id), 'no-inputs': isTriggerTemplate(ctx.node.data.model.templateObj) }"
+            (pointerdown)="onNodePointerDown($event, ctx.node)" (click)="onNodeClick($event, ctx)" (dblclick)="onNodeDoubleClick($event, ctx.node)" (contextmenu)="onNodeContextMenu($event, ctx.node)"
             (touchstart)="onNodeTouchStart($event, ctx.node)" (touchmove)="onNodeTouchMove($event)"
             (touchend)="onNodeTouchEnd()">
-            <div class="header">
+   
               <div class="error-badge" *ngIf="isNodeHardError(ctx.node.id)" nz-tooltip [nzTooltipTitle]="nodeErrorTooltip(ctx.node.id)">
                 <i class="fa-solid fa-triangle-exclamation"></i>
               </div>
-              <i *ngIf="ctx.node.data.model.templateObj?.icon" [class]="ctx.node.data.model.templateObj?.icon"
-                class="icon"></i>
-              <div class="meta">
-                <div class="title">{{ ctx.node.data.model.templateObj?.title || ctx.node.data.model?.name }}</div>
-                <div class="subtitle">
-                  {{ ctx.node.data.model.templateObj?.subtitle || ctx.node.data.model.templateObj?.category ||
-                  ctx.node.data.model.templateObj?.type }}
-                  <i class="type-badge" [class]="typeIconClass(ctx.node.data.model.templateObj)" nz-tooltip
-                    [nzTooltipTitle]="ctx.node.data.model.templateObj?.type" style="margin-left:6px"></i>
-                  <span *ngIf="appLabelOf(ctx.node.data.model.templateObj) as appLbl"
-                    style="margin-left:6px; color:#6b7280">• {{ appLbl }}</span>
+          
+              <div class="center-wrap">
+                <node-card-header
+                  [title]="ctx.node.data.model.templateObj?.title || ctx.node.data.model?.name"
+                  [subtitle]="ctx.node.data.model.templateObj?.subtitle || ctx.node.data.model.templateObj?.category || ctx.node.data.model.templateObj?.type"
+                  [typeIcon]="typeIconClass(ctx.node.data.model.templateObj)"
+                  [app]="getAppById((ctx.node.data.model.templateObj?.app && ctx.node.data.model.templateObj?.app._id) ? ctx.node.data.model.templateObj?.app._id : ctx.node.data.model.templateObj?.appId)"
+                  [appId]="(ctx.node.data.model.templateObj?.app && ctx.node.data.model.templateObj?.app._id) ? ctx.node.data.model.templateObj?.app._id : ctx.node.data.model.templateObj?.appId"
+                  [iconClass]="ctx.node.data.model.templateObj?.icon"
+                  [iconUrl]="ctx.node.data.model.templateObj?.iconUrl"
+                ></node-card-header>
+                <div class="desc" [ngClass]="{ clamp: ctx.node.data.model?.expand_description !== true }" *ngIf="(ctx.node.data.model?.hide_description !== true) && ctx.node.data.model?.description as d"
+                      [ngStyle]="{ display: (portOrientation === 'vertical' && (linkHandlesForNode(ctx.node.id, ctx.node.data.model)?.length || 0) > 0) ? 'none' : '' }">
+                  {{ d }}
                 </div>
               </div>
-            </div>
-            <ng-container *ngIf="inputId(ctx.node.data.model.templateObj) as inId">
-              <ng-template #handleInTpl let-hctx>
-                <svg:g>
-                  <svg:circle [attr.cx]="hctx.point().x" [attr.cy]="hctx.point().y"
-                    [attr.r]="hctx.state() === 'valid' ? 6 : 4"
-                    [attr.fill]="isNodeInError(ctx.node.id) ? '#f759ab' : '#000000'" [attr.stroke]="'#ffffff'"
-                    stroke-width="1"></svg:circle>
-                </svg:g>
+          
+              <ng-container *ngIf="!isTriggerTemplate(ctx.node.data.model.templateObj) && (ctx.node.data.model.templateObj?.inputHandles?.length || 0) > 0; else singleIn">
+                <div class="inputs" *ngIf="ctx.node.data.model.templateObj.inputHandles as ins">
+                  <div class="in" *ngFor="let ih of ins; let i = index">
+                    <ng-template #ihTpl let-hctx>
+                    <svg:g>
+                      
+                      <svg:circle [attr.cx]="hctx.point().x" [attr.cy]="hctx.point().y"
+                         [attr.r]="hctx.state() === 'valid' ? 6 : 4"
+                         [attr.fill]="isNodeInError(ctx.node.id) ? '#f759ab' : '#000000'"
+                         [attr.stroke]="connectingEdge ? (hctx.state() === 'valid' ? '#22c55e' : (canConnectPreview(ctx.node.id, ih.id) ? '#3b82f6' : '#ef4444')) : '#ffffff'" [attr.stroke-width]="connectingEdge ? 2 : 1"
+                         [style.cursor]="hctx.state() === 'valid' ? 'crosshair' : 'pointer'"
+                         [attr.data-input-id]="ih.id" [attr.data-node-id]="ctx.node.id" [attr.data-input-name]="getInputName(ctx.node.data.model, ih.id)"
+                         (mouseenter)="onTargetEnter($event, hctx.state() === 'valid'); onInputEnter($event, ctx.node.data.model, ih.id)"
+                         (mousemove)="onTargetMove($event, hctx.state() === 'valid'); onHandleMove($event)"
+                         (pointerover)="onInputPointerOver($event, ctx.node.data.model, ih.id)"
+                         (pointermove)="onHandleMove($event)"
+                         (pointerout)="onHandleLeave()"
+                         (mouseleave)="onTargetLeave(); onHandleLeave()"
+                       ></svg:circle>
+                    </svg:g>
+                    </ng-template>
+                    <ng-container *ngIf="portOrientation === 'vertical'; else horizInputMulti">
+                      <handle position="top" type="target" [id]="ih.id" [template]="ihTpl" />
+                    </ng-container>
+                    <ng-template #horizInputMulti>
+                    <div style="position: absolute; left: 0;" [style.top.px]="horizHandleTop(i, ins.length)">
+                        <handle position="left" type="target" [id]="ih.id" [template]="ihTpl" />
+                    </div>
+                    </ng-template>
+                  </div>
+                </div>
+              </ng-container>
+              <ng-template #singleIn>
+                <ng-container *ngIf="!isTriggerTemplate(ctx.node.data.model.templateObj)">
+                  <ng-container *ngIf="inputId(ctx.node.data.model.templateObj) as inId">
+                  <ng-template #handleInTpl let-hctx>
+                    <svg:g>
+                      <svg:circle [attr.cx]="hctx.point().x" [attr.cy]="hctx.point().y"
+                        [attr.r]="hctx.state() === 'valid' ? 6 : 4"
+                        [attr.fill]="isNodeInError(ctx.node.id) ? '#f759ab' : '#000000'" 
+                        [attr.stroke]="connectingEdge ? (hctx.state() === 'valid' ? '#22c55e' : (canConnectPreview(ctx.node.id, inId) ? '#3b82f6' : '#ef4444')) : '#ffffff'" [attr.stroke-width]="connectingEdge ? 2 : 1"
+                        [style.cursor]="hctx.state() === 'valid' ? 'crosshair' : 'pointer'"
+                        [attr.data-input-id]="inId" [attr.data-node-id]="ctx.node.id" [attr.data-input-name]="getInputName(ctx.node.data.model, inId)"
+                        (mouseenter)="onTargetEnter($event, hctx.state() === 'valid'); onInputEnter($event, ctx.node.data.model, inId)"
+                        (mousemove)="onTargetMove($event, hctx.state() === 'valid'); onHandleMove($event)"
+                        (pointerover)="onInputPointerOver($event, ctx.node.data.model, inId)"
+                        (pointermove)="onHandleMove($event)"
+                        (pointerout)="onHandleLeave()"
+                        (mouseleave)="onTargetLeave(); onHandleLeave()"
+                      ></svg:circle>
+                    </svg:g>
+                  </ng-template>
+                  <ng-container *ngIf="portOrientation === 'vertical'; else horizInputSingle">
+              
+                    <handle position="top" type="target" [id]="inId" [template]="handleInTpl" />
+                  </ng-container>
+                  <ng-template #horizInputSingle>
+                    <!-- Laisser Vflow centrer verticalement le handle 'left' sans wrapper -->
+                    <handle position="left" type="target" [id]="inId" [template]="handleInTpl" />
+                  </ng-template>
+                  </ng-container>
+                </ng-container>
               </ng-template>
-              <handle position="top" type="target" [id]="inId" [template]="handleInTpl" />
-            </ng-container>
-            <div class="outputs" *ngIf="outputIds(ctx.node.data.model)?.length as outs">
-              <div class="out" *ngFor="let out of outputIds(ctx.node.data.model); let i = index"
-                [ngClass]="{ error: out === 'err' }">
-                <ng-template #hTpl let-hctx>
-                  <svg:g>
+              <div class="outputs" *ngIf="outputIds(ctx.node.data.model)?.length as outs">
+                <div class="out" *ngFor="let out of outputIds(ctx.node.data.model); let i = index"
+                  style="position: relative;"
+                  [ngClass]="{ error: out === 'err' }">
+        
+                  <ng-template #hTpl let-hctx>
+                    <svg:g>
                     <svg:circle [attr.cx]="hctx.point().x" [attr.cy]="hctx.point().y"
                       [attr.r]="hctx.state() === 'valid' ? 6 : 4"
                       [attr.fill]="(out === 'err' || isNodeInError(ctx.node.id)) ? '#f759ab' : '#000000'"
-                      [attr.stroke]="'#ffffff'" stroke-width="1"
-                      (mouseenter)="onHandleEnter($event, ctx.node.data.model, out)" (mousemove)="onHandleMove($event)"
-                      (mouseleave)="onHandleLeave()"></svg:circle>
-                  </svg:g>
+                      [attr.stroke]="'#ffffff'" stroke-width="1" [style.cursor]="hctx.state() === 'valid' ? 'crosshair' : 'pointer'"
+                      (pointerdown)="onConnectStartFrom(ctx.node.id, out)"
+                      (mouseenter)="onOutputHandleEnter(ctx.node.id, out); onHandleEnter($event, ctx.node.data.model, out)"
+                      (mousemove)="onHandleMove($event)"
+                      (mouseleave)="onOutputHandleLeave(ctx.node.id, out); onHandleLeave()"></svg:circle>
+                      <!-- Pure SVG assist elements (do not intercept handle drag) -->
+                      <!-- Assist line: visible only when handle is free, orientation-stable, and not during hover/drag -->
+                      <svg:g *ngIf="!isOutputConnected(ctx.node.id, out) && !isConnectingFrom(ctx.node.id, out) && (isAssistClosing(ctx.node.id, out) || (isAssistReady(ctx.node.id, out) && !isHoveringFrom(ctx.node.id, out)))"
+                        [attr.style]="isAssistClosing(ctx.node.id, out) ? (portOrientation === 'horizontal' ? 'animation: assistOutH 140ms ease both;' : 'animation: assistOutV 140ms ease both;') : (portOrientation === 'horizontal' ? 'animation: assistInH 180ms ease both;' : 'animation: assistInV 180ms ease both;')"
+                        pointer-events="visibleStroke"
+                        (pointerdown)="$event.stopPropagation(); $event.preventDefault()">
+                        <!-- Tooltip shows output display name. Use pure SVG <title> for reliability (no foreignObject). -->
+                        <svg:title>{{ getOutputName(ctx.node.data.model, out) || 'Ajouter un nœud' }}</svg:title>
+                        <svg:line
+                          [attr.x1]="hctx.point().x" [attr.y1]="hctx.point().y"
+                          [attr.x2]="(hctx.point().x || 0) + (portOrientation === 'horizontal' ? 24 : 0)"
+                          [attr.y2]="(hctx.point().y || 0) + (portOrientation === 'horizontal' ? 0 : 24)"
+                          [attr.stroke]="(out === 'err' || isNodeInError(ctx.node.id)) ? '#f759ab' : '#000000'"
+                          stroke-width="2" stroke-linecap="round" opacity="0.9"></svg:line>
+                        <!-- balancing dummy on opposite side (invisible) to keep bbox center at the circle center -->
+                        <svg:line
+                          [attr.x1]="hctx.point().x" [attr.y1]="hctx.point().y"
+                          [attr.x2]="(hctx.point().x || 0) - (portOrientation === 'horizontal' ? 24 : 0)"
+                          [attr.y2]="(hctx.point().y || 0) - (portOrientation === 'horizontal' ? 0 : 24)"
+                          stroke="#000000" stroke-width="2" stroke-linecap="round" opacity="0"></svg:line>
+                      </svg:g>
+                      <!-- Plus button: same guards; allow touchend on mobile and click on desktop -->
+                      <svg:g *ngIf="!isOutputConnected(ctx.node.id, out) && !isConnectingFrom(ctx.node.id, out) && (isAssistClosing(ctx.node.id, out) || (isAssistReady(ctx.node.id, out) && !isHoveringFrom(ctx.node.id, out)))"
+                        (pointerdown)="$event.stopPropagation(); $event.preventDefault()"
+                        (mousedown)="$event.stopPropagation(); $event.preventDefault()"
+                        (touchstart)="$event.stopPropagation()"
+                        (touchend)="$event.stopPropagation(); openAddNodeFromHandle(ctx.node.id, out, $event)"
+                        (click)="openAddNodeFromHandle(ctx.node.id, out, $event)"
+                        [attr.style]="isAssistClosing(ctx.node.id, out) ? (portOrientation === 'horizontal' ? 'animation: assistOutH 140ms ease both;' : 'animation: assistOutV 140ms ease both;') : (portOrientation === 'horizontal' ? 'animation: assistInH 180ms ease both;' : 'animation: assistInV 180ms ease both;')">
+                        <!-- Same tooltip on the plus button -->
+                        <svg:title>{{ getOutputName(ctx.node.data.model, out) || 'Ajouter un nœud' }}</svg:title>
+                        <svg:circle
+                          [attr.cx]="(hctx.point().x || 0) + (portOrientation === 'horizontal' ? 34 : 0)"
+                          [attr.cy]="(hctx.point().y || 0) + (portOrientation === 'horizontal' ? 0 : 34)"
+                          r="8" fill="#ffffff"
+                          [attr.stroke]="(out === 'err' || isNodeInError(ctx.node.id)) ? '#f759ab' : '#000000'"
+                          stroke-width="1.5" style="cursor: pointer;"></svg:circle>
+                        <svg:text
+                          [attr.x]="(hctx.point().x || 0) + (portOrientation === 'horizontal' ? 34 : 0)"
+                          [attr.y]="(hctx.point().y || 0) + (portOrientation === 'horizontal' ? 3 : 37)"
+                          text-anchor="middle" font-size="12" font-weight="700"
+                          [attr.fill]="(out === 'err' || isNodeInError(ctx.node.id)) ? '#f759ab' : '#000000'"
+                          style="pointer-events: none;">+</svg:text>
+                        <!-- balancing dummy circle/text on opposite side (invisible) -->
+                        <svg:circle
+                          [attr.cx]="(hctx.point().x || 0) - (portOrientation === 'horizontal' ? 34 : 0)"
+                          [attr.cy]="(hctx.point().y || 0) - (portOrientation === 'horizontal' ? 0 : 34)"
+                          r="8" fill="#ffffff" stroke="#000000" stroke-width="1.5" opacity="0"></svg:circle>
+                        <svg:text
+                          [attr.x]="(hctx.point().x || 0) - (portOrientation === 'horizontal' ? 34 : 0)"
+                          [attr.y]="(hctx.point().y || 0) - (portOrientation === 'horizontal' ? -3 : 37)"
+                          text-anchor="middle" font-size="12" font-weight="700" fill="#000" opacity="0">+</svg:text>
+                      </svg:g>
+                    </svg:g>
+                  </ng-template>
+                  <ng-container *ngIf="portOrientation === 'vertical'; else horizOutput">
+                    <handle position="bottom" type="source" [id]="out" [template]="hTpl" />
+                  </ng-container>
+                <ng-template #horizOutput>
+                  <div style="position: absolute; right: 0;" [style.top.px]="horizHandleTop(i, outs)">
+                    <handle position="right" type="source" [id]="out" [template]="hTpl" />
+                  </div>
                 </ng-template>
-                <handle position="bottom" type="source" [id]="out" [template]="hTpl" />
+               </div>
+          </div>
+            <!-- Link handles (targets on the right) for v2 -->
+              <ng-container *ngIf="portOrientation === 'vertical'; else linksDefault">
+                <div class="desc-links" *ngIf="(linkHandlesForNode(ctx.node.id, ctx.node.data.model)?.length || 0) > 0">
+                <div class="desc" [ngClass]="{ clamp: ctx.node.data.model?.expand_description !== true }" *ngIf="(ctx.node.data.model?.hide_description !== true) && ctx.node.data.model?.description as d">{{ d }}</div>
+                <div class="links">
+                  <div class="link" *ngFor="let lh of linkHandlesForNode(ctx.node.id, ctx.node.data.model)">
+                    <div class="link-label">{{ lh.name }}</div>
+                    <ng-template #linkTpl let-hctx>
+                      <svg:g>
+                        <svg:circle [attr.cx]="hctx.point().x" [attr.cy]="hctx.point().y"
+                          [attr.r]="hctx.state() === 'valid' ? 6 : 4"
+                          [attr.fill]="'#111'" [attr.stroke]="'#ffffff'" stroke-width="1" [style.cursor]="hctx.state() === 'valid' ? 'crosshair' : 'pointer'"
+                          (pointerdown)="onConnectStartFrom(ctx.node.id, lh.id)"
+                          (mouseenter)="onHandleEnter($event, ctx.node.data.model, lh.id)" (mousemove)="onHandleMove($event)"
+                          (mouseleave)="onHandleLeave()"></svg:circle>
+                      </svg:g>
+                    </ng-template>
+                    <!-- Vertical: linked handles are outputs on the right side -->
+                    <handle position="right" type="source" [id]="lh.id" [template]="linkTpl" />
+                  </div>
+                </div>
               </div>
-            </div>
-            <div class="exec-badge" *ngIf="nodeExecStatus(ctx.node.id) as st">
-              <i class="fa-solid" [ngClass]="st.lastStatus === 'success' ? 'fa-circle-check ok' : (st.lastStatus === 'error' ? 'fa-triangle-exclamation err' : 'fa-clock pending')" title="Etat dernière exécution"></i>
+            </ng-container>
+            <ng-template #linksDefault>
+              <div class="links" *ngIf="linkHandlesForNode(ctx.node.id, ctx.node.data.model)?.length as links">
+                <div class="link" *ngFor="let lh of linkHandlesForNode(ctx.node.id, ctx.node.data.model)">
+                  <div class="link-label">{{ lh.name }}</div>
+                  <ng-template #linkTpl let-hctx>
+                    <svg:g>
+                      <svg:circle [attr.cx]="hctx.point().x" [attr.cy]="hctx.point().y"
+                        [attr.r]="hctx.state() === 'valid' ? 6 : 4"
+                        [attr.fill]="'#111'" [attr.stroke]="'#ffffff'" stroke-width="1" [style.cursor]="hctx.state() === 'valid' ? 'crosshair' : 'pointer'"
+                        (pointerdown)="onConnectStartFrom(ctx.node.id, lh.id)"
+                        (mouseenter)="onHandleEnter($event, ctx.node.data.model, lh.id)" (mousemove)="onHandleMove($event)"
+                        (mouseleave)="onHandleLeave()"></svg:circle>
+                    </svg:g>
+                  </ng-template>
+                  <ng-container *ngIf="portOrientation === 'vertical'; else horizLink">
+                    <!-- Vertical: linked handles are outputs on the right side -->
+                    <handle position="right" type="source" [id]="lh.id" [template]="linkTpl" />
+                  </ng-container>
+                  <ng-template #horizLink>
+                    <!-- Horizontal: linked handles are outputs at the bottom, centered by Vflow -->
+                    <handle position="bottom" type="source" [id]="lh.id" [template]="linkTpl" />
+                  </ng-template>
+                </div>
+              </div>
+            </ng-template>
+            <div class="exec-badge" *ngIf="nodeExecStatus(ctx.node.id) as st"
+                 (click)="onExecBadgeClick($event, ctx.node.id)" style="cursor:pointer;">
+              <i class="fa-solid" [ngClass]="st.lastStatus === 'success' ? 'fa-circle-check ok' : (st.lastStatus === 'error' ? 'fa-triangle-exclamation err' : (st.lastStatus === 'cancelled' ? 'fa-stop stop' : 'fa-clock pending'))" title="Etat dernière exécution"></i>
               <span class="cnt" *ngIf="st.count as c">{{ c }}</span>
             </div>
-          </div>
+            </div>
+            <!-- Streaming log overlay via node-toolbar -->
+            <node-toolbar *ngIf="nodeLogText.get(ctx.node.id) as logText"
+              [position]="portOrientation === 'vertical' ? 'right' : 'bottom'">
+              <div class="node-log-bubble" [class.expanded]="nodeLogExpanded.has(ctx.node.id)"
+                   [attr.data-node-id]="ctx.node.id"
+                   (click)="nodeLogExpanded.has(ctx.node.id) ? nodeLogExpanded.delete(ctx.node.id) : nodeLogExpanded.add(ctx.node.id)"
+                   (wheel)="nodeLogExpanded.has(ctx.node.id) ? onLogBubbleWheel($event, ctx.node.id) : null">
+                <span class="node-log-text"><span class="log-stable">{{ nodeLogOld.get(ctx.node.id) }}</span><span class="log-reveal" [class.cycle-a]="(nodeLogAnimCycle.get(ctx.node.id) || 0) === 0" [class.cycle-b]="(nodeLogAnimCycle.get(ctx.node.id) || 0) === 1">{{ nodeLogNew.get(ctx.node.id) }}</span></span><span class="log-cursor"></span>
+              </div>
+            </node-toolbar>
         </ng-template>
         <ng-template let-ctx connectionTemplate>
           <div class="edge-labels">
@@ -131,105 +317,154 @@
           </div>
         </ng-template>
       </vflow>
+      <!-- Modal: Spotlight-style add node assistant (headerless, close button only) -->
+      <nz-modal
+        [(nzVisible)]="addNodeVisible"
+        nzTitle=""
+        [nzClosable]="false"
+        (nzOnCancel)="closeAddNodeModalWithCleanup()"
+        [nzFooter]="null"
+        [nzWidth]="860"
+        nzClassName="add-node-modal spotlight-modal">
+        <ng-container *nzModalContent>
+          <ng-container *ngIf="addNodeContentVisible">
+              <spotlight-add-node
+                [groups]="addNodeGroups"
+                [query]="addNodeQuery"
+                [totalCount]="addNodeCandidates.length"
+                [getAppByIdFn]="getAppById.bind(this)"
+                (queryChange)="onAddNodeQueryChange($event)"
+                (pick)="onSpotlightPick($event)"
+                (close)="closeAddNodeModal()"></spotlight-add-node>
+          </ng-container>
+        </ng-container>
+      </nz-modal>
+      <!-- Capture overlay to block pan/zoom while dragging selection -->
+      <div class="selection-capture" *ngIf="selectionBoxStart || marqueeMode"
+           (contextmenu)="$event.preventDefault()"
+           (mousedown)="onCanvasMouseDown($event)"
+           (mousemove)="onCanvasMouseMove($event)"
+           (mouseup)="onCanvasMouseUp($event)"
+           (touchstart)="onCanvasTouchStart($event)"
+           (touchmove)="onCanvasTouchMove($event)"
+           (touchend)="onCanvasTouchEnd($event)"
+           (touchcancel)="onCanvasTouchEnd($event)"></div>
+      <!-- Selection rectangle overlay (fixed to viewport) -->
+      <div class="selection-box" *ngIf="selectionBoxRect as r"
+        [style.left.px]="r.left" [style.top.px]="r.top" [style.width.px]="r.width" [style.height.px]="r.height"></div>
       <!-- lightweight tooltip overlay -->
       <div class="flow-tooltip" *ngIf="tipVisible" [style.left.px]="tipX" [style.top.px]="tipY"
         [ngClass]="{ error: tipError }">{{ tipText }}</div>
+      <div class="ban-overlay" *ngIf="banVisible" [style.left.px]="banX" [style.top.px]="banY" title="Connexion invalide">
+        <i class="fa-solid fa-ban" style="color:#ef4444;"></i>
+      </div>
     </div>
   </section>
 
 
   <!-- Reusable right panel content (desktop + drawer) -->
   <!-- Desktop right panel: inspector only (Snapshots only in drawer on mobile) -->
-  <div class="right-panel" *ngIf="!isMobile">
-    <flow-inspector-panel [mode]="'outside'" [selected]="selectedNode" [selectedModel]="selectedModel"
+  <div class="right-panel" *ngIf="!isMobile" [class.closed]="!rightPanelOpen">
+    <flow-right-panel [mode]="'outside'"
+      [selected]="selectedNode" [selectedList]="selectionList" [selectedModel]="selectedModel"
+      [nodeHasError]="selectedNode?.id ? (isNodeHardError(selectedNode.id) || isNodeInError(selectedNode.id)) : false"
+      [nodeErrorText]="selectedNode?.id ? nodeErrorTooltip(selectedNode.id) : null"
+      [selectedAttempt]="getLastAttemptFor(selectedNode?.id)"
       [inspectorTab]="inspectorTab" (inspectorTabChange)="inspectorTab = $event" [editJson]="editJson"
-      (editJsonChange)="editJson = $event" (openAdvanced)="openAdvancedEditor()" (delete)="deleteSelected()"
-      (saveJson)="saveSelectedJson()"></flow-inspector-panel>
-    <div class="inspector-meta" style="padding: 8px; overflow: auto;">
-      <form nz-form nzLayout="vertical" class="meta-form">
-        <nz-form-item>
-          <nz-form-label>Nom</nz-form-label>
-          <nz-form-control>
-            <input nz-input [(ngModel)]="currentFlowName" (ngModelChange)="onMetaChange()" name="flowName" placeholder="Nom du flow" />
-          </nz-form-control>
-        </nz-form-item>
-
-        <nz-form-item>
-          <nz-form-label>Description</nz-form-label>
-          <nz-form-control>
-            <input nz-input [(ngModel)]="currentFlowDesc" (ngModelChange)="onMetaChange()" name="flowDesc" placeholder="Description" />
-          </nz-form-control>
-        </nz-form-item>
-
-        <nz-form-item>
-          <nz-form-label>Exécution</nz-form-label>
-          <nz-form-control>
-            <div class="exec-row">
-              <nz-select [(ngModel)]="builderMode" name="builderMode" nzPlaceHolder="Mode">
-                <nz-option nzValue="test" nzLabel="test"></nz-option>
-                <nz-option nzValue="prod" nzLabel="prod"></nz-option>
-              </nz-select>
-              <button nz-button class="apple-btn icon-only" nzType="primary" type="button" (click)="runFlow()" title="Lancer" aria-label="Lancer">
-                <i class="fa-solid fa-play"></i>
-              </button>
-              <button nz-button class="apple-btn icon-only" type="button" (click)="stopLastRun()" title="Stop" aria-label="Stop">
-                <i class="fa-solid fa-stop"></i>
-              </button>
-            </div>
-            <div class="status mono" title="Dernier / En cours">
-              <div>Dernier: {{ lastRun?.status || '—' }}</div>
-              <div>En cours: {{ currentRun?.status || '—' }}</div>
-            </div>
-          </nz-form-control>
-        </nz-form-item>
-
-        <nz-form-item>
-          <nz-form-label>Publication</nz-form-label>
-          <nz-form-control>
-            <div class="pub-row">
-              <nz-select [(ngModel)]="currentFlowStatus" (ngModelChange)="onMetaChange()" name="flowStatus" nzPlaceHolder="Statut">
-                <nz-option nzValue="draft" nzLabel="brouillon"></nz-option>
-                <nz-option nzValue="test" nzLabel="test"></nz-option>
-                <nz-option nzValue="production" nzLabel="production"></nz-option>
-              </nz-select>
-              <button nz-button class="apple-btn icon-only" nzType="default" type="button" (click)="saveFlow()" [disabled]="!canSave" title="Enregistrer" aria-label="Enregistrer">
-                <i class="fa-solid fa-floppy-disk"></i>
-              </button>
-            </div>
-          </nz-form-control>
-        </nz-form-item>
-
-        <nz-form-item>
-          <nz-form-label>En service</nz-form-label>
-          <nz-form-control>
-            <label class="enabled single-line">
-              <input type="checkbox" [(ngModel)]="currentFlowEnabled" (ngModelChange)="onMetaChange()" name="flowEnabled" />
-              <span>Activer ce flow</span>
-            </label>
-          </nz-form-control>
-        </nz-form-item>
-      </form>
-
-      <flow-history-timeline [pastItems]="timelinePastItemsCache" [futureItems]="timelineFutureItemsCache"
-        (hoverPast)="onHistoryHoverPast($event)" (hoverFuture)="onHistoryHoverFuture($event)"
-        (leave)="onHistoryHoverLeave()" (clickPast)="onHistoryClickPast($event)"
-        (clickFuture)="onHistoryClickFuture($event)"></flow-history-timeline>
-    </div>
+      (editJsonChange)="editJson = $event" (openAdvanced)="openAdvancedEditorV2()" (openAdvancedV2)="openAdvancedEditorV2()" (delete)="deleteSelected()" (openSingle)="onInspectorOpenSingle($event)" (deleteMany)="onDeleteMany()" (saveJson)="saveSelectedJson()"
+      [currentFlowName]="currentFlowName" (currentFlowNameChange)="currentFlowName=$event; onMetaChange()"
+      [currentFlowDesc]="currentFlowDesc" (currentFlowDescChange)="currentFlowDesc=$event; onMetaChange()"
+      [currentFlowStatus]="currentFlowStatus" (currentFlowStatusChange)="currentFlowStatus=$event; onMetaChange()"
+      [currentFlowEnabled]="currentFlowEnabled" (currentFlowEnabledChange)="currentFlowEnabled=$event; onMetaChange()"
+      [builderMode]="builderMode" [lastRun]="lastRun" [currentRun]="currentRun" [canSave]="canSave"
+      [runInfo]="currentRunMeta" [selectedRunId]="currentRunMeta?.id || backendRunId" [recentRuns]="recentRuns" [runsHasMore]="runsHasMore" (run)="runFlow()" (stop)="stopLastRun()" (save)="saveFlow()" (metaChange)="onMetaChange()" (clearRun)="onClearRun()" (restart)="onRestartRun()" (selectRun)="onSelectRun($event)" (loadMoreRuns)="onLoadMoreRuns()"
+      [timelinePastItems]="timelinePastItemsCache" [timelineFutureItems]="timelineFutureItemsCache"
+      (hoverPast)="onHistoryHoverPast($event)" (hoverFuture)="onHistoryHoverFuture($event)" (leave)="onHistoryHoverLeave()" (clickPast)="onHistoryClickPast($event)" (clickFuture)="onHistoryClickFuture($event)"
+    ></flow-right-panel>
   </div>
+  <button nz-button nzSize="small" class="panel-toggle-fab" type="button"
+    (click)="toggleRightPanel()"
+    aria-label="Ouvrir ou fermer le panneau droit">
+    <svg width="20" height="20" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="48" height="48" fill="white" fill-opacity="0.01"/>
+        <path d="M41.5 10H35.5" stroke="#6b7280" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M27.5 6V14" stroke="#6b7280" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M27.5 10L5.5 10" stroke="#6b7280" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M13.5 24H5.5" stroke="#6b7280" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M21.5 20V28" stroke="#6b7280" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M43.5 24H21.5" stroke="#6b7280" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M41.5 38H35.5" stroke="#6b7280" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M27.5 34V42" stroke="#6b7280" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M27.5 38H5.5" stroke="#6b7280" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+  </button>
+  <button nz-button nzSize="small" class="panel-toggle-fab ai-chat-fab" type="button"
+    (click)="openAiPanel()" aria-label="Assistant IA" nz-tooltip nzTooltipTitle="Assistant IA">
+    <i class="fa-solid fa-wand-magic-sparkles"></i>
+  </button>
+  <button nz-button nzSize="small" class="panel-toggle-fab help-fab" [class.open]="shortcutsOpen"
+    nz-popover nzPopoverTrigger="click" [nzPopoverTitle]="'Raccourcis clavier'" [nzPopoverContent]="shortcutsTpl"
+    [nzPopoverVisible]="shortcutsOpen" (nzPopoverVisibleChange)="shortcutsOpen = $event"
+    type="button" aria-label="Afficher les raccourcis">
+    <i class="fa-solid fa-keyboard"></i>
+  </button>
+  <button nz-button nzSize="small" class="panel-toggle-fab clear-run-fab" type="button" *ngIf="backendRunId || currentRunMeta?.id"
+    (click)="onClearRun()" aria-label="Effacer l'exécution en cours">
+    <i class="fa-regular fa-trash-can"></i>
+  </button>
+      <ng-template #shortcutsTpl>
+        <div style="min-width:220px; font-size:12px; line-height:1.6;">
+          <div><b>P</b> — Ouvrir/Fermer le panneau droit</div>
+          <div><b>N</b> — Ouvrir/Fermer la palette (gauche)</div>
+          <div><b>R</b> — Activer/Désactiver les aides d'alignement</div>
+          <div><b>S</b> — Sauvegarder</div>
+          <div><b>D</b> — Effacer l’exécution en cours</div>
+          <div><b>Espace</b> — Ajouter un nœud suivant (si un nœud est sélectionné et une sortie disponible)</div>
+          <div><b>Ctrl/Cmd + C</b> — Copier la sélection</div>
+          <div><b>Ctrl/Cmd + X</b> — Couper la sélection</div>
+          <div><b>Ctrl/Cmd + V</b> — Coller</div>
+          <div><b>H</b> — Aligner horizontalement la sélection</div>
+          <div><b>V</b> — Aligner verticalement la sélection</div>
+          <div><b>Ctrl/Cmd + Z</b> — Annuler</div>
+          <div><b>Shift + Ctrl/Cmd + Z</b> ou <b>Ctrl/Cmd + Y</b> — Rétablir</div>
+        </div>
+      </ng-template>
+  <button nz-button nzSize="small" class="panel-toggle-fab left" type="button"
+    (click)="toggleLeftPanel()"
+    aria-label="Ouvrir ou fermer le panneau gauche">
+    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" id="sidebar">
+      <g fill="none" fill-rule="evenodd" stroke="#6b7280" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" transform="translate(1 1)">
+        <rect width="16" height="16" rx="2"></rect>
+        <path d="M6 0v18"></path>
+      </g>
+    </svg>
+  </button>
   <div class="import-overlay" *ngIf="isImporting">
     <div class="spinner"></div>
     <div>Import du flow…</div>
   </div>
+  <ng-template #issuesTpl>
+    <div style="max-width:320px; max-height: 260px; overflow:auto;">
+      <button type="button" style="display:block; width:100%; text-align:left; border:0; background:transparent; padding:4px 0; font-size:12px; color:#111; cursor:pointer;" *ngFor="let it of validationIssues" (click)="onIssueClick(it)">
+        <span *ngIf="it.nodeId" style="color:#6b7280">[Node {{ it.nodeId }}]</span>
+        <span> {{ it.message }}</span>
+      </button>
+    </div>
+  </ng-template>
   <!-- Left vertical floating actions (responsive only) -->
   <div class="left-bar">
     <div class="actions">
-      <button class="icon-btn" (click)="saveFlow()" [disabled]="!canSave" title="Sauvegarder" aria-label="Sauvegarder">
+      <!-- Desktop: Save in left bar; on mobile keep Save in bottom bar for consistency -->
+      <button class="icon-btn" *ngIf="!isMobile" (click)="saveFlow()" [disabled]="!canSave" title="Sauvegarder" aria-label="Sauvegarder">
         <i class="fa-solid fa-floppy-disk"></i>
       </button>
-      <button class="icon-btn" (click)="runFlow()" title="Lancer" aria-label="Lancer">
-        <i class="fa-solid fa-play"></i>
+      <button class="icon-btn" *ngIf="isMobile && validationIssues.length" nz-popover nzPopoverTrigger="click" [nzPopoverTitle]="'Problèmes détectés (' + validationIssues.length + ')'" [nzPopoverContent]="issuesTpl" title="Problèmes">
+        <i class="fa-solid fa-triangle-exclamation" style="color:#ef4444"></i>
       </button>
-      <button class="icon-btn" (click)="openAdvancedEditor()" [disabled]="!selectedModel" title="Configurer / Tester">
+      <button class="icon-btn" *ngIf="isMobile" (click)="centerOnSelection()" [disabled]="!selectedNode" title="Centrer sur le nœud sélectionné">
+        <i class="fa-solid fa-crosshairs"></i>
+      </button>
+      <button class="icon-btn" *ngIf="!isMobile" (click)="openAdvancedEditorV2()" [disabled]="!selectedModel" title="Configurer / Tester (V2)">
         <i class="fa-solid fa-flask"></i>
       </button>
       <button class="icon-btn" (click)="exportFlow()" title="Exporter" aria-label="Exporter">
@@ -239,50 +474,62 @@
         <i class="fa-solid fa-file-arrow-up"></i>
         <input type="file" accept="application/json,.json" (change)="importFlow($event)" hidden>
       </label>
+
+      <!-- Balanced: keep configuration toggles in left bar on mobile; move two most used (Center, Auto-placer) back to bottom bar -->
+      <button class="icon-btn" *ngIf="isPhone" [class.active]="marqueeMode" (click)="toggleMarqueeMode()" [title]="marqueeMode ? 'Sélection multiple: activée' : 'Sélection multiple: désactivée'">
+        <i class="fa-solid fa-vector-square"></i>
+      </button>
+      <button class="icon-btn" *ngIf="isPhone" (click)="togglePortOrientation()" [title]="portOrientation === 'vertical' ? 'Ports: vertical' : 'Ports: horizontal'">
+        <i class="fa-solid" [ngClass]="portOrientation === 'vertical' ? 'fa-arrows-up-down' : 'fa-arrows-left-right'"></i>
+      </button>
+      <button class="icon-btn" *ngIf="isPhone" (click)="toggleAlignmentHelper()" [title]="alignmentHelper ? 'Aides d\'alignement: activées' : 'Aides d\'alignement: désactivées'">
+        <i class="fa-solid" [ngClass]="alignmentHelper ? 'fa-grip-lines' : 'fa-grip-lines-vertical'"></i>
+      </button>
+      <button class="icon-btn" *ngIf="isPhone" (click)="toggleSnapGrid()" [title]="snapGrid ? 'Grille magnétique: activée' : 'Grille magnétique: désactivée'">
+        <i class="fa-solid fa-border-all"></i>
+      </button>
     </div>
   </div>
 
   <div class="bottom-bar">
     <div class="actions">
-      <!-- Left side actions are now shown in the vertical left bar on all sizes -->
       <button class="icon-btn" (click)="undo()" [disabled]="!canUndo" title="Annuler">
         <i class="fa-solid fa-rotate-left"></i>
       </button>
       <button class="icon-btn" (click)="redo()" [disabled]="!canRedo" title="Rétablir">
         <i class="fa-solid fa-rotate-right"></i>
       </button>
+      <span class="divider" aria-hidden="true"></span>
       <button class="icon-btn" (click)="centerFlow()" title="Centrer le flow">
         <i class="fa-regular fa-object-group"></i>
       </button>
-      <button class="icon-btn" *ngIf="validationIssues.length" nz-popover nzPopoverTrigger="click"
-        [nzPopoverTitle]="'Problèmes détectés (' + validationIssues.length + ')'
-        " [nzPopoverContent]="issuesTpl" title="Problèmes">
+      <button class="icon-btn" (click)="onAutoLayoutClick()" [disabled]="layoutLoading" [title]="autoLayoutTooltip()">
+        <i class="fa-solid fa-sitemap"></i>
+      </button>
+      <button class="icon-btn" *ngIf="!isPhone" (click)="togglePortOrientation()" [title]="portOrientation === 'vertical' ? 'Ports: vertical' : 'Ports: horizontal'">
+        <i class="fa-solid" [ngClass]="portOrientation === 'vertical' ? 'fa-arrows-up-down' : 'fa-arrows-left-right'"></i>
+      </button>
+      <button class="icon-btn" *ngIf="!isPhone" (click)="toggleAlignmentHelper()" [title]="alignmentHelper ? 'Aides d\'alignement: activées' : 'Aides d\'alignement: désactivées'">
+        <i class="fa-solid" [ngClass]="alignmentHelper ? 'fa-grip-lines' : 'fa-grip-lines-vertical'"></i>
+      </button>
+      <button class="icon-btn" *ngIf="!isPhone" (click)="toggleSnapGrid()" [title]="snapGrid ? 'Grille magnétique: activée' : 'Grille magnétique: désactivée'">
+        <i class="fa-solid fa-border-all"></i>
+      </button>
+      <button class="icon-btn" *ngIf="validationIssues.length && !isPhone" nz-popover nzPopoverTrigger="click" [nzPopoverTitle]="'Problèmes détectés (' + validationIssues.length + ')'" [nzPopoverContent]="issuesTpl" title="Problèmes">
         <i class="fa-solid fa-triangle-exclamation" style="color:#ef4444"></i>
       </button>
-      <ng-template #issuesTpl>
-        <div style="max-width:320px; max-height: 260px; overflow:auto;">
-          <button type="button" style="display:block; width:100%; text-align:left; border:0; background:transparent; padding:4px 0; font-size:12px; color:#111; cursor:pointer;"
-            *ngFor="let it of validationIssues" (click)="onIssueClick(it)">
-            <span *ngIf="it.nodeId" style="color:#6b7280">[Node {{ it.nodeId }}]</span>
-            <span> {{ it.message }}</span>
-          </button>
-        </div>
-      </ng-template>
-      <button class="icon-btn" (click)="centerOnSelection()" [disabled]="!selectedNode"
-        title="Centrer sur le nœud sélectionné">
+      <button class="icon-btn" *ngIf="!isPhone" (click)="centerOnSelection()" [disabled]="!selectedNode" title="Centrer sur le nœud sélectionné">
         <i class="fa-solid fa-crosshairs"></i>
       </button>
-      <button class="icon-btn desktop-only" (click)="runFlow()" title="Lancer" aria-label="Lancer">
-        <i class="fa-solid fa-play"></i>
-      </button>
-      <div class="zoom-control" *ngIf="!isMobile">
+      <span class="divider" *ngIf="!isPhone" aria-hidden="true"></span>
+      <div class="zoom-control" *ngIf="!isPhone">
         <span class="label">Zoom</span>
         <input type="range" min="5" max="300" step="1" [ngModel]="zoomPercent" (ngModelChange)="onZoomSlider($event)" />
         <span class="value">{{ zoomPercent }}%</span>
       </div>
+      <span class="divider" *ngIf="!isPhone" aria-hidden="true"></span>
       <span class="toast" *ngIf="toastMsg">{{ toastMsg }}</span>
 
-      <!-- Desktop: show Import/Export and Save as icon-only on the right of the group -->
       <label class="icon-btn import-btn desktop-only" title="Importer" aria-label="Importer">
         <i class="fa-solid fa-file-arrow-up"></i>
         <input type="file" accept="application/json,.json" (change)="importFlow($event)" hidden>
@@ -290,41 +537,84 @@
       <button class="icon-btn desktop-only" (click)="exportFlow()" title="Exporter" aria-label="Exporter">
         <i class="fa-solid fa-cloud-arrow-down"></i>
       </button>
-      <button class="icon-btn desktop-only" (click)="saveFlow()" [disabled]="!canSave" title="Sauvegarder" aria-label="Sauvegarder">
+      <button class="icon-btn" *ngIf="!isPhone" (click)="saveFlow()" [disabled]="!canSave" title="Sauvegarder" aria-label="Sauvegarder">
         <i class="fa-solid fa-floppy-disk"></i>
+      </button>
+      <button class="icon-btn" *ngIf="isPhone" (click)="saveFlow()" [disabled]="!canSave" title="Sauvegarder" aria-label="Sauvegarder">
+        <i class="fa-solid fa-floppy-disk"></i>
+      </button>
+      <span class="divider before-run" aria-hidden="true"></span>
+      <button class="run-btn" *ngIf="!isRunBusy(); else stopRunBtn" (click)="runFlow()" [disabled]="isProduction" title="Lancer" aria-label="Lancer">
+        <i class="fa-solid fa-play"></i>
+        <span *ngIf="!isPhone">Lancer</span>
+      </button>
+      <ng-template #stopRunBtn>
+        <button class="run-btn" (click)="stopLastRun()" title="Stop" aria-label="Stop">
+          <i class="fa-solid fa-stop"></i>
+          <span *ngIf="!isPhone">Stop</span>
+        </button>
+      </ng-template>
+      <button class="deploy-btn" *ngIf="!isProduction" (click)="deployFlow()" [disabled]="deploying" title="Déployer en production" aria-label="Déployer">
+        <i class="fa-solid fa-rocket"></i>
+        <span *ngIf="!isPhone">{{ deploying ? 'Déploiement...' : 'Déployer' }}</span>
+      </button>
+      <button class="undeploy-btn" *ngIf="isProduction" (click)="undeployFlow()" [disabled]="undeploying" title="Arrêter la production" aria-label="Arrêter">
+        <i class="fa-solid fa-stop"></i>
+        <span *ngIf="!isPhone">{{ undeploying ? 'Arrêt...' : 'Arrêter prod.' }}</span>
       </button>
     </div>
   </div>
 
+
   <!-- Context menu overlay -->
   <div class="ctx-overlay" *ngIf="ctxMenuVisible" (click)="closeCtxMenu()"></div>
   <div class="ctx-menu" *ngIf="ctxMenuVisible" [style.left.px]="ctxMenuX" [style.top.px]="ctxMenuY">
-    <button (click)="ctxDuplicateTarget()"><i class="fa-regular fa-copy"></i> Dupliquer</button>
+    <ng-container *ngIf="(selectionList?.length || 0) > 1; else singleCtx">
+      <button (click)="ctxDuplicateGroup()"><i class="fa-regular fa-copy"></i> Dupliquer la sélection ({{selectionList.length}})</button>
+      <button (click)="ctxCenterSelection()"><i class="fa-solid fa-crosshairs"></i> Centrer la sélection</button>
+      <button (click)="ctxCenterZoomSelection()"><i class="fa-solid fa-magnifying-glass-location"></i> Centrer + zoom sur la sélection</button>
+      <button (click)="ctxAutoLayoutSelection()"><i class="fa-solid fa-sitemap"></i> Auto-placer la sélection (backend)</button>
+      <button (click)="ctxAlignSelection('horizontal')"><i class="fa-solid fa-arrows-left-right"></i> Aligner horizontalement</button>
+      <button (click)="ctxAlignSelection('vertical')"><i class="fa-solid fa-arrows-up-down"></i> Aligner verticalement</button>
+      <button class="danger" (click)="ctxDeleteGroup()"><i class="fa-regular fa-trash-can"></i> Supprimer la sélection ({{selectionList.length}})</button>
+      <span class="divider" aria-hidden="true"></span>
+    </ng-container>
+    <ng-template #singleCtx>
+      <button (click)="ctxDuplicateTarget()"><i class="fa-regular fa-copy"></i> Dupliquer</button>
+    </ng-template>
     <button (click)="ctxCenterTarget()"><i class="fa-solid fa-crosshairs"></i> Centrer sur ce nœud</button>
-    <button (click)="ctxOpenAdvancedAndInspector()"><i class="fa-regular fa-pen-to-square"></i> Ouvrir l’éditeur +
-      Inspector</button>
-    <button class="danger" (click)="ctxDeleteTarget()"><i class="fa-regular fa-trash-can"></i> Supprimer</button>
+    <button (click)="ctxOpenAdvancedV2AndInspector()"><i class="fa-regular fa-pen-to-square"></i> Éditeur (V2)</button>
+    <button (click)="ctxOpenAdvancedAndInspector()"><i class="fa-regular fa-pen-to-square"></i> Éditeur (Ancien)</button>
+    <button (click)="ctxOpenSimulation()"><i class="fa-solid fa-flask"></i> Ouvrir en simulation</button>
+    <button class="danger" *ngIf="(selectionList?.length || 0) <= 1" (click)="ctxDeleteTarget()"><i class="fa-regular fa-trash-can"></i> Supprimer</button>
   </div>
-  <flow-advanced-editor-dialog *ngIf="advancedOpen && selectedModel" [model]="selectedModel" [flowId]="currentFlowId"
+  <flow-node-settings-dialog *ngIf="advancedOpen && selectedModel" [model]="advancedDialogModel()" [flowId]="currentFlowId"
     [disableForChecksum]="hasTemplateMismatch(selectedModel)"
     [ctx]="advancedCtx" [injectedInput]="advancedInjectedInput" [injectedOutput]="advancedInjectedOutput"
     [hasPrev]="hasPredecessor(selectedModel?.id)" [loadingInput]="previewLoading" [loadingOutput]="outputLoading"
     [testStatus]="testStatus" [testStartedAt]="testStartedAt" [testDurationMs]="testDurationMs" [testDisabled]="isTestDisabled()" [attemptEvents]="advancedAttemptEvents"
     [attemptOptions]="advancedAttemptOptions" [selectedAttemptIdx]="advancedSelectedAttemptIdx"
     (selectedAttemptIdxChange)="onDialogAttemptIdxChange($event)"
+    [simScenarios]="advancedSimScenarios" [simSelectedIndex]="advancedSimScenarioIdx" (simSelectedIndexChange)="onSimScenarioIdxChange($event)" (reloadSimulation)="reloadSimulationForSelected()"
     (injectedInputChange)="onDialogInputChange($event)"
     (requestUpdateArgs)="onRequestUpdateArgs()" (test)="onTestSelectedNode()" (runPrev)="onRunPrevNodes()" (startPayloadChange)="onStartPayloadChange($event)"
     (modelChange)="onAdvancedModelChange($event)" (modelChangeCommitted)="onAdvancedModelCommitted($event)"
-    (close)="closeAdvancedEditor()"></flow-advanced-editor-dialog>
+    (close)="closeAdvancedEditor()"></flow-node-settings-dialog>
 
-  <!-- Floating AI Chat Popover Trigger + persistent popover -->
-  <button nz-button nzType="primary" class="ai-chat-fab" (click)="aiChatOpen = !aiChatOpen" aria-label="Ouvrir l'assistant IA">
-    <i class="fa-solid fa-message"></i>
-  </button>
-  <div class="ai-chat-backdrop" [class.open]="aiChatOpen" (click)="aiChatOpen=false"></div>
-  <div class="ai-chat-popover" [class.open]="aiChatOpen" (click)="$event.stopPropagation()">
-    <flow-ai-chat [seedGraph]="{ nodes: nodes, edges: edges }" (close)="aiChatOpen=false" (graphGenerated)="applyAiGraph($event)"></flow-ai-chat>
-  </div>
+  <flow-node-settings-v2-dialog *ngIf="advancedV2Open && selectedModel" [model]="advancedDialogModel()" [flowId]="currentFlowId" [nodes]="nodes" [edges]="edges"
+    [disableForChecksum]="hasTemplateMismatch(selectedModel)"
+    [ctx]="advancedCtx" [injectedInput]="advancedInjectedInput" [injectedOutput]="advancedInjectedOutput"
+    [hasPrev]="hasPredecessor(selectedModel?.id)" [loadingInput]="previewLoading" [loadingOutput]="outputLoading"
+    [testStatus]="testStatus" [testStartedAt]="testStartedAt" [testDurationMs]="testDurationMs" [testDisabled]="isTestDisabled()" [attemptEvents]="advancedAttemptEvents"
+    [attemptOptions]="advancedAttemptOptions" [selectedAttemptIdx]="advancedSelectedAttemptIdx"
+    (selectedAttemptIdxChange)="onDialogAttemptIdxChange($event)"
+    [simScenarios]="advancedSimScenarios" [simSelectedIndex]="advancedSimScenarioIdx" (simSelectedIndexChange)="onSimScenarioIdxChange($event)" (reloadSimulation)="reloadSimulationForSelected()"
+    (requestLoadAttempts)="onRequestLoadAttempts()"
+    (injectedInputChange)="onDialogInputChange($event)"
+    (requestUpdateArgs)="onRequestUpdateArgs()" (test)="onTestSelectedNode()" (runPrev)="onRunPrevNodes()" (startPayloadChange)="onStartPayloadChange($event)"
+    (modelChange)="onAdvancedModelChange($event)" (modelChangeCommitted)="onAdvancedModelCommitted($event)"
+    (close)="closeAdvancedEditorV2()"></flow-node-settings-v2-dialog>
+
 
 </div>
 
@@ -339,18 +629,26 @@
 <nz-drawer [nzVisible]="rightDrawer" (nzOnClose)="onRightDrawerClose()" nzPlacement="right" [nzWidth]="360"
   [nzBodyStyle]="{padding:'0'}" [nzClosable]="false" [nzMaskClosable]="true" nzWrapClassName="ios-safe-drawer">
   <ng-container *nzDrawerContent>
-    <div class="right-panel drawer-mode">
-      <flow-inspector-panel [mode]="'drawer'" [selected]="selectedNode" [selectedModel]="selectedModel"
-        [inspectorTab]="inspectorTab" (inspectorTabChange)="inspectorTab = $event" [editJson]="editJson"
-        (editJsonChange)="editJson = $event" (openAdvanced)="openAdvancedEditor()" (delete)="deleteSelected()"
-        (saveJson)="saveSelectedJson()"></flow-inspector-panel>
-      <div style="padding: 8px; overflow: auto;">
-
-        <flow-history-timeline [pastItems]="timelinePastItemsCache" [futureItems]="timelineFutureItemsCache"
-          (hoverPast)="onHistoryHoverPast($event)" (hoverFuture)="onHistoryHoverFuture($event)"
-          (leave)="onHistoryHoverLeave()" (clickPast)="onHistoryClickPast($event)"
-          (clickFuture)="onHistoryClickFuture($event)"></flow-history-timeline>
-      </div>
-    </div>
+    <flow-right-panel [mode]="'drawer'"
+      [selected]="selectedNode" [selectedList]="selectionList" [selectedModel]="selectedModel"
+      [nodeHasError]="selectedNode?.id ? (isNodeHardError(selectedNode.id) || isNodeInError(selectedNode.id)) : false"
+      [nodeErrorText]="selectedNode?.id ? nodeErrorTooltip(selectedNode.id) : null"
+      [selectedAttempt]="getLastAttemptFor(selectedNode?.id)"
+      [inspectorTab]="inspectorTab" (inspectorTabChange)="inspectorTab = $event" [editJson]="editJson"
+      (editJsonChange)="editJson = $event" (openAdvanced)="openAdvancedEditorV2()" (openAdvancedV2)="openAdvancedEditorV2()" (delete)="deleteSelected()" (openSingle)="onInspectorOpenSingle($event)" (deleteMany)="onDeleteMany()" (saveJson)="saveSelectedJson()"
+      [currentFlowName]="currentFlowName" (currentFlowNameChange)="currentFlowName=$event; onMetaChange()"
+      [currentFlowDesc]="currentFlowDesc" (currentFlowDescChange)="currentFlowDesc=$event; onMetaChange()"
+      [currentFlowStatus]="currentFlowStatus" (currentFlowStatusChange)="currentFlowStatus=$event; onMetaChange()"
+      [currentFlowEnabled]="currentFlowEnabled" (currentFlowEnabledChange)="currentFlowEnabled=$event; onMetaChange()"
+      [builderMode]="builderMode" [lastRun]="lastRun" [currentRun]="currentRun" [canSave]="canSave"
+      [runInfo]="currentRunMeta" [selectedRunId]="currentRunMeta?.id || backendRunId" [recentRuns]="recentRuns" [runsHasMore]="runsHasMore" (run)="runFlow()" (stop)="stopLastRun()" (save)="saveFlow()" (metaChange)="onMetaChange()" (clearRun)="onClearRun()" (restart)="onRestartRun()" (selectRun)="onSelectRun($event)" (loadMoreRuns)="onLoadMoreRuns()"
+      [timelinePastItems]="timelinePastItemsCache" [timelineFutureItems]="timelineFutureItemsCache"
+      (hoverPast)="onHistoryHoverPast($event)" (hoverFuture)="onHistoryHoverFuture($event)" (leave)="onHistoryHoverLeave()" (clickPast)="onHistoryClickPast($event)" (clickFuture)="onHistoryClickFuture($event)"
+    ></flow-right-panel>
   </ng-container>
 </nz-drawer>
+<node-exec-result-dialog *ngIf="execResultOpen && execResultNodeId"
+  [attempts]="execResultAttempts" [template]="execResultTemplate"
+  [model]="execResultModel" [nodeTitle]="execResultTitle"
+  (close)="closeExecResult()">
+</node-exec-result-dialog>

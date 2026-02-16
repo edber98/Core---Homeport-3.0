@@ -8,11 +8,13 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzBadgeModule } from 'ng-zorro-antd/badge';
-import { CatalogService, AppProvider, CredentialSummary, CredentialDoc } from '../../../services/catalog.service';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { CatalogService, AppProvider, CredentialSummary, CredentialDoc, FormSummary, FormDoc } from '../../../services/catalog.service';
 import { Router } from '@angular/router';
 import { AccessControlService } from '../../../services/access-control.service';
 import { CredentialEditDialogComponent } from '../../credentials/credential-edit-dialog.component';
 import { FormsModule } from '@angular/forms';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'flow-advanced-center-panel',
@@ -52,6 +54,23 @@ import { FormsModule } from '@angular/forms';
                     </label>
                   </div>
                 </div>
+                <div class="start-form-import" *ngIf="startFormEnabled">
+                  <div class="row">
+                    <div class="label">Ou choisir un formulaire existant</div>
+                    <button nz-button nzSize="small" class="apple-btn icon-only" (click)="loadForms()" [disabled]="formsLoading" nz-tooltip nzTooltipTitle="Actualiser">
+                      <i nz-icon nzType="reload"></i>
+                    </button>
+                  </div>
+                  <div class="row">
+                    <nz-select class="form-select" [(ngModel)]="selectedFormId" nzShowSearch nzAllowClear nzPlaceHolder="Sélectionner un formulaire">
+                      <nz-option *ngFor="let f of forms; trackBy: trackForm" [nzValue]="f.id" [nzLabel]="f.name"></nz-option>
+                    </nz-select>
+                    <button nz-button nzSize="small" class="apple-btn" (click)="applySelectedForm()" [disabled]="!selectedFormId || formsLoading">
+                      Importer
+                    </button>
+                  </div>
+                  <div class="hint">Importer remplace le formulaire actuel.</div>
+                </div>
                 <div *ngIf="startFormEnabled && flowId" style="display:flex; align-items:center; gap:10px; margin-top:10px;">
                   <input nz-input [readonly]="true" [value]="formUrl || ''" placeholder="URL publique" style="flex:1 1 auto; min-width: 260px;" />
                   <button nz-button nzSize="small" class="apple-btn" (click)="copyFormUrl()" [disabled]="!formUrl">Copier</button>
@@ -59,18 +78,32 @@ import { FormsModule } from '@angular/forms';
               </div>
               <div class="test-row">
                 <button nz-button class="apple-btn" (click)="test.emit()" title="Tester ce nœud" [disabled]="testDisabled || disabled"><i class="fa-solid fa-play"></i> Tester</button>
-                <div class="attempt-selects" *ngIf="attemptOptions?.length">
-                  <nz-select class="attempt" [ngModel]="selectedAttemptIdx" (ngModelChange)="selectedAttemptIdxChange.emit($event)" nzSize="small" nzPlaceHolder="Tentative">
-                    <nz-option *ngFor="let op of attemptOptions; trackBy: trackAttempt" [nzValue]="op.idx" [nzLabel]="op.label"></nz-option>
-                  </nz-select>
+                <div class="right-controls">
                   <span class="attempt-name" *ngIf="attemptName() as an">{{ an }}</span>
-                </div>
-                <nz-badge class="test-badge" [nzStatus]="testStatus === 'success' ? 'success' : (testStatus === 'error' ? 'error' : (testStatus === 'running' ? 'processing' : 'default'))"></nz-badge>
-                <div class="test-meta" *ngIf="(testStartedAt != null) || (testDurationMs != null)">
-                  <span *ngIf="testStartedAt as t">{{ t | date:'shortTime' }}</span>
-                  <span *ngIf="testDurationMs != null"> <ng-container *ngIf="testStartedAt != null">· </ng-container>{{ testDurationMs }} ms</span>
+                  <nz-badge class="test-badge" [nzStatus]="testStatus === 'success' ? 'success' : (testStatus === 'error' ? 'error' : (testStatus === 'running' ? 'processing' : 'default'))"></nz-badge>
+                  <div class="test-meta" *ngIf="(testStartedAt != null) || (testDurationMs != null)">
+                    <span *ngIf="testStartedAt as t">{{ t | date:'shortTime' }}</span>
+                    <span *ngIf="testDurationMs != null"> <ng-container *ngIf="testStartedAt != null">· </ng-container>{{ testDurationMs }} ms</span>
+                  </div>
+                  <div class="attempt-selects" *ngIf="attemptOptions?.length">
+                    <nz-select class="attempt" [ngModel]="selectedAttemptIdx" (ngModelChange)="selectedAttemptIdxChange.emit($event)" nzPlaceHolder="Tentative">
+                      <nz-option *ngFor="let op of attemptOptions; trackBy: trackAttempt" [nzValue]="op.idx" [nzLabel]="op.label"></nz-option>
+                    </nz-select>
+                  </div>
                 </div>
               </div>
+              <!-- Description (node-level, above credentials) -->
+              <div class="desc-box">
+                <div class="title-row">
+                  <div class="title">Description</div>
+                </div>
+                <textarea nz-input class="desc-text"
+                          [ngModel]="model?.description || ''"
+                          (ngModelChange)="onDescChange($event)"
+                          rows="3"
+                          placeholder="Décrire ce nœud (but, détails)…"></textarea>
+              </div>
+
               <!-- Credentials selection (above form) -->
               <div class="cred-box" *ngIf="credVisible">
                 <div class="title-row">
@@ -81,7 +114,8 @@ import { FormsModule } from '@angular/forms';
                 <div class="control-row">
                   <nz-select class="cred-select" [ngClass]="{ error: credRequired && !selectedCredId }"
                     [(ngModel)]="selectedCredId" [nzAllowClear]="allowWithout"
-                    [nzPlaceHolder]="allowWithout ? 'Aucun (optionnel)' : 'Sélectionner'" (ngModelChange)="onCredChange($event)">
+                    [nzPlaceHolder]="allowWithout ? 'Aucun (optionnel)' : 'Sélectionner'" (ngModelChange)="onCredChange($event)"
+                    [nzDropdownStyle]="{ zIndex: '200010' }" [nzDropdownClassName]="'in-advanced-editor'" nzShowSearch>
                     <nz-option *ngFor="let c of credentials" [nzValue]="c.id" [nzLabel]="c.name"></nz-option>
                   </nz-select>
                   <button nz-button class="apple-btn icon-only cred-add-btn" (click)="openCreateCred()" [disabled]="!currentProvider" nz-tooltip nzTooltipTitle="Nouveau">
@@ -90,16 +124,19 @@ import { FormsModule } from '@angular/forms';
                 </div>
               </div>
               <credential-edit-dialog *ngIf="createVisible" [visible]="createVisible" [provider]="currentProvider" [workspaceId]="workspaceId" (closed)="createVisible=false" (saved)="onCredCreated($event)"></credential-edit-dialog>
-              <ng-container *ngIf="schema as s; else noSchema">
-                <app-dynamic-form *ngIf="dfVisible"
+              <ng-container  *ngIf="schema as s; else noSchema">
+              <div style="overflow-x:hidden">
+              <app-dynamic-form  *ngIf="dfVisible"
                   [schema]="s"
                   [value]="model?.context || {}"
                   [ctx]="ctx"
+                  [hideActions]="true"
                   (valueChange)="onValue($event)"
                   (valueCommitted)="onValueCommitted($event)"
                   (validChange)="onValid($event)"
                   (submitted)="onSubmitted($event)">
                 </app-dynamic-form>
+                </div> 
               </ng-container>
               <ng-template #noSchema>
                 <div class="placeholder">Aucun schéma d’arguments (template.args absent).</div>
@@ -129,9 +166,30 @@ import { FormsModule } from '@angular/forms';
                   (ngModelChange)="onToggleSkipError($event)"></nz-switch>
               </div>
             </div>
+            <!-- Afficher plus de 3 lignes pour la description -->
+            <div class="setting-row">
+              <div class="left">
+                <div class="label">Afficher toute la description</div>
+                <div class="hint">Par défaut, 3 lignes maximum avec ellipses.</div>
+              </div>
+              <div class="right">
+                <nz-switch [(ngModel)]="model.expand_description" (ngModelChange)="onToggleExpandDescription($event)"></nz-switch>
+              </div>
+            </div>
+            <!-- Masquer la description sur la carte -->
+            <div class="setting-row">
+              <div class="left">
+                <div class="label">Masquer la description</div>
+                <div class="hint">N’affiche pas la description sur la carte du nœud.</div>
+              </div>
+              <div class="right">
+                <nz-switch [(ngModel)]="model.hide_description" (ngModelChange)="onToggleHideDescription($event)"></nz-switch>
+              </div>
+            </div>
             <div class="placeholder" *ngIf="!model?.templateObj?.authorize_catch_error && !model?.templateObj?.authorize_skip_error">Aucun paramètre disponible.</div>
           </div>
         </nz-tab>
+        <!-- Assistant AI tab removed — use the unified AI panel (drawer) instead -->
         <nz-tab *ngIf="(attemptEvents && attemptEvents.length)" nzTitle="Logs">
           <div class="settings-pane" style="gap: 6px;">
             <div *ngFor="let ev of attemptEventsView; trackBy: trackEvent" style="border:1px solid #ececec; border-radius:8px; padding:8px;">
@@ -158,13 +216,14 @@ import { FormsModule } from '@angular/forms';
     /* Bare variant: no border, radius, or shadow; fills container */
     .card.panel-card { width:100%; height:100%; max-height:none; border:0; border-radius:0; box-shadow:none; background:transparent; padding:0; }
     .tabs { flex:1 1 auto; min-height:0; display:flex; }
-    .tab-header { display:flex; align-items:center; justify-content:space-between; padding: 8px 12px 0 12px; }
+    .tab-header { display:flex; align-items:center; justify-content:space-between; padding: 8px 0 0; }
     .tab-header .title { font-weight:600; font-size:13px; color:#111; }
     .tab-header .actions { display:flex; gap:6px; }
     .tab-header .icon { background:#fff; color:#111; border:1px solid #e5e7eb; border-radius:8px; padding:6px 8px; cursor:pointer; }
     .tab-header .icon[disabled] { color:#bbb; border-color:#eee; background:#fafafa; cursor:not-allowed; }
     .body { padding: 12px 16px; flex:1 1 auto; overflow:auto; padding-top: 0px }
-    .test-row { display:flex; align-items:center; justify-content:flex-end; gap:8px; margin: 0 0 8px; }
+    .test-row { display:flex; align-items:center; justify-content:flex-start; gap:8px; margin: 0 0 8px; padding-top: 8px; }
+    .test-row .right-controls { display:flex; align-items:center; gap:8px; margin-left:auto; }
     .test-row .attempt-selects { display:flex; align-items:center; gap:6px; }
     .test-row .attempt-selects .attempt { min-width: 156px; }
     .test-row .attempt-name { color:#6b7280; font-size:12px; }
@@ -188,6 +247,16 @@ import { FormsModule } from '@angular/forms';
     .cred-box .control-row .cred-select { flex: 1 1 auto; min-width: 0; }
     .cred-add-btn { display:inline-flex; align-items:center; justify-content:center; height: 32px; padding: 0 12px; border-radius: 6px; }
     .apple-btn.icon-only .label { display: none; }
+    /* Description section (node-level) */
+    .desc-box { border:0; border-radius:0; padding:6px 0 10px; margin: 4px 0 8px; background:transparent; }
+    .desc-box .title-row { display:flex; align-items:baseline; gap:8px; margin-bottom:4px; }
+    .desc-box .title-row .title { font-weight:600; font-size:13px; color:#111; }
+    .desc-box .desc-text { width:100%; min-height: 64px; resize: vertical; }
+    .start-form-import { margin-top: 10px; padding: 8px 10px; border: 1px dashed #e5e7eb; border-radius: 10px; background: #fafafa; display:flex; flex-direction:column; gap:6px; }
+    .start-form-import .row { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+    .start-form-import .label { font-weight:600; font-size:12px; color:#111; }
+    .start-form-import .hint { font-size:12px; color:#6b7280; }
+    .start-form-import .form-select { flex: 1 1 auto; min-width: 0; }
     /* Error style when credentials required but missing */
     :host ::ng-deep .cred-select.error .ant-select-selector { border-color: #ff4d4f !important; box-shadow: 0 0 0 2px rgba(255,77,79,0.12) !important; }
     /* Make tabs fill available height and allow inner scrolling */
@@ -205,6 +274,8 @@ export class FlowAdvancedCenterPanelComponent {
   @Input() ctx: any = {};
   @Input() flowId: string | null = null;
   @Input() bare = false;
+  @Input() simScenarios: Array<{ id: string; index: number; label: string; msgIn: any; match?: { exec?: boolean; handleId?: string; handleLabel?: string } }>|null = null;
+  @Input() simSelectedIndex: number = 0;
   @Input() disabled = false;
   @Input() disableReason: string | null = null;
   @Input() testStatus: 'idle'|'running'|'success'|'error' = 'idle';
@@ -229,7 +300,7 @@ export class FlowAdvancedCenterPanelComponent {
   @Output() modelChange = new EventEmitter<any>();
   @Output() submitted = new EventEmitter<any>();
   @Output() committed = new EventEmitter<any>();
-  // Derived schema from template
+  // Derived schema from template (unchanged)
   get schema() { return this.model?.templateObj?.args || null; }
   private formPast: any[] = [];
   private formFuture: any[] = [];
@@ -237,11 +308,14 @@ export class FlowAdvancedCenterPanelComponent {
   private lastJson = '';
   private commitTimer: any = null;
   private pendingContext: any = null;
+  forms: FormSummary[] = [];
+  formsLoading = false;
+  selectedFormId: string | null = null;
 
   private lastModelId: string | null = null;
   private lastTemplateSig: string | null = null;
   dfVisible = true;
-  constructor(private cdr: ChangeDetectorRef, private zone: NgZone, private catalog: CatalogService, private acl: AccessControlService, private router: Router) {}
+  constructor(private cdr: ChangeDetectorRef, private zone: NgZone, private catalog: CatalogService, private acl: AccessControlService, private router: Router, private msg: NzMessageService) {}
 
   // Credentials state
   credVisible = false;
@@ -252,6 +326,8 @@ export class FlowAdvancedCenterPanelComponent {
   selectedCredId: string | null = null;
   createVisible = false;
   workspaceId: string | null = null;
+  // Expose global Object for template usages like Object.keys
+  Object = Object;
 
   ngOnChanges(changes: SimpleChanges) {
     // Reset local form history only when switching node/template (not on each context patch)
@@ -285,7 +361,16 @@ export class FlowAdvancedCenterPanelComponent {
       // Refresh credentials UI based on provider
       this.refreshCredentialsState();
     }
+    if (needReset && this.isStartForm(this.model)) {
+      this.loadForms();
+    }
     // Always refresh logs view when attemptEvents changes (even without node/template reset)
+    try {
+      if (changes && (changes as any)['ctx']) {
+        const keys = Object.keys(this.ctx || {});
+        console.log('[center-panel] ctx changed', { keys });
+      }
+    } catch {}
     if ('attemptEvents' in changes) {
       try {
         if (Array.isArray(this.attemptEvents)) {
@@ -342,6 +427,83 @@ export class FlowAdvancedCenterPanelComponent {
       try { this.cdr.detectChanges(); } catch {}
     } catch {}
   }
+  lastAppliedArgs?: { prev: any; next: any };
+  lastAppliedDesc?: { prev: string|null; next: string };
+
+  onAssistantApplyArgs(args: any) {
+    try {
+      const v = args && typeof args === 'object' ? JSON.parse(JSON.stringify(args)) : {};
+      const prev = (this.model?.context && typeof this.model.context === 'object') ? JSON.parse(JSON.stringify(this.model.context)) : {};
+      this.lastAppliedArgs = { prev, next: v };
+      const hist = Array.isArray((this.model as any).aiArgsHistory) ? ((this.model as any).aiArgsHistory as any[]).slice() : [];
+      hist.push({ id: 'h' + Date.now().toString(36), ts: Date.now(), by: 'ai-args', prev, next: v, threadId: this.model?.aiChatThreadId || null });
+      while (hist.length > 20) hist.shift();
+      const m = { ...this.model, context: v, aiArgsHistory: hist } as any;
+      this.model = m;
+      this.modelChange.emit(m);
+      this.committed.emit(m);
+      try { this.msg.success('Arguments appliqués'); } catch {}
+      try { this.cdr.detectChanges(); } catch {}
+      // chat message is appended by the chat component
+    } catch {}
+  }
+
+  undoApplyArgs() {
+    try {
+      const last = this.lastAppliedArgs; if (!last) return;
+      const m = { ...this.model, context: JSON.parse(JSON.stringify(last.prev || {})) } as any;
+      this.model = m;
+      this.modelChange.emit(m);
+      this.committed.emit(m);
+      this.lastAppliedArgs = undefined;
+      try { this.msg.info('Chargement annulé (arguments)'); } catch {}
+      try { this.cdr.detectChanges(); } catch {}
+      // chat message is appended by the chat component
+    } catch {}
+  }
+
+  restoreArgsSnapshot(item: any) {
+    try {
+      if (!item || !item.next) return;
+      const ok = window.confirm('Restaurer ces arguments depuis l\'historique ?');
+      if (!ok) return;
+      const v = JSON.parse(JSON.stringify(item.next || {}));
+      const m = { ...this.model, context: v } as any;
+      this.model = m;
+      this.modelChange.emit(m);
+      this.committed.emit(m);
+      try { this.msg.success('Arguments restaurés'); } catch {}
+      try { this.cdr.detectChanges(); } catch {}
+    } catch {}
+  }
+
+  onAssistantApplyDesc(text: string) {
+    try {
+      const prev = String(this.model?.description || '') || '';
+      this.lastAppliedDesc = { prev, next: text };
+      const m = { ...this.model, description: text } as any;
+      this.model = m;
+      this.modelChange.emit(m);
+      this.committed.emit(m);
+      try { this.msg.success('Description appliquée'); } catch {}
+      try { this.cdr.detectChanges(); } catch {}
+      // chat message is appended by the chat component
+    } catch {}
+  }
+
+  undoApplyDesc() {
+    try {
+      const last = this.lastAppliedDesc; if (!last) return;
+      const m = { ...this.model, description: last.prev || '' } as any;
+      this.model = m;
+      this.modelChange.emit(m);
+      this.committed.emit(m);
+      this.lastAppliedDesc = undefined;
+      try { this.msg.info('Chargement annulé (description)'); } catch {}
+      try { this.cdr.detectChanges(); } catch {}
+      // chat message is appended by the chat component
+    } catch {}
+  }
   copyFormUrl() { try { const url = this.formUrl || ''; if (!url) return; (window.navigator as any)?.clipboard?.writeText?.(url); } catch {} }
   openFormBuilder() {
     try {
@@ -351,15 +513,68 @@ export class FlowAdvancedCenterPanelComponent {
         : ((this.model && (this.model.startFormSchema != null))
           ? this.model.startFormSchema
           : (this.model?.templateObj?.args || { title: 'Formulaire', ui: { layout: 'vertical', labelsOnTop: true }, fields: [] }));
+      try { console.log('[center-panel] openFormBuilder', { session: sess, flowId: this.flowId, nodeId: this.model?.id, initSource: (this.model?.context && (this.model.context.fields || this.model.context.steps)) ? 'context' : (this.model?.startFormSchema ? 'startFormSchema' : 'templateArgs') }); } catch {}
       try { localStorage.setItem('formbuilder.session.' + sess, JSON.stringify(init)); } catch {}
       const flow = this.flowId || '';
       const node = String(this.model?.id || '');
+      // Remember last session for this node as a resilience fallback if URL param is lost on return
+      try { if (node) localStorage.setItem('formbuilder.lastSessionForNode.' + node, sess); } catch {}
       const returnTo = this.router.createUrlTree(['/flow-builder/editor'], { queryParams: { flow, node, fbSession: sess } }).toString();
       const query: any = { session: sess, return: returnTo, tplPreset: '1' };
       try { query.schema = JSON.stringify(init); } catch {}
       this.router.navigate(['/dynamic-form'], { queryParams: query });
     } catch {}
   }
+  loadForms() {
+    if (this.formsLoading) return;
+    this.formsLoading = true;
+    const wsId = this.acl.currentWorkspaceId();
+    if (!wsId) { this.formsLoading = false; this.forms = []; return; }
+    this.catalog.listForms(wsId).subscribe({
+      next: (list) => {
+        // Align with /forms page: only show forms accessible in current workspace
+        const all = Array.isArray(list) ? list : [];
+        if (!environment.useBackend) {
+          try {
+            const filtered = all.filter(f => {
+              const ws = this.acl.ensureResourceWorkspace('form', f.id);
+              return ws === this.acl.currentWorkspaceId() && this.acl.canAccessWorkspace(ws);
+            });
+            this.forms = filtered;
+          } catch {
+            this.forms = all;
+          }
+        } else {
+          this.forms = all;
+        }
+        if (this.selectedFormId && !this.forms.some(f => f.id === this.selectedFormId)) {
+          this.selectedFormId = null;
+        }
+      },
+      error: () => { this.forms = []; },
+      complete: () => { this.formsLoading = false; try { this.cdr.detectChanges(); } catch {} }
+    });
+  }
+  applySelectedForm() {
+    const id = this.selectedFormId;
+    if (!id) { try { this.msg.warning('Sélectionnez un formulaire d\'abord'); } catch {} return; }
+    try { console.log('[center-panel] applySelectedForm: fetching', id); } catch {}
+    this.catalog.getForm(id).subscribe({
+      next: (doc: FormDoc) => {
+        const schema = (doc as any)?.schema || { title: doc?.name || 'Formulaire', fields: [] };
+        // Store imported form under startFormSchema (source of truth)
+        // Clear context if it currently holds a schema, so preview binds to startFormSchema
+        const m: any = this.model || {};
+        const isCtxSchema = !!(m?.context && (Array.isArray(m.context?.fields) || Array.isArray(m.context?.steps)));
+        this.patchModel({ startFormSchema: schema, startFormEnabled: true, startFormAppliedAt: Date.now(), context: isCtxSchema ? {} : (m.context || {}) });
+        try { console.log('[center-panel] applySelectedForm: applied', { fields: Array.isArray(schema?.fields) ? schema.fields.length : null, steps: Array.isArray(schema?.steps) ? schema.steps.length : null, clearedContext: isCtxSchema }); } catch {}
+        try { this.msg.success('Formulaire importé'); } catch {}
+        try { this.cdr.detectChanges(); } catch {}
+      },
+      error: () => { try { this.msg.error('Échec de l\'import'); } catch {} }
+    });
+  }
+  trackForm(i: number, f: FormSummary) { return f?.id || i; }
   trackIdx(i: number, v: number) { return v; }
 
   trackEvent(i: number, ev: any) { try { return ev?.createdAt + ':' + (ev?.type || '') + ':' + (ev?.exec ?? '') + ':' + (ev?.nodeId || '') + ':' + i; } catch { return i; } }
@@ -414,18 +629,40 @@ export class FlowAdvancedCenterPanelComponent {
     } catch {}
   }
 
+  onDescChange(text: string) {
+    try {
+      const m = { ...this.model, description: text };
+      this.model = m;
+      this.modelChange.emit(m);
+      this.committed.emit(m);
+    } catch {}
+  }
+
   openCreateCred() { if (this.currentProvider && this.workspaceId) this.createVisible = true; }
   onCredCreated(doc: CredentialDoc) {
     this.createVisible = false;
-    // Refresh list and select the new one
+    // Optimistic select: insert into local list and bind immediately
+    try {
+      const created: CredentialSummary = { id: String(doc.id), name: String(doc.name || ''), providerId: String(doc.providerId || ''), workspaceId: String(doc.workspaceId || '') };
+      const exists = (this.credentials || []).some(c => String(c.id) === String(created.id));
+      if (!exists) this.credentials = [created, ...(this.credentials || [])];
+      this.selectedCredId = created.id;
+      this.onCredChange(created.id);
+      try { this.cdr.detectChanges(); } catch {}
+    } catch {}
+    // Then refresh list from backend to ensure consistency (keep selection)
     try {
       const appId = this.currentProvider?.id || '';
       if (!appId) return;
       const ws = this.workspaceId || undefined;
       this.catalog.listCredentials(ws, appId).subscribe(list => {
         this.credentials = list || [];
-        this.selectedCredId = doc.id;
-        this.onCredChange(doc.id);
+        // preserve selection if still present
+        const sel = this.selectedCredId;
+        if (sel && !this.credentials.some(c => String(c.id) === String(sel))) {
+          // If not present (rare), append a minimal option to keep UI stable
+          this.credentials = [{ id: sel, name: doc.name || sel, providerId: doc.providerId, workspaceId: doc.workspaceId }, ...this.credentials];
+        }
         try { this.cdr.detectChanges(); } catch {}
       });
     } catch {}
@@ -533,4 +770,34 @@ export class FlowAdvancedCenterPanelComponent {
       this.modelChange.emit(m);
     } catch {}
   }
+
+  onToggleHideDescription(val: boolean) {
+    try {
+      const m = { ...this.model, hide_description: !!val };
+      this.model = m;
+      this.modelChange.emit(m);
+      this.committed.emit(m);
+    } catch {}
+  }
+
+  onToggleExpandDescription(val: boolean) {
+    try {
+      const m = { ...this.model, expand_description: !!val };
+      this.model = m;
+      this.modelChange.emit(m);
+      this.committed.emit(m);
+    } catch {}
+  }
+
+  // Link callback from Assistant AI tab
+  onNodeAssistantLinked(ev: { threadId: string|null; type?: string } | null) {
+    try {
+      if (!ev || !ev.threadId) return;
+      const patch: any = { aiChatThreadId: ev.threadId };
+      if (ev.type) patch.aiChatType = ev.type;
+      this.patchModel(patch);
+      try { this.committed.emit(this.model); } catch {}
+    } catch {}
+  }
+
 }

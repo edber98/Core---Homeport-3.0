@@ -27,15 +27,15 @@ export class BuilderCustomizeService {
   }
   private addSpacing(group: FormGroup) {
     ['m_top','m_right','m_bottom','m_left','p_top','p_right','p_bottom','p_left']
-      .forEach(k => group.addControl(k, this.fb.control(null)));
+      .forEach(k => group.addControl(k, this.fb.control(0)));
   }
   private patchStyle(group: FormGroup, st?: Record<string, any>) {
     const pick = (prop: string) => this.unpx(st?.[prop]);
     group.patchValue({
       color: st?.['color'] ?? '', fontSize: this.unpx(st?.['fontSize']),
       borderWidth: this.unpx(st?.['borderWidth']), borderRadius: this.unpx(st?.['borderRadius']), borderColor: st?.['borderColor'] ?? '', boxShadow: st?.['boxShadow'] ?? '',
-      m_top: pick('marginTop'), m_right: pick('marginRight'), m_bottom: pick('marginBottom'), m_left: pick('marginLeft'),
-      p_top: pick('paddingTop'), p_right: pick('paddingRight'), p_bottom: pick('paddingBottom'), p_left: pick('paddingLeft'),
+      m_top: pick('marginTop') ?? 0, m_right: pick('marginRight') ?? 0, m_bottom: pick('marginBottom') ?? 0, m_left: pick('marginLeft') ?? 0,
+      p_top: pick('paddingTop') ?? 0, p_right: pick('paddingRight') ?? 0, p_bottom: pick('paddingBottom') ?? 0, p_left: pick('paddingLeft') ?? 0,
     }, { emitEvent: false });
   }
   private styleFromForm(group: FormGroup): Record<string, any> {

@@ -19,7 +19,7 @@ import { PluginReposBackendService, PluginRepoDto } from '../../services/plugin-
       </div>
       <div class="actions">
         <button nz-button class="apple-btn" (click)="edit()"><i class="fa-regular fa-pen-to-square"></i><span class="label">Éditer</span></button>
-        <button nz-button class="apple-btn" nzType="default" (click)="reloadPlugins()"><i class="fa-solid fa-rotate"></i><span class="label">Recharger</span></button>
+        <button nz-button class="apple-btn" nzType="default" (click)="sync(false)"><i class="fa-solid fa-rotate"></i><span class="label">Recharger</span></button>
       </div>
     </div>
     <div *ngIf="repo as r" class="grid">
@@ -76,7 +76,8 @@ export class PluginRepoViewerComponent implements OnInit {
       this.repo = items.find(x => x.id === id) || null; try{ this.cdr.detectChanges(); }catch{}
     }); });
   }
-  reloadPlugins(){ this.api.reload().subscribe(); }
+  // Reload only this repository (per-repo sync)
+  // The global reload remains accessible from the list page if needed
   back(){ history.back(); }
   edit(){ if (this.repo) { this.zone.run(()=> location.href = '/plugin-repos/editor?id=' + encodeURIComponent(this.repo!.id)); } }
   relPath(p?: string|null): string { try { if (!p) return '—'; const s = String(p).replace(/\\/g,'/'); const i = s.indexOf('/backend/'); return i>=0 ? s.slice(i+1) : (s.includes('backend/src/plugins/local') ? 'backend/src/plugins/local' : s); } catch { return String(p||'—'); } }

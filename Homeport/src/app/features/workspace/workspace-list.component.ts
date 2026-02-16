@@ -198,7 +198,7 @@ import { auditTime } from 'rxjs/operators';
     .page-header p { margin: 4px 0 0; color:#6b7280; }
     .actions { display:flex; align-items:center; gap:10px; flex-wrap: wrap; }
     .actions .search { width: 220px; max-width: 100%; border:1px solid #e5e7eb; border-radius:8px; padding:6px 10px; outline:none; }
-    .actions .primary { background:#111; border-color:#111; }
+    .actions .primary { background:#1677ff; border-color:#1677ff; }
     .actions .icon-only { display:none; align-items:center; justify-content:center; padding: 6px 10px; }
     .actions .with-text { display:inline-flex; align-items:center; gap:6px; }
     @media (max-width: 640px) { .actions .with-text { display:none; } .actions .icon-only { display:inline-flex; } }
@@ -377,7 +377,7 @@ export class WorkspaceListComponent implements OnInit {
     this.zone.run(() => { this.loadingItems = true; this.dbg('Items loading start', { wsId: src, reqId }); });
     // In backend mode: fetch aggregated elements to avoid race conditions
     if (environment.useBackend) {
-      let pending = 3; // elements + forms + websites (forms/websites are local)
+      let pending = 2; // elements + websites (forms are included in elements)
       const finish = () => {
         if (reqId !== this.itemsReqId) return; // selection changed; ignore
         if (--pending <= 0) { this.zone.run(() => { this.loadingItems = false; this.dbg('Items loading done', { wsId: src, reqId }); try { this.cdr.detectChanges(); } catch {} }); }
@@ -388,25 +388,21 @@ export class WorkspaceListComponent implements OnInit {
           if (reqId !== this.itemsReqId) return;
           const flows = Array.isArray(resp?.flows) ? resp.flows : [];
           const creds = Array.isArray(resp?.credentials) ? resp.credentials : [];
+          const forms = Array.isArray(resp?.forms) ? resp.forms : [];
           this.flowsAvail = flows.map((f: any) => ({ id: String(f.id || f._id || ''), name: f.name || String(f.id || '') }));
           this.credsAvail = creds.map((c: any) => ({ id: String(c.id || c._id || ''), name: c.name || String(c.id || '') }));
+          this.formsAvail = forms.map((f: any) => ({ id: String(f.id || f._id || ''), name: f.name || String(f.id || '') }));
           this.dbg('Elements response', { flows: this.flowsAvail.length, creds: this.credsAvail.length, reqId });
           try { this.cdr.detectChanges(); } catch {}
         }),
         error: (e) => this.zone.run(() => {
           if (reqId !== this.itemsReqId) return;
           this.dbg('Elements error', { error: (e && (e.message || e.code)) || 'error', reqId });
-          this.flowsAvail = []; this.credsAvail = [];
+          this.flowsAvail = []; this.credsAvail = []; this.formsAvail = [];
           finish();
         }),
         complete: () => this.zone.run(() => { this.dbg('Elements complete', { reqId }); finish(); })
       });
-      // Local forms (demo)
-      this.catalog.listForms().subscribe({ next: list => { this.dbg('Forms response');
-        const items = (list || []).filter(f => this.acl.ensureResourceWorkspace('form', f.id) === src);
-        this.formsAvail = items.map(f => ({ id: f.id, name: f.name }));
-        try { this.cdr.detectChanges(); } catch {}
-      }, error: () => {}, complete: () => this.zone.run(() => { finish(); }) });
       // Local websites (demo)
       this.websites.list().subscribe({ next: list => { this.dbg('Websites response');
         const items = (list || []).filter(s => this.acl.ensureResourceWorkspace('website', s.id) === src);
@@ -436,7 +432,11 @@ export class WorkspaceListComponent implements OnInit {
         }
       });
     } else if (kind === 'form') {
-      this.acl.setResourceWorkspace('form', id, dest); this.afterMoveCleanup();
+      if (environment.useBackend) {
+        this.catalog.transferForm(id, dest).subscribe(() => this.afterMoveCleanup());
+      } else {
+        this.acl.setResourceWorkspace('form', id, dest); this.afterMoveCleanup();
+      }
     } else if (kind === 'website') {
       this.acl.setResourceWorkspace('website', id, dest); this.afterMoveCleanup();
     } else {
@@ -464,10 +464,15 @@ export class WorkspaceListComponent implements OnInit {
       });
     } else if (kind === 'form') {
       this.catalog.getForm(id).subscribe(doc => {
-        const nid = id + '-copy-' + Date.now().toString(36);
-        const copy: any = { ...doc, id: nid, name: (doc.name || id) + ' (copie)' };
-        this.catalog.saveForm(copy).subscribe(() => this.acl.setResourceWorkspace('form', nid, dest));
-        this.afterMoveCleanup();
+        const nameCopy = (doc.name || id) + ' (copie)';
+        if (environment.useBackend) {
+          this.catalog.createForm(dest, nameCopy, doc.description || '', doc.schema || {}).subscribe(() => this.afterMoveCleanup());
+        } else {
+          const nid = id + '-copy-' + Date.now().toString(36);
+          const copy: any = { ...doc, id: nid, name: nameCopy };
+          this.catalog.saveForm(copy).subscribe(() => this.acl.setResourceWorkspace('form', nid, dest));
+          this.afterMoveCleanup();
+        }
       });
     } else if (kind === 'website') {
       this.websites.getById(id).subscribe(site => {

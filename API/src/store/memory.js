@@ -9,10 +9,11 @@ class MemoryStore {
     this.workspaces = new Map();// id → {id, name, companyId, templatesAllowed: string[]}
     this.flows = new Map();     // id → {id, workspaceId, name, status, enabled, graph}
     this.runs = new Map();      // id → {id, flowId, workspaceId, companyId, status, events:[], result: any}
+    // Cooperative cancellation: runId → true when user requests stop
+    this.cancelledRuns = new Set();
   }
 
   add(map, obj){ const id = obj.id || randomUUID(); const copy = { ...obj, id }; map.set(id, copy); return copy; }
 }
 
 module.exports = { MemoryStore };
-

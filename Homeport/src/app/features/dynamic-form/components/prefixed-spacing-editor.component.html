@@ -1,42 +1,40 @@
 <div class="spacing" [formGroup]="group" style="margin-bottom:8px;">
-  <div class="frame margin">
-    <div class="slot top">
-      <label>margin-top</label>
-      <nz-input-number [formControlName]="ctrl('m_top')" [nzMin]="0"></nz-input-number>
-    </div>
-    <div class="slot left">
-      <label>margin-left</label>
-      <nz-input-number [formControlName]="ctrl('m_left')" [nzMin]="0"></nz-input-number>
-    </div>
-    <div class="box">content</div>
-    <div class="slot right">
-      <nz-input-number [formControlName]="ctrl('m_right')" [nzMin]="0"></nz-input-number>
-      <label>margin-right</label>
-    </div>
-    <div class="slot bottom">
-      <nz-input-number [formControlName]="ctrl('m_bottom')" [nzMin]="0"></nz-input-number>
-      <label>margin-bottom</label>
-    </div>
-  </div>
+  <div class="box-model">
+    <svg class="connector-svg" viewBox="0 0 220 180" aria-hidden="true">
+      <line class="margin" x1="66" y1="66" x2="0" y2="0" />
+      <line class="margin" x1="154" y1="66" x2="220" y2="0" />
+      <line class="margin" x1="154" y1="114" x2="220" y2="180" />
+      <line class="margin" x1="66" y1="114" x2="0" y2="180" />
+    </svg>
+    <div class="label margin">Marge</div>
+    <div class="label padding">Padding</div>
+    <div class="content-box"></div>
+    <div class="label content">contenu</div>
 
-  <div class="frame padding">
-    <div class="slot top">
-      <label>padding-top</label>
-      <nz-input-number [formControlName]="ctrl('p_top')" [nzMin]="0"></nz-input-number>
+    <div class="field margin top">
+      <input class="spacing-input" type="text" inputmode="numeric" pattern="[0-9]*" [formControlName]="ctrl('m_top')" />
     </div>
-    <div class="slot left">
-      <label>padding-left</label>
-      <nz-input-number [formControlName]="ctrl('p_left')" [nzMin]="0"></nz-input-number>
+    <div class="field margin right">
+      <input class="spacing-input" type="text" inputmode="numeric" pattern="[0-9]*" [formControlName]="ctrl('m_right')" />
     </div>
-    <div class="box inner">padding</div>
-    <div class="slot right">
-      <nz-input-number [formControlName]="ctrl('p_right')" [nzMin]="0"></nz-input-number>
-      <label>padding-right</label>
+    <div class="field margin bottom">
+      <input class="spacing-input" type="text" inputmode="numeric" pattern="[0-9]*" [formControlName]="ctrl('m_bottom')" />
     </div>
-    <div class="slot bottom">
-      <nz-input-number [formControlName]="ctrl('p_bottom')" [nzMin]="0"></nz-input-number>
-      <label>padding-bottom</label>
+    <div class="field margin left">
+      <input class="spacing-input" type="text" inputmode="numeric" pattern="[0-9]*" [formControlName]="ctrl('m_left')" />
+    </div>
+
+    <div class="field padding top">
+      <input class="spacing-input" type="text" inputmode="numeric" pattern="[0-9]*" [formControlName]="ctrl('p_top')" />
+    </div>
+    <div class="field padding right">
+      <input class="spacing-input" type="text" inputmode="numeric" pattern="[0-9]*" [formControlName]="ctrl('p_right')" />
+    </div>
+    <div class="field padding bottom">
+      <input class="spacing-input" type="text" inputmode="numeric" pattern="[0-9]*" [formControlName]="ctrl('p_bottom')" />
+    </div>
+    <div class="field padding left">
+      <input class="spacing-input" type="text" inputmode="numeric" pattern="[0-9]*" [formControlName]="ctrl('p_left')" />
     </div>
   </div>
 </div>
-

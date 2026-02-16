@@ -1,0 +1,1592 @@
+{
+  "repo": {
+    "name": "dropbox",
+    "type": "local",
+    "label": "Dropbox"
+  },
+  "variables": {
+    "dbx_file": {
+      "title": "Fichier Dropbox",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "path",
+          "label": "Chemin",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "size",
+          "label": "Taille",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "modified",
+          "label": "Dernière modification",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "rev",
+          "label": "Révision",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "contentHash",
+          "label": "Hash du contenu",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "file",
+          "key": "file",
+          "label": "Fichier",
+          "description": "Référence au fichier",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "dbx_files": {
+      "title": "Fichiers Dropbox",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Fichiers Dropbox",
+          "description": "Liste",
+          "mode": "array",
+          "key": "files",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "path",
+              "label": "Chemin",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "size",
+              "label": "Taille",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "modified",
+              "label": "Dernière modification",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "tag",
+              "label": "Type",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "dbx_folder": {
+      "title": "Dossier Dropbox",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "path",
+          "label": "Chemin",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "dbx_shared_link": {
+      "title": "Lien partagé Dropbox",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "url",
+          "label": "URL",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "path",
+          "label": "Chemin",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "visibility",
+          "label": "Visibilité",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "expires",
+          "label": "Expiration",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "dbx_shared_links": {
+      "title": "Liens partagés Dropbox",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Liens partagés Dropbox",
+          "description": "Liste",
+          "mode": "array",
+          "key": "links",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "url",
+              "label": "URL",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "path",
+              "label": "Chemin",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "visibility",
+              "label": "Visibilité",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "dbx_account": {
+      "title": "Compte Dropbox",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "accountId",
+          "label": "ID du compte",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "displayName",
+          "label": "Nom affiché",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "email",
+          "label": "Email",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "emailVerified",
+          "label": "Email vérifié",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "profilePhotoUrl",
+          "label": "Photo de profil",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "dbx_result": {
+      "title": "Résultat Dropbox",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "message",
+          "label": "Message",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "dbx_event": {
+      "title": "Événement Dropbox",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "path",
+          "label": "Chemin",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "tag",
+          "label": "Type de changement",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "modified",
+          "label": "Date modification",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "dropbox",
+      "name": "Dropbox",
+      "title": "Dropbox",
+      "iconClass": "fa-brands fa-dropbox",
+      "iconUrl": "https://cdn.simpleicons.org/dropbox",
+      "color": "#b5c5ff",
+      "tags": [
+        "dropbox",
+        "cloud",
+        "files",
+        "storage"
+      ],
+      "categories": [
+        "Cloud Storage"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Dropbox",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "accessToken",
+            "label": "Access Token (OAuth2)",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "dbx_upload_file",
+      "name": "dbxUploadFile",
+      "schemaVersion": 2,
+      "title": "Téléverser un fichier",
+      "subtitle": "Fichiers",
+      "icon": "fa-solid fa-file-arrow-up",
+      "tags": [
+        "téléversement",
+        "dropbox"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Dropbox",
+      "providerKey": "dropbox",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:dbx_file"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Téléverse un fichier dans Dropbox.",
+      "args": {
+        "title": "Téléverser un fichier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Chemin de destination",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "Ex: /dossier/fichier.txt"
+          },
+          {
+            "type": "file",
+            "key": "file",
+            "label": "Fichier",
+            "col": {
+              "xs": 24
+            },
+            "description": "Fichier à téléverser.",
+            "file": {
+              "accept": "",
+              "maxSize": 104857600,
+              "multiple": false,
+              "lifecycle": "execution",
+              "listType": "text",
+              "hint": "Téléverser un fichier ou utiliser une expression"
+            }
+          },
+          {
+            "type": "select",
+            "key": "mode",
+            "label": "Mode",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "Ajouter",
+                "value": "add"
+              },
+              {
+                "label": "Écraser",
+                "value": "overwrite"
+              }
+            ],
+            "default": "overwrite",
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Fichiers"
+    },
+    {
+      "key": "dbx_download_file",
+      "name": "dbxDownloadFile",
+      "schemaVersion": 2,
+      "title": "Télécharger un fichier",
+      "subtitle": "Fichiers",
+      "icon": "fa-solid fa-download",
+      "tags": [
+        "téléchargement",
+        "dropbox"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Dropbox",
+      "providerKey": "dropbox",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:dbx_file"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Télécharge un fichier depuis Dropbox.",
+      "args": {
+        "title": "Télécharger un fichier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Chemin du fichier",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Fichiers"
+    },
+    {
+      "key": "dbx_delete_file",
+      "name": "dbxDeleteFile",
+      "schemaVersion": 2,
+      "title": "Supprimer un fichier",
+      "subtitle": "Fichiers",
+      "icon": "fa-solid fa-trash",
+      "tags": [
+        "suppression",
+        "dropbox"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Dropbox",
+      "providerKey": "dropbox",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:dbx_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Supprime un fichier ou dossier dans Dropbox.",
+      "args": {
+        "title": "Supprimer un fichier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Chemin",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Fichiers"
+    },
+    {
+      "key": "dbx_move_file",
+      "name": "dbxMoveFile",
+      "schemaVersion": 2,
+      "title": "Déplacer un fichier",
+      "subtitle": "Fichiers",
+      "icon": "fa-solid fa-arrow-right",
+      "tags": [
+        "mise-à-jour",
+        "dropbox"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Dropbox",
+      "providerKey": "dropbox",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:dbx_file"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Déplace un fichier ou dossier dans Dropbox.",
+      "args": {
+        "title": "Déplacer un fichier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "fromPath",
+            "label": "Chemin source",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "toPath",
+            "label": "Chemin destination",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Fichiers"
+    },
+    {
+      "key": "dbx_copy_file",
+      "name": "dbxCopyFile",
+      "schemaVersion": 2,
+      "title": "Copier un fichier",
+      "subtitle": "Fichiers",
+      "icon": "fa-solid fa-copy",
+      "tags": [
+        "création",
+        "dropbox"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Dropbox",
+      "providerKey": "dropbox",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:dbx_file"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Copie un fichier ou dossier dans Dropbox.",
+      "args": {
+        "title": "Copier un fichier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "fromPath",
+            "label": "Chemin source",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "toPath",
+            "label": "Chemin destination",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Fichiers"
+    },
+    {
+      "key": "dbx_get_metadata",
+      "name": "dbxGetMetadata",
+      "schemaVersion": 2,
+      "title": "Récupérer les métadonnées",
+      "subtitle": "Fichiers",
+      "icon": "fa-solid fa-circle-info",
+      "tags": [
+        "lecture",
+        "dropbox"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Dropbox",
+      "providerKey": "dropbox",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:dbx_file"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère les métadonnées d'un fichier ou dossier.",
+      "args": {
+        "title": "Récupérer les métadonnées",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Chemin",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Fichiers"
+    },
+    {
+      "key": "dbx_list_folder",
+      "name": "dbxListFolder",
+      "schemaVersion": 2,
+      "title": "Lister un dossier",
+      "subtitle": "Dossiers",
+      "icon": "fa-solid fa-folder-open",
+      "tags": [
+        "liste",
+        "dropbox"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Dropbox",
+      "providerKey": "dropbox",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:dbx_files"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste le contenu d'un dossier Dropbox.",
+      "args": {
+        "title": "Lister un dossier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Chemin du dossier",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "default": ""
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Nombre max",
+            "col": {
+              "xs": 24
+            },
+            "default": 100
+          },
+          {
+            "type": "select",
+            "key": "recursive",
+            "label": "Récursif",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "Non",
+                "value": "false"
+              },
+              {
+                "label": "Oui",
+                "value": "true"
+              }
+            ],
+            "default": "false",
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Dossiers"
+    },
+    {
+      "key": "dbx_search",
+      "name": "dbxSearch",
+      "schemaVersion": 2,
+      "title": "Rechercher des fichiers",
+      "subtitle": "Fichiers",
+      "icon": "fa-solid fa-magnifying-glass",
+      "tags": [
+        "recherche",
+        "dropbox"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Dropbox",
+      "providerKey": "dropbox",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:dbx_files"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Recherche des fichiers dans Dropbox.",
+      "args": {
+        "title": "Rechercher des fichiers",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "query",
+            "label": "Recherche",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Chemin de recherche",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "maxResults",
+            "label": "Nombre max",
+            "col": {
+              "xs": 24
+            },
+            "default": 100
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Fichiers"
+    },
+    {
+      "key": "dbx_create_folder",
+      "name": "dbxCreateFolder",
+      "schemaVersion": 2,
+      "title": "Créer un dossier",
+      "subtitle": "Dossiers",
+      "icon": "fa-solid fa-folder-plus",
+      "tags": [
+        "création",
+        "dropbox"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Dropbox",
+      "providerKey": "dropbox",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:dbx_folder"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un nouveau dossier dans Dropbox.",
+      "args": {
+        "title": "Créer un dossier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Chemin du dossier",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Dossiers"
+    },
+    {
+      "key": "dbx_get_thumbnail",
+      "name": "dbxGetThumbnail",
+      "schemaVersion": 2,
+      "title": "Récupérer une miniature",
+      "subtitle": "Fichiers",
+      "icon": "fa-solid fa-image",
+      "tags": [
+        "téléchargement",
+        "dropbox"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Dropbox",
+      "providerKey": "dropbox",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:dbx_file"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère la miniature d'un fichier image.",
+      "args": {
+        "title": "Récupérer une miniature",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Chemin du fichier",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "key": "size",
+            "label": "Taille",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "32x32",
+                "value": "w32h32"
+              },
+              {
+                "label": "64x64",
+                "value": "w64h64"
+              },
+              {
+                "label": "128x128",
+                "value": "w128h128"
+              },
+              {
+                "label": "256x256",
+                "value": "w256h256"
+              }
+            ],
+            "default": "w128h128",
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Fichiers"
+    },
+    {
+      "key": "dbx_create_shared_link",
+      "name": "dbxCreateSharedLink",
+      "schemaVersion": 2,
+      "title": "Créer un lien partagé",
+      "subtitle": "Partage",
+      "icon": "fa-solid fa-link",
+      "tags": [
+        "création",
+        "dropbox"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Dropbox",
+      "providerKey": "dropbox",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:dbx_shared_link"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un lien de partage pour un fichier.",
+      "args": {
+        "title": "Créer un lien partagé",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Chemin du fichier",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Partage"
+    },
+    {
+      "key": "dbx_list_shared_links",
+      "name": "dbxListSharedLinks",
+      "schemaVersion": 2,
+      "title": "Lister les liens partagés",
+      "subtitle": "Partage",
+      "icon": "fa-solid fa-list",
+      "tags": [
+        "liste",
+        "dropbox"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Dropbox",
+      "providerKey": "dropbox",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:dbx_shared_links"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les liens de partage.",
+      "args": {
+        "title": "Lister les liens partagés",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Chemin (optionnel)",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Partage"
+    },
+    {
+      "key": "dbx_share_folder",
+      "name": "dbxShareFolder",
+      "schemaVersion": 2,
+      "title": "Partager un dossier",
+      "subtitle": "Partage",
+      "icon": "fa-solid fa-share",
+      "tags": [
+        "création",
+        "dropbox"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Dropbox",
+      "providerKey": "dropbox",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:dbx_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Partage un dossier avec d'autres utilisateurs.",
+      "args": {
+        "title": "Partager un dossier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Chemin du dossier",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "members",
+            "label": "Emails des membres",
+            "col": {
+              "xs": 24
+            },
+            "description": "Séparer par des virgules."
+          },
+          {
+            "type": "select",
+            "key": "accessLevel",
+            "label": "Niveau d'accès",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "Lecteur",
+                "value": "viewer"
+              },
+              {
+                "label": "Éditeur",
+                "value": "editor"
+              }
+            ],
+            "default": "viewer",
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Partage"
+    },
+    {
+      "key": "dbx_get_account",
+      "name": "dbxGetAccount",
+      "schemaVersion": 2,
+      "title": "Récupérer le compte",
+      "subtitle": "Compte",
+      "icon": "fa-solid fa-user",
+      "tags": [
+        "lecture",
+        "dropbox"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Dropbox",
+      "providerKey": "dropbox",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:dbx_account"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère les informations du compte courant.",
+      "args": {
+        "title": "Récupérer le compte",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Compte"
+    },
+    {
+      "key": "dbx_list_paper_docs",
+      "name": "dbxListPaperDocs",
+      "schemaVersion": 2,
+      "title": "Lister les documents Paper",
+      "subtitle": "Paper",
+      "icon": "fa-solid fa-file-lines",
+      "tags": [
+        "liste",
+        "dropbox"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Dropbox",
+      "providerKey": "dropbox",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:dbx_files"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les documents Dropbox Paper.",
+      "args": {
+        "title": "Lister les documents Paper",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Nombre max",
+            "col": {
+              "xs": 24
+            },
+            "default": 100
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Paper"
+    },
+    {
+      "key": "dbx_watch_folder",
+      "name": "dbxWatchFolder",
+      "schemaVersion": 2,
+      "title": "Surveiller un dossier",
+      "subtitle": "Événements",
+      "icon": "fa-solid fa-bell",
+      "tags": [
+        "événement",
+        "dropbox"
+      ],
+      "type": "event",
+      "nodeKind": "event",
+      "category": "Dropbox",
+      "providerKey": "dropbox",
+      "inputHandles": [],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Event",
+          "type": "payload",
+          "schema": "$var:dbx_event"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Déclenche un événement quand un fichier change dans un dossier.",
+      "args": {
+        "title": "Surveiller un dossier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Chemin du dossier",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "default": "",
+            "description": "Chemin à surveiller."
+          },
+          {
+            "type": "number",
+            "key": "interval",
+            "label": "Intervalle (secondes)",
+            "col": {
+              "xs": 24
+            },
+            "default": 60
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Événements"
+    }
+  ]
+}

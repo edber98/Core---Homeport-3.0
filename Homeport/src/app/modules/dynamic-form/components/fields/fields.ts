@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostListener, Input, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -10,7 +10,11 @@ import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { NzTypographyModule } from 'ng-zorro-antd/typography';
 import { NzSegmentedModule } from 'ng-zorro-antd/segmented';
+import { NzCronExpressionModule } from 'ng-zorro-antd/cron-expression';
+import { NzColorPickerModule } from 'ng-zorro-antd/color-picker';
 import { ExpressionEditorComponent } from '../../../expression-editor/expression-editor';
+import { FileFieldComponent } from '../file-field/file-field';
+import { SchemaBuilderComponent } from '../schema-builder/schema-builder';
 import {
   FieldConfig,
   InputFieldConfig,
@@ -25,7 +29,7 @@ import {
   imports: [
     CommonModule, ReactiveFormsModule, FormsModule,
     NzFormModule, NzInputModule, NzSelectModule, NzRadioModule, NzCheckboxModule, NzDatePickerModule, NzTypographyModule,
-    NzSegmentedModule, ExpressionEditorComponent
+    NzSegmentedModule, NzCronExpressionModule, NzColorPickerModule, ExpressionEditorComponent, FileFieldComponent, SchemaBuilderComponent
   ],
   templateUrl: './fields.html',
   styleUrls: ['./fields.scss']
@@ -45,6 +49,7 @@ export class Fields implements OnInit, OnDestroy {
   get exprEnabled() { return this.exprMode === 'expr'; }
   // Secret input visibility
   secretVisible = false;
+  isLgUp = false;
 
   // Final flag used for ExpressionEditor preview errors: combine global + field-level
   get showPreviewErrors(): boolean {
@@ -62,6 +67,7 @@ export class Fields implements OnInit, OnDestroy {
 
   private sub: any;
   ngOnInit(): void {
+    this.updateViewport();
     const k = this.fieldKey;
     // Initial default mode: honor explicit defaultMode first, fallback to auto-detect
     const exprCfg = (this.field as any)?.expression || {};
@@ -87,6 +93,12 @@ export class Fields implements OnInit, OnDestroy {
     }
   }
   ngOnDestroy(): void { try { this.sub?.unsubscribe?.(); } catch {} }
+  @HostListener('window:resize')
+  onResize() { this.updateViewport(); }
+  private updateViewport(): void {
+    if (typeof window === 'undefined') return;
+    this.isLgUp = window.innerWidth >= 992;
+  }
 
   /** champ required ? */
   get requiredFlag(): boolean {
@@ -103,19 +115,20 @@ export class Fields implements OnInit, OnDestroy {
   }
 
   /** spans/offsets calculés */
-  get labelSpan(): number { return this.labelsOnTop ? 24 : (this.ui?.labelCol?.span ?? 8); }
-  get labelOffset(): number { return this.labelsOnTop ? 0  : (this.ui?.labelCol?.offset ?? 0); }
-  get controlSpan(): number { return this.labelsOnTop ? 24 : (this.ui?.controlCol?.span ?? 16); }
-  get controlOffset(): number { return this.labelsOnTop ? 0  : (this.ui?.controlCol?.offset ?? 0); }
-
-  /** styles marge/padding : fusion ui.itemStyle + field.itemStyle ; textblock => no margin/padding */
-  get itemStyle(): Record<string, any> {
-    const fromUi = (this.ui as any)?.itemStyle ?? {};
-    const fromField = (this.field as any)?.itemStyle ?? {};
-    const merged = { ...fromUi, ...fromField };
-    if (this.field.type === 'textblock') {
-      return { ...merged, margin: 0, padding: 0 };
-    }
-    return merged;
+  get labelSpan(): number {
+    if (this.labelsOnTop) return 24;
+    const base = this.ui?.labelCol?.span ?? 8;
+    const controlBase = this.ui?.controlCol?.span ?? 16;
+    if (this.isLgUp && base === 8 && controlBase === 16) return 6;
+    return base;
   }
+  get labelOffset(): number { return this.labelsOnTop ? 0  : (this.ui?.labelCol?.offset ?? 0); }
+  get controlSpan(): number {
+    if (this.labelsOnTop) return 24;
+    const base = this.ui?.controlCol?.span ?? 16;
+    const labelBase = this.ui?.labelCol?.span ?? 8;
+    if (this.isLgUp && labelBase === 8 && base === 16) return 18;
+    return base;
+  }
+  get controlOffset(): number { return this.labelsOnTop ? 0  : (this.ui?.controlCol?.offset ?? 0); }
 }

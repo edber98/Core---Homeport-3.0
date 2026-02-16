@@ -1,0 +1,2140 @@
+{
+  "repo": {
+    "name": "clickup",
+    "type": "local",
+    "label": "ClickUp"
+  },
+  "variables": {
+    "clickup_task": {
+      "title": "Tâche ClickUp",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant de la tâche.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom de la tâche.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "description",
+          "label": "Description",
+          "description": "Description de la tâche.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut actuel.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "priority",
+          "label": "Priorité",
+          "description": "Priorité de la tâche.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "assignees",
+          "label": "Assignés",
+          "description": "Personnes assignées.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "due_date",
+          "label": "Date d'échéance",
+          "description": "Date d'échéance.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "listId",
+          "label": "Liste ID",
+          "description": "Identifiant de la liste.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "url",
+          "label": "URL",
+          "description": "URL de la tâche.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "date_created",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "clickup_tasks": {
+      "title": "Tâches ClickUp",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Tâches",
+          "description": "Liste des tâches",
+          "mode": "array",
+          "key": "tasks",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "priority",
+              "label": "Priorité",
+              "description": "Priorité.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "assignees",
+              "label": "Assignés",
+              "description": "Assignés.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "due_date",
+              "label": "Date d'échéance",
+              "description": "Échéance.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "date_created",
+              "label": "Date création",
+              "description": "Création.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "clickup_list": {
+      "title": "Liste ClickUp",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant de la liste.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom de la liste.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "content",
+          "label": "Contenu",
+          "description": "Description de la liste.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "folderId",
+          "label": "Folder ID",
+          "description": "Identifiant du dossier parent.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "taskCount",
+          "label": "Nombre de tâches",
+          "description": "Nombre de tâches dans la liste.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "clickup_folder": {
+      "title": "Dossier ClickUp",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du dossier.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom du dossier.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "hidden",
+          "label": "Masqué",
+          "description": "Dossier masqué.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "spaceId",
+          "label": "Space ID",
+          "description": "Identifiant de l'espace.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "clickup_folders": {
+      "title": "Dossiers ClickUp",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Dossiers",
+          "description": "Liste des dossiers",
+          "mode": "array",
+          "key": "folders",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "hidden",
+              "label": "Masqué",
+              "description": "Masqué.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "clickup_space": {
+      "title": "Espace ClickUp",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant de l'espace.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom de l'espace.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "private",
+          "label": "Privé",
+          "description": "Espace privé.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "color",
+          "label": "Couleur",
+          "description": "Couleur de l'espace.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "clickup_spaces": {
+      "title": "Espaces ClickUp",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Espaces",
+          "description": "Liste des espaces",
+          "mode": "array",
+          "key": "spaces",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "private",
+              "label": "Privé",
+              "description": "Privé.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "clickup_team": {
+      "title": "Team ClickUp",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant de la team.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom de la team.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "color",
+          "label": "Couleur",
+          "description": "Couleur.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "clickup_teams": {
+      "title": "Teams ClickUp",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Teams",
+          "description": "Liste des teams/workspaces",
+          "mode": "array",
+          "key": "teams",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "color",
+              "label": "Couleur",
+              "description": "Couleur.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "clickup_comment": {
+      "title": "Commentaire ClickUp",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du commentaire.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "comment_text",
+          "label": "Texte",
+          "description": "Texte du commentaire.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "user",
+          "label": "Auteur",
+          "description": "Auteur du commentaire.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "date",
+          "label": "Date",
+          "description": "Date du commentaire.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "clickup_comments": {
+      "title": "Commentaires ClickUp",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Commentaires",
+          "description": "Liste des commentaires",
+          "mode": "array",
+          "key": "comments",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "comment_text",
+              "label": "Texte",
+              "description": "Texte.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "user",
+              "label": "Auteur",
+              "description": "Auteur.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "date",
+              "label": "Date",
+              "description": "Date.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "clickup_result": {
+      "title": "Résultat",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut de l'opération.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "message",
+          "label": "Message",
+          "description": "Message de retour.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "clickup_event": {
+      "title": "Événement ClickUp",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "event",
+          "label": "Événement",
+          "description": "Type d'événement.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "taskId",
+          "label": "Task ID",
+          "description": "Identifiant de la tâche.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "webhookId",
+          "label": "Webhook ID",
+          "description": "Identifiant du webhook.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "timestamp",
+          "label": "Horodatage",
+          "description": "Horodatage.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "payload",
+          "label": "Payload",
+          "description": "Données brutes (JSON).",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "clickup",
+      "name": "ClickUp",
+      "title": "ClickUp",
+      "iconClass": "fa-solid fa-clipboard-check",
+      "iconUrl": "https://s3-eu-west-1.amazonaws.com/tpd/logos/596dc4c10000ff0005a6e68f/0x0.png",
+      "color": "#c7bdff",
+      "tags": [
+        "clickup",
+        "project",
+        "tasks",
+        "productivity"
+      ],
+      "categories": [
+        "Gestion de projet"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants ClickUp",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "apiToken",
+            "label": "API Token",
+            "description": "Token d'API ClickUp (Personal API Token).",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "clickup_task_create",
+      "name": "clickupTaskCreate",
+      "schemaVersion": 2,
+      "title": "Créer une tâche",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "ClickUp",
+      "providerKey": "clickup",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:clickup_task"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée une nouvelle tâche dans ClickUp.",
+      "args": {
+        "title": "Créer une tâche",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "listId",
+            "label": "List ID",
+            "description": "Identifiant de la liste.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nom de la tâche.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "description",
+            "label": "Description",
+            "description": "Description de la tâche.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "priority",
+            "label": "Priorité",
+            "description": "Priorité (1=Urgent, 2=High, 3=Normal, 4=Low).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "date",
+            "key": "due_date",
+            "label": "Date d'échéance",
+            "description": "Date d'échéance (timestamp ms ou ISO).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "assignees",
+            "label": "Assignés",
+            "description": "IDs des assignés séparés par des virgules.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Tâches",
+      "icon": "fa-solid fa-square-plus",
+      "tags": [
+        "clickup",
+        "création"
+      ],
+      "group": "Tâches"
+    },
+    {
+      "key": "clickup_task_get",
+      "name": "clickupTaskGet",
+      "schemaVersion": 2,
+      "title": "Obtenir une tâche",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "ClickUp",
+      "providerKey": "clickup",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:clickup_task"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère une tâche ClickUp par son ID.",
+      "args": {
+        "title": "Obtenir une tâche",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "taskId",
+            "label": "Task ID",
+            "description": "Identifiant de la tâche.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Tâches",
+      "icon": "fa-solid fa-eye",
+      "tags": [
+        "clickup",
+        "lecture"
+      ],
+      "group": "Tâches"
+    },
+    {
+      "key": "clickup_task_update",
+      "name": "clickupTaskUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier une tâche",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "ClickUp",
+      "providerKey": "clickup",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:clickup_task"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Met à jour une tâche existante dans ClickUp.",
+      "args": {
+        "title": "Modifier une tâche",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "taskId",
+            "label": "Task ID",
+            "description": "Identifiant de la tâche.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nouveau nom.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "description",
+            "label": "Description",
+            "description": "Nouvelle description.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "priority",
+            "label": "Priorité",
+            "description": "Nouvelle priorité (1-4).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "date",
+            "key": "due_date",
+            "label": "Date d'échéance",
+            "description": "Nouvelle date d'échéance.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "status",
+            "label": "Statut",
+            "description": "Nouveau statut.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Tâches",
+      "icon": "fa-solid fa-pen-to-square",
+      "tags": [
+        "clickup",
+        "mise-à-jour"
+      ],
+      "group": "Tâches"
+    },
+    {
+      "key": "clickup_task_delete",
+      "name": "clickupTaskDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer une tâche",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "ClickUp",
+      "providerKey": "clickup",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:clickup_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Supprime une tâche ClickUp.",
+      "args": {
+        "title": "Supprimer une tâche",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "taskId",
+            "label": "Task ID",
+            "description": "Identifiant de la tâche à supprimer.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Tâches",
+      "icon": "fa-solid fa-trash",
+      "tags": [
+        "clickup",
+        "suppression"
+      ],
+      "group": "Tâches"
+    },
+    {
+      "key": "clickup_tasks_list",
+      "name": "clickupTasksList",
+      "schemaVersion": 2,
+      "title": "Lister les tâches",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "ClickUp",
+      "providerKey": "clickup",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:clickup_tasks"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les tâches d'une liste ClickUp.",
+      "args": {
+        "title": "Lister les tâches",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "listId",
+            "label": "List ID",
+            "description": "Identifiant de la liste.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Tâches",
+      "icon": "fa-solid fa-list",
+      "tags": [
+        "clickup",
+        "liste"
+      ],
+      "group": "Tâches"
+    },
+    {
+      "key": "clickup_list_create",
+      "name": "clickupListCreate",
+      "schemaVersion": 2,
+      "title": "Créer une liste",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "ClickUp",
+      "providerKey": "clickup",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:clickup_list"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée une nouvelle liste dans un dossier ClickUp.",
+      "args": {
+        "title": "Créer une liste",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "folderId",
+            "label": "Folder ID",
+            "description": "Identifiant du dossier.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nom de la liste.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "content",
+            "label": "Description",
+            "description": "Description de la liste.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Listes",
+      "icon": "fa-solid fa-square-plus",
+      "tags": [
+        "clickup",
+        "création"
+      ],
+      "group": "Listes"
+    },
+    {
+      "key": "clickup_list_get",
+      "name": "clickupListGet",
+      "schemaVersion": 2,
+      "title": "Obtenir une liste",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "ClickUp",
+      "providerKey": "clickup",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:clickup_list"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère les détails d'une liste ClickUp.",
+      "args": {
+        "title": "Obtenir une liste",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "listId",
+            "label": "List ID",
+            "description": "Identifiant de la liste.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Listes",
+      "icon": "fa-solid fa-eye",
+      "tags": [
+        "clickup",
+        "lecture"
+      ],
+      "group": "Listes"
+    },
+    {
+      "key": "clickup_folder_create",
+      "name": "clickupFolderCreate",
+      "schemaVersion": 2,
+      "title": "Créer un dossier",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "ClickUp",
+      "providerKey": "clickup",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:clickup_folder"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un nouveau dossier dans un espace ClickUp.",
+      "args": {
+        "title": "Créer un dossier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "spaceId",
+            "label": "Space ID",
+            "description": "Identifiant de l'espace.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nom du dossier.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Dossiers",
+      "icon": "fa-solid fa-folder-plus",
+      "tags": [
+        "clickup",
+        "création"
+      ],
+      "group": "Dossiers"
+    },
+    {
+      "key": "clickup_folder_get",
+      "name": "clickupFolderGet",
+      "schemaVersion": 2,
+      "title": "Obtenir un dossier",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "ClickUp",
+      "providerKey": "clickup",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:clickup_folder"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère les détails d'un dossier ClickUp.",
+      "args": {
+        "title": "Obtenir un dossier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "folderId",
+            "label": "Folder ID",
+            "description": "Identifiant du dossier.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Dossiers",
+      "icon": "fa-solid fa-folder-open",
+      "tags": [
+        "clickup",
+        "lecture"
+      ],
+      "group": "Dossiers"
+    },
+    {
+      "key": "clickup_folders_list",
+      "name": "clickupFoldersList",
+      "schemaVersion": 2,
+      "title": "Lister les dossiers",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "ClickUp",
+      "providerKey": "clickup",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:clickup_folders"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les dossiers d'un espace ClickUp.",
+      "args": {
+        "title": "Lister les dossiers",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "spaceId",
+            "label": "Space ID",
+            "description": "Identifiant de l'espace.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Dossiers",
+      "icon": "fa-solid fa-folder-open",
+      "tags": [
+        "clickup",
+        "liste"
+      ],
+      "group": "Dossiers"
+    },
+    {
+      "key": "clickup_space_get",
+      "name": "clickupSpaceGet",
+      "schemaVersion": 2,
+      "title": "Obtenir un espace",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "ClickUp",
+      "providerKey": "clickup",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:clickup_space"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère les détails d'un espace ClickUp.",
+      "args": {
+        "title": "Obtenir un espace",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "spaceId",
+            "label": "Space ID",
+            "description": "Identifiant de l'espace.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Espaces",
+      "icon": "fa-solid fa-eye",
+      "tags": [
+        "clickup",
+        "lecture"
+      ],
+      "group": "Espaces"
+    },
+    {
+      "key": "clickup_spaces_list",
+      "name": "clickupSpacesList",
+      "schemaVersion": 2,
+      "title": "Lister les espaces",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "ClickUp",
+      "providerKey": "clickup",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:clickup_spaces"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les espaces d'un workspace ClickUp.",
+      "args": {
+        "title": "Lister les espaces",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "teamId",
+            "label": "Team ID",
+            "description": "Identifiant de la team/workspace.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Espaces",
+      "icon": "fa-solid fa-list",
+      "tags": [
+        "clickup",
+        "liste"
+      ],
+      "group": "Espaces"
+    },
+    {
+      "key": "clickup_teams_list",
+      "name": "clickupTeamsList",
+      "schemaVersion": 2,
+      "title": "Lister les workspaces",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "ClickUp",
+      "providerKey": "clickup",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:clickup_teams"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les workspaces (teams) ClickUp.",
+      "args": {
+        "title": "Lister les workspaces",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Équipes",
+      "icon": "fa-solid fa-list",
+      "tags": [
+        "clickup",
+        "liste"
+      ],
+      "group": "Équipes"
+    },
+    {
+      "key": "clickup_comment_create",
+      "name": "clickupCommentCreate",
+      "schemaVersion": 2,
+      "title": "Ajouter un commentaire",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "ClickUp",
+      "providerKey": "clickup",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:clickup_comment"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Ajoute un commentaire à une tâche ClickUp.",
+      "args": {
+        "title": "Ajouter un commentaire",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "taskId",
+            "label": "Task ID",
+            "description": "Identifiant de la tâche.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "comment_text",
+            "label": "Commentaire",
+            "description": "Texte du commentaire.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Commentaires",
+      "icon": "fa-solid fa-comment",
+      "tags": [
+        "clickup",
+        "création"
+      ],
+      "group": "Commentaires"
+    },
+    {
+      "key": "clickup_comments_list",
+      "name": "clickupCommentsList",
+      "schemaVersion": 2,
+      "title": "Lister les commentaires",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "ClickUp",
+      "providerKey": "clickup",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:clickup_comments"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les commentaires d'une tâche ClickUp.",
+      "args": {
+        "title": "Lister les commentaires",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "taskId",
+            "label": "Task ID",
+            "description": "Identifiant de la tâche.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Commentaires",
+      "icon": "fa-solid fa-comments",
+      "tags": [
+        "clickup",
+        "liste"
+      ],
+      "group": "Commentaires"
+    },
+    {
+      "key": "clickup_tags_list",
+      "name": "clickupTagsList",
+      "schemaVersion": 2,
+      "title": "Lister les tags",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "ClickUp",
+      "providerKey": "clickup",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:clickup_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les tags d'un espace ClickUp.",
+      "args": {
+        "title": "Lister les tags",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "spaceId",
+            "label": "Space ID",
+            "description": "Identifiant de l'espace.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Tags",
+      "icon": "fa-solid fa-tags",
+      "tags": [
+        "clickup",
+        "liste"
+      ],
+      "group": "Tags"
+    },
+    {
+      "key": "clickup_time_entry_create",
+      "name": "clickupTimeEntryCreate",
+      "schemaVersion": 2,
+      "title": "Créer une entrée de temps",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "ClickUp",
+      "providerKey": "clickup",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:clickup_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée une entrée de temps dans ClickUp.",
+      "args": {
+        "title": "Créer une entrée de temps",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "teamId",
+            "label": "Team ID",
+            "description": "Identifiant de la team.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "taskId",
+            "label": "Task ID",
+            "description": "Identifiant de la tâche.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "duration",
+            "label": "Durée (ms)",
+            "description": "Durée en millisecondes.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "description",
+            "label": "Description",
+            "description": "Description du temps passé.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Temps",
+      "icon": "fa-solid fa-clock",
+      "tags": [
+        "clickup",
+        "création"
+      ],
+      "group": "Temps"
+    },
+    {
+      "key": "clickup_time_entries_list",
+      "name": "clickupTimeEntriesList",
+      "schemaVersion": 2,
+      "title": "Lister les entrées de temps",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "ClickUp",
+      "providerKey": "clickup",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:clickup_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les entrées de temps d'une team ClickUp.",
+      "args": {
+        "title": "Lister les entrées de temps",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "teamId",
+            "label": "Team ID",
+            "description": "Identifiant de la team.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Temps",
+      "icon": "fa-solid fa-clock",
+      "tags": [
+        "clickup",
+        "liste"
+      ],
+      "group": "Temps"
+    },
+    {
+      "key": "clickup_webhook_event",
+      "name": "clickupWebhookEvent",
+      "schemaVersion": 2,
+      "title": "Événement entrant",
+      "type": "event",
+      "nodeKind": "event",
+      "category": "ClickUp",
+      "providerKey": "clickup",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:clickup_event"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Reçoit un événement entrant depuis ClickUp.",
+      "args": {
+        "title": "Événement entrant",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Chemin",
+            "description": "Chemin du webhook.",
+            "col": {
+              "xs": 24
+            },
+            "default": "/clickup"
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Événements",
+      "icon": "fa-solid fa-bolt",
+      "inputHandles": [],
+      "tags": [
+        "clickup",
+        "événement"
+      ],
+      "group": "Événements"
+    }
+  ]
+}

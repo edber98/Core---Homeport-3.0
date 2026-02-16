@@ -8,15 +8,18 @@ import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { Subscription } from 'rxjs';
 import { auditTime } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
+import { UiMessageService } from '../../services/ui-message.service';
 
 type FormItem = { id: string; name: string; description?: string };
 
 @Component({
   selector: 'form-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, NzModalModule, NzButtonModule, NzInputModule, NzFormModule],
+  imports: [CommonModule, FormsModule, NzModalModule, NzButtonModule, NzInputModule, NzFormModule, NzPopconfirmModule],
   template: `
   <div class="list-page">
     <div class="container">
@@ -45,7 +48,7 @@ type FormItem = { id: string; name: string; description?: string };
       </div>
       <div class="error" *ngIf="!loading && error">{{ error }}</div>
       <div class="grid" *ngIf="!loading && !error">
-        <div class="card" *ngFor="let it of filtered">
+        <div class="card" *ngFor="let it of filtered" (dblclick)="openBuilder(it)">
           <div class="leading"><div class="icon-badge"><i class="fa-regular fa-rectangle-list"></i></div></div>
           <div class="content">
             <div class="title-row"><div class="name">{{ it.name }}</div></div>
@@ -58,14 +61,25 @@ type FormItem = { id: string; name: string; description?: string };
             <button class="icon-btn" (click)="openViewer(it)" title="Viewer">
               <i class="fa-regular fa-eye"></i>
             </button>
+            <button class="icon-btn danger"
+                    nz-popconfirm
+                    [nzPopconfirmTitle]="'Supprimer ' + it.name + ' ?'"
+                    nzOkText="Supprimer"
+                    nzCancelText="Annuler"
+                    nzPopconfirmPlacement="topLeft"
+                    (nzOnConfirm)="removeForm(it)"
+                    (click)="$event.stopPropagation()"
+                    title="Supprimer">
+              <i class="fa-regular fa-trash-can"></i>
+            </button>
           </div>
         </div>
       </div>
     </div>
     <!-- Create modal -->
-    <nz-modal [(nzVisible)]="createVisible" nzTitle="Nouveau formulaire" (nzOnCancel)="closeCreate()" [nzFooter]="null">
+    <nz-modal [(nzVisible)]="createVisible" nzTitle="Nouveau formulaire" nzWrapClassName="create-form-modal" (nzOnCancel)="closeCreate()" [nzFooter]="null">
       <ng-container *nzModalContent>
-        <form nz-form nzLayout="vertical">
+        <form nz-form nzLayout="vertical" (ngSubmit)="createForm()">
           <nz-form-item>
             <nz-form-label>Titre</nz-form-label>
             <nz-form-control>
@@ -79,8 +93,8 @@ type FormItem = { id: string; name: string; description?: string };
             </nz-form-control>
           </nz-form-item>
           <div class="modal-actions">
-            <button nz-button (click)="closeCreate()">Annuler</button>
-            <button nz-button nzType="primary" [disabled]="!canCreate() || creating" (click)="createForm()">Créer</button>
+            <button nz-button type="button" (click)="closeCreate()">Annuler</button>
+            <button nz-button type="submit" nzType="primary" [disabled]="!canCreate() || creating">Créer</button>
           </div>
           <div class="error" *ngIf="createError">{{ createError }}</div>
         </form>
@@ -97,10 +111,12 @@ type FormItem = { id: string; name: string; description?: string };
     .page-header .actions { display:flex; align-items:center; gap:10px; flex-wrap: wrap; }
     .page-header .actions .search { width: 220px; max-width: 100%; border:1px solid #e5e7eb; border-radius:8px; padding:6px 10px; outline:none; }
     .page-header .actions .search:focus { border-color:#d1d5db; }
-    .page-header .actions .primary { background:#111; border-color:#111; }
+    .page-header .actions .primary { background:#1677ff !important; border-color:#1677ff !important; }
     .page-header .actions .icon-only { display:none; align-items:center; justify-content:center; padding:6px 10px; }
     .page-header .actions .icon-only.search-action { display:inline-flex; }
     .page-header .actions .icon-only i { font-size:14px; line-height:1; }
+    .page-header .actions .icon-only.search-action:hover { border-color:#1677ff; color:#1677ff; }
+    .page-header .actions .with-text i { margin-right: 6px; }
     @media (max-width: 640px) {
       .page-header { flex-direction: column; align-items: stretch; }
       .page-header .actions { width:100%; flex-wrap: nowrap; }
@@ -113,8 +129,8 @@ type FormItem = { id: string; name: string; description?: string };
     .skeleton-card:after { content:''; position:absolute; inset:0; transform: translateX(-100%); background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(0,0,0,0.05) 50%, rgba(255,255,255,0) 100%); animation: shimmer 1.2s infinite; }
     @keyframes shimmer { 100% { transform: translateX(100%); } }
     .error { color:#b42318; background:#fee4e2; border:1px solid #fecaca; padding:10px 12px; border-radius:10px; display:inline-block; }
-    .grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap:16px; }
-    .card { display:flex; align-items:center; gap:14px; padding:14px 14px; border-radius:14px; cursor:pointer; background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%); border: 1px solid #ececec; box-shadow: 0 8px 24px rgba(0,0,0,0.04); transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease; }
+    .grid { display:grid; grid-template-columns: minmax(0, 1fr); gap:16px; }
+    .card { display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:14px; cursor:pointer; background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%); border: 1px solid #ececec; box-shadow: 0 8px 24px rgba(0,0,0,0.04); transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease; }
     .card:hover { transform: translateY(-2px); box-shadow: 0 16px 40px rgba(0,0,0,0.08); border-color:#e5e7eb; }
     .leading .icon-badge { width:40px; height:40px; border-radius: 12px; display:flex; align-items:center; justify-content:center; color:#111; background: radial-gradient(100% 100% at 100% 0%, #f5f7ff 0%, #eaeefc 100%); border: 1px solid #e5e7eb; }
     .leading .icon-badge i { font-size:18px; }
@@ -123,13 +139,23 @@ type FormItem = { id: string; name: string; description?: string };
     .name { font-weight: 600; letter-spacing: -0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .desc { color:#6b7280; font-size: 12.5px; margin-top:4px; overflow: hidden; text-overflow: ellipsis; display:-webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
     .trailing { display:flex; align-items:center; gap:8px; }
-    .icon-btn { width:36px; height:36px; display:inline-flex; align-items:center; justify-content:center; background:#fff; color:#111; border:1px solid #e5e7eb; border-radius:12px; cursor:pointer; transition: background-color .15s ease, box-shadow .15s ease, border-color .15s ease, transform .02s ease; }
+    .icon-btn { width:36px; height:36px; display:inline-flex; align-items:center; justify-content:center; background:#fff; color:#111; border:1px solid #e5e7eb; border-radius:12px; cursor:pointer; transition: background-color .15s ease, color .15s ease, box-shadow .15s ease, border-color .15s ease, transform .02s ease; }
     .icon-btn i { font-size:16px; }
-    .icon-btn:hover { border-color:#d1d5db; background-image: var(--hp-menu-hover-bg); background-color: transparent; }
+    .icon-btn:hover:not([disabled]) { border-color:#c7dbff; background: rgba(22,119,255,0.1); color:#1677ff; box-shadow: 0 4px 12px rgba(22,119,255,0.18); transform: translateY(-1px); }
+    .icon-btn.danger:hover:not([disabled]) { border-color:#fecaca; background:#fee2e2; color:#b91c1c; box-shadow: 0 4px 12px rgba(239,68,68,0.18); }
     .icon-btn:active { transform: translateY(0.5px); }
     nz-modal .form { display:flex; flex-direction:column; gap:10px; }
     nz-modal .form label { font-size:12px; color:#6b7280; }
     .modal-actions { display:flex; justify-content:flex-end; gap:8px; margin-top:8px; }
+    :host ::ng-deep .ant-modal .ant-input:focus,
+    :host ::ng-deep .ant-modal .ant-input-focused {
+      border-color:#1677ff !important;
+      box-shadow:none;
+    }
+    :host ::ng-deep .ant-modal .ant-btn:hover:not([disabled]) {
+      border-color:#1677ff !important;
+      color:#1677ff !important;
+    }
   `]
 })
 export class FormListComponent implements OnInit, OnDestroy {
@@ -151,7 +177,7 @@ export class FormListComponent implements OnInit, OnDestroy {
   draft: { name: string; description?: string } = { name: '', description: '' };
 
   private changesSub?: Subscription;
-  constructor(private route: ActivatedRoute, private router: Router, private catalog: CatalogService, private zone: NgZone, private cdr: ChangeDetectorRef, private acl: AccessControlService) {}
+  constructor(private route: ActivatedRoute, private router: Router, private catalog: CatalogService, private zone: NgZone, private cdr: ChangeDetectorRef, private acl: AccessControlService, private ui: UiMessageService) {}
 
   private autoOpened = false;
   ngOnInit() {
@@ -176,21 +202,27 @@ export class FormListComponent implements OnInit, OnDestroy {
 
   load() {
     this.loading = true; this.error = null;
-    this.catalog.listForms().subscribe({
+    const wsId = this.acl.currentWorkspaceId();
+    if (!wsId) { this.loading = false; return; }
+    this.catalog.listForms(wsId).subscribe({
       next: items => {
         this.zone.run(() => {
           const list = items || [];
-          try {
-            const counts: any = {};
-            (list || []).forEach(f => { const w = this.acl.ensureResourceWorkspace('form', f.id); counts[w] = (counts[w]||0)+1; });
-            console.debug('[FormList] list', { total: list.length, byWorkspace: counts, currentWorkspace: this.acl.currentWorkspaceId() });
-          } catch {}
-          const filtered = list.filter(f => {
-            const ws = this.acl.ensureResourceWorkspace('form', f.id);
-            return ws === this.acl.currentWorkspaceId() && this.acl.canAccessWorkspace(ws);
-          });
-          try { console.debug('[FormList] filtered', { count: filtered.length, currentWorkspace: this.acl.currentWorkspaceId() }); } catch {}
-          this.forms = filtered;
+          if (!environment.useBackend) {
+            try {
+              const counts: any = {};
+              (list || []).forEach(f => { const w = this.acl.ensureResourceWorkspace('form', f.id); counts[w] = (counts[w]||0)+1; });
+              console.debug('[FormList] list', { total: list.length, byWorkspace: counts, currentWorkspace: this.acl.currentWorkspaceId() });
+            } catch {}
+            const filtered = list.filter(f => {
+              const ws = this.acl.ensureResourceWorkspace('form', f.id);
+              return ws === this.acl.currentWorkspaceId() && this.acl.canAccessWorkspace(ws);
+            });
+            try { console.debug('[FormList] filtered', { count: filtered.length, currentWorkspace: this.acl.currentWorkspaceId() }); } catch {}
+            this.forms = filtered;
+          } else {
+            this.forms = list;
+          }
         });
       },
       error: () => { this.zone.run(() => { this.error = 'Impossible de charger les formulaires.'; try { console.debug('[FormList] error loading'); } catch {} }); },
@@ -200,6 +232,12 @@ export class FormListComponent implements OnInit, OnDestroy {
 
   openBuilder(item: FormSummary) { this.router.navigate(['/dynamic-form'], { queryParams: { id: item.id } }); }
   openViewer(item: FormSummary) { this.router.navigate(['/dynamic-form'], { queryParams: { id: item.id, preview: '1' } }); }
+  removeForm(item: FormSummary) {
+    this.catalog.deleteForm(item.id).subscribe({
+      next: () => { this.ui.success('Formulaire supprimé'); this.load(); },
+      error: () => { this.ui.error('Échec de la suppression'); }
+    });
+  }
   openCreate() { this.createVisible = true; this.createError = null; this.draft = { name: '', description: '' }; }
   closeCreate() { if (!this.creating) this.createVisible = false; }
   canCreate() { return !!(this.draft.name && this.draft.name.trim().length >= 2); }
@@ -211,17 +249,24 @@ export class FormListComponent implements OnInit, OnDestroy {
   createForm() {
     if (!this.canCreate()) return;
     this.creating = true; this.createError = null;
-    const id = this.makeIdFromName(this.draft.name);
     const title = (this.draft.name || '').trim();
     const uiDescription = (this.draft.description || '').trim();
-    const doc = { id, name: title, description: uiDescription, schema: { title, description: uiDescription || undefined, fields: [] } };
-    this.catalog.saveForm(doc).subscribe({
-      next: () => {
+    const schema = { title, description: uiDescription || undefined, fields: [] };
+    const wsId = this.acl.currentWorkspaceId();
+    if (!wsId) { this.creating = false; this.createError = 'Workspace introuvable.'; return; }
+    const localDoc = { id: this.makeIdFromName(this.draft.name), name: title, description: uiDescription, schema };
+    const create$ = environment.useBackend
+      ? this.catalog.createForm(wsId, title, uiDescription, schema)
+      : this.catalog.saveForm(localDoc);
+    create$.subscribe({
+      next: (created: any) => {
         this.zone.run(() => {
           // Attach to currently selected workspace
           const ws = this.acl.currentWorkspaceId();
-          this.acl.setResourceWorkspace('form', id, ws);
-          this.creating = false; this.createVisible = false; this.load(); this.openBuilder({ id, name: doc.name, description: doc.description });
+          const createdDoc = environment.useBackend ? (created as FormSummary) : (localDoc as FormSummary);
+          if (!environment.useBackend) this.acl.setResourceWorkspace('form', createdDoc.id, ws);
+          this.creating = false; this.createVisible = false; this.load();
+          this.openBuilder({ id: createdDoc.id, name: createdDoc.name, description: createdDoc.description });
           setTimeout(() => { try { this.cdr.detectChanges(); } catch {} }, 0);
         });
       },

@@ -1,0 +1,1304 @@
+{
+  "repo": {
+    "name": "linkedin",
+    "type": "local",
+    "label": "LinkedIn"
+  },
+  "variables": {
+    "li_profile": {
+      "title": "Profil LinkedIn",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du profil.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "firstName",
+          "label": "Prénom",
+          "description": "Prénom.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "lastName",
+          "label": "Nom",
+          "description": "Nom de famille.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "email",
+          "label": "Email",
+          "description": "Adresse e-mail.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "picture",
+          "label": "Photo",
+          "description": "URL de la photo de profil.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "locale",
+          "label": "Langue",
+          "description": "Langue du profil.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "li_post": {
+      "title": "Publication LinkedIn",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant de la publication.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "text",
+          "label": "Texte",
+          "description": "Contenu de la publication.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "authorUrn",
+          "label": "Auteur URN",
+          "description": "URN de l'auteur.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "visibility",
+          "label": "Visibilité",
+          "description": "Visibilité de la publication.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "li_posts": {
+      "title": "Publications LinkedIn",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Publications",
+          "description": "Liste des publications",
+          "mode": "array",
+          "key": "posts",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "author",
+              "label": "Auteur",
+              "description": "Auteur.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "text",
+              "label": "Texte",
+              "description": "Contenu.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "createdAt",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "lifecycleState",
+              "label": "État",
+              "description": "État du cycle de vie.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "li_org": {
+      "title": "Organisation LinkedIn",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant de l'organisation.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom de l'organisation.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "vanityName",
+          "label": "Nom vanité",
+          "description": "Nom d'URL.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "description",
+          "label": "Description",
+          "description": "Description.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "website",
+          "label": "Site web",
+          "description": "URL du site web.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "logoUrl",
+          "label": "Logo",
+          "description": "URL du logo.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "li_comment": {
+      "title": "Commentaire LinkedIn",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du commentaire.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "text",
+          "label": "Texte",
+          "description": "Contenu du commentaire.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "postUrn",
+          "label": "Post URN",
+          "description": "URN de la publication.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "actorUrn",
+          "label": "Acteur URN",
+          "description": "URN de l'auteur.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "li_comments": {
+      "title": "Commentaires LinkedIn",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Commentaires",
+          "description": "Liste des commentaires",
+          "mode": "array",
+          "key": "comments",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "text",
+              "label": "Texte",
+              "description": "Contenu.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "actor",
+              "label": "Acteur",
+              "description": "Auteur.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "createdAt",
+              "label": "Date création",
+              "description": "Date.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "li_result": {
+      "title": "Résultat LinkedIn",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "text",
+          "label": "Texte",
+          "description": "Contenu texte.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "total",
+          "label": "Total",
+          "description": "Nombre total.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "linkedin",
+      "name": "LinkedIn",
+      "title": "LinkedIn",
+      "iconClass": "fa-brands fa-linkedin",
+      "iconUrl": "https://img.icons8.com/ios11/512/FFFFFF/linkedin.png",
+      "color": "#0A66C2",
+      "tags": [
+        "social",
+        "marketing"
+      ],
+      "categories": [
+        "Social Media"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants LinkedIn",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "accessToken",
+            "label": "Access Token",
+            "description": "Token d'accès OAuth2 LinkedIn.",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "linkedin_get_me",
+      "name": "linkedinGetMe",
+      "schemaVersion": 2,
+      "title": "Récupérer mon profil",
+      "subtitle": "Profil",
+      "icon": "fa-solid fa-user",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "LinkedIn",
+      "providerKey": "linkedin",
+      "tags": [
+        "lecture",
+        "linkedin"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:li_profile"
+        }
+      ],
+      "description": "Récupérer le profil de l'utilisateur connecté.",
+      "args": {
+        "title": "Récupérer mon profil",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Profil"
+    },
+    {
+      "key": "linkedin_create_text_post",
+      "name": "linkedinCreateTextPost",
+      "schemaVersion": 2,
+      "title": "Publier un texte",
+      "subtitle": "Publications",
+      "icon": "fa-solid fa-pen-to-square",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "LinkedIn",
+      "providerKey": "linkedin",
+      "tags": [
+        "création",
+        "envoi",
+        "linkedin"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:li_post"
+        }
+      ],
+      "description": "Publier un post texte sur LinkedIn.",
+      "args": {
+        "title": "Publier un texte",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "authorUrn",
+            "label": "Auteur URN",
+            "description": "URN de l'auteur (ex.: urn:li:person:xxx).",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "text",
+            "label": "Texte",
+            "description": "Contenu de la publication.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "key": "visibility",
+            "label": "Visibilité",
+            "description": "Visibilité de la publication.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "Public",
+                "value": "PUBLIC"
+              },
+              {
+                "label": "Connections",
+                "value": "CONNECTIONS"
+              }
+            ],
+            "default": "PUBLIC",
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Publications"
+    },
+    {
+      "key": "linkedin_create_image_post",
+      "name": "linkedinCreateImagePost",
+      "schemaVersion": 2,
+      "title": "Publier une image",
+      "subtitle": "Publications",
+      "icon": "fa-solid fa-image",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "LinkedIn",
+      "providerKey": "linkedin",
+      "tags": [
+        "création",
+        "envoi",
+        "linkedin"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:li_post"
+        }
+      ],
+      "description": "Publier un post avec image sur LinkedIn.",
+      "args": {
+        "title": "Publier une image",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "authorUrn",
+            "label": "Auteur URN",
+            "description": "URN de l'auteur.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "text",
+            "label": "Texte",
+            "description": "Texte accompagnant l'image.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "imageUrl",
+            "label": "URL de l'image",
+            "description": "URL publique de l'image.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "title",
+            "label": "Titre",
+            "description": "Titre de l'image.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "select",
+            "key": "visibility",
+            "label": "Visibilité",
+            "description": "Visibilité.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "Public",
+                "value": "PUBLIC"
+              },
+              {
+                "label": "Connections",
+                "value": "CONNECTIONS"
+              }
+            ],
+            "default": "PUBLIC",
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Publications"
+    },
+    {
+      "key": "linkedin_create_article_post",
+      "name": "linkedinCreateArticlePost",
+      "schemaVersion": 2,
+      "title": "Publier un article",
+      "subtitle": "Publications",
+      "icon": "fa-solid fa-link",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "LinkedIn",
+      "providerKey": "linkedin",
+      "tags": [
+        "création",
+        "envoi",
+        "linkedin"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:li_post"
+        }
+      ],
+      "description": "Publier un lien d'article sur LinkedIn.",
+      "args": {
+        "title": "Publier un article",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "authorUrn",
+            "label": "Auteur URN",
+            "description": "URN de l'auteur.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "text",
+            "label": "Texte",
+            "description": "Commentaire accompagnant l'article.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "articleUrl",
+            "label": "URL de l'article",
+            "description": "URL de l'article.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "title",
+            "label": "Titre",
+            "description": "Titre de l'article.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "description",
+            "label": "Description",
+            "description": "Description de l'article.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "select",
+            "key": "visibility",
+            "label": "Visibilité",
+            "description": "Visibilité.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "Public",
+                "value": "PUBLIC"
+              },
+              {
+                "label": "Connections",
+                "value": "CONNECTIONS"
+              }
+            ],
+            "default": "PUBLIC",
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Publications"
+    },
+    {
+      "key": "linkedin_list_posts",
+      "name": "linkedinListPosts",
+      "schemaVersion": 2,
+      "title": "Lister les publications",
+      "subtitle": "Publications",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "LinkedIn",
+      "providerKey": "linkedin",
+      "tags": [
+        "liste",
+        "linkedin"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:li_posts"
+        }
+      ],
+      "description": "Récupérer les publications d'un auteur.",
+      "args": {
+        "title": "Lister les publications",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "authorUrn",
+            "label": "Auteur URN",
+            "description": "URN de l'auteur.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "count",
+            "label": "Limite",
+            "description": "Nombre de résultats.",
+            "col": {
+              "xs": 24
+            },
+            "default": 10
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Publications"
+    },
+    {
+      "key": "linkedin_delete_post",
+      "name": "linkedinDeletePost",
+      "schemaVersion": 2,
+      "title": "Supprimer une publication",
+      "subtitle": "Publications",
+      "icon": "fa-solid fa-trash",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "LinkedIn",
+      "providerKey": "linkedin",
+      "tags": [
+        "suppression",
+        "linkedin"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:li_result"
+        }
+      ],
+      "description": "Supprimer une publication LinkedIn.",
+      "args": {
+        "title": "Supprimer une publication",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "postUrn",
+            "label": "Post URN",
+            "description": "URN de la publication.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Publications"
+    },
+    {
+      "key": "linkedin_get_organization",
+      "name": "linkedinGetOrganization",
+      "schemaVersion": 2,
+      "title": "Récupérer une organisation",
+      "subtitle": "Organisations",
+      "icon": "fa-solid fa-building",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "LinkedIn",
+      "providerKey": "linkedin",
+      "tags": [
+        "lecture",
+        "linkedin"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:li_org"
+        }
+      ],
+      "description": "Récupérer les détails d'une organisation.",
+      "args": {
+        "title": "Récupérer une organisation",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "organizationId",
+            "label": "Organisation ID",
+            "description": "Identifiant de l'organisation.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Organisations"
+    },
+    {
+      "key": "linkedin_list_org_posts",
+      "name": "linkedinListOrgPosts",
+      "schemaVersion": 2,
+      "title": "Lister les publications d'une organisation",
+      "subtitle": "Organisations",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "LinkedIn",
+      "providerKey": "linkedin",
+      "tags": [
+        "liste",
+        "linkedin"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:li_posts"
+        }
+      ],
+      "description": "Récupérer les publications d'une organisation.",
+      "args": {
+        "title": "Lister les publications d'une organisation",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "organizationUrn",
+            "label": "Organisation URN",
+            "description": "URN de l'organisation.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "count",
+            "label": "Limite",
+            "description": "Nombre de résultats.",
+            "col": {
+              "xs": 24
+            },
+            "default": 10
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Organisations"
+    },
+    {
+      "key": "linkedin_create_comment",
+      "name": "linkedinCreateComment",
+      "schemaVersion": 2,
+      "title": "Créer un commentaire",
+      "subtitle": "Commentaires",
+      "icon": "fa-solid fa-comment",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "LinkedIn",
+      "providerKey": "linkedin",
+      "tags": [
+        "création",
+        "linkedin"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:li_comment"
+        }
+      ],
+      "description": "Créer un commentaire sur une publication.",
+      "args": {
+        "title": "Créer un commentaire",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "postUrn",
+            "label": "Post URN",
+            "description": "URN de la publication.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "actorUrn",
+            "label": "Acteur URN",
+            "description": "URN de l'auteur du commentaire.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "text",
+            "label": "Texte",
+            "description": "Contenu du commentaire.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Commentaires"
+    },
+    {
+      "key": "linkedin_list_comments",
+      "name": "linkedinListComments",
+      "schemaVersion": 2,
+      "title": "Lister les commentaires",
+      "subtitle": "Commentaires",
+      "icon": "fa-solid fa-comments",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "LinkedIn",
+      "providerKey": "linkedin",
+      "tags": [
+        "liste",
+        "linkedin"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:li_comments"
+        }
+      ],
+      "description": "Récupérer les commentaires d'une publication.",
+      "args": {
+        "title": "Lister les commentaires",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "postUrn",
+            "label": "Post URN",
+            "description": "URN de la publication.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Commentaires"
+    },
+    {
+      "key": "linkedin_list_reactions",
+      "name": "linkedinListReactions",
+      "schemaVersion": 2,
+      "title": "Lister les réactions",
+      "subtitle": "Réactions",
+      "icon": "fa-solid fa-heart",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "LinkedIn",
+      "providerKey": "linkedin",
+      "tags": [
+        "liste",
+        "linkedin"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:li_result"
+        }
+      ],
+      "description": "Récupérer les réactions d'une publication.",
+      "args": {
+        "title": "Lister les réactions",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "postUrn",
+            "label": "Post URN",
+            "description": "URN de la publication.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Réactions"
+    }
+  ]
+}

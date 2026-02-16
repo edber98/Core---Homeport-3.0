@@ -1,0 +1,26 @@
+const { utils } = require("./utils");
+
+module.exports = {
+  async nc_talk_messages_list(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
+    const d = inputs || {};
+    if (!d.token) return { ok: false, error: "Token requis." };
+    const params = new URLSearchParams();
+    params.set("limit", String(d.limit || 100));
+    params.set("lookIntoFuture", String(d.lookIntoFuture || "0"));
+    log('Récupération de la liste...');
+    const res = await utils.ocsRequest(opts, `/ocs/v2.php/apps/spreed/api/v4/chat/${encodeURIComponent(d.token)}?${params}`);
+    if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
+    const raw = (res.data && res.data.ocs && res.data.ocs.data) || [];
+    const messages = (Array.isArray(raw) ? raw : []).map(m => ({
+      id: String(m.id || ""),
+      token: m.token || d.token,
+      actorId: m.actorId || "",
+      actorDisplayName: m.actorDisplayName || "",
+      message: m.message || "",
+      timestamp: String(m.timestamp || "")
+    }));
+    const totalCount = parseInt(res.data?.ocs?.meta?.totalitems, 10) || messages.length;
+    return { ok: true, totalCount, messages };
+  }
+};

@@ -1,8 +1,18 @@
 <div class="flow-workbench">
   <div class="top-bar">
-    <div class="seg">
-      <a routerLink="editor" routerLinkActive="active" [queryParamsHandling]="'preserve'">Editor</a>
-      <a routerLink="executions" routerLinkActive="active" [queryParamsHandling]="'preserve'">Executions</a>
+    <div class="top-bar-stack">
+      <div class="seg">
+        <a [routerLink]="['/flow-builder','editor']" routerLinkActive="active" [queryParamsHandling]="'preserve'">Éditeur</a>
+        <a [routerLink]="['/flow-builder','executions']" routerLinkActive="active" [queryParamsHandling]="'preserve'">Exécutions</a>
+        <a [routerLink]="['/flow-builder','simulation']" routerLinkActive="active" [queryParamsHandling]="'preserve'">Simulation</a>
+      </div>
+      <div class="production-banner" *ngIf="isProduction">
+        <i class="fa-solid fa-tower-broadcast"></i>
+        <span>Flow en production</span>
+        <span class="sep">—</span>
+        <span class="hint">Arrêtez la production pour modifier</span>
+        <span class="event-count" *ngIf="triggerStatus?.eventCount">{{ triggerStatus!.eventCount }} événement{{ (triggerStatus!.eventCount || 0) > 1 ? 's' : '' }}</span>
+      </div>
     </div>
   </div>
   <div class="content">

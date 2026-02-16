@@ -95,6 +95,7 @@ import { AuthTokenService } from '../../services/auth-token.service';
     .row { display:flex; gap:10px; align-items:center; flex-wrap: wrap; }
     .row .text { width: 220px; max-width: 100%; border:1px solid #e5e7eb; border-radius:8px; padding:6px 10px; outline:none; }
     .row .select { min-width: 160px; }
+    .row .primary { background:#1677ff; border-color:#1677ff; color:#fff; }
     .grid { display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap:14px; }
     @media (max-width: 768px) { .grid { grid-template-columns: 1fr; } }
     .card { display:flex; align-items:center; gap:10px; padding:12px; border-radius:12px; background:linear-gradient(180deg,#fff,#fafafa); border:1px solid #ececec; }
@@ -104,6 +105,8 @@ import { AuthTokenService } from '../../services/auth-token.service';
     .desc { color:#6b7280; font-size:12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .trailing { display:flex; align-items:center; gap:8px; }
     .small { min-width: 120px; }
+    .icon-btn { border:1px solid #e5e7eb; background:#fff; color:#111; }
+    .icon-btn:hover:not([disabled]) { border-color:#1677ff; color:#1677ff; }
     .loading .skeleton-grid { display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap:14px; }
     @media (max-width: 768px) { .loading .skeleton-grid { grid-template-columns: 1fr; } }
     .skeleton-card { height: 72px; border-radius: 12px; background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%); border:1px solid #ececec; position: relative; overflow: hidden; }

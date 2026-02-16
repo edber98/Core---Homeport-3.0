@@ -1,30 +1,140 @@
+/* Modern Inspector Styles */
 .card-title {
   display: flex;
   flex-direction: column;
   line-height: 1.2;
   align-items: center;
   text-align: center;
-  margin: 0;
+  margin: 0 0 16px 0;
 }
-.card-title .t { font-weight: 600; font-size: 14px; }
-.card-title .s { font-size: 12px; color: #64748b; }
 
-/* Section headers inside this inspector panel, mimic nz-card small header rhythm */
+.card-title .t {
+  font-weight: 700;
+  font-size: 15px;
+  color: #0f172a;
+}
+
+.card-title .s {
+  font-size: 12px;
+  color: #64748b;
+  margin-top: 2px;
+}
+
+/* Tabs: Segmented Pill Style (Matching Left Panel) */
+.inspector-tabs {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  margin: 0 16px 20px 16px;
+  justify-content: stretch;
+  background: #f1f5f9;
+  border-radius: 10px;
+  border: 0;
+}
+
+.inspector-tabs .tab-btn {
+  flex: 1;
+  background: transparent;
+  border: 0;
+  color: #64748b;
+  font-weight: 600;
+  font-size: 12px;
+  padding: 6px 4px;
+  position: relative;
+  cursor: pointer;
+  text-align: center;
+  border-radius: 7px;
+  transition: all 0.2s ease;
+}
+
+.inspector-tabs .tab-btn::after {
+  display: none;
+}
+
+.inspector-tabs .tab-btn:hover:not(.active) {
+  background: rgba(255, 255, 255, 0.5);
+  color: #475569;
+}
+
+.inspector-tabs .tab-btn.active {
+  background: #fff;
+  color: #0f172a;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.inspector-tab {
+  padding: 0 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.logic-tab,
+.json-tab {
+  padding: 0 16px;
+}
+
+.inline-checks {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 4px 0 8px;
+}
+
+.inline-checks label[nz-checkbox][disabled] {
+  opacity: 0.5;
+}
+
+/* Section Headers */
 .ins-section-header {
   display: flex;
-  justify-content: center;
-  padding: 6px 12px 8px; /* lateral 12px like .ant-card-small head */
-  margin: 8px 0;
-  border-bottom: 1px solid #E2E1E4;
-  box-sizing: border-box;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 0 0 8px;
+  margin: 16px 0 8px;
+  border-bottom: 1px solid #f1f5f9;
 }
+
+.ins-section-header .card-title {
+  align-items: flex-start;
+  text-align: left;
+  margin: 0;
+}
+
+.ins-section-header .card-title .t {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #64748b;
+}
+
 .ins-mini-header {
   display: flex;
   justify-content: center;
-  padding: 4px 12px 6px;
-  margin: 6px 0;
-  border-bottom: 1px solid #eee;
-  box-sizing: border-box;
+  padding: 8px 12px;
+  margin: 12px 0;
+  background: #f8fafc;
+  border-radius: 8px;
+  border: 1px solid #f1f5f9;
 }
-.ins-mini-header .card-title .t { font-size: 13px; }
-.ins-mini-header .card-title .s { font-size: 11px; }
+
+.ins-mini-header .card-title {
+  margin: 0;
+}
+
+.ins-mini-header .card-title .s {
+  font-size: 11px;
+  font-weight: 500;
+}
+
+/* Form Items Spacing */
+:host ::ng-deep nz-form-item {
+  margin-bottom: 16px;
+}
+
+:host ::ng-deep nz-form-label {
+  font-weight: 500;
+  color: #334155;
+  font-size: 13px;
+  padding-bottom: 4px;
+}

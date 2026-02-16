@@ -71,21 +71,17 @@ export class CredentialEditDialogComponent implements OnChanges {
 
   cancel() { this.closed.emit(); }
 
-  private makeId(base: string) { return (base || 'cred') + '-' + Date.now().toString(36); }
-
   save() {
     if (!this.provider || !this.workspaceId) { this.cancel(); return; }
     const name = (this.form.value?.name || '').trim();
     if (!name) return;
-    const base: CredentialDoc = this.doc ? { ...this.doc } as any : { id: '', name, providerId: this.provider.id, workspaceId: this.workspaceId, values: {} } as any;
-    const id = this.doc?.id || this.makeId(this.provider.id);
-    const out: CredentialDoc = {
-      id,
-      name,
-      providerId: base.providerId,
-      workspaceId: base.workspaceId,
-      values: this.values || {}
-    };
-    this.catalog.saveCredential(out).subscribe({ next: () => { this.ui.success('Identifiants enregistrés'); this.saved.emit(out); }, error: () => this.ui.error('Échec de l\'enregistrement des identifiants') });
+    const isEdit = !!this.doc?.id;
+    const payload: CredentialDoc = isEdit
+      ? { id: this.doc!.id, name, providerId: this.doc!.providerId, workspaceId: this.doc!.workspaceId, values: this.values || {} }
+      : { id: '' as any, name, providerId: this.provider.id, workspaceId: this.workspaceId, values: this.values || {} } as any;
+    this.catalog.saveCredential(payload).subscribe({
+      next: (saved: CredentialDoc) => { this.ui.success('Identifiants enregistrés'); this.saved.emit(saved); },
+      error: () => this.ui.error('Échec de l\'enregistrement des identifiants')
+    });
   }
 }

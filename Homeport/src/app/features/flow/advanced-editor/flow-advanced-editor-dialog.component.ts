@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output, OnInit, AfterViewInit, ChangeDetectorRef, NgZone, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnInit, AfterViewInit, OnDestroy, ChangeDetectorRef, NgZone, ViewChild, ElementRef, Renderer2 } from '@angular/core';
 import { FlowAdvancedCenterPanelComponent } from './flow-advanced-center-panel.component';
 import { JsonSchemaViewerComponent } from '../../../modules/json-schema-viewer/json-schema-viewer';
 import { DynamicForm } from '../../../modules/dynamic-form/dynamic-form';
@@ -19,7 +19,15 @@ import { NzBadgeModule } from 'ng-zorro-antd/badge';
     <div class="bundle" *ngIf="!isMobile" [class.center-visible]="centerVisible" [class.wings-visible]="wingsVisible">
       <div class="wing left" aria-label="Input wing" *ngIf="hasInput(model)">
         <div *ngIf="loadingInput" class="wing-loading"><span class="tiny-spinner big"></span></div>
-        <div *ngIf="!loadingInput && hasPrev && injectedInput == null" style="border:1px solid #fde68a; background:#fffbeb; color:#92400e; border-radius:8px; padding:6px 8px; margin-bottom:8px; font-size:12px;">
+        <div *ngIf="!loadingInput && simScenarios && simScenarios.length > 0" style="display:flex; align-items:center; gap:8px; margin-bottom:8px; font-size:12px;">
+          <span style="color:#374151;">Entrée simulée:</span>
+          <select [ngModel]="simSelectedIndex" (ngModelChange)="onSimIdxChange($event)" style="font-size:12px; padding:2px 6px; border:1px solid #e5e7eb; border-radius:6px;">
+            <option *ngFor="let sc of simScenarios; let i = index" [ngValue]="i">{{ sc?.label || ('Cas ' + (i+1)) }}</option>
+          </select>
+          <button (click)="reloadSimulation.emit()" style="border:1px solid #d1d5db; background:#ffffff; color:#374151; border-radius:6px; padding:2px 8px; cursor:pointer;">Recharger</button>
+          <button (click)="runPrev.emit()" style="margin-left:auto; border:1px solid #d1d5db; background:#ffffff; color:#374151; border-radius:6px; padding:2px 8px; cursor:pointer;">Voir exécution réelle</button>
+        </div>
+        <div *ngIf="!loadingInput && hasPrev && injectedInput == null && (!simScenarios || simScenarios.length===0)" style="border:1px solid #fde68a; background:#fffbeb; color:#92400e; border-radius:8px; padding:6px 8px; margin-bottom:8px; font-size:12px;">
           Aucune exécution précédente pour fournir l'entrée. Vous pouvez lancer le(s) nœud(s) précédent(s).
           <button (click)="runPrev.emit()" style="margin-left:8px; border:1px solid #d97706; background:#fff7ed; color:#92400e; border-radius:6px; padding:2px 8px; cursor:pointer;">Lancer les précédents</button>
         </div>
@@ -36,7 +44,7 @@ import { NzBadgeModule } from 'ng-zorro-antd/badge';
         <div *ngIf="loadingOutput" class="wing-loading"><span class="tiny-spinner big"></span></div>
         <!-- Start Form: afficher le Dynamic Form dans le panneau Output pour éditer le payload -->
         <app-dynamic-form *ngIf="isStartForm(model)"
-          [schema]="(model?.context && (model?.context?.fields || model?.context?.steps)) ? model?.context : (model?.startFormSchema || model?.templateObj?.args) || { title: 'Formulaire', fields: [] }"
+          [schema]="debugRightSchema()"
           [value]="injectedOutput || {}"
           (valueChange)="startPayloadChange.emit($event)"></app-dynamic-form>
         <!-- Start simple: payload JSON éditable -->
@@ -69,7 +77,15 @@ import { NzBadgeModule } from 'ng-zorro-antd/badge';
           <!-- Input panel -->
           <div class="slide">
             <div class="scroll">
-              <div *ngIf="!loadingInput && hasPrev && injectedInput == null" style="border:1px solid #fde68a; background:#fffbeb; color:#92400e; border-radius:8px; padding:6px 8px; margin-bottom:8px; font-size:12px;">
+              <div *ngIf="!loadingInput && simScenarios && simScenarios.length > 0" style="display:flex; align-items:center; gap:8px; margin-bottom:8px; font-size:12px;">
+                <span style="color:#374151;">Entrée simulée:</span>
+                <select [ngModel]="simSelectedIndex" (ngModelChange)="onSimIdxChange($event)" style="font-size:12px; padding:2px 6px; border:1px solid #e5e7eb; border-radius:6px;">
+                  <option *ngFor="let sc of simScenarios; let i = index" [ngValue]="i">{{ sc?.label || ('Cas ' + (i+1)) }}</option>
+                </select>
+                <button (click)="reloadSimulation.emit()" style="border:1px solid #d1d5db; background:#ffffff; color:#374151; border-radius:6px; padding:2px 8px; cursor:pointer;">Recharger</button>
+                <button (click)="runPrev.emit()" style="margin-left:auto; border:1px solid #d1d5db; background:#ffffff; color:#374151; border-radius:6px; padding:2px 8px; cursor:pointer;">Exécution réelle</button>
+              </div>
+              <div *ngIf="!loadingInput && hasPrev && injectedInput == null && (!simScenarios || simScenarios.length===0)" style="border:1px solid #fde68a; background:#fffbeb; color:#92400e; border-radius:8px; padding:6px 8px; margin-bottom:8px; font-size:12px;">
                 Aucune exécution précédente pour fournir l'entrée. Vous pouvez lancer le(s) nœud(s) précédent(s).
                 <button (click)="runPrev.emit()" style="margin-left:8px; border:1px solid #d97706; background:#fff7ed; color:#92400e; border-radius:6px; padding:2px 8px; cursor:pointer;">Lancer les précédents</button>
               </div>
@@ -89,7 +105,7 @@ import { NzBadgeModule } from 'ng-zorro-antd/badge';
               <div *ngIf="loadingOutput" class="loading-box" style="margin-bottom:8px;"><span class="tiny-spinner"></span> Chargement de la sortie…</div>
               <!-- Start Form (mobile): formulaire dans l'onglet Output -->
               <app-dynamic-form *ngIf="!loadingOutput && isStartForm(model)"
-                [schema]="(model?.context && (model?.context?.fields || model?.context?.steps)) ? model?.context : (model?.startFormSchema || model?.templateObj?.args) || { title: 'Formulaire', fields: [] }" [value]="injectedOutput || {}"
+                [schema]="debugRightSchema()" [value]="injectedOutput || {}"
                 (valueChange)="startPayloadChange.emit($event)"></app-dynamic-form>
               <!-- Autres (hors start_form): viewer de sortie -->
               <app-json-schema-viewer *ngIf="!loadingOutput && (!isStart(model)) && (!isStartForm(model)) && injectedOutput != null" [data]="injectedOutput" [editable]="true" [editMode]="true" [initialMode]="'Schema'" [title]="'Output'"></app-json-schema-viewer>
@@ -109,7 +125,7 @@ import { NzBadgeModule } from 'ng-zorro-antd/badge';
     :host { position:fixed; inset:0; z-index: 100000; display:block; }
     .overlay { position:absolute; inset:0; background:rgba(17,17,17,0.32); backdrop-filter: blur(2px); opacity:0; transition: opacity .24s ease; pointer-events: none; }
     .overlay.enter { opacity:1; pointer-events:auto; }
-    .bundle { --dialog-h: 90vh; --dialog-w: 450px; --wing-h: calc(var(--dialog-h) - 200px); --wing-w: max(0px, min(var(--dialog-w), calc((100vw - 400px - var(--dialog-w)) / 2))); position:fixed; top:50%; left:50%; transform: translate(-50%, calc(-50% + 8px)); display:flex; align-items:center; gap:0; z-index:100001; opacity:0; transition: opacity .22s ease, transform .26s ease; pointer-events: auto; }
+    .bundle { --dialog-h: 96vh; --dialog-w: 520px; --margin: 24px; --wing-h: calc(var(--dialog-h) - 200px); --wing-w: max(0px, calc((100vw - (2 * var(--margin)) - var(--dialog-w)) / 2)); position:fixed; top:50%; left:50%; transform: translate(-50%, calc(-50% + 8px)); display:flex; align-items:center; gap:0; z-index:100001; opacity:0; transition: opacity .22s ease, transform .26s ease; pointer-events: auto; }
     .bundle.center-visible { opacity:1; transform: translate(-50%, -50%); }
     .center { position:relative; z-index:6; }
     .close { position:absolute; top:8px; right:12px; background:#fff; border:1px solid #e5e7eb; border-radius:18px; padding:4px 8px; cursor:pointer; box-shadow:0 2px 6px rgba(0,0,0,.12); }
@@ -119,8 +135,9 @@ import { NzBadgeModule } from 'ng-zorro-antd/badge';
     .wing { position: relative; pointer-events: auto; height:var(--wing-h); overflow:auto; padding: 9px; opacity:0; background:#fff; }
     .wing .wing-loading { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background: rgba(255,255,255,0.65); z-index: 10; }
     .tiny-spinner.big { width: 28px; height: 28px; border-width: 3px; }
-    .wing.left { width: calc(var(--wing-w) + 200px); border:1px solid #ececec; border-radius:14px 0 0 14px; box-shadow:0 8px 24px rgba(0,0,0,.08); transform: translateX(-8px) scaleX(0.98); transform-origin: right center; transition: transform .28s ease .12s, opacity .24s ease .12s; z-index:5; }
-    .wing.right { width: calc(var(--wing-w) + 200px); border:1px solid #ececec; border-radius:0 14px 14px 0; box-shadow:0 8px 24px rgba(0,0,0,.08); transform: translateX(8px) scaleX(0.98); transform-origin: left center; transition: transform .28s ease .12s, opacity .24s ease .12s; z-index:5; }
+    .wing.left { width: var(--wing-w); min-width: 320px; border:1px solid #ececec; border-radius:14px 0 0 14px; box-shadow:0 8px 24px rgba(0,0,0,.08); transform: translateX(-8px) scaleX(0.98); transform-origin: right center; transition: transform .28s ease .12s, opacity .24s ease .12s; z-index:5; margin-left: var(--margin); }
+    .wing.right { width: var(--wing-w); min-width: 320px; border:1px solid #ececec; border-radius:0 14px 14px 0; box-shadow:0 8px 24px rgba(0,0,0,.08); transform: translateX(8px) scaleX(0.98); transform-origin: left center; transition: transform .28s ease .12s, opacity .24s ease .12s; z-index:5; margin-right: var(--margin); }
+    .center { width: var(--dialog-w); max-width: calc(100vw - (2 * var(--margin)) - (2 * 320px)); }
     .bundle.wings-visible .wing.left, .bundle.wings-visible .wing.right { transform: translateX(0) scaleX(1); opacity:1; }
     .bundle.wings-visible .wing.left, .bundle.wings-visible .wing.right { transform: translateX(0) scaleX(1); opacity:1; }
 
@@ -157,7 +174,7 @@ import { NzBadgeModule } from 'ng-zorro-antd/badge';
     }
   `]
 })
-export class FlowAdvancedEditorDialogComponent implements OnInit, AfterViewInit {
+export class FlowAdvancedEditorDialogComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() flowId: string | null = null;
   @Input() model: any;
   @Input() disableForChecksum = false;
@@ -183,6 +200,11 @@ export class FlowAdvancedEditorDialogComponent implements OnInit, AfterViewInit 
   @Output() test = new EventEmitter<void>();
   @Output() runPrev = new EventEmitter<void>();
   @Output() startPayloadChange = new EventEmitter<any>();
+  // Simulation scenarios (optional)
+  @Input() simScenarios: Array<{ id: string; index: number; label: string; msgIn: any }> | null = null;
+  @Input() simSelectedIndex: number = 0;
+  @Output() simSelectedIndexChange = new EventEmitter<number>();
+  @Output() reloadSimulation = new EventEmitter<void>();
   // Nouvel événement: émis lorsquon «relâche» le formulaire (pointerup) ou submit
   @Output() modelChangeCommitted = new EventEmitter<any>();
   @Output() close = new EventEmitter<void>();
@@ -214,13 +236,35 @@ export class FlowAdvancedEditorDialogComponent implements OnInit, AfterViewInit 
 
   onBackdrop(_ev: MouseEvent) { this.startExit(); }
   emitModel(m: any) {
+    // Update local model immediately so right wing reflects changes live
+    this.model = m;
     this.latestModel = m;
     this.dirty = true;
     this.modelChange.emit(m);
   }
   ngOnInit() { this.updateIsMobile(); this.updateSlidesTransform(); }
-  constructor(private cdr: ChangeDetectorRef, private zone: NgZone) {}
+  private lastSchemaLogAt = 0;
+  debugRightSchema(): any {
+    try {
+      const now = Date.now();
+      const ctx = this.model?.context;
+      const sfs = this.model?.startFormSchema;
+      const args = this.model?.templateObj?.args;
+      const useCtx = !!(ctx && (Array.isArray(ctx?.fields) || Array.isArray(ctx?.steps)));
+      const schema = useCtx ? ctx : (sfs || args) || { title: 'Formulaire', fields: [] };
+      if (now - this.lastSchemaLogAt > 200) {
+        this.lastSchemaLogAt = now;
+        const len = (v: any) => (Array.isArray(v?.fields) ? v.fields.length : (Array.isArray(v?.steps) ? v.steps.length : null));
+        console.log('[dialog][right] pick schema', { useCtx, ctxFields: len(ctx), sfsFields: len(sfs), argsFields: len(args), pickedFields: len(schema) });
+      }
+      return schema;
+    } catch { return (this.model?.startFormSchema || this.model?.templateObj?.args) || { title: 'Formulaire', fields: [] }; }
+  }
+  constructor(private cdr: ChangeDetectorRef, private zone: NgZone, private el: ElementRef<HTMLElement>, private renderer: Renderer2) {}
+
   ngAfterViewInit() {
+    // iOS Safari: move host to body to escape any overflow/stacking contexts from layout containers
+    try { this.renderer.addClass(this.el.nativeElement, 'advanced-dialog-portal'); this.renderer.appendChild(document.body, this.el.nativeElement); } catch {}
     this.zone.run(() => {
       setTimeout(() => {
         this.centerVisible = true;
@@ -231,6 +275,16 @@ export class FlowAdvancedEditorDialogComponent implements OnInit, AfterViewInit 
         }, 160);
       });
     });
+  }
+
+  ngOnDestroy() {
+    try { this.renderer.removeClass(this.el.nativeElement, 'advanced-dialog-portal'); } catch {}
+  }
+
+  onSimIdxChange(i: number) {
+    const idx = Number(i || 0);
+    this.simSelectedIndex = idx;
+    this.simSelectedIndexChange.emit(idx);
   }
 
   startExit() {

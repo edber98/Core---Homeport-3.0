@@ -1,0 +1,3207 @@
+{
+  "repo": {
+    "name": "wordpress",
+    "type": "local",
+    "label": "WordPress"
+  },
+  "variables": {
+    "wp_post": {
+      "title": "Article WordPress",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant de l'article.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "title",
+          "label": "Titre",
+          "description": "Titre de l'article.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "slug",
+          "label": "Slug",
+          "description": "Slug de l'article.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut (publish, draft, etc.).",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "content",
+          "label": "Contenu",
+          "description": "Contenu HTML de l'article.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "excerpt",
+          "label": "Extrait",
+          "description": "Extrait de l'article.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "author",
+          "label": "Auteur",
+          "description": "ID de l'auteur.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "date",
+          "label": "Date",
+          "description": "Date de publication.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "categories",
+          "label": "Catégories",
+          "description": "IDs des catégories.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "tags",
+          "label": "Tags",
+          "description": "IDs des tags.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "wp_posts": {
+      "title": "Articles",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "totalPages",
+          "label": "Total de pages",
+          "description": "Nombre total de pages.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Articles",
+          "description": "Liste des articles",
+          "mode": "array",
+          "key": "posts",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "title",
+              "label": "Titre",
+              "description": "Titre.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "slug",
+              "label": "Slug",
+              "description": "Slug.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "author",
+              "label": "Auteur",
+              "description": "Auteur.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "date",
+              "label": "Date",
+              "description": "Date.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "wp_page": {
+      "title": "Page WordPress",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant de la page.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "title",
+          "label": "Titre",
+          "description": "Titre de la page.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "slug",
+          "label": "Slug",
+          "description": "Slug de la page.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut de la page.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "content",
+          "label": "Contenu",
+          "description": "Contenu HTML de la page.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "author",
+          "label": "Auteur",
+          "description": "ID de l'auteur.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "date",
+          "label": "Date",
+          "description": "Date de publication.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "parent",
+          "label": "Parent",
+          "description": "ID de la page parente.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "wp_pages": {
+      "title": "Pages",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "totalPages",
+          "label": "Total de pages",
+          "description": "Nombre total de pages.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Pages",
+          "description": "Liste des pages",
+          "mode": "array",
+          "key": "pages",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "title",
+              "label": "Titre",
+              "description": "Titre.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "slug",
+              "label": "Slug",
+              "description": "Slug.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "author",
+              "label": "Auteur",
+              "description": "Auteur.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "date",
+              "label": "Date",
+              "description": "Date.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "wp_media": {
+      "title": "Média WordPress",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du média.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "title",
+          "label": "Titre",
+          "description": "Titre du média.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "source_url",
+          "label": "URL source",
+          "description": "URL du fichier.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "media_type",
+          "label": "Type",
+          "description": "Type de média.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "mime_type",
+          "label": "MIME",
+          "description": "Type MIME du fichier.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "date",
+          "label": "Date",
+          "description": "Date d'upload.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "alt_text",
+          "label": "Texte alternatif",
+          "description": "Texte alternatif.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "wp_medias": {
+      "title": "Médias",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "totalPages",
+          "label": "Total de pages",
+          "description": "Nombre total de pages.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Médias",
+          "description": "Liste des médias",
+          "mode": "array",
+          "key": "medias",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "title",
+              "label": "Titre",
+              "description": "Titre.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "source_url",
+              "label": "URL",
+              "description": "URL.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "media_type",
+              "label": "Type",
+              "description": "Type.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "date",
+              "label": "Date",
+              "description": "Date.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "wp_category": {
+      "title": "Catégorie WordPress",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant de la catégorie.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom de la catégorie.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "slug",
+          "label": "Slug",
+          "description": "Slug de la catégorie.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "description",
+          "label": "Description",
+          "description": "Description de la catégorie.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "count",
+          "label": "Nombre",
+          "description": "Nombre d'articles.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "parent",
+          "label": "Parent",
+          "description": "ID de la catégorie parente.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "wp_categories": {
+      "title": "Catégories",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "totalPages",
+          "label": "Total de pages",
+          "description": "Nombre total de pages.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Catégories",
+          "description": "Liste des catégories",
+          "mode": "array",
+          "key": "categories",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "slug",
+              "label": "Slug",
+              "description": "Slug.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "count",
+              "label": "Nombre",
+              "description": "Nombre.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "wp_tag": {
+      "title": "Tag WordPress",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du tag.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom du tag.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "slug",
+          "label": "Slug",
+          "description": "Slug du tag.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "count",
+          "label": "Nombre",
+          "description": "Nombre d'articles.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "wp_tags": {
+      "title": "Tags",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "totalPages",
+          "label": "Total de pages",
+          "description": "Nombre total de pages.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Tags",
+          "description": "Liste des tags",
+          "mode": "array",
+          "key": "tags",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "slug",
+              "label": "Slug",
+              "description": "Slug.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "count",
+              "label": "Nombre",
+              "description": "Nombre.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "wp_comment": {
+      "title": "Commentaire WordPress",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du commentaire.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "post",
+          "label": "Article",
+          "description": "ID de l'article.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "author_name",
+          "label": "Auteur",
+          "description": "Nom de l'auteur.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "author_email",
+          "label": "Email auteur",
+          "description": "Email de l'auteur.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "content",
+          "label": "Contenu",
+          "description": "Contenu du commentaire.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut du commentaire.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "date",
+          "label": "Date",
+          "description": "Date du commentaire.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "wp_comments": {
+      "title": "Commentaires",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "totalPages",
+          "label": "Total de pages",
+          "description": "Nombre total de pages.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Commentaires",
+          "description": "Liste des commentaires",
+          "mode": "array",
+          "key": "comments",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "post",
+              "label": "Article",
+              "description": "Article.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "author_name",
+              "label": "Auteur",
+              "description": "Auteur.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "content",
+              "label": "Contenu",
+              "description": "Contenu.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "date",
+              "label": "Date",
+              "description": "Date.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "wp_user": {
+      "title": "Utilisateur WordPress",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant de l'utilisateur.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "username",
+          "label": "Nom d'utilisateur",
+          "description": "Login.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom affiché.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "email",
+          "label": "Email",
+          "description": "Email de l'utilisateur.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "roles",
+          "label": "Rôles",
+          "description": "Rôles de l'utilisateur.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "url",
+          "label": "URL",
+          "description": "URL du site.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "wp_users": {
+      "title": "Utilisateurs",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "totalPages",
+          "label": "Total de pages",
+          "description": "Nombre total de pages.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Utilisateurs",
+          "description": "Liste des utilisateurs",
+          "mode": "array",
+          "key": "users",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "username",
+              "label": "Login",
+              "description": "Login.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "email",
+              "label": "Email",
+              "description": "Email.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "wp_result": {
+      "title": "Résultat",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut de l'opération.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "message",
+          "label": "Message",
+          "description": "Message de retour.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "wp_event": {
+      "title": "Événement WordPress",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "type",
+          "label": "Type",
+          "description": "Type d'événement.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "data",
+          "label": "Données",
+          "description": "Données de l'événement.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "wordpress",
+      "name": "WordPress",
+      "title": "WordPress",
+      "iconClass": "fa-brands fa-wordpress",
+      "iconUrl": "https://cdn.simpleicons.org/wordpress",
+      "color": "#bbeaff",
+      "tags": [
+        "wordpress",
+        "cms",
+        "blog",
+        "content"
+      ],
+      "categories": [
+        "CMS"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants WordPress",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "siteUrl",
+            "label": "URL du site",
+            "description": "URL de votre site WordPress (ex: https://monsite.com).",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "username",
+            "label": "Nom d'utilisateur",
+            "description": "Identifiant WordPress.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "applicationPassword",
+            "label": "Mot de passe application",
+            "description": "Mot de passe d'application WordPress.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "secret": true
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "wp_post_create",
+      "name": "wpPostCreate",
+      "schemaVersion": 2,
+      "title": "Créer un article",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Articles",
+      "providerKey": "wordpress",
+      "description": "Crée un nouvel article WordPress.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wp_post"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Créer un article",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "title",
+            "label": "Titre",
+            "description": "Titre de l'article.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "content",
+            "label": "Contenu",
+            "description": "Contenu HTML de l'article.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "status",
+            "label": "Statut",
+            "description": "Statut (publish, draft). Défaut: draft.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "excerpt",
+            "label": "Extrait",
+            "description": "Extrait.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "categories",
+            "label": "Catégories",
+            "description": "IDs des catégories (séparés par virgule).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "tags",
+            "label": "Tags",
+            "description": "IDs des tags (séparés par virgule).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Articles",
+      "icon": "fa-solid fa-square-plus",
+      "tags": [
+        "création",
+        "wordpress"
+      ],
+      "group": "Articles"
+    },
+    {
+      "key": "wp_post_get",
+      "name": "wpPostGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un article",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Articles",
+      "providerKey": "wordpress",
+      "description": "Récupère un article par son ID.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wp_post"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Récupérer un article",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "postId",
+            "label": "ID de l'article",
+            "description": "Identifiant de l'article.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Articles",
+      "icon": "fa-solid fa-eye",
+      "tags": [
+        "lecture",
+        "wordpress"
+      ],
+      "group": "Articles"
+    },
+    {
+      "key": "wp_post_update",
+      "name": "wpPostUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier un article",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Articles",
+      "providerKey": "wordpress",
+      "description": "Modifie un article existant.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wp_post"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Modifier un article",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "postId",
+            "label": "ID de l'article",
+            "description": "Identifiant de l'article.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "title",
+            "label": "Titre",
+            "description": "Nouveau titre.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "content",
+            "label": "Contenu",
+            "description": "Nouveau contenu.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "status",
+            "label": "Statut",
+            "description": "Nouveau statut.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "excerpt",
+            "label": "Extrait",
+            "description": "Nouvel extrait.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Articles",
+      "icon": "fa-solid fa-pen-to-square",
+      "tags": [
+        "mise-à-jour",
+        "wordpress"
+      ],
+      "group": "Articles"
+    },
+    {
+      "key": "wp_post_delete",
+      "name": "wpPostDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un article",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Articles",
+      "providerKey": "wordpress",
+      "description": "Supprime un article.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wp_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Supprimer un article",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "postId",
+            "label": "ID de l'article",
+            "description": "Identifiant de l'article.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Articles",
+      "icon": "fa-solid fa-trash",
+      "tags": [
+        "suppression",
+        "wordpress"
+      ],
+      "group": "Articles"
+    },
+    {
+      "key": "wp_posts_list",
+      "name": "wpPostsList",
+      "schemaVersion": 2,
+      "title": "Lister les articles",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Articles",
+      "providerKey": "wordpress",
+      "description": "Liste les articles WordPress.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wp_posts"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Lister les articles",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "per_page",
+            "label": "Limite",
+            "description": "Nombre de résultats (défaut 10).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "page",
+            "label": "Page",
+            "description": "Numéro de page.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "status",
+            "label": "Statut",
+            "description": "Filtrer par statut.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "search",
+            "label": "Recherche",
+            "description": "Terme de recherche.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Articles",
+      "icon": "fa-solid fa-list",
+      "tags": [
+        "liste",
+        "wordpress"
+      ],
+      "group": "Articles"
+    },
+    {
+      "key": "wp_page_create",
+      "name": "wpPageCreate",
+      "schemaVersion": 2,
+      "title": "Créer une page",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Pages",
+      "providerKey": "wordpress",
+      "description": "Crée une nouvelle page WordPress.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wp_page"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Créer une page",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "title",
+            "label": "Titre",
+            "description": "Titre de la page.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "content",
+            "label": "Contenu",
+            "description": "Contenu HTML.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "status",
+            "label": "Statut",
+            "description": "Statut (publish, draft). Défaut: draft.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "parent",
+            "label": "Parent",
+            "description": "ID de la page parente.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Pages",
+      "icon": "fa-solid fa-square-plus",
+      "tags": [
+        "création",
+        "wordpress"
+      ],
+      "group": "Pages"
+    },
+    {
+      "key": "wp_page_get",
+      "name": "wpPageGet",
+      "schemaVersion": 2,
+      "title": "Récupérer une page",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Pages",
+      "providerKey": "wordpress",
+      "description": "Récupère une page par son ID.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wp_page"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Récupérer une page",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "pageId",
+            "label": "ID de la page",
+            "description": "Identifiant de la page.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Pages",
+      "icon": "fa-solid fa-eye",
+      "tags": [
+        "lecture",
+        "wordpress"
+      ],
+      "group": "Pages"
+    },
+    {
+      "key": "wp_page_update",
+      "name": "wpPageUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier une page",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Pages",
+      "providerKey": "wordpress",
+      "description": "Modifie une page existante.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wp_page"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Modifier une page",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "pageId",
+            "label": "ID de la page",
+            "description": "Identifiant de la page.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "title",
+            "label": "Titre",
+            "description": "Nouveau titre.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "content",
+            "label": "Contenu",
+            "description": "Nouveau contenu.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "status",
+            "label": "Statut",
+            "description": "Nouveau statut.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Pages",
+      "icon": "fa-solid fa-pen-to-square",
+      "tags": [
+        "mise-à-jour",
+        "wordpress"
+      ],
+      "group": "Pages"
+    },
+    {
+      "key": "wp_page_delete",
+      "name": "wpPageDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer une page",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Pages",
+      "providerKey": "wordpress",
+      "description": "Supprime une page.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wp_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Supprimer une page",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "pageId",
+            "label": "ID de la page",
+            "description": "Identifiant de la page.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Pages",
+      "icon": "fa-solid fa-trash",
+      "tags": [
+        "suppression",
+        "wordpress"
+      ],
+      "group": "Pages"
+    },
+    {
+      "key": "wp_pages_list",
+      "name": "wpPagesList",
+      "schemaVersion": 2,
+      "title": "Lister les pages",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Pages",
+      "providerKey": "wordpress",
+      "description": "Liste les pages WordPress.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wp_pages"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Lister les pages",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "per_page",
+            "label": "Limite",
+            "description": "Nombre de résultats (défaut 10).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "page",
+            "label": "Page",
+            "description": "Numéro de page.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "status",
+            "label": "Statut",
+            "description": "Filtrer par statut.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "search",
+            "label": "Recherche",
+            "description": "Terme de recherche.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Pages",
+      "icon": "fa-solid fa-list",
+      "tags": [
+        "liste",
+        "wordpress"
+      ],
+      "group": "Pages"
+    },
+    {
+      "key": "wp_media_upload",
+      "name": "wpMediaUpload",
+      "schemaVersion": 2,
+      "title": "Uploader un média",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Médias",
+      "providerKey": "wordpress",
+      "description": "Upload un fichier média.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wp_media"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Uploader un média",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "fileUrl",
+            "label": "URL du fichier",
+            "description": "URL du fichier à uploader.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "title",
+            "label": "Titre",
+            "description": "Titre du média.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "alt_text",
+            "label": "Texte alternatif",
+            "description": "Texte alternatif pour l'image.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Médias",
+      "icon": "fa-solid fa-file-arrow-up",
+      "tags": [
+        "création",
+        "wordpress"
+      ],
+      "group": "Médias"
+    },
+    {
+      "key": "wp_media_get",
+      "name": "wpMediaGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un média",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Médias",
+      "providerKey": "wordpress",
+      "description": "Récupère un média par son ID.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wp_media"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Récupérer un média",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "mediaId",
+            "label": "ID du média",
+            "description": "Identifiant du média.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Médias",
+      "icon": "fa-solid fa-eye",
+      "tags": [
+        "lecture",
+        "wordpress"
+      ],
+      "group": "Médias"
+    },
+    {
+      "key": "wp_media_list",
+      "name": "wpMediaList",
+      "schemaVersion": 2,
+      "title": "Lister les médias",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Médias",
+      "providerKey": "wordpress",
+      "description": "Liste les fichiers médias.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wp_medias"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Lister les médias",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "per_page",
+            "label": "Limite",
+            "description": "Nombre de résultats (défaut 10).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "page",
+            "label": "Page",
+            "description": "Numéro de page.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "media_type",
+            "label": "Type",
+            "description": "Filtrer par type (image, video, etc.).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Médias",
+      "icon": "fa-solid fa-list",
+      "tags": [
+        "liste",
+        "wordpress"
+      ],
+      "group": "Médias"
+    },
+    {
+      "key": "wp_media_delete",
+      "name": "wpMediaDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un média",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Médias",
+      "providerKey": "wordpress",
+      "description": "Supprime un fichier média.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wp_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Supprimer un média",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "mediaId",
+            "label": "ID du média",
+            "description": "Identifiant du média.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Médias",
+      "icon": "fa-solid fa-trash",
+      "tags": [
+        "suppression",
+        "wordpress"
+      ],
+      "group": "Médias"
+    },
+    {
+      "key": "wp_category_create",
+      "name": "wpCategoryCreate",
+      "schemaVersion": 2,
+      "title": "Créer une catégorie",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Catégories",
+      "providerKey": "wordpress",
+      "description": "Crée une nouvelle catégorie.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wp_category"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Créer une catégorie",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nom de la catégorie.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "description",
+            "label": "Description",
+            "description": "Description.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "parent",
+            "label": "Parent",
+            "description": "ID de la catégorie parente.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Catégories",
+      "icon": "fa-solid fa-square-plus",
+      "tags": [
+        "création",
+        "wordpress"
+      ],
+      "group": "Catégories"
+    },
+    {
+      "key": "wp_category_get",
+      "name": "wpCategoryGet",
+      "schemaVersion": 2,
+      "title": "Récupérer une catégorie",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Catégories",
+      "providerKey": "wordpress",
+      "description": "Récupère une catégorie par son ID.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wp_category"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Récupérer une catégorie",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "categoryId",
+            "label": "ID de la catégorie",
+            "description": "Identifiant de la catégorie.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Catégories",
+      "icon": "fa-solid fa-eye",
+      "tags": [
+        "lecture",
+        "wordpress"
+      ],
+      "group": "Catégories"
+    },
+    {
+      "key": "wp_categories_list",
+      "name": "wpCategoriesList",
+      "schemaVersion": 2,
+      "title": "Lister les catégories",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Catégories",
+      "providerKey": "wordpress",
+      "description": "Liste les catégories.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wp_categories"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Lister les catégories",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "per_page",
+            "label": "Limite",
+            "description": "Nombre de résultats (défaut 10).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "search",
+            "label": "Recherche",
+            "description": "Terme de recherche.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Catégories",
+      "icon": "fa-solid fa-list",
+      "tags": [
+        "liste",
+        "wordpress"
+      ],
+      "group": "Catégories"
+    },
+    {
+      "key": "wp_tag_create",
+      "name": "wpTagCreate",
+      "schemaVersion": 2,
+      "title": "Créer un tag",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Tags",
+      "providerKey": "wordpress",
+      "description": "Crée un nouveau tag.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wp_tag"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Créer un tag",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nom du tag.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "description",
+            "label": "Description",
+            "description": "Description du tag.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Tags",
+      "icon": "fa-solid fa-tag",
+      "tags": [
+        "création",
+        "wordpress"
+      ],
+      "group": "Tags"
+    },
+    {
+      "key": "wp_tags_list",
+      "name": "wpTagsList",
+      "schemaVersion": 2,
+      "title": "Lister les tags",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Tags",
+      "providerKey": "wordpress",
+      "description": "Liste les tags.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wp_tags"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Lister les tags",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "per_page",
+            "label": "Limite",
+            "description": "Nombre de résultats (défaut 10).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "search",
+            "label": "Recherche",
+            "description": "Terme de recherche.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Tags",
+      "icon": "fa-solid fa-tags",
+      "tags": [
+        "liste",
+        "wordpress"
+      ],
+      "group": "Tags"
+    },
+    {
+      "key": "wp_comment_create",
+      "name": "wpCommentCreate",
+      "schemaVersion": 2,
+      "title": "Créer un commentaire",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Commentaires",
+      "providerKey": "wordpress",
+      "description": "Crée un nouveau commentaire.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wp_comment"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Créer un commentaire",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "post",
+            "label": "ID de l'article",
+            "description": "ID de l'article.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "content",
+            "label": "Contenu",
+            "description": "Contenu du commentaire.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "author_name",
+            "label": "Nom de l'auteur",
+            "description": "Nom de l'auteur.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "author_email",
+            "label": "Email de l'auteur",
+            "description": "Email de l'auteur.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Commentaires",
+      "icon": "fa-solid fa-comment",
+      "tags": [
+        "création",
+        "wordpress"
+      ],
+      "group": "Commentaires"
+    },
+    {
+      "key": "wp_comment_get",
+      "name": "wpCommentGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un commentaire",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Commentaires",
+      "providerKey": "wordpress",
+      "description": "Récupère un commentaire par son ID.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wp_comment"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Récupérer un commentaire",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "commentId",
+            "label": "ID du commentaire",
+            "description": "Identifiant du commentaire.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Commentaires",
+      "icon": "fa-solid fa-comment",
+      "tags": [
+        "lecture",
+        "wordpress"
+      ],
+      "group": "Commentaires"
+    },
+    {
+      "key": "wp_comments_list",
+      "name": "wpCommentsList",
+      "schemaVersion": 2,
+      "title": "Lister les commentaires",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Commentaires",
+      "providerKey": "wordpress",
+      "description": "Liste les commentaires.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wp_comments"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Lister les commentaires",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "per_page",
+            "label": "Limite",
+            "description": "Nombre de résultats (défaut 10).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "post",
+            "label": "ID de l'article",
+            "description": "Filtrer par article.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "status",
+            "label": "Statut",
+            "description": "Filtrer par statut.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Commentaires",
+      "icon": "fa-solid fa-comments",
+      "tags": [
+        "liste",
+        "wordpress"
+      ],
+      "group": "Commentaires"
+    },
+    {
+      "key": "wp_comment_update",
+      "name": "wpCommentUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier un commentaire",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Commentaires",
+      "providerKey": "wordpress",
+      "description": "Modifie un commentaire existant.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wp_comment"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Modifier un commentaire",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "commentId",
+            "label": "ID du commentaire",
+            "description": "Identifiant du commentaire.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "content",
+            "label": "Contenu",
+            "description": "Nouveau contenu.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "status",
+            "label": "Statut",
+            "description": "Nouveau statut (approved, hold, spam, trash).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Commentaires",
+      "icon": "fa-solid fa-pen-to-square",
+      "tags": [
+        "mise-à-jour",
+        "wordpress"
+      ],
+      "group": "Commentaires"
+    },
+    {
+      "key": "wp_user_get",
+      "name": "wpUserGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un utilisateur",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Utilisateurs",
+      "providerKey": "wordpress",
+      "description": "Récupère un utilisateur par son ID.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wp_user"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Récupérer un utilisateur",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "userId",
+            "label": "ID de l'utilisateur",
+            "description": "Identifiant de l'utilisateur.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Utilisateurs",
+      "icon": "fa-solid fa-eye",
+      "tags": [
+        "lecture",
+        "wordpress"
+      ],
+      "group": "Utilisateurs"
+    },
+    {
+      "key": "wp_users_list",
+      "name": "wpUsersList",
+      "schemaVersion": 2,
+      "title": "Lister les utilisateurs",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Utilisateurs",
+      "providerKey": "wordpress",
+      "description": "Liste les utilisateurs.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wp_users"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Lister les utilisateurs",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "per_page",
+            "label": "Limite",
+            "description": "Nombre de résultats (défaut 10).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "search",
+            "label": "Recherche",
+            "description": "Terme de recherche.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Utilisateurs",
+      "icon": "fa-solid fa-list",
+      "tags": [
+        "liste",
+        "wordpress"
+      ],
+      "group": "Utilisateurs"
+    },
+    {
+      "key": "wp_plugins_list",
+      "name": "wpPluginsList",
+      "schemaVersion": 2,
+      "title": "Lister les plugins",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Plugins",
+      "providerKey": "wordpress",
+      "description": "Liste les plugins installés.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wp_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Lister les plugins",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "per_page",
+            "label": "Limite",
+            "description": "Nombre de résultats.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Extensions",
+      "icon": "fa-solid fa-list",
+      "tags": [
+        "liste",
+        "wordpress"
+      ],
+      "group": "Extensions"
+    },
+    {
+      "key": "wp_webhook_event",
+      "name": "wpWebhookEvent",
+      "schemaVersion": 2,
+      "title": "Événement webhook",
+      "type": "event",
+      "nodeKind": "event",
+      "category": "Événements",
+      "providerKey": "wordpress",
+      "description": "Déclenchement via webhook WordPress entrant.",
+      "subtitle": "Événements",
+      "icon": "fa-solid fa-bolt",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wp_event"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Événement webhook",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Chemin d'endpoint",
+            "description": "Chemin d'URL pour recevoir le webhook.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "événement",
+        "wordpress"
+      ],
+      "group": "Événements"
+    }
+  ]
+}

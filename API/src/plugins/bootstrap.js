@@ -70,7 +70,7 @@ async function ensureReposFromEnv(){
   }
 
   // Load all repos (builtin + env repos)
-  try { const loaded = registry.reload(); console.log('[plugins] registry reloaded, handlers =', loaded.length); } catch (e) { try { console.error('[plugins] reload failed:', e.message); } catch {} }
+  try { const loaded = await registry.reload(); console.log('[plugins] registry reloaded, handlers =', loaded.length); } catch (e) { try { console.error('[plugins] reload failed:', e.message); } catch {} }
 }
 
 module.exports = { ensureReposFromEnv };

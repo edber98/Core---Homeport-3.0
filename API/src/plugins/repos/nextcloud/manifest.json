@@ -1,40 +1,3944 @@
 {
+  "repo": {
+    "name": "nextcloud",
+    "type": "local",
+    "label": "Nextcloud (Files / Talk / Calendar)"
+  },
+  "variables": {
+    "nc_file": {
+      "title": "Fichier Nextcloud",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "path",
+          "label": "Chemin",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "contentType",
+          "label": "Type de contenu",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "size",
+          "label": "Taille",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "lastModified",
+          "label": "Dernière modification",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "etag",
+          "label": "ETag",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "file",
+          "label": "Fichier (fileRef)",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "nc_files": {
+      "title": "Fichiers Nextcloud",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Fichiers Nextcloud",
+          "description": "Liste",
+          "mode": "array",
+          "key": "files",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "path",
+              "label": "Chemin",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "contentType",
+              "label": "Type de contenu",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "size",
+              "label": "Taille",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "lastModified",
+              "label": "Dernière modification",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "etag",
+              "label": "ETag",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "nc_share": {
+      "title": "Partage Nextcloud",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "shareType",
+          "label": "Type de partage",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "shareWith",
+          "label": "Partagé avec",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "path",
+          "label": "Chemin",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "permissions",
+          "label": "Permissions",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "url",
+          "label": "URL",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "expiration",
+          "label": "Expiration",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "nc_shares": {
+      "title": "Partages Nextcloud",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Partages Nextcloud",
+          "description": "Liste",
+          "mode": "array",
+          "key": "shares",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "shareType",
+              "label": "Type de partage",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "shareWith",
+              "label": "Partagé avec",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "path",
+              "label": "Chemin",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "permissions",
+              "label": "Permissions",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "url",
+              "label": "URL",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "expiration",
+              "label": "Expiration",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "nc_room": {
+      "title": "Conversation Talk",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "token",
+          "label": "Token",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "type",
+          "label": "Type",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "participantType",
+          "label": "Type de participant",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "lastMessage",
+          "label": "Dernier message",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "unreadMessages",
+          "label": "Messages non lus",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "nc_rooms": {
+      "title": "Conversations Talk",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Conversations Talk",
+          "description": "Liste",
+          "mode": "array",
+          "key": "rooms",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "token",
+              "label": "Token",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "type",
+              "label": "Type",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "participantType",
+              "label": "Type de participant",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "lastMessage",
+              "label": "Dernier message",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "unreadMessages",
+              "label": "Messages non lus",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "nc_message": {
+      "title": "Message Talk",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "token",
+          "label": "Token",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "actorId",
+          "label": "Auteur ID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "actorDisplayName",
+          "label": "Nom de l'auteur",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "message",
+          "label": "Message",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "timestamp",
+          "label": "Horodatage",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "nc_messages": {
+      "title": "Messages Talk",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Messages Talk",
+          "description": "Liste",
+          "mode": "array",
+          "key": "messages",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "token",
+              "label": "Token",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "actorId",
+              "label": "Auteur ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "actorDisplayName",
+              "label": "Nom de l'auteur",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "message",
+              "label": "Message",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "timestamp",
+              "label": "Horodatage",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "nc_calendar": {
+      "title": "Calendrier Nextcloud",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "displayName",
+          "label": "Nom affiché",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "color",
+          "label": "Couleur",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "url",
+          "label": "URL",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "nc_calendars": {
+      "title": "Calendriers Nextcloud",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Calendriers Nextcloud",
+          "description": "Liste",
+          "mode": "array",
+          "key": "calendars",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "displayName",
+              "label": "Nom affiché",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "color",
+              "label": "Couleur",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "url",
+              "label": "URL",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "nc_event": {
+      "title": "Événement",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "summary",
+          "label": "Résumé",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "dtstart",
+          "label": "Début",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "dtend",
+          "label": "Fin",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "description",
+          "label": "Description",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "location",
+          "label": "Lieu",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "nc_events": {
+      "title": "Événements",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Événements",
+          "description": "Liste",
+          "mode": "array",
+          "key": "events",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "summary",
+              "label": "Résumé",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "dtstart",
+              "label": "Début",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "dtend",
+              "label": "Fin",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "description",
+              "label": "Description",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "location",
+              "label": "Lieu",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "nc_user": {
+      "title": "Utilisateur Nextcloud",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "displayName",
+          "label": "Nom affiché",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "email",
+          "label": "Email",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "phone",
+          "label": "Téléphone",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "quota",
+          "label": "Quota",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "nc_users": {
+      "title": "Utilisateurs Nextcloud",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Utilisateurs Nextcloud",
+          "description": "Liste",
+          "mode": "array",
+          "key": "users",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "displayName",
+              "label": "Nom affiché",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "email",
+              "label": "Email",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "phone",
+              "label": "Téléphone",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "quota",
+              "label": "Quota",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "nc_activity": {
+      "title": "Activité",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "type",
+          "label": "Type",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "subject",
+          "label": "Sujet",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "datetime",
+          "label": "Date et heure",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "user",
+          "label": "Utilisateur",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "nc_activities": {
+      "title": "Activités",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Activités",
+          "description": "Liste",
+          "mode": "array",
+          "key": "activities",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "type",
+              "label": "Type",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "subject",
+              "label": "Sujet",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "datetime",
+              "label": "Date et heure",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "user",
+              "label": "Utilisateur",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "nc_notification": {
+      "title": "Notification",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "subject",
+          "label": "Sujet",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "message",
+          "label": "Message",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "datetime",
+          "label": "Date et heure",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "nc_notifications": {
+      "title": "Notifications",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Notifications",
+          "description": "Liste",
+          "mode": "array",
+          "key": "notifications",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "subject",
+              "label": "Sujet",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "message",
+              "label": "Message",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "datetime",
+              "label": "Date et heure",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "nc_result": {
+      "title": "Résultat",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "message",
+          "label": "Message",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
   "providers": [
     {
-      "key": "nextcloud",
-      "name": "Nextcloud",
-      "title": "Nextcloud",
+      "key": "nextcloudFiles",
+      "name": "Nextcloud Files",
+      "title": "Nextcloud Files",
       "iconClass": "fa-solid fa-cloud",
-      "color": "#0082C9",
-      "tags": ["webdav", "storage"],
-      "categories": ["Docs & Drive"],
+      "color": "#98daff",
+      "tags": [
+        "nextcloud",
+        "files",
+        "cloud",
+        "storage"
+      ],
+      "categories": [
+        "Cloud Storage"
+      ],
       "hasCredentials": true,
       "credentialsForm": {
-        "title": "Nextcloud WebDAV",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "title": "Identifiants Nextcloud",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
-          { "type": "text", "key": "baseUrl", "label": "URL de base (WebDAV)", "col": { "xs": 24 }, "default": "https://cloud.example.com/remote.php/dav" },
-          { "type": "text", "key": "username", "label": "Nom d’utilisateur", "col": { "xs": 24 } },
-          { "type": "text", "key": "password", "label": "Mot de passe / App password", "col": { "xs": 24 }, "secret": true }
-        ]
-      }
+          {
+            "type": "text",
+            "key": "url",
+            "label": "URL Nextcloud",
+            "description": "URL de l'instance (ex: https://cloud.example.com)",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "username",
+            "label": "Utilisateur",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "password",
+            "label": "Mot de passe ou token",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "iconUrl": "https://cdn.simpleicons.org/nextcloud"
+    },
+    {
+      "key": "nextcloudTalk",
+      "name": "Nextcloud Talk",
+      "title": "Nextcloud Talk",
+      "iconClass": "fa-solid fa-comments",
+      "color": "#98daff",
+      "tags": [
+        "nextcloud",
+        "talk",
+        "chat"
+      ],
+      "categories": [
+        "Communication"
+      ],
+      "hasCredentials": false,
+      "iconUrl": "https://cdn.simpleicons.org/nextcloud"
+    },
+    {
+      "key": "nextcloudCalendar",
+      "name": "Nextcloud Calendar",
+      "title": "Nextcloud Calendar",
+      "iconClass": "fa-solid fa-calendar",
+      "color": "#98daff",
+      "tags": [
+        "nextcloud",
+        "calendar",
+        "events"
+      ],
+      "categories": [
+        "Calendar"
+      ],
+      "hasCredentials": false,
+      "iconUrl": "https://cdn.simpleicons.org/nextcloud"
     }
   ],
   "nodeTemplates": [
-    { "key": "nextcloud_upload_file", "name": "nextcloudUploadFile", "title": "Téléverser un fichier", "type": "function", "category": "Nextcloud", "providerKey": "nextcloud", "output": ["Success"],
-      "description": "Téléverser un fichier via WebDAV", "args": { "title": "Téléversement", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
-        {"type":"text","key":"path","label":"Chemin distant","col":{"xs":24},"validators":[{"type":"required"}]},
-        {"type":"textarea","key":"content","label":"Contenu (base64 ou texte)","col":{"xs":24}}
-      ] } },
-    { "key": "nextcloud_create_share_link", "name": "nextcloudCreateShareLink", "title": "Créer un lien de partage", "type": "function", "category": "Nextcloud", "providerKey": "nextcloud", "output": ["Success"],
-      "description": "Créer un lien de partage public", "args": { "title": "Partage", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
-        {"type":"text","key":"path","label":"Chemin","col":{"xs":24},"validators":[{"type":"required"}]},
-        {"type":"select","key":"permissions","label":"Permissions","col":{"xs":24},"options":[{"label":"lecture","value":"read"},{"label":"écriture","value":"write"}],"default":"read"}
-      ] } },
-    { "key": "nextcloud_set_permissions", "name": "nextcloudSetPermissions", "title": "Définir les permissions", "type": "function", "category": "Nextcloud", "providerKey": "nextcloud", "output": ["Success"],
-      "description": "Définir les permissions d’un fichier/dossier", "args": { "title": "Permissions", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
-        {"type":"text","key":"path","label":"Chemin","col":{"xs":24}},
-        {"type":"textarea","key":"acl","label":"ACL (JSON)","col":{"xs":24},"default":"{}"}
-      ] } }
+    {
+      "key": "nc_file_list",
+      "name": "ncFileList",
+      "schemaVersion": 2,
+      "title": "Lister les fichiers",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Nextcloud Files",
+      "providerKey": "nextcloudFiles",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:nc_files"
+        }
+      ],
+      "description": "Liste les fichiers et dossiers via WebDAV.",
+      "args": {
+        "title": "Lister les fichiers",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Chemin",
+            "col": {
+              "xs": 24
+            },
+            "description": "Chemin du répertoire (ex: /Documents).",
+            "default": "/"
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Fichiers",
+      "icon": "fa-solid fa-list",
+      "group": "Fichiers",
+      "tags": [
+        "liste",
+        "Nextcloud"
+      ]
+    },
+    {
+      "key": "nc_file_get",
+      "name": "ncFileGet",
+      "schemaVersion": 2,
+      "title": "Télécharger un fichier",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Nextcloud Files",
+      "providerKey": "nextcloudFiles",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:nc_file"
+        }
+      ],
+      "description": "Télécharge le contenu d'un fichier via WebDAV.",
+      "args": {
+        "title": "Télécharger un fichier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Chemin",
+            "col": {
+              "xs": 24
+            },
+            "description": "Chemin du fichier à télécharger.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Fichiers",
+      "icon": "fa-solid fa-download",
+      "group": "Fichiers",
+      "tags": [
+        "lecture",
+        "Nextcloud"
+      ]
+    },
+    {
+      "key": "nc_file_upload",
+      "name": "ncFileUpload",
+      "schemaVersion": 2,
+      "title": "Téléverser un fichier",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Nextcloud Files",
+      "providerKey": "nextcloudFiles",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:nc_result"
+        }
+      ],
+      "description": "Téléverse un fichier via WebDAV.",
+      "args": {
+        "title": "Téléverser un fichier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Chemin",
+            "col": {
+              "xs": 24
+            },
+            "description": "Chemin de destination sur le serveur.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "file",
+            "key": "file",
+            "label": "Fichier",
+            "col": {
+              "xs": 24
+            },
+            "description": "Fichier à téléverser.",
+            "file": {
+              "accept": "",
+              "maxSize": 104857600,
+              "multiple": false,
+              "lifecycle": "execution",
+              "listType": "text",
+              "hint": "Téléverser un fichier ou utiliser une expression"
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Fichiers",
+      "icon": "fa-solid fa-file-arrow-up",
+      "group": "Fichiers",
+      "tags": [
+        "création",
+        "Nextcloud"
+      ]
+    },
+    {
+      "key": "nc_file_delete",
+      "name": "ncFileDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un fichier",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Nextcloud Files",
+      "providerKey": "nextcloudFiles",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:nc_result"
+        }
+      ],
+      "description": "Supprime un fichier ou dossier via WebDAV.",
+      "args": {
+        "title": "Supprimer un fichier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Chemin",
+            "col": {
+              "xs": 24
+            },
+            "description": "Chemin du fichier à supprimer.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Fichiers",
+      "icon": "fa-solid fa-trash",
+      "group": "Fichiers",
+      "tags": [
+        "suppression",
+        "Nextcloud"
+      ]
+    },
+    {
+      "key": "nc_file_move",
+      "name": "ncFileMove",
+      "schemaVersion": 2,
+      "title": "Déplacer un fichier",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Nextcloud Files",
+      "providerKey": "nextcloudFiles",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:nc_result"
+        }
+      ],
+      "description": "Déplace un fichier ou dossier via WebDAV.",
+      "args": {
+        "title": "Déplacer un fichier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "sourcePath",
+            "label": "Chemin source",
+            "col": {
+              "xs": 24
+            },
+            "description": "Chemin actuel du fichier.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "destPath",
+            "label": "Chemin destination",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nouveau chemin du fichier.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Fichiers",
+      "icon": "fa-solid fa-arrow-right",
+      "group": "Fichiers",
+      "tags": [
+        "mise-à-jour",
+        "Nextcloud"
+      ]
+    },
+    {
+      "key": "nc_file_copy",
+      "name": "ncFileCopy",
+      "schemaVersion": 2,
+      "title": "Copier un fichier",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Nextcloud Files",
+      "providerKey": "nextcloudFiles",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:nc_result"
+        }
+      ],
+      "description": "Copie un fichier ou dossier via WebDAV.",
+      "args": {
+        "title": "Copier un fichier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "sourcePath",
+            "label": "Chemin source",
+            "col": {
+              "xs": 24
+            },
+            "description": "Chemin du fichier à copier.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "destPath",
+            "label": "Chemin destination",
+            "col": {
+              "xs": 24
+            },
+            "description": "Chemin de la copie.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Fichiers",
+      "icon": "fa-solid fa-copy",
+      "group": "Fichiers",
+      "tags": [
+        "création",
+        "Nextcloud"
+      ]
+    },
+    {
+      "key": "nc_folder_create",
+      "name": "ncFolderCreate",
+      "schemaVersion": 2,
+      "title": "Créer un dossier",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Nextcloud Files",
+      "providerKey": "nextcloudFiles",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:nc_result"
+        }
+      ],
+      "description": "Crée un nouveau dossier via WebDAV.",
+      "args": {
+        "title": "Créer un dossier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Chemin",
+            "col": {
+              "xs": 24
+            },
+            "description": "Chemin du dossier à créer.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Dossiers",
+      "icon": "fa-solid fa-folder-plus",
+      "group": "Dossiers",
+      "tags": [
+        "création",
+        "Nextcloud"
+      ]
+    },
+    {
+      "key": "nc_file_share",
+      "name": "ncFileShare",
+      "schemaVersion": 2,
+      "title": "Partager un fichier",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Nextcloud Files",
+      "providerKey": "nextcloudFiles",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:nc_share"
+        }
+      ],
+      "description": "Crée un partage via l'API OCS.",
+      "args": {
+        "title": "Partager un fichier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Chemin",
+            "col": {
+              "xs": 24
+            },
+            "description": "Chemin du fichier ou dossier à partager.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "key": "shareType",
+            "label": "Type de partage",
+            "options": [
+              {
+                "label": "Utilisateur",
+                "value": "0"
+              },
+              {
+                "label": "Groupe",
+                "value": "1"
+              },
+              {
+                "label": "Lien public",
+                "value": "3"
+              }
+            ],
+            "col": {
+              "xs": 24
+            },
+            "description": "Type de partage à créer.",
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          },
+          {
+            "type": "text",
+            "key": "shareWith",
+            "label": "Partagé avec",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant de l'utilisateur ou du groupe."
+          },
+          {
+            "type": "select",
+            "key": "permissions",
+            "label": "Permissions",
+            "options": [
+              {
+                "label": "Lecture",
+                "value": "1"
+              },
+              {
+                "label": "Mise à jour",
+                "value": "2"
+              },
+              {
+                "label": "Création",
+                "value": "4"
+              },
+              {
+                "label": "Toutes",
+                "value": "15"
+              }
+            ],
+            "col": {
+              "xs": 24
+            },
+            "description": "Permissions accordées.",
+            "default": "1",
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Partage",
+      "icon": "fa-solid fa-share",
+      "group": "Partage",
+      "tags": [
+        "création",
+        "Nextcloud"
+      ]
+    },
+    {
+      "key": "nc_file_shares_list",
+      "name": "ncFileSharesList",
+      "schemaVersion": 2,
+      "title": "Lister les partages",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Nextcloud Files",
+      "providerKey": "nextcloudFiles",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:nc_shares"
+        }
+      ],
+      "description": "Liste les partages d'un fichier ou dossier.",
+      "args": {
+        "title": "Lister les partages",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Chemin",
+            "col": {
+              "xs": 24
+            },
+            "description": "Chemin du fichier (optionnel)."
+          },
+          {
+            "type": "checkbox",
+            "key": "reshares",
+            "label": "Inclure les re-partages",
+            "col": {
+              "xs": 24
+            },
+            "description": "Inclure les partages créés par d'autres."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Partage",
+      "icon": "fa-solid fa-list",
+      "group": "Partage",
+      "tags": [
+        "liste",
+        "Nextcloud"
+      ]
+    },
+    {
+      "key": "nc_file_search",
+      "name": "ncFileSearch",
+      "schemaVersion": 2,
+      "title": "Rechercher des fichiers",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Nextcloud Files",
+      "providerKey": "nextcloudFiles",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:nc_files"
+        }
+      ],
+      "description": "Recherche des fichiers par nom.",
+      "args": {
+        "title": "Rechercher des fichiers",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "query",
+            "label": "Recherche",
+            "col": {
+              "xs": 24
+            },
+            "description": "Terme de recherche.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Fichiers",
+      "icon": "fa-solid fa-magnifying-glass",
+      "group": "Fichiers",
+      "tags": [
+        "recherche",
+        "Nextcloud"
+      ]
+    },
+    {
+      "key": "nc_talk_room_create",
+      "name": "ncTalkRoomCreate",
+      "schemaVersion": 2,
+      "title": "Créer une conversation",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Nextcloud Talk",
+      "providerKey": "nextcloudTalk",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:nc_room"
+        }
+      ],
+      "description": "Crée une nouvelle conversation Talk.",
+      "args": {
+        "title": "Créer une conversation",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "select",
+            "key": "roomType",
+            "label": "Type de conversation",
+            "options": [
+              {
+                "label": "Un à un",
+                "value": "1"
+              },
+              {
+                "label": "Groupe",
+                "value": "2"
+              },
+              {
+                "label": "Publique",
+                "value": "3"
+              }
+            ],
+            "col": {
+              "xs": 24
+            },
+            "description": "Type de conversation à créer.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          },
+          {
+            "type": "text",
+            "key": "invite",
+            "label": "Inviter",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant de l'utilisateur ou du groupe."
+          },
+          {
+            "type": "text",
+            "key": "roomName",
+            "label": "Nom de la conversation",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nom de la conversation (groupe/publique)."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Conversations",
+      "icon": "fa-solid fa-comments",
+      "group": "Conversations",
+      "tags": [
+        "création",
+        "Nextcloud"
+      ]
+    },
+    {
+      "key": "nc_talk_rooms_list",
+      "name": "ncTalkRoomsList",
+      "schemaVersion": 2,
+      "title": "Lister les conversations",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Nextcloud Talk",
+      "providerKey": "nextcloudTalk",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:nc_rooms"
+        }
+      ],
+      "description": "Liste toutes les conversations Talk.",
+      "args": {
+        "title": "Lister les conversations",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Conversations",
+      "icon": "fa-solid fa-list",
+      "group": "Conversations",
+      "tags": [
+        "liste",
+        "Nextcloud"
+      ]
+    },
+    {
+      "key": "nc_talk_room_get",
+      "name": "ncTalkRoomGet",
+      "schemaVersion": 2,
+      "title": "Récupérer une conversation",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Nextcloud Talk",
+      "providerKey": "nextcloudTalk",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:nc_room"
+        }
+      ],
+      "description": "Récupère les détails d'une conversation Talk.",
+      "args": {
+        "title": "Récupérer une conversation",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "token",
+            "label": "Token",
+            "col": {
+              "xs": 24
+            },
+            "description": "Token de la conversation.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Conversations",
+      "icon": "fa-solid fa-eye",
+      "group": "Conversations",
+      "tags": [
+        "lecture",
+        "Nextcloud"
+      ]
+    },
+    {
+      "key": "nc_talk_room_delete",
+      "name": "ncTalkRoomDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer une conversation",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Nextcloud Talk",
+      "providerKey": "nextcloudTalk",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:nc_result"
+        }
+      ],
+      "description": "Supprime une conversation Talk.",
+      "args": {
+        "title": "Supprimer une conversation",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "token",
+            "label": "Token",
+            "col": {
+              "xs": 24
+            },
+            "description": "Token de la conversation à supprimer.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Conversations",
+      "icon": "fa-solid fa-trash",
+      "group": "Conversations",
+      "tags": [
+        "suppression",
+        "Nextcloud"
+      ]
+    },
+    {
+      "key": "nc_talk_send_message",
+      "name": "ncTalkSendMessage",
+      "schemaVersion": 2,
+      "title": "Envoyer un message",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Nextcloud Talk",
+      "providerKey": "nextcloudTalk",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:nc_message"
+        }
+      ],
+      "description": "Envoie un message dans une conversation Talk.",
+      "args": {
+        "title": "Envoyer un message",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "token",
+            "label": "Token",
+            "col": {
+              "xs": 24
+            },
+            "description": "Token de la conversation.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "message",
+            "label": "Message",
+            "col": {
+              "xs": 24
+            },
+            "description": "Contenu du message.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "replyTo",
+            "label": "Répondre à",
+            "col": {
+              "xs": 24
+            },
+            "description": "ID du message auquel répondre."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Messages",
+      "icon": "fa-solid fa-paper-plane",
+      "group": "Messages",
+      "tags": [
+        "envoi",
+        "Nextcloud"
+      ]
+    },
+    {
+      "key": "nc_talk_messages_list",
+      "name": "ncTalkMessagesList",
+      "schemaVersion": 2,
+      "title": "Lister les messages",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Nextcloud Talk",
+      "providerKey": "nextcloudTalk",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:nc_messages"
+        }
+      ],
+      "description": "Liste les messages d'une conversation Talk.",
+      "args": {
+        "title": "Lister les messages",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "token",
+            "label": "Token",
+            "col": {
+              "xs": 24
+            },
+            "description": "Token de la conversation.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nombre de messages à récupérer.",
+            "default": 100
+          },
+          {
+            "type": "select",
+            "key": "lookIntoFuture",
+            "label": "Direction",
+            "options": [
+              {
+                "label": "Messages passés",
+                "value": "0"
+              },
+              {
+                "label": "Messages futurs",
+                "value": "1"
+              }
+            ],
+            "col": {
+              "xs": 24
+            },
+            "description": "Direction de lecture.",
+            "default": "0",
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Messages",
+      "icon": "fa-solid fa-list",
+      "group": "Messages",
+      "tags": [
+        "liste",
+        "Nextcloud"
+      ]
+    },
+    {
+      "key": "nc_talk_add_participant",
+      "name": "ncTalkAddParticipant",
+      "schemaVersion": 2,
+      "title": "Ajouter un participant",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Nextcloud Talk",
+      "providerKey": "nextcloudTalk",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:nc_result"
+        }
+      ],
+      "description": "Ajoute un participant à une conversation Talk.",
+      "args": {
+        "title": "Ajouter un participant",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "token",
+            "label": "Token",
+            "col": {
+              "xs": 24
+            },
+            "description": "Token de la conversation.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "newParticipant",
+            "label": "Participant",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant du participant à ajouter.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "key": "source",
+            "label": "Source",
+            "options": [
+              {
+                "label": "Utilisateurs",
+                "value": "users"
+              },
+              {
+                "label": "Groupes",
+                "value": "groups"
+              },
+              {
+                "label": "Emails",
+                "value": "emails"
+              }
+            ],
+            "col": {
+              "xs": 24
+            },
+            "description": "Type de participant.",
+            "default": "users",
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Conversations",
+      "icon": "fa-solid fa-user-plus",
+      "group": "Conversations",
+      "tags": [
+        "mise-à-jour",
+        "Nextcloud"
+      ]
+    },
+    {
+      "key": "nc_talk_remove_participant",
+      "name": "ncTalkRemoveParticipant",
+      "schemaVersion": 2,
+      "title": "Retirer un participant",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Nextcloud Talk",
+      "providerKey": "nextcloudTalk",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:nc_result"
+        }
+      ],
+      "description": "Retire un participant d'une conversation Talk.",
+      "args": {
+        "title": "Retirer un participant",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "token",
+            "label": "Token",
+            "col": {
+              "xs": 24
+            },
+            "description": "Token de la conversation.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "participant",
+            "label": "Participant",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant du participant à retirer.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Conversations",
+      "icon": "fa-solid fa-user-minus",
+      "group": "Conversations",
+      "tags": [
+        "suppression",
+        "Nextcloud"
+      ]
+    },
+    {
+      "key": "nc_talk_set_message_read",
+      "name": "ncTalkSetMessageRead",
+      "schemaVersion": 2,
+      "title": "Marquer comme lu",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Nextcloud Talk",
+      "providerKey": "nextcloudTalk",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:nc_result"
+        }
+      ],
+      "description": "Marque les messages comme lus dans une conversation.",
+      "args": {
+        "title": "Marquer comme lu",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "token",
+            "label": "Token",
+            "col": {
+              "xs": 24
+            },
+            "description": "Token de la conversation.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "lastReadMessage",
+            "label": "Dernier message lu",
+            "col": {
+              "xs": 24
+            },
+            "description": "ID du dernier message lu."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Messages",
+      "icon": "fa-solid fa-circle-check",
+      "group": "Messages",
+      "tags": [
+        "mise-à-jour",
+        "Nextcloud"
+      ]
+    },
+    {
+      "key": "nc_talk_room_rename",
+      "name": "ncTalkRoomRename",
+      "schemaVersion": 2,
+      "title": "Renommer une conversation",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Nextcloud Talk",
+      "providerKey": "nextcloudTalk",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:nc_result"
+        }
+      ],
+      "description": "Renomme une conversation Talk.",
+      "args": {
+        "title": "Renommer une conversation",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "token",
+            "label": "Token",
+            "col": {
+              "xs": 24
+            },
+            "description": "Token de la conversation.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "roomName",
+            "label": "Nouveau nom",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nouveau nom de la conversation.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Conversations",
+      "icon": "fa-solid fa-pen-to-square",
+      "group": "Conversations",
+      "tags": [
+        "mise-à-jour",
+        "Nextcloud"
+      ]
+    },
+    {
+      "key": "nc_calendar_list",
+      "name": "ncCalendarList",
+      "schemaVersion": 2,
+      "title": "Lister les calendriers",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Nextcloud Calendar",
+      "providerKey": "nextcloudCalendar",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:nc_calendars"
+        }
+      ],
+      "description": "Liste tous les calendriers via CalDAV.",
+      "args": {
+        "title": "Lister les calendriers",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Calendriers",
+      "icon": "fa-solid fa-list",
+      "group": "Calendriers",
+      "tags": [
+        "liste",
+        "Nextcloud"
+      ]
+    },
+    {
+      "key": "nc_calendar_create",
+      "name": "ncCalendarCreate",
+      "schemaVersion": 2,
+      "title": "Créer un calendrier",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Nextcloud Calendar",
+      "providerKey": "nextcloudCalendar",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:nc_result"
+        }
+      ],
+      "description": "Crée un nouveau calendrier via CalDAV.",
+      "args": {
+        "title": "Créer un calendrier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "calendarName",
+            "label": "Identifiant",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant technique du calendrier (sans espaces).",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "displayName",
+            "label": "Nom affiché",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nom affiché du calendrier.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "color",
+            "label": "Couleur",
+            "col": {
+              "xs": 24
+            },
+            "description": "Couleur du calendrier (ex: #FF0000)."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Calendriers",
+      "icon": "fa-solid fa-square-plus",
+      "group": "Calendriers",
+      "tags": [
+        "création",
+        "Nextcloud"
+      ]
+    },
+    {
+      "key": "nc_calendar_delete",
+      "name": "ncCalendarDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un calendrier",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Nextcloud Calendar",
+      "providerKey": "nextcloudCalendar",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:nc_result"
+        }
+      ],
+      "description": "Supprime un calendrier via CalDAV.",
+      "args": {
+        "title": "Supprimer un calendrier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "calendarName",
+            "label": "Identifiant",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant technique du calendrier.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Calendriers",
+      "icon": "fa-solid fa-trash",
+      "group": "Calendriers",
+      "tags": [
+        "suppression",
+        "Nextcloud"
+      ]
+    },
+    {
+      "key": "nc_event_create",
+      "name": "ncEventCreate",
+      "schemaVersion": 2,
+      "title": "Créer un événement",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Nextcloud Calendar",
+      "providerKey": "nextcloudCalendar",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:nc_event"
+        }
+      ],
+      "description": "Crée un événement au format iCalendar.",
+      "args": {
+        "title": "Créer un événement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "calendarName",
+            "label": "Calendrier",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant du calendrier.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "summary",
+            "label": "Résumé",
+            "col": {
+              "xs": 24
+            },
+            "description": "Titre de l'événement.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "dtstart",
+            "label": "Début",
+            "col": {
+              "xs": 24
+            },
+            "description": "Date de début (ISO 8601, ex: 2025-01-15T09:00:00).",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "dtend",
+            "label": "Fin",
+            "col": {
+              "xs": 24
+            },
+            "description": "Date de fin (ISO 8601, ex: 2025-01-15T10:00:00).",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "description",
+            "label": "Description",
+            "col": {
+              "xs": 24
+            },
+            "description": "Description de l'événement."
+          },
+          {
+            "type": "text",
+            "key": "location",
+            "label": "Lieu",
+            "col": {
+              "xs": 24
+            },
+            "description": "Lieu de l'événement."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Événements",
+      "icon": "fa-solid fa-square-plus",
+      "group": "Événements",
+      "tags": [
+        "création",
+        "Nextcloud"
+      ]
+    },
+    {
+      "key": "nc_event_get",
+      "name": "ncEventGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un événement",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Nextcloud Calendar",
+      "providerKey": "nextcloudCalendar",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:nc_event"
+        }
+      ],
+      "description": "Récupère un événement depuis CalDAV.",
+      "args": {
+        "title": "Récupérer un événement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "calendarName",
+            "label": "Calendrier",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant du calendrier.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "eventId",
+            "label": "ID événement",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant de l'événement.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Événements",
+      "icon": "fa-solid fa-eye",
+      "group": "Événements",
+      "tags": [
+        "lecture",
+        "Nextcloud"
+      ]
+    },
+    {
+      "key": "nc_events_list",
+      "name": "ncEventsList",
+      "schemaVersion": 2,
+      "title": "Lister les événements",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Nextcloud Calendar",
+      "providerKey": "nextcloudCalendar",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:nc_events"
+        }
+      ],
+      "description": "Liste les événements d'un calendrier via CalDAV REPORT.",
+      "args": {
+        "title": "Lister les événements",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "calendarName",
+            "label": "Calendrier",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant du calendrier.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "start",
+            "label": "Début",
+            "col": {
+              "xs": 24
+            },
+            "description": "Date de début du filtre (ISO 8601)."
+          },
+          {
+            "type": "text",
+            "key": "end",
+            "label": "Fin",
+            "col": {
+              "xs": 24
+            },
+            "description": "Date de fin du filtre (ISO 8601)."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Événements",
+      "icon": "fa-solid fa-list",
+      "group": "Événements",
+      "tags": [
+        "liste",
+        "Nextcloud"
+      ]
+    },
+    {
+      "key": "nc_event_update",
+      "name": "ncEventUpdate",
+      "schemaVersion": 2,
+      "title": "Mettre à jour un événement",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Nextcloud Calendar",
+      "providerKey": "nextcloudCalendar",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:nc_event"
+        }
+      ],
+      "description": "Met à jour un événement existant.",
+      "args": {
+        "title": "Mettre à jour un événement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "calendarName",
+            "label": "Calendrier",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant du calendrier.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "eventId",
+            "label": "ID événement",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant de l'événement.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "summary",
+            "label": "Résumé",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nouveau titre de l'événement."
+          },
+          {
+            "type": "text",
+            "key": "dtstart",
+            "label": "Début",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nouvelle date de début (ISO 8601)."
+          },
+          {
+            "type": "text",
+            "key": "dtend",
+            "label": "Fin",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nouvelle date de fin (ISO 8601)."
+          },
+          {
+            "type": "textarea",
+            "key": "description",
+            "label": "Description",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nouvelle description."
+          },
+          {
+            "type": "text",
+            "key": "location",
+            "label": "Lieu",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nouveau lieu."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Événements",
+      "icon": "fa-solid fa-pen-to-square",
+      "group": "Événements",
+      "tags": [
+        "mise-à-jour",
+        "Nextcloud"
+      ]
+    },
+    {
+      "key": "nc_event_delete",
+      "name": "ncEventDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un événement",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Nextcloud Calendar",
+      "providerKey": "nextcloudCalendar",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:nc_result"
+        }
+      ],
+      "description": "Supprime un événement via CalDAV.",
+      "args": {
+        "title": "Supprimer un événement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "calendarName",
+            "label": "Calendrier",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant du calendrier.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "eventId",
+            "label": "ID événement",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant de l'événement.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Événements",
+      "icon": "fa-solid fa-trash",
+      "group": "Événements",
+      "tags": [
+        "suppression",
+        "Nextcloud"
+      ]
+    },
+    {
+      "key": "nc_users_list",
+      "name": "ncUsersList",
+      "schemaVersion": 2,
+      "title": "Lister les utilisateurs",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Nextcloud Users",
+      "providerKey": "nextcloudFiles",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:nc_users"
+        }
+      ],
+      "description": "Liste les utilisateurs via l'API OCS.",
+      "args": {
+        "title": "Lister les utilisateurs",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "search",
+            "label": "Recherche",
+            "col": {
+              "xs": 24
+            },
+            "description": "Filtre de recherche."
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nombre maximum de résultats."
+          },
+          {
+            "type": "number",
+            "key": "offset",
+            "label": "Décalage",
+            "col": {
+              "xs": 24
+            },
+            "description": "Décalage pour la pagination."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Utilisateurs",
+      "group": "Utilisateurs",
+      "tags": [
+        "liste",
+        "Nextcloud"
+      ]
+    },
+    {
+      "key": "nc_user_get",
+      "name": "ncUserGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un utilisateur",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Nextcloud Users",
+      "providerKey": "nextcloudFiles",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:nc_user"
+        }
+      ],
+      "description": "Récupère les informations d'un utilisateur.",
+      "args": {
+        "title": "Récupérer un utilisateur",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "userId",
+            "label": "Identifiant",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant de l'utilisateur.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Utilisateurs",
+      "group": "Utilisateurs",
+      "tags": [
+        "lecture",
+        "Nextcloud"
+      ]
+    },
+    {
+      "key": "nc_user_create",
+      "name": "ncUserCreate",
+      "schemaVersion": 2,
+      "title": "Créer un utilisateur",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Nextcloud Users",
+      "providerKey": "nextcloudFiles",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:nc_result"
+        }
+      ],
+      "description": "Crée un nouvel utilisateur via l'API OCS.",
+      "args": {
+        "title": "Créer un utilisateur",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "userid",
+            "label": "Identifiant",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant du nouvel utilisateur.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "password",
+            "label": "Mot de passe",
+            "col": {
+              "xs": 24
+            },
+            "description": "Mot de passe du nouvel utilisateur.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "displayName",
+            "label": "Nom affiché",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nom affiché de l'utilisateur."
+          },
+          {
+            "type": "text",
+            "key": "email",
+            "label": "Email",
+            "col": {
+              "xs": 24
+            },
+            "description": "Adresse email de l'utilisateur."
+          },
+          {
+            "type": "text",
+            "key": "groups",
+            "label": "Groupes",
+            "col": {
+              "xs": 24
+            },
+            "description": "Groupes (séparés par des virgules)."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Utilisateurs",
+      "group": "Utilisateurs",
+      "tags": [
+        "création",
+        "Nextcloud"
+      ]
+    },
+    {
+      "key": "nc_user_update",
+      "name": "ncUserUpdate",
+      "schemaVersion": 2,
+      "title": "Mettre à jour un utilisateur",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Nextcloud Users",
+      "providerKey": "nextcloudFiles",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:nc_result"
+        }
+      ],
+      "description": "Met à jour un champ de l'utilisateur.",
+      "args": {
+        "title": "Mettre à jour un utilisateur",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "userId",
+            "label": "Identifiant",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant de l'utilisateur.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "key": "key",
+            "label": "Clé",
+            "options": [
+              {
+                "label": "Email",
+                "value": "email"
+              },
+              {
+                "label": "Nom affiché",
+                "value": "displayname"
+              },
+              {
+                "label": "Téléphone",
+                "value": "phone"
+              },
+              {
+                "label": "Quota",
+                "value": "quota"
+              }
+            ],
+            "col": {
+              "xs": 24
+            },
+            "description": "Champ à mettre à jour.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          },
+          {
+            "type": "text",
+            "key": "value",
+            "label": "Valeur",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nouvelle valeur.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Utilisateurs",
+      "group": "Utilisateurs",
+      "tags": [
+        "mise-à-jour",
+        "Nextcloud"
+      ]
+    },
+    {
+      "key": "nc_activity_list",
+      "name": "ncActivityList",
+      "schemaVersion": 2,
+      "title": "Lister les activités",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Nextcloud Activity",
+      "providerKey": "nextcloudFiles",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:nc_activities"
+        }
+      ],
+      "description": "Liste les activités récentes.",
+      "args": {
+        "title": "Lister les activités",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "select",
+            "key": "type",
+            "label": "Type",
+            "options": [
+              {
+                "label": "Toutes",
+                "value": "all"
+              },
+              {
+                "label": "Par moi",
+                "value": "by"
+              },
+              {
+                "label": "Filtré",
+                "value": "filter"
+              }
+            ],
+            "col": {
+              "xs": 24
+            },
+            "description": "Type de filtre.",
+            "default": "all",
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nombre maximum de résultats."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Activités",
+      "group": "Activités",
+      "tags": [
+        "liste",
+        "Nextcloud"
+      ]
+    },
+    {
+      "key": "nc_notifications_list",
+      "name": "ncNotificationsList",
+      "schemaVersion": 2,
+      "title": "Lister les notifications",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Nextcloud Activity",
+      "providerKey": "nextcloudFiles",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:nc_notifications"
+        }
+      ],
+      "description": "Liste les notifications non lues.",
+      "args": {
+        "title": "Lister les notifications",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Notifications",
+      "group": "Notifications",
+      "tags": [
+        "liste",
+        "Nextcloud"
+      ]
+    }
   ]
 }

@@ -1,6 +1,6 @@
 services:
   api:
-    image: kinn-backend:${CI_COMMIT_REF_NAME}
+    image: kinn-backend:${CI_COMMIT_REF_SLUG}
     container_name: kinn-backend
     volumes:
       - ./API:/app
@@ -22,6 +22,9 @@ services:
       - DEFAULT_WORKSPACE_NAME=${DEFAULT_WORKSPACE_NAME}
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - OPENAI_MODEL=${OPENAI_MODEL}
+      - OPENAI_MODEL=${OPENAI_MODEL}
+      - PLUGIN_IMPORT_ENABLED=1
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
       - HOST=0.0.0.0
     labels:
       - "traefik.http.routers.kinn-backend.rule=Host(`kinn.c4rbon.group`) && (PathPrefix(`/api`) || PathPrefix(`/auth`)) && !PathPrefix(`/onlyoffice`)"
@@ -38,7 +41,7 @@ services:
   
   homeport:
     container_name: kinn_homeport
-    image: kinn_homeport:${CI_COMMIT_REF_NAME}
+    image: kinn_homeport:${CI_COMMIT_REF_SLUG}
     restart: always
     labels:
       - "traefik.http.routers.kinn-homeport.rule=Host(`kinn.c4rbon.group`)  && PathPrefix(`/`) && !PathPrefix(`/api`) && !PathPrefix(`/auth`)"

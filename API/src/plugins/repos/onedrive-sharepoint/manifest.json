@@ -1,30 +1,437 @@
 {
+  "repo": {
+    "name": "onedrive-sharepoint",
+    "type": "local",
+    "label": "OneDrive/SharePoint"
+  },
   "providers": [
-    { "key": "oneDrive", "name": "OneDrive", "title": "OneDrive", "iconClass": "fa-brands fa-microsoft", "color": "#0366D6", "tags": ["storage"], "categories": ["Docs & Drive"], "hasCredentials": true,
-      "credentialsForm": { "title": "OAuth Microsoft Graph", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
-        {"type":"text","key":"tenantId","label":"ID du tenant","col":{"xs":24}},
-        {"type":"text","key":"clientId","label":"ID client","col":{"xs":24}},
-        {"type":"text","key":"clientSecret","label":"Secret client","col":{"xs":24},"secret":true}
-      ] } },
-    { "key": "sharePoint", "name": "SharePoint", "title": "SharePoint", "iconClass": "fa-brands fa-microsoft", "color": "#0078D4", "tags": ["sharepoint"], "categories": ["Docs & Drive"], "hasCredentials": true }
+    {
+      "key": "oneDrive",
+      "name": "OneDrive",
+      "title": "OneDrive",
+      "iconClass": "fa-brands fa-microsoft",
+      "iconUrl": "https://logo-marque.com/wp-content/uploads/2022/04/Microsoft-OneDrive-Logo.png",
+      "color": "#9ecbff",
+      "tags": [
+        "storage"
+      ],
+      "categories": [
+        "Docs & Drive"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "OAuth Microsoft Graph",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "tenantId",
+            "label": "ID du tenant",
+            "description": "ID du tenant Microsoft.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "clientId",
+            "label": "ID client",
+            "description": "Client ID OAuth.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "clientSecret",
+            "label": "Secret client",
+            "description": "Client secret OAuth.",
+            "col": {
+              "xs": 24
+            },
+            "secret": true
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    },
+    {
+      "key": "sharePoint",
+      "name": "SharePoint",
+      "title": "SharePoint",
+      "iconClass": "fa-brands fa-microsoft",
+      "iconUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Microsoft_Office_SharePoint_%282025%E2%80%93present%29.svg/langfr-250px-Microsoft_Office_SharePoint_%282025%E2%80%93present%29.svg.png",
+      "color": "#c2e4ff",
+      "tags": [
+        "sharepoint"
+      ],
+      "categories": [
+        "Docs & Drive"
+      ],
+      "hasCredentials": true
+    }
   ],
+  "variables": {
+    "onedrive_file": {
+      "title": "Fichier OneDrive",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "path",
+          "label": "Chemin",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "contentType",
+          "label": "Type de contenu",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "size",
+          "label": "Taille",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "file",
+          "label": "Fichier (fileRef)",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "sharepoint_file": {
+      "title": "Fichier SharePoint",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "path",
+          "label": "Chemin",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "contentType",
+          "label": "Type de contenu",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "size",
+          "label": "Taille",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "file",
+          "label": "Fichier (fileRef)",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
   "nodeTemplates": [
-    { "key": "onedrive_upload_file", "name": "onedriveUploadFile", "title": "Téléverser un fichier", "type": "function", "category": "OneDrive", "providerKey": "oneDrive", "output": ["Success"],
-      "description": "Téléverser un fichier vers OneDrive", "args": { "title": "Téléversement", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
-        {"type":"text","key":"path","label":"Chemin","col":{"xs":24},"validators":[{"type":"required"}]},
-        {"type":"textarea","key":"content","label":"Contenu (base64 ou texte)","col":{"xs":24}}
-      ] } },
-    { "key": "sharepoint_upload_file", "name": "sharepointUploadFile", "title": "Téléverser un fichier", "type": "function", "category": "SharePoint", "providerKey": "sharePoint", "output": ["Success"],
-      "description": "Téléverser un fichier dans une bibliothèque SharePoint", "args": { "title": "Téléversement", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
-        {"type":"text","key":"siteId","label":"ID du site","col":{"xs":24}},
-        {"type":"text","key":"driveId","label":"ID du drive","col":{"xs":24}},
-        {"type":"text","key":"path","label":"Chemin","col":{"xs":24}},
-        {"type":"textarea","key":"content","label":"Contenu","col":{"xs":24}}
-      ] } },
-    { "key": "sharepoint_share_link", "name": "sharepointShareLink", "title": "Créer un lien de partage", "type": "function", "category": "SharePoint", "providerKey": "sharePoint", "output": ["Success"],
-      "description": "Créer un lien partageable avec permissions", "args": { "title": "Lien de partage", "ui": {"layout":"vertical","labelsOnTop": true}, "fields": [
-        {"type":"text","key":"itemId","label":"ID de l’élément","col":{"xs":24},"validators":[{"type":"required"}]},
-        {"type":"select","key":"type","label":"Type de lien","col":{"xs":24},"options":[{"label":"lecture","value":"view"},{"label":"édition","value":"edit"}],"default":"view"}
-      ] } }
+    {
+      "key": "onedrive_upload_file",
+      "name": "onedriveUploadFile",
+      "schemaVersion": 2,
+      "title": "Téléverser un fichier",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "OneDrive",
+      "providerKey": "oneDrive",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "file",
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload"
+        }
+      ],
+      "description": "Téléverser un fichier vers OneDrive",
+      "args": {
+        "title": "Téléversement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Chemin",
+            "description": "Chemin de destination sur OneDrive.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "file",
+            "key": "file",
+            "label": "Fichier",
+            "col": {
+              "xs": 24
+            },
+            "description": "Fichier à téléverser.",
+            "file": {
+              "accept": "",
+              "maxSize": 104857600,
+              "multiple": false,
+              "lifecycle": "execution",
+              "listType": "text",
+              "hint": "Téléverser un fichier ou utiliser une expression"
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Fichiers",
+      "icon": "fa-solid fa-file-arrow-up",
+      "group": "Fichiers",
+      "tags": [
+        "téléversement",
+        "OneDrive"
+      ]
+    },
+    {
+      "key": "sharepoint_upload_file",
+      "name": "sharepointUploadFile",
+      "schemaVersion": 2,
+      "title": "Téléverser un fichier",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SharePoint",
+      "providerKey": "sharePoint",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "file",
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload"
+        }
+      ],
+      "description": "Téléverser un fichier dans une bibliothèque SharePoint",
+      "args": {
+        "title": "Téléversement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "siteId",
+            "label": "ID du site",
+            "description": "Identifiant du site SharePoint.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "driveId",
+            "label": "ID du drive",
+            "description": "Identifiant du drive/bibliothèque.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Chemin",
+            "description": "Chemin du fichier dans la bibliothèque.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "file",
+            "key": "file",
+            "label": "Fichier",
+            "col": {
+              "xs": 24
+            },
+            "description": "Fichier à téléverser.",
+            "file": {
+              "accept": "",
+              "maxSize": 104857600,
+              "multiple": false,
+              "lifecycle": "execution",
+              "listType": "text",
+              "hint": "Téléverser un fichier ou utiliser une expression"
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Fichiers",
+      "icon": "fa-solid fa-file-arrow-up",
+      "group": "Fichiers",
+      "tags": [
+        "téléversement",
+        "SharePoint"
+      ]
+    },
+    {
+      "key": "sharepoint_share_link",
+      "name": "sharepointShareLink",
+      "schemaVersion": 2,
+      "title": "Créer un lien de partage",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SharePoint",
+      "providerKey": "sharePoint",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "file",
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload"
+        }
+      ],
+      "description": "Créer un lien partageable avec permissions",
+      "args": {
+        "title": "Lien de partage",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "itemId",
+            "label": "ID de l’élément",
+            "description": "Identifiant de l’élément (fichier/dossier).",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "key": "type",
+            "label": "Type de lien",
+            "description": "Type de permission du lien.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "lecture",
+                "value": "view"
+              },
+              {
+                "label": "édition",
+                "value": "edit"
+              }
+            ],
+            "default": "view",
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Permissions",
+      "icon": "fa-solid fa-link",
+      "group": "Permissions",
+      "tags": [
+        "création",
+        "SharePoint"
+      ]
+    }
   ]
 }

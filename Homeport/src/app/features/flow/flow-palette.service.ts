@@ -49,7 +49,20 @@ export class FlowPaletteService {
         const key = appId || '';
         ensure(key).push(it);
       }
-      const appKeys = Array.from(byApp.keys()).sort((a, b) => a.localeCompare(b));
+      const appKeys = Array.from(byApp.keys());
+      // Sort by provider order when available: providers with an order come first by ascending order,
+      // others keep alphabetical order afterwards.
+      appKeys.sort((a, b) => {
+        const pa = a ? appsMap.get(a) : undefined;
+        const pb = b ? appsMap.get(b) : undefined;
+        const oa = (pa && typeof (pa as any).order === 'number') ? (pa as any).order : null;
+        const ob = (pb && typeof (pb as any).order === 'number') ? (pb as any).order : null;
+        if (oa != null && ob != null) return oa - ob;
+        if (oa != null) return -1;
+        if (ob != null) return 1;
+        // No explicit order on either → fallback alphabetical
+        return a.localeCompare(b);
+      });
       for (const key of appKeys) {
         const app = key ? appsMap.get(key) : undefined;
         const title = app ? (app.title || app.name || app.id) : 'Sans App';
@@ -59,4 +72,3 @@ export class FlowPaletteService {
     } catch { return []; }
   }
 }
-

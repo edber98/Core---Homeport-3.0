@@ -1,0 +1,2268 @@
+{
+  "repo": {
+    "name": "prestashop",
+    "type": "local",
+    "label": "PrestaShop"
+  },
+  "variables": {
+    "ps_order": {
+      "title": "Commande PrestaShop",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          },
+          "description": "Identifiant de la commande."
+        },
+        {
+          "type": "text",
+          "key": "reference",
+          "label": "Référence",
+          "col": {
+            "xs": 24
+          },
+          "description": "Référence de la commande."
+        },
+        {
+          "type": "text",
+          "key": "total_paid",
+          "label": "Total payé",
+          "col": {
+            "xs": 24
+          },
+          "description": "Montant total payé."
+        },
+        {
+          "type": "text",
+          "key": "current_state",
+          "label": "État actuel",
+          "col": {
+            "xs": 24
+          },
+          "description": "État actuel de la commande."
+        },
+        {
+          "type": "text",
+          "key": "payment",
+          "label": "Paiement",
+          "col": {
+            "xs": 24
+          },
+          "description": "Méthode de paiement."
+        },
+        {
+          "type": "date",
+          "key": "date_add",
+          "label": "Créé le",
+          "col": {
+            "xs": 24
+          },
+          "description": "Date de création."
+        }
+      ]
+    },
+    "ps_orders": {
+      "title": "Commandes PrestaShop",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Commandes",
+          "description": "Liste des commandes",
+          "mode": "array",
+          "key": "orders",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "reference",
+              "label": "Référence",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "total_paid",
+              "label": "Total payé",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "current_state",
+              "label": "État actuel",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "payment",
+              "label": "Paiement",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "date_add",
+              "label": "Créé le",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "ps_product": {
+      "title": "Produit PrestaShop",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          },
+          "description": "Identifiant du produit."
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "col": {
+            "xs": 24
+          },
+          "description": "Nom du produit."
+        },
+        {
+          "type": "text",
+          "key": "price",
+          "label": "Prix",
+          "col": {
+            "xs": 24
+          },
+          "description": "Prix du produit."
+        },
+        {
+          "type": "text",
+          "key": "reference",
+          "label": "Référence",
+          "col": {
+            "xs": 24
+          },
+          "description": "Référence du produit."
+        },
+        {
+          "type": "text",
+          "key": "quantity",
+          "label": "Stock",
+          "col": {
+            "xs": 24
+          },
+          "description": "Quantité en stock."
+        },
+        {
+          "type": "text",
+          "key": "active",
+          "label": "Actif",
+          "col": {
+            "xs": 24
+          },
+          "description": "Produit actif."
+        },
+        {
+          "type": "date",
+          "key": "date_add",
+          "label": "Créé le",
+          "col": {
+            "xs": 24
+          },
+          "description": "Date de création."
+        }
+      ]
+    },
+    "ps_products": {
+      "title": "Produits PrestaShop",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Produits",
+          "description": "Liste des produits",
+          "mode": "array",
+          "key": "products",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "price",
+              "label": "Prix",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "reference",
+              "label": "Référence",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "quantity",
+              "label": "Stock",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "active",
+              "label": "Actif",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "date_add",
+              "label": "Créé le",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "ps_customer": {
+      "title": "Client PrestaShop",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          },
+          "description": "Identifiant du client."
+        },
+        {
+          "type": "text",
+          "key": "email",
+          "label": "Email",
+          "col": {
+            "xs": 24
+          },
+          "description": "Adresse e-mail."
+        },
+        {
+          "type": "text",
+          "key": "firstname",
+          "label": "Prénom",
+          "col": {
+            "xs": 24
+          },
+          "description": "Prénom du client."
+        },
+        {
+          "type": "text",
+          "key": "lastname",
+          "label": "Nom",
+          "col": {
+            "xs": 24
+          },
+          "description": "Nom du client."
+        },
+        {
+          "type": "text",
+          "key": "active",
+          "label": "Actif",
+          "col": {
+            "xs": 24
+          },
+          "description": "Client actif."
+        },
+        {
+          "type": "date",
+          "key": "date_add",
+          "label": "Créé le",
+          "col": {
+            "xs": 24
+          },
+          "description": "Date de création."
+        }
+      ]
+    },
+    "ps_customers": {
+      "title": "Clients PrestaShop",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Clients",
+          "description": "Liste des clients",
+          "mode": "array",
+          "key": "customers",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "email",
+              "label": "Email",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "firstname",
+              "label": "Prénom",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "lastname",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "active",
+              "label": "Actif",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "date_add",
+              "label": "Créé le",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "ps_category": {
+      "title": "Catégorie PrestaShop",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          },
+          "description": "Identifiant de la catégorie."
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "col": {
+            "xs": 24
+          },
+          "description": "Nom de la catégorie."
+        },
+        {
+          "type": "text",
+          "key": "active",
+          "label": "Actif",
+          "col": {
+            "xs": 24
+          },
+          "description": "Catégorie active."
+        },
+        {
+          "type": "text",
+          "key": "id_parent",
+          "label": "ID parent",
+          "col": {
+            "xs": 24
+          },
+          "description": "Identifiant de la catégorie parente."
+        }
+      ]
+    },
+    "ps_categories": {
+      "title": "Catégories PrestaShop",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Catégories",
+          "description": "Liste des catégories",
+          "mode": "array",
+          "key": "categories",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "active",
+              "label": "Actif",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "id_parent",
+              "label": "ID parent",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "ps_cart_rule": {
+      "title": "Règle panier PrestaShop",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          },
+          "description": "Identifiant de la règle panier."
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "col": {
+            "xs": 24
+          },
+          "description": "Nom de la règle."
+        },
+        {
+          "type": "text",
+          "key": "code",
+          "label": "Code",
+          "col": {
+            "xs": 24
+          },
+          "description": "Code promotionnel."
+        },
+        {
+          "type": "text",
+          "key": "reduction_percent",
+          "label": "Réduction %",
+          "col": {
+            "xs": 24
+          },
+          "description": "Pourcentage de réduction."
+        },
+        {
+          "type": "text",
+          "key": "reduction_amount",
+          "label": "Réduction montant",
+          "col": {
+            "xs": 24
+          },
+          "description": "Montant de réduction."
+        },
+        {
+          "type": "text",
+          "key": "active",
+          "label": "Actif",
+          "col": {
+            "xs": 24
+          },
+          "description": "Règle active."
+        }
+      ]
+    },
+    "ps_cart_rules": {
+      "title": "Règles panier PrestaShop",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Règles panier",
+          "description": "Liste des règles panier",
+          "mode": "array",
+          "key": "cart_rules",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "code",
+              "label": "Code",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "reduction_percent",
+              "label": "Réduction %",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "reduction_amount",
+              "label": "Réduction montant",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "active",
+              "label": "Actif",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "ps_stock": {
+      "title": "Stock PrestaShop",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          },
+          "description": "Identifiant du stock."
+        },
+        {
+          "type": "text",
+          "key": "id_product",
+          "label": "ID produit",
+          "col": {
+            "xs": 24
+          },
+          "description": "Identifiant du produit."
+        },
+        {
+          "type": "number",
+          "key": "quantity",
+          "label": "Quantité",
+          "col": {
+            "xs": 24
+          },
+          "description": "Quantité en stock."
+        }
+      ]
+    },
+    "ps_result": {
+      "title": "Résultat PrestaShop",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "col": {
+            "xs": 24
+          },
+          "description": "Statut de l'opération."
+        },
+        {
+          "type": "text",
+          "key": "message",
+          "label": "Message",
+          "col": {
+            "xs": 24
+          },
+          "description": "Message de retour."
+        }
+      ]
+    },
+    "ps_event": {
+      "title": "Événement PrestaShop",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "topic",
+          "label": "Sujet",
+          "col": {
+            "xs": 24
+          },
+          "description": "Sujet du webhook."
+        },
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          },
+          "description": "Identifiant de la ressource."
+        },
+        {
+          "type": "textarea",
+          "key": "payload",
+          "label": "Données",
+          "col": {
+            "xs": 24
+          },
+          "description": "Données du webhook."
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "prestashop",
+      "name": "PrestaShop",
+      "title": "PrestaShop",
+      "iconClass": "fa-solid fa-store",
+      "iconUrl": "https://staging.svgrepo.com/show/306598/prestashop.svg",
+      "color": "#9bd3e0",
+      "tags": [
+        "prestashop",
+        "ecommerce",
+        "shop"
+      ],
+      "categories": [
+        "E-commerce"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants PrestaShop",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "storeUrl",
+            "label": "URL du store",
+            "col": {
+              "xs": 24
+            },
+            "description": "URL du store PrestaShop (ex: https://mon-shop.com).",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "apiKey",
+            "label": "Clé API",
+            "col": {
+              "xs": 24
+            },
+            "description": "Clé API PrestaShop.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "secret": true
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "ps_order_get",
+      "name": "psOrderGet",
+      "schemaVersion": 2,
+      "title": "Récupérer une commande",
+      "subtitle": "Commandes",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Commandes",
+      "providerKey": "prestashop",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ps_order"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère les détails d'une commande PrestaShop.",
+      "args": {
+        "title": "Récupérer une commande",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "orderId",
+            "label": "ID commande",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant de la commande.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "PrestaShop",
+        "lecture"
+      ],
+      "group": "Commandes"
+    },
+    {
+      "key": "ps_orders_list",
+      "name": "psOrdersList",
+      "schemaVersion": 2,
+      "title": "Lister les commandes",
+      "subtitle": "Commandes",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Commandes",
+      "providerKey": "prestashop",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ps_orders"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les commandes PrestaShop.",
+      "args": {
+        "title": "Lister les commandes",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nombre maximum de résultats."
+          },
+          {
+            "type": "number",
+            "key": "page",
+            "label": "Page",
+            "col": {
+              "xs": 24
+            },
+            "description": "Numéro de page."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "PrestaShop",
+        "liste"
+      ],
+      "group": "Commandes"
+    },
+    {
+      "key": "ps_product_get",
+      "name": "psProductGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un produit",
+      "subtitle": "Produits",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Produits",
+      "providerKey": "prestashop",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ps_product"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère les détails d'un produit PrestaShop.",
+      "args": {
+        "title": "Récupérer un produit",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "productId",
+            "label": "ID produit",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant du produit.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "PrestaShop",
+        "lecture"
+      ],
+      "group": "Produits"
+    },
+    {
+      "key": "ps_products_list",
+      "name": "psProductsList",
+      "schemaVersion": 2,
+      "title": "Lister les produits",
+      "subtitle": "Produits",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Produits",
+      "providerKey": "prestashop",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ps_products"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les produits PrestaShop.",
+      "args": {
+        "title": "Lister les produits",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nombre maximum de résultats."
+          },
+          {
+            "type": "number",
+            "key": "page",
+            "label": "Page",
+            "col": {
+              "xs": 24
+            },
+            "description": "Numéro de page."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "PrestaShop",
+        "liste"
+      ],
+      "group": "Produits"
+    },
+    {
+      "key": "ps_product_create",
+      "name": "psProductCreate",
+      "schemaVersion": 2,
+      "title": "Créer un produit",
+      "subtitle": "Produits",
+      "icon": "fa-solid fa-square-plus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Produits",
+      "providerKey": "prestashop",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ps_product"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un nouveau produit PrestaShop.",
+      "args": {
+        "title": "Créer un produit",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nom du produit.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "price",
+            "label": "Prix",
+            "col": {
+              "xs": 24
+            },
+            "description": "Prix du produit.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "reference",
+            "label": "Référence",
+            "col": {
+              "xs": 24
+            },
+            "description": "Référence du produit."
+          },
+          {
+            "type": "text",
+            "key": "active",
+            "label": "Actif",
+            "col": {
+              "xs": 24
+            },
+            "description": "Produit actif (0 ou 1)."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "PrestaShop",
+        "création"
+      ],
+      "group": "Produits"
+    },
+    {
+      "key": "ps_product_update",
+      "name": "psProductUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier un produit",
+      "subtitle": "Produits",
+      "icon": "fa-solid fa-pen-to-square",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Produits",
+      "providerKey": "prestashop",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ps_product"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Modifie un produit PrestaShop.",
+      "args": {
+        "title": "Modifier un produit",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "productId",
+            "label": "ID produit",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant du produit.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nouveau nom."
+          },
+          {
+            "type": "text",
+            "key": "price",
+            "label": "Prix",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nouveau prix."
+          },
+          {
+            "type": "text",
+            "key": "reference",
+            "label": "Référence",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nouvelle référence."
+          },
+          {
+            "type": "text",
+            "key": "active",
+            "label": "Actif",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nouveau statut (0 ou 1)."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "PrestaShop",
+        "mise-à-jour"
+      ],
+      "group": "Produits"
+    },
+    {
+      "key": "ps_customer_get",
+      "name": "psCustomerGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un client",
+      "subtitle": "Clients",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Clients",
+      "providerKey": "prestashop",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ps_customer"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère les détails d'un client PrestaShop.",
+      "args": {
+        "title": "Récupérer un client",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "customerId",
+            "label": "ID client",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant du client.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "PrestaShop",
+        "lecture"
+      ],
+      "group": "Clients"
+    },
+    {
+      "key": "ps_customers_list",
+      "name": "psCustomersList",
+      "schemaVersion": 2,
+      "title": "Lister les clients",
+      "subtitle": "Clients",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Clients",
+      "providerKey": "prestashop",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ps_customers"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les clients PrestaShop.",
+      "args": {
+        "title": "Lister les clients",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nombre maximum de résultats."
+          },
+          {
+            "type": "number",
+            "key": "page",
+            "label": "Page",
+            "col": {
+              "xs": 24
+            },
+            "description": "Numéro de page."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "PrestaShop",
+        "liste"
+      ],
+      "group": "Clients"
+    },
+    {
+      "key": "ps_customer_create",
+      "name": "psCustomerCreate",
+      "schemaVersion": 2,
+      "title": "Créer un client",
+      "subtitle": "Clients",
+      "icon": "fa-solid fa-square-plus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Clients",
+      "providerKey": "prestashop",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ps_customer"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un nouveau client PrestaShop.",
+      "args": {
+        "title": "Créer un client",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "email",
+            "label": "Email",
+            "col": {
+              "xs": 24
+            },
+            "description": "Adresse e-mail du client.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "firstname",
+            "label": "Prénom",
+            "col": {
+              "xs": 24
+            },
+            "description": "Prénom du client.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "lastname",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nom du client.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "passwd",
+            "label": "Mot de passe",
+            "col": {
+              "xs": 24
+            },
+            "description": "Mot de passe du client.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "PrestaShop",
+        "création"
+      ],
+      "group": "Clients"
+    },
+    {
+      "key": "ps_category_get",
+      "name": "psCategoryGet",
+      "schemaVersion": 2,
+      "title": "Récupérer une catégorie",
+      "subtitle": "Catégories",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Catégories",
+      "providerKey": "prestashop",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ps_category"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère les détails d'une catégorie PrestaShop.",
+      "args": {
+        "title": "Récupérer une catégorie",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "categoryId",
+            "label": "ID catégorie",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant de la catégorie.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "PrestaShop",
+        "lecture"
+      ],
+      "group": "Catégories"
+    },
+    {
+      "key": "ps_categories_list",
+      "name": "psCategoriesList",
+      "schemaVersion": 2,
+      "title": "Lister les catégories",
+      "subtitle": "Catégories",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Catégories",
+      "providerKey": "prestashop",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ps_categories"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les catégories PrestaShop.",
+      "args": {
+        "title": "Lister les catégories",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nombre maximum de résultats."
+          },
+          {
+            "type": "number",
+            "key": "page",
+            "label": "Page",
+            "col": {
+              "xs": 24
+            },
+            "description": "Numéro de page."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "PrestaShop",
+        "liste"
+      ],
+      "group": "Catégories"
+    },
+    {
+      "key": "ps_cart_rule_get",
+      "name": "psCartRuleGet",
+      "schemaVersion": 2,
+      "title": "Récupérer une règle panier",
+      "subtitle": "Règles panier",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Règles panier",
+      "providerKey": "prestashop",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ps_cart_rule"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère les détails d'une règle panier PrestaShop.",
+      "args": {
+        "title": "Récupérer une règle panier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "cartRuleId",
+            "label": "ID règle panier",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant de la règle panier.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "PrestaShop",
+        "lecture"
+      ],
+      "group": "Règles panier"
+    },
+    {
+      "key": "ps_cart_rules_list",
+      "name": "psCartRulesList",
+      "schemaVersion": 2,
+      "title": "Lister les règles panier",
+      "subtitle": "Règles panier",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Règles panier",
+      "providerKey": "prestashop",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ps_cart_rules"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les règles panier PrestaShop.",
+      "args": {
+        "title": "Lister les règles panier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nombre maximum de résultats."
+          },
+          {
+            "type": "number",
+            "key": "page",
+            "label": "Page",
+            "col": {
+              "xs": 24
+            },
+            "description": "Numéro de page."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "PrestaShop",
+        "liste"
+      ],
+      "group": "Règles panier"
+    },
+    {
+      "key": "ps_cart_rule_create",
+      "name": "psCartRuleCreate",
+      "schemaVersion": 2,
+      "title": "Créer une règle panier",
+      "subtitle": "Règles panier",
+      "icon": "fa-solid fa-square-plus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Règles panier",
+      "providerKey": "prestashop",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ps_cart_rule"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée une nouvelle règle panier PrestaShop.",
+      "args": {
+        "title": "Créer une règle panier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nom de la règle.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "code",
+            "label": "Code",
+            "col": {
+              "xs": 24
+            },
+            "description": "Code promotionnel.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "reduction_percent",
+            "label": "Réduction %",
+            "col": {
+              "xs": 24
+            },
+            "description": "Pourcentage de réduction."
+          },
+          {
+            "type": "text",
+            "key": "reduction_amount",
+            "label": "Réduction montant",
+            "col": {
+              "xs": 24
+            },
+            "description": "Montant de réduction."
+          },
+          {
+            "type": "text",
+            "key": "active",
+            "label": "Actif",
+            "col": {
+              "xs": 24
+            },
+            "description": "Règle active (0 ou 1)."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "PrestaShop",
+        "création"
+      ],
+      "group": "Règles panier"
+    },
+    {
+      "key": "ps_stock_list",
+      "name": "psStockList",
+      "schemaVersion": 2,
+      "title": "Lister le stock",
+      "subtitle": "Stock",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Stock",
+      "providerKey": "prestashop",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ps_stock"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste le stock PrestaShop.",
+      "args": {
+        "title": "Lister le stock",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nombre maximum de résultats."
+          },
+          {
+            "type": "number",
+            "key": "page",
+            "label": "Page",
+            "col": {
+              "xs": 24
+            },
+            "description": "Numéro de page."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "PrestaShop",
+        "liste"
+      ],
+      "group": "Stocks"
+    },
+    {
+      "key": "ps_carriers_list",
+      "name": "psCarriersList",
+      "schemaVersion": 2,
+      "title": "Lister les transporteurs",
+      "subtitle": "Transporteurs",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Transporteurs",
+      "providerKey": "prestashop",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ps_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les transporteurs PrestaShop.",
+      "args": {
+        "title": "Lister les transporteurs",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "PrestaShop",
+        "liste"
+      ],
+      "group": "Transporteurs"
+    },
+    {
+      "key": "ps_manufacturers_list",
+      "name": "psManufacturersList",
+      "schemaVersion": 2,
+      "title": "Lister les fabricants",
+      "subtitle": "Fabricants",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Fabricants",
+      "providerKey": "prestashop",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ps_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les fabricants PrestaShop.",
+      "args": {
+        "title": "Lister les fabricants",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "PrestaShop",
+        "liste"
+      ],
+      "group": "Fabricants"
+    },
+    {
+      "key": "ps_order_states_list",
+      "name": "psOrderStatesList",
+      "schemaVersion": 2,
+      "title": "Lister les états de commande",
+      "subtitle": "Commandes",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Commandes",
+      "providerKey": "prestashop",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ps_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les états de commande PrestaShop.",
+      "args": {
+        "title": "Lister les états de commande",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "PrestaShop",
+        "liste"
+      ],
+      "group": "Commandes"
+    },
+    {
+      "key": "ps_suppliers_list",
+      "name": "psSuppliersList",
+      "schemaVersion": 2,
+      "title": "Lister les fournisseurs",
+      "subtitle": "Fournisseurs",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Fournisseurs",
+      "providerKey": "prestashop",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ps_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les fournisseurs PrestaShop.",
+      "args": {
+        "title": "Lister les fournisseurs",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "PrestaShop",
+        "liste"
+      ],
+      "group": "Fournisseurs"
+    },
+    {
+      "key": "ps_languages_list",
+      "name": "psLanguagesList",
+      "schemaVersion": 2,
+      "title": "Lister les langues",
+      "subtitle": "Langues",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Langues",
+      "providerKey": "prestashop",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ps_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les langues PrestaShop.",
+      "args": {
+        "title": "Lister les langues",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "PrestaShop",
+        "liste"
+      ],
+      "group": "Langues"
+    },
+    {
+      "key": "ps_countries_list",
+      "name": "psCountriesList",
+      "schemaVersion": 2,
+      "title": "Lister les pays",
+      "subtitle": "Pays",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Pays",
+      "providerKey": "prestashop",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ps_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les pays PrestaShop.",
+      "args": {
+        "title": "Lister les pays",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "PrestaShop",
+        "liste"
+      ],
+      "group": "Pays"
+    },
+    {
+      "key": "ps_webhook_event",
+      "name": "psWebhookEvent",
+      "schemaVersion": 2,
+      "title": "Événement webhook",
+      "subtitle": "Déclencheur",
+      "icon": "fa-solid fa-bolt",
+      "type": "event",
+      "nodeKind": "event",
+      "category": "Événements",
+      "providerKey": "prestashop",
+      "inputHandles": [],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ps_event"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Déclenchement via webhook PrestaShop entrant.",
+      "args": {
+        "title": "Événement webhook",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Chemin d'endpoint",
+            "description": "Chemin d'URL pour recevoir le webhook.",
+            "col": {
+              "xs": 24
+            },
+            "default": "/prestashop"
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "PrestaShop",
+        "événement"
+      ],
+      "group": "Déclencheur"
+    }
+  ]
+}

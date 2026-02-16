@@ -150,6 +150,7 @@ export class BuilderPreviewService {
       case 'checkbox': return true;
       case 'number': return 1;
       case 'date': return new Date();
+      case 'cron': return '0 * * * *';
       case 'select':
       case 'radio': return f?.options?.[0]?.value ?? 'x';
       default: return 'x';
@@ -230,7 +231,7 @@ export class BuilderPreviewService {
     // Par step: activer la première règle de chaque entité (si présente) sur la baseline
     const steps = schema.steps?.length ? schema.steps : [{ title: schema.title || 'Form', fields: schema.fields }] as any[];
     steps.forEach((st: any, si: number) => {
-      const label = steps.length > 1 ? `Step ${si + 1} (règles principales)` : 'Form (règles principales)';
+      const label = steps.length > 1 ? `Étape ${si + 1} (règles principales)` : 'Form (règles principales)';
       const desc = 'Active une hypothèse par entité pour ce bloc.';
       const val = JSON.parse(JSON.stringify(baseline));
       const apply = (patch: any, arrayKey?: string) => {

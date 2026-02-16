@@ -1,0 +1,3184 @@
+{
+  "repo": {
+    "name": "shopify",
+    "type": "local",
+    "label": "Shopify"
+  },
+  "variables": {
+    "shopify_order": {
+      "title": "Commande Shopify",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          },
+          "description": "Identifiant de la commande."
+        },
+        {
+          "type": "text",
+          "key": "order_number",
+          "label": "Numéro",
+          "col": {
+            "xs": 24
+          },
+          "description": "Numéro de commande."
+        },
+        {
+          "type": "text",
+          "key": "email",
+          "label": "Email",
+          "col": {
+            "xs": 24
+          },
+          "description": "Email du client."
+        },
+        {
+          "type": "text",
+          "key": "financial_status",
+          "label": "Statut financier",
+          "col": {
+            "xs": 24
+          },
+          "description": "Statut du paiement."
+        },
+        {
+          "type": "text",
+          "key": "fulfillment_status",
+          "label": "Statut expédition",
+          "col": {
+            "xs": 24
+          },
+          "description": "Statut de l'expédition."
+        },
+        {
+          "type": "text",
+          "key": "total_price",
+          "label": "Prix total",
+          "col": {
+            "xs": 24
+          },
+          "description": "Montant total."
+        },
+        {
+          "type": "text",
+          "key": "currency",
+          "label": "Devise",
+          "col": {
+            "xs": 24
+          },
+          "description": "Code devise."
+        },
+        {
+          "type": "date",
+          "key": "created_at",
+          "label": "Créé le",
+          "col": {
+            "xs": 24
+          },
+          "description": "Date de création."
+        },
+        {
+          "type": "text",
+          "key": "customer_id",
+          "label": "ID client",
+          "col": {
+            "xs": 24
+          },
+          "description": "Identifiant du client."
+        }
+      ]
+    },
+    "shopify_orders": {
+      "title": "Commandes Shopify",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Commandes",
+          "description": "Liste des commandes",
+          "mode": "array",
+          "key": "orders",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "order_number",
+              "label": "Numéro",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "email",
+              "label": "Email",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "financial_status",
+              "label": "Statut financier",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "fulfillment_status",
+              "label": "Statut expédition",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "total_price",
+              "label": "Prix total",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "currency",
+              "label": "Devise",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "created_at",
+              "label": "Créé le",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "customer_id",
+              "label": "ID client",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "shopify_product": {
+      "title": "Produit Shopify",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          },
+          "description": "Identifiant du produit."
+        },
+        {
+          "type": "text",
+          "key": "title",
+          "label": "Titre",
+          "col": {
+            "xs": 24
+          },
+          "description": "Titre du produit."
+        },
+        {
+          "type": "text",
+          "key": "vendor",
+          "label": "Vendeur",
+          "col": {
+            "xs": 24
+          },
+          "description": "Nom du vendeur."
+        },
+        {
+          "type": "text",
+          "key": "product_type",
+          "label": "Type",
+          "col": {
+            "xs": 24
+          },
+          "description": "Type de produit."
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "col": {
+            "xs": 24
+          },
+          "description": "Statut du produit."
+        },
+        {
+          "type": "text",
+          "key": "handle",
+          "label": "Handle",
+          "col": {
+            "xs": 24
+          },
+          "description": "Handle URL."
+        },
+        {
+          "type": "date",
+          "key": "created_at",
+          "label": "Créé le",
+          "col": {
+            "xs": 24
+          },
+          "description": "Date de création."
+        }
+      ]
+    },
+    "shopify_products": {
+      "title": "Produits Shopify",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Produits",
+          "description": "Liste des produits",
+          "mode": "array",
+          "key": "products",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "title",
+              "label": "Titre",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "vendor",
+              "label": "Vendeur",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "product_type",
+              "label": "Type",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "handle",
+              "label": "Handle",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "created_at",
+              "label": "Créé le",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "shopify_customer": {
+      "title": "Client Shopify",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          },
+          "description": "Identifiant du client."
+        },
+        {
+          "type": "text",
+          "key": "email",
+          "label": "Email",
+          "col": {
+            "xs": 24
+          },
+          "description": "Adresse e-mail."
+        },
+        {
+          "type": "text",
+          "key": "first_name",
+          "label": "Prénom",
+          "col": {
+            "xs": 24
+          },
+          "description": "Prénom du client."
+        },
+        {
+          "type": "text",
+          "key": "last_name",
+          "label": "Nom",
+          "col": {
+            "xs": 24
+          },
+          "description": "Nom du client."
+        },
+        {
+          "type": "text",
+          "key": "phone",
+          "label": "Téléphone",
+          "col": {
+            "xs": 24
+          },
+          "description": "Numéro de téléphone."
+        },
+        {
+          "type": "text",
+          "key": "orders_count",
+          "label": "Nb commandes",
+          "col": {
+            "xs": 24
+          },
+          "description": "Nombre de commandes."
+        },
+        {
+          "type": "text",
+          "key": "total_spent",
+          "label": "Total dépensé",
+          "col": {
+            "xs": 24
+          },
+          "description": "Montant total dépensé."
+        },
+        {
+          "type": "date",
+          "key": "created_at",
+          "label": "Créé le",
+          "col": {
+            "xs": 24
+          },
+          "description": "Date de création."
+        }
+      ]
+    },
+    "shopify_customers": {
+      "title": "Clients Shopify",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Clients",
+          "description": "Liste des clients",
+          "mode": "array",
+          "key": "customers",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "email",
+              "label": "Email",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "first_name",
+              "label": "Prénom",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "last_name",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "phone",
+              "label": "Téléphone",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "orders_count",
+              "label": "Nb commandes",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "total_spent",
+              "label": "Total dépensé",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "created_at",
+              "label": "Créé le",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "shopify_inventory": {
+      "title": "Inventaire Shopify",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "inventory_item_id",
+          "label": "ID article",
+          "col": {
+            "xs": 24
+          },
+          "description": "Identifiant de l'article."
+        },
+        {
+          "type": "text",
+          "key": "location_id",
+          "label": "ID emplacement",
+          "col": {
+            "xs": 24
+          },
+          "description": "Identifiant de l'emplacement."
+        },
+        {
+          "type": "number",
+          "key": "available",
+          "label": "Disponible",
+          "col": {
+            "xs": 24
+          },
+          "description": "Quantité disponible."
+        }
+      ]
+    },
+    "shopify_collection": {
+      "title": "Collection Shopify",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          },
+          "description": "Identifiant de la collection."
+        },
+        {
+          "type": "text",
+          "key": "title",
+          "label": "Titre",
+          "col": {
+            "xs": 24
+          },
+          "description": "Titre de la collection."
+        },
+        {
+          "type": "text",
+          "key": "handle",
+          "label": "Handle",
+          "col": {
+            "xs": 24
+          },
+          "description": "Handle URL."
+        },
+        {
+          "type": "date",
+          "key": "published_at",
+          "label": "Publié le",
+          "col": {
+            "xs": 24
+          },
+          "description": "Date de publication."
+        }
+      ]
+    },
+    "shopify_collections": {
+      "title": "Collections Shopify",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Collections",
+          "description": "Liste des collections",
+          "mode": "array",
+          "key": "collections",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "title",
+              "label": "Titre",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "handle",
+              "label": "Handle",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "published_at",
+              "label": "Publié le",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "shopify_fulfillment": {
+      "title": "Expédition Shopify",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          },
+          "description": "Identifiant de l'expédition."
+        },
+        {
+          "type": "text",
+          "key": "order_id",
+          "label": "ID commande",
+          "col": {
+            "xs": 24
+          },
+          "description": "Identifiant de la commande."
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "col": {
+            "xs": 24
+          },
+          "description": "Statut de l'expédition."
+        },
+        {
+          "type": "text",
+          "key": "tracking_number",
+          "label": "Numéro de suivi",
+          "col": {
+            "xs": 24
+          },
+          "description": "Numéro de suivi."
+        },
+        {
+          "type": "text",
+          "key": "tracking_url",
+          "label": "URL de suivi",
+          "col": {
+            "xs": 24
+          },
+          "description": "URL de suivi."
+        },
+        {
+          "type": "date",
+          "key": "created_at",
+          "label": "Créé le",
+          "col": {
+            "xs": 24
+          },
+          "description": "Date de création."
+        }
+      ]
+    },
+    "shopify_fulfillments": {
+      "title": "Expéditions Shopify",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Expéditions",
+          "description": "Liste des expéditions",
+          "mode": "array",
+          "key": "fulfillments",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "order_id",
+              "label": "ID commande",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "tracking_number",
+              "label": "Numéro de suivi",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "tracking_url",
+              "label": "URL de suivi",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "created_at",
+              "label": "Créé le",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "shopify_variant": {
+      "title": "Variant Shopify",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          },
+          "description": "Identifiant du variant."
+        },
+        {
+          "type": "text",
+          "key": "product_id",
+          "label": "ID produit",
+          "col": {
+            "xs": 24
+          },
+          "description": "Identifiant du produit."
+        },
+        {
+          "type": "text",
+          "key": "title",
+          "label": "Titre",
+          "col": {
+            "xs": 24
+          },
+          "description": "Titre du variant."
+        },
+        {
+          "type": "text",
+          "key": "price",
+          "label": "Prix",
+          "col": {
+            "xs": 24
+          },
+          "description": "Prix du variant."
+        },
+        {
+          "type": "text",
+          "key": "sku",
+          "label": "SKU",
+          "col": {
+            "xs": 24
+          },
+          "description": "Référence SKU."
+        },
+        {
+          "type": "number",
+          "key": "inventory_quantity",
+          "label": "Stock",
+          "col": {
+            "xs": 24
+          },
+          "description": "Quantité en stock."
+        }
+      ]
+    },
+    "shopify_variants": {
+      "title": "Variants Shopify",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Variants",
+          "description": "Liste des variants",
+          "mode": "array",
+          "key": "variants",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "product_id",
+              "label": "ID produit",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "title",
+              "label": "Titre",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "price",
+              "label": "Prix",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "sku",
+              "label": "SKU",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "inventory_quantity",
+              "label": "Stock",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "shopify_result": {
+      "title": "Résultat Shopify",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "col": {
+            "xs": 24
+          },
+          "description": "Statut de l'opération."
+        },
+        {
+          "type": "text",
+          "key": "message",
+          "label": "Message",
+          "col": {
+            "xs": 24
+          },
+          "description": "Message de retour."
+        }
+      ]
+    },
+    "shopify_event": {
+      "title": "Événement Shopify",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "topic",
+          "label": "Sujet",
+          "col": {
+            "xs": 24
+          },
+          "description": "Sujet du webhook."
+        },
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          },
+          "description": "Identifiant de la ressource."
+        },
+        {
+          "type": "textarea",
+          "key": "payload",
+          "label": "Données",
+          "col": {
+            "xs": 24
+          },
+          "description": "Données du webhook."
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "shopify",
+      "name": "Shopify",
+      "title": "Shopify",
+      "iconClass": "fa-brands fa-shopify",
+      "iconUrl": "https://cdn.simpleicons.org/shopify",
+      "color": "#e2ffab",
+      "tags": [
+        "shopify",
+        "ecommerce",
+        "shop"
+      ],
+      "categories": [
+        "E-commerce"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Shopify",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "shop",
+            "label": "Nom du shop",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nom du shop Shopify (ex: mon-shop).",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "accessToken",
+            "label": "Access Token",
+            "col": {
+              "xs": 24
+            },
+            "description": "Token d'accès Shopify.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "secret": true
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "shopify_order_get",
+      "name": "shopifyOrderGet",
+      "schemaVersion": 2,
+      "title": "Récupérer une commande",
+      "subtitle": "Commandes",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Commandes",
+      "providerKey": "shopify",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:shopify_order"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère les détails d'une commande Shopify.",
+      "args": {
+        "title": "Récupérer une commande",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "orderId",
+            "label": "ID commande",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant de la commande.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "Shopify",
+        "lecture"
+      ],
+      "group": "Commandes"
+    },
+    {
+      "key": "shopify_orders_list",
+      "name": "shopifyOrdersList",
+      "schemaVersion": 2,
+      "title": "Lister les commandes",
+      "subtitle": "Commandes",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Commandes",
+      "providerKey": "shopify",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:shopify_orders"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les commandes Shopify.",
+      "args": {
+        "title": "Lister les commandes",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nombre maximum de résultats (1-250)."
+          },
+          {
+            "type": "text",
+            "key": "status",
+            "label": "Statut",
+            "col": {
+              "xs": 24
+            },
+            "description": "Filtrer par statut (open, closed, any)."
+          },
+          {
+            "type": "text",
+            "key": "since_id",
+            "label": "Since ID",
+            "col": {
+              "xs": 24
+            },
+            "description": "Retourner les commandes après cet ID."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "Shopify",
+        "liste"
+      ],
+      "group": "Commandes"
+    },
+    {
+      "key": "shopify_order_create",
+      "name": "shopifyOrderCreate",
+      "schemaVersion": 2,
+      "title": "Créer une commande",
+      "subtitle": "Commandes",
+      "icon": "fa-solid fa-square-plus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Commandes",
+      "providerKey": "shopify",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:shopify_order"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée une nouvelle commande Shopify.",
+      "args": {
+        "title": "Créer une commande",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "email",
+            "label": "Email",
+            "col": {
+              "xs": 24
+            },
+            "description": "Email du client.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "line_items",
+            "label": "Articles (JSON)",
+            "col": {
+              "xs": 24
+            },
+            "description": "Articles de la commande au format JSON."
+          },
+          {
+            "type": "text",
+            "key": "financial_status",
+            "label": "Statut financier",
+            "col": {
+              "xs": 24
+            },
+            "description": "Statut du paiement (paid, pending, etc.)."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "Shopify",
+        "création"
+      ],
+      "group": "Commandes"
+    },
+    {
+      "key": "shopify_order_update",
+      "name": "shopifyOrderUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier une commande",
+      "subtitle": "Commandes",
+      "icon": "fa-solid fa-pen-to-square",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Commandes",
+      "providerKey": "shopify",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:shopify_order"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Modifie une commande Shopify.",
+      "args": {
+        "title": "Modifier une commande",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "orderId",
+            "label": "ID commande",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant de la commande.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "email",
+            "label": "Email",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nouvel email."
+          },
+          {
+            "type": "text",
+            "key": "note",
+            "label": "Note",
+            "col": {
+              "xs": 24
+            },
+            "description": "Note de la commande."
+          },
+          {
+            "type": "textarea",
+            "key": "tags",
+            "label": "Tags",
+            "col": {
+              "xs": 24
+            },
+            "description": "Tags séparés par des virgules."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "Shopify",
+        "mise-à-jour"
+      ],
+      "group": "Commandes"
+    },
+    {
+      "key": "shopify_order_cancel",
+      "name": "shopifyOrderCancel",
+      "schemaVersion": 2,
+      "title": "Annuler une commande",
+      "subtitle": "Commandes",
+      "icon": "fa-solid fa-ban",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Commandes",
+      "providerKey": "shopify",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:shopify_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Annule une commande Shopify.",
+      "args": {
+        "title": "Annuler une commande",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "orderId",
+            "label": "ID commande",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant de la commande.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "reason",
+            "label": "Raison",
+            "col": {
+              "xs": 24
+            },
+            "description": "Raison de l'annulation."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "Shopify",
+        "suppression"
+      ],
+      "group": "Commandes"
+    },
+    {
+      "key": "shopify_order_close",
+      "name": "shopifyOrderClose",
+      "schemaVersion": 2,
+      "title": "Fermer une commande",
+      "subtitle": "Commandes",
+      "icon": "fa-solid fa-circle-check",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Commandes",
+      "providerKey": "shopify",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:shopify_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Ferme une commande Shopify.",
+      "args": {
+        "title": "Fermer une commande",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "orderId",
+            "label": "ID commande",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant de la commande.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "Shopify",
+        "mise-à-jour"
+      ],
+      "group": "Commandes"
+    },
+    {
+      "key": "shopify_orders_count",
+      "name": "shopifyOrdersCount",
+      "schemaVersion": 2,
+      "title": "Compter les commandes",
+      "subtitle": "Commandes",
+      "icon": "fa-solid fa-hashtag",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Commandes",
+      "providerKey": "shopify",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:shopify_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Compte le nombre de commandes Shopify.",
+      "args": {
+        "title": "Compter les commandes",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "status",
+            "label": "Statut",
+            "col": {
+              "xs": 24
+            },
+            "description": "Filtrer par statut (open, closed, any)."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "Shopify",
+        "lecture"
+      ],
+      "group": "Commandes"
+    },
+    {
+      "key": "shopify_product_get",
+      "name": "shopifyProductGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un produit",
+      "subtitle": "Produits",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Produits",
+      "providerKey": "shopify",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:shopify_product"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère les détails d'un produit Shopify.",
+      "args": {
+        "title": "Récupérer un produit",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "productId",
+            "label": "ID produit",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant du produit.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "Shopify",
+        "lecture"
+      ],
+      "group": "Produits"
+    },
+    {
+      "key": "shopify_products_list",
+      "name": "shopifyProductsList",
+      "schemaVersion": 2,
+      "title": "Lister les produits",
+      "subtitle": "Produits",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Produits",
+      "providerKey": "shopify",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:shopify_products"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les produits Shopify.",
+      "args": {
+        "title": "Lister les produits",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nombre maximum de résultats (1-250)."
+          },
+          {
+            "type": "text",
+            "key": "product_type",
+            "label": "Type",
+            "col": {
+              "xs": 24
+            },
+            "description": "Filtrer par type de produit."
+          },
+          {
+            "type": "text",
+            "key": "vendor",
+            "label": "Vendeur",
+            "col": {
+              "xs": 24
+            },
+            "description": "Filtrer par vendeur."
+          },
+          {
+            "type": "text",
+            "key": "since_id",
+            "label": "Since ID",
+            "col": {
+              "xs": 24
+            },
+            "description": "Retourner les produits après cet ID."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "Shopify",
+        "liste"
+      ],
+      "group": "Produits"
+    },
+    {
+      "key": "shopify_product_create",
+      "name": "shopifyProductCreate",
+      "schemaVersion": 2,
+      "title": "Créer un produit",
+      "subtitle": "Produits",
+      "icon": "fa-solid fa-square-plus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Produits",
+      "providerKey": "shopify",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:shopify_product"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un nouveau produit Shopify.",
+      "args": {
+        "title": "Créer un produit",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "title",
+            "label": "Titre",
+            "col": {
+              "xs": 24
+            },
+            "description": "Titre du produit.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "body_html",
+            "label": "Description HTML",
+            "col": {
+              "xs": 24
+            },
+            "description": "Description du produit en HTML."
+          },
+          {
+            "type": "text",
+            "key": "vendor",
+            "label": "Vendeur",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nom du vendeur."
+          },
+          {
+            "type": "text",
+            "key": "product_type",
+            "label": "Type",
+            "col": {
+              "xs": 24
+            },
+            "description": "Type de produit."
+          },
+          {
+            "type": "text",
+            "key": "status",
+            "label": "Statut",
+            "col": {
+              "xs": 24
+            },
+            "description": "Statut (active, draft, archived)."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "Shopify",
+        "création"
+      ],
+      "group": "Produits"
+    },
+    {
+      "key": "shopify_product_update",
+      "name": "shopifyProductUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier un produit",
+      "subtitle": "Produits",
+      "icon": "fa-solid fa-pen-to-square",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Produits",
+      "providerKey": "shopify",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:shopify_product"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Modifie un produit Shopify.",
+      "args": {
+        "title": "Modifier un produit",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "productId",
+            "label": "ID produit",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant du produit.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "title",
+            "label": "Titre",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nouveau titre."
+          },
+          {
+            "type": "textarea",
+            "key": "body_html",
+            "label": "Description HTML",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nouvelle description HTML."
+          },
+          {
+            "type": "text",
+            "key": "vendor",
+            "label": "Vendeur",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nouveau vendeur."
+          },
+          {
+            "type": "text",
+            "key": "product_type",
+            "label": "Type",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nouveau type."
+          },
+          {
+            "type": "text",
+            "key": "status",
+            "label": "Statut",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nouveau statut (active, draft, archived)."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "Shopify",
+        "mise-à-jour"
+      ],
+      "group": "Produits"
+    },
+    {
+      "key": "shopify_product_delete",
+      "name": "shopifyProductDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un produit",
+      "subtitle": "Produits",
+      "icon": "fa-solid fa-trash",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Produits",
+      "providerKey": "shopify",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:shopify_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Supprime un produit Shopify.",
+      "args": {
+        "title": "Supprimer un produit",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "productId",
+            "label": "ID produit",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant du produit.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "Shopify",
+        "suppression"
+      ],
+      "group": "Produits"
+    },
+    {
+      "key": "shopify_products_count",
+      "name": "shopifyProductsCount",
+      "schemaVersion": 2,
+      "title": "Compter les produits",
+      "subtitle": "Produits",
+      "icon": "fa-solid fa-hashtag",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Produits",
+      "providerKey": "shopify",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:shopify_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Compte le nombre de produits Shopify.",
+      "args": {
+        "title": "Compter les produits",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "product_type",
+            "label": "Type",
+            "col": {
+              "xs": 24
+            },
+            "description": "Filtrer par type de produit."
+          },
+          {
+            "type": "text",
+            "key": "vendor",
+            "label": "Vendeur",
+            "col": {
+              "xs": 24
+            },
+            "description": "Filtrer par vendeur."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "Shopify",
+        "lecture"
+      ],
+      "group": "Produits"
+    },
+    {
+      "key": "shopify_customer_get",
+      "name": "shopifyCustomerGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un client",
+      "subtitle": "Clients",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Clients",
+      "providerKey": "shopify",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:shopify_customer"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère les détails d'un client Shopify.",
+      "args": {
+        "title": "Récupérer un client",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "customerId",
+            "label": "ID client",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant du client.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "Shopify",
+        "lecture"
+      ],
+      "group": "Clients"
+    },
+    {
+      "key": "shopify_customers_list",
+      "name": "shopifyCustomersList",
+      "schemaVersion": 2,
+      "title": "Lister les clients",
+      "subtitle": "Clients",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Clients",
+      "providerKey": "shopify",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:shopify_customers"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les clients Shopify.",
+      "args": {
+        "title": "Lister les clients",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nombre maximum de résultats (1-250)."
+          },
+          {
+            "type": "text",
+            "key": "since_id",
+            "label": "Since ID",
+            "col": {
+              "xs": 24
+            },
+            "description": "Retourner les clients après cet ID."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "Shopify",
+        "liste"
+      ],
+      "group": "Clients"
+    },
+    {
+      "key": "shopify_customer_create",
+      "name": "shopifyCustomerCreate",
+      "schemaVersion": 2,
+      "title": "Créer un client",
+      "subtitle": "Clients",
+      "icon": "fa-solid fa-square-plus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Clients",
+      "providerKey": "shopify",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:shopify_customer"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un nouveau client Shopify.",
+      "args": {
+        "title": "Créer un client",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "email",
+            "label": "Email",
+            "col": {
+              "xs": 24
+            },
+            "description": "Adresse e-mail du client.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "first_name",
+            "label": "Prénom",
+            "col": {
+              "xs": 24
+            },
+            "description": "Prénom du client."
+          },
+          {
+            "type": "text",
+            "key": "last_name",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nom du client."
+          },
+          {
+            "type": "text",
+            "key": "phone",
+            "label": "Téléphone",
+            "col": {
+              "xs": 24
+            },
+            "description": "Numéro de téléphone."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "Shopify",
+        "création"
+      ],
+      "group": "Clients"
+    },
+    {
+      "key": "shopify_customer_update",
+      "name": "shopifyCustomerUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier un client",
+      "subtitle": "Clients",
+      "icon": "fa-solid fa-pen-to-square",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Clients",
+      "providerKey": "shopify",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:shopify_customer"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Modifie un client Shopify.",
+      "args": {
+        "title": "Modifier un client",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "customerId",
+            "label": "ID client",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant du client.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "email",
+            "label": "Email",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nouvelle adresse e-mail."
+          },
+          {
+            "type": "text",
+            "key": "first_name",
+            "label": "Prénom",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nouveau prénom."
+          },
+          {
+            "type": "text",
+            "key": "last_name",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nouveau nom."
+          },
+          {
+            "type": "text",
+            "key": "phone",
+            "label": "Téléphone",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nouveau numéro de téléphone."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "Shopify",
+        "mise-à-jour"
+      ],
+      "group": "Clients"
+    },
+    {
+      "key": "shopify_customers_search",
+      "name": "shopifyCustomersSearch",
+      "schemaVersion": 2,
+      "title": "Rechercher des clients",
+      "subtitle": "Clients",
+      "icon": "fa-solid fa-magnifying-glass",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Clients",
+      "providerKey": "shopify",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:shopify_customers"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Recherche des clients Shopify.",
+      "args": {
+        "title": "Rechercher des clients",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "query",
+            "label": "Recherche",
+            "col": {
+              "xs": 24
+            },
+            "description": "Requête de recherche.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nombre maximum de résultats."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "Shopify",
+        "recherche"
+      ],
+      "group": "Clients"
+    },
+    {
+      "key": "shopify_inventory_levels_list",
+      "name": "shopifyInventoryLevelsList",
+      "schemaVersion": 2,
+      "title": "Lister les niveaux d'inventaire",
+      "subtitle": "Inventaire",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Inventaire",
+      "providerKey": "shopify",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:shopify_inventory"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les niveaux d'inventaire Shopify.",
+      "args": {
+        "title": "Lister les niveaux d'inventaire",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "inventory_item_ids",
+            "label": "IDs articles",
+            "col": {
+              "xs": 24
+            },
+            "description": "IDs séparés par des virgules."
+          },
+          {
+            "type": "text",
+            "key": "location_ids",
+            "label": "IDs emplacements",
+            "col": {
+              "xs": 24
+            },
+            "description": "IDs séparés par des virgules."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "Shopify",
+        "liste"
+      ],
+      "group": "Inventaire"
+    },
+    {
+      "key": "shopify_inventory_adjust",
+      "name": "shopifyInventoryAdjust",
+      "schemaVersion": 2,
+      "title": "Ajuster l'inventaire",
+      "subtitle": "Inventaire",
+      "icon": "fa-solid fa-pen-to-square",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Inventaire",
+      "providerKey": "shopify",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:shopify_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Ajuste la quantité d'inventaire Shopify.",
+      "args": {
+        "title": "Ajuster l'inventaire",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "inventory_item_id",
+            "label": "ID article",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant de l'article.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "location_id",
+            "label": "ID emplacement",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant de l'emplacement.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "adjustment",
+            "label": "Ajustement",
+            "col": {
+              "xs": 24
+            },
+            "description": "Quantité à ajuster (positif ou négatif).",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "Shopify",
+        "mise-à-jour"
+      ],
+      "group": "Inventaire"
+    },
+    {
+      "key": "shopify_inventory_set",
+      "name": "shopifyInventorySet",
+      "schemaVersion": 2,
+      "title": "Définir l'inventaire",
+      "subtitle": "Inventaire",
+      "icon": "fa-solid fa-pen-to-square",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Inventaire",
+      "providerKey": "shopify",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:shopify_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Définit la quantité d'inventaire Shopify.",
+      "args": {
+        "title": "Définir l'inventaire",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "inventory_item_id",
+            "label": "ID article",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant de l'article.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "location_id",
+            "label": "ID emplacement",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant de l'emplacement.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "available",
+            "label": "Quantité",
+            "col": {
+              "xs": 24
+            },
+            "description": "Quantité disponible.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "Shopify",
+        "mise-à-jour"
+      ],
+      "group": "Inventaire"
+    },
+    {
+      "key": "shopify_collection_get",
+      "name": "shopifyCollectionGet",
+      "schemaVersion": 2,
+      "title": "Récupérer une collection",
+      "subtitle": "Collections",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Collections",
+      "providerKey": "shopify",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:shopify_collection"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère les détails d'une collection Shopify.",
+      "args": {
+        "title": "Récupérer une collection",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "collectionId",
+            "label": "ID collection",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant de la collection.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "Shopify",
+        "lecture"
+      ],
+      "group": "Collections"
+    },
+    {
+      "key": "shopify_collections_list",
+      "name": "shopifyCollectionsList",
+      "schemaVersion": 2,
+      "title": "Lister les collections",
+      "subtitle": "Collections",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Collections",
+      "providerKey": "shopify",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:shopify_collections"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les collections Shopify.",
+      "args": {
+        "title": "Lister les collections",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nombre maximum de résultats (1-250)."
+          },
+          {
+            "type": "text",
+            "key": "since_id",
+            "label": "Since ID",
+            "col": {
+              "xs": 24
+            },
+            "description": "Retourner les collections après cet ID."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "Shopify",
+        "liste"
+      ],
+      "group": "Collections"
+    },
+    {
+      "key": "shopify_fulfillment_create",
+      "name": "shopifyFulfillmentCreate",
+      "schemaVersion": 2,
+      "title": "Créer une expédition",
+      "subtitle": "Expéditions",
+      "icon": "fa-solid fa-truck",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Expéditions",
+      "providerKey": "shopify",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:shopify_fulfillment"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée une nouvelle expédition Shopify.",
+      "args": {
+        "title": "Créer une expédition",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "orderId",
+            "label": "ID commande",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant de la commande.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "tracking_number",
+            "label": "Numéro de suivi",
+            "col": {
+              "xs": 24
+            },
+            "description": "Numéro de suivi."
+          },
+          {
+            "type": "text",
+            "key": "tracking_url",
+            "label": "URL de suivi",
+            "col": {
+              "xs": 24
+            },
+            "description": "URL de suivi."
+          },
+          {
+            "type": "text",
+            "key": "tracking_company",
+            "label": "Transporteur",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nom du transporteur."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "Shopify",
+        "création"
+      ],
+      "group": "Expéditions"
+    },
+    {
+      "key": "shopify_fulfillments_list",
+      "name": "shopifyFulfillmentsList",
+      "schemaVersion": 2,
+      "title": "Lister les expéditions",
+      "subtitle": "Expéditions",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Expéditions",
+      "providerKey": "shopify",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:shopify_fulfillments"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les expéditions d'une commande Shopify.",
+      "args": {
+        "title": "Lister les expéditions",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "orderId",
+            "label": "ID commande",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant de la commande.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nombre maximum de résultats."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "Shopify",
+        "liste"
+      ],
+      "group": "Expéditions"
+    },
+    {
+      "key": "shopify_variants_list",
+      "name": "shopifyVariantsList",
+      "schemaVersion": 2,
+      "title": "Lister les variants",
+      "subtitle": "Variantes",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Variants",
+      "providerKey": "shopify",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:shopify_variants"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les variants d'un produit Shopify.",
+      "args": {
+        "title": "Lister les variants",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "productId",
+            "label": "ID produit",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant du produit.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nombre maximum de résultats."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "Shopify",
+        "liste"
+      ],
+      "group": "Variantes"
+    },
+    {
+      "key": "shopify_variant_get",
+      "name": "shopifyVariantGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un variant",
+      "subtitle": "Variantes",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Variants",
+      "providerKey": "shopify",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:shopify_variant"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère les détails d'un variant Shopify.",
+      "args": {
+        "title": "Récupérer un variant",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "variantId",
+            "label": "ID variant",
+            "col": {
+              "xs": 24
+            },
+            "description": "Identifiant du variant.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "Shopify",
+        "lecture"
+      ],
+      "group": "Variantes"
+    },
+    {
+      "key": "shopify_webhook_event",
+      "name": "shopifyWebhookEvent",
+      "schemaVersion": 2,
+      "title": "Événement webhook",
+      "subtitle": "Déclencheur",
+      "icon": "fa-solid fa-bolt",
+      "type": "event",
+      "nodeKind": "event",
+      "category": "Événements",
+      "providerKey": "shopify",
+      "inputHandles": [],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:shopify_event"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Déclenchement via webhook Shopify entrant.",
+      "args": {
+        "title": "Événement webhook",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Chemin d'endpoint",
+            "description": "Chemin d'URL pour recevoir le webhook.",
+            "col": {
+              "xs": 24
+            },
+            "default": "/shopify"
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "Shopify",
+        "événement"
+      ],
+      "group": "Déclencheur"
+    }
+  ]
+}

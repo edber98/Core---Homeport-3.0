@@ -42,28 +42,28 @@ import { Router } from '@angular/router';
             <div><span class="k">Workspaces max</span><span class="v">{{ company.license.maxWorkspaces }}</span></div>
           </div>
           <div class="actions">
-            <button nz-button nzType="default" (click)="saveCompany()">Enregistrer</button>
+            <button nz-button nzType="default" class="action-blue" (click)="saveCompany()">Enregistrer</button>
           </div>
         </div>
         <div class="card">
           <div class="title">Réinitialiser</div>
           <p>Efface les données locales (flows, formulaires, templates, apps, credentials) et recharge les valeurs par défaut.</p>
           <div class="actions">
-            <button nz-button nzType="default" (click)="resetAll()">Reset tout</button>
+            <button nz-button nzType="default" class="action-red" (click)="resetAll()">Reset tout</button>
           </div>
         </div>
         <div class="card">
           <div class="title">Exporter</div>
           <p>Télécharge toutes les données locales (flows, formulaires, templates, apps, credentials) en JSON.</p>
           <div class="actions">
-            <button nz-button nzType="default" (click)="exportAll()">Exporter (JSON)</button>
+            <button nz-button nzType="default" class="action-blue" (click)="exportAll()">Exporter (JSON)</button>
           </div>
         </div>
         <div class="card">
           <div class="title">Importer</div>
           <p>Importer un fichier JSON exporté précédemment. Remplace les données locales.</p>
           <div class="actions">
-            <label class="import-btn">
+            <label class="import-btn action-blue">
               <input type="file" accept="application/json,.json" (change)="onImportFile($event)"/>
               <span>Sélectionner un fichier…</span>
             </label>
@@ -75,8 +75,8 @@ import { Router } from '@angular/router';
         <div class="title">Sécurité</div>
         <p>Purger le stockage local et se déconnecter pour forcer la reconnexion au backend sans données résiduelles.</p>
         <div class="actions">
-          <button nz-button nzType="default" (click)="purgeAndLogout()">Purger localStorage + Logout</button>
-          <button nz-button nzType="default" (click)="logWorkspaceState()">Console: Workspace state</button>
+          <button nz-button nzType="default" class="action-blue" (click)="purgeAndLogout()">Purger localStorage + Logout</button>
+          <button nz-button nzType="default" class="action-blue" (click)="logWorkspaceState()">Console: Workspace state</button>
         </div>
       </div>
     </div>
@@ -88,7 +88,8 @@ import { Router } from '@angular/router';
     .page-header { display:flex; align-items:flex-end; justify-content:space-between; margin-bottom: 16px; }
     .page-header h1 { margin: 0; font-size: 22px; font-weight: 650; letter-spacing: -0.02em; }
     .page-header p { margin: 4px 0 0; color:#6b7280; }
-    .page-header .actions .primary { background:#111; border-color:#111; }
+    .page-header .actions .primary { background:#1677ff; border-color:#1677ff; }
+    .page-header .actions .primary i { margin-right: 6px; }
     .cards { display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
     .card { border:1px solid #ececec; border-radius:12px; padding:12px; background:#fff; box-shadow: 0 8px 24px rgba(0,0,0,.04); }
     .card .title { font-weight:600; margin-bottom: 6px; }
@@ -99,8 +100,12 @@ import { Router } from '@angular/router';
     .kv .k { width: 160px; color:#6b7280; display:inline-block; }
     .kv .v { color:#111; }
     .card .actions { margin-top: 8px; display:flex; gap:8px; align-items:center; }
-    .card .actions .import-btn { display:inline-flex; align-items:center; gap:8px; background:#fff; color:#111; border:1px solid #e5e7eb; border-radius:8px; padding:6px 10px; cursor:pointer; }
+    .card .actions .import-btn { display:inline-flex; align-items:center; gap:8px; background:#fff; color:#111; border:1px solid #e5e7eb; border-radius:8px; padding:6px 10px; cursor:pointer; transition: border-color .15s ease, color .15s ease, background-color .15s ease, box-shadow .15s ease; }
     .card .actions .import-btn input[type=file] { display:none; }
+    .action-blue:hover { border-color:#1677ff; color:#1677ff; }
+    .card .actions .import-btn.action-blue:hover { border-color:#1677ff; color:#1677ff; }
+    .action-red { background:#ef4444; border-color:#ef4444; color:#fff; }
+    .action-red:hover { background:#dc2626; border-color:#dc2626; color:#fff; }
     .result { margin-top: 12px; color:#0f172a; }
   `]
 })

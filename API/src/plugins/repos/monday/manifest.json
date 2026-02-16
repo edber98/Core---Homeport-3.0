@@ -1,0 +1,2280 @@
+{
+  "repo": {
+    "name": "monday",
+    "type": "local",
+    "label": "Monday.com"
+  },
+  "variables": {
+    "monday_item": {
+      "title": "Élément Monday",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant de l'élément.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom de l'élément.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "board_id",
+          "label": "Board ID",
+          "description": "Identifiant du tableau.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "group_id",
+          "label": "Group ID",
+          "description": "Identifiant du groupe.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "state",
+          "label": "État",
+          "description": "État de l'élément.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "column_values",
+          "label": "Valeurs des colonnes",
+          "description": "Valeurs des colonnes (JSON).",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "created_at",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "updated_at",
+          "label": "Date modification",
+          "description": "Date de dernière modification.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "monday_items": {
+      "title": "Éléments",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Éléments",
+          "description": "Liste des éléments",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "board_id",
+              "label": "Board ID",
+              "description": "Identifiant du tableau.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "group_id",
+              "label": "Group ID",
+              "description": "Identifiant du groupe.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "state",
+              "label": "État",
+              "description": "État.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "column_values",
+              "label": "Valeurs des colonnes",
+              "description": "Valeurs (JSON).",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "created_at",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "updated_at",
+              "label": "Date modification",
+              "description": "Date de modification.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments retournés.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "monday_board": {
+      "title": "Tableau Monday",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du tableau.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom du tableau.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "description",
+          "label": "Description",
+          "description": "Description du tableau.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "state",
+          "label": "État",
+          "description": "État du tableau.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "board_kind",
+          "label": "Type",
+          "description": "Type de tableau (public, private, share).",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "monday_boards": {
+      "title": "Tableaux",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Tableaux",
+          "description": "Liste des tableaux",
+          "mode": "array",
+          "key": "boards",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "description",
+              "label": "Description",
+              "description": "Description.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "state",
+              "label": "État",
+              "description": "État.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "board_kind",
+              "label": "Type",
+              "description": "Type.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments retournés.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "monday_group": {
+      "title": "Groupe Monday",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du groupe.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "title",
+          "label": "Titre",
+          "description": "Titre du groupe.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "color",
+          "label": "Couleur",
+          "description": "Couleur du groupe.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "monday_groups": {
+      "title": "Groupes",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Groupes",
+          "description": "Liste des groupes",
+          "mode": "array",
+          "key": "groups",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "title",
+              "label": "Titre",
+              "description": "Titre.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "color",
+              "label": "Couleur",
+              "description": "Couleur.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments retournés.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "monday_column": {
+      "title": "Colonne Monday",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant de la colonne.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "title",
+          "label": "Titre",
+          "description": "Titre de la colonne.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "type",
+          "label": "Type",
+          "description": "Type de la colonne.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "settings_str",
+          "label": "Paramètres",
+          "description": "Paramètres de la colonne (JSON).",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "monday_user": {
+      "title": "Utilisateur Monday",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant de l'utilisateur.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom de l'utilisateur.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "email",
+          "label": "Email",
+          "description": "Adresse e-mail.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "monday_users": {
+      "title": "Utilisateurs",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Utilisateurs",
+          "description": "Liste des utilisateurs",
+          "mode": "array",
+          "key": "users",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "email",
+              "label": "Email",
+              "description": "Email.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments retournés.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "monday_update": {
+      "title": "Mise à jour Monday",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant de la mise à jour.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "body",
+          "label": "Contenu",
+          "description": "Contenu de la mise à jour.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "creator_id",
+          "label": "Créateur ID",
+          "description": "Identifiant du créateur.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "created_at",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "monday_updates": {
+      "title": "Mises à jour",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Mises à jour",
+          "description": "Liste des mises à jour",
+          "mode": "array",
+          "key": "updates",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "body",
+              "label": "Contenu",
+              "description": "Contenu.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "creator_id",
+              "label": "Créateur ID",
+              "description": "Créateur.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "created_at",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments retournés.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "monday_workspace": {
+      "title": "Espace de travail Monday",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant de l'espace de travail.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom de l'espace de travail.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "kind",
+          "label": "Type",
+          "description": "Type d'espace de travail.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "description",
+          "label": "Description",
+          "description": "Description.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "monday_workspaces": {
+      "title": "Espaces de travail",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Espaces de travail",
+          "description": "Liste des espaces de travail",
+          "mode": "array",
+          "key": "workspaces",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "kind",
+              "label": "Type",
+              "description": "Type.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "description",
+              "label": "Description",
+              "description": "Description.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments retournés.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "monday_result": {
+      "title": "Résultat",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut de l'opération.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "message",
+          "label": "Message",
+          "description": "Message de retour.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "monday_event": {
+      "title": "Événement Monday",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "type",
+          "label": "Type",
+          "description": "Type d'événement.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "data",
+          "label": "Données",
+          "description": "Données de l'événement (JSON).",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "timestamp",
+          "label": "Horodatage",
+          "description": "Horodatage de l'événement.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "monday",
+      "name": "Monday.com",
+      "title": "Monday.com",
+      "iconClass": "fa-solid fa-calendar-week",
+      "iconUrl": "https://windsor.ai/wp-content/uploads/2024/04/monday-300x300.png",
+      "color": "#fff0f3",
+      "tags": [
+        "monday",
+        "gestion de projet",
+        "collaboration"
+      ],
+      "categories": [
+        "Gestion de projet"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Monday.com",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "apiToken",
+            "label": "API Token",
+            "description": "Token d'API Monday.com.",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "monday_item_create",
+      "name": "mondayItemCreate",
+      "schemaVersion": 2,
+      "title": "Créer un élément",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Monday.com",
+      "providerKey": "monday",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:monday_item"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un nouvel élément dans un tableau Monday.com.",
+      "args": {
+        "title": "Créer un élément",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "boardId",
+            "label": "Board ID",
+            "description": "Identifiant du tableau.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "groupId",
+            "label": "Group ID",
+            "description": "Identifiant du groupe.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "itemName",
+            "label": "Nom",
+            "description": "Nom de l'élément.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "columnValues",
+            "label": "Valeurs des colonnes",
+            "description": "Valeurs des colonnes (JSON).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Items",
+      "icon": "fa-solid fa-square-plus",
+      "tags": [
+        "monday",
+        "création"
+      ],
+      "group": "Items"
+    },
+    {
+      "key": "monday_item_get",
+      "name": "mondayItemGet",
+      "schemaVersion": 2,
+      "title": "Obtenir un élément",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Monday.com",
+      "providerKey": "monday",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:monday_item"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère un élément par son ID.",
+      "args": {
+        "title": "Obtenir un élément",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "itemId",
+            "label": "Item ID",
+            "description": "Identifiant de l'élément.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Items",
+      "icon": "fa-solid fa-eye",
+      "tags": [
+        "monday",
+        "lecture"
+      ],
+      "group": "Items"
+    },
+    {
+      "key": "monday_item_update",
+      "name": "mondayItemUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier un élément",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Monday.com",
+      "providerKey": "monday",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:monday_item"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Met à jour un élément existant.",
+      "args": {
+        "title": "Modifier un élément",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "boardId",
+            "label": "Board ID",
+            "description": "Identifiant du tableau.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "itemId",
+            "label": "Item ID",
+            "description": "Identifiant de l'élément.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "columnValues",
+            "label": "Valeurs des colonnes",
+            "description": "Nouvelles valeurs des colonnes (JSON).",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Items",
+      "icon": "fa-solid fa-pen-to-square",
+      "tags": [
+        "monday",
+        "mise-à-jour"
+      ],
+      "group": "Items"
+    },
+    {
+      "key": "monday_item_delete",
+      "name": "mondayItemDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un élément",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Monday.com",
+      "providerKey": "monday",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:monday_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Supprime un élément Monday.com.",
+      "args": {
+        "title": "Supprimer un élément",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "itemId",
+            "label": "Item ID",
+            "description": "Identifiant de l'élément à supprimer.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Items",
+      "icon": "fa-solid fa-trash",
+      "tags": [
+        "monday",
+        "suppression"
+      ],
+      "group": "Items"
+    },
+    {
+      "key": "monday_items_list",
+      "name": "mondayItemsList",
+      "schemaVersion": 2,
+      "title": "Lister les éléments",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Monday.com",
+      "providerKey": "monday",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:monday_items"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les éléments d'un tableau.",
+      "args": {
+        "title": "Lister les éléments",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "boardId",
+            "label": "Board ID",
+            "description": "Identifiant du tableau.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre max de résultats (défaut 25).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Items",
+      "icon": "fa-solid fa-list",
+      "tags": [
+        "monday",
+        "liste"
+      ],
+      "group": "Items"
+    },
+    {
+      "key": "monday_board_get",
+      "name": "mondayBoardGet",
+      "schemaVersion": 2,
+      "title": "Obtenir un tableau",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Monday.com",
+      "providerKey": "monday",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:monday_board"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère un tableau par son ID.",
+      "args": {
+        "title": "Obtenir un tableau",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "boardId",
+            "label": "Board ID",
+            "description": "Identifiant du tableau.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Boards",
+      "icon": "fa-solid fa-eye",
+      "tags": [
+        "monday",
+        "lecture"
+      ],
+      "group": "Boards"
+    },
+    {
+      "key": "monday_boards_list",
+      "name": "mondayBoardsList",
+      "schemaVersion": 2,
+      "title": "Lister les tableaux",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Monday.com",
+      "providerKey": "monday",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:monday_boards"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les tableaux disponibles.",
+      "args": {
+        "title": "Lister les tableaux",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre max de résultats (défaut 25).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Boards",
+      "icon": "fa-solid fa-list",
+      "tags": [
+        "monday",
+        "liste"
+      ],
+      "group": "Boards"
+    },
+    {
+      "key": "monday_group_create",
+      "name": "mondayGroupCreate",
+      "schemaVersion": 2,
+      "title": "Créer un groupe",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Monday.com",
+      "providerKey": "monday",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:monday_group"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un nouveau groupe dans un tableau.",
+      "args": {
+        "title": "Créer un groupe",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "boardId",
+            "label": "Board ID",
+            "description": "Identifiant du tableau.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "groupName",
+            "label": "Nom du groupe",
+            "description": "Nom du groupe.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "groupColor",
+            "label": "Couleur",
+            "description": "Couleur du groupe (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Groupes",
+      "icon": "fa-solid fa-square-plus",
+      "tags": [
+        "monday",
+        "création"
+      ],
+      "group": "Groupes"
+    },
+    {
+      "key": "monday_groups_list",
+      "name": "mondayGroupsList",
+      "schemaVersion": 2,
+      "title": "Lister les groupes",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Monday.com",
+      "providerKey": "monday",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:monday_groups"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les groupes d'un tableau.",
+      "args": {
+        "title": "Lister les groupes",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "boardId",
+            "label": "Board ID",
+            "description": "Identifiant du tableau.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Groupes",
+      "icon": "fa-solid fa-list",
+      "tags": [
+        "monday",
+        "liste"
+      ],
+      "group": "Groupes"
+    },
+    {
+      "key": "monday_columns_list",
+      "name": "mondayColumnsList",
+      "schemaVersion": 2,
+      "title": "Lister les colonnes",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Monday.com",
+      "providerKey": "monday",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:monday_column"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les colonnes d'un tableau.",
+      "args": {
+        "title": "Lister les colonnes",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "boardId",
+            "label": "Board ID",
+            "description": "Identifiant du tableau.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Colonnes",
+      "icon": "fa-solid fa-list",
+      "tags": [
+        "monday",
+        "liste"
+      ],
+      "group": "Colonnes"
+    },
+    {
+      "key": "monday_column_create_value",
+      "name": "mondayColumnCreateValue",
+      "schemaVersion": 2,
+      "title": "Créer une valeur de colonne",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Monday.com",
+      "providerKey": "monday",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:monday_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Définit la valeur d'une colonne pour un élément.",
+      "args": {
+        "title": "Créer une valeur de colonne",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "boardId",
+            "label": "Board ID",
+            "description": "Identifiant du tableau.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "itemId",
+            "label": "Item ID",
+            "description": "Identifiant de l'élément.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "columnId",
+            "label": "Column ID",
+            "description": "Identifiant de la colonne.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "value",
+            "label": "Valeur",
+            "description": "Valeur à définir (JSON).",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Colonnes",
+      "icon": "fa-solid fa-square-plus",
+      "tags": [
+        "monday",
+        "création"
+      ],
+      "group": "Colonnes"
+    },
+    {
+      "key": "monday_column_change_value",
+      "name": "mondayColumnChangeValue",
+      "schemaVersion": 2,
+      "title": "Modifier une valeur de colonne",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Monday.com",
+      "providerKey": "monday",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:monday_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Modifie la valeur d'une colonne pour un élément.",
+      "args": {
+        "title": "Modifier une valeur de colonne",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "boardId",
+            "label": "Board ID",
+            "description": "Identifiant du tableau.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "itemId",
+            "label": "Item ID",
+            "description": "Identifiant de l'élément.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "columnId",
+            "label": "Column ID",
+            "description": "Identifiant de la colonne.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "value",
+            "label": "Valeur",
+            "description": "Nouvelle valeur (JSON).",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Colonnes",
+      "icon": "fa-solid fa-pen-to-square",
+      "tags": [
+        "monday",
+        "mise-à-jour"
+      ],
+      "group": "Colonnes"
+    },
+    {
+      "key": "monday_subitem_create",
+      "name": "mondaySubitemCreate",
+      "schemaVersion": 2,
+      "title": "Créer un sous-élément",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Monday.com",
+      "providerKey": "monday",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:monday_item"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un sous-élément pour un élément.",
+      "args": {
+        "title": "Créer un sous-élément",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "parentItemId",
+            "label": "Parent Item ID",
+            "description": "Identifiant de l'élément parent.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "itemName",
+            "label": "Nom",
+            "description": "Nom du sous-élément.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "columnValues",
+            "label": "Valeurs des colonnes",
+            "description": "Valeurs des colonnes (JSON).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Sous-items",
+      "icon": "fa-solid fa-square-plus",
+      "tags": [
+        "monday",
+        "création"
+      ],
+      "group": "Sous-items"
+    },
+    {
+      "key": "monday_subitems_list",
+      "name": "mondaySubitemsList",
+      "schemaVersion": 2,
+      "title": "Lister les sous-éléments",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Monday.com",
+      "providerKey": "monday",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:monday_items"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les sous-éléments d'un élément.",
+      "args": {
+        "title": "Lister les sous-éléments",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "parentItemId",
+            "label": "Parent Item ID",
+            "description": "Identifiant de l'élément parent.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Sous-items",
+      "icon": "fa-solid fa-list",
+      "tags": [
+        "monday",
+        "liste"
+      ],
+      "group": "Sous-items"
+    },
+    {
+      "key": "monday_users_list",
+      "name": "mondayUsersList",
+      "schemaVersion": 2,
+      "title": "Lister les utilisateurs",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Monday.com",
+      "providerKey": "monday",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:monday_users"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les utilisateurs du compte.",
+      "args": {
+        "title": "Lister les utilisateurs",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre max de résultats (défaut 25).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Utilisateurs",
+      "icon": "fa-solid fa-users",
+      "tags": [
+        "monday",
+        "liste"
+      ],
+      "group": "Utilisateurs"
+    },
+    {
+      "key": "monday_update_create",
+      "name": "mondayUpdateCreate",
+      "schemaVersion": 2,
+      "title": "Créer une mise à jour",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Monday.com",
+      "providerKey": "monday",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:monday_update"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée une mise à jour sur un élément.",
+      "args": {
+        "title": "Créer une mise à jour",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "itemId",
+            "label": "Item ID",
+            "description": "Identifiant de l'élément.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "body",
+            "label": "Contenu",
+            "description": "Contenu de la mise à jour.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Mises à jour",
+      "icon": "fa-solid fa-comment",
+      "tags": [
+        "monday",
+        "création"
+      ],
+      "group": "Mises à jour"
+    },
+    {
+      "key": "monday_updates_list",
+      "name": "mondayUpdatesList",
+      "schemaVersion": 2,
+      "title": "Lister les mises à jour",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Monday.com",
+      "providerKey": "monday",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:monday_updates"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les mises à jour d'un élément.",
+      "args": {
+        "title": "Lister les mises à jour",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "itemId",
+            "label": "Item ID",
+            "description": "Identifiant de l'élément.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre max de résultats (défaut 25).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Mises à jour",
+      "icon": "fa-solid fa-comments",
+      "tags": [
+        "monday",
+        "liste"
+      ],
+      "group": "Mises à jour"
+    },
+    {
+      "key": "monday_workspaces_list",
+      "name": "mondayWorkspacesList",
+      "schemaVersion": 2,
+      "title": "Lister les espaces de travail",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Monday.com",
+      "providerKey": "monday",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:monday_workspaces"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les espaces de travail disponibles.",
+      "args": {
+        "title": "Lister les espaces de travail",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre max de résultats (défaut 25).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Espaces de travail",
+      "icon": "fa-solid fa-building",
+      "tags": [
+        "monday",
+        "liste"
+      ],
+      "group": "Espaces de travail"
+    },
+    {
+      "key": "monday_webhook_event",
+      "name": "mondayWebhookEvent",
+      "schemaVersion": 2,
+      "title": "Événement entrant",
+      "subtitle": "Événements",
+      "icon": "fa-solid fa-bolt",
+      "type": "event",
+      "nodeKind": "event",
+      "category": "Monday.com",
+      "providerKey": "monday",
+      "inputHandles": [],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Received",
+          "type": "payload",
+          "schema": "$var:monday_event"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Reçoit un événement entrant Monday.com.",
+      "args": {
+        "title": "Événement entrant",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Chemin",
+            "description": "Chemin du webhook.",
+            "col": {
+              "xs": 24
+            },
+            "default": "/monday"
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "monday",
+        "événement"
+      ],
+      "group": "Événements"
+    }
+  ]
+}

@@ -1,0 +1,1977 @@
+{
+  "repo": {
+    "name": "aws",
+    "type": "local",
+    "label": "AWS S3 + SES"
+  },
+  "variables": {
+    "aws_s3_object": {
+      "title": "Objet S3",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "key",
+          "label": "Clé",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "bucket",
+          "label": "Bucket",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "size",
+          "label": "Taille",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "lastModified",
+          "label": "Dernière modification",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "etag",
+          "label": "ETag",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "contentType",
+          "label": "Type de contenu",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "storageClass",
+          "label": "Classe de stockage",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "file",
+          "label": "Fichier (fileRef)",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "aws_s3_objects": {
+      "title": "Objets S3",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Objets S3",
+          "description": "Liste",
+          "mode": "array",
+          "key": "objects",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "key",
+              "label": "Clé",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "bucket",
+              "label": "Bucket",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "size",
+              "label": "Taille",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "lastModified",
+              "label": "Dernière modification",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "etag",
+              "label": "ETag",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "storageClass",
+              "label": "Classe de stockage",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "aws_s3_bucket": {
+      "title": "Bucket S3",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "creationDate",
+          "label": "Date de création",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "region",
+          "label": "Région",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "aws_s3_buckets": {
+      "title": "Buckets S3",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Buckets S3",
+          "description": "Liste",
+          "mode": "array",
+          "key": "buckets",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "creationDate",
+              "label": "Date de création",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "aws_s3_result": {
+      "title": "Résultat S3",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "message",
+          "label": "Message",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "aws_ses_email": {
+      "title": "Email SES",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "messageId",
+          "label": "ID du message",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "aws_ses_template": {
+      "title": "Template SES",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "templateName",
+          "label": "Nom du template",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "subjectPart",
+          "label": "Sujet",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "htmlPart",
+          "label": "HTML",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "textPart",
+          "label": "Texte",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "aws_ses_templates": {
+      "title": "Templates SES",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Templates SES",
+          "description": "Liste",
+          "mode": "array",
+          "key": "templates",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "createdTimestamp",
+              "label": "Date de création",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "aws_ses_identity": {
+      "title": "Identité SES",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "identity",
+          "label": "Identité",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "verificationType",
+          "label": "Type de vérification",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "verificationStatus",
+          "label": "Statut de vérification",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "aws_ses_identities": {
+      "title": "Identités SES",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Identités SES",
+          "description": "Liste",
+          "mode": "array",
+          "key": "identities",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "identity",
+              "label": "Identité",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "aws_ses_result": {
+      "title": "Résultat SES",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "message",
+          "label": "Message",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "awsS3",
+      "name": "AWS S3",
+      "title": "AWS S3",
+      "iconClass": "fa-brands fa-aws",
+      "iconUrl": "https://cdn.iconscout.com/icon/free/png-128/free-amazon-s3-logo-icon-svg-download-png-2464706.png?f=webp",
+      "color": "#ffce87",
+      "tags": [
+        "aws",
+        "s3",
+        "storage",
+        "cloud"
+      ],
+      "categories": [
+        "Cloud Storage"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants AWS",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "accessKeyId",
+            "label": "Access Key ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "secretAccessKey",
+            "label": "Secret Access Key",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "region",
+            "label": "Région",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "default": "us-east-1"
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    },
+    {
+      "key": "awsSes",
+      "name": "AWS SES",
+      "title": "AWS SES",
+      "iconClass": "fa-brands fa-aws",
+      "iconUrl": "https://harmonizer.com/storage/app/uploads/public/65c/0dd/fe8/65c0ddfe8c4ff281343082",
+      "color": "#ffcf87",
+      "tags": [
+        "aws",
+        "ses",
+        "email"
+      ],
+      "categories": [
+        "Email"
+      ],
+      "hasCredentials": false
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "aws_s3_put_object",
+      "name": "awsS3PutObject",
+      "schemaVersion": 2,
+      "title": "Téléverser un objet",
+      "subtitle": "Objets",
+      "icon": "fa-solid fa-file-arrow-up",
+      "tags": [
+        "téléversement",
+        "aws"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AWS S3",
+      "providerKey": "awsS3",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:aws_s3_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Téléverse un objet dans un bucket S3.",
+      "args": {
+        "title": "Téléverser un objet",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "bucket",
+            "label": "Bucket",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "key",
+            "label": "Clé de l'objet",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "file",
+            "key": "file",
+            "label": "Fichier",
+            "col": {
+              "xs": 24
+            },
+            "description": "Fichier à téléverser.",
+            "file": {
+              "accept": "",
+              "maxSize": 104857600,
+              "multiple": false,
+              "lifecycle": "execution",
+              "listType": "text",
+              "hint": "Téléverser un fichier ou utiliser une expression"
+            }
+          },
+          {
+            "type": "text",
+            "key": "contentType",
+            "label": "Type de contenu",
+            "col": {
+              "xs": 24
+            },
+            "default": "application/octet-stream"
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Objets"
+    },
+    {
+      "key": "aws_s3_get_object",
+      "name": "awsS3GetObject",
+      "schemaVersion": 2,
+      "title": "Récupérer un objet",
+      "subtitle": "Objets",
+      "icon": "fa-solid fa-download",
+      "tags": [
+        "lecture",
+        "aws"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AWS S3",
+      "providerKey": "awsS3",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:aws_s3_object"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère un objet depuis un bucket S3.",
+      "args": {
+        "title": "Récupérer un objet",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "bucket",
+            "label": "Bucket",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "key",
+            "label": "Clé de l'objet",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Objets"
+    },
+    {
+      "key": "aws_s3_delete_object",
+      "name": "awsS3DeleteObject",
+      "schemaVersion": 2,
+      "title": "Supprimer un objet",
+      "subtitle": "Objets",
+      "icon": "fa-solid fa-trash",
+      "tags": [
+        "suppression",
+        "aws"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AWS S3",
+      "providerKey": "awsS3",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:aws_s3_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Supprime un objet d'un bucket S3.",
+      "args": {
+        "title": "Supprimer un objet",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "bucket",
+            "label": "Bucket",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "key",
+            "label": "Clé de l'objet",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Objets"
+    },
+    {
+      "key": "aws_s3_list_objects",
+      "name": "awsS3ListObjects",
+      "schemaVersion": 2,
+      "title": "Lister les objets",
+      "subtitle": "Objets",
+      "icon": "fa-solid fa-list",
+      "tags": [
+        "liste",
+        "aws"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AWS S3",
+      "providerKey": "awsS3",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:aws_s3_objects"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les objets d'un bucket S3.",
+      "args": {
+        "title": "Lister les objets",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "bucket",
+            "label": "Bucket",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "prefix",
+            "label": "Préfixe",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "maxKeys",
+            "label": "Nombre max",
+            "col": {
+              "xs": 24
+            },
+            "default": 1000
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Objets"
+    },
+    {
+      "key": "aws_s3_copy_object",
+      "name": "awsS3CopyObject",
+      "schemaVersion": 2,
+      "title": "Copier un objet",
+      "subtitle": "Objets",
+      "icon": "fa-solid fa-copy",
+      "tags": [
+        "création",
+        "aws"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AWS S3",
+      "providerKey": "awsS3",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:aws_s3_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Copie un objet dans S3.",
+      "args": {
+        "title": "Copier un objet",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "sourceBucket",
+            "label": "Bucket source",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "sourceKey",
+            "label": "Clé source",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "destBucket",
+            "label": "Bucket destination",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "destKey",
+            "label": "Clé destination",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Objets"
+    },
+    {
+      "key": "aws_s3_head_object",
+      "name": "awsS3HeadObject",
+      "schemaVersion": 2,
+      "title": "Métadonnées d'un objet",
+      "subtitle": "Objets",
+      "icon": "fa-solid fa-circle-info",
+      "tags": [
+        "lecture",
+        "aws"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AWS S3",
+      "providerKey": "awsS3",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:aws_s3_object"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère les métadonnées d'un objet S3.",
+      "args": {
+        "title": "Métadonnées d'un objet",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "bucket",
+            "label": "Bucket",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "key",
+            "label": "Clé de l'objet",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Objets"
+    },
+    {
+      "key": "aws_s3_list_buckets",
+      "name": "awsS3ListBuckets",
+      "schemaVersion": 2,
+      "title": "Lister les buckets",
+      "subtitle": "Buckets",
+      "icon": "fa-solid fa-list",
+      "tags": [
+        "liste",
+        "aws"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AWS S3",
+      "providerKey": "awsS3",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:aws_s3_buckets"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste tous les buckets S3.",
+      "args": {
+        "title": "Lister les buckets",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Buckets"
+    },
+    {
+      "key": "aws_s3_create_bucket",
+      "name": "awsS3CreateBucket",
+      "schemaVersion": 2,
+      "title": "Créer un bucket",
+      "subtitle": "Buckets",
+      "icon": "fa-solid fa-square-plus",
+      "tags": [
+        "création",
+        "aws"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AWS S3",
+      "providerKey": "awsS3",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:aws_s3_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un nouveau bucket S3.",
+      "args": {
+        "title": "Créer un bucket",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "bucket",
+            "label": "Nom du bucket",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "region",
+            "label": "Région",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Buckets"
+    },
+    {
+      "key": "aws_s3_delete_bucket",
+      "name": "awsS3DeleteBucket",
+      "schemaVersion": 2,
+      "title": "Supprimer un bucket",
+      "subtitle": "Buckets",
+      "icon": "fa-solid fa-trash",
+      "tags": [
+        "suppression",
+        "aws"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AWS S3",
+      "providerKey": "awsS3",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:aws_s3_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Supprime un bucket S3 vide.",
+      "args": {
+        "title": "Supprimer un bucket",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "bucket",
+            "label": "Nom du bucket",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Buckets"
+    },
+    {
+      "key": "aws_s3_presigned_url",
+      "name": "awsS3PresignedUrl",
+      "schemaVersion": 2,
+      "title": "Générer une URL présignée",
+      "subtitle": "Objets",
+      "icon": "fa-solid fa-link",
+      "tags": [
+        "lecture",
+        "aws"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AWS S3",
+      "providerKey": "awsS3",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:aws_s3_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Génère une URL présignée pour un objet S3.",
+      "args": {
+        "title": "Générer une URL présignée",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "bucket",
+            "label": "Bucket",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "key",
+            "label": "Clé de l'objet",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "key": "method",
+            "label": "Méthode",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "GET",
+                "value": "GET"
+              },
+              {
+                "label": "PUT",
+                "value": "PUT"
+              }
+            ],
+            "default": "GET",
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          },
+          {
+            "type": "number",
+            "key": "expiresIn",
+            "label": "Expiration (secondes)",
+            "col": {
+              "xs": 24
+            },
+            "default": 3600
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Objets"
+    },
+    {
+      "key": "aws_ses_send_email",
+      "name": "awsSesSendEmail",
+      "schemaVersion": 2,
+      "title": "Envoyer un email",
+      "subtitle": "Emails",
+      "icon": "fa-solid fa-envelope",
+      "tags": [
+        "envoi",
+        "aws"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AWS SES",
+      "providerKey": "awsSes",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:aws_ses_email"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Envoie un email via AWS SES.",
+      "args": {
+        "title": "Envoyer un email",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "from",
+            "label": "Expéditeur",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "to",
+            "label": "Destinataire(s)",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "Séparer par des virgules."
+          },
+          {
+            "type": "text",
+            "key": "subject",
+            "label": "Sujet",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "htmlBody",
+            "label": "Corps HTML",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "textBody",
+            "label": "Corps texte",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "cc",
+            "label": "CC",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "bcc",
+            "label": "BCC",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Emails"
+    },
+    {
+      "key": "aws_ses_send_templated",
+      "name": "awsSesSendTemplated",
+      "schemaVersion": 2,
+      "title": "Envoyer un email avec template",
+      "subtitle": "Emails",
+      "icon": "fa-solid fa-envelope-open-text",
+      "tags": [
+        "envoi",
+        "aws"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AWS SES",
+      "providerKey": "awsSes",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:aws_ses_email"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Envoie un email utilisant un template SES.",
+      "args": {
+        "title": "Envoyer un email avec template",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "from",
+            "label": "Expéditeur",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "to",
+            "label": "Destinataire(s)",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "templateName",
+            "label": "Nom du template",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "templateData",
+            "label": "Données du template (JSON)",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Emails"
+    },
+    {
+      "key": "aws_ses_send_raw",
+      "name": "awsSesSendRaw",
+      "schemaVersion": 2,
+      "title": "Envoyer un email brut",
+      "subtitle": "Emails",
+      "icon": "fa-solid fa-paper-plane",
+      "tags": [
+        "envoi",
+        "aws"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AWS SES",
+      "providerKey": "awsSes",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:aws_ses_email"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Envoie un email brut (MIME) via SES.",
+      "args": {
+        "title": "Envoyer un email brut",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "rawMessage",
+            "label": "Message brut (MIME)",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Emails"
+    },
+    {
+      "key": "aws_ses_create_template",
+      "name": "awsSesCreateTemplate",
+      "schemaVersion": 2,
+      "title": "Créer un template",
+      "subtitle": "Templates",
+      "icon": "fa-solid fa-square-plus",
+      "tags": [
+        "création",
+        "aws"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AWS SES",
+      "providerKey": "awsSes",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:aws_ses_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un template d'email SES.",
+      "args": {
+        "title": "Créer un template",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "templateName",
+            "label": "Nom du template",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "subjectPart",
+            "label": "Sujet",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "htmlPart",
+            "label": "Corps HTML",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "textPart",
+            "label": "Corps texte",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Templates"
+    },
+    {
+      "key": "aws_ses_get_template",
+      "name": "awsSesGetTemplate",
+      "schemaVersion": 2,
+      "title": "Récupérer un template",
+      "subtitle": "Templates",
+      "icon": "fa-solid fa-eye",
+      "tags": [
+        "lecture",
+        "aws"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AWS SES",
+      "providerKey": "awsSes",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:aws_ses_template"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère un template d'email SES.",
+      "args": {
+        "title": "Récupérer un template",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "templateName",
+            "label": "Nom du template",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Templates"
+    },
+    {
+      "key": "aws_ses_list_templates",
+      "name": "awsSesListTemplates",
+      "schemaVersion": 2,
+      "title": "Lister les templates",
+      "subtitle": "Templates",
+      "icon": "fa-solid fa-list",
+      "tags": [
+        "liste",
+        "aws"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AWS SES",
+      "providerKey": "awsSes",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:aws_ses_templates"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les templates d'email SES.",
+      "args": {
+        "title": "Lister les templates",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "maxItems",
+            "label": "Nombre max",
+            "col": {
+              "xs": 24
+            },
+            "default": 50
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Templates"
+    },
+    {
+      "key": "aws_ses_delete_template",
+      "name": "awsSesDeleteTemplate",
+      "schemaVersion": 2,
+      "title": "Supprimer un template",
+      "subtitle": "Templates",
+      "icon": "fa-solid fa-trash",
+      "tags": [
+        "suppression",
+        "aws"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AWS SES",
+      "providerKey": "awsSes",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:aws_ses_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Supprime un template d'email SES.",
+      "args": {
+        "title": "Supprimer un template",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "templateName",
+            "label": "Nom du template",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Templates"
+    },
+    {
+      "key": "aws_ses_list_identities",
+      "name": "awsSesListIdentities",
+      "schemaVersion": 2,
+      "title": "Lister les identités",
+      "subtitle": "Identités",
+      "icon": "fa-solid fa-id-badge",
+      "tags": [
+        "liste",
+        "aws"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AWS SES",
+      "providerKey": "awsSes",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:aws_ses_identities"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les identités vérifiées SES.",
+      "args": {
+        "title": "Lister les identités",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "select",
+            "key": "identityType",
+            "label": "Type",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "Email",
+                "value": "EmailAddress"
+              },
+              {
+                "label": "Domaine",
+                "value": "Domain"
+              }
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Identités"
+    }
+  ]
+}

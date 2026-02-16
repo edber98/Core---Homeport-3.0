@@ -1,0 +1,4046 @@
+{
+  "repo": {
+    "name": "microsoft",
+    "type": "local",
+    "label": "Microsoft 365"
+  },
+  "variables": {
+    "ms_message": {
+      "title": "Message Teams",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "content",
+          "label": "Contenu",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "from",
+          "label": "Expéditeur",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "createdDateTime",
+          "label": "Date de création",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "chatId",
+          "label": "Chat ID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "channelId",
+          "label": "Canal ID",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "ms_messages": {
+      "title": "Messages Teams",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "hasMore",
+          "label": "Plus de résultats",
+          "description": "Indique s'il reste des résultats.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Messages Teams",
+          "description": "Liste",
+          "mode": "array",
+          "key": "messages",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "content",
+              "label": "Contenu",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "from",
+              "label": "Expéditeur",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "createdDateTime",
+              "label": "Date de création",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "ms_channel": {
+      "title": "Canal Teams",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "displayName",
+          "label": "Nom",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "description",
+          "label": "Description",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "membershipType",
+          "label": "Type d'appartenance",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "ms_channels": {
+      "title": "Canaux Teams",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "hasMore",
+          "label": "Plus de résultats",
+          "description": "Indique s'il reste des résultats.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Canaux Teams",
+          "description": "Liste",
+          "mode": "array",
+          "key": "channels",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "displayName",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "description",
+              "label": "Description",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "membershipType",
+              "label": "Type d'appartenance",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "ms_team": {
+      "title": "Équipe Teams",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "displayName",
+          "label": "Nom",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "description",
+          "label": "Description",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "ms_teams": {
+      "title": "Équipes Teams",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "hasMore",
+          "label": "Plus de résultats",
+          "description": "Indique s'il reste des résultats.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Équipes Teams",
+          "description": "Liste",
+          "mode": "array",
+          "key": "teams",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "displayName",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "description",
+              "label": "Description",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "ms_member": {
+      "title": "Membre Teams",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "displayName",
+          "label": "Nom",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "email",
+          "label": "Email",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "roles",
+          "label": "Rôles",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "ms_members": {
+      "title": "Membres Teams",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "hasMore",
+          "label": "Plus de résultats",
+          "description": "Indique s'il reste des résultats.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Membres Teams",
+          "description": "Liste",
+          "mode": "array",
+          "key": "members",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "displayName",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "email",
+              "label": "Email",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "roles",
+              "label": "Rôles",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "ms_meeting": {
+      "title": "Réunion Teams",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "subject",
+          "label": "Sujet",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "startDateTime",
+          "label": "Début",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "endDateTime",
+          "label": "Fin",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "joinWebUrl",
+          "label": "Lien de participation",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "ms_meetings": {
+      "title": "Réunions Teams",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "hasMore",
+          "label": "Plus de résultats",
+          "description": "Indique s'il reste des résultats.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Réunions Teams",
+          "description": "Liste",
+          "mode": "array",
+          "key": "meetings",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "subject",
+              "label": "Sujet",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "startDateTime",
+              "label": "Début",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "endDateTime",
+              "label": "Fin",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "joinWebUrl",
+              "label": "Lien de participation",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "ms_chat": {
+      "title": "Chat Teams",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "topic",
+          "label": "Sujet",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "chatType",
+          "label": "Type",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "createdDateTime",
+          "label": "Date de création",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "ms_chats": {
+      "title": "Chats Teams",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "hasMore",
+          "label": "Plus de résultats",
+          "description": "Indique s'il reste des résultats.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Chats Teams",
+          "description": "Liste",
+          "mode": "array",
+          "key": "chats",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "topic",
+              "label": "Sujet",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "chatType",
+              "label": "Type",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "createdDateTime",
+              "label": "Date de création",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "ms_site": {
+      "title": "Site SharePoint",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "displayName",
+          "label": "Nom",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "webUrl",
+          "label": "URL",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "description",
+          "label": "Description",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "ms_sites": {
+      "title": "Sites SharePoint",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "hasMore",
+          "label": "Plus de résultats",
+          "description": "Indique s'il reste des résultats.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Sites SharePoint",
+          "description": "Liste",
+          "mode": "array",
+          "key": "sites",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "displayName",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "webUrl",
+              "label": "URL",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "description",
+              "label": "Description",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "ms_list": {
+      "title": "Liste SharePoint",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "displayName",
+          "label": "Nom",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "webUrl",
+          "label": "URL",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "template",
+          "label": "Modèle",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "ms_lists": {
+      "title": "Listes SharePoint",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "hasMore",
+          "label": "Plus de résultats",
+          "description": "Indique s'il reste des résultats.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Listes SharePoint",
+          "description": "Liste",
+          "mode": "array",
+          "key": "lists",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "displayName",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "webUrl",
+              "label": "URL",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "template",
+              "label": "Modèle",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "ms_list_item": {
+      "title": "Élément de liste",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "fields",
+          "label": "Champs",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "ms_list_items": {
+      "title": "Éléments de liste",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "hasMore",
+          "label": "Plus de résultats",
+          "description": "Indique s'il reste des résultats.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Éléments de liste",
+          "description": "Liste",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "fields",
+              "label": "Champs",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "ms_file": {
+      "title": "Fichier SharePoint",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "size",
+          "label": "Taille",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "webUrl",
+          "label": "URL",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "createdDateTime",
+          "label": "Date de création",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "lastModifiedDateTime",
+          "label": "Date de modification",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "ms_files": {
+      "title": "Fichiers SharePoint",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "hasMore",
+          "label": "Plus de résultats",
+          "description": "Indique s'il reste des résultats.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Fichiers SharePoint",
+          "description": "Liste",
+          "mode": "array",
+          "key": "files",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "size",
+              "label": "Taille",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "webUrl",
+              "label": "URL",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "createdDateTime",
+              "label": "Date de création",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "lastModifiedDateTime",
+              "label": "Date de modification",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "ms_user": {
+      "title": "Utilisateur Microsoft",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "displayName",
+          "label": "Nom",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "mail",
+          "label": "Email",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "userPrincipalName",
+          "label": "Nom principal",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "jobTitle",
+          "label": "Poste",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "ms_users": {
+      "title": "Utilisateurs Microsoft",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "hasMore",
+          "label": "Plus de résultats",
+          "description": "Indique s'il reste des résultats.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Utilisateurs Microsoft",
+          "description": "Liste",
+          "mode": "array",
+          "key": "users",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "displayName",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "mail",
+              "label": "Email",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "userPrincipalName",
+              "label": "Nom principal",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "jobTitle",
+              "label": "Poste",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "ms_result": {
+      "title": "Résultat",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "message",
+          "label": "Message",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "microsoft",
+      "name": "Microsoft 365",
+      "title": "Microsoft 365",
+      "iconClass": "fa-brands fa-microsoft",
+      "color": "#0078D4",
+      "tags": [
+        "microsoft",
+        "teams",
+        "sharepoint",
+        "office365"
+      ],
+      "categories": [
+        "Communication",
+        "Cloud Storage"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Microsoft 365",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "tenantId",
+            "label": "Tenant ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "clientId",
+            "label": "Client ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "clientSecret",
+            "label": "Client secret",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "refreshToken",
+            "label": "Refresh token",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "ms_teams_send_message",
+      "name": "msTeamsSendMessage",
+      "schemaVersion": 2,
+      "title": "Envoyer un message dans un canal",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Teams - Messages",
+      "providerKey": "microsoft",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ms_message"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Envoie un message dans un canal Teams.",
+      "args": {
+        "title": "Envoyer un message dans un canal",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "teamId",
+            "label": "Team ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "channelId",
+            "label": "Canal ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "content",
+            "label": "Contenu",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "key": "contentType",
+            "label": "Type de contenu",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "Texte",
+                "value": "text"
+              },
+              {
+                "label": "HTML",
+                "value": "html"
+              }
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Messages",
+      "icon": "fa-solid fa-paper-plane",
+      "group": "Messages",
+      "tags": [
+        "envoi",
+        "Microsoft Teams"
+      ]
+    },
+    {
+      "key": "ms_teams_reply_message",
+      "name": "msTeamsReplyMessage",
+      "schemaVersion": 2,
+      "title": "Répondre à un message",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Teams - Messages",
+      "providerKey": "microsoft",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ms_message"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Répond à un message dans un canal Teams.",
+      "args": {
+        "title": "Répondre à un message",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "teamId",
+            "label": "Team ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "channelId",
+            "label": "Canal ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "messageId",
+            "label": "Message ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "content",
+            "label": "Contenu",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Messages",
+      "icon": "fa-solid fa-reply",
+      "group": "Messages",
+      "tags": [
+        "envoi",
+        "Microsoft Teams"
+      ]
+    },
+    {
+      "key": "ms_teams_send_chat_message",
+      "name": "msTeamsSendChatMessage",
+      "schemaVersion": 2,
+      "title": "Envoyer un message de chat",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Teams - Messages",
+      "providerKey": "microsoft",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ms_message"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Envoie un message dans un chat Teams.",
+      "args": {
+        "title": "Envoyer un message de chat",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "chatId",
+            "label": "Chat ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "content",
+            "label": "Contenu",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Messages",
+      "icon": "fa-solid fa-paper-plane",
+      "group": "Messages",
+      "tags": [
+        "envoi",
+        "Microsoft Teams"
+      ]
+    },
+    {
+      "key": "ms_teams_list_messages",
+      "name": "msTeamsListMessages",
+      "schemaVersion": 2,
+      "title": "Lister les messages d'un canal",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Teams - Messages",
+      "providerKey": "microsoft",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ms_messages"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les messages d'un canal Teams.",
+      "args": {
+        "title": "Lister les messages d'un canal",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "teamId",
+            "label": "Team ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "channelId",
+            "label": "Canal ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "top",
+            "label": "Nombre max",
+            "col": {
+              "xs": 24
+            },
+            "default": 50
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Messages",
+      "icon": "fa-solid fa-list",
+      "group": "Messages",
+      "tags": [
+        "liste",
+        "Microsoft Teams"
+      ]
+    },
+    {
+      "key": "ms_teams_get_message",
+      "name": "msTeamsGetMessage",
+      "schemaVersion": 2,
+      "title": "Obtenir un message",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Teams - Messages",
+      "providerKey": "microsoft",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ms_message"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère un message spécifique d'un canal Teams.",
+      "args": {
+        "title": "Obtenir un message",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "teamId",
+            "label": "Team ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "channelId",
+            "label": "Canal ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "messageId",
+            "label": "Message ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Messages",
+      "icon": "fa-solid fa-eye",
+      "group": "Messages",
+      "tags": [
+        "lecture",
+        "Microsoft Teams"
+      ]
+    },
+    {
+      "key": "ms_teams_create_channel",
+      "name": "msTeamsCreateChannel",
+      "schemaVersion": 2,
+      "title": "Créer un canal",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Teams - Canaux",
+      "providerKey": "microsoft",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ms_channel"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un nouveau canal dans une équipe Teams.",
+      "args": {
+        "title": "Créer un canal",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "teamId",
+            "label": "Team ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "displayName",
+            "label": "Nom du canal",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "description",
+            "label": "Description",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "select",
+            "key": "membershipType",
+            "label": "Type d'appartenance",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "Standard",
+                "value": "standard"
+              },
+              {
+                "label": "Privé",
+                "value": "private"
+              },
+              {
+                "label": "Partagé",
+                "value": "shared"
+              }
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Canaux",
+      "icon": "fa-solid fa-square-plus",
+      "group": "Canaux",
+      "tags": [
+        "création",
+        "Microsoft Teams"
+      ]
+    },
+    {
+      "key": "ms_teams_list_channels",
+      "name": "msTeamsListChannels",
+      "schemaVersion": 2,
+      "title": "Lister les canaux",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Teams - Canaux",
+      "providerKey": "microsoft",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ms_channels"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les canaux d'une équipe Teams.",
+      "args": {
+        "title": "Lister les canaux",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "teamId",
+            "label": "Team ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Canaux",
+      "icon": "fa-solid fa-list",
+      "group": "Canaux",
+      "tags": [
+        "liste",
+        "Microsoft Teams"
+      ]
+    },
+    {
+      "key": "ms_teams_get_channel",
+      "name": "msTeamsGetChannel",
+      "schemaVersion": 2,
+      "title": "Obtenir un canal",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Teams - Canaux",
+      "providerKey": "microsoft",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ms_channel"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère les informations d'un canal Teams.",
+      "args": {
+        "title": "Obtenir un canal",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "teamId",
+            "label": "Team ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "channelId",
+            "label": "Canal ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Canaux",
+      "icon": "fa-solid fa-eye",
+      "group": "Canaux",
+      "tags": [
+        "lecture",
+        "Microsoft Teams"
+      ]
+    },
+    {
+      "key": "ms_teams_delete_channel",
+      "name": "msTeamsDeleteChannel",
+      "schemaVersion": 2,
+      "title": "Supprimer un canal",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Teams - Canaux",
+      "providerKey": "microsoft",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ms_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Supprime un canal d'une équipe Teams.",
+      "args": {
+        "title": "Supprimer un canal",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "teamId",
+            "label": "Team ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "channelId",
+            "label": "Canal ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Canaux",
+      "icon": "fa-solid fa-trash",
+      "group": "Canaux",
+      "tags": [
+        "suppression",
+        "Microsoft Teams"
+      ]
+    },
+    {
+      "key": "ms_teams_list_teams",
+      "name": "msTeamsListTeams",
+      "schemaVersion": 2,
+      "title": "Lister les équipes",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Teams - Équipes",
+      "providerKey": "microsoft",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ms_teams"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les équipes Teams de l'utilisateur connecté.",
+      "args": {
+        "title": "Lister les équipes",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Équipes",
+      "icon": "fa-solid fa-users",
+      "group": "Équipes",
+      "tags": [
+        "liste",
+        "Microsoft Teams"
+      ]
+    },
+    {
+      "key": "ms_teams_get_team",
+      "name": "msTeamsGetTeam",
+      "schemaVersion": 2,
+      "title": "Obtenir une équipe",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Teams - Équipes",
+      "providerKey": "microsoft",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ms_team"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère les informations d'une équipe Teams.",
+      "args": {
+        "title": "Obtenir une équipe",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "teamId",
+            "label": "Team ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Équipes",
+      "icon": "fa-solid fa-eye",
+      "group": "Équipes",
+      "tags": [
+        "lecture",
+        "Microsoft Teams"
+      ]
+    },
+    {
+      "key": "ms_teams_list_members",
+      "name": "msTeamsListMembers",
+      "schemaVersion": 2,
+      "title": "Lister les membres",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Teams - Équipes",
+      "providerKey": "microsoft",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ms_members"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les membres d'une équipe Teams.",
+      "args": {
+        "title": "Lister les membres",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "teamId",
+            "label": "Team ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Équipes",
+      "icon": "fa-solid fa-users",
+      "group": "Équipes",
+      "tags": [
+        "liste",
+        "Microsoft Teams"
+      ]
+    },
+    {
+      "key": "ms_teams_add_member",
+      "name": "msTeamsAddMember",
+      "schemaVersion": 2,
+      "title": "Ajouter un membre",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Teams - Équipes",
+      "providerKey": "microsoft",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ms_member"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Ajoute un membre à une équipe Teams.",
+      "args": {
+        "title": "Ajouter un membre",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "teamId",
+            "label": "Team ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "userId",
+            "label": "User ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "key": "roles",
+            "label": "Rôle",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "Membre",
+                "value": "member"
+              },
+              {
+                "label": "Propriétaire",
+                "value": "owner"
+              }
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Équipes",
+      "icon": "fa-solid fa-user-plus",
+      "group": "Équipes",
+      "tags": [
+        "création",
+        "Microsoft Teams"
+      ]
+    },
+    {
+      "key": "ms_teams_create_meeting",
+      "name": "msTeamsCreateMeeting",
+      "schemaVersion": 2,
+      "title": "Créer une réunion",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Teams - Réunions",
+      "providerKey": "microsoft",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ms_meeting"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée une réunion en ligne Teams.",
+      "args": {
+        "title": "Créer une réunion",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "subject",
+            "label": "Sujet",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "date",
+            "key": "startDateTime",
+            "label": "Date de début",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "Format ISO 8601 (ex: 2024-01-15T10:00:00Z)."
+          },
+          {
+            "type": "date",
+            "key": "endDateTime",
+            "label": "Date de fin",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "Format ISO 8601 (ex: 2024-01-15T11:00:00Z)."
+          },
+          {
+            "type": "textarea",
+            "key": "participants",
+            "label": "Participants",
+            "col": {
+              "xs": 24
+            },
+            "description": "Adresses email séparées par des virgules."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Réunions",
+      "icon": "fa-solid fa-calendar-check",
+      "group": "Réunions",
+      "tags": [
+        "création",
+        "Microsoft Teams"
+      ]
+    },
+    {
+      "key": "ms_teams_get_meeting",
+      "name": "msTeamsGetMeeting",
+      "schemaVersion": 2,
+      "title": "Obtenir une réunion",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Teams - Réunions",
+      "providerKey": "microsoft",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ms_meeting"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère les informations d'une réunion Teams.",
+      "args": {
+        "title": "Obtenir une réunion",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "meetingId",
+            "label": "Meeting ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Réunions",
+      "icon": "fa-solid fa-eye",
+      "group": "Réunions",
+      "tags": [
+        "lecture",
+        "Microsoft Teams"
+      ]
+    },
+    {
+      "key": "ms_teams_list_meetings",
+      "name": "msTeamsListMeetings",
+      "schemaVersion": 2,
+      "title": "Lister les réunions",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Teams - Réunions",
+      "providerKey": "microsoft",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ms_meetings"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les réunions en ligne Teams.",
+      "args": {
+        "title": "Lister les réunions",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "top",
+            "label": "Nombre max",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Réunions",
+      "icon": "fa-solid fa-list",
+      "group": "Réunions",
+      "tags": [
+        "liste",
+        "Microsoft Teams"
+      ]
+    },
+    {
+      "key": "ms_teams_create_chat",
+      "name": "msTeamsCreateChat",
+      "schemaVersion": 2,
+      "title": "Créer un chat",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Teams - Chats",
+      "providerKey": "microsoft",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ms_chat"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un nouveau chat Teams.",
+      "args": {
+        "title": "Créer un chat",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "select",
+            "key": "chatType",
+            "label": "Type de chat",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "Un à un",
+                "value": "oneOnOne"
+              },
+              {
+                "label": "Groupe",
+                "value": "group"
+              }
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          },
+          {
+            "type": "text",
+            "key": "topic",
+            "label": "Sujet",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "members",
+            "label": "Membres",
+            "col": {
+              "xs": 24
+            },
+            "description": "User IDs séparés par des virgules."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Chats",
+      "icon": "fa-solid fa-comments",
+      "group": "Chats",
+      "tags": [
+        "création",
+        "Microsoft Teams"
+      ]
+    },
+    {
+      "key": "ms_teams_list_chats",
+      "name": "msTeamsListChats",
+      "schemaVersion": 2,
+      "title": "Lister les chats",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Teams - Chats",
+      "providerKey": "microsoft",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ms_chats"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les chats Teams de l'utilisateur connecté.",
+      "args": {
+        "title": "Lister les chats",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "top",
+            "label": "Nombre max",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Chats",
+      "icon": "fa-solid fa-comments",
+      "group": "Chats",
+      "tags": [
+        "liste",
+        "Microsoft Teams"
+      ]
+    },
+    {
+      "key": "ms_teams_get_chat",
+      "name": "msTeamsGetChat",
+      "schemaVersion": 2,
+      "title": "Obtenir un chat",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Teams - Chats",
+      "providerKey": "microsoft",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ms_chat"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère les informations d'un chat Teams.",
+      "args": {
+        "title": "Obtenir un chat",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "chatId",
+            "label": "Chat ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Chats",
+      "icon": "fa-solid fa-eye",
+      "group": "Chats",
+      "tags": [
+        "lecture",
+        "Microsoft Teams"
+      ]
+    },
+    {
+      "key": "ms_sp_get_site",
+      "name": "msSpGetSite",
+      "schemaVersion": 2,
+      "title": "Obtenir un site",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SharePoint - Sites",
+      "providerKey": "microsoft",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ms_site"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère les informations d'un site SharePoint.",
+      "args": {
+        "title": "Obtenir un site",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "siteId",
+            "label": "Site ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Sites",
+      "icon": "fa-solid fa-eye",
+      "group": "Sites",
+      "tags": [
+        "lecture",
+        "SharePoint"
+      ]
+    },
+    {
+      "key": "ms_sp_search_sites",
+      "name": "msSpSearchSites",
+      "schemaVersion": 2,
+      "title": "Rechercher des sites",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SharePoint - Sites",
+      "providerKey": "microsoft",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ms_sites"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Recherche des sites SharePoint.",
+      "args": {
+        "title": "Rechercher des sites",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "query",
+            "label": "Recherche",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Sites",
+      "icon": "fa-solid fa-magnifying-glass",
+      "group": "Sites",
+      "tags": [
+        "recherche",
+        "SharePoint"
+      ]
+    },
+    {
+      "key": "ms_sp_list_subsites",
+      "name": "msSpListSubsites",
+      "schemaVersion": 2,
+      "title": "Lister les sous-sites",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SharePoint - Sites",
+      "providerKey": "microsoft",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ms_sites"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les sous-sites d'un site SharePoint.",
+      "args": {
+        "title": "Lister les sous-sites",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "siteId",
+            "label": "Site ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Sites",
+      "icon": "fa-solid fa-list",
+      "group": "Sites",
+      "tags": [
+        "liste",
+        "SharePoint"
+      ]
+    },
+    {
+      "key": "ms_sp_create_list",
+      "name": "msSpCreateList",
+      "schemaVersion": 2,
+      "title": "Créer une liste",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SharePoint - Listes",
+      "providerKey": "microsoft",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ms_list"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée une nouvelle liste SharePoint.",
+      "args": {
+        "title": "Créer une liste",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "siteId",
+            "label": "Site ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "displayName",
+            "label": "Nom de la liste",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "key": "template",
+            "label": "Modèle",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "Liste générique",
+                "value": "genericList"
+              },
+              {
+                "label": "Bibliothèque de documents",
+                "value": "documentLibrary"
+              }
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Listes",
+      "icon": "fa-solid fa-square-plus",
+      "group": "Listes",
+      "tags": [
+        "création",
+        "SharePoint"
+      ]
+    },
+    {
+      "key": "ms_sp_get_list",
+      "name": "msSpGetList",
+      "schemaVersion": 2,
+      "title": "Obtenir une liste",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SharePoint - Listes",
+      "providerKey": "microsoft",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ms_list"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère les informations d'une liste SharePoint.",
+      "args": {
+        "title": "Obtenir une liste",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "siteId",
+            "label": "Site ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "listId",
+            "label": "Liste ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Listes",
+      "icon": "fa-solid fa-eye",
+      "group": "Listes",
+      "tags": [
+        "lecture",
+        "SharePoint"
+      ]
+    },
+    {
+      "key": "ms_sp_list_items",
+      "name": "msSpListItems",
+      "schemaVersion": 2,
+      "title": "Lister les éléments",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SharePoint - Listes",
+      "providerKey": "microsoft",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ms_list_items"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les éléments d'une liste SharePoint.",
+      "args": {
+        "title": "Lister les éléments",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "siteId",
+            "label": "Site ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "listId",
+            "label": "Liste ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "top",
+            "label": "Nombre max",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Listes",
+      "icon": "fa-solid fa-list",
+      "group": "Listes",
+      "tags": [
+        "liste",
+        "SharePoint"
+      ]
+    },
+    {
+      "key": "ms_sp_create_item",
+      "name": "msSpCreateItem",
+      "schemaVersion": 2,
+      "title": "Créer un élément",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SharePoint - Listes",
+      "providerKey": "microsoft",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ms_list_item"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un élément dans une liste SharePoint.",
+      "args": {
+        "title": "Créer un élément",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "siteId",
+            "label": "Site ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "listId",
+            "label": "Liste ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "fields",
+            "label": "Champs (JSON)",
+            "col": {
+              "xs": 24
+            },
+            "description": "Champs de l'élément au format JSON."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Listes",
+      "icon": "fa-solid fa-square-plus",
+      "group": "Listes",
+      "tags": [
+        "création",
+        "SharePoint"
+      ]
+    },
+    {
+      "key": "ms_sp_update_item",
+      "name": "msSpUpdateItem",
+      "schemaVersion": 2,
+      "title": "Mettre à jour un élément",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SharePoint - Listes",
+      "providerKey": "microsoft",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ms_list_item"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Met à jour un élément dans une liste SharePoint.",
+      "args": {
+        "title": "Mettre à jour un élément",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "siteId",
+            "label": "Site ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "listId",
+            "label": "Liste ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "itemId",
+            "label": "Élément ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "fields",
+            "label": "Champs (JSON)",
+            "col": {
+              "xs": 24
+            },
+            "description": "Champs à mettre à jour au format JSON."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Listes",
+      "icon": "fa-solid fa-pen-to-square",
+      "group": "Listes",
+      "tags": [
+        "mise-à-jour",
+        "SharePoint"
+      ]
+    },
+    {
+      "key": "ms_sp_list_files",
+      "name": "msSpListFiles",
+      "schemaVersion": 2,
+      "title": "Lister les fichiers",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SharePoint - Fichiers",
+      "providerKey": "microsoft",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ms_files"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les fichiers d'un site SharePoint.",
+      "args": {
+        "title": "Lister les fichiers",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "siteId",
+            "label": "Site ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "folderId",
+            "label": "Dossier ID",
+            "col": {
+              "xs": 24
+            },
+            "description": "ID du dossier (vide = racine)."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Fichiers",
+      "icon": "fa-solid fa-list",
+      "group": "Fichiers",
+      "tags": [
+        "liste",
+        "SharePoint"
+      ]
+    },
+    {
+      "key": "ms_sp_get_file",
+      "name": "msSpGetFile",
+      "schemaVersion": 2,
+      "title": "Obtenir un fichier",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SharePoint - Fichiers",
+      "providerKey": "microsoft",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ms_file"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère les métadonnées d'un fichier SharePoint.",
+      "args": {
+        "title": "Obtenir un fichier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "siteId",
+            "label": "Site ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "itemId",
+            "label": "Fichier ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Fichiers",
+      "icon": "fa-solid fa-eye",
+      "group": "Fichiers",
+      "tags": [
+        "lecture",
+        "SharePoint"
+      ]
+    },
+    {
+      "key": "ms_sp_upload_file",
+      "name": "msSpUploadFile",
+      "schemaVersion": 2,
+      "title": "Téléverser un fichier",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SharePoint - Fichiers",
+      "providerKey": "microsoft",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ms_file"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Téléverse un fichier sur un site SharePoint.",
+      "args": {
+        "title": "Téléverser un fichier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "siteId",
+            "label": "Site ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Chemin du fichier",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "Chemin relatif du fichier (ex: Documents/rapport.pdf)."
+          },
+          {
+            "type": "textarea",
+            "key": "content",
+            "label": "Contenu",
+            "col": {
+              "xs": 24
+            },
+            "description": "Contenu du fichier (texte ou base64)."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Fichiers",
+      "icon": "fa-solid fa-file-arrow-up",
+      "group": "Fichiers",
+      "tags": [
+        "téléversement",
+        "SharePoint"
+      ]
+    },
+    {
+      "key": "ms_sp_download_file",
+      "name": "msSpDownloadFile",
+      "schemaVersion": 2,
+      "title": "Télécharger un fichier",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SharePoint - Fichiers",
+      "providerKey": "microsoft",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ms_file"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Télécharge le contenu d'un fichier SharePoint.",
+      "args": {
+        "title": "Télécharger un fichier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "siteId",
+            "label": "Site ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "itemId",
+            "label": "Fichier ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Fichiers",
+      "icon": "fa-solid fa-download",
+      "group": "Fichiers",
+      "tags": [
+        "téléchargement",
+        "SharePoint"
+      ]
+    },
+    {
+      "key": "ms_sp_delete_file",
+      "name": "msSpDeleteFile",
+      "schemaVersion": 2,
+      "title": "Supprimer un fichier",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SharePoint - Fichiers",
+      "providerKey": "microsoft",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ms_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Supprime un fichier d'un site SharePoint.",
+      "args": {
+        "title": "Supprimer un fichier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "siteId",
+            "label": "Site ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "itemId",
+            "label": "Fichier ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Fichiers",
+      "icon": "fa-solid fa-trash",
+      "group": "Fichiers",
+      "tags": [
+        "suppression",
+        "SharePoint"
+      ]
+    },
+    {
+      "key": "ms_users_list",
+      "name": "msUsersList",
+      "schemaVersion": 2,
+      "title": "Lister les utilisateurs",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Utilisateurs",
+      "providerKey": "microsoft",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ms_users"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les utilisateurs du tenant Microsoft 365.",
+      "args": {
+        "title": "Lister les utilisateurs",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "top",
+            "label": "Nombre max",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "filter",
+            "label": "Filtre OData",
+            "col": {
+              "xs": 24
+            },
+            "description": "Filtre OData (ex: startsWith(displayName,'A'))."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Utilisateurs",
+      "icon": "fa-solid fa-users",
+      "group": "Utilisateurs",
+      "tags": [
+        "liste",
+        "Microsoft 365"
+      ]
+    },
+    {
+      "key": "ms_user_get",
+      "name": "msUserGet",
+      "schemaVersion": 2,
+      "title": "Obtenir un utilisateur",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Utilisateurs",
+      "providerKey": "microsoft",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ms_user"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère les informations d'un utilisateur Microsoft 365.",
+      "args": {
+        "title": "Obtenir un utilisateur",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "userId",
+            "label": "User ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Utilisateurs",
+      "icon": "fa-solid fa-user",
+      "group": "Utilisateurs",
+      "tags": [
+        "lecture",
+        "Microsoft 365"
+      ]
+    },
+    {
+      "key": "ms_user_get_me",
+      "name": "msUserGetMe",
+      "schemaVersion": 2,
+      "title": "Obtenir mon profil",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Utilisateurs",
+      "providerKey": "microsoft",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ms_user"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère le profil de l'utilisateur connecté.",
+      "args": {
+        "title": "Obtenir mon profil",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Utilisateurs",
+      "icon": "fa-solid fa-user",
+      "group": "Utilisateurs",
+      "tags": [
+        "lecture",
+        "Microsoft 365"
+      ]
+    }
+  ]
+}

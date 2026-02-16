@@ -1,0 +1,18 @@
+<nz-upload
+  [nzCustomRequest]="customRequest"
+  [nzAccept]="config.accept || ''"
+  [nzMultiple]="config.multiple || false"
+  [nzLimit]="config.multiple ? (config.maxCount || 10) : 1"
+  [nzSize]="maxSizeKb"
+  [nzListType]="config.listType || 'text'"
+  [nzShowUploadList]="showUploadList"
+  [nzFileList]="fileList"
+  [nzRemove]="onRemove"
+  (nzChange)="onUploadChange($event)"
+  [nzShowButton]="canUploadMore">
+  <button nz-button type="button">
+    <i nz-icon nzType="upload"></i>
+    <span>{{ config.buttonText || 'Choisir un fichier' }}</span>
+  </button>
+</nz-upload>
+<div *ngIf="config.hint" class="df-file-hint">{{ config.hint }}</div>

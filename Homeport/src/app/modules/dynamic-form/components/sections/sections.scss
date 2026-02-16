@@ -2,16 +2,26 @@
 .df-edit-item {
   position: relative;
   border-radius: 8px;
+  padding-left: 8px;
+  padding-right: 8px;
 }
 .df-edit-item.df-edit:hover { outline: 1px dashed rgba(22,119,255,.5); }
-.df-edit-item.df-edit-selected { outline: 2px solid rgba(22,119,255,.8); }
+.df-edit-item.df-edit-selected { outline: 2px solid rgba(22,119,255,.8); background: #eef4ff; }
+.df-edit-item.df-edit-selected:hover { outline: 2px solid rgba(22,119,255,.8); }
 .df-edit-actions {
   position: absolute; top: 4px; right: 4px; display: flex; gap: 4px;
+  opacity: 0; pointer-events: none;
+}
+.df-edit-section-wrap.df-edit-selected .df-edit-actions,
+.df-edit-item.df-edit-selected .df-edit-actions {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 /* Align section wrap styling with DynamicForm component */
 .df-edit-section-wrap.df-edit:hover { outline: 1px dashed rgba(22,119,255,.5); border-radius: 8px; }
-.df-edit-section-wrap.df-edit-selected { outline: 2px solid rgba(22,119,255,.8); border-radius: 8px; }
+.df-edit-section-wrap.df-edit-selected { outline: 2px solid rgba(22,119,255,.8); border-radius: 8px; background: #eef4ff; }
+.df-edit-section-wrap.df-edit-selected:hover { outline: 2px solid rgba(22,119,255,.8); }
 .df-edit-section-wrap { position: relative; }
 
 /* Array mode basic layout */
