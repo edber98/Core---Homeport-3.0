@@ -14,6 +14,11 @@ node_modules
 /Homeport/node_modules
 /Homeport/.angular
 /API/node_modules
+
+/API/.env
+API/.env
+Homeport/.angular/
+
 npm-debug.log
 yarn-error.log
 
