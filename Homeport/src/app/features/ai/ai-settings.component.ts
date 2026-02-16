@@ -35,6 +35,7 @@ import { ApiClientService } from '../../services/api-client.service';
               <div class="section-title">Agent actif</div>
               <div class="section-desc">Choisir l'agent pour les nouvelles conversations</div>
               <nz-select
+                class="active-agent-select"
                 [(ngModel)]="selectedAgentId"
                 (ngModelChange)="onAgentChange($event)"
                 nzPlaceHolder="Choisir un agent"
@@ -98,7 +99,7 @@ import { ApiClientService } from '../../services/api-client.service';
                     </div>
                   </div>
                   <div class="ca-desc">{{ a.description }}</div>
-                  <div class="ca-edit" *ngIf="editingAgentId === a.id">
+                  <div class="ca-edit agent-customization-form" *ngIf="editingAgentId === a.id">
                     <label class="ca-label">Nom</label>
                     <input nz-input [(ngModel)]="editName" nzSize="small" />
                     <label class="ca-label">Description</label>
@@ -147,11 +148,11 @@ import { ApiClientService } from '../../services/api-client.service';
               </div>
 
               <div class="create-agent" *ngIf="!showCreateForm">
-                <button nz-button nzType="dashed" (click)="showCreateForm = true" nzBlock>
+                <button nz-button nzType="dashed" class="create-agent-btn" (click)="showCreateForm = true" nzBlock>
                   <span nz-icon nzType="plus" nzTheme="outline"></span> Créer un agent
                 </button>
               </div>
-              <div class="create-agent-form" *ngIf="showCreateForm">
+              <div class="create-agent-form agent-customization-form" *ngIf="showCreateForm">
                 <label class="ca-label">Nom</label>
                 <input nz-input [(ngModel)]="newAgentName" placeholder="Ex : Expert comptabilité" nzSize="small" />
                 <label class="ca-label">Description</label>
@@ -261,6 +262,7 @@ import { ApiClientService } from '../../services/api-client.service';
               <div class="section-title">Instructions personnalisées</div>
               <div class="section-desc">Consignes appliquées à toutes les conversations</div>
               <textarea nz-input
+                class="custom-instructions-input"
                 [(ngModel)]="customInstructions"
                 (ngModelChange)="onInstructionsChange($event)"
                 placeholder="Ex : Je travaille principalement avec Odoo et Slack..."
@@ -311,11 +313,11 @@ import { ApiClientService } from '../../services/api-client.service';
               </div>
 
               <div class="create-agent" *ngIf="!showMcpForm">
-                <button nz-button nzType="dashed" (click)="showMcpForm = true" nzBlock>
+                <button nz-button nzType="dashed" class="create-agent-btn" (click)="showMcpForm = true" nzBlock>
                   <span nz-icon nzType="plus" nzTheme="outline"></span> Ajouter un serveur MCP
                 </button>
               </div>
-              <div class="create-agent-form" *ngIf="showMcpForm">
+              <div class="create-agent-form agent-customization-form" *ngIf="showMcpForm">
                 <label class="ca-label">Nom</label>
                 <input nz-input [(ngModel)]="newMcpName" placeholder="Ex : Mon serveur CRM" nzSize="small" />
                 <label class="ca-label">Transport</label>
@@ -334,9 +336,9 @@ import { ApiClientService } from '../../services/api-client.service';
                 <label class="ca-label">Préfixe outils</label>
                 <input nz-input [(ngModel)]="newMcpPrefix" placeholder="Ex : crm" nzSize="small" />
                 <div class="field-hint">Préfixe ajouté aux noms d'outils pour éviter les collisions</div>
-                <div class="create-btns">
-                  <button nz-button nzSize="small" (click)="showMcpForm = false">Annuler</button>
-                  <button nz-button nzType="primary" nzSize="small" (click)="createMcpServer()" [disabled]="!newMcpName.trim()">Ajouter</button>
+                <div class="create-btns mcp-create-btns">
+                  <button nz-button nzSize="small" class="mcp-cancel-btn" (click)="showMcpForm = false">Annuler</button>
+                  <button nz-button nzType="primary" nzSize="small" class="mcp-add-btn" (click)="createMcpServer()" [disabled]="!newMcpName.trim()">Ajouter</button>
                 </div>
               </div>
             </div>
@@ -360,7 +362,7 @@ import { ApiClientService } from '../../services/api-client.service';
                 </div>
               </div>
               <div *ngIf="!stats" class="memory-empty-inline">
-                <button nz-button nzSize="small" (click)="loadStats()">Charger les statistiques</button>
+                <button nz-button nzSize="small" class="admin-stats-btn" (click)="loadStats()">Charger les statistiques</button>
               </div>
             </div>
 
@@ -424,8 +426,59 @@ import { ApiClientService } from '../../services/api-client.service';
     .ca-edit { display: flex; flex-direction: column; gap: 4px; margin-top: 8px; padding-top: 8px; border-top: 1px solid #f0f0f0; }
     .ca-label { font-size: 11px; font-weight: 600; color: #666; margin-top: 4px; }
     .create-agent { margin-top: 4px; }
+    .create-agent-btn.ant-btn-dashed:hover:not(:disabled),
+    .create-agent-btn.ant-btn-dashed:focus-visible:not(:disabled) {
+      border-color: #1677ff !important;
+      color: #1677ff !important;
+      border-style: dashed;
+    }
+    :host ::ng-deep .active-agent-select .ant-select-selector:hover {
+      border-color: #1677ff !important;
+    }
+    :host ::ng-deep .active-agent-select .ant-select-focused .ant-select-selector,
+    :host ::ng-deep .active-agent-select .ant-select-open .ant-select-selector,
+    :host ::ng-deep .active-agent-select .ant-select.ant-select-focused:not(.ant-select-disabled):not(.ant-select-customize-input) .ant-select-selector,
+    :host ::ng-deep .active-agent-select.ant-select-focused .ant-select-selector,
+    :host ::ng-deep .active-agent-select.ant-select-open .ant-select-selector {
+      border-color: #1677ff !important;
+      box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.15) !important;
+    }
+    :host ::ng-deep .agent-customization-form .ant-input:hover,
+    :host ::ng-deep .agent-customization-form .ant-input-number:hover,
+    :host ::ng-deep .agent-customization-form .ant-select-selector:hover {
+      border-color: #1677ff !important;
+    }
+    :host ::ng-deep .agent-customization-form .ant-input:focus,
+    :host ::ng-deep .agent-customization-form .ant-input-focused,
+    :host ::ng-deep .agent-customization-form .ant-input-number-focused,
+    :host ::ng-deep .agent-customization-form .ant-select-focused .ant-select-selector,
+    :host ::ng-deep .agent-customization-form .ant-select-open .ant-select-selector,
+    :host ::ng-deep .agent-customization-form .ant-select.ant-select-focused:not(.ant-select-disabled):not(.ant-select-customize-input) .ant-select-selector {
+      border-color: #1677ff !important;
+      box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.15) !important;
+    }
+    :host ::ng-deep .agent-customization-form .ant-input-number-focused .ant-input-number-input {
+      box-shadow: none !important;
+    }
     .create-agent-form { display: flex; flex-direction: column; gap: 4px; padding: 10px 12px; background: #f6f8fa; border-radius: 8px; border: 1px dashed #d9d9d9; margin-top: 4px; }
     .create-btns { display: flex; gap: 6px; margin-top: 6px; justify-content: flex-end; }
+    .mcp-create-btns .mcp-add-btn.ant-btn-primary,
+    .mcp-create-btns .mcp-add-btn.ant-btn-primary:not(:disabled) {
+      background: #1677ff;
+      border-color: #1677ff;
+      color: #fff;
+    }
+    .mcp-create-btns .mcp-add-btn.ant-btn-primary:hover:not(:disabled),
+    .mcp-create-btns .mcp-add-btn.ant-btn-primary:focus-visible:not(:disabled) {
+      background: #0958d9;
+      border-color: #0958d9;
+      color: #fff;
+    }
+    .mcp-create-btns .mcp-cancel-btn.ant-btn:hover:not(:disabled),
+    .mcp-create-btns .mcp-cancel-btn.ant-btn:focus-visible:not(:disabled) {
+      border-color: #ff4d4f !important;
+      color: #ff4d4f !important;
+    }
     .provider-opt { display: flex; align-items: center; gap: 6px; }
     .provider-opt-icon { width: 16px; height: 16px; border-radius: 3px; object-fit: contain; }
     .field-hint { font-size: 11px; color: #999; margin-top: 2px; }
@@ -434,6 +487,18 @@ import { ApiClientService } from '../../services/api-client.service';
     .aai-row:last-child { margin-bottom: 0; }
     .aai-label { font-weight: 600; color: #333; margin-right: 4px; }
     .save-hint { font-size: 11px; color: #999; margin-top: 4px; }
+    .admin-stats-btn.ant-btn,
+    .admin-stats-btn.ant-btn:not(:disabled) {
+      background: #1677ff;
+      border-color: #1677ff;
+      color: #fff;
+    }
+    .admin-stats-btn.ant-btn:hover:not(:disabled),
+    .admin-stats-btn.ant-btn:focus-visible:not(:disabled) {
+      background: #0958d9;
+      border-color: #0958d9;
+      color: #fff;
+    }
     .memory-empty-inline { padding: 8px 0; }
     .memory-item.project { border-color: #d9e8ff; background: #f0f7ff; }
     .empty-hint { font-size: 12px; color: #999; }
@@ -454,6 +519,26 @@ import { ApiClientService } from '../../services/api-client.service';
     .context-json { font-size: 11px; background: #f5f5f5; padding: 10px; border-radius: 6px; overflow: auto; max-height: 300px; white-space: pre-wrap; word-break: break-all; }
     .tool-groups-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px 8px; }
     .tool-groups-grid label { font-size: 12px; }
+    :host ::ng-deep .tool-groups-grid .ant-checkbox-wrapper:hover .ant-checkbox-inner,
+    :host ::ng-deep .tool-groups-grid .ant-checkbox:hover .ant-checkbox-inner {
+      border-color: #1677ff !important;
+    }
+    :host ::ng-deep .tool-groups-grid .ant-checkbox-checked .ant-checkbox-inner {
+      background-color: #1677ff !important;
+      border-color: #1677ff !important;
+    }
+    :host ::ng-deep .tool-groups-grid .ant-checkbox-input:focus + .ant-checkbox-inner {
+      border-color: #1677ff !important;
+      box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.15) !important;
+    }
+    :host ::ng-deep textarea.custom-instructions-input.ant-input:hover {
+      border-color: #1677ff !important;
+    }
+    :host ::ng-deep textarea.custom-instructions-input.ant-input:focus,
+    :host ::ng-deep textarea.custom-instructions-input.ant-input-focused {
+      border-color: #1677ff !important;
+      box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.15) !important;
+    }
     .mcp-server-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
     .mcp-server-item { padding: 10px 12px; background: #fafafa; border-radius: 8px; border: 1px solid #f0f0f0; }
     .mcp-status { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #d9d9d9; }

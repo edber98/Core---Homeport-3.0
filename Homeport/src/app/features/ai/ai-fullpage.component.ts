@@ -27,7 +27,7 @@ import { AiSettingsComponent } from './ai-settings.component';
       <div class="fp-sidebar" [class.collapsed]="sidebarCollapsed">
         <div class="sidebar-header">
           <span class="sidebar-title" *ngIf="!sidebarCollapsed">Conversations</span>
-          <button nz-button nzType="text" nzSize="small" (click)="sidebarCollapsed = !sidebarCollapsed"
+          <button nz-button nzType="text" nzSize="small" class="sidebar-toggle-btn" (click)="sidebarCollapsed = !sidebarCollapsed"
             nz-tooltip [nzTooltipTitle]="sidebarCollapsed ? 'Afficher' : 'Masquer'">
             <span nz-icon [nzType]="sidebarCollapsed ? 'menu-unfold' : 'menu-fold'" nzTheme="outline"></span>
           </button>
@@ -37,6 +37,7 @@ import { AiSettingsComponent } from './ai-settings.component';
           <!-- Agent selector -->
           <div class="sidebar-agent">
             <nz-select
+              class="sidebar-agent-select"
               [(ngModel)]="selectedAgentId"
               (ngModelChange)="onAgentChange($event)"
               nzPlaceHolder="Agent"
@@ -66,7 +67,7 @@ import { AiSettingsComponent } from './ai-settings.component';
 
           <!-- New thread button -->
           <div class="sidebar-new">
-            <button nz-button nzType="primary" nzSize="small" nzBlock (click)="newThread()">
+            <button nz-button nzType="primary" nzSize="small" nzBlock class="new-thread-btn" (click)="newThread()">
               <span nz-icon nzType="plus" nzTheme="outline"></span> Nouvelle conversation
             </button>
           </div>
@@ -118,7 +119,7 @@ import { AiSettingsComponent } from './ai-settings.component';
               <span nz-icon nzType="robot" nzTheme="outline" class="empty-icon"></span>
               <h3>Assistant IA</h3>
               <p>Sélectionnez une conversation ou créez-en une nouvelle.</p>
-              <button nz-button nzType="primary" (click)="newThread()">
+              <button nz-button nzType="primary" class="new-thread-btn" (click)="newThread()">
                 <span nz-icon nzType="plus" nzTheme="outline"></span> Nouvelle conversation
               </button>
             </div>
@@ -139,17 +140,17 @@ import { AiSettingsComponent } from './ai-settings.component';
                 </span>
               </div>
               <div class="chat-actions">
-                <button nz-button nzType="text" nzSize="small" (click)="regenerateTitle()"
-                  nz-tooltip nzTooltipTitle="Régénérer le titre" [nzLoading]="regeneratingTitle">
+                <button nz-button nzType="text" nzSize="small" class="chat-action-btn" (click)="regenerateTitle()"
+                  nz-tooltip nzTooltipTitle="Régénérer le titre" nzTooltipOverlayClassName="chat-action-tooltip" [nzLoading]="regeneratingTitle">
                   <span nz-icon nzType="reload" nzTheme="outline"></span>
                 </button>
-                <button nz-button nzType="text" nzSize="small" (click)="duplicateThread()"
-                  nz-tooltip nzTooltipTitle="Dupliquer la conversation">
+                <button nz-button nzType="text" nzSize="small" class="chat-action-btn" (click)="duplicateThread()"
+                  nz-tooltip nzTooltipTitle="Dupliquer la conversation" nzTooltipOverlayClassName="chat-action-tooltip">
                   <span nz-icon nzType="copy" nzTheme="outline"></span>
                 </button>
-                <button nz-button nzType="text" nzSize="small"
-                  nz-popover [nzPopoverContent]="settingsPopover" nzPopoverTrigger="click" nzPopoverPlacement="bottomRight"
-                  nz-tooltip nzTooltipTitle="Paramètres">
+                <button nz-button nzType="text" nzSize="small" class="chat-action-btn"
+                  nz-popover [nzPopoverContent]="settingsPopover" nzPopoverTrigger="click" nzPopoverPlacement="bottomRight" nzPopoverOverlayClassName="thread-settings-popover"
+                  nz-tooltip nzTooltipTitle="Paramètres" nzTooltipOverlayClassName="chat-action-tooltip">
                   <span nz-icon nzType="setting" nzTheme="outline"></span>
                 </button>
               </div>
@@ -224,11 +225,36 @@ import { AiSettingsComponent } from './ai-settings.component';
     .fp-layout { display: flex; height: 100%; background: #fff; }
 
     /* Sidebar */
-    .fp-sidebar { width: 300px; border-right: 1px solid #f0f0f0; display: flex; flex-direction: column; flex-shrink: 0; background: #fafafa; transition: width 0.2s ease; }
+    .fp-sidebar { width: 300px; border-right: 1px solid #f0f0f0; display: flex; flex-direction: column; flex-shrink: 0; background: #fff; transition: width 0.2s ease; }
     .fp-sidebar.collapsed { width: 48px; }
     .sidebar-header { display: flex; align-items: center; justify-content: space-between; padding: 12px; border-bottom: 1px solid #f0f0f0; }
     .sidebar-title { font-weight: 600; font-size: 15px; }
+    .sidebar-toggle-btn,
+    .chat-action-btn {
+      border-radius: 8px;
+      transition: background .15s, color .15s, box-shadow .15s, transform .08s;
+    }
+    .sidebar-toggle-btn:hover:not(:disabled),
+    .sidebar-toggle-btn:focus-visible:not(:disabled),
+    .chat-action-btn:hover:not(:disabled),
+    .chat-action-btn:focus-visible:not(:disabled) {
+      background: rgba(22,119,255,0.1) !important;
+      color: #1677ff !important;
+      box-shadow: 0 4px 12px rgba(22,119,255,0.18);
+      transform: translateY(-1px);
+    }
     .sidebar-agent { padding: 8px 12px 0; }
+    :host ::ng-deep .sidebar-agent-select .ant-select-selector:hover {
+      border-color: #1677ff !important;
+    }
+    :host ::ng-deep .sidebar-agent-select .ant-select-focused .ant-select-selector,
+    :host ::ng-deep .sidebar-agent-select .ant-select-open .ant-select-selector,
+    :host ::ng-deep .sidebar-agent-select .ant-select.ant-select-focused:not(.ant-select-disabled):not(.ant-select-customize-input) .ant-select-selector,
+    :host ::ng-deep .sidebar-agent-select.ant-select-focused .ant-select-selector,
+    :host ::ng-deep .sidebar-agent-select.ant-select-open .ant-select-selector {
+      border-color: #1677ff !important;
+      box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.15) !important;
+    }
     .sidebar-new { padding: 8px 12px; }
     .sidebar-threads { flex: 1; overflow-y: auto; padding: 4px 8px; }
     .sidebar-bottom { padding: 8px 12px; border-top: 1px solid #f0f0f0; }
@@ -256,6 +282,22 @@ import { AiSettingsComponent } from './ai-settings.component';
 
     .empty-threads { padding: 30px 10px; }
     .active-btn { color: #1677ff !important; }
+    .new-thread-btn.ant-btn-primary,
+    .new-thread-btn.ant-btn-primary:not(:disabled) {
+      background: #1677ff;
+      border-color: #1677ff;
+      color: #fff;
+    }
+    .new-thread-btn.ant-btn-primary:hover,
+    .new-thread-btn.ant-btn-primary:focus-visible {
+      background: #0958d9;
+      border-color: #0958d9;
+      color: #fff;
+    }
+    .new-thread-btn.ant-btn-primary:active {
+      background: #003eb3;
+      border-color: #003eb3;
+    }
 
     /* Main */
     .fp-main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
@@ -272,6 +314,24 @@ import { AiSettingsComponent } from './ai-settings.component';
     .linked-link { display: flex; align-items: center; gap: 3px; font-size: 11px; color: #1677ff; cursor: pointer; padding: 1px 6px; border-radius: 4px; text-decoration: none; white-space: nowrap; }
     .linked-link:hover { background: rgba(22,119,255,0.1); }
     .chat-actions { margin-left: auto; display: flex; gap: 2px; }
+    :host ::ng-deep .chat-action-tooltip .ant-tooltip-inner {
+      font-size: 10px;
+      line-height: 1.15;
+      padding: 4px 6px;
+    }
+    ::ng-deep .thread-settings-popover .settings-popover .ant-input:hover,
+    ::ng-deep .thread-settings-popover .settings-popover .ant-select:not(.ant-select-disabled):hover .ant-select-selector,
+    ::ng-deep .thread-settings-popover .settings-popover .ant-select-selector:hover {
+      border-color: #1677ff !important;
+    }
+    ::ng-deep .thread-settings-popover .settings-popover .ant-input:focus,
+    ::ng-deep .thread-settings-popover .settings-popover .ant-input-focused,
+    ::ng-deep .thread-settings-popover .settings-popover .ant-select-focused .ant-select-selector,
+    ::ng-deep .thread-settings-popover .settings-popover .ant-select-open .ant-select-selector,
+    ::ng-deep .thread-settings-popover .settings-popover .ant-select.ant-select-focused:not(.ant-select-disabled):not(.ant-select-customize-input) .ant-select-selector {
+      border-color: #1677ff !important;
+      box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.15) !important;
+    }
     .settings-popover { width: 280px; }
     .sp-field { margin-bottom: 10px; }
     .sp-field:last-child { margin-bottom: 0; }
