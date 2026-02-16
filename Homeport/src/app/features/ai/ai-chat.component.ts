@@ -203,7 +203,7 @@ interface StreamTool {
       <!-- Normal text input -->
       <div class="input-row" *ngIf="!audio.recording()">
         <div class="input-prefix">
-          <button nz-button nzType="text" nzSize="small"
+          <button nz-button nzType="text" nzSize="small" class="voice-btn"
             (click)="toggleMic()"
             [disabled]="ai.streaming() || audio.transcribing()"
             nz-tooltip nzTooltipTitle="Enregistrement vocal">
@@ -223,7 +223,7 @@ interface StreamTool {
           <button *ngIf="ai.streaming()" nz-button nzType="text" nzSize="small" nzDanger (click)="stopStream()">
             <span nz-icon nzType="pause-circle" nzTheme="outline"></span>
           </button>
-          <button *ngIf="!ai.streaming()" nz-button nzType="text" nzSize="small" (click)="send()" [disabled]="!inputText.trim()">
+          <button *ngIf="!ai.streaming()" nz-button nzType="text" nzSize="small" class="chat-send-btn" (click)="send()" [disabled]="!inputText.trim()">
             <span nz-icon nzType="send" nzTheme="outline"></span>
           </button>
         </div>
@@ -309,6 +309,20 @@ interface StreamTool {
     .input-row textarea { flex: 1; border: none !important; outline: none !important; box-shadow: none !important; resize: none; padding: 4px 0; font-size: 14px; line-height: 1.5; background: transparent; }
     .input-row textarea:focus { box-shadow: none !important; }
     .input-prefix, .input-suffix { display: flex; align-items: center; flex-shrink: 0; height: 29px; }
+    .voice-btn,
+    .chat-send-btn {
+      border-radius: 8px;
+      transition: background .15s, color .15s, box-shadow .15s, transform .08s;
+    }
+    .voice-btn:hover:not(:disabled),
+    .voice-btn:focus-visible:not(:disabled),
+    .chat-send-btn:hover:not(:disabled),
+    .chat-send-btn:focus-visible:not(:disabled) {
+      background: rgba(22,119,255,0.1) !important;
+      color: #1677ff !important;
+      box-shadow: 0 4px 12px rgba(22,119,255,0.18);
+      transform: translateY(-1px);
+    }
     .recording-row { align-items: center !important; gap: 8px !important; padding: 6px 12px !important; overflow: hidden; }
     .waveform-canvas { flex: 1; width: 0; height: 32px; min-width: 0; display: block; }
     .mic-timer { font-size: 12px; color: #ff4d4f; font-weight: 600; flex-shrink: 0; min-width: 28px; text-align: center; }
