@@ -117,7 +117,7 @@
                 </button>
               </ng-template>
               <ng-template #aiSuffixTpl>
-                <button nz-button nzType="primary" nzSize="small" nzShape="circle" (click)="sendAiMessage()" [disabled]="!aiInput.trim()">
+                <button nz-button nzType="primary" nzSize="small" nzShape="circle" class="ai-send-btn" (click)="sendAiMessage()" [disabled]="!aiInput.trim()">
                   <i class="fa-solid fa-paper-plane"></i>
                 </button>
               </ng-template>
@@ -156,9 +156,9 @@
               <div class="row-main">
                 <div class="row-name">{{ f.name }}</div>
                 <div class="row-detail">
-                  <nz-tag nzColor="default" class="mini-tag">{{ f.runCount }} exec.</nz-tag>
-                  <nz-tag nzColor="green" class="mini-tag">{{ f.successCount }} succès</nz-tag>
-                  <nz-tag *ngIf="f.errorCount > 0" nzColor="red" class="mini-tag">{{ f.errorCount }} erreurs</nz-tag>
+                  <span class="flow-stat flow-stat-runs">{{ f.runCount }} exec.</span>
+                  <span class="flow-stat flow-stat-success">{{ f.successCount }} succès</span>
+                  <span *ngIf="f.errorCount > 0" class="flow-stat flow-stat-error">{{ f.errorCount }} erreurs</span>
                 </div>
               </div>
               <div class="row-right muted">{{ formatDuration(f.avgDurationMs) }}</div>

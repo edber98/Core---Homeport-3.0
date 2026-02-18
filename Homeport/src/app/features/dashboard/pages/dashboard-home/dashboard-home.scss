@@ -2,6 +2,7 @@
   display: block;
   height: 100%;
   min-height: 0;
+  --heatmap-chart-height: 190px;
 }
 
 .dash {
@@ -86,7 +87,6 @@
   background: #ffffff;
   border: 1px solid #e2e8f0;
   border-radius: 14px;
-  box-shadow: 0 6px 22px rgba(15, 23, 42, 0.04);
 }
 
 .panel {
@@ -100,6 +100,88 @@
 .panel-scroll {
   min-height: 0;
   overflow: auto;
+}
+
+/* List panels: place scrollbar flush to the card right edge + nicer styling */
+.panel-topflows .panel-scroll,
+.panel-topnodes .panel-scroll,
+.panel-production .panel-scroll,
+.panel-runs .panel-scroll {
+  width: calc(100% + 12px);
+  padding-right: 12px;
+  box-sizing: border-box;
+  position: relative;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-gutter: stable both-edges;
+  scrollbar-width: thin;
+  scrollbar-color: #94a3b8 transparent;
+}
+
+.panel-topflows .panel-scroll::-webkit-scrollbar,
+.panel-topnodes .panel-scroll::-webkit-scrollbar,
+.panel-production .panel-scroll::-webkit-scrollbar,
+.panel-runs .panel-scroll::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+
+.panel-topflows .panel-scroll::-webkit-scrollbar-button,
+.panel-topnodes .panel-scroll::-webkit-scrollbar-button,
+.panel-production .panel-scroll::-webkit-scrollbar-button,
+.panel-runs .panel-scroll::-webkit-scrollbar-button,
+.panel-topflows .panel-scroll::-webkit-scrollbar-button:single-button,
+.panel-topnodes .panel-scroll::-webkit-scrollbar-button:single-button,
+.panel-production .panel-scroll::-webkit-scrollbar-button:single-button,
+.panel-runs .panel-scroll::-webkit-scrollbar-button:single-button,
+.panel-topflows .panel-scroll::-webkit-scrollbar-button:vertical:decrement,
+.panel-topnodes .panel-scroll::-webkit-scrollbar-button:vertical:decrement,
+.panel-production .panel-scroll::-webkit-scrollbar-button:vertical:decrement,
+.panel-runs .panel-scroll::-webkit-scrollbar-button:vertical:decrement,
+.panel-topflows .panel-scroll::-webkit-scrollbar-button:vertical:increment,
+.panel-topnodes .panel-scroll::-webkit-scrollbar-button:vertical:increment,
+.panel-production .panel-scroll::-webkit-scrollbar-button:vertical:increment,
+.panel-runs .panel-scroll::-webkit-scrollbar-button:vertical:increment {
+  display: none !important;
+  -webkit-appearance: none;
+  width: 0 !important;
+  height: 0 !important;
+  background: transparent !important;
+}
+
+.panel-topflows .panel-scroll::-webkit-scrollbar-track,
+.panel-topnodes .panel-scroll::-webkit-scrollbar-track,
+.panel-production .panel-scroll::-webkit-scrollbar-track,
+.panel-runs .panel-scroll::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 9999px;
+}
+
+.panel-topflows .panel-scroll::-webkit-scrollbar-thumb,
+.panel-topnodes .panel-scroll::-webkit-scrollbar-thumb,
+.panel-production .panel-scroll::-webkit-scrollbar-thumb,
+.panel-runs .panel-scroll::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgba(148, 163, 184, 0.85) 0%, rgba(100, 116, 139, 0.95) 100%);
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  min-height: 34px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.panel-topflows .panel-scroll::-webkit-scrollbar-thumb:hover,
+.panel-topnodes .panel-scroll::-webkit-scrollbar-thumb:hover,
+.panel-production .panel-scroll::-webkit-scrollbar-thumb:hover,
+.panel-runs .panel-scroll::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, rgba(59, 130, 246, 0.92) 0%, rgba(37, 99, 235, 0.98) 100%);
+  box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.38);
+}
+
+.panel-topflows .panel-scroll::-webkit-scrollbar-thumb:active,
+.panel-topnodes .panel-scroll::-webkit-scrollbar-thumb:active,
+.panel-production .panel-scroll::-webkit-scrollbar-thumb:active,
+.panel-runs .panel-scroll::-webkit-scrollbar-thumb:active {
+  background: linear-gradient(180deg, rgba(37, 99, 235, 0.98) 0%, rgba(29, 78, 216, 1) 100%);
 }
 
 .panel-kpis {
@@ -221,6 +303,16 @@
   min-height: 0;
 }
 
+.panel-heatmap {
+  align-self: start;
+}
+
+.panel-heatmap .chart-wrap-lg {
+  height: var(--heatmap-chart-height);
+  min-height: var(--heatmap-chart-height);
+  flex: 0 0 var(--heatmap-chart-height);
+}
+
 .panel-ai {
   border: 1px solid #dbeafe;
   background: linear-gradient(135deg, #fbfdff 0%, #f4f9ff 100%);
@@ -284,13 +376,48 @@
   overflow: hidden;
 }
 
-.ai-input-group ::ng-deep .ant-input-group-addon,
-.ai-input-group ::ng-deep .ant-input {
+.ai-input-group ::ng-deep .ant-input-affix-wrapper {
   border-radius: 10px !important;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
-.ai-input-group ::ng-deep .ant-input {
+:host ::ng-deep .ai-input-group .ant-input-affix-wrapper .ant-input {
   font-size: 13px;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+:host ::ng-deep .ai-input-group .ant-input-affix-wrapper:not(.ant-input-affix-wrapper-disabled):hover,
+:host ::ng-deep .ai-input-group .ant-input-affix-wrapper-focused,
+:host ::ng-deep .ai-input-group .ant-input-affix-wrapper:focus-within {
+  border: 1px solid #1677ff !important;
+  border-right-width: 1px !important;
+  z-index: 1;
+  box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.15) !important;
+}
+
+.ai-input-group ::ng-deep .ai-send-btn.ant-btn-primary {
+  background: #1677ff;
+  border-color: #1677ff;
+  color: #ffffff;
+}
+
+.ai-input-group ::ng-deep .ai-send-btn.ant-btn-primary:hover,
+.ai-input-group ::ng-deep .ai-send-btn.ant-btn-primary:focus {
+  background: #4096ff;
+  border-color: #4096ff;
+}
+
+.ai-input-group ::ng-deep .ai-send-btn.ant-btn-primary:active {
+  background: #0958d9;
+  border-color: #0958d9;
+}
+
+.ai-input-group ::ng-deep .ai-send-btn.ant-btn-primary[disabled],
+.ai-input-group ::ng-deep .ai-send-btn.ant-btn-primary:disabled {
+  background: #91caff;
+  border-color: #91caff;
+  color: #ffffff;
 }
 
 .ai-input {
@@ -437,6 +564,23 @@
   font-size: 10px;
 }
 
+.flow-stat {
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.flow-stat-runs {
+  color: #475569;
+}
+
+.flow-stat-success {
+  color: #16a34a;
+}
+
+.flow-stat-error {
+  color: #dc2626;
+}
+
 .row-right {
   flex-shrink: 0;
   font-size: 11px;
@@ -520,14 +664,28 @@
 
 @media (max-width: 1023px) {
   .dash {
+    height: auto;
+    min-height: 100%;
+    padding: 10px;
     overflow: auto;
+  }
+
+  .page-header {
+    gap: 10px;
+    margin-bottom: 10px;
   }
 
   .dashboard-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    align-items: start;
   }
 
   .panel-kpis {
+    grid-column: 1 / -1;
+  }
+
+  .panel-heatmap {
     grid-column: 1 / -1;
   }
 
@@ -541,6 +699,71 @@
 
   .kpis-matrix {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: auto;
+    grid-auto-rows: minmax(92px, auto);
+  }
+
+  .kpi-intro {
+    grid-column: 1 / -1;
+    height: auto;
+    min-height: 90px;
+  }
+
+  .kpi-chip {
+    height: auto;
+  }
+
+  .panel-topflows .panel-scroll,
+  .panel-topnodes .panel-scroll,
+  .panel-production .panel-scroll,
+  .panel-runs .panel-scroll,
+  .panel-notifications .panel-scroll {
+    max-height: min(34vh, 260px);
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1023px) {
+  .dash {
+    height: 100%;
+    overflow: hidden;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: 10px;
+  }
+
+  .page-header {
+    margin-bottom: 0;
+  }
+
+  .dashboard-grid {
+    min-height: 0;
+    height: 100%;
+    overflow: hidden;
+    grid-template-rows: auto auto auto minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .panel-topflows,
+  .panel-topnodes,
+  .panel-production,
+  .panel-runs,
+  .panel-notifications {
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .panel-topflows .panel-scroll,
+  .panel-topnodes .panel-scroll,
+  .panel-production .panel-scroll,
+  .panel-runs .panel-scroll,
+  .panel-notifications .panel-scroll {
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: none;
+    overflow: auto;
+  }
+
+  .panel-notifications {
+    grid-column: 1 / -1;
   }
 }
 
@@ -634,18 +857,58 @@
     padding: 10px;
   }
 
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
   .dashboard-grid {
     grid-template-columns: 1fr;
     gap: 10px;
   }
 
+  .card {
+    border-radius: 12px;
+  }
+
   .panel {
     padding: 10px;
+    gap: 8px;
+  }
+
+  .panel-scroll {
+    overflow: visible;
+    max-height: none !important;
+  }
+
+  .panel-topflows .panel-scroll,
+  .panel-topnodes .panel-scroll,
+  .panel-production .panel-scroll,
+  .panel-runs .panel-scroll {
+    width: calc(100% + 10px);
+    padding-right: 10px;
+    overflow-y: auto;
+    overflow-x: hidden;
   }
 
   .kpis-matrix {
     grid-template-columns: 1fr 1fr;
     gap: 8px;
+    grid-auto-rows: minmax(84px, auto);
+  }
+
+  .kpi-intro {
+    min-height: 82px;
+    padding: 9px;
+  }
+
+  .kpi-chip {
+    padding: 9px;
   }
 
   .k-value {
@@ -659,11 +922,35 @@
   .card-title .s {
     font-size: 11px;
   }
+
+  .ai-content,
+  .ai-main {
+    gap: 8px;
+  }
+
+  .ai-hints {
+    margin-top: 2px;
+  }
+
+  .ai-hint {
+    min-height: 28px;
+    padding: 3px 8px;
+  }
+
+  .notif-header {
+    gap: 8px;
+    flex-wrap: wrap;
+  }
 }
 
 @media (max-width: 480px) {
   .kpis-matrix {
     grid-template-columns: 1fr;
+    grid-auto-rows: minmax(74px, auto);
+  }
+
+  .kpi-intro {
+    min-height: 72px;
   }
 
   .token-inline {
@@ -672,5 +959,16 @@
 
   .list-row {
     padding: 7px 4px;
+  }
+
+  .row-name {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+    line-height: 1.2;
+  }
+
+  .row-detail {
+    row-gap: 4px;
   }
 }

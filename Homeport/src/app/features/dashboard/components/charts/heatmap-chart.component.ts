@@ -55,10 +55,10 @@ export interface HeatmapPoint { date: string; total: number; success: number; er
     </div>
   `,
   styles: [`
-    :host { display: block; height: 100%; min-height: 0; }
-    .heatmap-wrap { position: relative; height: 100%; min-height: 0; display: flex; flex-direction: column; }
-    .heatmap-scroll { flex: 1 1 auto; min-height: 0; overflow: hidden; }
-    .heatmap-svg { display: block; max-width: 100%; }
+    :host { display: block; width: 100%; min-width: 0; height: 100%; min-height: 0; }
+    .heatmap-wrap { position: relative; width: 100%; min-width: 0; height: 100%; min-height: 0; display: flex; flex-direction: column; }
+    .heatmap-scroll { flex: 1 1 auto; width: 100%; max-width: 100%; min-width: 0; min-height: 0; overflow-x: auto; overflow-y: hidden; }
+    .heatmap-svg { display: block; max-width: none; }
     .cell { cursor: pointer; }
     .month-label { font-size: 9px; fill: #6b7280; font-family: inherit; }
     .day-label { font-size: 9px; fill: #94a3b8; font-family: inherit; dominant-baseline: middle; }
@@ -136,13 +136,9 @@ export class HeatmapChartComponent implements OnChanges, AfterViewInit, OnDestro
   ngOnChanges(): void { this.compute(); }
 
   private compute() {
-    // Auto-size: fill the available section without horizontal overflow.
     const host = this.elRef?.nativeElement as HTMLElement;
     const containerWidth = Math.max(320, host?.offsetWidth || 700);
     const containerHeight = Math.max(140, host?.offsetHeight || 220);
-    const plotWidth = Math.max(120, containerWidth - this.leftPad);
-    const legendReserve = 24;
-    const plotHeight = Math.max(72, containerHeight - this.topPad - legendReserve);
 
     // Build date map
     const map = new Map<string, HeatmapPoint>();
@@ -171,14 +167,22 @@ export class HeatmapChartComponent implements OnChanges, AfterViewInit, OnDestro
     // Calculate number of weeks (columns)
     const totalSlots = startDow + allDays.length;
     const numWeeks = Math.ceil(totalSlots / 7);
+    const legendReserve = 24;
+    const plotHeight = Math.max(72, containerHeight - this.topPad - legendReserve);
+
+    // Keep a baseline width so small containers scroll horizontally instead of shrinking cells.
+    // On larger containers, cells scale to use available space.
+    const minPlotWidth = 760;
+    const plotWidth = Math.max(minPlotWidth, containerWidth - this.leftPad);
     const stepX = plotWidth / Math.max(1, numWeeks);
     const stepY = plotHeight / 7;
     const minInnerGap = 1;
-    const cellSize = Math.max(2, Math.min(stepX, stepY) - minInnerGap);
+    const rawCellSize = Math.min(stepX, stepY) - minInnerGap;
+    const cellSize = Math.max(11, Math.min(16, rawCellSize));
     this.cellWidth = cellSize;
     this.cellHeight = cellSize;
-    this.colGap = Math.max(0.25, stepX - cellSize);
-    this.rowGap = Math.max(0.25, stepY - cellSize);
+    this.colGap = Math.max(1, stepX - cellSize);
+    this.rowGap = Math.max(1, stepY - cellSize);
 
     // Find max
     let maxVal = 0;

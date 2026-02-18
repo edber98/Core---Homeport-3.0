@@ -47,6 +47,59 @@ body.cdk-global-scrollblock { overflow: auto !important; -webkit-overflow-scroll
     --hp-menu-hover-bg: radial-gradient(100% 100% at 100% 0%, #f5f7ff 0%, #eaeefc 100%);
 }
 
+/* AI inputs: force blue hover/focus border instead of default dark border */
+ai-fullpage .ant-input-affix-wrapper:not(.ant-input-affix-wrapper-disabled):hover,
+ai-fullpage .ant-input-affix-wrapper-focused,
+ai-fullpage .ant-input-affix-wrapper:focus-within,
+app-dashboard-home .ant-input-affix-wrapper:not(.ant-input-affix-wrapper-disabled):hover,
+app-dashboard-home .ant-input-affix-wrapper-focused,
+app-dashboard-home .ant-input-affix-wrapper:focus-within {
+  border-color: #1677ff !important;
+  border-right-width: 1px !important;
+  z-index: 1;
+}
+
+ai-fullpage .ant-input-affix-wrapper-focused,
+ai-fullpage .ant-input-affix-wrapper:focus-within,
+app-dashboard-home .ant-input-affix-wrapper-focused,
+app-dashboard-home .ant-input-affix-wrapper:focus-within {
+  box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.15) !important;
+}
+
+/* Dashboard list panels: hard-hide scrollbar arrow buttons (browser stepper buttons) */
+app-dashboard-home .panel-topflows .panel-scroll::-webkit-scrollbar-button,
+app-dashboard-home .panel-topnodes .panel-scroll::-webkit-scrollbar-button,
+app-dashboard-home .panel-production .panel-scroll::-webkit-scrollbar-button,
+app-dashboard-home .panel-runs .panel-scroll::-webkit-scrollbar-button,
+app-dashboard-home .panel-topflows .panel-scroll::-webkit-scrollbar-button:single-button,
+app-dashboard-home .panel-topnodes .panel-scroll::-webkit-scrollbar-button:single-button,
+app-dashboard-home .panel-production .panel-scroll::-webkit-scrollbar-button:single-button,
+app-dashboard-home .panel-runs .panel-scroll::-webkit-scrollbar-button:single-button,
+app-dashboard-home .panel-topflows .panel-scroll::-webkit-scrollbar-button:start:decrement,
+app-dashboard-home .panel-topnodes .panel-scroll::-webkit-scrollbar-button:start:decrement,
+app-dashboard-home .panel-production .panel-scroll::-webkit-scrollbar-button:start:decrement,
+app-dashboard-home .panel-runs .panel-scroll::-webkit-scrollbar-button:start:decrement,
+app-dashboard-home .panel-topflows .panel-scroll::-webkit-scrollbar-button:end:increment,
+app-dashboard-home .panel-topnodes .panel-scroll::-webkit-scrollbar-button:end:increment,
+app-dashboard-home .panel-production .panel-scroll::-webkit-scrollbar-button:end:increment,
+app-dashboard-home .panel-runs .panel-scroll::-webkit-scrollbar-button:end:increment,
+app-dashboard-home .panel-topflows .panel-scroll::-webkit-scrollbar-button:vertical:decrement,
+app-dashboard-home .panel-topnodes .panel-scroll::-webkit-scrollbar-button:vertical:decrement,
+app-dashboard-home .panel-production .panel-scroll::-webkit-scrollbar-button:vertical:decrement,
+app-dashboard-home .panel-runs .panel-scroll::-webkit-scrollbar-button:vertical:decrement,
+app-dashboard-home .panel-topflows .panel-scroll::-webkit-scrollbar-button:vertical:increment,
+app-dashboard-home .panel-topnodes .panel-scroll::-webkit-scrollbar-button:vertical:increment,
+app-dashboard-home .panel-production .panel-scroll::-webkit-scrollbar-button:vertical:increment,
+app-dashboard-home .panel-runs .panel-scroll::-webkit-scrollbar-button:vertical:increment {
+  -webkit-appearance: none !important;
+  appearance: none !important;
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+}
+
 /* iOS-safe drawer: ensure touch/scroll are contained within the drawer and do not leak to background DnD/canvas */
 .ios-safe-drawer .ant-drawer-body {
     -webkit-overflow-scrolling: touch;
