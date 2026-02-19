@@ -375,6 +375,12 @@ export class AiChatComponent {
   expandedTools = new Set<StreamSegment>();
   thinkingIteration = 0;
   interrupted = false;
+
+  // Rotator: minimum display time per tool (avoids flashing for fast tools)
+  private readonly ROTATOR_MIN_MS = 400;
+  private _rotatorId: string | null = null;
+  private _rotatorTimer: any = null;
+  private _rotatorSwitchedAt = 0;
   @ViewChild('scrollContainer') scrollContainer?: ElementRef<HTMLDivElement>;
   @ViewChild('waveformCanvas') waveformCanvas?: ElementRef<HTMLCanvasElement>;
 
@@ -438,6 +444,7 @@ export class AiChatComponent {
     this.streamError = null;
     this.thinkingIteration = 0;
     this.interrupted = false;
+    this.resetRotator();
 
     const { events$, stop } = await this.ai.quickSend(text);
     this.stopFn = stop;
@@ -540,6 +547,7 @@ export class AiChatComponent {
   private processStreamEvent(ev: AiStreamEvent) {
     switch (ev.type) {
       case 'message': {
+        this.resetRotator(); // Text streaming → collapse tools immediately
         const text = (ev as any).text || '';
         const last = this.segments[this.segments.length - 1];
         if (last && last.type === 'text') {
@@ -573,6 +581,7 @@ export class AiChatComponent {
         } else {
           this.segments = [...this.segments, { type: 'tools', tools: [tool] }];
         }
+        this.updateRotator();
         break;
       }
       case 'tool.input_delta': {
@@ -609,7 +618,6 @@ export class AiChatComponent {
         // Pre-resolved displayTitle from backend DB lookup — update running tool immediately
         const titleId = (ev as any).id;
         const titleValue = (ev as any).displayTitle;
-        console.log(`[ai-chat] tool.title: id=${titleId}, displayTitle="${titleValue}"`);
         this.segments = this.segments.map(seg => {
           if (seg.type !== 'tools' || !seg.tools) return seg;
           const idx = seg.tools.findIndex(t => t.id === titleId);
@@ -619,6 +627,7 @@ export class AiChatComponent {
           );
           return { ...seg, tools: updatedTools };
         });
+        this.updateRotator(); // displayTitle now available → rotator can show this tool
         break;
       }
       case 'tool.end': {
@@ -653,6 +662,7 @@ export class AiChatComponent {
             this.segments = [...this.segments, { type: 'tools', tools: [tool] }];
           }
         }
+        this.updateRotator();
         break;
       }
       case 'error': {
@@ -674,6 +684,7 @@ export class AiChatComponent {
         break;
       }
       case 'done':
+        this.resetRotator();
         // Clear segments immediately to avoid duplication with final message from messages signal
         this.segments = [];
         this.thinkingIteration = 0;
@@ -737,27 +748,60 @@ export class AiChatComponent {
     return '';
   }
 
-  /** All completed tools (not running) — for collapsible list during streaming */
+  /** All completed tools excluding the one currently in the rotator — for collapsible during streaming */
   completedTools(tools: StreamTool[]): StreamTool[] {
-    return tools.filter(t => t.status !== 'running');
+    return tools.filter(t => t.status !== 'running' && t.id !== this._rotatorId);
   }
 
-  /** Returns a single-element array for *ngFor with trackBy — forces DOM recreation on tool change.
-   *  For execute_tool: defer showing until displayTitle is available (avoid "Exécution" flash). */
+  /** Returns single-element array for the rotator *ngFor — uses delayed switching for min display time */
   latestToolArray(tools: StreamTool[]): StreamTool[] {
-    if (!tools?.length) return [];
-    const last = tools[tools.length - 1];
-    // For execute_tool without displayTitle yet: wait for tool.title event
-    if (last.name === 'execute_tool' && !last.displayTitle && !last.args?.key) {
-      // Show previous tool (if any) while waiting
-      for (let i = tools.length - 2; i >= 0; i--) {
-        if (tools[i].name !== 'execute_tool' || tools[i].displayTitle || tools[i].args?.key) {
-          return [tools[i]];
-        }
-      }
-      return []; // No suitable tool to show yet
+    if (!this._rotatorId) return [];
+    const tool = tools.find(t => t.id === this._rotatorId);
+    return tool ? [tool] : [];
+  }
+
+  /** Evaluate which tool should be in the rotator — called after tool events */
+  private updateRotator() {
+    const lastSeg = this.segments[this.segments.length - 1];
+    if (lastSeg?.type !== 'tools' || !lastSeg.tools?.length) return;
+
+    const tools = lastSeg.tools;
+    // Find the best target tool to display
+    let targetId: string | null = null;
+    for (let i = tools.length - 1; i >= 0; i--) {
+      const t = tools[i];
+      // Skip execute_tool without displayTitle (waiting for tool.title)
+      if (t.name === 'execute_tool' && !t.displayTitle && !t.args?.key) continue;
+      targetId = t.id;
+      break;
     }
-    return [last];
+
+    if (!targetId || targetId === this._rotatorId) return;
+
+    const now = Date.now();
+    const elapsed = now - this._rotatorSwitchedAt;
+
+    if (!this._rotatorId || elapsed >= this.ROTATOR_MIN_MS) {
+      // Switch immediately
+      this._rotatorId = targetId;
+      this._rotatorSwitchedAt = now;
+      clearTimeout(this._rotatorTimer);
+    } else {
+      // Queue switch after remaining time
+      clearTimeout(this._rotatorTimer);
+      this._rotatorTimer = setTimeout(() => {
+        this.updateRotator();
+        this.cdr.detectChanges();
+        this.scrollToBottom();
+      }, this.ROTATOR_MIN_MS - elapsed);
+    }
+  }
+
+  /** Reset rotator state (on stream end or text start) */
+  private resetRotator() {
+    clearTimeout(this._rotatorTimer);
+    this._rotatorId = null;
+    this._rotatorSwitchedAt = 0;
   }
 
   trackToolRotate(_i: number, t: StreamTool): string { return t.id; }
