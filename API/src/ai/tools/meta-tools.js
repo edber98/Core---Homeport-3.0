@@ -379,11 +379,15 @@ async function executeMetaTool(name, input, ctx) {
     }
 
     case 'execute_tool': {
-      return await executeTool(input.key, input.args || {}, {
+      const { result, displayTitle } = await executeTool(input.key, input.args || {}, {
         workspaceId: ctx.workspaceId,
         companyId: ctx.companyId,
         userId: ctx.userId,
       });
+      // Ensure result is an object so _displayTitle side-channel can be attached
+      const out = (result && typeof result === 'object') ? result : { ok: true, data: result };
+      if (displayTitle) out._displayTitle = displayTitle;
+      return out;
     }
 
     case 'list_providers': {

@@ -29,6 +29,7 @@ export interface AiToolCall {
   result?: any;
   duration?: number;
   status?: 'success' | 'error';
+  displayTitle?: string;
 }
 
 export interface AiQuestionOption {
@@ -82,7 +83,8 @@ export type AiStreamEvent =
   | { type: 'message'; text: string }
   | { type: 'tool.start'; id: string; name: string }
   | { type: 'tool.input_delta'; id: string; name: string; text: string }
-  | { type: 'tool.end'; id: string; name: string; args?: any; result?: any; error?: string; status: string; duration?: number }
+  | { type: 'tool.title'; id: string; displayTitle: string }
+  | { type: 'tool.end'; id: string; name: string; args?: any; result?: any; error?: string; status: string; duration?: number; displayTitle?: string }
   | { type: 'question'; text: string; questionType: string; options?: AiQuestionOption[] }
   | { type: 'thread.title'; title: string }
   | { type: 'thread.update'; mode: string; flowId?: string; formId?: string }
@@ -337,6 +339,7 @@ export class AiService {
                 result: (event as any).result,
                 duration: (event as any).duration,
                 status: (event as any).status,
+                displayTitle: (event as any).displayTitle,
               };
               toolCalls.push(tc);
               // Track segment: append to last tools segment or create new one

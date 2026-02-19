@@ -7,6 +7,7 @@ const ToolCallSchema = new Schema({
   result: { type: Schema.Types.Mixed },
   duration: { type: Number },
   status: { type: String, enum: ['success', 'error', 'running'] },
+  displayTitle: { type: String },
 }, { _id: false });
 
 const QuestionItemSchema = new Schema({

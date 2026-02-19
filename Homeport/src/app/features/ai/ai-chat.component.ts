@@ -1,12 +1,12 @@
 import { Component, ElementRef, ViewChild, ChangeDetectorRef, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { trigger, transition, style, animate } from '@angular/animations';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzEmptyModule } from 'ng-zorro-antd/empty';
 import { NzTagModule } from 'ng-zorro-antd/tag';
-import { NzPopoverModule } from 'ng-zorro-antd/popover';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { AiService, AiStreamEvent } from './ai.service';
 import { AiAudioService } from './ai-audio.service';
@@ -57,12 +57,25 @@ interface StreamTool {
   id: string; name: string; status: 'running' | 'success' | 'error';
   duration?: number; args?: any; result?: any;
   inputJson?: string; // Partial JSON being streamed from LLM
+  displayTitle?: string;
 }
 
 @Component({
   selector: 'ai-chat',
   standalone: true,
-  imports: [CommonModule, FormsModule, NzInputModule, NzButtonModule, NzIconModule, NzEmptyModule, NzTagModule, NzPopoverModule, NzToolTipModule, AiMessageComponent, AiQuestionComponent],
+  imports: [CommonModule, FormsModule, NzInputModule, NzButtonModule, NzIconModule, NzEmptyModule, NzTagModule, NzToolTipModule, AiMessageComponent, AiQuestionComponent],
+  animations: [
+    trigger('toolRotate', [
+      transition(':enter', [
+        style({ transform: 'translateY(100%)', opacity: 0 }),
+        animate('300ms cubic-bezier(0.16, 1, 0.3, 1)', style({ transform: 'translateY(0)', opacity: 1 })),
+      ]),
+      transition(':leave', [
+        style({ position: 'absolute', width: '100%' }),
+        animate('200ms ease-in', style({ transform: 'translateY(-100%)', opacity: 0 })),
+      ]),
+    ]),
+  ],
   template: `
     <!-- Messages -->
     <div class="messages" #scrollContainer>
@@ -127,52 +140,71 @@ interface StreamTool {
               <div class="content" *ngIf="seg.type === 'text' && seg.html"
                    [innerHTML]="seg.html"></div>
 
-              <!-- Tools segment: reasoning block -->
+              <!-- Tools segment -->
               <div class="reasoning-block" *ngIf="seg.type === 'tools' && (seg.tools?.length || seg.reasoningHtml)"
                    [class.reasoning-active]="isLastSegment(i) && ai.streaming()">
-                <div class="reasoning-header">
-                  <span nz-icon nzType="loading" nzTheme="outline" *ngIf="isLastSegment(i) && ai.streaming()"></span>
-                  <span nz-icon nzType="bulb" nzTheme="outline" *ngIf="!isLastSegment(i) || !ai.streaming()"></span>
+                <div class="reasoning-header" *ngIf="seg.reasoningHtml">
+                  <span nz-icon [nzType]="isLastSegment(i) && ai.streaming() ? 'loading' : 'bulb'" nzTheme="outline"></span>
                   <span>Raisonnement</span>
                 </div>
-                <!-- Reasoning text (AI's thinking streamed in real-time) -->
                 <div class="reasoning-text" *ngIf="seg.reasoningHtml" [innerHTML]="seg.reasoningHtml"></div>
-                <div class="reasoning-tools" *ngIf="seg.tools?.length">
-                  <ng-container *ngFor="let t of seg.tools; trackBy: trackTool">
-                    <nz-tag
-                      class="tool-tag"
-                      [nzColor]="t.status === 'error' ? 'red' : t.status === 'running' ? 'processing' : 'geekblue'"
-                      nz-popover
-                      [nzPopoverContent]="popTpl"
-                      nzPopoverTrigger="hover"
-                      nzPopoverPlacement="topLeft">
-                      <span nz-icon [nzType]="t.status === 'running' ? 'loading' : t.status === 'error' ? 'close-circle' : 'check-circle'" nzTheme="outline" [nzSpin]="t.status === 'running'" class="tag-icon"></span>
-                      {{ toolLabel(t.name) }}
-                      <span class="tag-extra" *ngIf="toolExtra(t)">{{ toolExtra(t) }}</span>
-                      <span class="tag-dur" *ngIf="t.duration">{{ t.duration }}ms</span>
-                    </nz-tag>
-                    <ng-template #popTpl>
-                      <div class="popover-content">
-                        <div class="popover-section" *ngIf="t.args">
-                          <div class="popover-label">Arguments</div>
-                          <pre class="popover-json">{{ t.args | json }}</pre>
-                        </div>
-                        <div class="popover-section" *ngIf="t.result !== undefined && t.result !== null && t.status !== 'running'">
-                          <div class="popover-label">Résultat</div>
-                          <pre class="popover-json">{{ truncJson(t.result) }}</pre>
-                        </div>
+
+                <!-- During streaming: collapsible for completed tools + rotator for current -->
+                <ng-container *ngIf="isLastSegment(i) && ai.streaming() && seg.tools?.length">
+                  <!-- Collapsible for completed tools (all except last) -->
+                  <div class="tool-summary" *ngIf="completedTools(seg.tools!).length > 0">
+                    <span class="summary-toggle" (click)="toggleToolExpand(seg)">
+                      <span nz-icon [nzType]="expandedTools.has(seg) ? 'down' : 'right'" nzTheme="outline"></span>
+                      {{ completedTools(seg.tools!).length }} outil{{ completedTools(seg.tools!).length > 1 ? 's' : '' }} exécuté{{ completedTools(seg.tools!).length > 1 ? 's' : '' }}
+                    </span>
+                    <div class="tool-list" *ngIf="expandedTools.has(seg)">
+                      <div *ngFor="let t of completedTools(seg.tools!)" class="tool-list-item"
+                           [class.item-success]="t.status === 'success'"
+                           [class.item-error]="t.status === 'error'">
+                        <span nz-icon [nzType]="t.status === 'error' ? 'close-circle' : 'check-circle'" nzTheme="outline"></span>
+                        <span>{{ toolDisplayName(t) }}</span>
+                        <span class="item-dur" *ngIf="t.duration">{{ t.duration }}ms</span>
                       </div>
-                    </ng-template>
-                  </ng-container>
-                  <!-- Live streaming of tool arguments for the current running tool -->
-                  <div class="tool-input-stream" *ngIf="lastRunningTool(seg.tools) as rt">
-                    <div class="stream-preview" [innerHTML]="formatToolStream(rt.name, rt.inputJson)"></div>
+                    </div>
+                  </div>
+                  <!-- Rotator for latest tool -->
+                  <div class="tool-rotator" *ngIf="latestToolArray(seg.tools!).length">
+                    <div *ngFor="let t of latestToolArray(seg.tools!); trackBy: trackToolRotate"
+                         @toolRotate
+                         class="tool-rotate-line"
+                         [class.tool-running]="t.status === 'running'"
+                         [class.tool-success]="t.status === 'success'"
+                         [class.tool-error]="t.status === 'error'">
+                      <span nz-icon
+                        [nzType]="t.status === 'running' ? 'loading' : t.status === 'error' ? 'close-circle' : 'check-circle'"
+                        nzTheme="outline"
+                        [nzSpin]="t.status === 'running'">
+                      </span>
+                      <span class="rotate-text">{{ toolDisplayName(t) }}</span>
+                    </div>
+                  </div>
+                </ng-container>
+
+                <!-- Segment done (not streaming): full collapsible summary -->
+                <div class="tool-summary" *ngIf="!(isLastSegment(i) && ai.streaming()) && seg.tools?.length">
+                  <span class="summary-toggle" (click)="toggleToolExpand(seg)">
+                    <span nz-icon [nzType]="expandedTools.has(seg) ? 'down' : 'right'" nzTheme="outline"></span>
+                    {{ seg.tools!.length }} outil{{ seg.tools!.length > 1 ? 's' : '' }} exécuté{{ seg.tools!.length > 1 ? 's' : '' }}
+                  </span>
+                  <div class="tool-list" *ngIf="expandedTools.has(seg)">
+                    <div *ngFor="let t of seg.tools" class="tool-list-item"
+                         [class.item-success]="t.status === 'success'"
+                         [class.item-error]="t.status === 'error'">
+                      <span nz-icon [nzType]="t.status === 'error' ? 'close-circle' : 'check-circle'" nzTheme="outline"></span>
+                      <span>{{ toolDisplayName(t) }}</span>
+                      <span class="item-dur" *ngIf="t.duration">{{ t.duration }}ms</span>
+                    </div>
                   </div>
                 </div>
               </div>
             </ng-container>
-            <!-- Thinking indicator between tool completion and next LLM response -->
-            <div class="thinking-inline" *ngIf="thinkingIteration > 1 && ai.streaming()">
+            <!-- Thinking indicator between tool completion and next LLM response (not during text streaming) -->
+            <div class="thinking-inline" *ngIf="thinkingIteration > 1 && ai.streaming() && !isLastSegmentText()">
               <span nz-icon nzType="loading" nzTheme="outline" class="thinking-spin"></span>
               <span class="thinking-text">Analyse...</span>
             </div>
@@ -269,18 +301,22 @@ interface StreamTool {
     .reasoning-text ::ng-deep code { background: #e8e8e8; padding: 1px 3px; border-radius: 2px; font-size: 11px; }
     .reasoning-text ::ng-deep ul, .reasoning-text ::ng-deep ol { margin: 2px 0; padding-left: 18px; }
     .reasoning-text ::ng-deep li { margin: 1px 0; }
-    .reasoning-tools { display: flex; flex-wrap: wrap; gap: 4px; }
     @keyframes pulse-reason { 0%, 100% { opacity: 0.9; } 50% { opacity: 0.75; } }
-    .tool-tags { display: flex; flex-wrap: wrap; gap: 4px; }
-    .tool-tag { cursor: pointer; display: inline-flex; align-items: center; gap: 3px; font-size: 12px; margin: 0; }
-    .tag-icon { font-size: 11px; }
-    .tag-extra { opacity: 0.7; font-size: 11px; max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .tag-dur { opacity: 0.6; font-size: 10px; margin-left: 2px; }
-    .popover-content { max-height: 400px; overflow-y: auto; }
-    .popover-section { margin-bottom: 8px; }
-    .popover-section:last-child { margin-bottom: 0; }
-    .popover-label { font-weight: 600; font-size: 12px; color: #666; margin-bottom: 4px; }
-    .popover-json { font-size: 11px; background: #f5f5f5; padding: 6px 8px; border-radius: 4px; margin: 0; max-height: 200px; overflow: auto; white-space: pre-wrap; word-break: break-all; }
+    .tool-rotator { overflow: hidden; height: 22px; position: relative; }
+    .tool-rotate-line { display: flex; align-items: center; gap: 6px; font-size: 12px; }
+    .tool-running { color: #1677ff; }
+    .tool-success { color: #52c41a; }
+    .tool-error { color: #ff4d4f; }
+    .rotate-text { white-space: nowrap; }
+    .tool-summary { margin-top: 4px; }
+    .summary-toggle { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; color: #999; cursor: pointer; transition: color 0.2s; }
+    .summary-toggle:hover { color: #666; }
+    .tool-list { margin-top: 4px; }
+    .tool-list-item { display: flex; align-items: center; gap: 6px; font-size: 12px; padding: 2px 0; color: #666; }
+    .item-success span[nz-icon] { color: #52c41a; }
+    .item-error span[nz-icon] { color: #ff4d4f; }
+    .item-error { color: #ff4d4f; }
+    .item-dur { color: #bbb; font-size: 10px; margin-left: auto; }
     .typing-indicator { display: flex; align-items: center; gap: 4px; padding: 10px 16px; background: #f5f5f5; border-radius: 12px 12px 12px 2px; max-width: 60px; }
     .typing-indicator .dot { width: 7px; height: 7px; border-radius: 50%; background: #bbb; animation: typing-bounce 1.4s ease-in-out infinite; }
     .typing-indicator .dot:nth-child(2) { animation-delay: 0.2s; }
@@ -290,17 +326,6 @@ interface StreamTool {
     .thinking-spin { font-size: 14px; color: #722ed1; }
     .thinking-text { font-size: 12px; color: #999; }
     .thinking-inline { display: flex; align-items: center; gap: 5px; padding: 4px 0; opacity: 0.7; }
-    .tool-input-stream { margin-top: 4px; width: 100%; }
-    .stream-preview { font-size: 12px; color: #666; animation: stream-fade 0.3s ease; }
-    .stream-preview ::ng-deep .sp-label { font-size: 10px; color: #999; text-transform: uppercase; font-weight: 500; margin-bottom: 2px; }
-    .stream-preview ::ng-deep .sp-value { color: #333; line-height: 1.4; margin-bottom: 4px; }
-    .stream-preview ::ng-deep .sp-tag { display: inline-block; background: #f0f0f0; padding: 1px 6px; border-radius: 3px; font-size: 11px; color: #666; margin: 1px 2px; }
-    .stream-preview ::ng-deep .sp-opts { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
-    .stream-preview ::ng-deep .sp-opt { display: inline-block; background: #e6f4ff; color: #1677ff; padding: 2px 8px; border-radius: 10px; font-size: 11px; }
-    .stream-preview ::ng-deep .sp-sub-q { font-size: 11px; margin: 3px 0; padding: 3px 0; border-top: 1px solid #f5f5f5; }
-    .stream-preview ::ng-deep .sp-json { font-size: 10px; background: #f9f9f9; border: 1px solid #f0f0f0; padding: 4px 6px; border-radius: 3px; margin: 2px 0; max-height: 100px; overflow: auto; white-space: pre-wrap; word-break: break-all; }
-    .stream-preview ::ng-deep .sp-raw { font-size: 10px; color: #999; word-break: break-all; }
-    @keyframes stream-fade { from { opacity: 0.5; } to { opacity: 1; } }
     .avatar-error { background: #fff2f0 !important; color: #ff4d4f !important; }
     .content-error { background: #fff2f0 !important; color: #ff4d4f; border: 1px solid #ffccc7; display: flex; align-items: center; }
     .input-bar { padding: 8px 16px 12px; border-top: 1px solid #f0f0f0; }
@@ -347,6 +372,7 @@ export class AiChatComponent {
   segments: StreamSegment[] = [];
   streamError: string | null = null;
   expandedMsgs = new Set<any>();
+  expandedTools = new Set<StreamSegment>();
   thinkingIteration = 0;
   interrupted = false;
   @ViewChild('scrollContainer') scrollContainer?: ElementRef<HTMLDivElement>;
@@ -579,6 +605,22 @@ export class AiChatComponent {
         }
         break;
       }
+      case 'tool.title': {
+        // Pre-resolved displayTitle from backend DB lookup — update running tool immediately
+        const titleId = (ev as any).id;
+        const titleValue = (ev as any).displayTitle;
+        console.log(`[ai-chat] tool.title: id=${titleId}, displayTitle="${titleValue}"`);
+        this.segments = this.segments.map(seg => {
+          if (seg.type !== 'tools' || !seg.tools) return seg;
+          const idx = seg.tools.findIndex(t => t.id === titleId);
+          if (idx < 0) return seg;
+          const updatedTools = seg.tools.map((t, i) =>
+            i === idx ? { ...t, displayTitle: titleValue } : t
+          );
+          return { ...seg, tools: updatedTools };
+        });
+        break;
+      }
       case 'tool.end': {
         const evId = (ev as any).id;
         const evName = (ev as any).name || '';
@@ -586,6 +628,7 @@ export class AiChatComponent {
         const evDuration = (ev as any).duration;
         const evArgs = (ev as any).args;
         const evResult = (ev as any).result;
+        const evDisplayTitle = (ev as any).displayTitle;
         // Find and update the tool — create NEW segment + tools array
         let found = false;
         const updated = this.segments.map(seg => {
@@ -594,7 +637,7 @@ export class AiChatComponent {
           if (idx < 0) return seg;
           found = true;
           const updatedTools = seg.tools.map((t, i) =>
-            i === idx ? { ...t, status: evStatus, duration: evDuration, args: evArgs, result: evResult } : t
+            i === idx ? { ...t, status: evStatus, duration: evDuration, args: evArgs, result: evResult, displayTitle: evDisplayTitle } : t
           );
           return { ...seg, tools: updatedTools };
         });
@@ -602,7 +645,7 @@ export class AiChatComponent {
           this.segments = updated;
         } else {
           // tool.start was missed — create the tool entry directly
-          const tool: StreamTool = { id: evId, name: evName, status: evStatus, duration: evDuration, args: evArgs, result: evResult };
+          const tool: StreamTool = { id: evId, name: evName, status: evStatus, duration: evDuration, args: evArgs, result: evResult, displayTitle: evDisplayTitle };
           const last = this.segments[this.segments.length - 1];
           if (last && last.type === 'tools') {
             this.segments = [...this.segments.slice(0, -1), { ...last, tools: [...(last.tools || []), tool] }];
@@ -669,6 +712,7 @@ export class AiChatComponent {
   trackTool(i: number, t: StreamTool): string { return t.id; }
 
   isLastSegment(i: number): boolean { return i === this.segments.length - 1; }
+  isLastSegmentText(): boolean { const last = this.segments[this.segments.length - 1]; return last?.type === 'text'; }
 
   toggleExpanded(msg: any) {
     if (this.expandedMsgs.has(msg)) this.expandedMsgs.delete(msg);
@@ -693,84 +737,64 @@ export class AiChatComponent {
     return '';
   }
 
-  lastRunningTool(tools?: StreamTool[]): StreamTool | null {
-    if (!tools?.length) return null;
-    const running = tools.filter(t => t.status === 'running' && t.inputJson);
-    return running.length ? running[running.length - 1] : null;
+  /** All completed tools (not running) — for collapsible list during streaming */
+  completedTools(tools: StreamTool[]): StreamTool[] {
+    return tools.filter(t => t.status !== 'running');
   }
 
-  /** Format streaming tool input as readable HTML, specific to each tool */
-  formatToolStream(toolName: string, json?: string): string {
-    if (!json) return '';
-    let parsed: any = null;
-    try { parsed = JSON.parse(json); } catch {
-      // Incomplete JSON — try to extract partial key-values
-      return this.formatPartialKeys(toolName, json);
-    }
-    // Tool-specific formatting
-    switch (toolName) {
-      case 'ask_user': {
-        let html = '';
-        if (parsed.text) html += `<div class="sp-label">Question :</div><div class="sp-value">${this.esc(parsed.text)}</div>`;
-        if (parsed.questionType) html += `<span class="sp-tag">${parsed.questionType}</span>`;
-        if (parsed.options?.length) {
-          html += '<div class="sp-opts">' + parsed.options.map((o: any) =>
-            `<span class="sp-opt">${this.esc(o.label || o.value || '')}</span>`
-          ).join('') + '</div>';
+  /** Returns a single-element array for *ngFor with trackBy — forces DOM recreation on tool change.
+   *  For execute_tool: defer showing until displayTitle is available (avoid "Exécution" flash). */
+  latestToolArray(tools: StreamTool[]): StreamTool[] {
+    if (!tools?.length) return [];
+    const last = tools[tools.length - 1];
+    // For execute_tool without displayTitle yet: wait for tool.title event
+    if (last.name === 'execute_tool' && !last.displayTitle && !last.args?.key) {
+      // Show previous tool (if any) while waiting
+      for (let i = tools.length - 2; i >= 0; i--) {
+        if (tools[i].name !== 'execute_tool' || tools[i].displayTitle || tools[i].args?.key) {
+          return [tools[i]];
         }
-        if (parsed.questions?.length) {
-          html += parsed.questions.map((q: any) => {
-            let qh = `<div class="sp-sub-q">${this.esc(q.text || '')}`;
-            if (q.options?.length) qh += ' ' + q.options.map((o: any) => `<span class="sp-opt">${this.esc(o.label)}</span>`).join('');
-            return qh + '</div>';
-          }).join('');
-        }
-        return html || `<pre class="sp-json">${this.esc(JSON.stringify(parsed, null, 2))}</pre>`;
       }
-      case 'execute_tool':
-        return `<span class="sp-tag">${this.esc(parsed.key || '')}</span>` +
-          (parsed.args ? `<pre class="sp-json">${this.esc(JSON.stringify(parsed.args, null, 2).slice(0, 300))}</pre>` : '');
-      case 'search_tools':
-        return (parsed.query ? `<span class="sp-tag">"${this.esc(parsed.query)}"</span>` : '') +
-          (parsed.provider ? ` <span class="sp-tag">${this.esc(parsed.provider)}</span>` : '');
-      case 'set_node_args':
-        return (parsed.nodeId ? `<span class="sp-tag">Node: ${this.esc(parsed.nodeId.slice(-8))}</span>` : '') +
-          (parsed.args ? `<pre class="sp-json">${this.esc(JSON.stringify(parsed.args, null, 2).slice(0, 300))}</pre>` : '');
-      default:
-        return `<pre class="sp-json">${this.esc(JSON.stringify(parsed, null, 2).slice(0, 400))}</pre>`;
+      return []; // No suitable tool to show yet
     }
+    return [last];
   }
 
-  private formatPartialKeys(toolName: string, json: string): string {
-    // Extract readable values from partial JSON via regex
-    const textMatch = json.match(/"text"\s*:\s*"([^"]*)/);
-    const queryMatch = json.match(/"query"\s*:\s*"([^"]*)/);
-    const keyMatch = json.match(/"key"\s*:\s*"([^"]*)/);
-    let html = '';
-    if (toolName === 'ask_user' && textMatch) {
-      html += `<div class="sp-label">Question :</div><div class="sp-value">${this.esc(textMatch[1])}</div>`;
-      // Extract options being formed
-      const optLabels = [...json.matchAll(/"label"\s*:\s*"([^"]*)/g)].map(m => m[1]);
-      if (optLabels.length) {
-        html += '<div class="sp-opts">' + optLabels.map(l => `<span class="sp-opt">${this.esc(l)}</span>`).join('') + '</div>';
+  trackToolRotate(_i: number, t: StreamTool): string { return t.id; }
+
+  toolDisplayName(t: StreamTool): string {
+    if (t.displayTitle) return t.displayTitle;
+    if (t.name === 'execute_tool') {
+      // Use key as fallback (from args or partial JSON)
+      if (t.args?.key) return t.args.key;
+      if (t.inputJson) {
+        const m = t.inputJson.match(/"key"\s*:\s*"([^"]+)"/);
+        if (m) return m[1];
       }
-      return html;
+      return ''; // Should never reach here (latestToolArray defers until displayTitle arrives)
     }
-    if (queryMatch) return `<span class="sp-tag">"${this.esc(queryMatch[1])}"</span>`;
-    if (keyMatch) return `<span class="sp-tag">${this.esc(keyMatch[1])}</span>`;
-    // Fallback: show raw truncated
-    return `<code class="sp-raw">${this.esc(json.slice(0, 200))}</code>`;
+    const label = this.toolLabel(t.name);
+    const extra = this.toolExtra(t) || this.extraFromInputJson(t);
+    return extra ? `${label} — ${extra}` : label;
   }
 
-  private esc(s: string): string {
-    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  /** Extract tool extra info from partial inputJson during streaming (before args are available) */
+  private extraFromInputJson(t: StreamTool): string {
+    if (!t.inputJson) return '';
+    if (t.name === 'search_tools') {
+      const m = t.inputJson.match(/"query"\s*:\s*"([^"]+)"/);
+      if (m) return `"${m[1]}"`;
+    }
+    if (t.name === 'get_tool_details' || t.name === 'get_template_details') {
+      const m = t.inputJson.match(/"key"\s*:\s*"([^"]+)"/);
+      if (m) return m[1];
+    }
+    return '';
   }
 
-  truncJson(val: any): string {
-    try {
-      const txt = JSON.stringify(val, null, 2);
-      return txt.length > 800 ? txt.slice(0, 800) + '\n...' : txt;
-    } catch { return String(val); }
+  toggleToolExpand(seg: StreamSegment) {
+    if (this.expandedTools.has(seg)) this.expandedTools.delete(seg);
+    else this.expandedTools.add(seg);
   }
 
   private scrollToBottom() {

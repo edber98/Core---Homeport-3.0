@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzTagModule } from 'ng-zorro-antd/tag';
-import { NzPopoverModule } from 'ng-zorro-antd/popover';
 import { marked } from 'marked';
 import DOMPurify from 'dompurify';
 import { AiMessage, AiMessageSegment, AiToolCall, AiQuestionOption, AiService } from './ai.service';
@@ -41,13 +40,6 @@ const TOOL_LABELS: Record<string, string> = {
   list_runs: 'Historique exécutions', get_run_stats: 'Statistiques',
 };
 
-interface ToolGroup {
-  category: string;
-  icon: string;
-  color: string;
-  tools: AiToolCall[];
-}
-
 /** Processed segment for display — text-before-tools merged into reasoning blocks */
 interface ProcessedSegment {
   type: 'text' | 'reasoning';
@@ -56,43 +48,10 @@ interface ProcessedSegment {
   toolCalls?: AiToolCall[];  // for reasoning segments
 }
 
-const TOOL_CATEGORIES: Record<string, { category: string; icon: string; color: string }> = {};
-const CAT_PLAN = { category: 'Analyse', icon: 'search', color: '#722ed1' };
-const CAT_QUESTION = { category: 'Question', icon: 'question-circle', color: '#fa8c16' };
-const CAT_BUILD = { category: 'Construction', icon: 'tool', color: '#1677ff' };
-const CAT_EXEC = { category: 'Exécution', icon: 'thunderbolt', color: '#52c41a' };
-const CAT_VALID = { category: 'Finalisation', icon: 'check-circle', color: '#13c2c2' };
-const CAT_MEM = { category: 'Mémoire', icon: 'database', color: '#eb2f96' };
-
-// Planning
-for (const k of ['search_tools', 'get_tool_details', 'get_templates', 'get_template_details',
-  'list_graph', 'get_output_options', 'get_node_schema', 'get_output_schema', 'get_node_info',
-  'list_predecessors', 'get_predecessor_context', 'search_predecessors', 'get_scenarios',
-  'get_msgin_preview', 'list_providers', 'search_workflows', 'get_form_schema', 'get_field_types',
-  'search_forms', 'load_form', 'get_deployment_status', 'list_runs', 'get_run_stats',
-  'search_manual', 'get_manual_section', 'get_project_memory', 'activate_capsule'])
-  TOOL_CATEGORIES[k] = CAT_PLAN;
-// Question
-TOOL_CATEGORIES['ask_user'] = CAT_QUESTION;
-// Building
-for (const k of ['create_flow', 'ensure_start', 'add_node', 'remove_node', 'replace_node',
-  'connect_nodes', 'disconnect_nodes', 'connect_by_output_name',
-  'set_node_args', 'set_node_description', 'create_start_form', 'build_schema',
-  'propose_context_mapping', 'set_form_schema', 'add_field', 'update_field', 'remove_field',
-  'add_section', 'update_section', 'update_form_settings', 'reorder_fields', 'create_form'])
-  TOOL_CATEGORIES[k] = CAT_BUILD;
-// Execution
-for (const k of ['execute_tool', 'run_workflow', 'deploy_flow', 'undeploy_flow', 'start_run',
-  'open_element', 'open_credentials']) TOOL_CATEGORIES[k] = CAT_EXEC;
-// Validation
-for (const k of ['validate_flow', 'auto_layout', 'save_flow', 'save_form', 'compact_and_transfer']) TOOL_CATEGORIES[k] = CAT_VALID;
-// Memory
-for (const k of ['save_memory', 'get_memory', 'enrich_context', 'save_project_memory']) TOOL_CATEGORIES[k] = CAT_MEM;
-
 @Component({
   selector: 'ai-message',
   standalone: true,
-  imports: [CommonModule, NzButtonModule, NzIconModule, NzTagModule, NzPopoverModule, NodeExecResultDialogComponent],
+  imports: [CommonModule, NzButtonModule, NzIconModule, NzTagModule, NodeExecResultDialogComponent],
   template: `
     <div class="ai-msg" [class.user]="msg.role === 'user'" [class.assistant]="msg.role === 'assistant'">
       <div class="avatar">
@@ -107,26 +66,29 @@ for (const k of ['save_memory', 'get_memory', 'enrich_context', 'save_project_me
             <!-- Final response text -->
             <div class="content" *ngIf="ps.type === 'text' && ps.content"
                  [innerHTML]="renderMarkdown(ps.content)"></div>
-            <!-- Reasoning block: optional text + tool groups -->
+            <!-- Reasoning block: optional text + collapsible tool summary -->
             <div class="reasoning-block" *ngIf="ps.type === 'reasoning'">
-              <div class="reasoning-header">
+              <div class="reasoning-header" *ngIf="ps.reasoningText">
                 <span nz-icon nzType="bulb" nzTheme="outline"></span>
                 <span>Raisonnement</span>
               </div>
               <div class="reasoning-text" *ngIf="ps.reasoningText" [innerHTML]="renderMarkdown(ps.reasoningText)"></div>
-              <ng-container *ngFor="let group of groupTools(ps.toolCalls || [])">
-                <div class="tool-group">
-                  <div class="tool-group-header" [style.color]="group.color">
-                    <span nz-icon [nzType]="group.icon" nzTheme="outline" class="group-icon"></span>
-                    <span class="group-label">{{ group.category }}</span>
-                  </div>
-                  <div class="tool-tags">
-                    <ng-container *ngFor="let tc of group.tools">
-                      <ng-container *ngTemplateOutlet="toolTagTpl; context: { $implicit: tc }"></ng-container>
-                    </ng-container>
+              <div class="tool-summary" *ngIf="ps.toolCalls?.length">
+                <span class="summary-toggle" (click)="toggleToolExpand(ps)">
+                  <span nz-icon [nzType]="expandedTools.has(ps) ? 'down' : 'right'" nzTheme="outline"></span>
+                  {{ ps.toolCalls!.length }} outil{{ ps.toolCalls!.length > 1 ? 's' : '' }} exécuté{{ ps.toolCalls!.length > 1 ? 's' : '' }}
+                </span>
+                <div class="tool-list" *ngIf="expandedTools.has(ps)">
+                  <div *ngFor="let tc of ps.toolCalls" class="tool-list-item"
+                       [class.item-success]="tc.status !== 'error'"
+                       [class.item-error]="tc.status === 'error'"
+                       style="cursor: pointer" (click)="openToolResult(tc)">
+                    <span nz-icon [nzType]="tc.status === 'error' ? 'close-circle' : 'check-circle'" nzTheme="outline"></span>
+                    <span>{{ toolDisplayName(tc) }}</span>
+                    <span class="item-dur" *ngIf="tc.duration">{{ tc.duration }}ms</span>
                   </div>
                 </div>
-              </ng-container>
+              </div>
             </div>
           </ng-container>
         </ng-container>
@@ -135,58 +97,23 @@ for (const k of ['save_memory', 'get_memory', 'enrich_context', 'save_project_me
         <ng-template #flatLayout>
           <div class="content" *ngIf="msg.content" [innerHTML]="renderMarkdown(msg.content)"></div>
           <div class="reasoning-block" *ngIf="msg.toolCalls?.length">
-            <div class="reasoning-header">
-              <span nz-icon nzType="bulb" nzTheme="outline"></span>
-              <span>Raisonnement</span>
-            </div>
-            <ng-container *ngFor="let group of groupTools(msg.toolCalls!)">
-              <div class="tool-group">
-                <div class="tool-group-header" [style.color]="group.color">
-                  <span nz-icon [nzType]="group.icon" nzTheme="outline" class="group-icon"></span>
-                  <span class="group-label">{{ group.category }}</span>
-                </div>
-                <div class="tool-tags">
-                  <ng-container *ngFor="let tc of group.tools">
-                    <ng-container *ngTemplateOutlet="toolTagTpl; context: { $implicit: tc }"></ng-container>
-                  </ng-container>
+            <div class="tool-summary">
+              <span class="summary-toggle" (click)="toggleToolExpand(msg)">
+                <span nz-icon [nzType]="expandedTools.has(msg) ? 'down' : 'right'" nzTheme="outline"></span>
+                {{ msg.toolCalls!.length }} outil{{ msg.toolCalls!.length > 1 ? 's' : '' }} exécuté{{ msg.toolCalls!.length > 1 ? 's' : '' }}
+              </span>
+              <div class="tool-list" *ngIf="expandedTools.has(msg)">
+                <div *ngFor="let tc of msg.toolCalls" class="tool-list-item"
+                     [class.item-success]="tc.status !== 'error'"
+                     [class.item-error]="tc.status === 'error'"
+                     style="cursor: pointer" (click)="openToolResult(tc)">
+                  <span nz-icon [nzType]="tc.status === 'error' ? 'close-circle' : 'check-circle'" nzTheme="outline"></span>
+                  <span>{{ toolDisplayName(tc) }}</span>
+                  <span class="item-dur" *ngIf="tc.duration">{{ tc.duration }}ms</span>
                 </div>
               </div>
-            </ng-container>
+            </div>
           </div>
-        </ng-template>
-
-        <!-- Reusable tool tag template -->
-        <ng-template #toolTagTpl let-tc>
-          <nz-tag
-            class="tool-tag"
-            [nzColor]="!tc.status ? 'processing' : (tc.status === 'error' ? 'red' : 'green')"
-            nz-popover
-            [nzPopoverContent]="popoverTpl"
-            nzPopoverTrigger="hover"
-            nzPopoverPlacement="topLeft"
-            [nzPopoverOverlayStyle]="{ maxWidth: '500px' }"
-            (click)="openToolResult(tc)">
-            <span nz-icon [nzType]="!tc.status ? 'loading' : (tc.status === 'error' ? 'close-circle' : 'check-circle')" nzTheme="outline" class="tag-icon" [class.spinning]="!tc.status"></span>
-            {{ toolLabel(tc.name) }}
-            <span class="tag-extra" *ngIf="toolExtra(tc)">{{ toolExtra(tc) }}</span>
-            <span class="tag-dur" *ngIf="tc.duration">{{ tc.duration }}ms</span>
-          </nz-tag>
-          <ng-template #popoverTpl>
-            <div class="popover-content">
-              <div class="popover-section" *ngIf="tc.args">
-                <div class="popover-label">Arguments</div>
-                <pre class="popover-json">{{ tc.args | json }}</pre>
-              </div>
-              <div class="popover-section" *ngIf="tc.result !== undefined && tc.result !== null">
-                <div class="popover-label">Résultat</div>
-                <pre class="popover-json">{{ truncateJson(tc.result) }}</pre>
-              </div>
-              <div class="popover-section" *ngIf="tc.status === 'error' && !tc.result">
-                <div class="popover-label">Erreur</div>
-                <pre class="popover-json error-text">Erreur inconnue</pre>
-              </div>
-            </div>
-          </ng-template>
         </ng-template>
 
         <!-- Answered question display (only when answered — otherwise ai-question handles it) -->
@@ -268,23 +195,15 @@ for (const k of ['save_memory', 'get_memory', 'enrich_context', 'save_project_me
     .reasoning-text ::ng-deep code { background: #e8e8e8; padding: 1px 3px; border-radius: 2px; font-size: 11px; }
     .reasoning-text ::ng-deep ul, .reasoning-text ::ng-deep ol { margin: 2px 0; padding-left: 18px; }
     .reasoning-text ::ng-deep li { margin: 1px 0; }
-    .tool-group { margin: 2px 0; }
-    .tool-group-header { display: flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 600; margin-bottom: 2px; opacity: 0.85; }
-    .group-icon { font-size: 12px; }
-    .group-label { text-transform: uppercase; letter-spacing: 0.5px; }
-    .tool-tags { display: flex; flex-wrap: wrap; gap: 4px; }
-    .tool-tag { cursor: pointer; display: inline-flex; align-items: center; gap: 3px; font-size: 12px; margin: 0; }
-    .tag-icon { font-size: 11px; }
-    .tag-icon.spinning { animation: spin 1s linear infinite; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .tag-extra { opacity: 0.7; font-size: 11px; max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .tag-dur { opacity: 0.6; font-size: 10px; margin-left: 2px; }
-    .popover-content { max-height: 400px; overflow-y: auto; }
-    .popover-section { margin-bottom: 8px; }
-    .popover-section:last-child { margin-bottom: 0; }
-    .popover-label { font-weight: 600; font-size: 12px; color: #666; margin-bottom: 4px; }
-    .popover-json { font-size: 11px; background: #f5f5f5; padding: 6px 8px; border-radius: 4px; margin: 0; max-height: 200px; overflow: auto; white-space: pre-wrap; word-break: break-all; }
-    .error-text { color: #ff4d4f; }
+    .tool-summary { margin-top: 4px; }
+    .summary-toggle { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; color: #999; cursor: pointer; transition: color 0.2s; }
+    .summary-toggle:hover { color: #666; }
+    .tool-list { margin-top: 4px; }
+    .tool-list-item { display: flex; align-items: center; gap: 6px; font-size: 12px; padding: 2px 0; color: #666; }
+    .item-success span[nz-icon] { color: #52c41a; }
+    .item-error span[nz-icon] { color: #ff4d4f; }
+    .item-error { color: #ff4d4f; }
+    .item-dur { color: #bbb; font-size: 10px; margin-left: auto; }
     .answered-question { background: #fafafa; border: 1px solid #f0f0f0; border-radius: 8px; padding: 10px 12px; margin: 4px 0; max-width: 85%; }
     .aq-text { font-size: 12px; color: #666; margin-bottom: 6px; }
     .aq-options { display: flex; flex-wrap: wrap; gap: 4px; }
@@ -311,7 +230,7 @@ export class AiMessageComponent {
   selectedToolTitle = '';
   selectedToolTemplate: any = null;
 
-  private _groupCache = new WeakMap<AiToolCall[], ToolGroup[]>();
+  expandedTools = new Set<any>();
   private _processedCache = new WeakMap<AiMessageSegment[], ProcessedSegment[]>();
 
   /** Open tool result dialog when clicking on a tool tag */
@@ -380,23 +299,17 @@ export class AiMessageComponent {
     } catch { return src; }
   }
 
-  /** Group consecutive tools by category, preserving execution order */
-  groupTools(toolCalls: AiToolCall[]): ToolGroup[] {
-    if (this._groupCache.has(toolCalls)) return this._groupCache.get(toolCalls)!;
+  toolDisplayName(tc: AiToolCall): string {
+    if (tc.displayTitle) return tc.displayTitle;
+    if (tc.name === 'execute_tool' && tc.args?.key) return tc.args.key;
+    const label = this.toolLabel(tc.name);
+    const extra = this.toolExtra(tc);
+    return extra ? `${label} — ${extra}` : label;
+  }
 
-    const groups: ToolGroup[] = [];
-    for (const tc of toolCalls) {
-      const cat = TOOL_CATEGORIES[tc.name] || { category: 'Autre', icon: 'api', color: '#666' };
-      const last = groups[groups.length - 1];
-      if (last && last.category === cat.category) {
-        last.tools.push(tc);
-      } else {
-        groups.push({ category: cat.category, icon: cat.icon, color: cat.color, tools: [tc] });
-      }
-    }
-
-    this._groupCache.set(toolCalls, groups);
-    return groups;
+  toggleToolExpand(item: any) {
+    if (this.expandedTools.has(item)) this.expandedTools.delete(item);
+    else this.expandedTools.add(item);
   }
 
   toolLabel(name: string): string {
@@ -468,10 +381,4 @@ export class AiMessageComponent {
     return false;
   }
 
-  truncateJson(val: any): string {
-    try {
-      const txt = JSON.stringify(val, null, 2);
-      return txt.length > 800 ? txt.slice(0, 800) + '\n...' : txt;
-    } catch { return String(val); }
-  }
 }

@@ -220,10 +220,24 @@ async function* runHarness({ mode, messages, context, metadata, agentOverrides, 
           case 'tool_input_delta':
             yield { type: 'tool.input_delta', id: event.id, name: event.name, text: event.text };
             break;
-          case 'tool_use_end':
+          case 'tool_use_end': {
             console.log(`[harness] stream: tool_use_end → ${event.name} (id=${event.id})`);
-            pendingToolCalls.push({ id: event.id, name: event.name, input: event.input });
+            const tcEntry = { id: event.id, name: event.name, input: event.input };
+            // Pre-resolve displayTitle for execute_tool via quick DB lookup
+            if (event.name === 'execute_tool' && event.input?.key) {
+              try {
+                const NodeTemplate = require('../db/models/node-template.model');
+                const tpl = await NodeTemplate.findOne({ key: event.input.key }, 'title name').lean();
+                tcEntry._displayTitle = tpl?.title || tpl?.name || event.input.key;
+                console.log(`[harness] pre-resolved displayTitle: "${tcEntry._displayTitle}" for key=${event.input.key}`);
+                yield { type: 'tool.title', id: event.id, displayTitle: tcEntry._displayTitle };
+              } catch (e) {
+                console.error('[harness] title pre-resolve error:', e.message);
+              }
+            }
+            pendingToolCalls.push(tcEntry);
             break;
+          }
           case 'done':
             if (event.usage) {
               totalUsage.input += event.usage.input || 0;
@@ -309,10 +323,16 @@ async function* runHarness({ mode, messages, context, metadata, agentOverrides, 
         }
 
         // ── Normal tool result ──
+        // Use pre-resolved displayTitle (from tool_use_end DB lookup), fallback to _displayTitle side-channel
+        let displayTitle = tc._displayTitle;
+        if (result?._displayTitle) {
+          if (!displayTitle) displayTitle = result._displayTitle;
+          delete result._displayTitle; // Clean up before LLM serialization
+        }
         const toolStatus = result?.ok === false ? 'error' : 'success';
-        console.log(`[harness] tool ${tc.name} ${toolStatus} (${duration}ms):`, JSON.stringify(result || {}).slice(0, 300));
+        console.log(`[harness] tool ${tc.name} ${toolStatus} (${duration}ms), displayTitle="${displayTitle || 'none'}":`, JSON.stringify(result || {}).slice(0, 300));
         toolResults.push({ id: tc.id, name: tc.name, content: JSON.stringify(result), status: toolStatus, duration, result });
-        yield { type: 'tool.end', id: tc.id, name: tc.name, args: tc.input, result, status: toolStatus, duration };
+        yield { type: 'tool.end', id: tc.id, name: tc.name, args: tc.input, result, status: toolStatus, duration, displayTitle };
 
         // Action events (open_credentials, etc.)
         if (result?._action) {
@@ -333,7 +353,7 @@ async function* runHarness({ mode, messages, context, metadata, agentOverrides, 
         const errMsg = e?.message || String(e);
         console.error(`[harness] tool ${tc.name} ERROR (${duration}ms):`, errMsg);
         toolResults.push({ id: tc.id, name: tc.name, content: JSON.stringify({ error: errMsg }), status: 'error', duration });
-        yield { type: 'tool.end', id: tc.id, name: tc.name, args: tc.input, error: errMsg, status: 'error', duration };
+        yield { type: 'tool.end', id: tc.id, name: tc.name, args: tc.input, error: errMsg, status: 'error', duration, displayTitle: tc._displayTitle };
 
         // Still drain side events
         for (const ev of sideEvents) yield ev;

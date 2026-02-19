@@ -582,8 +582,19 @@ ${toolLines.join('\n')}
             send(event);
             break;
 
+          case 'tool.title': {
+            // Pre-resolved displayTitle for execute_tool — update existing tool placeholder
+            for (const seg of segments) {
+              if (seg.type !== 'tools' || !seg.toolCalls) continue;
+              const idx = seg.toolCalls.findIndex(t => t.id === event.id);
+              if (idx >= 0) { seg.toolCalls[idx].displayTitle = event.displayTitle; break; }
+            }
+            send(event);
+            break;
+          }
+
           case 'tool.end': {
-            const tc = { id: event.id, name: event.name, args: event.args, result: event.result, duration: event.duration, status: event.status };
+            const tc = { id: event.id, name: event.name, args: event.args, result: event.result, duration: event.duration, status: event.status, displayTitle: event.displayTitle };
             toolCalls.push(tc);
             // Update the tool in its tools segment
             let tcFound = false;

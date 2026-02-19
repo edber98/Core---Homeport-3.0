@@ -234,10 +234,16 @@ async function* runAgent({ mode, messages, context, metadata, agentOverrides }) 
         }
 
         const duration = Date.now() - startTime;
+        // Extract displayTitle side-channel before serialization for LLM
+        let displayTitle;
+        if (result?._displayTitle) {
+          displayTitle = result._displayTitle;
+          delete result._displayTitle;
+        }
         console.log(`[agent] tool ${tc.name} OK (${duration}ms):`, JSON.stringify(result || {}).slice(0, 300));
         toolResults.push({ id: tc.id, name: tc.name, content: JSON.stringify(result), status: 'success', duration, result });
 
-        yield { type: 'tool.end', id: tc.id, name: tc.name, args: tc.input, result, status: 'success', duration };
+        yield { type: 'tool.end', id: tc.id, name: tc.name, args: tc.input, result, status: 'success', duration, displayTitle };
 
         // Emit action events (e.g. open_credentials) for frontend handling
         if (result?._action) {

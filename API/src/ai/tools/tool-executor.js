@@ -48,7 +48,8 @@ async function executeTool(toolKey, args, { workspaceId, companyId, userId }) {
   const result = await handler(node, msg, args, opts);
 
   // 6. Sanitize — never expose secrets
-  return sanitizeResult(result);
+  const displayTitle = tpl.title || tpl.name || toolKey;
+  return { result: sanitizeResult(result), displayTitle };
 }
 
 function sanitizeResult(result) {
