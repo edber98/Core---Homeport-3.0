@@ -1,0 +1,1366 @@
+{
+  "repo": {
+    "name": "digiforma",
+    "type": "local",
+    "label": "Digiforma"
+  },
+  "providers": [
+    {
+      "key": "digiforma",
+      "name": "Digiforma",
+      "title": "Digiforma",
+      "iconClass": "fa-solid fa-graduation-cap",
+      "color": "#6366f1",
+      "tags": ["digiforma", "formation", "stagiaire", "training"],
+      "categories": ["Education"],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Digiforma",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          {
+            "type": "text",
+            "key": "token",
+            "label": "Jeton API",
+            "description": "Jeton d'authentification API Digiforma.",
+            "col": { "xs": 24 },
+            "secret": true,
+            "validators": [{ "type": "required" }]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "digiforma_trainees_list",
+      "name": "digiformaTraineesList",
+      "schemaVersion": 2,
+      "title": "Lister les stagiaires",
+      "subtitle": "Stagiaire",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Stagiaires",
+      "providerKey": "digiforma",
+      "icon": "fa-solid fa-list",
+      "description": "Récupérer la liste des stagiaires",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:digiforma_stagiaires" }],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Lister les stagiaires",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "number", "key": "page", "label": "Page", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Numéro de page.", "default": 1, "expression": { "allow": true } },
+          { "type": "number", "key": "per_page", "label": "Par page", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Nombre de résultats par page.", "default": 25, "expression": { "allow": true } }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Stagiaires",
+      "tags": ["liste", "Digiforma"]
+    },
+    {
+      "key": "digiforma_trainee_get",
+      "name": "digiformaTraineeGet",
+      "schemaVersion": 2,
+      "title": "Obtenir un stagiaire",
+      "subtitle": "Stagiaire",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Stagiaires",
+      "providerKey": "digiforma",
+      "icon": "fa-solid fa-eye",
+      "description": "Récupérer les détails d'un stagiaire",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:digiforma_stagiaire" }],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Obtenir un stagiaire",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "id", "label": "ID stagiaire", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Identifiant du stagiaire.", "validators": [{ "type": "required" }], "expression": { "allow": true } }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Stagiaires",
+      "tags": ["lecture", "Digiforma"]
+    },
+    {
+      "key": "digiforma_trainee_create",
+      "name": "digiformaTraineeCreate",
+      "schemaVersion": 2,
+      "title": "Créer un stagiaire",
+      "subtitle": "Stagiaire",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Stagiaires",
+      "providerKey": "digiforma",
+      "icon": "fa-solid fa-plus",
+      "description": "Créer un nouveau stagiaire",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:digiforma_stagiaire_short" }],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Créer un stagiaire",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "firstname", "label": "Prénom", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Prénom du stagiaire.", "validators": [{ "type": "required" }], "expression": { "allow": true } },
+          { "type": "text", "key": "lastname", "label": "Nom", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Nom du stagiaire.", "validators": [{ "type": "required" }], "expression": { "allow": true } },
+          { "type": "text", "key": "email", "label": "Email", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Adresse email.", "expression": { "allow": true } },
+          { "type": "text", "key": "phone", "label": "Téléphone", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Numéro de téléphone.", "expression": { "allow": true } },
+          { "type": "text", "key": "birthdate", "label": "Date de naissance", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Date de naissance.", "expression": { "allow": true } },
+          { "type": "text", "key": "profession", "label": "Profession", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Profession.", "expression": { "allow": true } },
+          { "type": "text", "key": "position", "label": "Poste", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Poste occupé.", "expression": { "allow": true } },
+          { "type": "text", "key": "companyName", "label": "Entreprise", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Nom de l'entreprise.", "expression": { "allow": true } },
+          { "type": "text", "key": "roadAddress", "label": "Adresse", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Adresse postale.", "expression": { "allow": true } },
+          { "type": "text", "key": "zipcode", "label": "Code postal", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Code postal.", "expression": { "allow": true } },
+          { "type": "text", "key": "city", "label": "Ville", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Ville.", "expression": { "allow": true } },
+          { "type": "text", "key": "country", "label": "Pays", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Pays.", "expression": { "allow": true } }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Stagiaires",
+      "tags": ["création", "Digiforma"]
+    },
+    {
+      "key": "digiforma_trainee_update",
+      "name": "digiformaTraineeUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier un stagiaire",
+      "subtitle": "Stagiaire",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Stagiaires",
+      "providerKey": "digiforma",
+      "icon": "fa-solid fa-pen",
+      "description": "Modifier un stagiaire existant",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:digiforma_stagiaire_short" }],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Modifier un stagiaire",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "id", "label": "ID stagiaire", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Identifiant du stagiaire.", "validators": [{ "type": "required" }], "expression": { "allow": true } },
+          { "type": "text", "key": "firstname", "label": "Prénom", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Prénom.", "expression": { "allow": true } },
+          { "type": "text", "key": "lastname", "label": "Nom", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Nom.", "expression": { "allow": true } },
+          { "type": "text", "key": "email", "label": "Email", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Adresse email.", "expression": { "allow": true } },
+          { "type": "text", "key": "phone", "label": "Téléphone", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Numéro de téléphone.", "expression": { "allow": true } },
+          { "type": "text", "key": "birthdate", "label": "Date de naissance", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Date de naissance.", "expression": { "allow": true } },
+          { "type": "text", "key": "profession", "label": "Profession", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Profession.", "expression": { "allow": true } },
+          { "type": "text", "key": "position", "label": "Poste", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Poste occupé.", "expression": { "allow": true } },
+          { "type": "text", "key": "companyName", "label": "Entreprise", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Nom de l'entreprise.", "expression": { "allow": true } },
+          { "type": "text", "key": "roadAddress", "label": "Adresse", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Adresse postale.", "expression": { "allow": true } },
+          { "type": "text", "key": "zipcode", "label": "Code postal", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Code postal.", "expression": { "allow": true } },
+          { "type": "text", "key": "city", "label": "Ville", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Ville.", "expression": { "allow": true } },
+          { "type": "text", "key": "country", "label": "Pays", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Pays.", "expression": { "allow": true } }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Stagiaires",
+      "tags": ["modification", "Digiforma"]
+    },
+    {
+      "key": "digiforma_trainee_delete",
+      "name": "digiformaTraineeDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un stagiaire",
+      "subtitle": "Stagiaire",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Stagiaires",
+      "providerKey": "digiforma",
+      "icon": "fa-solid fa-trash",
+      "description": "Supprimer un stagiaire",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:digiforma_delete" }],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Supprimer un stagiaire",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "id", "label": "ID stagiaire", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Identifiant du stagiaire à supprimer.", "validators": [{ "type": "required" }], "expression": { "allow": true } }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Stagiaires",
+      "tags": ["suppression", "Digiforma"]
+    },
+    {
+      "key": "digiforma_companies_list",
+      "name": "digiformaCompaniesList",
+      "schemaVersion": 2,
+      "title": "Lister les entreprises",
+      "subtitle": "Entreprise",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Entreprises",
+      "providerKey": "digiforma",
+      "icon": "fa-solid fa-list",
+      "description": "Récupérer la liste des entreprises",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:digiforma_entreprises" }],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Lister les entreprises",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "number", "key": "page", "label": "Page", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Numéro de page.", "default": 1, "expression": { "allow": true } },
+          { "type": "number", "key": "per_page", "label": "Par page", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Nombre de résultats par page.", "default": 25, "expression": { "allow": true } }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Entreprises",
+      "tags": ["liste", "Digiforma"]
+    },
+    {
+      "key": "digiforma_company_get",
+      "name": "digiformaCompanyGet",
+      "schemaVersion": 2,
+      "title": "Obtenir une entreprise",
+      "subtitle": "Entreprise",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Entreprises",
+      "providerKey": "digiforma",
+      "icon": "fa-solid fa-eye",
+      "description": "Récupérer les détails d'une entreprise",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:digiforma_entreprise" }],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Obtenir une entreprise",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "id", "label": "ID entreprise", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Identifiant de l'entreprise.", "validators": [{ "type": "required" }], "expression": { "allow": true } }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Entreprises",
+      "tags": ["lecture", "Digiforma"]
+    },
+    {
+      "key": "digiforma_company_create",
+      "name": "digiformaCompanyCreate",
+      "schemaVersion": 2,
+      "title": "Créer une entreprise",
+      "subtitle": "Entreprise",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Entreprises",
+      "providerKey": "digiforma",
+      "icon": "fa-solid fa-plus",
+      "description": "Créer une nouvelle entreprise",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:digiforma_entreprise_short" }],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Créer une entreprise",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "name", "label": "Nom", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Nom de l'entreprise.", "validators": [{ "type": "required" }], "expression": { "allow": true } },
+          { "type": "text", "key": "siret", "label": "SIRET", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Numéro SIRET.", "expression": { "allow": true } },
+          { "type": "text", "key": "siren", "label": "SIREN", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Numéro SIREN.", "expression": { "allow": true } },
+          { "type": "text", "key": "email", "label": "Email", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Adresse email.", "expression": { "allow": true } },
+          { "type": "text", "key": "phone", "label": "Téléphone", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Numéro de téléphone.", "expression": { "allow": true } },
+          { "type": "text", "key": "roadAddress", "label": "Adresse", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Adresse postale.", "expression": { "allow": true } },
+          { "type": "text", "key": "zipcode", "label": "Code postal", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Code postal.", "expression": { "allow": true } },
+          { "type": "text", "key": "city", "label": "Ville", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Ville.", "expression": { "allow": true } },
+          { "type": "text", "key": "country", "label": "Pays", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Pays.", "expression": { "allow": true } },
+          { "type": "text", "key": "vatNumber", "label": "N° TVA", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Numéro de TVA intracommunautaire.", "expression": { "allow": true } },
+          { "type": "text", "key": "activity", "label": "Activité", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Secteur d'activité.", "expression": { "allow": true } }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Entreprises",
+      "tags": ["création", "Digiforma"]
+    },
+    {
+      "key": "digiforma_company_update",
+      "name": "digiformaCompanyUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier une entreprise",
+      "subtitle": "Entreprise",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Entreprises",
+      "providerKey": "digiforma",
+      "icon": "fa-solid fa-pen",
+      "description": "Modifier une entreprise existante",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:digiforma_entreprise_short" }],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Modifier une entreprise",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "id", "label": "ID entreprise", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Identifiant de l'entreprise.", "validators": [{ "type": "required" }], "expression": { "allow": true } },
+          { "type": "text", "key": "name", "label": "Nom", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Nom de l'entreprise.", "expression": { "allow": true } },
+          { "type": "text", "key": "siret", "label": "SIRET", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Numéro SIRET.", "expression": { "allow": true } },
+          { "type": "text", "key": "siren", "label": "SIREN", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Numéro SIREN.", "expression": { "allow": true } },
+          { "type": "text", "key": "email", "label": "Email", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Adresse email.", "expression": { "allow": true } },
+          { "type": "text", "key": "phone", "label": "Téléphone", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Numéro de téléphone.", "expression": { "allow": true } },
+          { "type": "text", "key": "roadAddress", "label": "Adresse", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Adresse postale.", "expression": { "allow": true } },
+          { "type": "text", "key": "zipcode", "label": "Code postal", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Code postal.", "expression": { "allow": true } },
+          { "type": "text", "key": "city", "label": "Ville", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Ville.", "expression": { "allow": true } },
+          { "type": "text", "key": "country", "label": "Pays", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Pays.", "expression": { "allow": true } },
+          { "type": "text", "key": "vatNumber", "label": "N° TVA", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Numéro de TVA.", "expression": { "allow": true } },
+          { "type": "text", "key": "activity", "label": "Activité", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Secteur d'activité.", "expression": { "allow": true } }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Entreprises",
+      "tags": ["modification", "Digiforma"]
+    },
+    {
+      "key": "digiforma_company_delete",
+      "name": "digiformaCompanyDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer une entreprise",
+      "subtitle": "Entreprise",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Entreprises",
+      "providerKey": "digiforma",
+      "icon": "fa-solid fa-trash",
+      "description": "Supprimer une entreprise",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:digiforma_delete" }],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Supprimer une entreprise",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "id", "label": "ID entreprise", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Identifiant de l'entreprise à supprimer.", "validators": [{ "type": "required" }], "expression": { "allow": true } }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Entreprises",
+      "tags": ["suppression", "Digiforma"]
+    },
+    {
+      "key": "digiforma_sessions_list",
+      "name": "digiformaSessionsList",
+      "schemaVersion": 2,
+      "title": "Lister les sessions",
+      "subtitle": "Session",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Sessions",
+      "providerKey": "digiforma",
+      "icon": "fa-solid fa-list",
+      "description": "Récupérer la liste des sessions de formation",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:digiforma_sessions" }],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Lister les sessions",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "number", "key": "page", "label": "Page", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Numéro de page.", "default": 1, "expression": { "allow": true } },
+          { "type": "number", "key": "per_page", "label": "Par page", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Nombre de résultats par page.", "default": 25, "expression": { "allow": true } }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Sessions",
+      "tags": ["liste", "Digiforma"]
+    },
+    {
+      "key": "digiforma_session_get",
+      "name": "digiformaSessionGet",
+      "schemaVersion": 2,
+      "title": "Obtenir une session",
+      "subtitle": "Session",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Sessions",
+      "providerKey": "digiforma",
+      "icon": "fa-solid fa-eye",
+      "description": "Récupérer les détails d'une session de formation",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:digiforma_session" }],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Obtenir une session",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "id", "label": "ID session", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Identifiant de la session.", "validators": [{ "type": "required" }], "expression": { "allow": true } }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Sessions",
+      "tags": ["lecture", "Digiforma"]
+    },
+    {
+      "key": "digiforma_session_create",
+      "name": "digiformaSessionCreate",
+      "schemaVersion": 2,
+      "title": "Créer une session",
+      "subtitle": "Session",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Sessions",
+      "providerKey": "digiforma",
+      "icon": "fa-solid fa-plus",
+      "description": "Créer une nouvelle session de formation",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:digiforma_session_short" }],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Créer une session",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "name", "label": "Nom", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Nom de la session.", "validators": [{ "type": "required" }], "expression": { "allow": true } },
+          { "type": "text", "key": "programId", "label": "ID programme", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Identifiant du programme associé.", "validators": [{ "type": "required" }], "expression": { "allow": true } },
+          { "type": "text", "key": "startDate", "label": "Date de début", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Date de début de la session.", "validators": [{ "type": "required" }], "expression": { "allow": true } },
+          { "type": "text", "key": "endDate", "label": "Date de fin", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Date de fin de la session.", "validators": [{ "type": "required" }], "expression": { "allow": true } },
+          { "type": "text", "key": "location", "label": "Lieu", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Lieu de la session.", "expression": { "allow": true } },
+          { "type": "number", "key": "capacity", "label": "Capacité", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Nombre maximum de participants.", "expression": { "allow": true } },
+          { "type": "textarea", "key": "description", "label": "Description", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Description de la session.", "expression": { "allow": true } }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Sessions",
+      "tags": ["création", "Digiforma"]
+    },
+    {
+      "key": "digiforma_session_update",
+      "name": "digiformaSessionUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier une session",
+      "subtitle": "Session",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Sessions",
+      "providerKey": "digiforma",
+      "icon": "fa-solid fa-pen",
+      "description": "Modifier une session de formation existante",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:digiforma_session_short" }],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Modifier une session",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "id", "label": "ID session", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Identifiant de la session.", "validators": [{ "type": "required" }], "expression": { "allow": true } },
+          { "type": "text", "key": "name", "label": "Nom", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Nom de la session.", "expression": { "allow": true } },
+          { "type": "text", "key": "startDate", "label": "Date de début", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Date de début.", "expression": { "allow": true } },
+          { "type": "text", "key": "endDate", "label": "Date de fin", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Date de fin.", "expression": { "allow": true } },
+          { "type": "text", "key": "location", "label": "Lieu", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Lieu.", "expression": { "allow": true } },
+          { "type": "number", "key": "capacity", "label": "Capacité", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Nombre maximum de participants.", "expression": { "allow": true } },
+          { "type": "textarea", "key": "description", "label": "Description", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Description.", "expression": { "allow": true } },
+          { "type": "text", "key": "status", "label": "Statut", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Statut de la session.", "expression": { "allow": true } }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Sessions",
+      "tags": ["modification", "Digiforma"]
+    },
+    {
+      "key": "digiforma_programs_list",
+      "name": "digiformaProgramsList",
+      "schemaVersion": 2,
+      "title": "Lister les programmes",
+      "subtitle": "Programme",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Programmes",
+      "providerKey": "digiforma",
+      "icon": "fa-solid fa-list",
+      "description": "Récupérer la liste des programmes de formation",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:digiforma_programmes" }],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Lister les programmes",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "number", "key": "page", "label": "Page", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Numéro de page.", "default": 1, "expression": { "allow": true } },
+          { "type": "number", "key": "per_page", "label": "Par page", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Nombre de résultats par page.", "default": 25, "expression": { "allow": true } }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Programmes",
+      "tags": ["liste", "Digiforma"]
+    },
+    {
+      "key": "digiforma_program_get",
+      "name": "digiformaProgramGet",
+      "schemaVersion": 2,
+      "title": "Obtenir un programme",
+      "subtitle": "Programme",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Programmes",
+      "providerKey": "digiforma",
+      "icon": "fa-solid fa-eye",
+      "description": "Récupérer les détails d'un programme de formation",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:digiforma_programme" }],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Obtenir un programme",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "id", "label": "ID programme", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Identifiant du programme.", "validators": [{ "type": "required" }], "expression": { "allow": true } }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Programmes",
+      "tags": ["lecture", "Digiforma"]
+    },
+    {
+      "key": "digiforma_program_create",
+      "name": "digiformaProgramCreate",
+      "schemaVersion": 2,
+      "title": "Créer un programme",
+      "subtitle": "Programme",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Programmes",
+      "providerKey": "digiforma",
+      "icon": "fa-solid fa-plus",
+      "description": "Créer un nouveau programme de formation",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:digiforma_programme_short" }],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Créer un programme",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "name", "label": "Nom", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Nom du programme.", "validators": [{ "type": "required" }], "expression": { "allow": true } },
+          { "type": "text", "key": "level", "label": "Niveau", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Niveau du programme.", "expression": { "allow": true } },
+          { "type": "text", "key": "duration", "label": "Durée", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Durée du programme.", "expression": { "allow": true } },
+          { "type": "text", "key": "category", "label": "Catégorie", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Catégorie du programme.", "expression": { "allow": true } },
+          { "type": "textarea", "key": "description", "label": "Description", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Description du programme.", "expression": { "allow": true } },
+          { "type": "textarea", "key": "goals", "label": "Objectifs", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Objectifs pédagogiques.", "expression": { "allow": true } },
+          { "type": "textarea", "key": "prerequisites", "label": "Prérequis", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Prérequis pour la formation.", "expression": { "allow": true } },
+          { "type": "textarea", "key": "targetAudience", "label": "Public cible", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Public cible de la formation.", "expression": { "allow": true } }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Programmes",
+      "tags": ["création", "Digiforma"]
+    },
+    {
+      "key": "digiforma_program_update",
+      "name": "digiformaProgramUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier un programme",
+      "subtitle": "Programme",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Programmes",
+      "providerKey": "digiforma",
+      "icon": "fa-solid fa-pen",
+      "description": "Modifier un programme de formation existant",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:digiforma_programme_short" }],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Modifier un programme",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "id", "label": "ID programme", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Identifiant du programme.", "validators": [{ "type": "required" }], "expression": { "allow": true } },
+          { "type": "text", "key": "name", "label": "Nom", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Nom du programme.", "expression": { "allow": true } },
+          { "type": "text", "key": "level", "label": "Niveau", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Niveau.", "expression": { "allow": true } },
+          { "type": "text", "key": "duration", "label": "Durée", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Durée.", "expression": { "allow": true } },
+          { "type": "text", "key": "category", "label": "Catégorie", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Catégorie.", "expression": { "allow": true } },
+          { "type": "textarea", "key": "description", "label": "Description", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Description.", "expression": { "allow": true } },
+          { "type": "textarea", "key": "goals", "label": "Objectifs", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Objectifs pédagogiques.", "expression": { "allow": true } },
+          { "type": "textarea", "key": "prerequisites", "label": "Prérequis", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Prérequis.", "expression": { "allow": true } },
+          { "type": "textarea", "key": "targetAudience", "label": "Public cible", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Public cible.", "expression": { "allow": true } }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Programmes",
+      "tags": ["modification", "Digiforma"]
+    },
+    {
+      "key": "digiforma_instructors_list",
+      "name": "digiformaInstructorsList",
+      "schemaVersion": 2,
+      "title": "Lister les formateurs",
+      "subtitle": "Formateur",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Formateurs",
+      "providerKey": "digiforma",
+      "icon": "fa-solid fa-list",
+      "description": "Récupérer la liste des formateurs",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:digiforma_formateurs" }],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Lister les formateurs",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "number", "key": "page", "label": "Page", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Numéro de page.", "default": 1, "expression": { "allow": true } },
+          { "type": "number", "key": "per_page", "label": "Par page", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Nombre de résultats par page.", "default": 25, "expression": { "allow": true } }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Formateurs",
+      "tags": ["liste", "Digiforma"]
+    },
+    {
+      "key": "digiforma_instructor_get",
+      "name": "digiformaInstructorGet",
+      "schemaVersion": 2,
+      "title": "Obtenir un formateur",
+      "subtitle": "Formateur",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Formateurs",
+      "providerKey": "digiforma",
+      "icon": "fa-solid fa-eye",
+      "description": "Récupérer les détails d'un formateur",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:digiforma_formateur" }],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Obtenir un formateur",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "id", "label": "ID formateur", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Identifiant du formateur.", "validators": [{ "type": "required" }], "expression": { "allow": true } }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Formateurs",
+      "tags": ["lecture", "Digiforma"]
+    },
+    {
+      "key": "digiforma_instructor_create",
+      "name": "digiformaInstructorCreate",
+      "schemaVersion": 2,
+      "title": "Créer un formateur",
+      "subtitle": "Formateur",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Formateurs",
+      "providerKey": "digiforma",
+      "icon": "fa-solid fa-plus",
+      "description": "Créer un nouveau formateur",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:digiforma_formateur_short" }],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Créer un formateur",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "firstname", "label": "Prénom", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Prénom du formateur.", "validators": [{ "type": "required" }], "expression": { "allow": true } },
+          { "type": "text", "key": "lastname", "label": "Nom", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Nom du formateur.", "validators": [{ "type": "required" }], "expression": { "allow": true } },
+          { "type": "text", "key": "email", "label": "Email", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Adresse email.", "expression": { "allow": true } },
+          { "type": "text", "key": "phone", "label": "Téléphone", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Numéro de téléphone.", "expression": { "allow": true } },
+          { "type": "text", "key": "profession", "label": "Profession", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Profession.", "expression": { "allow": true } },
+          { "type": "text", "key": "speciality", "label": "Spécialité", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Spécialité du formateur.", "expression": { "allow": true } },
+          { "type": "text", "key": "roadAddress", "label": "Adresse", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Adresse postale.", "expression": { "allow": true } },
+          { "type": "text", "key": "zipcode", "label": "Code postal", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Code postal.", "expression": { "allow": true } },
+          { "type": "text", "key": "city", "label": "Ville", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Ville.", "expression": { "allow": true } },
+          { "type": "text", "key": "country", "label": "Pays", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Pays.", "expression": { "allow": true } }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Formateurs",
+      "tags": ["création", "Digiforma"]
+    },
+    {
+      "key": "digiforma_instructor_update",
+      "name": "digiformaInstructorUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier un formateur",
+      "subtitle": "Formateur",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Formateurs",
+      "providerKey": "digiforma",
+      "icon": "fa-solid fa-pen",
+      "description": "Modifier un formateur existant",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:digiforma_formateur_short" }],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Modifier un formateur",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "id", "label": "ID formateur", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Identifiant du formateur.", "validators": [{ "type": "required" }], "expression": { "allow": true } },
+          { "type": "text", "key": "firstname", "label": "Prénom", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Prénom.", "expression": { "allow": true } },
+          { "type": "text", "key": "lastname", "label": "Nom", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Nom.", "expression": { "allow": true } },
+          { "type": "text", "key": "email", "label": "Email", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Adresse email.", "expression": { "allow": true } },
+          { "type": "text", "key": "phone", "label": "Téléphone", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Numéro de téléphone.", "expression": { "allow": true } },
+          { "type": "text", "key": "profession", "label": "Profession", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Profession.", "expression": { "allow": true } },
+          { "type": "text", "key": "speciality", "label": "Spécialité", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Spécialité.", "expression": { "allow": true } },
+          { "type": "text", "key": "roadAddress", "label": "Adresse", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Adresse postale.", "expression": { "allow": true } },
+          { "type": "text", "key": "zipcode", "label": "Code postal", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Code postal.", "expression": { "allow": true } },
+          { "type": "text", "key": "city", "label": "Ville", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Ville.", "expression": { "allow": true } },
+          { "type": "text", "key": "country", "label": "Pays", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Pays.", "expression": { "allow": true } }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Formateurs",
+      "tags": ["modification", "Digiforma"]
+    },
+    {
+      "key": "digiforma_instructor_delete",
+      "name": "digiformaInstructorDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un formateur",
+      "subtitle": "Formateur",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Formateurs",
+      "providerKey": "digiforma",
+      "icon": "fa-solid fa-trash",
+      "description": "Supprimer un formateur",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:digiforma_delete" }],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Supprimer un formateur",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "id", "label": "ID formateur", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Identifiant du formateur à supprimer.", "validators": [{ "type": "required" }], "expression": { "allow": true } }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Formateurs",
+      "tags": ["suppression", "Digiforma"]
+    },
+    {
+      "key": "digiforma_invoices_list",
+      "name": "digiformaInvoicesList",
+      "schemaVersion": 2,
+      "title": "Lister les factures",
+      "subtitle": "Facture",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Factures",
+      "providerKey": "digiforma",
+      "icon": "fa-solid fa-list",
+      "description": "Récupérer la liste des factures",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:digiforma_factures" }],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Lister les factures",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "number", "key": "page", "label": "Page", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Numéro de page.", "default": 1, "expression": { "allow": true } },
+          { "type": "number", "key": "per_page", "label": "Par page", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Nombre de résultats par page.", "default": 25, "expression": { "allow": true } }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Factures",
+      "tags": ["liste", "Digiforma"]
+    },
+    {
+      "key": "digiforma_invoice_get",
+      "name": "digiformaInvoiceGet",
+      "schemaVersion": 2,
+      "title": "Obtenir une facture",
+      "subtitle": "Facture",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Factures",
+      "providerKey": "digiforma",
+      "icon": "fa-solid fa-eye",
+      "description": "Récupérer les détails d'une facture",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:digiforma_facture" }],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Obtenir une facture",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "id", "label": "ID facture", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Identifiant de la facture.", "validators": [{ "type": "required" }], "expression": { "allow": true } }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Factures",
+      "tags": ["lecture", "Digiforma"]
+    },
+    {
+      "key": "digiforma_invoice_create",
+      "name": "digiformaInvoiceCreate",
+      "schemaVersion": 2,
+      "title": "Créer une facture",
+      "subtitle": "Facture",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Factures",
+      "providerKey": "digiforma",
+      "icon": "fa-solid fa-plus",
+      "description": "Créer une nouvelle facture",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:digiforma_facture_short" }],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Créer une facture",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "companyId", "label": "ID entreprise", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Identifiant de l'entreprise.", "validators": [{ "type": "required" }], "expression": { "allow": true } },
+          { "type": "text", "key": "trainingSessionId", "label": "ID session", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Identifiant de la session de formation.", "expression": { "allow": true } },
+          { "type": "text", "key": "reference", "label": "Référence", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Référence de la facture.", "expression": { "allow": true } },
+          { "type": "number", "key": "totalAmount", "label": "Montant total", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Montant total en euros.", "expression": { "allow": true } },
+          { "type": "text", "key": "currency", "label": "Devise", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Code devise.", "default": "EUR", "expression": { "allow": true } },
+          { "type": "text", "key": "issueDate", "label": "Date d'émission", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Date d'émission de la facture.", "expression": { "allow": true } },
+          { "type": "text", "key": "dueDate", "label": "Date d'échéance", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Date d'échéance de paiement.", "expression": { "allow": true } },
+          { "type": "textarea", "key": "description", "label": "Description", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Description de la facture.", "expression": { "allow": true } }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Factures",
+      "tags": ["création", "Digiforma"]
+    },
+    {
+      "key": "digiforma_quotations_list",
+      "name": "digiformaQuotationsList",
+      "schemaVersion": 2,
+      "title": "Lister les devis",
+      "subtitle": "Devis",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Devis",
+      "providerKey": "digiforma",
+      "icon": "fa-solid fa-list",
+      "description": "Récupérer la liste des devis",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:digiforma_devis_list" }],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Lister les devis",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "number", "key": "page", "label": "Page", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Numéro de page.", "default": 1, "expression": { "allow": true } },
+          { "type": "number", "key": "per_page", "label": "Par page", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Nombre de résultats par page.", "default": 25, "expression": { "allow": true } }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Devis",
+      "tags": ["liste", "Digiforma"]
+    },
+    {
+      "key": "digiforma_quotation_get",
+      "name": "digiformaQuotationGet",
+      "schemaVersion": 2,
+      "title": "Obtenir un devis",
+      "subtitle": "Devis",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Devis",
+      "providerKey": "digiforma",
+      "icon": "fa-solid fa-eye",
+      "description": "Récupérer les détails d'un devis",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:digiforma_devis" }],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Obtenir un devis",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "id", "label": "ID devis", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Identifiant du devis.", "validators": [{ "type": "required" }], "expression": { "allow": true } }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Devis",
+      "tags": ["lecture", "Digiforma"]
+    },
+    {
+      "key": "digiforma_quotation_create",
+      "name": "digiformaQuotationCreate",
+      "schemaVersion": 2,
+      "title": "Créer un devis",
+      "subtitle": "Devis",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Devis",
+      "providerKey": "digiforma",
+      "icon": "fa-solid fa-plus",
+      "description": "Créer un nouveau devis",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:digiforma_devis_short" }],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Créer un devis",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "companyId", "label": "ID entreprise", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Identifiant de l'entreprise.", "validators": [{ "type": "required" }], "expression": { "allow": true } },
+          { "type": "text", "key": "trainingSessionId", "label": "ID session", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Identifiant de la session de formation.", "expression": { "allow": true } },
+          { "type": "text", "key": "reference", "label": "Référence", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Référence du devis.", "expression": { "allow": true } },
+          { "type": "number", "key": "totalAmount", "label": "Montant total", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Montant total en euros.", "expression": { "allow": true } },
+          { "type": "text", "key": "currency", "label": "Devise", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Code devise.", "default": "EUR", "expression": { "allow": true } },
+          { "type": "text", "key": "issueDate", "label": "Date d'émission", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Date d'émission du devis.", "expression": { "allow": true } },
+          { "type": "text", "key": "validUntil", "label": "Valide jusqu'au", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Date de validité du devis.", "expression": { "allow": true } },
+          { "type": "textarea", "key": "description", "label": "Description", "col": { "xs": 24, "sm": 24, "md": 24 }, "description": "Description du devis.", "expression": { "allow": true } }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Devis",
+      "tags": ["création", "Digiforma"]
+    }
+  ],
+  "variables": {
+    "digiforma_stagiaires": {
+      "title": "Stagiaires Digiforma",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "checkbox", "key": "ok", "label": "OK", "description": "Succès de la requête.", "col": { "xs": 24 } },
+        { "type": "number", "key": "totalCount", "label": "Nombre total", "col": { "xs": 24 } },
+        {
+          "type": "section", "title": "Stagiaires", "key": "stagiaires", "col": { "xs": 24 },
+          "mode": "array", "array": { "initialItems": 0, "minItems": 0 },
+          "fields": [
+            { "type": "text", "key": "id", "label": "ID", "description": "Identifiant.", "col": { "xs": 24 } },
+            { "type": "text", "key": "prenom", "label": "Prénom", "description": "Prénom.", "col": { "xs": 24 } },
+            { "type": "text", "key": "nom", "label": "Nom", "description": "Nom.", "col": { "xs": 24 } },
+            { "type": "text", "key": "email", "label": "Email", "description": "Adresse email.", "col": { "xs": 24 } },
+            { "type": "text", "key": "telephone", "label": "Téléphone", "description": "Téléphone.", "col": { "xs": 24 } },
+            { "type": "text", "key": "statut", "label": "Statut", "description": "Statut.", "col": { "xs": 24 } },
+            { "type": "text", "key": "entreprise", "label": "Entreprise", "description": "Entreprise.", "col": { "xs": 24 } }
+          ]
+        }
+      ]
+    },
+    "digiforma_stagiaire": {
+      "title": "Stagiaire Digiforma",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "checkbox", "key": "ok", "label": "OK", "description": "Succès de la requête.", "col": { "xs": 24 } },
+        {
+          "type": "section", "title": "Données", "key": "data", "col": { "xs": 24 },
+          "fields": [
+            { "type": "text", "key": "id", "label": "ID", "description": "Identifiant.", "col": { "xs": 24 } },
+            { "type": "text", "key": "prenom", "label": "Prénom", "description": "Prénom.", "col": { "xs": 24 } },
+            { "type": "text", "key": "nom", "label": "Nom", "description": "Nom.", "col": { "xs": 24 } },
+            { "type": "text", "key": "email", "label": "Email", "description": "Adresse email.", "col": { "xs": 24 } },
+            { "type": "text", "key": "telephone", "label": "Téléphone", "description": "Téléphone.", "col": { "xs": 24 } },
+            { "type": "text", "key": "date_naissance", "label": "Date de naissance", "description": "Date de naissance.", "col": { "xs": 24 } },
+            { "type": "text", "key": "statut", "label": "Statut", "description": "Statut.", "col": { "xs": 24 } },
+            { "type": "text", "key": "profession", "label": "Profession", "description": "Profession.", "col": { "xs": 24 } },
+            { "type": "text", "key": "poste", "label": "Poste", "description": "Poste.", "col": { "xs": 24 } },
+            { "type": "text", "key": "entreprise", "label": "Entreprise", "description": "Entreprise.", "col": { "xs": 24 } },
+            { "type": "text", "key": "adresse", "label": "Adresse", "description": "Adresse.", "col": { "xs": 24 } },
+            { "type": "text", "key": "code_postal", "label": "Code postal", "description": "Code postal.", "col": { "xs": 24 } },
+            { "type": "text", "key": "ville", "label": "Ville", "description": "Ville.", "col": { "xs": 24 } },
+            { "type": "text", "key": "pays", "label": "Pays", "description": "Pays.", "col": { "xs": 24 } }
+          ]
+        }
+      ]
+    },
+    "digiforma_stagiaire_short": {
+      "title": "Stagiaire Digiforma (résumé)",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "checkbox", "key": "ok", "label": "OK", "description": "Succès de la requête.", "col": { "xs": 24 } },
+        {
+          "type": "section", "title": "Données", "key": "data", "col": { "xs": 24 },
+          "fields": [
+            { "type": "text", "key": "id", "label": "ID", "description": "Identifiant.", "col": { "xs": 24 } },
+            { "type": "text", "key": "prenom", "label": "Prénom", "description": "Prénom.", "col": { "xs": 24 } },
+            { "type": "text", "key": "nom", "label": "Nom", "description": "Nom.", "col": { "xs": 24 } },
+            { "type": "text", "key": "email", "label": "Email", "description": "Adresse email.", "col": { "xs": 24 } }
+          ]
+        }
+      ]
+    },
+    "digiforma_delete": {
+      "title": "Suppression Digiforma",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "checkbox", "key": "ok", "label": "OK", "description": "Succès de la requête.", "col": { "xs": 24 } },
+        { "type": "checkbox", "key": "deleted", "label": "Supprimé", "description": "Élément supprimé avec succès.", "col": { "xs": 24 } }
+      ]
+    },
+    "digiforma_entreprises": {
+      "title": "Entreprises Digiforma",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "checkbox", "key": "ok", "label": "OK", "description": "Succès de la requête.", "col": { "xs": 24 } },
+        { "type": "number", "key": "totalCount", "label": "Nombre total", "col": { "xs": 24 } },
+        {
+          "type": "section", "title": "Entreprises", "key": "entreprises", "col": { "xs": 24 },
+          "mode": "array", "array": { "initialItems": 0, "minItems": 0 },
+          "fields": [
+            { "type": "text", "key": "id", "label": "ID", "description": "Identifiant.", "col": { "xs": 24 } },
+            { "type": "text", "key": "nom", "label": "Nom", "description": "Nom.", "col": { "xs": 24 } },
+            { "type": "text", "key": "siret", "label": "SIRET", "description": "SIRET.", "col": { "xs": 24 } },
+            { "type": "text", "key": "siren", "label": "SIREN", "description": "SIREN.", "col": { "xs": 24 } },
+            { "type": "text", "key": "email", "label": "Email", "description": "Email.", "col": { "xs": 24 } },
+            { "type": "text", "key": "telephone", "label": "Téléphone", "description": "Téléphone.", "col": { "xs": 24 } },
+            { "type": "text", "key": "ville", "label": "Ville", "description": "Ville.", "col": { "xs": 24 } }
+          ]
+        }
+      ]
+    },
+    "digiforma_entreprise": {
+      "title": "Entreprise Digiforma",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "checkbox", "key": "ok", "label": "OK", "description": "Succès de la requête.", "col": { "xs": 24 } },
+        {
+          "type": "section", "title": "Données", "key": "data", "col": { "xs": 24 },
+          "fields": [
+            { "type": "text", "key": "id", "label": "ID", "description": "Identifiant.", "col": { "xs": 24 } },
+            { "type": "text", "key": "nom", "label": "Nom", "description": "Nom.", "col": { "xs": 24 } },
+            { "type": "text", "key": "siret", "label": "SIRET", "description": "SIRET.", "col": { "xs": 24 } },
+            { "type": "text", "key": "siren", "label": "SIREN", "description": "SIREN.", "col": { "xs": 24 } },
+            { "type": "text", "key": "email", "label": "Email", "description": "Email.", "col": { "xs": 24 } },
+            { "type": "text", "key": "telephone", "label": "Téléphone", "description": "Téléphone.", "col": { "xs": 24 } },
+            { "type": "text", "key": "adresse", "label": "Adresse", "description": "Adresse.", "col": { "xs": 24 } },
+            { "type": "text", "key": "code_postal", "label": "Code postal", "description": "Code postal.", "col": { "xs": 24 } },
+            { "type": "text", "key": "ville", "label": "Ville", "description": "Ville.", "col": { "xs": 24 } },
+            { "type": "text", "key": "pays", "label": "Pays", "description": "Pays.", "col": { "xs": 24 } },
+            { "type": "text", "key": "tva", "label": "N° TVA", "description": "Numéro de TVA.", "col": { "xs": 24 } },
+            { "type": "text", "key": "activite", "label": "Activité", "description": "Activité.", "col": { "xs": 24 } }
+          ]
+        }
+      ]
+    },
+    "digiforma_entreprise_short": {
+      "title": "Entreprise Digiforma (résumé)",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "checkbox", "key": "ok", "label": "OK", "description": "Succès de la requête.", "col": { "xs": 24 } },
+        {
+          "type": "section", "title": "Données", "key": "data", "col": { "xs": 24 },
+          "fields": [
+            { "type": "text", "key": "id", "label": "ID", "description": "Identifiant.", "col": { "xs": 24 } },
+            { "type": "text", "key": "nom", "label": "Nom", "description": "Nom.", "col": { "xs": 24 } },
+            { "type": "text", "key": "siret", "label": "SIRET", "description": "SIRET.", "col": { "xs": 24 } },
+            { "type": "text", "key": "email", "label": "Email", "description": "Email.", "col": { "xs": 24 } }
+          ]
+        }
+      ]
+    },
+    "digiforma_sessions": {
+      "title": "Sessions Digiforma",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "checkbox", "key": "ok", "label": "OK", "description": "Succès de la requête.", "col": { "xs": 24 } },
+        { "type": "number", "key": "totalCount", "label": "Nombre total", "col": { "xs": 24 } },
+        {
+          "type": "section", "title": "Sessions", "key": "sessions", "col": { "xs": 24 },
+          "mode": "array", "array": { "initialItems": 0, "minItems": 0 },
+          "fields": [
+            { "type": "text", "key": "id", "label": "ID", "description": "Identifiant.", "col": { "xs": 24 } },
+            { "type": "text", "key": "nom", "label": "Nom", "description": "Nom.", "col": { "xs": 24 } },
+            { "type": "text", "key": "statut", "label": "Statut", "description": "Statut.", "col": { "xs": 24 } },
+            { "type": "text", "key": "date_debut", "label": "Date de début", "description": "Date de début.", "col": { "xs": 24 } },
+            { "type": "text", "key": "date_fin", "label": "Date de fin", "description": "Date de fin.", "col": { "xs": 24 } },
+            { "type": "text", "key": "programme", "label": "Programme", "description": "Programme associé.", "col": { "xs": 24 } },
+            { "type": "text", "key": "lieu", "label": "Lieu", "description": "Lieu.", "col": { "xs": 24 } }
+          ]
+        }
+      ]
+    },
+    "digiforma_session": {
+      "title": "Session Digiforma",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "checkbox", "key": "ok", "label": "OK", "description": "Succès de la requête.", "col": { "xs": 24 } },
+        {
+          "type": "section", "title": "Données", "key": "data", "col": { "xs": 24 },
+          "fields": [
+            { "type": "text", "key": "id", "label": "ID", "description": "Identifiant.", "col": { "xs": 24 } },
+            { "type": "text", "key": "nom", "label": "Nom", "description": "Nom.", "col": { "xs": 24 } },
+            { "type": "text", "key": "statut", "label": "Statut", "description": "Statut.", "col": { "xs": 24 } },
+            { "type": "text", "key": "date_debut", "label": "Date de début", "description": "Date de début.", "col": { "xs": 24 } },
+            { "type": "text", "key": "date_fin", "label": "Date de fin", "description": "Date de fin.", "col": { "xs": 24 } },
+            { "type": "text", "key": "programme", "label": "Programme", "description": "Programme.", "col": { "xs": 24 } },
+            { "type": "text", "key": "lieu", "label": "Lieu", "description": "Lieu.", "col": { "xs": 24 } },
+            { "type": "number", "key": "capacite", "label": "Capacité", "description": "Capacité.", "col": { "xs": 24 } },
+            { "type": "textarea", "key": "description", "label": "Description", "description": "Description.", "col": { "xs": 24 } },
+            { "type": "text", "key": "reference", "label": "Référence", "description": "Référence.", "col": { "xs": 24 } }
+          ]
+        }
+      ]
+    },
+    "digiforma_session_short": {
+      "title": "Session Digiforma (résumé)",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "checkbox", "key": "ok", "label": "OK", "description": "Succès de la requête.", "col": { "xs": 24 } },
+        {
+          "type": "section", "title": "Données", "key": "data", "col": { "xs": 24 },
+          "fields": [
+            { "type": "text", "key": "id", "label": "ID", "description": "Identifiant.", "col": { "xs": 24 } },
+            { "type": "text", "key": "nom", "label": "Nom", "description": "Nom.", "col": { "xs": 24 } },
+            { "type": "text", "key": "statut", "label": "Statut", "description": "Statut.", "col": { "xs": 24 } },
+            { "type": "text", "key": "date_debut", "label": "Date de début", "description": "Date de début.", "col": { "xs": 24 } },
+            { "type": "text", "key": "date_fin", "label": "Date de fin", "description": "Date de fin.", "col": { "xs": 24 } }
+          ]
+        }
+      ]
+    },
+    "digiforma_programmes": {
+      "title": "Programmes Digiforma",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "checkbox", "key": "ok", "label": "OK", "description": "Succès de la requête.", "col": { "xs": 24 } },
+        { "type": "number", "key": "totalCount", "label": "Nombre total", "col": { "xs": 24 } },
+        {
+          "type": "section", "title": "Programmes", "key": "programmes", "col": { "xs": 24 },
+          "mode": "array", "array": { "initialItems": 0, "minItems": 0 },
+          "fields": [
+            { "type": "text", "key": "id", "label": "ID", "description": "Identifiant.", "col": { "xs": 24 } },
+            { "type": "text", "key": "nom", "label": "Nom", "description": "Nom.", "col": { "xs": 24 } },
+            { "type": "text", "key": "niveau", "label": "Niveau", "description": "Niveau.", "col": { "xs": 24 } },
+            { "type": "text", "key": "duree", "label": "Durée", "description": "Durée.", "col": { "xs": 24 } },
+            { "type": "text", "key": "statut", "label": "Statut", "description": "Statut.", "col": { "xs": 24 } },
+            { "type": "text", "key": "categorie", "label": "Catégorie", "description": "Catégorie.", "col": { "xs": 24 } }
+          ]
+        }
+      ]
+    },
+    "digiforma_programme": {
+      "title": "Programme Digiforma",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "checkbox", "key": "ok", "label": "OK", "description": "Succès de la requête.", "col": { "xs": 24 } },
+        {
+          "type": "section", "title": "Données", "key": "data", "col": { "xs": 24 },
+          "fields": [
+            { "type": "text", "key": "id", "label": "ID", "description": "Identifiant.", "col": { "xs": 24 } },
+            { "type": "text", "key": "nom", "label": "Nom", "description": "Nom.", "col": { "xs": 24 } },
+            { "type": "text", "key": "niveau", "label": "Niveau", "description": "Niveau.", "col": { "xs": 24 } },
+            { "type": "text", "key": "duree", "label": "Durée", "description": "Durée.", "col": { "xs": 24 } },
+            { "type": "text", "key": "statut", "label": "Statut", "description": "Statut.", "col": { "xs": 24 } },
+            { "type": "text", "key": "categorie", "label": "Catégorie", "description": "Catégorie.", "col": { "xs": 24 } },
+            { "type": "textarea", "key": "description", "label": "Description", "description": "Description.", "col": { "xs": 24 } },
+            { "type": "textarea", "key": "objectifs", "label": "Objectifs", "description": "Objectifs.", "col": { "xs": 24 } },
+            { "type": "textarea", "key": "prerequis", "label": "Prérequis", "description": "Prérequis.", "col": { "xs": 24 } },
+            { "type": "textarea", "key": "public_cible", "label": "Public cible", "description": "Public cible.", "col": { "xs": 24 } }
+          ]
+        }
+      ]
+    },
+    "digiforma_programme_short": {
+      "title": "Programme Digiforma (résumé)",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "checkbox", "key": "ok", "label": "OK", "description": "Succès de la requête.", "col": { "xs": 24 } },
+        {
+          "type": "section", "title": "Données", "key": "data", "col": { "xs": 24 },
+          "fields": [
+            { "type": "text", "key": "id", "label": "ID", "description": "Identifiant.", "col": { "xs": 24 } },
+            { "type": "text", "key": "nom", "label": "Nom", "description": "Nom.", "col": { "xs": 24 } },
+            { "type": "text", "key": "niveau", "label": "Niveau", "description": "Niveau.", "col": { "xs": 24 } },
+            { "type": "text", "key": "duree", "label": "Durée", "description": "Durée.", "col": { "xs": 24 } },
+            { "type": "text", "key": "statut", "label": "Statut", "description": "Statut.", "col": { "xs": 24 } }
+          ]
+        }
+      ]
+    },
+    "digiforma_formateurs": {
+      "title": "Formateurs Digiforma",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "checkbox", "key": "ok", "label": "OK", "description": "Succès de la requête.", "col": { "xs": 24 } },
+        { "type": "number", "key": "totalCount", "label": "Nombre total", "col": { "xs": 24 } },
+        {
+          "type": "section", "title": "Formateurs", "key": "formateurs", "col": { "xs": 24 },
+          "mode": "array", "array": { "initialItems": 0, "minItems": 0 },
+          "fields": [
+            { "type": "text", "key": "id", "label": "ID", "description": "Identifiant.", "col": { "xs": 24 } },
+            { "type": "text", "key": "prenom", "label": "Prénom", "description": "Prénom.", "col": { "xs": 24 } },
+            { "type": "text", "key": "nom", "label": "Nom", "description": "Nom.", "col": { "xs": 24 } },
+            { "type": "text", "key": "email", "label": "Email", "description": "Email.", "col": { "xs": 24 } },
+            { "type": "text", "key": "telephone", "label": "Téléphone", "description": "Téléphone.", "col": { "xs": 24 } },
+            { "type": "text", "key": "statut", "label": "Statut", "description": "Statut.", "col": { "xs": 24 } }
+          ]
+        }
+      ]
+    },
+    "digiforma_formateur": {
+      "title": "Formateur Digiforma",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "checkbox", "key": "ok", "label": "OK", "description": "Succès de la requête.", "col": { "xs": 24 } },
+        {
+          "type": "section", "title": "Données", "key": "data", "col": { "xs": 24 },
+          "fields": [
+            { "type": "text", "key": "id", "label": "ID", "description": "Identifiant.", "col": { "xs": 24 } },
+            { "type": "text", "key": "prenom", "label": "Prénom", "description": "Prénom.", "col": { "xs": 24 } },
+            { "type": "text", "key": "nom", "label": "Nom", "description": "Nom.", "col": { "xs": 24 } },
+            { "type": "text", "key": "email", "label": "Email", "description": "Email.", "col": { "xs": 24 } },
+            { "type": "text", "key": "telephone", "label": "Téléphone", "description": "Téléphone.", "col": { "xs": 24 } },
+            { "type": "text", "key": "statut", "label": "Statut", "description": "Statut.", "col": { "xs": 24 } },
+            { "type": "text", "key": "profession", "label": "Profession", "description": "Profession.", "col": { "xs": 24 } },
+            { "type": "text", "key": "specialite", "label": "Spécialité", "description": "Spécialité.", "col": { "xs": 24 } },
+            { "type": "text", "key": "adresse", "label": "Adresse", "description": "Adresse.", "col": { "xs": 24 } },
+            { "type": "text", "key": "code_postal", "label": "Code postal", "description": "Code postal.", "col": { "xs": 24 } },
+            { "type": "text", "key": "ville", "label": "Ville", "description": "Ville.", "col": { "xs": 24 } },
+            { "type": "text", "key": "pays", "label": "Pays", "description": "Pays.", "col": { "xs": 24 } }
+          ]
+        }
+      ]
+    },
+    "digiforma_formateur_short": {
+      "title": "Formateur Digiforma (résumé)",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "checkbox", "key": "ok", "label": "OK", "description": "Succès de la requête.", "col": { "xs": 24 } },
+        {
+          "type": "section", "title": "Données", "key": "data", "col": { "xs": 24 },
+          "fields": [
+            { "type": "text", "key": "id", "label": "ID", "description": "Identifiant.", "col": { "xs": 24 } },
+            { "type": "text", "key": "prenom", "label": "Prénom", "description": "Prénom.", "col": { "xs": 24 } },
+            { "type": "text", "key": "nom", "label": "Nom", "description": "Nom.", "col": { "xs": 24 } },
+            { "type": "text", "key": "email", "label": "Email", "description": "Email.", "col": { "xs": 24 } }
+          ]
+        }
+      ]
+    },
+    "digiforma_factures": {
+      "title": "Factures Digiforma",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "checkbox", "key": "ok", "label": "OK", "description": "Succès de la requête.", "col": { "xs": 24 } },
+        { "type": "number", "key": "totalCount", "label": "Nombre total", "col": { "xs": 24 } },
+        {
+          "type": "section", "title": "Factures", "key": "factures", "col": { "xs": 24 },
+          "mode": "array", "array": { "initialItems": 0, "minItems": 0 },
+          "fields": [
+            { "type": "text", "key": "id", "label": "ID", "description": "Identifiant.", "col": { "xs": 24 } },
+            { "type": "text", "key": "reference", "label": "Référence", "description": "Référence.", "col": { "xs": 24 } },
+            { "type": "text", "key": "statut", "label": "Statut", "description": "Statut.", "col": { "xs": 24 } },
+            { "type": "number", "key": "montant_total", "label": "Montant total", "description": "Montant total.", "col": { "xs": 24 } },
+            { "type": "text", "key": "devise", "label": "Devise", "description": "Devise.", "col": { "xs": 24 } },
+            { "type": "text", "key": "date_emission", "label": "Date d'émission", "description": "Date d'émission.", "col": { "xs": 24 } },
+            { "type": "text", "key": "date_echeance", "label": "Date d'échéance", "description": "Date d'échéance.", "col": { "xs": 24 } },
+            { "type": "text", "key": "entreprise", "label": "Entreprise", "description": "Entreprise.", "col": { "xs": 24 } }
+          ]
+        }
+      ]
+    },
+    "digiforma_facture": {
+      "title": "Facture Digiforma",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "checkbox", "key": "ok", "label": "OK", "description": "Succès de la requête.", "col": { "xs": 24 } },
+        {
+          "type": "section", "title": "Données", "key": "data", "col": { "xs": 24 },
+          "fields": [
+            { "type": "text", "key": "id", "label": "ID", "description": "Identifiant.", "col": { "xs": 24 } },
+            { "type": "text", "key": "reference", "label": "Référence", "description": "Référence.", "col": { "xs": 24 } },
+            { "type": "text", "key": "statut", "label": "Statut", "description": "Statut.", "col": { "xs": 24 } },
+            { "type": "number", "key": "montant_total", "label": "Montant total", "description": "Montant total.", "col": { "xs": 24 } },
+            { "type": "text", "key": "devise", "label": "Devise", "description": "Devise.", "col": { "xs": 24 } },
+            { "type": "text", "key": "date_emission", "label": "Date d'émission", "description": "Date d'émission.", "col": { "xs": 24 } },
+            { "type": "text", "key": "date_echeance", "label": "Date d'échéance", "description": "Date d'échéance.", "col": { "xs": 24 } },
+            { "type": "text", "key": "entreprise", "label": "Entreprise", "description": "Entreprise.", "col": { "xs": 24 } },
+            { "type": "textarea", "key": "description", "label": "Description", "description": "Description.", "col": { "xs": 24 } },
+            { "type": "number", "key": "montant_taxes", "label": "Montant taxes", "description": "Montant des taxes.", "col": { "xs": 24 } }
+          ]
+        }
+      ]
+    },
+    "digiforma_facture_short": {
+      "title": "Facture Digiforma (résumé)",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "checkbox", "key": "ok", "label": "OK", "description": "Succès de la requête.", "col": { "xs": 24 } },
+        {
+          "type": "section", "title": "Données", "key": "data", "col": { "xs": 24 },
+          "fields": [
+            { "type": "text", "key": "id", "label": "ID", "description": "Identifiant.", "col": { "xs": 24 } },
+            { "type": "text", "key": "reference", "label": "Référence", "description": "Référence.", "col": { "xs": 24 } },
+            { "type": "text", "key": "statut", "label": "Statut", "description": "Statut.", "col": { "xs": 24 } },
+            { "type": "number", "key": "montant_total", "label": "Montant total", "description": "Montant total.", "col": { "xs": 24 } }
+          ]
+        }
+      ]
+    },
+    "digiforma_devis_list": {
+      "title": "Devis Digiforma",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "checkbox", "key": "ok", "label": "OK", "description": "Succès de la requête.", "col": { "xs": 24 } },
+        { "type": "number", "key": "totalCount", "label": "Nombre total", "col": { "xs": 24 } },
+        {
+          "type": "section", "title": "Devis", "key": "devis", "col": { "xs": 24 },
+          "mode": "array", "array": { "initialItems": 0, "minItems": 0 },
+          "fields": [
+            { "type": "text", "key": "id", "label": "ID", "description": "Identifiant.", "col": { "xs": 24 } },
+            { "type": "text", "key": "reference", "label": "Référence", "description": "Référence.", "col": { "xs": 24 } },
+            { "type": "text", "key": "statut", "label": "Statut", "description": "Statut.", "col": { "xs": 24 } },
+            { "type": "number", "key": "montant_total", "label": "Montant total", "description": "Montant total.", "col": { "xs": 24 } },
+            { "type": "text", "key": "devise", "label": "Devise", "description": "Devise.", "col": { "xs": 24 } },
+            { "type": "text", "key": "date_emission", "label": "Date d'émission", "description": "Date d'émission.", "col": { "xs": 24 } },
+            { "type": "text", "key": "valide_jusqua", "label": "Valide jusqu'au", "description": "Valide jusqu'au.", "col": { "xs": 24 } },
+            { "type": "text", "key": "entreprise", "label": "Entreprise", "description": "Entreprise.", "col": { "xs": 24 } }
+          ]
+        }
+      ]
+    },
+    "digiforma_devis": {
+      "title": "Devis Digiforma (détail)",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "checkbox", "key": "ok", "label": "OK", "description": "Succès de la requête.", "col": { "xs": 24 } },
+        {
+          "type": "section", "title": "Données", "key": "data", "col": { "xs": 24 },
+          "fields": [
+            { "type": "text", "key": "id", "label": "ID", "description": "Identifiant.", "col": { "xs": 24 } },
+            { "type": "text", "key": "reference", "label": "Référence", "description": "Référence.", "col": { "xs": 24 } },
+            { "type": "text", "key": "statut", "label": "Statut", "description": "Statut.", "col": { "xs": 24 } },
+            { "type": "number", "key": "montant_total", "label": "Montant total", "description": "Montant total.", "col": { "xs": 24 } },
+            { "type": "text", "key": "devise", "label": "Devise", "description": "Devise.", "col": { "xs": 24 } },
+            { "type": "text", "key": "date_emission", "label": "Date d'émission", "description": "Date d'émission.", "col": { "xs": 24 } },
+            { "type": "text", "key": "valide_jusqua", "label": "Valide jusqu'au", "description": "Valide jusqu'au.", "col": { "xs": 24 } },
+            { "type": "text", "key": "entreprise", "label": "Entreprise", "description": "Entreprise.", "col": { "xs": 24 } },
+            { "type": "textarea", "key": "description", "label": "Description", "description": "Description.", "col": { "xs": 24 } },
+            { "type": "number", "key": "montant_taxes", "label": "Montant taxes", "description": "Montant des taxes.", "col": { "xs": 24 } }
+          ]
+        }
+      ]
+    },
+    "digiforma_devis_short": {
+      "title": "Devis Digiforma (résumé)",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "checkbox", "key": "ok", "label": "OK", "description": "Succès de la requête.", "col": { "xs": 24 } },
+        {
+          "type": "section", "title": "Données", "key": "data", "col": { "xs": 24 },
+          "fields": [
+            { "type": "text", "key": "id", "label": "ID", "description": "Identifiant.", "col": { "xs": 24 } },
+            { "type": "text", "key": "reference", "label": "Référence", "description": "Référence.", "col": { "xs": 24 } },
+            { "type": "text", "key": "statut", "label": "Statut", "description": "Statut.", "col": { "xs": 24 } },
+            { "type": "number", "key": "montant_total", "label": "Montant total", "description": "Montant total.", "col": { "xs": 24 } }
+          ]
+        }
+      ]
+    }
+  }
+}
