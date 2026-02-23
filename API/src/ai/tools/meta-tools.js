@@ -379,7 +379,15 @@ async function executeMetaTool(name, input, ctx) {
     }
 
     case 'execute_tool': {
-      const { result, displayTitle } = await executeTool(input.key, input.args || {}, {
+      // LLM sometimes puts args at top level instead of inside `args: {}` — handle both
+      let toolArgs = input.args;
+      if (!toolArgs || (typeof toolArgs === 'object' && Object.keys(toolArgs).length === 0)) {
+        // Extract everything except 'key' as args
+        const { key, args, ...rest } = input;
+        if (Object.keys(rest).length > 0) toolArgs = rest;
+        else toolArgs = args || {};
+      }
+      const { result, displayTitle } = await executeTool(input.key, toolArgs, {
         workspaceId: ctx.workspaceId,
         companyId: ctx.companyId,
         userId: ctx.userId,
