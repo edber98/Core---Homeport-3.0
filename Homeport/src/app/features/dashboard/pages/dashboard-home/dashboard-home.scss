@@ -561,10 +561,20 @@
 }
 
 .ai-header-center {
+  display: grid;
+  grid-template-columns: 36px auto 36px;
+  align-items: center;
   justify-content: center;
+  column-gap: 10px;
 }
 
-.ai-header-center > div {
+.ai-header-center::after {
+  content: '';
+  width: 36px;
+  height: 36px;
+}
+
+.ai-header-copy {
   text-align: center;
 }
 
@@ -598,58 +608,83 @@
   width: 100%;
 }
 
-.ai-input-group {
+.ai-input-shell {
   flex: 1;
-  border-radius: 10px !important;
-  overflow: hidden;
-}
-
-.ai-input-group ::ng-deep .ant-input-affix-wrapper {
-  border-radius: 10px !important;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px;
+  border: 1px solid #dbe4ef;
+  border-radius: 10px;
+  background: #ffffff;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
-:host ::ng-deep .ai-input-group .ant-input-affix-wrapper .ant-input {
-  font-size: 13px;
-  border: 0 !important;
-  box-shadow: none !important;
+.ai-input-shell:hover,
+.ai-input-shell:focus-within {
+  border-color: #1677ff;
+  box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.15);
 }
 
-:host ::ng-deep .ai-input-group .ant-input-affix-wrapper:not(.ant-input-affix-wrapper-disabled):hover,
-:host ::ng-deep .ai-input-group .ant-input-affix-wrapper-focused,
-:host ::ng-deep .ai-input-group .ant-input-affix-wrapper:focus-within {
-  border: 1px solid #1677ff !important;
-  border-right-width: 1px !important;
-  z-index: 1;
-  box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.15) !important;
+.ai-mic-btn {
+  align-self: center;
+  flex-shrink: 0;
+  margin-top: 0;
 }
 
-.ai-input-group ::ng-deep .ai-send-btn.ant-btn-primary {
+.ai-input-shell .ai-send-btn.ant-btn-primary {
   background: #1677ff;
   border-color: #1677ff;
   color: #ffffff;
+  align-self: center;
+  flex-shrink: 0;
+  margin-top: 0;
 }
 
-.ai-input-group ::ng-deep .ai-send-btn.ant-btn-primary:hover,
-.ai-input-group ::ng-deep .ai-send-btn.ant-btn-primary:focus {
+.ai-input-shell.ai-input-shell-multiline {
+  align-items: flex-end;
+}
+
+.ai-input-shell.ai-input-shell-multiline .ai-mic-btn,
+.ai-input-shell.ai-input-shell-multiline .ai-send-btn.ant-btn-primary {
+  align-self: flex-end;
+}
+
+.ai-input-shell .ai-send-btn.ant-btn-primary:hover,
+.ai-input-shell .ai-send-btn.ant-btn-primary:focus {
   background: #4096ff;
   border-color: #4096ff;
 }
 
-.ai-input-group ::ng-deep .ai-send-btn.ant-btn-primary:active {
+.ai-input-shell .ai-send-btn.ant-btn-primary:active {
   background: #0958d9;
   border-color: #0958d9;
 }
 
-.ai-input-group ::ng-deep .ai-send-btn.ant-btn-primary[disabled],
-.ai-input-group ::ng-deep .ai-send-btn.ant-btn-primary:disabled {
+.ai-input-shell .ai-send-btn.ant-btn-primary[disabled],
+.ai-input-shell .ai-send-btn.ant-btn-primary:disabled {
   background: #91caff;
   border-color: #91caff;
   color: #ffffff;
 }
 
 .ai-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 30px;
+  border: 0 !important;
+  box-shadow: none !important;
+  resize: none;
+  background: transparent;
   font-size: 13px !important;
+  line-height: 1.4;
+  padding: 6px 4px;
+  overflow-y: auto;
+}
+
+.ai-input:focus {
+  outline: none;
 }
 
 .mic-recording {
@@ -1124,11 +1159,11 @@
   }
 
   .ai-header-center {
-    flex-direction: column;
-    gap: 8px;
+    grid-template-columns: 36px auto 36px;
+    column-gap: 8px;
   }
 
-  .ai-header-center > div {
+  .ai-header-copy {
     text-align: center;
   }
 

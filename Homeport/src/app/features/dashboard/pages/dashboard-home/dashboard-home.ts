@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, ChangeDetectorRef, ElementRef, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ElementRef, OnDestroy, ViewChild, AfterViewInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { NzIconModule } from 'ng-zorro-antd/icon';
@@ -24,10 +24,11 @@ import { AiAudioService } from '../../../ai/ai-audio.service';
   templateUrl: './dashboard-home.html',
   styleUrl: './dashboard-home.scss'
 })
-export class DashboardHome implements OnInit, OnDestroy {
+export class DashboardHome implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('dashRoot', { static: true }) private dashRootRef!: ElementRef<HTMLElement>;
   @ViewChild('assistantSection', { static: true }) private assistantSectionRef!: ElementRef<HTMLElement>;
   @ViewChild('dashboardSection', { static: true }) private dashboardSectionRef!: ElementRef<HTMLElement>;
+  @ViewChild('aiInputEl') private aiInputElRef?: ElementRef<HTMLTextAreaElement>;
 
   data: DashboardData | null = null;
   loading = false;
@@ -36,8 +37,10 @@ export class DashboardHome implements OnInit, OnDestroy {
   // Cached computed values (avoid new array refs on every change detection)
   successRate = '0';
   tagColors = ['blue', 'green', 'orange', 'purple', 'cyan', 'magenta', 'volcano', 'gold', 'lime', 'geekblue'];
+  aiInputMultiline = false;
   private sectionScrollLock = false;
   private sectionScrollUnlockId: ReturnType<typeof setTimeout> | null = null;
+  private aiInputLayoutRaf: number | null = null;
 
   constructor(
     private ds: DashboardService,
@@ -53,10 +56,18 @@ export class DashboardHome implements OnInit, OnDestroy {
     this.refresh();
   }
 
+  ngAfterViewInit() {
+    this.scheduleAiInputLayoutRefresh();
+  }
+
   ngOnDestroy() {
     if (this.sectionScrollUnlockId) {
       clearTimeout(this.sectionScrollUnlockId);
       this.sectionScrollUnlockId = null;
+    }
+    if (this.aiInputLayoutRaf != null) {
+      cancelAnimationFrame(this.aiInputLayoutRaf);
+      this.aiInputLayoutRaf = null;
     }
   }
 
@@ -101,8 +112,20 @@ export class DashboardHome implements OnInit, OnDestroy {
     const text = (this.aiInput || '').trim();
     if (!text) return;
     this.aiInput = '';
+    this.scheduleAiInputLayoutRefresh();
     this.ai.openDrawer();
     await this.ai.quickSend(text);
+  }
+
+  onAiInputChanged() {
+    this.scheduleAiInputLayoutRefresh();
+  }
+
+  onAiInputKeydown(event: KeyboardEvent) {
+    if (event.key !== 'Enter') return;
+    if (!event.ctrlKey && !event.metaKey) return;
+    event.preventDefault();
+    this.sendAiMessage();
   }
 
   onDashWheel(event: WheelEvent) {
@@ -171,6 +194,30 @@ export class DashboardHome implements OnInit, OnDestroy {
     return false;
   }
 
+  private scheduleAiInputLayoutRefresh() {
+    if (this.aiInputLayoutRaf != null) {
+      cancelAnimationFrame(this.aiInputLayoutRaf);
+    }
+    this.aiInputLayoutRaf = requestAnimationFrame(() => {
+      this.aiInputLayoutRaf = null;
+      this.refreshAiInputMultilineState();
+    });
+  }
+
+  private refreshAiInputMultilineState() {
+    const el = this.aiInputElRef?.nativeElement;
+    if (!el) {
+      this.aiInputMultiline = false;
+      return;
+    }
+    const styles = window.getComputedStyle(el);
+    const lineHeight = parseFloat(styles.lineHeight || '18') || 18;
+    const padTop = parseFloat(styles.paddingTop || '0') || 0;
+    const padBottom = parseFloat(styles.paddingBottom || '0') || 0;
+    const oneLineHeight = lineHeight + padTop + padBottom;
+    this.aiInputMultiline = el.scrollHeight > oneLineHeight + 2;
+  }
+
   async toggleMic() {
     if (this.audioService.recording()) {
       try {
@@ -179,6 +226,7 @@ export class DashboardHome implements OnInit, OnDestroy {
           next: (text) => {
             if (text?.trim()) {
               this.aiInput = text.trim();
+              this.scheduleAiInputLayoutRefresh();
               try { this.cdr.detectChanges(); } catch {}
             }
           },

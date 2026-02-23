@@ -7,27 +7,19 @@
         <div class="ai-main">
           <div class="ai-header ai-header-center">
             <div class="ai-icon-wrap"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
-            <div>
+            <div class="ai-header-copy">
               <div class="ai-title">Assistant IA</div>
               <div class="ai-subtitle">Posez une question sur vos workflows</div>
             </div>
           </div>
           <div class="ai-input-row">
-            <nz-input-group [nzPrefix]="aiPrefixTpl" [nzSuffix]="aiSuffixTpl" nzSize="large" class="ai-input-group">
-              <input
-                nz-input
-                [(ngModel)]="aiInput"
-                placeholder="Ex : Quels flows ont des erreurs ?"
-                (keydown.enter)="sendAiMessage()"
-                class="ai-input"
-              />
-            </nz-input-group>
-            <ng-template #aiPrefixTpl>
+            <div class="ai-input-shell" [class.ai-input-shell-multiline]="aiInputMultiline">
               <button
                 nz-button
                 nzType="text"
                 nzSize="small"
                 nzShape="circle"
+                class="ai-mic-btn"
                 [class.mic-recording]="audioService.recording()"
                 (click)="toggleMic()"
                 [nz-tooltip]="audioService.recording() ? 'Arrêter l\'enregistrement' : 'Dicter un message'"
@@ -38,8 +30,16 @@
                   [class.fa-stop]="audioService.recording()"
                 ></i>
               </button>
-            </ng-template>
-            <ng-template #aiSuffixTpl>
+              <textarea
+                nz-input
+                #aiInputEl
+                [(ngModel)]="aiInput"
+                [nzAutosize]="{ minRows: 1, maxRows: 5 }"
+                placeholder="Ex : Quels flows ont des erreurs ? (Ctrl/Cmd + Entrée pour envoyer)"
+                (keydown)="onAiInputKeydown($event)"
+                (input)="onAiInputChanged()"
+                class="ai-input"
+              ></textarea>
               <button
                 nz-button
                 nzType="primary"
@@ -51,7 +51,7 @@
               >
                 <i class="fa-solid fa-arrow-up"></i>
               </button>
-            </ng-template>
+            </div>
           </div>
           <div class="ai-recording-bar" *ngIf="audioService.recording()">
             <span class="rec-dot"></span>
