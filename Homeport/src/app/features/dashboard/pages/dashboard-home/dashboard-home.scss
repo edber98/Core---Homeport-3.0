@@ -1073,7 +1073,7 @@
     min-height: 0;
     height: 100%;
     grid-template-columns: repeat(12, minmax(0, 1fr));
-    grid-template-rows: fit-content(320px) fit-content(calc(var(--heatmap-chart-height) + 64px)) minmax(0, 1fr);
+    grid-template-rows: fit-content(305px) fit-content(calc(var(--heatmap-chart-height) + 64px)) minmax(0, 1fr);
     grid-template-areas:
       "kpis kpis kpis kpis kpis kpis topflows topflows topflows topnodes topnodes topnodes"
       "heatmap heatmap heatmap heatmap heatmap heatmap heatmap heatmap heatmap heatmap heatmap heatmap"
