@@ -44,6 +44,12 @@ interface NestedSection {
   data: any;
 }
 
+interface SectionGroup {
+  title: string;
+  entries: ScalarEntry[];
+  arraySections: ArraySection[];
+}
+
 @Component({
   selector: 'exec-result-viewer',
   standalone: true,
@@ -91,6 +97,40 @@ interface NestedSection {
           </div>
           <ng-template #emptyArrayTpl><div class="rv-empty">Aucun élément</div></ng-template>
         </div>
+
+        <!-- Section groups (nested object sections) -->
+        <ng-container *ngFor="let group of sectionGroups">
+          <div class="rv-section-header">{{ group.title }}</div>
+          <ng-container *ngIf="!labelsOnTop">
+            <table class="rv-table" *ngIf="group.entries.length">
+              <tr *ngFor="let entry of group.entries">
+                <td class="rv-label">{{ entry.field.label }}</td>
+                <td class="rv-value">
+                  <ng-container [ngTemplateOutlet]="cellTpl" [ngTemplateOutletContext]="{ field: entry.field, value: entry.value }"></ng-container>
+                </td>
+              </tr>
+            </table>
+          </ng-container>
+          <ng-container *ngIf="labelsOnTop">
+            <div class="rv-vertical" *ngFor="let entry of group.entries">
+              <div class="rv-vlabel">{{ entry.field.label }}</div>
+              <div class="rv-vvalue">
+                <ng-container [ngTemplateOutlet]="cellTpl" [ngTemplateOutletContext]="{ field: entry.field, value: entry.value }"></ng-container>
+              </div>
+            </div>
+          </ng-container>
+          <div class="rv-array-section" *ngFor="let sec of group.arraySections">
+            <div class="rv-array-title">{{ sec.title }} <span class="rv-array-count">({{ sec.rows.length }})</span></div>
+            <div class="rv-table-scroll">
+              <table class="rv-data-table" *ngIf="sec.rows.length">
+                <thead><tr><th *ngFor="let col of sec.fields">{{ col.label }}</th></tr></thead>
+                <tbody><tr *ngFor="let row of sec.rows"><td *ngFor="let col of sec.fields">
+                  <ng-container [ngTemplateOutlet]="cellTpl" [ngTemplateOutletContext]="{ field: col, value: row[col.key] }"></ng-container>
+                </td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </ng-container>
 
         <!-- Unknown fields (not in schema) -->
         <ng-container *ngIf="unknownEntries.length">
@@ -293,7 +333,7 @@ interface NestedSection {
     .rv-root { font-size: 13px; }
 
     .rv-table { width: 100%; border-collapse: collapse; }
-    .rv-table .rv-label { width: 35%; font-weight: 500; color: #374151; padding: 6px 10px; border-bottom: 1px solid #f0f0f0; background: #fafafa; vertical-align: top; white-space: nowrap; }
+    .rv-table .rv-label { width: 35%; font-weight: 500; font-style: italic; color: #374151; padding: 6px 10px; border-bottom: 1px solid #f0f0f0; background: #fafafa; vertical-align: top; white-space: nowrap; }
     .rv-table .rv-value { padding: 6px 10px; border-bottom: 1px solid #f0f0f0; word-break: break-word; }
     @media (max-width: 600px) {
       .rv-table .rv-label { width: auto; display: block; border-bottom: none; padding-bottom: 2px; }
@@ -302,7 +342,7 @@ interface NestedSection {
     }
 
     .rv-vertical { margin-bottom: 10px; }
-    .rv-vlabel { font-weight: 500; color: #374151; font-size: 12px; margin-bottom: 2px; }
+    .rv-vlabel { font-weight: 500; font-style: italic; color: #374151; font-size: 12px; margin-bottom: 2px; }
     .rv-vvalue { padding: 2px 0; word-break: break-word; }
 
     .rv-table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
@@ -353,6 +393,7 @@ interface NestedSection {
     :host ::ng-deep .rv-nested-collapse .ant-collapse-header { padding: 6px 10px !important; font-weight: 500; font-size: 13px; background: #fafafa; }
     :host ::ng-deep .rv-nested-collapse .ant-collapse-content-box { padding: 4px 8px !important; }
 
+    .rv-section-header { font-weight: 600; font-size: 13px; color: #374151; padding: 8px 10px 4px; margin-top: 8px; margin-bottom: 10px; border-bottom: 2px solid #e5e7eb; }
     .rv-unknown-header { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; padding: 6px 10px; background: #fefce8; border: 1px solid #fde68a; border-radius: 6px; }
     .rv-unknown-label { font-size: 12px; color: #92400e; font-weight: 500; }
     .rv-unknown-table { margin-top: 6px; opacity: 0.85; }
@@ -371,6 +412,7 @@ export class ExecResultViewerComponent implements OnChanges, OnDestroy {
   private _lightboxEl: HTMLElement | null = null;
   scalarEntries: ScalarEntry[] = [];
   arraySections: ArraySection[] = [];
+  sectionGroups: SectionGroup[] = [];
   unknownEntries: Array<{ key: string; value: any }> = [];
 
   // Fallback (no schema)
@@ -422,7 +464,7 @@ export class ExecResultViewerComponent implements OnChanges, OnDestroy {
     }
 
     // Signal whether we have table content (for dialog width adaptation)
-    const hasTables = this.arraySections.length > 0 || this.fallbackMode === 'array-objects';
+    const hasTables = this.arraySections.length > 0 || this.sectionGroups.some(g => g.arraySections.length > 0) || this.fallbackMode === 'array-objects';
     this.hasTableContent.emit(hasTables);
   }
 
@@ -444,6 +486,7 @@ export class ExecResultViewerComponent implements OnChanges, OnDestroy {
 
     this.scalarEntries = [];
     this.arraySections = [];
+    this.sectionGroups = [];
     this.unknownEntries = [];
 
     const schemaKeys = new Set<string>();
@@ -500,8 +543,43 @@ export class ExecResultViewerComponent implements OnChanges, OnDestroy {
         continue;
       }
 
-      // Regular section (non-array) → skip
-      if (f.type === 'section') continue;
+      // Regular section (non-array) → render sub-fields from d[section.key]
+      if (f.type === 'section') {
+        schemaKeys.add(f.key);
+        const sectionData = d[f.key];
+        if (sectionData && typeof sectionData === 'object' && !Array.isArray(sectionData)) {
+          const group: SectionGroup = { title: this.fieldLabel(f), entries: [], arraySections: [] };
+          for (const sf of (f.fields || [])) {
+            if (!sf.key || sf.type === 'textblock') continue;
+            if (sf.type === 'section_array' || (sf.type === 'section' && sf.mode === 'array')) {
+              const arrData = sectionData[sf.key] || [];
+              const subFields = (sf.fields || []).filter((ssf: any) => ssf.key && ssf.type !== 'textblock');
+              if (subFields.length) {
+                group.arraySections.push({
+                  title: this.fieldLabel(sf),
+                  fields: subFields.map((ssf: any) => ({ ...ssf, label: this.fieldLabel(ssf), type: ssf.type || 'text' })),
+                  rows: Array.isArray(arrData) ? arrData : []
+                });
+              }
+              continue;
+            }
+            const val = sectionData[sf.key];
+            if (Array.isArray(val) && val.length > 0 && typeof val[0] === 'object' && !this.isFileRef(val[0])) {
+              const cols = Object.keys(val[0]).map(k => ({ key: k, label: k, type: 'text' as string, options: undefined as any }));
+              group.arraySections.push({ title: this.fieldLabel(sf), fields: cols, rows: val });
+            } else {
+              group.entries.push({
+                field: { ...sf, label: this.fieldLabel(sf), type: sf.type || 'text' },
+                value: val
+              });
+            }
+          }
+          if (group.entries.length || group.arraySections.length) {
+            this.sectionGroups.push(group);
+          }
+        }
+        continue;
+      }
 
       schemaKeys.add(f.key);
       const val = d[f.key];
