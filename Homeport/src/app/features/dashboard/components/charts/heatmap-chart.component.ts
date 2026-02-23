@@ -139,6 +139,7 @@ export class HeatmapChartComponent implements OnChanges, AfterViewInit, OnDestro
     const host = this.elRef?.nativeElement as HTMLElement;
     const containerWidth = Math.max(320, host?.offsetWidth || 700);
     const containerHeight = Math.max(140, host?.offsetHeight || 220);
+    const isDesktop = containerWidth >= 1024;
 
     // Build date map
     const map = new Map<string, HeatmapPoint>();
@@ -171,18 +172,22 @@ export class HeatmapChartComponent implements OnChanges, AfterViewInit, OnDestro
     const plotHeight = Math.max(72, containerHeight - this.topPad - legendReserve);
 
     // Keep a baseline width so small containers scroll horizontally instead of shrinking cells.
-    // On larger containers, cells scale to use available space.
-    const minPlotWidth = 760;
+    // Use near-touching fixed gaps and derive the cell size from available width.
+    const minPlotWidth = isDesktop ? 920 : 820;
     const plotWidth = Math.max(minPlotWidth, containerWidth - this.leftPad);
-    const stepX = plotWidth / Math.max(1, numWeeks);
-    const stepY = plotHeight / 7;
-    const minInnerGap = 1;
-    const rawCellSize = Math.min(stepX, stepY) - minInnerGap;
-    const cellSize = Math.max(11, Math.min(16, rawCellSize));
+    const targetGap = 0.7;
+    const rawCellFromWidth = (plotWidth - numWeeks * targetGap) / Math.max(1, numWeeks);
+    const rawCellFromHeight = (plotHeight - 7 * targetGap) / 7;
+    const rawCellSize = Math.min(rawCellFromWidth, rawCellFromHeight);
+    const minCellSize = isDesktop ? 15 : 13;
+    const maxCellSize = isDesktop ? 22 : 18;
+    const cellSize = Math.max(minCellSize, Math.min(maxCellSize, rawCellSize));
+    const stepX = cellSize + targetGap;
+    const stepY = cellSize + targetGap;
     this.cellWidth = cellSize;
     this.cellHeight = cellSize;
-    this.colGap = Math.max(1, stepX - cellSize);
-    this.rowGap = Math.max(1, stepY - cellSize);
+    this.colGap = targetGap;
+    this.rowGap = targetGap;
 
     // Find max
     let maxVal = 0;

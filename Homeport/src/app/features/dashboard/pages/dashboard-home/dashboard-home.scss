@@ -1048,6 +1048,10 @@
 }
 
 @media (min-width: 1024px) {
+  :host {
+    --heatmap-chart-height: 210px;
+  }
+
   .dash-view {
     overflow: hidden;
     display: grid;
@@ -1069,7 +1073,7 @@
     min-height: 0;
     height: 100%;
     grid-template-columns: repeat(12, minmax(0, 1fr));
-    grid-template-rows: fit-content(340px) fit-content(calc(var(--heatmap-chart-height) + 76px)) minmax(0, 1fr);
+    grid-template-rows: fit-content(320px) fit-content(calc(var(--heatmap-chart-height) + 64px)) minmax(0, 1fr);
     grid-template-areas:
       "kpis kpis kpis kpis kpis kpis topflows topflows topflows topnodes topnodes topnodes"
       "heatmap heatmap heatmap heatmap heatmap heatmap heatmap heatmap heatmap heatmap heatmap heatmap"
@@ -1096,9 +1100,9 @@
   }
 
   .panel-heatmap .chart-wrap-lg {
-    width: min(100%, 1160px);
+    width: min(100%, 1280px);
     margin-inline: auto;
-    padding-inline: clamp(14px, 2.4vw, 32px);
+    padding-inline: clamp(8px, 1.5vw, 20px);
     box-sizing: border-box;
   }
 
