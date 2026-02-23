@@ -1,11 +1,11 @@
-import { Component, Input, Output, EventEmitter, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject, ChangeDetectorRef, HostListener, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { marked } from 'marked';
 import DOMPurify from 'dompurify';
-import { AiMessage, AiMessageSegment, AiToolCall, AiQuestionOption, AiService } from './ai.service';
+import { AiMessage, AiMessageSegment, AiToolCall, AiQuestionOption, AiService, AiAttachment } from './ai.service';
 import { NodeExecResultDialogComponent } from '../flow/node-exec-result-dialog.component';
 
 const TOOL_LABELS: Record<string, string> = {
@@ -15,7 +15,7 @@ const TOOL_LABELS: Record<string, string> = {
   enrich_context: 'Contexte', open_element: 'Ouverture', list_credentials: 'Lister les identifiants', open_credentials: 'Identifiants',
   save_project_memory: 'Mémoire projet', get_project_memory: 'Mémoire projet',
   compact_and_transfer: 'Transfert', activate_capsule: 'Activation outils',
-  search_manual: 'Manuel', get_manual_section: 'Manuel',
+  read_file: 'Lecture fichier', search_manual: 'Manuel', get_manual_section: 'Manuel',
   create_flow: 'Création flow', list_graph: 'Graphe',
   get_templates: 'Templates', get_template_details: 'Détails template', ensure_start: 'Démarrage',
   add_node: 'Ajout noeud', remove_node: 'Suppression', replace_node: 'Remplacement',
@@ -100,6 +100,19 @@ interface ProcessedSegment {
       </div>
 
       <div class="body">
+        <!-- User message attachments -->
+        <div class="msg-attachments" *ngIf="msg.role === 'user' && msg.attachments?.length">
+          <div class="msg-att-chip" *ngFor="let att of msg.attachments">
+            <img *ngIf="isImage(att.mimeType) && att.fileId" [src]="ai.fileUrl(att.fileId)" class="msg-att-img"
+                 loading="lazy" (click)="openImagePreview(att)" />
+            <a *ngIf="!isImage(att.mimeType) && att.fileId" [href]="ai.fileUrl(att.fileId)" target="_blank" class="msg-att-file">
+              <span nz-icon nzType="file" nzTheme="outline"></span>
+              <span>{{ att.name }}</span>
+              <span class="msg-att-size" *ngIf="att.size">{{ formatFileSize(att.size) }}</span>
+            </a>
+          </div>
+        </div>
+
         <!-- Segments mode: reasoning blocks with text + tools, final text at end -->
         <ng-container *ngIf="msg.segments?.length; else flatLayout">
           <ng-container *ngFor="let ps of getProcessedSegments()">
@@ -253,6 +266,8 @@ interface ProcessedSegment {
     .content :host ::ng-deep p:last-child { margin: 0; }
     .content :host ::ng-deep code { background: #f0f0f0; padding: 1px 4px; border-radius: 3px; font-size: 13px; }
     .content :host ::ng-deep pre { background: #f0f0f0; padding: 8px; border-radius: 6px; overflow-x: auto; }
+    .content ::ng-deep img { max-width: 100%; border-radius: 8px; cursor: pointer; transition: opacity 0.2s; }
+    .content ::ng-deep img:hover { opacity: 0.85; }
     .content ::ng-deep table { border-collapse: collapse; width: 100%; margin: 8px 0; font-size: 13px; display: block; overflow-x: auto; max-width: 100%; }
     .content ::ng-deep th, .content ::ng-deep td { border: 1px solid #e8e8e8; padding: 6px 10px; text-align: left; white-space: nowrap; }
     .content ::ng-deep th { background: #fafafa; font-weight: 600; font-size: 12px; }
@@ -298,13 +313,36 @@ interface ProcessedSegment {
     .cancelled-tag { color: #ff4d4f; border: 1px solid #ff4d4f; background: transparent; margin: 0; }
     .retry-btn { color: #666; font-size: 12px; }
     .retry-btn:hover { color: #1677ff; }
+    .msg-attachments { display: flex; flex-wrap: wrap; gap: 6px; max-width: 85%; }
+    .msg-att-chip { display: inline-flex; }
+    .msg-att-img { max-width: 200px; max-height: 150px; border-radius: 8px; cursor: pointer; object-fit: cover; border: 1px solid #e8e8e8; transition: opacity 0.2s; }
+    .msg-att-img:hover { opacity: 0.85; }
+    .msg-att-file { display: inline-flex; align-items: center; gap: 4px; background: #f5f5f5; border: 1px solid #e8e8e8; border-radius: 6px; padding: 4px 8px; font-size: 12px; color: #333; text-decoration: none; transition: border-color 0.2s; }
+    .msg-att-file:hover { border-color: #1677ff; color: #1677ff; }
+    .msg-att-size { color: #999; font-size: 10px; }
+    .tool-files { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+    .tool-file-img { max-width: 200px; max-height: 150px; border-radius: 6px; object-fit: cover; border: 1px solid #e8e8e8; }
+    .tool-file-link { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; color: #1677ff; }
   `]
 })
 export class AiMessageComponent {
   @Input() msg!: AiMessage;
   @Output() retryClick = new EventEmitter<void>();
-  private ai = inject(AiService);
+  public ai = inject(AiService);
   private cdr = inject(ChangeDetectorRef);
+  private el = inject(ElementRef);
+
+  /** Intercept clicks on <img> inside .content (markdown-rendered images) to open lightbox */
+  @HostListener('click', ['$event'])
+  onHostClick(e: MouseEvent) {
+    const target = e.target as HTMLElement;
+    if (target.tagName === 'IMG' && target.closest('.content')) {
+      e.preventDefault();
+      e.stopPropagation();
+      const src = (target as HTMLImageElement).src;
+      if (src) this.openImageUrl(src);
+    }
+  }
 
   // Tool result dialog state
   selectedToolResult: AiToolCall | null = null;
@@ -377,8 +415,8 @@ export class AiMessageComponent {
     try {
       const html = marked.parse(String(src || ''), { breaks: true, gfm: true }) as string;
       return DOMPurify.sanitize(html, {
-        ALLOWED_TAGS: ['p', 'strong', 'em', 'code', 'pre', 'a', 'ul', 'ol', 'li', 'br', 'span', 'b', 'i', 'h1', 'h2', 'h3', 'h4', 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'blockquote', 'hr'],
-        ALLOWED_ATTR: ['href', 'target', 'rel', 'class'],
+        ALLOWED_TAGS: ['p', 'strong', 'em', 'code', 'pre', 'a', 'ul', 'ol', 'li', 'br', 'span', 'b', 'i', 'h1', 'h2', 'h3', 'h4', 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'blockquote', 'hr', 'img'],
+        ALLOWED_ATTR: ['href', 'target', 'rel', 'class', 'src', 'alt', 'loading', 'width', 'height'],
       });
     } catch { return src; }
   }
@@ -489,6 +527,59 @@ export class AiMessageComponent {
       }
     }
     return false;
+  }
+
+  isImage(mimeType: string): boolean {
+    return mimeType?.startsWith('image/') || false;
+  }
+
+  formatFileSize(bytes: number): string {
+    if (!bytes) return '';
+    if (bytes < 1024) return `${bytes} o`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} Ko`;
+    return `${(bytes / (1024 * 1024)).toFixed(1)} Mo`;
+  }
+
+  openImagePreview(att: any) {
+    this.openImageUrl(this.ai.fileUrl(att.fileId));
+  }
+
+  openImageUrl(url: string) {
+    if (!url) return;
+    this.closeLightbox();
+    const overlay = document.createElement('div');
+    overlay.style.cssText = 'position:fixed;inset:0;z-index:100000;display:flex;align-items:center;justify-content:center;animation:aiFadeIn .15s ease';
+    overlay.innerHTML = `
+      <div style="position:absolute;inset:0;background:rgba(0,0,0,0.8)" data-ai-close></div>
+      <div style="position:relative;max-width:92vw;max-height:92vh;display:flex;align-items:center;justify-content:center">
+        <img src="${url}" style="max-width:92vw;max-height:92vh;object-fit:contain;border-radius:8px;box-shadow:0 8px 32px rgba(0,0,0,0.5);background:#fff" />
+        <div style="position:absolute;top:-44px;right:0;display:flex;gap:8px">
+          <a href="${url}" target="_blank" download style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.15);color:#fff;display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:16px;cursor:pointer;border:none" title="Télécharger"><i class="fa-solid fa-download"></i></a>
+          <button style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.15);color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;border:none" data-ai-close title="Fermer"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+      </div>
+    `;
+    if (!document.getElementById('ai-lightbox-style')) {
+      const s = document.createElement('style');
+      s.id = 'ai-lightbox-style';
+      s.textContent = '@keyframes aiFadeIn{from{opacity:0}to{opacity:1}}';
+      document.head.appendChild(s);
+    }
+    overlay.addEventListener('click', (e) => {
+      if ((e.target as HTMLElement).closest('[data-ai-close]')) this.closeLightbox();
+    });
+    this._onEsc = (e: KeyboardEvent) => { if (e.key === 'Escape') this.closeLightbox(); };
+    document.addEventListener('keydown', this._onEsc);
+    document.body.appendChild(overlay);
+    this._lightboxEl = overlay;
+  }
+
+  private _lightboxEl: HTMLElement | null = null;
+  private _onEsc: ((e: KeyboardEvent) => void) | null = null;
+
+  closeLightbox() {
+    if (this._lightboxEl) { this._lightboxEl.remove(); this._lightboxEl = null; }
+    if (this._onEsc) { document.removeEventListener('keydown', this._onEsc); this._onEsc = null; }
   }
 
   /** Check if an option was the answer selected by the user (look at next user message) */

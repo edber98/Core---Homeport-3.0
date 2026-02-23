@@ -144,12 +144,25 @@ function formatMessages(messages) {
     if (m.role === 'system') continue; // handled at top level
 
     if (m.role === 'tool') {
+      const toolContent = [];
+      // Support multimodal tool results (text + images)
+      if (Array.isArray(m.content)) {
+        for (const b of m.content) {
+          if (b.type === 'image') {
+            toolContent.push({ type: 'image', source: { type: 'base64', media_type: b.media_type, data: b.data } });
+          } else {
+            toolContent.push({ type: 'text', text: b.text || '' });
+          }
+        }
+      } else {
+        toolContent.push({ type: 'text', text: typeof m.content === 'string' ? m.content : JSON.stringify(m.content) });
+      }
       out.push({
         role: 'user',
         content: [{
           type: 'tool_result',
           tool_use_id: m.tool_call_id,
-          content: typeof m.content === 'string' ? m.content : JSON.stringify(m.content),
+          content: toolContent,
         }],
       });
       continue;
@@ -170,7 +183,18 @@ function formatMessages(messages) {
       continue;
     }
 
-    out.push({ role: m.role === 'user' ? 'user' : 'assistant', content: typeof m.content === 'string' ? m.content : JSON.stringify(m.content || '') });
+    // Content arrays (multimodal) — convert to Anthropic format
+    if (Array.isArray(m.content)) {
+      const blocks = m.content.map(b => {
+        if (b.type === 'image') {
+          return { type: 'image', source: { type: 'base64', media_type: b.media_type, data: b.data } };
+        }
+        return { type: 'text', text: b.text || '' };
+      });
+      out.push({ role: m.role === 'user' ? 'user' : 'assistant', content: blocks });
+    } else {
+      out.push({ role: m.role === 'user' ? 'user' : 'assistant', content: typeof m.content === 'string' ? m.content : JSON.stringify(m.content || '') });
+    }
   }
 
   // Anthropic requires alternating user/assistant — merge consecutive same-role
@@ -178,14 +202,13 @@ function formatMessages(messages) {
   for (const m of out) {
     const last = merged[merged.length - 1];
     if (last && last.role === m.role) {
-      // Merge content
-      if (typeof last.content === 'string' && typeof m.content === 'string') {
-        last.content += '\n\n' + m.content;
-      } else {
-        const arr = Array.isArray(last.content) ? last.content : [{ type: 'text', text: last.content }];
-        const add = Array.isArray(m.content) ? m.content : [{ type: 'text', text: m.content }];
-        last.content = [...arr, ...add];
-      }
+      // Merge content — ensure both sides are arrays for proper concatenation
+      const toArr = (c) => {
+        if (Array.isArray(c)) return c;
+        if (typeof c === 'string') return [{ type: 'text', text: c }];
+        return [{ type: 'text', text: String(c || '') }];
+      };
+      last.content = [...toArr(last.content), ...toArr(m.content)];
     } else {
       merged.push({ ...m });
     }

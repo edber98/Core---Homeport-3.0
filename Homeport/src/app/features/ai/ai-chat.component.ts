@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild, ChangeDetectorRef, effect } from '@angular/core';
+import { Component, ElementRef, ViewChild, ChangeDetectorRef, effect, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { trigger, transition, style, animate } from '@angular/animations';
@@ -8,7 +8,8 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzEmptyModule } from 'ng-zorro-antd/empty';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
-import { AiService, AiStreamEvent } from './ai.service';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { AiService, AiStreamEvent, AiAttachment, AI_MAX_FILES, AI_MAX_FILE_SIZE } from './ai.service';
 import { AiAudioService } from './ai-audio.service';
 import { AiMessageComponent } from './ai-message.component';
 import { AiQuestionComponent } from './ai-question.component';
@@ -23,7 +24,7 @@ const TOOL_LABELS: Record<string, string> = {
   enrich_context: 'Contexte', open_element: 'Ouverture', list_credentials: 'Lister les identifiants', open_credentials: 'Identifiants',
   save_project_memory: 'Mémoire projet', get_project_memory: 'Mémoire projet',
   compact_and_transfer: 'Transfert', activate_capsule: 'Activation outils',
-  search_manual: 'Manuel', get_manual_section: 'Manuel',
+  read_file: 'Lecture fichier', search_manual: 'Manuel', get_manual_section: 'Manuel',
   create_flow: 'Création flow', list_graph: 'Graphe', get_templates: 'Templates',
   get_template_details: 'Détails template', ensure_start: 'Démarrage', add_node: 'Ajout noeud',
   remove_node: 'Suppression', replace_node: 'Remplacement', connect_nodes: 'Connexion',
@@ -335,7 +336,23 @@ interface StreamTool {
     </div>
 
     <!-- Input -->
-    <div class="input-bar">
+    <div class="input-bar" (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)" (drop)="onDrop($event)"
+         [class.drag-over]="isDragOver">
+      <!-- Attachment previews -->
+      <div class="att-previews" *ngIf="pendingAttachments.length">
+        <div class="att-chip" *ngFor="let att of pendingAttachments; let i = index"
+             [class.att-uploading]="att.uploading" [class.att-error]="!!att.error">
+          <img *ngIf="att.previewUrl && isImage(att.mimeType)" [src]="att.previewUrl" class="att-thumb" />
+          <span *ngIf="!att.previewUrl || !isImage(att.mimeType)" nz-icon nzType="file" nzTheme="outline" class="att-icon"></span>
+          <span class="att-name" [title]="att.name">{{ att.name }}</span>
+          <span class="att-size">{{ formatFileSize(att.size) }}</span>
+          <span nz-icon *ngIf="att.uploading" nzType="loading" nzTheme="outline" class="att-loading"></span>
+          <span nz-icon *ngIf="att.error" nzType="warning" nzTheme="outline" class="att-warn" [title]="att.error"></span>
+          <button nz-button nzType="text" nzSize="small" class="att-remove" (click)="removeAttachment(i)">
+            <span nz-icon nzType="close" nzTheme="outline"></span>
+          </button>
+        </div>
+      </div>
       <!-- Normal text input -->
       <div class="input-row" *ngIf="!audio.recording()">
         <div class="input-prefix">
@@ -346,12 +363,20 @@ interface StreamTool {
             <span nz-icon [nzType]="audio.transcribing() ? 'loading' : 'audio'" nzTheme="outline"
               [nzSpin]="audio.transcribing()"></span>
           </button>
+          <button nz-button nzType="text" nzSize="small" class="attach-btn"
+            (click)="fileInput.click()"
+            [disabled]="ai.streaming() || pendingAttachments.length >= maxFiles"
+            nz-tooltip nzTooltipTitle="Joindre un fichier">
+            <span nz-icon nzType="paper-clip" nzTheme="outline"></span>
+          </button>
+          <input #fileInput type="file" multiple hidden (change)="onFilesSelected($event)" />
         </div>
         <textarea
           nz-input
           [(ngModel)]="inputText"
           placeholder="Écris un message..."
           (keydown)="onInputKeydown($event)"
+          (paste)="onPaste($event)"
           [nzAutosize]="{ minRows: 1, maxRows: 6 }"
           [disabled]="audio.transcribing()">
         </textarea>
@@ -359,7 +384,8 @@ interface StreamTool {
           <button *ngIf="ai.streaming()" nz-button nzType="text" nzSize="small" nzDanger (click)="stopStream()">
             <span nz-icon nzType="pause-circle" nzTheme="outline"></span>
           </button>
-          <button *ngIf="!ai.streaming()" nz-button nzType="text" nzSize="small" class="chat-send-btn" (click)="send()" [disabled]="!inputText.trim()">
+          <button *ngIf="!ai.streaming()" nz-button nzType="text" nzSize="small" class="chat-send-btn" (click)="send()"
+            [disabled]="!inputText.trim() && !pendingAttachments.length">
             <span nz-icon nzType="send" nzTheme="outline"></span>
           </button>
         </div>
@@ -486,6 +512,27 @@ interface StreamTool {
     .question-msg .avatar { width: 32px; height: 32px; border-radius: 50%; background: #e6f4ff; color: #1677ff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 16px; }
     .question-msg .question-body { flex: 1; min-width: 0; max-width: 85%; }
     .interrupted-tag { padding: 4px 0; }
+    .drag-over { border-color: #1677ff !important; background: rgba(22, 119, 255, 0.04); }
+    .att-previews { display: flex; flex-wrap: wrap; gap: 6px; padding: 6px 8px 2px; }
+    .att-chip { display: inline-flex; align-items: center; gap: 4px; background: #f5f5f5; border: 1px solid #e8e8e8; border-radius: 6px; padding: 3px 6px; font-size: 12px; max-width: 200px; }
+    .att-chip.att-uploading { opacity: 0.7; }
+    .att-chip.att-error { border-color: #ff4d4f; background: #fff2f0; }
+    .att-thumb { width: 28px; height: 28px; object-fit: cover; border-radius: 4px; flex-shrink: 0; }
+    .att-icon { font-size: 16px; color: #999; flex-shrink: 0; }
+    .att-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100px; color: #333; }
+    .att-size { color: #999; font-size: 10px; flex-shrink: 0; }
+    .att-loading { font-size: 12px; color: #1677ff; flex-shrink: 0; }
+    .att-warn { font-size: 12px; color: #ff4d4f; flex-shrink: 0; }
+    .att-remove { padding: 0 !important; min-width: auto !important; height: auto !important; color: #999 !important; font-size: 10px !important; }
+    .att-remove:hover { color: #ff4d4f !important; }
+    .attach-btn { border-radius: 8px; transition: background .15s, color .15s, box-shadow .15s, transform .08s; }
+    .attach-btn:hover:not(:disabled),
+    .attach-btn:focus-visible:not(:disabled) {
+      background: rgba(22,119,255,0.1) !important;
+      color: #1677ff !important;
+      box-shadow: 0 4px 12px rgba(22,119,255,0.18);
+      transform: translateY(-1px);
+    }
   `]
 })
 export class AiChatComponent {
@@ -498,6 +545,11 @@ export class AiChatComponent {
   expandedArgValues = new Set<string>(); // track expanded arg values (key = toolId:fieldKey)
   thinkingIteration = 0;
   interrupted = false;
+
+  // Attachment state
+  pendingAttachments: AiAttachment[] = [];
+  isDragOver = false;
+  maxFiles = AI_MAX_FILES;
 
   // Auto-scroll: only scroll if user is near the bottom
   private _userAtBottom = true;
@@ -512,6 +564,8 @@ export class AiChatComponent {
   @ViewChild('waveformCanvas') waveformCanvas?: ElementRef<HTMLCanvasElement>;
 
   private stopFn?: () => void;
+
+  private nzMsg = inject(NzMessageService);
 
   constructor(public ai: AiService, public audio: AiAudioService, private cdr: ChangeDetectorRef) {
     // Reset auto-scroll when switching threads
@@ -571,18 +625,141 @@ export class AiChatComponent {
 
   async send() {
     const text = (this.inputText || '').trim();
-    if (!text || this.ai.streaming()) return;
+    const hasAttachments = this.pendingAttachments.length > 0;
+    if ((!text && !hasAttachments) || this.ai.streaming()) return;
+
+    // Wait for all uploads to complete
+    const stillUploading = this.pendingAttachments.some(a => a.uploading);
+    if (stillUploading) {
+      this.nzMsg.warning('Uploads en cours, patiente...');
+      return;
+    }
+
+    // Check for upload errors
+    const withErrors = this.pendingAttachments.filter(a => a.error);
+    if (withErrors.length) {
+      this.nzMsg.warning('Certains fichiers ont échoué. Retire-les avant d\'envoyer.');
+      return;
+    }
+
+    const attachments = hasAttachments ? [...this.pendingAttachments] : undefined;
     this.inputText = '';
+    this.pendingAttachments = [];
     this.segments = [];
     this.streamError = null;
     this.thinkingIteration = 0;
     this.interrupted = false;
     this.resetRotator();
-    this.forceScrollToBottom(); // Always scroll when sending a new message
+    this.forceScrollToBottom();
 
-    const { events$, stop } = await this.ai.quickSend(text);
+    const { events$, stop } = await this.ai.quickSend(text, undefined, attachments);
     this.stopFn = stop;
     this.handleStream(events$);
+  }
+
+  // ── File attachment handling ──
+
+  onFilesSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files?.length) {
+      this.addFiles(Array.from(input.files));
+      input.value = ''; // reset for re-selecting same file
+    }
+  }
+
+  onDragOver(event: DragEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragOver = true;
+  }
+
+  onDragLeave(event: DragEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragOver = false;
+  }
+
+  onDrop(event: DragEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragOver = false;
+    if (event.dataTransfer?.files?.length) {
+      this.addFiles(Array.from(event.dataTransfer.files));
+    }
+  }
+
+  onPaste(event: ClipboardEvent) {
+    const items = event.clipboardData?.items;
+    if (!items) return;
+    const files: File[] = [];
+    for (let i = 0; i < items.length; i++) {
+      const item = items[i];
+      if (item.kind === 'file') {
+        const file = item.getAsFile();
+        if (file) files.push(file);
+      }
+    }
+    if (files.length) {
+      event.preventDefault();
+      this.addFiles(files);
+    }
+  }
+
+  addFiles(files: File[]) {
+    const remaining = AI_MAX_FILES - this.pendingAttachments.length;
+    if (remaining <= 0) {
+      this.nzMsg.warning(`Maximum ${AI_MAX_FILES} fichiers par message`);
+      return;
+    }
+    const toAdd = files.slice(0, remaining);
+    for (const file of toAdd) {
+      if (file.size > AI_MAX_FILE_SIZE) {
+        this.nzMsg.error(`"${file.name}" dépasse la limite de 20 Mo`);
+        continue;
+      }
+      const att: AiAttachment = {
+        fileId: '',
+        name: file.name,
+        mimeType: file.type || 'application/octet-stream',
+        size: file.size,
+        uploading: true,
+        previewUrl: this.isImage(file.type) ? URL.createObjectURL(file) : undefined,
+      };
+      this.pendingAttachments = [...this.pendingAttachments, att];
+      const idx = this.pendingAttachments.length - 1;
+
+      this.ai.uploadFile(file).subscribe({
+        next: (ref) => {
+          this.pendingAttachments = this.pendingAttachments.map((a, i) =>
+            i === idx ? { ...a, fileId: ref.fileId, uploading: false } : a
+          );
+          this.cdr.detectChanges();
+        },
+        error: (err) => {
+          this.pendingAttachments = this.pendingAttachments.map((a, i) =>
+            i === idx ? { ...a, uploading: false, error: err?.message || 'Échec upload' } : a
+          );
+          this.cdr.detectChanges();
+        },
+      });
+    }
+    this.cdr.detectChanges();
+  }
+
+  removeAttachment(index: number) {
+    const att = this.pendingAttachments[index];
+    if (att?.previewUrl) URL.revokeObjectURL(att.previewUrl);
+    this.pendingAttachments = this.pendingAttachments.filter((_, i) => i !== index);
+  }
+
+  isImage(mimeType: string): boolean {
+    return mimeType?.startsWith('image/') || false;
+  }
+
+  formatFileSize(bytes: number): string {
+    if (bytes < 1024) return `${bytes} o`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} Ko`;
+    return `${(bytes / (1024 * 1024)).toFixed(1)} Mo`;
   }
 
   async toggleMic() {
@@ -883,8 +1060,8 @@ export class AiChatComponent {
     try {
       const html = marked.parse(String(src || ''), { breaks: true, gfm: true }) as string;
       return DOMPurify.sanitize(html, {
-        ALLOWED_TAGS: ['p', 'strong', 'em', 'code', 'pre', 'a', 'ul', 'ol', 'li', 'br', 'span', 'b', 'i', 'h1', 'h2', 'h3', 'h4', 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'blockquote', 'hr'],
-        ALLOWED_ATTR: ['href', 'target', 'rel', 'class'],
+        ALLOWED_TAGS: ['p', 'strong', 'em', 'code', 'pre', 'a', 'ul', 'ol', 'li', 'br', 'span', 'b', 'i', 'h1', 'h2', 'h3', 'h4', 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'blockquote', 'hr', 'img'],
+        ALLOWED_ATTR: ['href', 'target', 'rel', 'class', 'src', 'alt', 'loading', 'width', 'height'],
       });
     } catch { return src; }
   }

@@ -312,11 +312,22 @@ function formatInputItems(messages) {
       continue;
     }
 
-    items.push({
-      type: 'message',
-      role: m.role === 'user' ? 'user' : 'assistant',
-      content: typeof m.content === 'string' ? m.content : JSON.stringify(m.content || ''),
-    });
+    // Content arrays (multimodal) — convert to Responses API format
+    if (Array.isArray(m.content)) {
+      const parts = m.content.map(b => {
+        if (b.type === 'image') {
+          return { type: 'input_image', image_url: `data:${b.media_type};base64,${b.data}` };
+        }
+        return { type: 'input_text', text: b.text || '' };
+      });
+      items.push({ type: 'message', role: m.role === 'user' ? 'user' : 'assistant', content: parts });
+    } else {
+      items.push({
+        type: 'message',
+        role: m.role === 'user' ? 'user' : 'assistant',
+        content: typeof m.content === 'string' ? m.content : JSON.stringify(m.content || ''),
+      });
+    }
   }
   return items;
 }

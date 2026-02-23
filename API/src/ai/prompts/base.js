@@ -76,6 +76,15 @@ function buildBasePrompt(ctx) {
     parts.push(`\n## Formulaires existants\n${lines.join('\n')}`);
   }
 
+  // Files and images
+  parts.push(`\n## Fichiers et images
+- L'utilisateur peut joindre des fichiers (images, PDF, texte) à ses messages.
+- Les images sont visibles — tu peux les décrire et analyser.
+- Les PDF et fichiers texte ont leur contenu extrait et inclus.
+- Quand un outil retourne un fichier (image, document), tu peux le voir via \`read_file\`.
+- Pour passer un fichier à un outil, utilise le fileId obtenu d'un résultat précédent ou d'un attachment utilisateur.
+- Pour les fichiers binaires non supportés, tu as le nom et la taille mais pas le contenu.`);
+
   // Rules
   parts.push(`\n## Règles
 - Ne JAMAIS afficher ou demander des credentials, secrets, mots de passe ou clés API.

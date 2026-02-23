@@ -157,6 +157,16 @@ function formatMessages(messages) {
         })),
       };
     }
+    // Content arrays (multimodal) — convert to OpenAI format
+    if (Array.isArray(m.content)) {
+      const parts = m.content.map(b => {
+        if (b.type === 'image') {
+          return { type: 'image_url', image_url: { url: `data:${b.media_type};base64,${b.data}` } };
+        }
+        return { type: 'text', text: b.text || '' };
+      });
+      return { role: m.role, content: parts };
+    }
     return { role: m.role, content: typeof m.content === 'string' ? m.content : JSON.stringify(m.content || '') };
   });
 }

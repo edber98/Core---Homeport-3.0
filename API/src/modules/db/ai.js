@@ -364,6 +364,9 @@ ${toolLines.join('\n')}
     /** Rough token estimate: 1 token ≈ 4 chars */
     const estimateCharsToTokens = (chars) => Math.ceil(chars / 4);
 
+    const { resolveAttachments, estimateAttachmentTokens } = require('../../ai/attachments');
+    const wsId = String(ws._id);
+
     // Build all messages first
     const allMessages = [];
     for (const m of history) {
@@ -384,7 +387,25 @@ ${toolLines.join('\n')}
             content = `Réponse à "${m.answer.questionText || 'la question'}": ${JSON.stringify(v)}`;
           }
         }
-        allMessages.push({ role: 'user', content });
+        // Resolve file attachments into multimodal content blocks
+        if (m.attachments?.length) {
+          try {
+            const attBlocks = await resolveAttachments(m.attachments, wsId);
+            if (attBlocks.length) {
+              const parts = [];
+              if (content) parts.push({ type: 'text', text: content });
+              parts.push(...attBlocks);
+              allMessages.push({ role: 'user', content: parts.length === 1 && parts[0].type === 'text' ? content : parts, _attTokens: estimateAttachmentTokens(attBlocks) });
+            } else {
+              allMessages.push({ role: 'user', content });
+            }
+          } catch (e) {
+            console.error('[ai] attachment resolve error:', e?.message);
+            allMessages.push({ role: 'user', content });
+          }
+        } else {
+          allMessages.push({ role: 'user', content });
+        }
       } else if (m.role === 'assistant') {
         if (m.toolCalls?.length) {
           allMessages.push({
@@ -411,7 +432,16 @@ ${toolLines.join('\n')}
     let messages = allMessages;
     /** Estimate tokens for a single message */
     const msgTokens = (m) => {
-      let chars = (m.content || '').length;
+      let chars = 0;
+      if (Array.isArray(m.content)) {
+        // Multimodal content array
+        for (const b of m.content) {
+          if (b.type === 'image') chars += 1600 * 4; // ~1600 tokens → chars equivalent
+          else chars += (b.text || '').length;
+        }
+      } else {
+        chars = (m.content || '').length;
+      }
       if (m.tool_calls) chars += JSON.stringify(m.tool_calls).length;
       return estimateCharsToTokens(chars);
     };
@@ -430,6 +460,23 @@ ${toolLines.join('\n')}
         messages.unshift(m);
       }
       console.log(`[ai] trimmed history: ${allMessages.length} → ${messages.length} messages (budget: ${TOKEN_BUDGET} tokens)`);
+    }
+
+    // Strip old image attachments to save tokens — keep only last 3 messages with full images
+    let imgMsgCount = 0;
+    for (let i = messages.length - 1; i >= 0; i--) {
+      const m = messages[i];
+      if (!Array.isArray(m.content)) continue;
+      const hasImage = m.content.some(b => b.type === 'image');
+      if (!hasImage) continue;
+      imgMsgCount++;
+      if (imgMsgCount > 3) {
+        // Replace image blocks with text placeholders
+        m.content = m.content.map(b => {
+          if (b.type === 'image') return { type: 'text', text: `[Image précédemment jointe: ${b.name || 'image'}]` };
+          return b;
+        });
+      }
     }
 
     // Build context
@@ -1113,7 +1160,25 @@ ${toolLines.join('\n')}
     const messages = [];
     for (const m of history) {
       if (m.role === 'user') {
-        messages.push({ role: 'user', content: m.content || '' });
+        // Background agent: resolve attachments if present
+        if (m.attachments?.length) {
+          try {
+            const { resolveAttachments } = require('../../ai/attachments');
+            const attBlocks = await resolveAttachments(m.attachments, String(ws._id));
+            if (attBlocks.length) {
+              const parts = [];
+              if (m.content) parts.push({ type: 'text', text: m.content });
+              parts.push(...attBlocks);
+              messages.push({ role: 'user', content: parts.length === 1 && parts[0].type === 'text' ? m.content : parts });
+            } else {
+              messages.push({ role: 'user', content: m.content || '' });
+            }
+          } catch {
+            messages.push({ role: 'user', content: m.content || '' });
+          }
+        } else {
+          messages.push({ role: 'user', content: m.content || '' });
+        }
       } else if (m.role === 'assistant') {
         if (m.toolCalls?.length) {
           messages.push({

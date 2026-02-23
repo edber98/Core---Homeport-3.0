@@ -61,6 +61,11 @@ function fieldToJsonSchema(field) {
       schema.type = 'string';
       schema.format = 'date';
       break;
+    case 'file':
+      schema.type = 'string';
+      schema.description = (schema.description || field.label || '') +
+        ' (ID de fichier fileId, ou URL. Utiliser un fileId obtenu d\'un résultat de tool ou d\'un attachment utilisateur)';
+      break;
     default:
       schema.type = 'string';
   }

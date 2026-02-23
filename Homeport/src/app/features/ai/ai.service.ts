@@ -3,6 +3,7 @@ import { Subject, Observable } from 'rxjs';
 import { ApiClientService } from '../../services/api-client.service';
 import { AccessControlService } from '../../services/access-control.service';
 import { AuthTokenService } from '../../services/auth-token.service';
+import { FilesBackendService, FileRef } from '../../services/files-backend.service';
 import { apiRoot, apiSuffix } from '../../shared/api-base';
 import { environment } from '../../../environments/environment';
 
@@ -108,6 +109,20 @@ export interface AiPageContext {
   schema?: any;
 }
 
+export interface AiAttachment {
+  fileId: string;
+  name: string;
+  mimeType: string;
+  size: number;
+  previewUrl?: string;  // blob URL for local preview
+  uploading?: boolean;
+  progress?: number;
+  error?: string;
+}
+
+export const AI_MAX_FILES = 5;
+export const AI_MAX_FILE_SIZE = 20 * 1024 * 1024; // 20MB
+
 export interface AiAvailableAgent {
   id: string;
   name: string;
@@ -152,8 +167,19 @@ export class AiService {
     private api: ApiClientService,
     private zone: NgZone,
     private acl: AccessControlService,
-    private auth: AuthTokenService
+    private auth: AuthTokenService,
+    private filesBackend: FilesBackendService,
   ) {}
+
+  /** Upload a file for AI chat attachment. Returns a FileRef on success. */
+  uploadFile(file: File): Observable<FileRef> {
+    return this.filesBackend.uploadSimple(this.wsId(), file, 'permanent');
+  }
+
+  /** Build a download/preview URL for a file */
+  fileUrl(fileId: string): string {
+    return this.filesBackend.downloadUrl(fileId);
+  }
 
   // ── Drawer ──
   openDrawer() { this.drawerOpen.set(true); }
@@ -559,7 +585,7 @@ export class AiService {
   emitSideEvent(ev: AiStreamEvent) { this.sideEvents$.next(ev); }
 
   // ── Quick send (auto-create thread if needed) ──
-  async quickSend(content: string, mode?: string) {
+  async quickSend(content: string, mode?: string, attachments?: AiAttachment[]) {
     if (!this.currentThread()) {
       // Auto-detect mode and metadata from page context
       const ctx = this.pageContext();
@@ -570,7 +596,11 @@ export class AiService {
       if (ctx.nodeId) meta.nodeId = ctx.nodeId;
       await this.createThread(autoMode, Object.keys(meta).length ? meta : undefined);
     }
-    return this.sendMessage(content);
+    // Convert AiAttachments to the backend format (only fileId, name, mimeType, size)
+    const attForBackend = attachments?.length
+      ? attachments.map(a => ({ fileId: a.fileId, name: a.name, mimeType: a.mimeType, size: a.size }))
+      : undefined;
+    return this.sendMessage(content, undefined, attForBackend);
   }
 
   /** Determine the best AI mode based on the current page context */

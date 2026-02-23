@@ -299,7 +299,34 @@ async function* runAgent({ mode, messages, context, metadata, agentOverrides }) 
     conversation.push(assistantMsg);
 
     for (const tr of toolResults) {
-      conversation.push({ role: 'tool', tool_call_id: tr.id, content: tr.content });
+      // Check for image files in tool results — include as content blocks for Anthropic
+      // (OpenAI doesn't support images in tool results, will get text fallback)
+      const result = tr.result;
+      if (result?._files?.some(f => f.isImage) || result?._contentBlocks?.length) {
+        const contentParts = [{ type: 'text', text: tr.content }];
+        // read_file tool returns _contentBlocks directly
+        if (result?._contentBlocks) {
+          for (const b of result._contentBlocks) {
+            if (b.type === 'image') contentParts.push(b);
+          }
+        }
+        // execute_tool results with _files containing images
+        if (result?._files) {
+          const { resolveAttachments } = require('./attachments');
+          try {
+            const imageFiles = result._files.filter(f => f.isImage);
+            const blocks = await resolveAttachments(imageFiles, context.workspaceId);
+            for (const b of blocks) {
+              if (b.type === 'image') contentParts.push(b);
+            }
+          } catch (e) {
+            console.error('[agent] failed to resolve image files for tool result:', e?.message);
+          }
+        }
+        conversation.push({ role: 'tool', tool_call_id: tr.id, content: contentParts.length > 1 ? contentParts : tr.content });
+      } else {
+        conversation.push({ role: 'tool', tool_call_id: tr.id, content: tr.content });
+      }
     }
   }
 

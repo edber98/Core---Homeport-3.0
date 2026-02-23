@@ -311,6 +311,17 @@ const META_TOOL_DEFINITIONS = [
     },
   },
   {
+    name: 'read_file',
+    description: 'Lit le contenu d\'un fichier. Pour les images, retourne l\'image visible. Pour les PDF/texte, retourne le contenu textuel. Utilise un fileId obtenu d\'un résultat de tool ou d\'un attachment utilisateur.',
+    parameters: {
+      type: 'object',
+      properties: {
+        fileId: { type: 'string', description: 'ID du fichier (ex: file_xxx)' },
+      },
+      required: ['fileId'],
+    },
+  },
+  {
     name: 'search_manual',
     description: 'Recherche dans le manuel de référence. Retourne les sections pertinentes avec leur topic ID. Utilise quand tu as besoin de détails sur : types de champs, validateurs, styles, visibleIf, patterns workflow, boucles, conditions, expressions, etc.',
     parameters: {
@@ -335,6 +346,15 @@ const META_TOOL_DEFINITIONS = [
     },
   },
 ];
+
+/** Recursively extract fileRef objects from a result */
+function extractFileRefs(obj, found = []) {
+  if (!obj || typeof obj !== 'object') return found;
+  if (obj._type === 'fileRef') { found.push(obj); return found; }
+  if (Array.isArray(obj)) { for (const v of obj) extractFileRefs(v, found); return found; }
+  for (const v of Object.values(obj)) extractFileRefs(v, found);
+  return found;
+}
 
 // Execute a meta-tool by name
 async function executeMetaTool(name, input, ctx) {
@@ -395,6 +415,14 @@ async function executeMetaTool(name, input, ctx) {
       // Ensure result is an object so _displayTitle side-channel can be attached
       const out = (result && typeof result === 'object') ? result : { ok: true, data: result };
       if (displayTitle) out._displayTitle = displayTitle;
+      // Detect fileRefs in the result and expose them as _files
+      const files = extractFileRefs(out);
+      if (files.length) {
+        out._files = files.map(f => ({
+          fileId: f.fileId, name: f.name, mimeType: f.mimeType, size: f.size,
+          isImage: (f.mimeType || '').startsWith('image/'),
+        }));
+      }
       return out;
     }
 
@@ -678,6 +706,20 @@ async function executeMetaTool(name, input, ctx) {
         );
       }
       return { ok: true, level, field };
+    }
+
+    case 'read_file': {
+      const { resolveAttachments } = require('../attachments');
+      if (!input.fileId) return { error: 'fileId requis' };
+      const blocks = await resolveAttachments([{ fileId: input.fileId, name: input.fileId }], ctx.workspaceId);
+      if (!blocks.length) return { error: 'Fichier introuvable' };
+      // For images, return as content blocks for the LLM to see
+      // For text/PDF, return the text content
+      const block = blocks[0];
+      if (block.type === 'image') {
+        return { _contentBlocks: [block], message: `Image "${block.name}" chargée.` };
+      }
+      return { content: block.text || '[Contenu vide]' };
     }
 
     case 'search_manual': {
