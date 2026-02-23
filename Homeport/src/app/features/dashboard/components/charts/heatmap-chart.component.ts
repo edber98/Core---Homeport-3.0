@@ -10,7 +10,13 @@ export interface HeatmapPoint { date: string; total: number; success: number; er
   template: `
     <div class="heatmap-wrap" (mouseleave)="hideTip()">
       <div class="heatmap-scroll">
-        <svg [attr.viewBox]="'0 0 ' + vw + ' ' + vh" class="heatmap-svg" preserveAspectRatio="xMinYMin meet">
+        <svg
+          [attr.viewBox]="'0 0 ' + vw + ' ' + vh"
+          [attr.width]="vw"
+          [attr.height]="vh"
+          class="heatmap-svg"
+          preserveAspectRatio="xMinYMin meet"
+        >
           <!-- Month labels -->
           <text *ngFor="let m of monthLabels" [attr.x]="m.x" [attr.y]="10" class="month-label">{{ m.text }}</text>
           <!-- Day labels (left side) -->
@@ -18,12 +24,12 @@ export interface HeatmapPoint { date: string; total: number; success: number; er
           <!-- Cells -->
           <rect *ngFor="let cell of cells; let i = index"
             [attr.x]="cell.x" [attr.y]="cell.y"
-            [attr.width]="cellSize" [attr.height]="cellSize"
+            [attr.width]="cellWidth" [attr.height]="cellHeight"
             [attr.rx]="2" [attr.ry]="2"
             [attr.fill]="cell.fill"
             class="cell"
-            (mouseenter)="showTip(i, $event)"
-            (mouseleave)="hideTip()"
+            (mouseenter)="onCellEnter(i, $event)"
+            (mouseleave)="onCellLeave()"
           />
         </svg>
       </div>
@@ -34,7 +40,14 @@ export interface HeatmapPoint { date: string; total: number; success: number; er
         <span class="legend-label">Plus</span>
       </div>
       <!-- Tooltip -->
-      <div class="tip" *ngIf="tipVisible" [style.left.px]="tipX" [style.top.px]="tipY">
+      <div
+        class="tip"
+        *ngIf="tipVisible"
+        [class.tip-left]="tipAlign === 'left'"
+        [class.tip-right]="tipAlign === 'right'"
+        [style.left.px]="tipX"
+        [style.top.px]="tipY"
+      >
         <div class="tip-date">{{ tipDate }}</div>
         <div class="tip-val">{{ tipTotal }} exécution{{ tipTotal > 1 ? 's' : '' }}</div>
         <div class="tip-detail" *ngIf="tipTotal > 0">{{ tipSuccess }} succès · {{ tipError }} erreur{{ tipError > 1 ? 's' : '' }}</div>
@@ -42,17 +55,19 @@ export interface HeatmapPoint { date: string; total: number; success: number; er
     </div>
   `,
   styles: [`
-    .heatmap-wrap { position: relative; }
-    .heatmap-scroll { overflow-x: hidden; overflow-y: hidden; }
-    .heatmap-svg { display: block; width: 100%; height: auto; }
+    :host { display: block; width: 100%; min-width: 0; height: 100%; min-height: 0; }
+    .heatmap-wrap { position: relative; width: 100%; min-width: 0; height: 100%; min-height: 0; display: flex; flex-direction: column; }
+    .heatmap-scroll { flex: 1 1 auto; width: 100%; max-width: 100%; min-width: 0; min-height: 0; overflow-x: auto; overflow-y: hidden; }
+    .heatmap-svg { display: block; max-width: none; }
     .cell { cursor: pointer; }
-    .cell:hover { stroke: #0f172a; stroke-width: 1; }
     .month-label { font-size: 9px; fill: #6b7280; font-family: inherit; }
     .day-label { font-size: 9px; fill: #94a3b8; font-family: inherit; dominant-baseline: middle; }
-    .heatmap-legend { display: flex; align-items: center; gap: 3px; margin-top: 6px; justify-content: flex-end; }
+    .heatmap-legend { display: flex; align-items: center; gap: 3px; margin-top: 6px; justify-content: flex-end; flex: 0 0 auto; }
     .legend-label { font-size: 10px; color: #94a3b8; }
     .legend-box { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
-    .tip { position: absolute; transform: translate(-50%, -110%); background: #0f172a; color: #fff; border-radius: 6px; padding: 4px 8px; font-size: 11px; pointer-events: none; box-shadow: 0 6px 12px rgba(0,0,0,.18); white-space: nowrap; z-index: 10; }
+    .tip { position: fixed; transform: translate(-50%, -110%); background: #0f172a; color: #fff; border-radius: 6px; padding: 4px 8px; font-size: 11px; pointer-events: none; box-shadow: 0 6px 12px rgba(0,0,0,.18); max-width: min(320px, calc(100vw - 24px)); white-space: normal; word-break: break-word; z-index: 2147483647; }
+    .tip.tip-left { transform: translate(0, -110%); }
+    .tip.tip-right { transform: translate(-100%, -110%); }
     .tip-date { font-weight: 600; margin-bottom: 1px; }
     .tip-val { color: #e2e8f0; }
     .tip-detail { color: #94a3b8; font-size: 10px; }
@@ -65,20 +80,24 @@ export class HeatmapChartComponent implements OnChanges, AfterViewInit, OnDestro
   monthLabels: { x: number; text: string }[] = [];
   dayLabelsY: { y: number; text: string }[] = [];
 
-  cellSize = 11;
-  gap = 2;
+  cellWidth = 9;
+  cellHeight = 9;
+  colGap = 2;
+  rowGap = 2;
   leftPad = 22; // space for day labels
   topPad = 16;  // space for month labels
   vw = 0;
   vh = 0;
 
   private resizeObs: ResizeObserver | null = null;
+  private lastObservedWidth = 0;
 
   constructor(private elRef: ElementRef) {}
 
   tipVisible = false;
   tipX = 0;
   tipY = 0;
+  tipAlign: 'left' | 'center' | 'right' = 'center';
   tipDate = '';
   tipTotal = 0;
   tipSuccess = 0;
@@ -90,8 +109,24 @@ export class HeatmapChartComponent implements OnChanges, AfterViewInit, OnDestro
   private static DAYS_FR = ['Lu', 'Ma', 'Me', 'Je', 'Ve', 'Sa', 'Di'];
 
   ngAfterViewInit() {
-    this.resizeObs = new ResizeObserver(() => this.compute());
+    this.resizeObs = new ResizeObserver((entries) => {
+      const rect = entries?.[0]?.contentRect;
+      const width = Math.round(rect?.width || 0);
+      if (!width) return;
+      if (this.lastObservedWidth > 0 && Math.abs(width - this.lastObservedWidth) < 24) return;
+      this.lastObservedWidth = width;
+      this.compute();
+    });
     this.resizeObs.observe(this.elRef.nativeElement);
+    this.compute();
+    if (typeof requestAnimationFrame === 'function') {
+      requestAnimationFrame(() => {
+        this.compute();
+        requestAnimationFrame(() => this.compute());
+      });
+    } else {
+      setTimeout(() => this.compute(), 0);
+    }
   }
 
   ngOnDestroy() {
@@ -101,15 +136,10 @@ export class HeatmapChartComponent implements OnChanges, AfterViewInit, OnDestro
   ngOnChanges(): void { this.compute(); }
 
   private compute() {
-    // Auto-size: fit 53 columns within container width
-    const containerWidth = (this.elRef?.nativeElement as HTMLElement)?.offsetWidth || 700;
-    const numWeeksEstimate = 53;
-    const availableWidth = containerWidth - this.leftPad - 4;
-    const computedStep = Math.max(8, Math.floor(availableWidth / numWeeksEstimate));
-    this.cellSize = computedStep - this.gap;
-    const size = this.cellSize;
-    const gap = this.gap;
-    const step = size + gap;
+    const host = this.elRef?.nativeElement as HTMLElement;
+    const containerWidth = Math.max(320, host?.offsetWidth || 700);
+    const containerHeight = Math.max(140, host?.offsetHeight || 220);
+    const isDesktop = containerWidth >= 1024;
 
     // Build date map
     const map = new Map<string, HeatmapPoint>();
@@ -138,6 +168,26 @@ export class HeatmapChartComponent implements OnChanges, AfterViewInit, OnDestro
     // Calculate number of weeks (columns)
     const totalSlots = startDow + allDays.length;
     const numWeeks = Math.ceil(totalSlots / 7);
+    const legendReserve = 24;
+    const plotHeight = Math.max(72, containerHeight - this.topPad - legendReserve);
+
+    // Keep a baseline width so small containers scroll horizontally instead of shrinking cells.
+    // Use near-touching fixed gaps and derive the cell size from available width.
+    const minPlotWidth = isDesktop ? 920 : 820;
+    const plotWidth = Math.max(minPlotWidth, containerWidth - this.leftPad);
+    const targetGap = 0.7;
+    const rawCellFromWidth = (plotWidth - numWeeks * targetGap) / Math.max(1, numWeeks);
+    const rawCellFromHeight = (plotHeight - 7 * targetGap) / 7;
+    const rawCellSize = Math.min(rawCellFromWidth, rawCellFromHeight);
+    const minCellSize = isDesktop ? 15 : 13;
+    const maxCellSize = isDesktop ? 22 : 18;
+    const cellSize = Math.max(minCellSize, Math.min(maxCellSize, rawCellSize));
+    const stepX = cellSize + targetGap;
+    const stepY = cellSize + targetGap;
+    this.cellWidth = cellSize;
+    this.cellHeight = cellSize;
+    this.colGap = targetGap;
+    this.rowGap = targetGap;
 
     // Find max
     let maxVal = 0;
@@ -154,8 +204,8 @@ export class HeatmapChartComponent implements OnChanges, AfterViewInit, OnDestro
       const p = map.get(day.dateStr);
       const total = p?.total || 0;
       return {
-        x: this.leftPad + col * step,
-        y: this.topPad + row * step,
+        x: this.leftPad + col * stepX + this.colGap / 2,
+        y: this.topPad + row * stepY + this.rowGap / 2,
         fill: this.colorForValue(total, maxVal),
         date: day.dateStr,
         total,
@@ -174,7 +224,7 @@ export class HeatmapChartComponent implements OnChanges, AfterViewInit, OnDestro
         const slot = startDow + idx;
         const col = Math.floor(slot / 7);
         this.monthLabels.push({
-          x: this.leftPad + col * step,
+          x: this.leftPad + col * stepX + this.colGap / 2,
           text: HeatmapChartComponent.MONTHS_FR[day.month],
         });
       }
@@ -182,12 +232,12 @@ export class HeatmapChartComponent implements OnChanges, AfterViewInit, OnDestro
 
     // Day labels on left (show Mon, Wed, Fri only like GitHub)
     this.dayLabelsY = [0, 2, 4].map(dow => ({
-      y: this.topPad + dow * step + size / 2,
+      y: this.topPad + dow * stepY + stepY / 2,
       text: HeatmapChartComponent.DAYS_FR[dow],
     }));
 
-    this.vw = this.leftPad + numWeeks * step;
-    this.vh = this.topPad + 7 * step;
+    this.vw = this.leftPad + numWeeks * stepX;
+    this.vh = this.topPad + 7 * stepY;
   }
 
   private colorForValue(val: number, max: number): string {
@@ -199,16 +249,33 @@ export class HeatmapChartComponent implements OnChanges, AfterViewInit, OnDestro
     return this.palette[4];
   }
 
-  showTip(i: number, ev: MouseEvent) {
+  onCellEnter(i: number, ev: MouseEvent) {
+    this.showTip(i, ev);
+  }
+
+  onCellLeave() {
+    this.hideTip();
+  }
+
+  private showTip(i: number, ev: MouseEvent) {
     const cell = this.cells[i];
     if (!cell) return;
     const el = ev.currentTarget as SVGElement;
-    const wrap = el.closest('.heatmap-wrap') as HTMLElement;
-    if (!wrap) return;
-    const wrapRect = wrap.getBoundingClientRect();
     const elRect = el.getBoundingClientRect();
-    this.tipX = elRect.left - wrapRect.left + elRect.width / 2;
-    this.tipY = elRect.top - wrapRect.top;
+    const centerX = elRect.left + elRect.width / 2;
+    const viewportPadding = 12;
+    const edgeThreshold = 170;
+    if (centerX < edgeThreshold) {
+      this.tipAlign = 'left';
+      this.tipX = viewportPadding;
+    } else if (centerX > window.innerWidth - edgeThreshold) {
+      this.tipAlign = 'right';
+      this.tipX = window.innerWidth - viewportPadding;
+    } else {
+      this.tipAlign = 'center';
+      this.tipX = centerX;
+    }
+    this.tipY = Math.max(12, elRect.top - 8);
     const parts = cell.date.split('-');
     const monthNames = ['jan.', 'fév.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'];
     this.tipDate = `${parseInt(parts[2])} ${monthNames[parseInt(parts[1]) - 1]} ${parts[0]}`;
@@ -218,5 +285,7 @@ export class HeatmapChartComponent implements OnChanges, AfterViewInit, OnDestro
     this.tipVisible = true;
   }
 
-  hideTip() { this.tipVisible = false; }
+  hideTip() {
+    this.tipVisible = false;
+  }
 }

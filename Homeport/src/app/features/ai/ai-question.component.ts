@@ -129,6 +129,20 @@ import { AiQuestion, AiQuestionOption, AiQuestionItem } from './ai.service';
     .aq-other { margin-top: 6px; width: 100%; }
     .aq-actions { display: flex; align-items: center; gap: 6px; margin-top: 8px; }
     .send-icon { cursor: pointer; color: #1677ff; }
+
+    :host ::ng-deep .aq .ant-input-affix-wrapper:not(.ant-input-affix-wrapper-disabled):hover {
+      border-color: #1677ff !important;
+      border-right-width: 1px !important;
+      z-index: 1;
+    }
+
+    :host ::ng-deep .aq .ant-input-affix-wrapper-focused,
+    :host ::ng-deep .aq .ant-input-affix-wrapper:focus-within {
+      border-color: #1677ff !important;
+      border-right-width: 1px !important;
+      z-index: 1;
+      box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.15) !important;
+    }
   `]
 })
 export class AiQuestionComponent {

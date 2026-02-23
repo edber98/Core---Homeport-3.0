@@ -332,6 +332,18 @@ import { AiSettingsComponent } from './ai-settings.component';
       border-color: #1677ff !important;
       box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.15) !important;
     }
+    :host ::ng-deep .fp-main .ant-input-affix-wrapper:not(.ant-input-affix-wrapper-disabled):hover {
+      border-color: #1677ff !important;
+      border-right-width: 1px !important;
+      z-index: 1;
+    }
+    :host ::ng-deep .fp-main .ant-input-affix-wrapper-focused,
+    :host ::ng-deep .fp-main .ant-input-affix-wrapper:focus-within {
+      border-color: #1677ff !important;
+      border-right-width: 1px !important;
+      z-index: 1;
+      box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.15) !important;
+    }
     .settings-popover { width: 280px; }
     .sp-field { margin-bottom: 10px; }
     .sp-field:last-child { margin-bottom: 0; }
