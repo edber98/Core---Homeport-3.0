@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ElementRef, OnDestroy, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { NzIconModule } from 'ng-zorro-antd/icon';
@@ -24,7 +24,11 @@ import { AiAudioService } from '../../../ai/ai-audio.service';
   templateUrl: './dashboard-home.html',
   styleUrl: './dashboard-home.scss'
 })
-export class DashboardHome implements OnInit {
+export class DashboardHome implements OnInit, OnDestroy {
+  @ViewChild('dashRoot', { static: true }) private dashRootRef!: ElementRef<HTMLElement>;
+  @ViewChild('assistantSection', { static: true }) private assistantSectionRef!: ElementRef<HTMLElement>;
+  @ViewChild('dashboardSection', { static: true }) private dashboardSectionRef!: ElementRef<HTMLElement>;
+
   data: DashboardData | null = null;
   loading = false;
   aiInput = '';
@@ -32,6 +36,8 @@ export class DashboardHome implements OnInit {
   // Cached computed values (avoid new array refs on every change detection)
   successRate = '0';
   tagColors = ['blue', 'green', 'orange', 'purple', 'cyan', 'magenta', 'volcano', 'gold', 'lime', 'geekblue'];
+  private sectionScrollLock = false;
+  private sectionScrollUnlockId: ReturnType<typeof setTimeout> | null = null;
 
   constructor(
     private ds: DashboardService,
@@ -45,6 +51,13 @@ export class DashboardHome implements OnInit {
 
   ngOnInit() {
     this.refresh();
+  }
+
+  ngOnDestroy() {
+    if (this.sectionScrollUnlockId) {
+      clearTimeout(this.sectionScrollUnlockId);
+      this.sectionScrollUnlockId = null;
+    }
   }
 
   refresh() {
@@ -90,6 +103,72 @@ export class DashboardHome implements OnInit {
     this.aiInput = '';
     this.ai.openDrawer();
     await this.ai.quickSend(text);
+  }
+
+  onDashWheel(event: WheelEvent) {
+    if (Math.abs(event.deltaY) < 10) return;
+
+    if (this.sectionScrollLock) {
+      event.preventDefault();
+      return;
+    }
+
+    const dashRoot = this.dashRootRef?.nativeElement;
+    const assistantSection = this.assistantSectionRef?.nativeElement;
+    const dashboardSection = this.dashboardSectionRef?.nativeElement;
+    if (!dashRoot || !assistantSection || !dashboardSection) return;
+
+    const currentTop = dashRoot.scrollTop;
+    const assistantDist = Math.abs(currentTop - assistantSection.offsetTop);
+    const dashboardDist = Math.abs(currentTop - dashboardSection.offsetTop);
+    const onAssistantSection = assistantDist <= dashboardDist;
+
+    if (event.deltaY > 0 && onAssistantSection) {
+      event.preventDefault();
+      this.scrollToDashboard();
+      return;
+    }
+
+    if (event.deltaY < 0 && !onAssistantSection) {
+      const canScrollUpInside = this.hasScrollableAncestorAbove(event.target, dashRoot);
+      if (!canScrollUpInside) {
+        event.preventDefault();
+        this.scrollToAssistant();
+      }
+    }
+  }
+
+  scrollToDashboard() {
+    const dashboardSection = this.dashboardSectionRef?.nativeElement;
+    if (!dashboardSection) return;
+    this.scrollToSection(dashboardSection);
+  }
+
+  private scrollToAssistant() {
+    const assistantSection = this.assistantSectionRef?.nativeElement;
+    if (!assistantSection) return;
+    this.scrollToSection(assistantSection);
+  }
+
+  private scrollToSection(sectionEl: HTMLElement) {
+    this.sectionScrollLock = true;
+    sectionEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (this.sectionScrollUnlockId) clearTimeout(this.sectionScrollUnlockId);
+    this.sectionScrollUnlockId = setTimeout(() => {
+      this.sectionScrollLock = false;
+      this.sectionScrollUnlockId = null;
+    }, 700);
+  }
+
+  private hasScrollableAncestorAbove(target: EventTarget | null, stopAt: HTMLElement): boolean {
+    let el = target instanceof HTMLElement ? target : null;
+    while (el && el !== stopAt) {
+      const style = window.getComputedStyle(el);
+      const isScrollable = (style.overflowY === 'auto' || style.overflowY === 'scroll') && el.scrollHeight > el.clientHeight;
+      if (isScrollable && el.scrollTop > 0) return true;
+      el = el.parentElement;
+    }
+    return false;
   }
 
   async toggleMic() {

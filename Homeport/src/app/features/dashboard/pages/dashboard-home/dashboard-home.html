@@ -1,5 +1,5 @@
-<div class="dash">
-  <section class="snap-section assistant-section">
+<div class="dash" #dashRoot (wheel)="onDashWheel($event)">
+  <section class="snap-section assistant-section" #assistantSection>
     <div class="assistant-view assistant-floating">
       <span class="assistant-halo halo-a" aria-hidden="true"></span>
       <span class="assistant-halo halo-b" aria-hidden="true"></span>
@@ -79,7 +79,7 @@
       type="button"
       class="assistant-next"
       aria-label="Aller au dashboard"
-      (click)="dashboardSection.scrollIntoView({ behavior: 'smooth', block: 'start' })"
+      (click)="scrollToDashboard()"
     >
       <span class="assistant-next-glyph" aria-hidden="true"></span>
     </button>
