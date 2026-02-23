@@ -279,7 +279,7 @@ const META_TOOL_DEFINITIONS = [
     parameters: {
       type: 'object',
       properties: {
-        providerKey: { type: 'string', description: 'Clé du provider (ex: odoo, slack, google_drive, email). Si omis, liste tous les credentials du workspace.' },
+        providerKey: { type: 'string', description: 'Clé exacte du provider (ex: odoo, slack, google_drive, smtp_imap). IMPORTANT : utilise d\'abord list_providers pour trouver la bonne clé. Si omis, liste tous les credentials du workspace.' },
       },
     },
   },
@@ -604,10 +604,25 @@ async function executeMetaTool(name, input, ctx) {
     case 'list_credentials': {
       const filter = { workspaceId: ctx.workspaceId };
       if (input.providerKey) filter.providerKey = input.providerKey;
-      const creds = await Credential.find(filter, 'id _id name providerKey createdAt').lean().limit(50).sort({ createdAt: -1 });
+      let creds = await Credential.find(filter, 'id _id name providerKey createdAt').lean().limit(50).sort({ createdAt: -1 });
+      // Fuzzy fallback: if exact providerKey found nothing, try matching by provider name/title
+      if (!creds.length && input.providerKey) {
+        const Provider = require('../../db/models/provider.model');
+        const fuzzy = new RegExp(input.providerKey.replace(/[_-]/g, '.*'), 'i');
+        const matchedProviders = await Provider.find({
+          $or: [{ key: fuzzy }, { name: fuzzy }, { title: fuzzy }]
+        }, 'key').lean().limit(5);
+        if (matchedProviders.length) {
+          const matchedKeys = matchedProviders.map(p => p.key);
+          creds = await Credential.find(
+            { workspaceId: ctx.workspaceId, providerKey: { $in: matchedKeys } },
+            'id _id name providerKey createdAt'
+          ).lean().limit(50).sort({ createdAt: -1 });
+        }
+      }
       if (!creds.length) {
         const msg = input.providerKey
-          ? `Aucun credential trouvé pour le provider "${input.providerKey}". Utilise open_credentials("${input.providerKey}") pour en créer.`
+          ? `Aucun credential trouvé pour le provider "${input.providerKey}". Utilise list_providers() pour voir les providers disponibles, puis open_credentials(providerKey) pour en créer.`
           : 'Aucun credential dans ce workspace.';
         return { credentials: [], message: msg };
       }

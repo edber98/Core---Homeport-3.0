@@ -8,6 +8,7 @@ const ToolCallSchema = new Schema({
   duration: { type: Number },
   status: { type: String, enum: ['success', 'error', 'running'] },
   displayTitle: { type: String },
+  argsSchema: { type: [{ key: String, label: String }], default: undefined },
 }, { _id: false });
 
 const QuestionItemSchema = new Schema({

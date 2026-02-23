@@ -30,6 +30,7 @@ export interface AiToolCall {
   duration?: number;
   status?: 'success' | 'error';
   displayTitle?: string;
+  argsSchema?: { key: string; label: string }[];
 }
 
 export interface AiQuestionOption {
@@ -83,7 +84,8 @@ export type AiStreamEvent =
   | { type: 'message'; text: string }
   | { type: 'tool.start'; id: string; name: string }
   | { type: 'tool.input_delta'; id: string; name: string; text: string }
-  | { type: 'tool.title'; id: string; displayTitle: string }
+  | { type: 'tool.meta'; id: string; displayTitle: string; argsSchema?: { key: string; label: string }[] }
+  | { type: 'tool.building_done'; id: string }
   | { type: 'tool.end'; id: string; name: string; args?: any; result?: any; error?: string; status: string; duration?: number; displayTitle?: string }
   | { type: 'question'; text: string; questionType: string; options?: AiQuestionOption[] }
   | { type: 'thread.title'; title: string }
@@ -270,6 +272,8 @@ export class AiService {
     let assistantText = '';
     const toolCalls: AiToolCall[] = [];
     const segments: AiMessageSegment[] = [];
+    const argsSchemaMap = new Map<string, { key: string; label: string }[]>();
+    const displayTitleMap = new Map<string, string>();
 
     try {
       const res = await fetch(url, {
@@ -331,15 +335,22 @@ export class AiService {
               }
               last.content = (last.content || '') + txt;
             }
+            if ((event as any).type === 'tool.meta') {
+              const metaId = (event as any).id;
+              if ((event as any).argsSchema) argsSchemaMap.set(metaId, (event as any).argsSchema);
+              if ((event as any).displayTitle) displayTitleMap.set(metaId, (event as any).displayTitle);
+            }
             if (event.type === 'tool.end') {
+              const evId = (event as any).id;
               const tc: AiToolCall = {
-                id: (event as any).id,
+                id: evId,
                 name: (event as any).name,
                 args: (event as any).args,
                 result: (event as any).result,
                 duration: (event as any).duration,
                 status: (event as any).status,
-                displayTitle: (event as any).displayTitle,
+                displayTitle: (event as any).displayTitle || displayTitleMap.get(evId),
+                argsSchema: argsSchemaMap.get(evId),
               };
               toolCalls.push(tc);
               // Track segment: append to last tools segment or create new one

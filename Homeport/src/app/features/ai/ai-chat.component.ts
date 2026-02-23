@@ -14,12 +14,13 @@ import { AiMessageComponent } from './ai-message.component';
 import { AiQuestionComponent } from './ai-question.component';
 import { marked } from 'marked';
 import DOMPurify from 'dompurify';
+import { jsonrepair } from 'jsonrepair';
 
 const TOOL_LABELS: Record<string, string> = {
   search_tools: 'Recherche d\'outils', get_tool_details: 'Détails outil', execute_tool: 'Exécution',
   list_providers: 'Providers', ask_user: 'Question', search_workflows: 'Recherche workflows',
   run_workflow: 'Lancement workflow', save_memory: 'Mémoire', get_memory: 'Mémoire',
-  enrich_context: 'Contexte', open_element: 'Ouverture', open_credentials: 'Identifiants',
+  enrich_context: 'Contexte', open_element: 'Ouverture', list_credentials: 'Lister les identifiants', open_credentials: 'Identifiants',
   save_project_memory: 'Mémoire projet', get_project_memory: 'Mémoire projet',
   compact_and_transfer: 'Transfert', activate_capsule: 'Activation outils',
   search_manual: 'Manuel', get_manual_section: 'Manuel',
@@ -44,6 +45,46 @@ const TOOL_LABELS: Record<string, string> = {
   list_runs: 'Historique', get_run_stats: 'Statistiques',
 };
 
+/** Human-readable labels for meta-tool arguments (non-execute_tool tools) */
+const META_TOOL_ARG_LABELS: Record<string, Record<string, string>> = {
+  search_tools: { query: 'Recherche' },
+  get_tool_details: { key: 'Clé du noeud' },
+  list_credentials: { providerKey: 'Fournisseur' },
+  search_workflows: { query: 'Recherche' },
+  run_workflow: { flowId: 'Workflow', input: 'Données d\'entrée' },
+  save_memory: { content: 'Contenu' },
+  ask_user: { text: 'Question', questionType: 'Type', options: 'Options' },
+  activate_capsule: { capsule: 'Capsule', reason: 'Raison' },
+  search_manual: { query: 'Recherche' },
+  get_manual_section: { sectionId: 'Section' },
+  add_node: { templateKey: 'Template', positionAfter: 'Après le noeud' },
+  connect_nodes: { sourceId: 'Source', targetId: 'Cible', sourceHandle: 'Sortie', targetHandle: 'Entrée' },
+  disconnect_nodes: { sourceId: 'Source', targetId: 'Cible' },
+  set_node_args: { nodeId: 'Noeud', args: 'Arguments' },
+  set_node_description: { nodeId: 'Noeud', description: 'Description' },
+  get_templates: { query: 'Recherche', providerKey: 'Fournisseur' },
+  get_template_details: { key: 'Clé du template' },
+  get_node_schema: { nodeId: 'Noeud' },
+  get_node_info: { nodeId: 'Noeud' },
+  remove_node: { nodeId: 'Noeud' },
+  replace_node: { nodeId: 'Noeud', newTemplateKey: 'Nouveau template' },
+  connect_by_output_name: { sourceId: 'Source', targetId: 'Cible', outputName: 'Nom de sortie' },
+  set_form_schema: { schema: 'Schéma' },
+  add_field: { sectionKey: 'Section', field: 'Champ' },
+  update_field: { fieldKey: 'Champ', updates: 'Modifications' },
+  remove_field: { fieldKey: 'Champ' },
+  add_section: { section: 'Section' },
+  update_section: { sectionKey: 'Section', updates: 'Modifications' },
+  search_forms: { query: 'Recherche' },
+  deploy_flow: { flowId: 'Workflow' },
+  undeploy_flow: { flowId: 'Workflow' },
+  start_run: { flowId: 'Workflow', input: 'Données d\'entrée' },
+  open_element: { elementType: 'Type', elementId: 'Élément' },
+  open_credentials: { providerKey: 'Fournisseur' },
+  save_project_memory: { content: 'Contenu' },
+  compact_and_transfer: { summary: 'Résumé' },
+};
+
 interface StreamSegment {
   type: 'text' | 'tools';
   html?: string;            // rendered markdown HTML for text segments
@@ -54,10 +95,13 @@ interface StreamSegment {
 }
 
 interface StreamTool {
-  id: string; name: string; status: 'running' | 'success' | 'error';
+  id: string; name: string;
+  status: 'building' | 'running' | 'success' | 'error';
   duration?: number; args?: any; result?: any;
-  inputJson?: string; // Partial JSON being streamed from LLM
-  displayTitle?: string;
+  inputJson?: string; displayTitle?: string;
+  argsSchema?: { key: string; label: string }[];
+  parsedArgs?: Record<string, any>;
+  changedKeys?: Set<string>;
 }
 
 @Component({
@@ -75,10 +119,20 @@ interface StreamTool {
         animate('200ms ease-in', style({ transform: 'translateY(-100%)', opacity: 0 })),
       ]),
     ]),
+    trigger('argsExpand', [
+      transition(':enter', [
+        style({ height: 0, opacity: 0, overflow: 'hidden' }),
+        animate('250ms cubic-bezier(0.16, 1, 0.3, 1)', style({ height: '*', opacity: 1 })),
+      ]),
+      transition(':leave', [
+        style({ overflow: 'hidden' }),
+        animate('200ms ease-in', style({ height: 0, opacity: 0 })),
+      ]),
+    ]),
   ],
   template: `
     <!-- Messages -->
-    <div class="messages" #scrollContainer>
+    <div class="messages" #scrollContainer (scroll)="onScroll()">
       <ng-container *ngIf="ai.messages().length === 0 && !ai.streaming()">
         <div class="empty">
           <nz-empty nzNotFoundContent="Commencez une conversation"></nz-empty>
@@ -158,31 +212,63 @@ interface StreamTool {
                       {{ completedTools(seg.tools!).length }} outil{{ completedTools(seg.tools!).length > 1 ? 's' : '' }} exécuté{{ completedTools(seg.tools!).length > 1 ? 's' : '' }}
                     </span>
                     <div class="tool-list" *ngIf="expandedTools.has(seg)">
-                      <div *ngFor="let t of completedTools(seg.tools!)" class="tool-list-item"
-                           [class.item-success]="t.status === 'success'"
-                           [class.item-error]="t.status === 'error'">
-                        <span nz-icon [nzType]="t.status === 'error' ? 'close-circle' : 'check-circle'" nzTheme="outline"></span>
-                        <span>{{ toolDisplayName(t) }}</span>
-                        <span class="item-dur" *ngIf="t.duration">{{ t.duration }}ms</span>
+                      <div *ngFor="let t of completedTools(seg.tools!)" class="tool-item-wrap">
+                        <div class="tool-list-item"
+                             [class.item-success]="t.status === 'success'"
+                             [class.item-error]="t.status === 'error'"
+                             [class.item-expandable]="hasVisibleArgs(t)"
+                             (click)="hasVisibleArgs(t) && toggleToolItemExpand(t)">
+                          <span nz-icon [nzType]="t.status === 'error' ? 'close-circle' : 'check-circle'" nzTheme="outline"></span>
+                          <span>{{ toolDisplayName(t) }}</span>
+                          <span class="item-dur" *ngIf="t.duration">{{ t.duration }}ms</span>
+                          <span nz-icon *ngIf="hasVisibleArgs(t)" class="item-chevron"
+                                [nzType]="expandedToolItems.has(t.id) ? 'down' : 'right'" nzTheme="outline"></span>
+                        </div>
+                        <div class="args-tree args-tree-done" *ngIf="expandedToolItems.has(t.id) && hasVisibleArgs(t)">
+                          <div *ngFor="let field of getArgsFields(t); trackBy: trackArgField" class="args-row">
+                            <span class="args-label">{{ field.label }}</span>
+                            <div class="args-value-wrap">
+                              <span class="args-value"
+                                    [class.args-value-clamped]="!expandedArgValues.has(t.id + ':' + field.key)"
+                                    #valRef>{{ formatArgValue(field.value) }}</span>
+                              <span class="args-expand-toggle" *ngIf="valRef.scrollHeight > valRef.clientHeight || expandedArgValues.has(t.id + ':' + field.key)"
+                                    (click)="toggleArgExpand(t.id, field.key)">{{ expandedArgValues.has(t.id + ':' + field.key) ? 'voir moins' : 'voir plus' }}</span>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
-                  <!-- Rotator for latest tool -->
-                  <div class="tool-rotator" *ngIf="latestToolArray(seg.tools!).length">
+                  <!-- Rotator / Tree View for latest tool -->
+                  <ng-container *ngIf="latestToolArray(seg.tools!).length">
                     <div *ngFor="let t of latestToolArray(seg.tools!); trackBy: trackToolRotate"
-                         @toolRotate
-                         class="tool-rotate-line"
-                         [class.tool-running]="t.status === 'running'"
-                         [class.tool-success]="t.status === 'success'"
-                         [class.tool-error]="t.status === 'error'">
-                      <span nz-icon
-                        [nzType]="t.status === 'running' ? 'loading' : t.status === 'error' ? 'close-circle' : 'check-circle'"
-                        nzTheme="outline"
-                        [nzSpin]="t.status === 'running'">
-                      </span>
-                      <span class="rotate-text">{{ toolDisplayName(t) }}</span>
+                         @toolRotate class="tool-viewer">
+                      <div class="tool-viewer-header"
+                           [class.tool-building]="t.status === 'building'"
+                           [class.tool-running]="t.status === 'running'"
+                           [class.tool-success]="t.status === 'success'"
+                           [class.tool-error]="t.status === 'error'">
+                        <span nz-icon
+                          [nzType]="t.status === 'building' ? 'tool' : t.status === 'running' ? 'loading' : t.status === 'error' ? 'close-circle' : 'check-circle'"
+                          nzTheme="outline" [nzSpin]="t.status === 'running'"></span>
+                        <span class="viewer-title">{{ toolDisplayName(t) }}</span>
+                      </div>
+                      <div class="args-tree" *ngIf="t.status === 'building' && hasVisibleArgs(t)" @argsExpand>
+                        <div *ngFor="let field of getArgsFields(t); trackBy: trackArgField" class="args-row"
+                             [class.args-row-new]="t.changedKeys?.has(field.key)">
+                          <span class="args-label">{{ field.label }}</span>
+                          <div class="args-value-wrap">
+                            <span class="args-value"
+                                  [class.fade-token]="t.changedKeys?.has(field.key)"
+                                  [class.args-value-clamped]="!expandedArgValues.has(t.id + ':' + field.key)"
+                                  #valRef>{{ formatArgValue(field.value) }}</span>
+                            <span class="args-expand-toggle" *ngIf="valRef.scrollHeight > valRef.clientHeight || expandedArgValues.has(t.id + ':' + field.key)"
+                                  (click)="toggleArgExpand(t.id, field.key)">{{ expandedArgValues.has(t.id + ':' + field.key) ? 'voir moins' : 'voir plus' }}</span>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  </ng-container>
                 </ng-container>
 
                 <!-- Segment done (not streaming): full collapsible summary -->
@@ -192,12 +278,30 @@ interface StreamTool {
                     {{ seg.tools!.length }} outil{{ seg.tools!.length > 1 ? 's' : '' }} exécuté{{ seg.tools!.length > 1 ? 's' : '' }}
                   </span>
                   <div class="tool-list" *ngIf="expandedTools.has(seg)">
-                    <div *ngFor="let t of seg.tools" class="tool-list-item"
-                         [class.item-success]="t.status === 'success'"
-                         [class.item-error]="t.status === 'error'">
-                      <span nz-icon [nzType]="t.status === 'error' ? 'close-circle' : 'check-circle'" nzTheme="outline"></span>
-                      <span>{{ toolDisplayName(t) }}</span>
-                      <span class="item-dur" *ngIf="t.duration">{{ t.duration }}ms</span>
+                    <div *ngFor="let t of seg.tools" class="tool-item-wrap">
+                      <div class="tool-list-item"
+                           [class.item-success]="t.status === 'success'"
+                           [class.item-error]="t.status === 'error'"
+                           [class.item-expandable]="hasVisibleArgs(t)"
+                           (click)="hasVisibleArgs(t) && toggleToolItemExpand(t)">
+                        <span nz-icon [nzType]="t.status === 'error' ? 'close-circle' : 'check-circle'" nzTheme="outline"></span>
+                        <span>{{ toolDisplayName(t) }}</span>
+                        <span class="item-dur" *ngIf="t.duration">{{ t.duration }}ms</span>
+                        <span nz-icon *ngIf="hasVisibleArgs(t)" class="item-chevron"
+                              [nzType]="expandedToolItems.has(t.id) ? 'down' : 'right'" nzTheme="outline"></span>
+                      </div>
+                      <div class="args-tree args-tree-done" *ngIf="expandedToolItems.has(t.id) && hasVisibleArgs(t)">
+                        <div *ngFor="let field of getArgsFields(t); trackBy: trackArgField" class="args-row">
+                          <span class="args-label">{{ field.label }}</span>
+                          <div class="args-value-wrap">
+                            <span class="args-value"
+                                  [class.args-value-clamped]="!expandedArgValues.has(t.id + ':' + field.key)"
+                                  #valRef>{{ formatArgValue(field.value) }}</span>
+                            <span class="args-expand-toggle" *ngIf="valRef.scrollHeight > valRef.clientHeight || expandedArgValues.has(t.id + ':' + field.key)"
+                                  (click)="toggleArgExpand(t.id, field.key)">{{ expandedArgValues.has(t.id + ':' + field.key) ? 'voir moins' : 'voir plus' }}</span>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -302,12 +406,29 @@ interface StreamTool {
     .reasoning-text ::ng-deep ul, .reasoning-text ::ng-deep ol { margin: 2px 0; padding-left: 18px; }
     .reasoning-text ::ng-deep li { margin: 1px 0; }
     @keyframes pulse-reason { 0%, 100% { opacity: 0.9; } 50% { opacity: 0.75; } }
-    .tool-rotator { overflow: hidden; height: 22px; position: relative; }
-    .tool-rotate-line { display: flex; align-items: center; gap: 6px; font-size: 12px; }
+    .tool-viewer { margin: 2px 0; }
+    .tool-viewer-header { display: flex; align-items: center; gap: 6px; font-size: 12px; padding: 2px 0; }
+    .viewer-title { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .tool-building { color: #8c8c8c; }
     .tool-running { color: #1677ff; }
     .tool-success { color: #52c41a; }
     .tool-error { color: #ff4d4f; }
-    .rotate-text { white-space: nowrap; }
+    .args-tree { padding: 4px 0 4px 22px; border-left: 2px solid #e8e8e8; margin-left: 7px; }
+    .args-row { display: flex; gap: 8px; font-size: 11px; padding: 1px 0; line-height: 1.5; }
+    .args-label { color: #999; font-weight: 500; min-width: 80px; flex-shrink: 0; white-space: nowrap; }
+    .args-value-wrap { min-width: 0; flex: 1; }
+    .args-value { color: #333; word-break: break-word; white-space: pre-wrap; display: block; }
+    .args-value-clamped { max-height: calc(4 * 1.5em); overflow: hidden; }
+    .args-expand-toggle { display: inline-block; font-size: 10px; color: #1677ff; cursor: pointer; margin-top: 1px; }
+    .args-expand-toggle:hover { text-decoration: underline; }
+    .fade-token { animation: tokenFadeIn 400ms ease-out; }
+    @keyframes tokenFadeIn { 0% { opacity: 0.3; color: #1677ff; } 100% { opacity: 1; color: #333; } }
+    .args-row-new { background: rgba(22, 119, 255, 0.04); border-radius: 3px; }
+    .tool-item-wrap { }
+    .item-expandable { cursor: default; }
+    .item-chevron { font-size: 10px; color: #bbb; margin-left: 4px; cursor: pointer; transition: color 0.2s; }
+    .item-chevron:hover { color: #666; }
+    .args-tree-done { margin-top: 2px; margin-bottom: 2px; }
     .tool-summary { margin-top: 4px; }
     .summary-toggle { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; color: #999; cursor: pointer; transition: color 0.2s; }
     .summary-toggle:hover { color: #666; }
@@ -373,8 +494,14 @@ export class AiChatComponent {
   streamError: string | null = null;
   expandedMsgs = new Set<any>();
   expandedTools = new Set<StreamSegment>();
+  expandedToolItems = new Set<string>(); // track individual tool id expansion
+  expandedArgValues = new Set<string>(); // track expanded arg values (key = toolId:fieldKey)
   thinkingIteration = 0;
   interrupted = false;
+
+  // Auto-scroll: only scroll if user is near the bottom
+  private _userAtBottom = true;
+  private readonly SCROLL_THRESHOLD = 60; // px from bottom to consider "at bottom"
 
   // Rotator: minimum display time per tool (avoids flashing for fast tools)
   private readonly ROTATOR_MIN_MS = 400;
@@ -387,6 +514,12 @@ export class AiChatComponent {
   private stopFn?: () => void;
 
   constructor(public ai: AiService, public audio: AiAudioService, private cdr: ChangeDetectorRef) {
+    // Reset auto-scroll when switching threads
+    effect(() => {
+      this.ai.currentThread();
+      this._userAtBottom = true;
+    });
+    // Scroll on message changes (conditional — respects user scroll position)
     effect(() => {
       this.ai.messages();
       this.scrollToBottom();
@@ -445,6 +578,7 @@ export class AiChatComponent {
     this.thinkingIteration = 0;
     this.interrupted = false;
     this.resetRotator();
+    this.forceScrollToBottom(); // Always scroll when sending a new message
 
     const { events$, stop } = await this.ai.quickSend(text);
     this.stopFn = stop;
@@ -510,6 +644,7 @@ export class AiChatComponent {
     this.streamError = null;
     this.thinkingIteration = 0;
     this.interrupted = false;
+    this.forceScrollToBottom();
     const result = this.ai.answerQuestion(answer);
     if (!result) return;
     const { events$, stop } = result;
@@ -562,7 +697,7 @@ export class AiChatComponent {
         break;
       }
       case 'tool.start': {
-        const tool: StreamTool = { id: (ev as any).id, name: (ev as any).name, status: 'running' };
+        const tool: StreamTool = { id: (ev as any).id, name: (ev as any).name, status: 'building' };
         const last = this.segments[this.segments.length - 1];
         if (last && last.type === 'tools') {
           // Add tool to existing tools segment
@@ -585,7 +720,7 @@ export class AiChatComponent {
         break;
       }
       case 'tool.input_delta': {
-        // Accumulate partial JSON on the running tool
+        // Accumulate partial JSON on the tool
         const deltaId = (ev as any).id;
         const deltaName = (ev as any).name || '';
         const deltaText = (ev as any).text || '';
@@ -604,7 +739,7 @@ export class AiChatComponent {
           this.segments = deltaUpdated;
         } else if (deltaId) {
           // tool.start was missed — create the tool entry from input_delta
-          const tool: StreamTool = { id: deltaId, name: deltaName, status: 'running', inputJson: deltaText };
+          const tool: StreamTool = { id: deltaId, name: deltaName, status: 'building', inputJson: deltaText };
           const last = this.segments[this.segments.length - 1];
           if (last && last.type === 'tools') {
             this.segments = [...this.segments.slice(0, -1), { ...last, tools: [...(last.tools || []), tool] }];
@@ -612,22 +747,58 @@ export class AiChatComponent {
             this.segments = [...this.segments, { type: 'tools', tools: [tool] }];
           }
         }
+        // Parse partial args with jsonrepair
+        const lastSeg = this.segments[this.segments.length - 1];
+        if (lastSeg?.type === 'tools') {
+          const tool = lastSeg.tools?.find(t => t.id === deltaId);
+          if (tool?.inputJson) {
+            const parsed = this.parsePartialArgs(tool);
+            if (parsed) {
+              const prevKeys = tool.parsedArgs ? new Set(Object.keys(tool.parsedArgs)) : new Set<string>();
+              const changedKeys = new Set<string>();
+              // Only mark genuinely NEW keys (first appearance) — not value updates
+              for (const k of Object.keys(parsed)) {
+                if (!prevKeys.has(k)) changedKeys.add(k);
+              }
+              this.segments = this.segments.map(seg => {
+                if (seg.type !== 'tools' || !seg.tools) return seg;
+                const idx = seg.tools.findIndex(t => t.id === deltaId);
+                if (idx < 0) return seg;
+                return { ...seg, tools: seg.tools.map((t, i) =>
+                  i === idx ? { ...t, parsedArgs: parsed, changedKeys: changedKeys.size ? changedKeys : t.changedKeys } : t
+                )};
+              });
+            }
+          }
+        }
+        this.updateRotator();
         break;
       }
-      case 'tool.title': {
-        // Pre-resolved displayTitle from backend DB lookup — update running tool immediately
-        const titleId = (ev as any).id;
-        const titleValue = (ev as any).displayTitle;
+      case 'tool.meta': {
+        const metaId = (ev as any).id;
+        const metaTitle = (ev as any).displayTitle;
+        const metaSchema = (ev as any).argsSchema;
         this.segments = this.segments.map(seg => {
           if (seg.type !== 'tools' || !seg.tools) return seg;
-          const idx = seg.tools.findIndex(t => t.id === titleId);
+          const idx = seg.tools.findIndex(t => t.id === metaId);
           if (idx < 0) return seg;
-          const updatedTools = seg.tools.map((t, i) =>
-            i === idx ? { ...t, displayTitle: titleValue } : t
-          );
-          return { ...seg, tools: updatedTools };
+          return { ...seg, tools: seg.tools.map((t, i) =>
+            i === idx ? { ...t, displayTitle: metaTitle, argsSchema: metaSchema || t.argsSchema } : t
+          )};
         });
-        this.updateRotator(); // displayTitle now available → rotator can show this tool
+        this.updateRotator();
+        break;
+      }
+      case 'tool.building_done': {
+        const bdId = (ev as any).id;
+        this.segments = this.segments.map(seg => {
+          if (seg.type !== 'tools' || !seg.tools) return seg;
+          const idx = seg.tools.findIndex(t => t.id === bdId);
+          if (idx < 0) return seg;
+          return { ...seg, tools: seg.tools.map((t, i) =>
+            i === idx ? { ...t, status: 'running' as const } : t
+          )};
+        });
         break;
       }
       case 'tool.end': {
@@ -646,7 +817,7 @@ export class AiChatComponent {
           if (idx < 0) return seg;
           found = true;
           const updatedTools = seg.tools.map((t, i) =>
-            i === idx ? { ...t, status: evStatus, duration: evDuration, args: evArgs, result: evResult, displayTitle: evDisplayTitle } : t
+            i === idx ? { ...t, status: evStatus, duration: evDuration, args: evArgs, result: evResult, displayTitle: evDisplayTitle || t.displayTitle } : t
           );
           return { ...seg, tools: updatedTools };
         });
@@ -750,7 +921,7 @@ export class AiChatComponent {
 
   /** All completed tools excluding the one currently in the rotator — for collapsible during streaming */
   completedTools(tools: StreamTool[]): StreamTool[] {
-    return tools.filter(t => t.status !== 'running' && t.id !== this._rotatorId);
+    return tools.filter(t => t.status !== 'building' && t.status !== 'running' && t.id !== this._rotatorId);
   }
 
   /** Returns single-element array for the rotator *ngFor — uses delayed switching for min display time */
@@ -766,13 +937,10 @@ export class AiChatComponent {
     if (lastSeg?.type !== 'tools' || !lastSeg.tools?.length) return;
 
     const tools = lastSeg.tools;
-    // Find the best target tool to display
+    // Find the best target tool to display — always show the latest tool
     let targetId: string | null = null;
     for (let i = tools.length - 1; i >= 0; i--) {
-      const t = tools[i];
-      // Skip execute_tool without displayTitle (waiting for tool.title)
-      if (t.name === 'execute_tool' && !t.displayTitle && !t.args?.key) continue;
-      targetId = t.id;
+      targetId = tools[i].id;
       break;
     }
 
@@ -805,17 +973,17 @@ export class AiChatComponent {
   }
 
   trackToolRotate(_i: number, t: StreamTool): string { return t.id; }
+  trackArgField(_i: number, f: { key: string }): string { return f.key; }
 
   toolDisplayName(t: StreamTool): string {
     if (t.displayTitle) return t.displayTitle;
     if (t.name === 'execute_tool') {
-      // Use key as fallback (from args or partial JSON)
       if (t.args?.key) return t.args.key;
       if (t.inputJson) {
         const m = t.inputJson.match(/"key"\s*:\s*"([^"]+)"/);
         if (m) return m[1];
       }
-      return ''; // Should never reach here (latestToolArray defers until displayTitle arrives)
+      return 'Exécution...';
     }
     const label = this.toolLabel(t.name);
     const extra = this.toolExtra(t) || this.extraFromInputJson(t);
@@ -836,15 +1004,101 @@ export class AiChatComponent {
     return '';
   }
 
+  /** Parse partial JSON via jsonrepair. For execute_tool, extract inner args. */
+  private parsePartialArgs(tool: StreamTool): Record<string, any> | null {
+    if (!tool.inputJson) return null;
+    try {
+      const repaired = jsonrepair(tool.inputJson);
+      const parsed = JSON.parse(repaired);
+      if (tool.name === 'execute_tool' && parsed.args && typeof parsed.args === 'object') {
+        return parsed.args;
+      }
+      return parsed;
+    } catch { return null; }
+  }
+
+  /** Check if tool has args to display in tree */
+  hasVisibleArgs(t: StreamTool): boolean {
+    return this.getArgsFields(t).length > 0;
+  }
+
+  /** Build field list for template: key, label (from argsSchema → META_TOOL_ARG_LABELS → raw key), value */
+  getArgsFields(t: StreamTool): { key: string; label: string; value: any }[] {
+    // Use parsedArgs (from jsonrepair during building), or final args from tool.end
+    let data = t.parsedArgs;
+    if (!data && t.args) {
+      // For execute_tool, inner args are in t.args.args; for others, top-level
+      data = (t.name === 'execute_tool' && t.args.args && typeof t.args.args === 'object')
+        ? t.args.args : t.args;
+    }
+    if (!data || typeof data !== 'object') return [];
+    const labelMap = new Map<string, string>();
+    // Priority 1: argsSchema from NodeTemplate (execute_tool)
+    if (t.argsSchema) {
+      for (const f of t.argsSchema) labelMap.set(f.key, f.label);
+    }
+    // Priority 2: static meta-tool labels
+    const metaLabels = META_TOOL_ARG_LABELS[t.name];
+    if (metaLabels) {
+      for (const [k, label] of Object.entries(metaLabels)) {
+        if (!labelMap.has(k)) labelMap.set(k, label);
+      }
+    }
+    return Object.entries(data)
+      .filter(([key]) => key !== 'key' && key !== 'credential_id') // skip meta keys for execute_tool
+      .map(([key, value]) => ({
+        key,
+        label: labelMap.get(key) || key,
+        value,
+      }));
+  }
+
+  /** Format arg value for display (no truncation — CSS handles wrapping) */
+  formatArgValue(value: any): string {
+    if (value === null || value === undefined) return '';
+    if (typeof value === 'string') return value;
+    if (typeof value === 'object') return JSON.stringify(value, null, 2);
+    return String(value);
+  }
+
   toggleToolExpand(seg: StreamSegment) {
     if (this.expandedTools.has(seg)) this.expandedTools.delete(seg);
     else this.expandedTools.add(seg);
   }
 
+  toggleToolItemExpand(t: StreamTool) {
+    if (this.expandedToolItems.has(t.id)) this.expandedToolItems.delete(t.id);
+    else this.expandedToolItems.add(t.id);
+  }
+
+  toggleArgExpand(toolId: string, fieldKey: string) {
+    const k = `${toolId}:${fieldKey}`;
+    if (this.expandedArgValues.has(k)) this.expandedArgValues.delete(k);
+    else this.expandedArgValues.add(k);
+  }
+
+  /** Detect user scroll position — disable auto-scroll if user scrolled up */
+  onScroll() {
+    const el = this.scrollContainer?.nativeElement;
+    if (!el) return;
+    this._userAtBottom = (el.scrollHeight - el.scrollTop - el.clientHeight) < this.SCROLL_THRESHOLD;
+  }
+
+  /** Scroll to bottom only if user was already at the bottom */
   private scrollToBottom() {
+    if (!this._userAtBottom) return;
     try {
       const el = this.scrollContainer?.nativeElement;
-      if (el) setTimeout(() => el.scrollTop = el.scrollHeight, 0);
+      if (el) setTimeout(() => { el.scrollTop = el.scrollHeight; this._userAtBottom = true; }, 0);
+    } catch {}
+  }
+
+  /** Force scroll to bottom (e.g. when sending a new message) */
+  private forceScrollToBottom() {
+    this._userAtBottom = true;
+    try {
+      const el = this.scrollContainer?.nativeElement;
+      if (el) setTimeout(() => { el.scrollTop = el.scrollHeight; }, 0);
     } catch {}
   }
 }

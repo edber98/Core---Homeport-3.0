@@ -66,10 +66,21 @@ async function* streamOpenAIResponses(messages, tools, config) {
   const decoder = new TextDecoder();
   let buffer = '';
 
-  // Track active tool calls
-  const toolBuilders = new Map(); // call_id → { id, name, arguments, ended }
+  // Track active tool calls — indexed by BOTH call_id and item.id for reliable lookup
+  const toolBuilders = new Map(); // call_id|item_id → builder { id, name, arguments, ended, itemId }
   let totalUsage = null;
   let toolIndex = 0;
+
+  /** Find builder by any known ID (call_id, item_id, or fallback to first active) */
+  function findBuilder(id1, id2) {
+    if (id1 && toolBuilders.has(id1)) return toolBuilders.get(id1);
+    if (id2 && toolBuilders.has(id2)) return toolBuilders.get(id2);
+    // Fallback: find first non-ended builder
+    for (const [, b] of toolBuilders) {
+      if (!b.ended) return b;
+    }
+    return null;
+  }
 
   while (true) {
     const { done, value } = await reader.read();
@@ -92,6 +103,9 @@ async function* streamOpenAIResponses(messages, tools, config) {
 
       // Responses API event types
       const type = data.type;
+      if (type?.includes('function_call') || type?.includes('output_item')) {
+        console.log(`[llm-openai-responses] SSE event: ${type}`, type.includes('delta') ? `delta=${(data.delta || '').length}chars` : '');
+      }
 
       switch (type) {
         // ── Text streaming ──
@@ -117,9 +131,16 @@ async function* streamOpenAIResponses(messages, tools, config) {
         case 'response.output_item.added': {
           if (data.item?.type === 'function_call') {
             const callId = data.item.call_id || data.item.id || `call_${toolIndex}`;
+            const itemId = data.item.id;
             const name = data.item.name || '';
             const args = data.item.arguments || '';
-            toolBuilders.set(callId, { id: callId, name, arguments: args, ended: false });
+            const builder = { id: callId, name, arguments: args, ended: false, itemId };
+            toolBuilders.set(callId, builder);
+            // Also index by item.id if different — delta events use item_id which maps to item.id
+            if (itemId && itemId !== callId) {
+              toolBuilders.set(itemId, builder);
+            }
+            console.log(`[llm-openai-responses] output_item.added: callId=${callId}, itemId=${itemId}, name=${name}`);
             yield { type: 'tool_use_start', index: toolIndex, id: callId, name };
             toolIndex++;
           }
@@ -128,31 +149,43 @@ async function* streamOpenAIResponses(messages, tools, config) {
 
         // ── Function call arguments streaming start ──
         case 'response.function_call_arguments.start': {
-          // Tool was already registered by output_item.added — nothing extra needed
+          // Ensure item_id and call_id are both mapped to the same builder
+          const startCallId = data.call_id;
+          const startItemId = data.item_id;
+          console.log(`[llm-openai-responses] arguments.start: call_id=${startCallId}, item_id=${startItemId}`);
+          if (startItemId && startCallId) {
+            const b = toolBuilders.get(startCallId) || toolBuilders.get(startItemId);
+            if (b) {
+              if (!toolBuilders.has(startItemId)) toolBuilders.set(startItemId, b);
+              if (!toolBuilders.has(startCallId)) toolBuilders.set(startCallId, b);
+            }
+          }
           break;
         }
 
         // ── Function call arguments delta ──
         case 'response.function_call_arguments.delta': {
-          const callId = data.call_id || data.item_id;
-          const builder = toolBuilders.get(callId);
+          const builder = findBuilder(data.call_id, data.item_id);
+          if (!builder) {
+            console.log(`[llm-openai-responses] delta: NO builder found! call_id=${data.call_id}, item_id=${data.item_id}, keys=[${[...toolBuilders.keys()]}]`);
+          }
           if (builder && data.delta) {
             builder.arguments += data.delta;
-            yield { type: 'tool_input_delta', index: toolIndex - 1, id: callId, name: builder.name, text: data.delta };
+            yield { type: 'tool_input_delta', index: toolIndex - 1, id: builder.id, name: builder.name, text: data.delta };
           }
           break;
         }
 
         // ── Function call arguments done ──
         case 'response.function_call_arguments.done': {
-          const callId = data.call_id || data.item_id;
-          const builder = toolBuilders.get(callId);
+          const builder = findBuilder(data.call_id, data.item_id);
           if (builder && !builder.ended) {
             if (data.arguments) builder.arguments = data.arguments;
             let input = {};
             try { input = JSON.parse(builder.arguments); } catch {}
             builder.ended = true;
-            yield { type: 'tool_use_end', index: toolIndex - 1, id: callId, name: builder.name, input };
+            console.log(`[llm-openai-responses] arguments.done → tool_use_end: ${builder.name} (id=${builder.id})`);
+            yield { type: 'tool_use_end', index: toolIndex - 1, id: builder.id, name: builder.name, input };
           }
           break;
         }
@@ -161,13 +194,14 @@ async function* streamOpenAIResponses(messages, tools, config) {
         case 'response.output_item.done': {
           if (data.item?.type === 'function_call') {
             const callId = data.item.call_id || data.item.id;
-            let builder = toolBuilders.get(callId);
+            let builder = findBuilder(callId, data.item.id);
 
             // If we never saw output_item.added for this call, create it now
             if (!builder) {
               const name = data.item.name || '';
-              builder = { id: callId, name, arguments: data.item.arguments || '', ended: false };
+              builder = { id: callId, name, arguments: data.item.arguments || '', ended: false, itemId: data.item.id };
               toolBuilders.set(callId, builder);
+              if (data.item.id && data.item.id !== callId) toolBuilders.set(data.item.id, builder);
               yield { type: 'tool_use_start', index: toolIndex, id: callId, name };
               toolIndex++;
             }
@@ -182,8 +216,8 @@ async function* streamOpenAIResponses(messages, tools, config) {
               let input = {};
               try { input = JSON.parse(builder.arguments); } catch {}
               builder.ended = true;
-              console.log(`[llm-openai-responses] output_item.done → tool_use_end: ${builder.name} (id=${callId})`);
-              yield { type: 'tool_use_end', index: toolIndex - 1, id: callId, name: builder.name, input };
+              console.log(`[llm-openai-responses] output_item.done → tool_use_end: ${builder.name} (id=${builder.id})`);
+              yield { type: 'tool_use_end', index: toolIndex - 1, id: builder.id, name: builder.name, input };
             }
           }
           break;

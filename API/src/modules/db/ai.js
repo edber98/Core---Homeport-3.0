@@ -578,23 +578,38 @@ ${toolLines.join('\n')}
           }
 
           case 'tool.input_delta':
-            if (process.env.AI_DEBUG) console.log(`[ai-sse] tool.input_delta → ${event.name} +${(event.text || '').length}chars (id=${event.id})`);
+            console.log(`[ai-sse] tool.input_delta → ${event.name} +${(event.text || '').length}chars (id=${event.id})`);
             send(event);
             break;
 
-          case 'tool.title': {
-            // Pre-resolved displayTitle for execute_tool — update existing tool placeholder
+          case 'tool.meta': {
+            console.log(`[ai-sse] tool.meta → "${event.displayTitle}", argsSchema=${event.argsSchema?.length || 0} fields (id=${event.id})`);
             for (const seg of segments) {
               if (seg.type !== 'tools' || !seg.toolCalls) continue;
               const idx = seg.toolCalls.findIndex(t => t.id === event.id);
-              if (idx >= 0) { seg.toolCalls[idx].displayTitle = event.displayTitle; break; }
+              if (idx >= 0) {
+                seg.toolCalls[idx].displayTitle = event.displayTitle;
+                if (event.argsSchema) seg.toolCalls[idx].argsSchema = event.argsSchema;
+                break;
+              }
             }
             send(event);
             break;
           }
 
+          case 'tool.building_done':
+            send(event);
+            break;
+
           case 'tool.end': {
-            const tc = { id: event.id, name: event.name, args: event.args, result: event.result, duration: event.duration, status: event.status, displayTitle: event.displayTitle };
+            // Recover argsSchema from tool.meta (stored on placeholder in segment)
+            let argsSchema;
+            for (const seg of segments) {
+              if (seg.type !== 'tools' || !seg.toolCalls) continue;
+              const placeholder = seg.toolCalls.find(t => t.id === event.id);
+              if (placeholder?.argsSchema) { argsSchema = placeholder.argsSchema; break; }
+            }
+            const tc = { id: event.id, name: event.name, args: event.args, result: event.result, duration: event.duration, status: event.status, displayTitle: event.displayTitle, argsSchema };
             toolCalls.push(tc);
             // Update the tool in its tools segment
             let tcFound = false;

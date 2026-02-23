@@ -12,7 +12,7 @@ const TOOL_LABELS: Record<string, string> = {
   search_tools: 'Recherche d\'outils', get_tool_details: 'Détails outil', execute_tool: 'Exécution',
   list_providers: 'Providers', ask_user: 'Question', search_workflows: 'Recherche workflows',
   run_workflow: 'Lancement workflow', save_memory: 'Mémoire', get_memory: 'Mémoire',
-  enrich_context: 'Contexte', open_element: 'Ouverture', open_credentials: 'Identifiants',
+  enrich_context: 'Contexte', open_element: 'Ouverture', list_credentials: 'Lister les identifiants', open_credentials: 'Identifiants',
   save_project_memory: 'Mémoire projet', get_project_memory: 'Mémoire projet',
   compact_and_transfer: 'Transfert', activate_capsule: 'Activation outils',
   search_manual: 'Manuel', get_manual_section: 'Manuel',
@@ -38,6 +38,46 @@ const TOOL_LABELS: Record<string, string> = {
   deploy_flow: 'Déploiement', undeploy_flow: 'Arrêt production',
   get_deployment_status: 'Statut déploiement', start_run: 'Lancement exécution',
   list_runs: 'Historique exécutions', get_run_stats: 'Statistiques',
+};
+
+/** Human-readable labels for meta-tool arguments (non-execute_tool tools) */
+const META_TOOL_ARG_LABELS: Record<string, Record<string, string>> = {
+  search_tools: { query: 'Recherche' },
+  get_tool_details: { key: 'Clé du noeud' },
+  list_credentials: { providerKey: 'Fournisseur' },
+  search_workflows: { query: 'Recherche' },
+  run_workflow: { flowId: 'Workflow', input: 'Données d\'entrée' },
+  save_memory: { content: 'Contenu' },
+  ask_user: { text: 'Question', questionType: 'Type', options: 'Options' },
+  activate_capsule: { capsule: 'Capsule', reason: 'Raison' },
+  search_manual: { query: 'Recherche' },
+  get_manual_section: { sectionId: 'Section' },
+  add_node: { templateKey: 'Template', positionAfter: 'Après le noeud' },
+  connect_nodes: { sourceId: 'Source', targetId: 'Cible', sourceHandle: 'Sortie', targetHandle: 'Entrée' },
+  disconnect_nodes: { sourceId: 'Source', targetId: 'Cible' },
+  set_node_args: { nodeId: 'Noeud', args: 'Arguments' },
+  set_node_description: { nodeId: 'Noeud', description: 'Description' },
+  get_templates: { query: 'Recherche', providerKey: 'Fournisseur' },
+  get_template_details: { key: 'Clé du template' },
+  get_node_schema: { nodeId: 'Noeud' },
+  get_node_info: { nodeId: 'Noeud' },
+  remove_node: { nodeId: 'Noeud' },
+  replace_node: { nodeId: 'Noeud', newTemplateKey: 'Nouveau template' },
+  connect_by_output_name: { sourceId: 'Source', targetId: 'Cible', outputName: 'Nom de sortie' },
+  set_form_schema: { schema: 'Schéma' },
+  add_field: { sectionKey: 'Section', field: 'Champ' },
+  update_field: { fieldKey: 'Champ', updates: 'Modifications' },
+  remove_field: { fieldKey: 'Champ' },
+  add_section: { section: 'Section' },
+  update_section: { sectionKey: 'Section', updates: 'Modifications' },
+  search_forms: { query: 'Recherche' },
+  deploy_flow: { flowId: 'Workflow' },
+  undeploy_flow: { flowId: 'Workflow' },
+  start_run: { flowId: 'Workflow', input: 'Données d\'entrée' },
+  open_element: { elementType: 'Type', elementId: 'Élément' },
+  open_credentials: { providerKey: 'Fournisseur' },
+  save_project_memory: { content: 'Contenu' },
+  compact_and_transfer: { summary: 'Résumé' },
 };
 
 /** Processed segment for display — text-before-tools merged into reasoning blocks */
@@ -79,13 +119,31 @@ interface ProcessedSegment {
                   {{ ps.toolCalls!.length }} outil{{ ps.toolCalls!.length > 1 ? 's' : '' }} exécuté{{ ps.toolCalls!.length > 1 ? 's' : '' }}
                 </span>
                 <div class="tool-list" *ngIf="expandedTools.has(ps)">
-                  <div *ngFor="let tc of ps.toolCalls" class="tool-list-item"
-                       [class.item-success]="tc.status !== 'error'"
-                       [class.item-error]="tc.status === 'error'"
-                       style="cursor: pointer" (click)="openToolResult(tc)">
-                    <span nz-icon [nzType]="tc.status === 'error' ? 'close-circle' : 'check-circle'" nzTheme="outline"></span>
-                    <span>{{ toolDisplayName(tc) }}</span>
-                    <span class="item-dur" *ngIf="tc.duration">{{ tc.duration }}ms</span>
+                  <div *ngFor="let tc of ps.toolCalls" class="tool-item-wrap">
+                    <div class="tool-list-item"
+                         [class.item-success]="tc.status !== 'error'"
+                         [class.item-error]="tc.status === 'error'"
+                         [class.item-expandable]="hasToolArgs(tc)">
+                      <span nz-icon [nzType]="tc.status === 'error' ? 'close-circle' : 'check-circle'" nzTheme="outline"
+                            style="cursor: pointer" (click)="openToolResult(tc)"></span>
+                      <span style="cursor: pointer" (click)="openToolResult(tc)">{{ toolDisplayName(tc) }}</span>
+                      <span class="item-dur" *ngIf="tc.duration">{{ tc.duration }}ms</span>
+                      <span nz-icon *ngIf="hasToolArgs(tc)" class="item-chevron" style="cursor: pointer"
+                            [nzType]="expandedToolItems.has(tc.id) ? 'down' : 'right'" nzTheme="outline"
+                            (click)="toggleToolItemExpand(tc.id)"></span>
+                    </div>
+                    <div class="args-tree" *ngIf="expandedToolItems.has(tc.id) && hasToolArgs(tc)">
+                      <div *ngFor="let field of getToolArgsFields(tc); trackBy: trackArgField" class="args-row">
+                        <span class="args-label">{{ field.label }}</span>
+                        <div class="args-value-wrap">
+                          <span class="args-value"
+                                [class.args-value-clamped]="!expandedArgValues.has(tc.id + ':' + field.key)"
+                                #valRef>{{ formatArgValue(field.value) }}</span>
+                          <span class="args-expand-toggle" *ngIf="valRef.scrollHeight > valRef.clientHeight || expandedArgValues.has(tc.id + ':' + field.key)"
+                                (click)="toggleArgExpand(tc.id, field.key)">{{ expandedArgValues.has(tc.id + ':' + field.key) ? 'voir moins' : 'voir plus' }}</span>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -103,13 +161,25 @@ interface ProcessedSegment {
                 {{ msg.toolCalls!.length }} outil{{ msg.toolCalls!.length > 1 ? 's' : '' }} exécuté{{ msg.toolCalls!.length > 1 ? 's' : '' }}
               </span>
               <div class="tool-list" *ngIf="expandedTools.has(msg)">
-                <div *ngFor="let tc of msg.toolCalls" class="tool-list-item"
-                     [class.item-success]="tc.status !== 'error'"
-                     [class.item-error]="tc.status === 'error'"
-                     style="cursor: pointer" (click)="openToolResult(tc)">
-                  <span nz-icon [nzType]="tc.status === 'error' ? 'close-circle' : 'check-circle'" nzTheme="outline"></span>
-                  <span>{{ toolDisplayName(tc) }}</span>
-                  <span class="item-dur" *ngIf="tc.duration">{{ tc.duration }}ms</span>
+                <div *ngFor="let tc of msg.toolCalls" class="tool-item-wrap">
+                  <div class="tool-list-item"
+                       [class.item-success]="tc.status !== 'error'"
+                       [class.item-error]="tc.status === 'error'"
+                       [class.item-expandable]="hasToolArgs(tc)">
+                    <span nz-icon [nzType]="tc.status === 'error' ? 'close-circle' : 'check-circle'" nzTheme="outline"
+                          style="cursor: pointer" (click)="openToolResult(tc)"></span>
+                    <span style="cursor: pointer" (click)="openToolResult(tc)">{{ toolDisplayName(tc) }}</span>
+                    <span class="item-dur" *ngIf="tc.duration">{{ tc.duration }}ms</span>
+                    <span nz-icon *ngIf="hasToolArgs(tc)" class="item-chevron" style="cursor: pointer"
+                          [nzType]="expandedToolItems.has(tc.id) ? 'down' : 'right'" nzTheme="outline"
+                          (click)="toggleToolItemExpand(tc.id)"></span>
+                  </div>
+                  <div class="args-tree" *ngIf="expandedToolItems.has(tc.id) && hasToolArgs(tc)">
+                    <div *ngFor="let field of getToolArgsFields(tc); trackBy: trackArgField" class="args-row">
+                      <span class="args-label">{{ field.label }}</span>
+                      <span class="args-value">{{ formatArgValue(field.value) }}</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -204,6 +274,18 @@ interface ProcessedSegment {
     .item-error span[nz-icon] { color: #ff4d4f; }
     .item-error { color: #ff4d4f; }
     .item-dur { color: #bbb; font-size: 10px; margin-left: auto; }
+    .tool-item-wrap { }
+    .item-expandable { cursor: default; }
+    .item-chevron { font-size: 10px; color: #bbb; margin-left: 4px; cursor: pointer; transition: color 0.2s; }
+    .item-chevron:hover { color: #666; }
+    .args-tree { padding: 4px 0 4px 22px; border-left: 2px solid #e8e8e8; margin-left: 7px; }
+    .args-row { display: flex; gap: 8px; font-size: 11px; padding: 1px 0; line-height: 1.5; }
+    .args-label { color: #999; font-weight: 500; min-width: 80px; flex-shrink: 0; white-space: nowrap; }
+    .args-value-wrap { min-width: 0; flex: 1; }
+    .args-value { color: #333; word-break: break-word; white-space: pre-wrap; display: block; }
+    .args-value-clamped { max-height: calc(4 * 1.5em); overflow: hidden; }
+    .args-expand-toggle { display: inline-block; font-size: 10px; color: #1677ff; cursor: pointer; margin-top: 1px; }
+    .args-expand-toggle:hover { text-decoration: underline; }
     .answered-question { background: #fafafa; border: 1px solid #f0f0f0; border-radius: 8px; padding: 10px 12px; margin: 4px 0; max-width: 85%; }
     .aq-text { font-size: 12px; color: #666; margin-bottom: 6px; }
     .aq-options { display: flex; flex-wrap: wrap; gap: 4px; }
@@ -231,6 +313,8 @@ export class AiMessageComponent {
   selectedToolTemplate: any = null;
 
   expandedTools = new Set<any>();
+  expandedToolItems = new Set<string>();
+  expandedArgValues = new Set<string>();
   private _processedCache = new WeakMap<AiMessageSegment[], ProcessedSegment[]>();
 
   /** Open tool result dialog when clicking on a tool tag */
@@ -310,6 +394,53 @@ export class AiMessageComponent {
   toggleToolExpand(item: any) {
     if (this.expandedTools.has(item)) this.expandedTools.delete(item);
     else this.expandedTools.add(item);
+  }
+
+  toggleToolItemExpand(id: string) {
+    if (this.expandedToolItems.has(id)) this.expandedToolItems.delete(id);
+    else this.expandedToolItems.add(id);
+  }
+
+  toggleArgExpand(toolId: string, fieldKey: string) {
+    const k = `${toolId}:${fieldKey}`;
+    if (this.expandedArgValues.has(k)) this.expandedArgValues.delete(k);
+    else this.expandedArgValues.add(k);
+  }
+
+  hasToolArgs(tc: AiToolCall): boolean {
+    return this.getToolArgsFields(tc).length > 0;
+  }
+
+  getToolArgsFields(tc: AiToolCall): { key: string; label: string; value: any }[] {
+    if (!tc.args || typeof tc.args !== 'object') return [];
+    let data = tc.args;
+    if (tc.name === 'execute_tool' && tc.args.args && typeof tc.args.args === 'object') {
+      data = tc.args.args;
+    }
+    const labelMap = new Map<string, string>();
+    // Priority 1: argsSchema from NodeTemplate (execute_tool)
+    if (tc.argsSchema) {
+      for (const f of tc.argsSchema) labelMap.set(f.key, f.label);
+    }
+    // Priority 2: static meta-tool labels
+    const metaLabels = META_TOOL_ARG_LABELS[tc.name];
+    if (metaLabels) {
+      for (const [k, label] of Object.entries(metaLabels)) {
+        if (!labelMap.has(k)) labelMap.set(k, label);
+      }
+    }
+    return Object.entries(data)
+      .filter(([key]) => key !== 'key' && key !== 'credential_id')
+      .map(([key, value]) => ({ key, label: labelMap.get(key) || key, value }));
+  }
+
+  trackArgField(_i: number, f: { key: string }): string { return f.key; }
+
+  formatArgValue(value: any): string {
+    if (value === null || value === undefined) return '';
+    if (typeof value === 'string') return value;
+    if (typeof value === 'object') return JSON.stringify(value, null, 2);
+    return String(value);
   }
 
   toolLabel(name: string): string {

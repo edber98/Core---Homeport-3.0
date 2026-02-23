@@ -191,6 +191,8 @@ async function* runHarness({ mode, messages, context, metadata, agentOverrides, 
     }
 
     const pendingToolCalls = [];
+    const toolInputBuffers = new Map();   // id → accumulated JSON string
+    const toolMetaResolved = new Set();   // ids where tool.meta already sent
     let assistantText = '';
     let eventCount = 0;
 
@@ -217,24 +219,67 @@ async function* runHarness({ mode, messages, context, metadata, agentOverrides, 
             console.log(`[harness] stream: tool_use_start → ${event.name} (id=${event.id})`);
             yield { type: 'tool.start', id: event.id, name: event.name };
             break;
-          case 'tool_input_delta':
+          case 'tool_input_delta': {
+            // Accumulate JSON for early key detection
+            let buf = toolInputBuffers.get(event.id) || '';
+            buf += event.text;
+            toolInputBuffers.set(event.id, buf);
+            console.log(`[harness] stream: tool_input_delta → ${event.name} +${event.text.length}chars (id=${event.id}), buf=${buf.length}chars`);
+
             yield { type: 'tool.input_delta', id: event.id, name: event.name, text: event.text };
+
+            // Early detection: for execute_tool, extract "key" from partial JSON
+            if (event.name === 'execute_tool' && !toolMetaResolved.has(event.id)) {
+              const keyMatch = buf.match(/"key"\s*:\s*"([^"]+)"/);
+              if (keyMatch) {
+                toolMetaResolved.add(event.id);
+                const templateKey = keyMatch[1];
+                console.log(`[harness] early key detected: "${templateKey}" — looking up NodeTemplate`);
+                try {
+                  const NodeTemplate = require('../db/models/node-template.model');
+                  const tpl = await NodeTemplate.findOne({ key: templateKey }, 'title name args').lean();
+                  if (tpl) {
+                    const { flattenFields } = require('./tools/tool-converter');
+                    const displayTitle = tpl.title || tpl.name || templateKey;
+                    const fields = flattenFields(tpl.args?.fields || []);
+                    const argsSchema = fields.filter(f => f.key).map(f => ({
+                      key: f.key, label: f.label || f.title || f.key
+                    }));
+                    console.log(`[harness] → tool.meta: "${displayTitle}", ${argsSchema.length} fields`);
+                    yield { type: 'tool.meta', id: event.id, displayTitle, argsSchema };
+                  } else {
+                    console.log(`[harness] → NodeTemplate not found for key="${templateKey}"`);
+                  }
+                } catch (e) {
+                  console.error('[harness] early meta resolve error:', e.message);
+                }
+              }
+            }
             break;
+          }
           case 'tool_use_end': {
             console.log(`[harness] stream: tool_use_end → ${event.name} (id=${event.id})`);
             const tcEntry = { id: event.id, name: event.name, input: event.input };
-            // Pre-resolve displayTitle for execute_tool via quick DB lookup
-            if (event.name === 'execute_tool' && event.input?.key) {
+            // Fallback: key wasn't detected during deltas (e.g., no deltas streamed)
+            if (event.name === 'execute_tool' && event.input?.key && !toolMetaResolved.has(event.id)) {
               try {
                 const NodeTemplate = require('../db/models/node-template.model');
-                const tpl = await NodeTemplate.findOne({ key: event.input.key }, 'title name').lean();
-                tcEntry._displayTitle = tpl?.title || tpl?.name || event.input.key;
-                console.log(`[harness] pre-resolved displayTitle: "${tcEntry._displayTitle}" for key=${event.input.key}`);
-                yield { type: 'tool.title', id: event.id, displayTitle: tcEntry._displayTitle };
+                const tpl = await NodeTemplate.findOne({ key: event.input.key }, 'title name args').lean();
+                if (tpl) {
+                  const { flattenFields } = require('./tools/tool-converter');
+                  tcEntry._displayTitle = tpl.title || tpl.name || event.input.key;
+                  const fields = flattenFields(tpl.args?.fields || []);
+                  const argsSchema = fields.filter(f => f.key).map(f => ({
+                    key: f.key, label: f.label || f.title || f.key
+                  }));
+                  yield { type: 'tool.meta', id: event.id, displayTitle: tcEntry._displayTitle, argsSchema };
+                }
               } catch (e) {
-                console.error('[harness] title pre-resolve error:', e.message);
+                console.error('[harness] title fallback error:', e.message);
               }
             }
+            // Signal frontend: args are complete → transition building → running
+            yield { type: 'tool.building_done', id: event.id };
             pendingToolCalls.push(tcEntry);
             break;
           }
