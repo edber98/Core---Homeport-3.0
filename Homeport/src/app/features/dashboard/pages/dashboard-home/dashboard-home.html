@@ -35,7 +35,7 @@
                 #aiInputEl
                 [(ngModel)]="aiInput"
                 [nzAutosize]="{ minRows: 1, maxRows: 5 }"
-                placeholder="Ex : Quels flows ont des erreurs ? (Ctrl/Cmd + Entrée pour envoyer)"
+                [placeholder]="aiInputPlaceholder"
                 (keydown)="onAiInputKeydown($event)"
                 (input)="onAiInputChanged()"
                 class="ai-input"

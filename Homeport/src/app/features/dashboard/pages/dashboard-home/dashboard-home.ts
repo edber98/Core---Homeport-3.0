@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, ChangeDetectorRef, ElementRef, OnDestroy, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ElementRef, OnDestroy, ViewChild, AfterViewInit, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { NzIconModule } from 'ng-zorro-antd/icon';
@@ -33,6 +33,7 @@ export class DashboardHome implements OnInit, OnDestroy, AfterViewInit {
   data: DashboardData | null = null;
   loading = false;
   aiInput = '';
+  aiInputPlaceholder = '';
 
   // Cached computed values (avoid new array refs on every change detection)
   successRate = '0';
@@ -53,11 +54,17 @@ export class DashboardHome implements OnInit, OnDestroy, AfterViewInit {
   ) {}
 
   ngOnInit() {
+    this.updateAiInputPlaceholder();
     this.refresh();
   }
 
   ngAfterViewInit() {
     this.scheduleAiInputLayoutRefresh();
+  }
+
+  @HostListener('window:resize')
+  onWindowResize() {
+    this.updateAiInputPlaceholder();
   }
 
   ngOnDestroy() {
@@ -153,7 +160,13 @@ export class DashboardHome implements OnInit, OnDestroy, AfterViewInit {
     }
 
     if (event.deltaY < 0 && !onAssistantSection) {
-      const canScrollUpInside = this.hasScrollableAncestorAbove(event.target, dashRoot);
+      const dashView = dashboardSection.querySelector('.dash-view') as HTMLElement | null;
+      const rootCanScrollUpWithinDashboard = currentTop > dashboardSection.offsetTop + 1;
+      const canScrollUpInside =
+        rootCanScrollUpWithinDashboard ||
+        dashboardSection.scrollTop > 1 ||
+        (dashView?.scrollTop || 0) > 1 ||
+        this.hasScrollableAncestorAbove(event.target, dashRoot);
       if (!canScrollUpInside) {
         event.preventDefault();
         this.scrollToAssistant();
@@ -184,11 +197,15 @@ export class DashboardHome implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private hasScrollableAncestorAbove(target: EventTarget | null, stopAt: HTMLElement): boolean {
-    let el = target instanceof HTMLElement ? target : null;
+    let el: Element | null = target instanceof Element ? target : null;
     while (el && el !== stopAt) {
-      const style = window.getComputedStyle(el);
-      const isScrollable = (style.overflowY === 'auto' || style.overflowY === 'scroll') && el.scrollHeight > el.clientHeight;
-      if (isScrollable && el.scrollTop > 0) return true;
+      if (el instanceof HTMLElement) {
+        const style = window.getComputedStyle(el);
+        const isScrollable =
+          (style.overflowY === 'auto' || style.overflowY === 'scroll' || style.overflowY === 'overlay') &&
+          el.scrollHeight > el.clientHeight;
+        if (isScrollable && el.scrollTop > 1) return true;
+      }
       el = el.parentElement;
     }
     return false;
@@ -216,6 +233,17 @@ export class DashboardHome implements OnInit, OnDestroy, AfterViewInit {
     const padBottom = parseFloat(styles.paddingBottom || '0') || 0;
     const oneLineHeight = lineHeight + padTop + padBottom;
     this.aiInputMultiline = el.scrollHeight > oneLineHeight + 2;
+  }
+
+  private updateAiInputPlaceholder() {
+    if (typeof window === 'undefined') {
+      this.aiInputPlaceholder = 'Ex : Quels flows ont des erreurs ?';
+      return;
+    }
+    const isMobileOrTablet = window.innerWidth <= 1023;
+    this.aiInputPlaceholder = isMobileOrTablet
+      ? 'Ex : Quels flows ont des erreurs ?'
+      : 'Ex : Quels flows ont des erreurs ? (Ctrl/Cmd + Entrée pour envoyer)';
   }
 
   async toggleMic() {
