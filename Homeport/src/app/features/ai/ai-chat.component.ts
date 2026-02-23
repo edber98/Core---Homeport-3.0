@@ -248,13 +248,17 @@ interface StreamTool {
                            [class.tool-building]="t.status === 'building'"
                            [class.tool-running]="t.status === 'running'"
                            [class.tool-success]="t.status === 'success'"
-                           [class.tool-error]="t.status === 'error'">
+                           [class.tool-error]="t.status === 'error'"
+                           [class.tool-clickable]="t.status === 'running' && hasVisibleArgs(t)"
+                           (click)="t.status === 'running' && hasVisibleArgs(t) && toggleRunningArgs(t.id)">
                         <span nz-icon
                           [nzType]="t.status === 'building' ? 'tool' : t.status === 'running' ? 'loading' : t.status === 'error' ? 'close-circle' : 'check-circle'"
                           nzTheme="outline" [nzSpin]="t.status === 'running'"></span>
                         <span class="viewer-title">{{ toolDisplayName(t) }}</span>
+                        <span nz-icon *ngIf="t.status === 'running' && hasVisibleArgs(t)" class="item-chevron"
+                              [nzType]="runningArgsExpanded.has(t.id) ? 'down' : 'right'" nzTheme="outline"></span>
                       </div>
-                      <div class="args-tree" *ngIf="t.status === 'building' && hasVisibleArgs(t)" @argsExpand>
+                      <div class="args-tree" *ngIf="(t.status === 'building' || (t.status === 'running' && runningArgsExpanded.has(t.id))) && hasVisibleArgs(t)" @argsExpand>
                         <div *ngFor="let field of getArgsFields(t); trackBy: trackArgField" class="args-row"
                              [class.args-row-new]="t.changedKeys?.has(field.key)">
                           <span class="args-label">{{ field.label }}</span>
@@ -264,7 +268,7 @@ interface StreamTool {
                                   [class.args-value-clamped]="!expandedArgValues.has(t.id + ':' + field.key)"
                                   #valRef>{{ formatArgValue(field.value) }}</span>
                             <span class="args-expand-toggle" *ngIf="valRef.scrollHeight > valRef.clientHeight || expandedArgValues.has(t.id + ':' + field.key)"
-                                  (click)="toggleArgExpand(t.id, field.key)">{{ expandedArgValues.has(t.id + ':' + field.key) ? 'voir moins' : 'voir plus' }}</span>
+                                  (click)="$event.stopPropagation(); toggleArgExpand(t.id, field.key)">{{ expandedArgValues.has(t.id + ':' + field.key) ? 'voir moins' : 'voir plus' }}</span>
                           </div>
                         </div>
                       </div>
@@ -437,6 +441,8 @@ interface StreamTool {
     .viewer-title { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .tool-building { color: #8c8c8c; }
     .tool-running { color: #1677ff; }
+    .tool-clickable { cursor: pointer; border-radius: 4px; padding: 2px 6px; margin: 0 -6px; transition: background 0.15s; }
+    .tool-clickable:hover { background: rgba(22, 119, 255, 0.06); }
     .tool-success { color: #52c41a; }
     .tool-error { color: #ff4d4f; }
     .args-tree { padding: 4px 0 4px 22px; border-left: 2px solid #e8e8e8; margin-left: 7px; }
@@ -543,6 +549,7 @@ export class AiChatComponent {
   expandedTools = new Set<StreamSegment>();
   expandedToolItems = new Set<string>(); // track individual tool id expansion
   expandedArgValues = new Set<string>(); // track expanded arg values (key = toolId:fieldKey)
+  runningArgsExpanded = new Set<string>(); // track running tools with args open
   thinkingIteration = 0;
   interrupted = false;
 
@@ -986,6 +993,8 @@ export class AiChatComponent {
         const evArgs = (ev as any).args;
         const evResult = (ev as any).result;
         const evDisplayTitle = (ev as any).displayTitle;
+        // Close running args with animation before status change
+        this.runningArgsExpanded.delete(evId);
         // Find and update the tool — create NEW segment + tools array
         let found = false;
         const updated = this.segments.map(seg => {
@@ -1147,6 +1156,7 @@ export class AiChatComponent {
     clearTimeout(this._rotatorTimer);
     this._rotatorId = null;
     this._rotatorSwitchedAt = 0;
+    this.runningArgsExpanded.clear();
   }
 
   trackToolRotate(_i: number, t: StreamTool): string { return t.id; }
@@ -1246,6 +1256,11 @@ export class AiChatComponent {
   toggleToolItemExpand(t: StreamTool) {
     if (this.expandedToolItems.has(t.id)) this.expandedToolItems.delete(t.id);
     else this.expandedToolItems.add(t.id);
+  }
+
+  toggleRunningArgs(id: string) {
+    if (this.runningArgsExpanded.has(id)) this.runningArgsExpanded.delete(id);
+    else this.runningArgsExpanded.add(id);
   }
 
   toggleArgExpand(toolId: string, fieldKey: string) {
