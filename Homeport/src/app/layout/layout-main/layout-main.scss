@@ -56,12 +56,25 @@ padding: 0 calc(50% - 32px / 2) !important;
 nz-header {
     background: #fff;
     padding: 0 12px;
+    flex: 0 0 auto;
 }
 
 nz-content {
     //margin: 0 16px;
-    height: 100%;
+    flex: 1 1 auto;
     min-height: 0; /* allow inner scroll areas to size correctly */
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+nz-layout.full-height {
+    overflow: hidden;
+}
+
+nz-layout.full-height > nz-layout {
+    min-height: 0;
+    overflow: hidden;
 }
 
 nz-breadcrumb {
@@ -71,13 +84,20 @@ nz-breadcrumb {
 .inner-content {
   //  padding: 24px;
     background: #fff;
-    height: 100%;
+    height: auto;
+    flex: 1 1 auto;
     min-height: 0; /* critical for nested scroll containers on iOS */
     overflow: auto;
     -webkit-overflow-scrolling: touch; /* iOS momentum scroll */
-    overscroll-behavior: contain; /* avoid scroll chaining */
+    overscroll-behavior: none; /* avoid any scroll chaining to header/sider */
     /* Ensure bottom is reachable on iPhone (URL bar/fixed UI)
        Apply only on XS screens to limit to responsive context */
+}
+
+.inner-content > app-dashboard-home {
+    display: block;
+    flex: 1 1 auto;
+    min-height: 0;
 }
 
 ::ng-deep  .ant-layout-sider-light .ant-layout-sider-trigger{
