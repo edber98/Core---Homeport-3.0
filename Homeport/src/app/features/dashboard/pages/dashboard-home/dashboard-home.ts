@@ -130,7 +130,8 @@ export class DashboardHome implements OnInit, OnDestroy, AfterViewInit {
 
   onAiInputKeydown(event: KeyboardEvent) {
     if (event.key !== 'Enter') return;
-    if (!event.ctrlKey && !event.metaKey) return;
+    if (event.isComposing) return;
+    if (event.shiftKey) return;
     event.preventDefault();
     this.sendAiMessage();
   }
@@ -188,7 +189,12 @@ export class DashboardHome implements OnInit, OnDestroy, AfterViewInit {
 
   private scrollToSection(sectionEl: HTMLElement) {
     this.sectionScrollLock = true;
-    sectionEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const dashRoot = this.dashRootRef?.nativeElement;
+    if (dashRoot) {
+      dashRoot.scrollTo({ top: sectionEl.offsetTop, behavior: 'smooth' });
+    } else {
+      sectionEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
     if (this.sectionScrollUnlockId) clearTimeout(this.sectionScrollUnlockId);
     this.sectionScrollUnlockId = setTimeout(() => {
       this.sectionScrollLock = false;
@@ -243,7 +249,7 @@ export class DashboardHome implements OnInit, OnDestroy, AfterViewInit {
     const isMobileOrTablet = window.innerWidth <= 1023;
     this.aiInputPlaceholder = isMobileOrTablet
       ? 'Ex : Quels flows ont des erreurs ?'
-      : 'Ex : Quels flows ont des erreurs ? (Ctrl/Cmd + Entrée pour envoyer)';
+      : 'Ex : Quels flows ont des erreurs ? (Entrée pour envoyer, Maj + Entrée pour un retour à la ligne)';
   }
 
   async toggleMic() {
