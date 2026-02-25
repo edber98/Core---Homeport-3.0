@@ -114,7 +114,6 @@ nz-footer {
 .hp-header .hdr-center { position:absolute; left:50%; top:50%; transform: translate(-50%, -50%); display:flex; justify-content:center; align-items:center; }
 .hp-header .hdr-actions { display:flex; align-items:center; gap:8px; }
 .hp-header .hdr-actions .user-switcher { min-width: 160px; }
-.hp-header .hdr-actions .ws-switcher { min-width: 160px; }
 .hp-header .brand { font-weight:600; letter-spacing:-0.01em; }
 .hp-header .burger { border-radius: 10px; border:1px solid #e5e7eb; }
 .hp-header .hdr-btn { border-radius: 10px; border:1px solid #e5e7eb; }
@@ -216,3 +215,46 @@ nz-footer {
 .drawer-list .group-list { list-style:none; margin:0; padding:0 12px; display:flex; flex-direction:column; gap:6px; }
 .drawer-list .group-list li { padding:6px 8px; border-radius:10px; border:1px solid #f0f0f0; cursor:pointer; }
 .drawer-list .group-list li:hover { background-image: radial-gradient(100% 100% at 100% 0%, #f5f7ff 0%, #eaeefc 100%); }
+
+/* Profile dropdown — workspace section */
+::ng-deep .profile-dropdown {
+  min-width: 220px;
+
+  .ws-section-title {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 16px 4px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #8c8c8c;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    cursor: default;
+    &:hover { background: transparent; }
+  }
+
+  .ws-item {
+    padding-left: 16px;
+    font-size: 13px;
+
+    .ws-check {
+      width: 14px;
+      display: inline-flex;
+      margin-right: 4px;
+      font-size: 12px;
+      color: transparent;
+    }
+  }
+
+  .ws-item.ws-active {
+    font-weight: 600;
+    color: #1677ff;
+    background: #f0f5ff;
+
+    .ws-check { color: #1677ff; }
+  }
+
+  .logout-item { color: #ff4d4f; }
+  .logout-item:hover { color: #ff4d4f; }
+}
