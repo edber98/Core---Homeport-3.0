@@ -622,29 +622,41 @@
 <nz-drawer [nzVisible]="leftDrawer" (nzOnClose)="onLeftDrawerClose()" nzPlacement="left" [nzWidth]="360"
   [nzBodyStyle]="{padding:'0'}" [nzClosable]="false" [nzMaskClosable]="true" nzWrapClassName="ios-safe-drawer">
   <ng-container *nzDrawerContent>
-    <ng-container [ngTemplateOutlet]="leftPanelContent" [ngTemplateOutletContext]="{ mode: 'drawer' }"></ng-container>
+    <div class="drawer-swipe-zone"
+      (touchstart)="onDrawerTouchStart($event, 'left')"
+      (touchmove)="onDrawerTouchMove($event, 'left')"
+      (touchend)="onDrawerTouchEnd('left')"
+      (touchcancel)="onDrawerTouchEnd('left')">
+      <ng-container [ngTemplateOutlet]="leftPanelContent" [ngTemplateOutletContext]="{ mode: 'drawer' }"></ng-container>
+    </div>
   </ng-container>
 </nz-drawer>
 
 <nz-drawer [nzVisible]="rightDrawer" (nzOnClose)="onRightDrawerClose()" nzPlacement="right" [nzWidth]="360"
   [nzBodyStyle]="{padding:'0'}" [nzClosable]="false" [nzMaskClosable]="true" nzWrapClassName="ios-safe-drawer">
   <ng-container *nzDrawerContent>
-    <flow-right-panel [mode]="'drawer'"
-      [selected]="selectedNode" [selectedList]="selectionList" [selectedModel]="selectedModel"
-      [nodeHasError]="selectedNode?.id ? (isNodeHardError(selectedNode.id) || isNodeInError(selectedNode.id)) : false"
-      [nodeErrorText]="selectedNode?.id ? nodeErrorTooltip(selectedNode.id) : null"
-      [selectedAttempt]="getLastAttemptFor(selectedNode?.id)"
-      [inspectorTab]="inspectorTab" (inspectorTabChange)="inspectorTab = $event" [editJson]="editJson"
-      (editJsonChange)="editJson = $event" (openAdvanced)="openAdvancedEditorV2()" (openAdvancedV2)="openAdvancedEditorV2()" (delete)="deleteSelected()" (openSingle)="onInspectorOpenSingle($event)" (deleteMany)="onDeleteMany()" (saveJson)="saveSelectedJson()"
-      [currentFlowName]="currentFlowName" (currentFlowNameChange)="currentFlowName=$event; onMetaChange()"
-      [currentFlowDesc]="currentFlowDesc" (currentFlowDescChange)="currentFlowDesc=$event; onMetaChange()"
-      [currentFlowStatus]="currentFlowStatus" (currentFlowStatusChange)="currentFlowStatus=$event; onMetaChange()"
-      [currentFlowEnabled]="currentFlowEnabled" (currentFlowEnabledChange)="currentFlowEnabled=$event; onMetaChange()"
-      [builderMode]="builderMode" [lastRun]="lastRun" [currentRun]="currentRun" [canSave]="canSave"
-      [runInfo]="currentRunMeta" [selectedRunId]="currentRunMeta?.id || backendRunId" [recentRuns]="recentRuns" [runsHasMore]="runsHasMore" (run)="runFlow()" (stop)="stopLastRun()" (save)="saveFlow()" (metaChange)="onMetaChange()" (clearRun)="onClearRun()" (restart)="onRestartRun()" (selectRun)="onSelectRun($event)" (loadMoreRuns)="onLoadMoreRuns()"
-      [timelinePastItems]="timelinePastItemsCache" [timelineFutureItems]="timelineFutureItemsCache"
-      (hoverPast)="onHistoryHoverPast($event)" (hoverFuture)="onHistoryHoverFuture($event)" (leave)="onHistoryHoverLeave()" (clickPast)="onHistoryClickPast($event)" (clickFuture)="onHistoryClickFuture($event)"
-    ></flow-right-panel>
+    <div class="drawer-swipe-zone"
+      (touchstart)="onDrawerTouchStart($event, 'right')"
+      (touchmove)="onDrawerTouchMove($event, 'right')"
+      (touchend)="onDrawerTouchEnd('right')"
+      (touchcancel)="onDrawerTouchEnd('right')">
+      <flow-right-panel [mode]="'drawer'"
+        [selected]="selectedNode" [selectedList]="selectionList" [selectedModel]="selectedModel"
+        [nodeHasError]="selectedNode?.id ? (isNodeHardError(selectedNode.id) || isNodeInError(selectedNode.id)) : false"
+        [nodeErrorText]="selectedNode?.id ? nodeErrorTooltip(selectedNode.id) : null"
+        [selectedAttempt]="getLastAttemptFor(selectedNode?.id)"
+        [inspectorTab]="inspectorTab" (inspectorTabChange)="inspectorTab = $event" [editJson]="editJson"
+        (editJsonChange)="editJson = $event" (openAdvanced)="openAdvancedEditorV2()" (openAdvancedV2)="openAdvancedEditorV2()" (delete)="deleteSelected()" (openSingle)="onInspectorOpenSingle($event)" (deleteMany)="onDeleteMany()" (saveJson)="saveSelectedJson()"
+        [currentFlowName]="currentFlowName" (currentFlowNameChange)="currentFlowName=$event; onMetaChange()"
+        [currentFlowDesc]="currentFlowDesc" (currentFlowDescChange)="currentFlowDesc=$event; onMetaChange()"
+        [currentFlowStatus]="currentFlowStatus" (currentFlowStatusChange)="currentFlowStatus=$event; onMetaChange()"
+        [currentFlowEnabled]="currentFlowEnabled" (currentFlowEnabledChange)="currentFlowEnabled=$event; onMetaChange()"
+        [builderMode]="builderMode" [lastRun]="lastRun" [currentRun]="currentRun" [canSave]="canSave"
+        [runInfo]="currentRunMeta" [selectedRunId]="currentRunMeta?.id || backendRunId" [recentRuns]="recentRuns" [runsHasMore]="runsHasMore" (run)="runFlow()" (stop)="stopLastRun()" (save)="saveFlow()" (metaChange)="onMetaChange()" (clearRun)="onClearRun()" (restart)="onRestartRun()" (selectRun)="onSelectRun($event)" (loadMoreRuns)="onLoadMoreRuns()"
+        [timelinePastItems]="timelinePastItemsCache" [timelineFutureItems]="timelineFutureItemsCache"
+        (hoverPast)="onHistoryHoverPast($event)" (hoverFuture)="onHistoryHoverFuture($event)" (leave)="onHistoryHoverLeave()" (clickPast)="onHistoryClickPast($event)" (clickFuture)="onHistoryClickFuture($event)"
+      ></flow-right-panel>
+    </div>
   </ng-container>
 </nz-drawer>
 <node-exec-result-dialog *ngIf="execResultOpen && execResultNodeId"

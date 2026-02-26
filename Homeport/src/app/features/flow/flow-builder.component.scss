@@ -304,6 +304,12 @@
 
 /* Ensure nz-drawer host does not take layout space */
 nz-drawer { display: contents; }
+.drawer-swipe-zone {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  touch-action: pan-y;
+}
 
 /* Context menu */
 .ctx-overlay { position: fixed; inset:0; z-index: 90; background: transparent; }
@@ -344,12 +350,12 @@ nz-drawer { display: contents; }
   .bottom-bar .divider.before-run { margin: 0 4px 0 2px; }
 }
 
-/* Phone-only offset: push floating FABs down by 50px (start at 62px) */
+/* Phone: keep panel toggles aligned at the top like desktop */
 @media (max-width: 768px) {
-  .panel-toggle-fab { top: 62px; }
-  .panel-toggle-fab.ai-chat-fab { top: 110px; }
-  .panel-toggle-fab.help-fab { top: 158px; }
-  .panel-toggle-fab.clear-run-fab { top: 206px; }
+  .panel-toggle-fab { top: 12px; }
+  .panel-toggle-fab.ai-chat-fab { top: 60px; }
+  .panel-toggle-fab.help-fab { top: 108px; }
+  .panel-toggle-fab.clear-run-fab { top: 156px; }
 }
 
 /* Bottom bar buttons: consistent square size and centered icons */

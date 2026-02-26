@@ -607,19 +607,137 @@ export class FlowBuilderComponent {
   // Responsive drawers (mobile/tablet)
   leftDrawer = false;
   rightDrawer = false;
+  // Swipe-to-close state for responsive drawers
+  leftDrawerSwipeX = 0;
+  rightDrawerSwipeX = 0;
+  private drawerSwipeSide: 'left' | 'right' | null = null;
+  private drawerSwipeMode: 'idle' | 'pending' | 'horizontal' | 'vertical' = 'idle';
+  private drawerSwipeStartX = 0;
+  private drawerSwipeStartY = 0;
+  private readonly drawerSwipeIntentThresh = 12; // px
+  private readonly drawerSwipeCloseThresh = 72; // px
+  private readonly drawerSwipeMaxShift = 220; // px
+  private getDrawerShell(side: 'left' | 'right'): HTMLElement | null {
+    try {
+      const sel = side === 'left'
+        ? '.ios-safe-drawer.ant-drawer-left .ant-drawer-content-wrapper'
+        : '.ios-safe-drawer.ant-drawer-right .ant-drawer-content-wrapper';
+      return document.querySelector(sel) as HTMLElement | null;
+    } catch { return null; }
+  }
+  private applyDrawerShellSwipe(side: 'left' | 'right', shift: number) {
+    try {
+      const shell = this.getDrawerShell(side);
+      if (!shell) return;
+      shell.style.setProperty('transition', 'none', 'important');
+      shell.style.setProperty('transform', `translate3d(${shift}px, 0, 0)`, 'important');
+    } catch {}
+  }
+  private clearDrawerShellSwipe(side: 'left' | 'right', animateBack: boolean) {
+    try {
+      const shell = this.getDrawerShell(side);
+      if (!shell) return;
+      if (!animateBack) {
+        shell.style.removeProperty('transition');
+        shell.style.removeProperty('transform');
+        return;
+      }
+      shell.style.removeProperty('transition');
+      requestAnimationFrame(() => {
+        try { shell.style.removeProperty('transform'); } catch {}
+      });
+    } catch {}
+  }
+  private resetDrawerSwipe(side?: 'left' | 'right') {
+    try {
+      if (!side || side === 'left') this.leftDrawerSwipeX = 0;
+      if (!side || side === 'right') this.rightDrawerSwipeX = 0;
+      if (!side || this.drawerSwipeSide === side) {
+        this.drawerSwipeSide = null;
+        this.drawerSwipeMode = 'idle';
+        this.drawerSwipeStartX = 0;
+        this.drawerSwipeStartY = 0;
+      }
+    } catch {}
+  }
+  onDrawerTouchStart(ev: TouchEvent, side: 'left' | 'right') {
+    try {
+      if (!this.isTabletOrBelow) return;
+      if (side === 'left' && !this.leftDrawer) return;
+      if (side === 'right' && !this.rightDrawer) return;
+      const t = ev.touches && ev.touches[0];
+      if (!t) return;
+      this.clearDrawerShellSwipe(side, false);
+      this.drawerSwipeSide = side;
+      this.drawerSwipeMode = 'pending';
+      this.drawerSwipeStartX = t.clientX;
+      this.drawerSwipeStartY = t.clientY;
+      if (side === 'left') this.leftDrawerSwipeX = 0;
+      else this.rightDrawerSwipeX = 0;
+    } catch {}
+  }
+  onDrawerTouchMove(ev: TouchEvent, side: 'left' | 'right') {
+    try {
+      if (this.drawerSwipeSide !== side) return;
+      if (this.drawerSwipeMode === 'idle') return;
+      const t = ev.touches && ev.touches[0];
+      if (!t) return;
+      const dx = t.clientX - this.drawerSwipeStartX;
+      const dy = t.clientY - this.drawerSwipeStartY;
+      const absX = Math.abs(dx);
+      const absY = Math.abs(dy);
+      if (this.drawerSwipeMode === 'pending') {
+        if (absX < this.drawerSwipeIntentThresh && absY < this.drawerSwipeIntentThresh) return;
+        this.drawerSwipeMode = absX > (absY + 4) ? 'horizontal' : 'vertical';
+      }
+      if (this.drawerSwipeMode !== 'horizontal') return;
+
+      const shift = side === 'left'
+        ? Math.max(-this.drawerSwipeMaxShift, Math.min(0, dx))
+        : Math.min(this.drawerSwipeMaxShift, Math.max(0, dx));
+      if (side === 'left') this.leftDrawerSwipeX = shift;
+      else this.rightDrawerSwipeX = shift;
+      this.applyDrawerShellSwipe(side, shift);
+      if (shift !== 0) ev.preventDefault();
+    } catch {}
+  }
+  onDrawerTouchEnd(side: 'left' | 'right') {
+    try {
+      if (this.drawerSwipeSide !== side) { this.resetDrawerSwipe(side); return; }
+      const shift = side === 'left' ? this.leftDrawerSwipeX : this.rightDrawerSwipeX;
+      const shouldClose = side === 'left'
+        ? shift <= -this.drawerSwipeCloseThresh
+        : shift >= this.drawerSwipeCloseThresh;
+      this.clearDrawerShellSwipe(side, !shouldClose);
+      this.resetDrawerSwipe(side);
+      if (!shouldClose) return;
+      if (side === 'left') this.onLeftDrawerClose();
+      else this.onRightDrawerClose();
+    } catch {
+      this.clearDrawerShellSwipe(side, false);
+      this.resetDrawerSwipe(side);
+    }
+  }
   // When opening on mobile, hide vflow first, then open the drawer
   prepOpenDrawer = false;
   openPanel(where: 'left' | 'right') { if (where === 'left') this.leftDrawer = true; else this.rightDrawer = true; }
   openMobilePanel(where: 'left' | 'right') {
+    this.resetDrawerSwipe();
+    this.clearDrawerShellSwipe('left', false);
+    this.clearDrawerShellSwipe('right', false);
     if (!this.isMobile) { this.openPanel(where); this.updateGlobalBlockers(); return; }
-    this.prepOpenDrawer = true;
+    // Keep drawer opening synchronous so the panel appears on the first tap/click.
+    this.prepOpenDrawer = false;
+    if (where === 'left') {
+      this.rightDrawer = false;
+      this.leftDrawer = true;
+    } else {
+      this.leftDrawer = false;
+      this.rightDrawer = true;
+      if (!this.recentRuns || this.recentRuns.length === 0) this.fetchRuns(true);
+    }
+    this.updateGlobalBlockers();
     try { this.cdr.detectChanges(); } catch { }
-    setTimeout(() => {
-      if (where === 'left') this.leftDrawer = true; else { this.rightDrawer = true; if (!this.recentRuns || this.recentRuns.length === 0) this.fetchRuns(true); }
-      this.updateGlobalBlockers();
-      this.prepOpenDrawer = false;
-      try { this.cdr.detectChanges(); } catch { }
-    }, 0);
   }
   get dndDisabled(): boolean { return !!(this.isMobile || this.leftDrawer || this.rightDrawer); }
   // Mobile drawer DnD helpers
@@ -634,8 +752,8 @@ export class FlowBuilderComponent {
   private enableGlobalBlockers() { /* no-op */ }
   private disableGlobalBlockers() { /* no-op */ }
   updateGlobalBlockers() { /* no-op */ }
-  onLeftDrawerClose() { this.leftDrawer = false; this.prepOpenDrawer = false; this.updateGlobalBlockers(); }
-  onRightDrawerClose() { this.rightDrawer = false; this.prepOpenDrawer = false; this.updateGlobalBlockers(); }
+  onLeftDrawerClose() { this.leftDrawer = false; this.prepOpenDrawer = false; this.clearDrawerShellSwipe('left', false); this.resetDrawerSwipe('left'); this.updateGlobalBlockers(); }
+  onRightDrawerClose() { this.rightDrawer = false; this.prepOpenDrawer = false; this.clearDrawerShellSwipe('right', false); this.resetDrawerSwipe('right'); this.updateGlobalBlockers(); }
   // Palette search and groups (materialized to avoid re-creating arrays each CD cycle)
   paletteQuery = '';
   paletteGroups: { title: string; items: any[]; appId?: string; appColor?: string; appIconClass?: string; appIconUrl?: string }[] = [];
@@ -1586,7 +1704,13 @@ export class FlowBuilderComponent {
       if (flag !== this.lastTabletFlag) {
         if (flag) { this.leftPanelOpen = false; this.rightPanelOpen = false; }
         // Always close drawers when leaving small to large to reset UX
-        if (!flag) { this.leftDrawer = false; this.rightDrawer = false; }
+        if (!flag) {
+          this.leftDrawer = false;
+          this.rightDrawer = false;
+          this.clearDrawerShellSwipe('left', false);
+          this.clearDrawerShellSwipe('right', false);
+          this.resetDrawerSwipe();
+        }
         this.lastTabletFlag = flag;
       }
       if (this.isMobile) {
