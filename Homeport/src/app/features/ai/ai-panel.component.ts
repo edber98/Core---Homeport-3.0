@@ -24,13 +24,20 @@ import { AiSettingsComponent } from './ai-settings.component';
   template: `
     <nz-drawer
       [nzVisible]="ai.drawerOpen()"
-      (nzOnClose)="ai.closeDrawer()"
+      (nzOnClose)="onDrawerCloseRequested()"
       [nzWidth]="drawerWidth"
       nzPlacement="right"
       [nzClosable]="false"
-      [nzBodyStyle]="{ padding: 0 }">
+      [nzBodyStyle]="{ padding: 0 }"
+      [nzMaskClosable]="true"
+      nzWrapClassName="ai-panel-drawer">
 
       <ng-container *nzDrawerContent>
+        <div class="ai-panel-swipe-zone"
+          (touchstart)="onDrawerTouchStart($event)"
+          (touchmove)="onDrawerTouchMove($event)"
+          (touchend)="onDrawerTouchEnd()"
+          (touchcancel)="onDrawerTouchEnd()">
         <div class="panel-wrapper">
           <!-- Header -->
           <div class="panel-header">
@@ -59,7 +66,7 @@ import { AiSettingsComponent } from './ai-settings.component';
               <button nz-button nzType="text" nzSize="small" nz-tooltip nzTooltipTitle="Nouvelle conversation" (click)="newThread()">
                 <span nz-icon nzType="plus" nzTheme="outline"></span>
               </button>
-              <button nz-button nzType="text" nzSize="small" (click)="ai.closeDrawer()">
+              <button nz-button nzType="text" nzSize="small" (click)="onDrawerCloseRequested()">
                 <span nz-icon nzType="close" nzTheme="outline"></span>
               </button>
             </div>
@@ -141,10 +148,12 @@ import { AiSettingsComponent } from './ai-settings.component';
             </div>
           </ng-template>
         </div>
+        </div>
       </ng-container>
     </nz-drawer>
   `,
   styles: [`
+    .ai-panel-swipe-zone { height: 100%; display: flex; flex-direction: column; touch-action: pan-y; }
     .panel-wrapper { display: flex; flex-direction: column; height: 100%; }
     .panel-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; border-bottom: 1px solid #f0f0f0; background: #fafafa; flex-shrink: 0; }
     .header-left { display: flex; align-items: center; gap: 8px; min-width: 0; }
@@ -181,6 +190,13 @@ export class AiPanelComponent implements OnInit {
   allAgents: AiAvailableAgent[] = [];
   drawerWidth: number | string = 460;
   private titleDebounce?: any;
+  private drawerSwipeX = 0;
+  private drawerSwipeMode: 'idle' | 'pending' | 'horizontal' | 'vertical' = 'idle';
+  private drawerSwipeStartX = 0;
+  private drawerSwipeStartY = 0;
+  private readonly drawerSwipeIntentThresh = 12; // px
+  private readonly drawerSwipeCloseThresh = 72; // px
+  private readonly drawerSwipeMaxShift = 240; // px
 
   @HostListener('window:resize')
   onResize() { this.updateDrawerWidth(); }
@@ -204,6 +220,12 @@ export class AiPanelComponent implements OnInit {
           this.cdr.detectChanges();
         }
       }
+    });
+    effect(() => {
+      const open = this.ai.drawerOpen();
+      if (open) return;
+      this.clearDrawerShellSwipe(false);
+      this.resetDrawerSwipe();
     });
   }
 
@@ -254,6 +276,61 @@ export class AiPanelComponent implements OnInit {
     this.ai.updateThread(thread.id || thread._id, { metadata: { autonomyLevel: level } }).subscribe({
       next: () => this.ai.currentThread.set({ ...thread, metadata: { ...(thread.metadata || {}), autonomyLevel: level } }),
     });
+  }
+
+  onDrawerCloseRequested() {
+    this.clearDrawerShellSwipe(false);
+    this.resetDrawerSwipe();
+    this.ai.closeDrawer();
+  }
+
+  onDrawerTouchStart(ev: TouchEvent) {
+    try {
+      if (!this.ai.drawerOpen() || !this.isTabletOrBelow()) return;
+      const t = ev.touches && ev.touches[0];
+      if (!t) return;
+      this.clearDrawerShellSwipe(false);
+      this.drawerSwipeMode = 'pending';
+      this.drawerSwipeStartX = t.clientX;
+      this.drawerSwipeStartY = t.clientY;
+      this.drawerSwipeX = 0;
+    } catch {}
+  }
+
+  onDrawerTouchMove(ev: TouchEvent) {
+    try {
+      if (!this.ai.drawerOpen() || !this.isTabletOrBelow()) return;
+      if (this.drawerSwipeMode === 'idle') return;
+      const t = ev.touches && ev.touches[0];
+      if (!t) return;
+      const dx = t.clientX - this.drawerSwipeStartX;
+      const dy = t.clientY - this.drawerSwipeStartY;
+      const absX = Math.abs(dx);
+      const absY = Math.abs(dy);
+      if (this.drawerSwipeMode === 'pending') {
+        if (absX < this.drawerSwipeIntentThresh && absY < this.drawerSwipeIntentThresh) return;
+        this.drawerSwipeMode = absX > (absY + 4) ? 'horizontal' : 'vertical';
+      }
+      if (this.drawerSwipeMode !== 'horizontal') return;
+
+      const shift = Math.min(this.drawerSwipeMaxShift, Math.max(0, dx));
+      this.drawerSwipeX = shift;
+      this.applyDrawerShellSwipe(shift);
+      if (shift !== 0) ev.preventDefault();
+    } catch {}
+  }
+
+  onDrawerTouchEnd() {
+    try {
+      if (this.drawerSwipeMode === 'idle') return;
+      const shouldClose = this.drawerSwipeX >= this.drawerSwipeCloseThresh;
+      this.clearDrawerShellSwipe(!shouldClose);
+      this.resetDrawerSwipe();
+      if (shouldClose) this.ai.closeDrawer();
+    } catch {
+      this.clearDrawerShellSwipe(false);
+      this.resetDrawerSwipe();
+    }
   }
 
   toggleView(target: 'history' | 'settings') {
@@ -390,5 +467,49 @@ export class AiPanelComponent implements OnInit {
     if (ctx.flowId && t.flowId === ctx.flowId) return true;
     if (ctx.formId && t.metadata?.formId === ctx.formId) return true;
     return false;
+  }
+
+  private isTabletOrBelow(): boolean {
+    try { return window.innerWidth <= 1280; } catch { return false; }
+  }
+
+  private getDrawerShell(): HTMLElement | null {
+    try {
+      return document.querySelector('.ai-panel-drawer.ant-drawer-right .ant-drawer-content-wrapper') as HTMLElement | null;
+    } catch {
+      return null;
+    }
+  }
+
+  private applyDrawerShellSwipe(shift: number) {
+    try {
+      const shell = this.getDrawerShell();
+      if (!shell) return;
+      shell.style.setProperty('transition', 'none', 'important');
+      shell.style.setProperty('transform', `translate3d(${shift}px, 0, 0)`, 'important');
+    } catch {}
+  }
+
+  private clearDrawerShellSwipe(animateBack: boolean) {
+    try {
+      const shell = this.getDrawerShell();
+      if (!shell) return;
+      if (!animateBack) {
+        shell.style.removeProperty('transition');
+        shell.style.removeProperty('transform');
+        return;
+      }
+      shell.style.removeProperty('transition');
+      requestAnimationFrame(() => {
+        try { shell.style.removeProperty('transform'); } catch {}
+      });
+    } catch {}
+  }
+
+  private resetDrawerSwipe() {
+    this.drawerSwipeX = 0;
+    this.drawerSwipeMode = 'idle';
+    this.drawerSwipeStartX = 0;
+    this.drawerSwipeStartY = 0;
   }
 }

@@ -249,12 +249,25 @@ import { NodeExecResultDialogComponent } from './node-exec-result-dialog.compone
     <nz-drawer [nzVisible]="leftDrawer" (nzOnClose)="onLeftDrawerClose()" nzPlacement="left" [nzWidth]="360"
       [nzBodyStyle]="{padding:'0'}" [nzClosable]="false" [nzMaskClosable]="true" nzWrapClassName="ios-safe-drawer">
       <ng-container *nzDrawerContent>
-        <ng-container [ngTemplateOutlet]="leftPanelContent"></ng-container>
+        <div class="drawer-swipe-zone"
+          (touchstart)="onDrawerTouchStart($event, 'left')"
+          (touchmove)="onDrawerTouchMove($event, 'left')"
+          (touchend)="onDrawerTouchEnd('left')"
+          (touchcancel)="onDrawerTouchEnd('left')">
+          <aside class="side executions drawer-executions-panel">
+            <ng-container [ngTemplateOutlet]="leftPanelContent"></ng-container>
+          </aside>
+        </div>
       </ng-container>
     </nz-drawer>
     <nz-drawer [nzVisible]="rightDrawer" (nzOnClose)="onRightDrawerClose()" nzPlacement="right" [nzWidth]="360"
       [nzBodyStyle]="{padding:'0'}" [nzClosable]="false" [nzMaskClosable]="true" nzWrapClassName="ios-safe-drawer">
       <ng-container *nzDrawerContent>
+        <div class="drawer-swipe-zone"
+          (touchstart)="onDrawerTouchStart($event, 'right')"
+          (touchmove)="onDrawerTouchMove($event, 'right')"
+          (touchend)="onDrawerTouchEnd('right')"
+          (touchcancel)="onDrawerTouchEnd('right')">
         <div class="details-panel" *ngIf="selectedBackendRun">
           <div class="panel-heading details-heading">
             <div class="card-title">
@@ -330,6 +343,7 @@ import { NodeExecResultDialogComponent } from './node-exec-result-dialog.compone
             </div>
             <pre>{{ ev | json }}</pre>
           </div>
+        </div>
         </div>
       </ng-container>
     </nz-drawer>
@@ -657,7 +671,7 @@ import { NodeExecResultDialogComponent } from './node-exec-result-dialog.compone
     @media (max-width: 1280px) {
       .flow-exec { display: block; }
       .panel-toggle-fab { display: inline-flex; }
-      .side.executions, section.viewer .details-panel { display: none; }
+      .flow-exec > .side.executions, .flow-exec > section.viewer .details-panel { display: none; }
       /* Keep single column; drawer handles details */
       .viewer-layout.show-details { grid-template-columns: 1fr 0 !important; }
     }
@@ -667,11 +681,26 @@ import { NodeExecResultDialogComponent } from './node-exec-result-dialog.compone
     }
     /* Ensure nz-drawer host does not take layout space */
     nz-drawer { display: contents; }
+    .drawer-swipe-zone {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      touch-action: pan-y;
+    }
   `]
 })
 export class FlowExecutionComponent {
   leftDrawer = false;
   rightDrawer = false;
+  leftDrawerSwipeX = 0;
+  rightDrawerSwipeX = 0;
+  private drawerSwipeSide: 'left' | 'right' | null = null;
+  private drawerSwipeMode: 'idle' | 'pending' | 'horizontal' | 'vertical' = 'idle';
+  private drawerSwipeStartX = 0;
+  private drawerSwipeStartY = 0;
+  private readonly drawerSwipeIntentThresh = 12; // px
+  private readonly drawerSwipeCloseThresh = 72; // px
+  private readonly drawerSwipeMaxShift = 220; // px
   activeMenuId: string | null = null;
   menuX = 0;
   menuY = 0;
@@ -770,8 +799,109 @@ export class FlowExecutionComponent {
       }
     } catch {}
   }
-  onLeftDrawerClose() { this.leftDrawer = false; }
-  onRightDrawerClose() { this.rightDrawer = false; }
+  private getDrawerShell(side: 'left' | 'right'): HTMLElement | null {
+    try {
+      const sel = side === 'left'
+        ? '.ios-safe-drawer.ant-drawer-left .ant-drawer-content-wrapper'
+        : '.ios-safe-drawer.ant-drawer-right .ant-drawer-content-wrapper';
+      return document.querySelector(sel) as HTMLElement | null;
+    } catch {
+      return null;
+    }
+  }
+  private applyDrawerShellSwipe(side: 'left' | 'right', shift: number) {
+    try {
+      const shell = this.getDrawerShell(side);
+      if (!shell) return;
+      shell.style.setProperty('transition', 'none', 'important');
+      shell.style.setProperty('transform', `translate3d(${shift}px, 0, 0)`, 'important');
+    } catch {}
+  }
+  private clearDrawerShellSwipe(side: 'left' | 'right', animateBack: boolean) {
+    try {
+      const shell = this.getDrawerShell(side);
+      if (!shell) return;
+      if (!animateBack) {
+        shell.style.removeProperty('transition');
+        shell.style.removeProperty('transform');
+        return;
+      }
+      shell.style.removeProperty('transition');
+      requestAnimationFrame(() => {
+        try { shell.style.removeProperty('transform'); } catch {}
+      });
+    } catch {}
+  }
+  private resetDrawerSwipe(side?: 'left' | 'right') {
+    if (!side || side === 'left') this.leftDrawerSwipeX = 0;
+    if (!side || side === 'right') this.rightDrawerSwipeX = 0;
+    if (!side || this.drawerSwipeSide === side) {
+      this.drawerSwipeSide = null;
+      this.drawerSwipeMode = 'idle';
+      this.drawerSwipeStartX = 0;
+      this.drawerSwipeStartY = 0;
+    }
+  }
+  onDrawerTouchStart(ev: TouchEvent, side: 'left' | 'right') {
+    try {
+      if (!this.isTabletOrBelow) return;
+      if (side === 'left' && !this.leftDrawer) return;
+      if (side === 'right' && !this.rightDrawer) return;
+      const t = ev.touches && ev.touches[0];
+      if (!t) return;
+      this.clearDrawerShellSwipe(side, false);
+      this.drawerSwipeSide = side;
+      this.drawerSwipeMode = 'pending';
+      this.drawerSwipeStartX = t.clientX;
+      this.drawerSwipeStartY = t.clientY;
+      if (side === 'left') this.leftDrawerSwipeX = 0;
+      else this.rightDrawerSwipeX = 0;
+    } catch {}
+  }
+  onDrawerTouchMove(ev: TouchEvent, side: 'left' | 'right') {
+    try {
+      if (this.drawerSwipeSide !== side) return;
+      if (this.drawerSwipeMode === 'idle') return;
+      const t = ev.touches && ev.touches[0];
+      if (!t) return;
+      const dx = t.clientX - this.drawerSwipeStartX;
+      const dy = t.clientY - this.drawerSwipeStartY;
+      const absX = Math.abs(dx);
+      const absY = Math.abs(dy);
+      if (this.drawerSwipeMode === 'pending') {
+        if (absX < this.drawerSwipeIntentThresh && absY < this.drawerSwipeIntentThresh) return;
+        this.drawerSwipeMode = absX > (absY + 4) ? 'horizontal' : 'vertical';
+      }
+      if (this.drawerSwipeMode !== 'horizontal') return;
+
+      const shift = side === 'left'
+        ? Math.max(-this.drawerSwipeMaxShift, Math.min(0, dx))
+        : Math.min(this.drawerSwipeMaxShift, Math.max(0, dx));
+      if (side === 'left') this.leftDrawerSwipeX = shift;
+      else this.rightDrawerSwipeX = shift;
+      this.applyDrawerShellSwipe(side, shift);
+      if (shift !== 0) ev.preventDefault();
+    } catch {}
+  }
+  onDrawerTouchEnd(side: 'left' | 'right') {
+    try {
+      if (this.drawerSwipeSide !== side) { this.resetDrawerSwipe(side); return; }
+      const shift = side === 'left' ? this.leftDrawerSwipeX : this.rightDrawerSwipeX;
+      const shouldClose = side === 'left'
+        ? shift <= -this.drawerSwipeCloseThresh
+        : shift >= this.drawerSwipeCloseThresh;
+      this.clearDrawerShellSwipe(side, !shouldClose);
+      this.resetDrawerSwipe(side);
+      if (!shouldClose) return;
+      if (side === 'left') this.onLeftDrawerClose();
+      else this.onRightDrawerClose();
+    } catch {
+      this.clearDrawerShellSwipe(side, false);
+      this.resetDrawerSwipe(side);
+    }
+  }
+  onLeftDrawerClose() { this.leftDrawer = false; this.clearDrawerShellSwipe('left', false); this.resetDrawerSwipe('left'); }
+  onRightDrawerClose() { this.rightDrawer = false; this.clearDrawerShellSwipe('right', false); this.resetDrawerSwipe('right'); }
   onRightFabClick() {
     // Do not auto-open panels; user opens with FAB (mobile -> drawer, desktop -> rightPanelOpen)
     if (this.isTabletOrBelow) { this.rightDrawer = true; }
