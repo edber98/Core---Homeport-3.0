@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, Input, OnChanges, ElementRef, AfterViewInit, OnDestroy, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 export interface HeatmapPoint { date: string; total: number; success: number; error: number; }
@@ -9,7 +9,7 @@ export interface HeatmapPoint { date: string; total: number; success: number; er
   imports: [CommonModule],
   template: `
     <div class="heatmap-wrap" (mouseleave)="hideTip()">
-      <div class="heatmap-scroll">
+      <div class="heatmap-scroll" #heatmapScroll>
         <svg
           [attr.viewBox]="'0 0 ' + vw + ' ' + vh"
           [attr.width]="vw"
@@ -75,6 +75,7 @@ export interface HeatmapPoint { date: string; total: number; success: number; er
 })
 export class HeatmapChartComponent implements OnChanges, AfterViewInit, OnDestroy {
   @Input() data: HeatmapPoint[] = [];
+  @ViewChild('heatmapScroll') private heatmapScrollRef?: ElementRef<HTMLDivElement>;
 
   cells: { x: number; y: number; fill: string; date: string; total: number; success: number; error: number }[] = [];
   monthLabels: { x: number; text: string }[] = [];
@@ -91,6 +92,7 @@ export class HeatmapChartComponent implements OnChanges, AfterViewInit, OnDestro
 
   private resizeObs: ResizeObserver | null = null;
   private lastObservedWidth = 0;
+  private alignScrollRafId: number | null = null;
 
   constructor(private elRef: ElementRef) {}
 
@@ -130,6 +132,10 @@ export class HeatmapChartComponent implements OnChanges, AfterViewInit, OnDestro
   }
 
   ngOnDestroy() {
+    if (this.alignScrollRafId !== null && typeof cancelAnimationFrame === 'function') {
+      cancelAnimationFrame(this.alignScrollRafId);
+      this.alignScrollRafId = null;
+    }
     this.resizeObs?.disconnect();
   }
 
@@ -238,6 +244,30 @@ export class HeatmapChartComponent implements OnChanges, AfterViewInit, OnDestro
 
     this.vw = this.leftPad + numWeeks * stepX;
     this.vh = this.topPad + 7 * stepY;
+    this.scheduleAlignScrollRight();
+  }
+
+  private scheduleAlignScrollRight() {
+    if (typeof requestAnimationFrame !== 'function') {
+      setTimeout(() => this.alignScrollRight(), 0);
+      return;
+    }
+    if (this.alignScrollRafId !== null) {
+      cancelAnimationFrame(this.alignScrollRafId);
+    }
+    this.alignScrollRafId = requestAnimationFrame(() => {
+      this.alignScrollRafId = null;
+      this.alignScrollRight();
+    });
+  }
+
+  private alignScrollRight() {
+    const scroller = this.heatmapScrollRef?.nativeElement;
+    if (!scroller) return;
+    const maxScrollLeft = scroller.scrollWidth - scroller.clientWidth;
+    if (maxScrollLeft > 0) {
+      scroller.scrollLeft = maxScrollLeft;
+    }
   }
 
   private colorForValue(val: number, max: number): string {

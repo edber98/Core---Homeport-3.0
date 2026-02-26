@@ -87,19 +87,20 @@
 
   <section class="snap-section dashboard-section" #dashboardSection>
     <div class="dash-view">
-      <div class="page-header">
-        <div class="card-title left dashboard-heading">
-          <span class="t">Tableau de bord</span>
-          <span class="s">Vue d'ensemble</span>
+      <div class="dash-view-inner">
+        <div class="page-header">
+          <div class="card-title left dashboard-heading">
+            <span class="t">Tableau de bord</span>
+            <span class="s">Vue d'ensemble</span>
+          </div>
         </div>
-      </div>
 
-      <div class="loading-wrap" *ngIf="loading && !data">
-        <nz-spin nzSimple></nz-spin>
-      </div>
+        <div class="loading-wrap" *ngIf="loading && !data">
+          <nz-spin nzSimple></nz-spin>
+        </div>
 
-      <ng-container *ngIf="data">
-        <div class="dashboard-grid">
+        <ng-container *ngIf="data">
+          <div class="dashboard-grid">
           <section class="card panel panel-kpis">
             <div class="kpis-matrix">
               <div class="kpi-intro">
@@ -286,12 +287,13 @@
               <div class="empty-section" *ngIf="data.recentNotifications.length === 0">Aucune notification</div>
             </div>
           </section>
-        </div>
-      </ng-container>
+          </div>
+        </ng-container>
 
-      <div class="empty-state" *ngIf="!data && !loading">
-        <nz-empty nzNotFoundContent="Impossible de charger les données"></nz-empty>
-        <button nz-button nzType="primary" (click)="refresh()" class="retry-btn">Réessayer</button>
+        <div class="empty-state" *ngIf="!data && !loading">
+          <nz-empty nzNotFoundContent="Impossible de charger les données"></nz-empty>
+          <button nz-button nzType="primary" (click)="refresh()" class="retry-btn">Réessayer</button>
+        </div>
       </div>
     </div>
   </section>

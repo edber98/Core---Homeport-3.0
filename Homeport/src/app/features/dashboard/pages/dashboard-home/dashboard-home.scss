@@ -4,6 +4,7 @@
   min-height: 0;
   background: #ffffff;
   --heatmap-chart-height: 190px;
+  --dashboard-inline-gutter: 12px;
 }
 
 .dash {
@@ -34,6 +35,10 @@
   scroll-snap-align: start;
   scroll-snap-stop: always;
   background: #ffffff;
+}
+
+.snap-section.dashboard-section {
+  padding-inline: 0;
 }
 
 .assistant-section {
@@ -221,11 +226,20 @@
 
 .dash-view {
   width: 100%;
-  max-width: 1440px;
-  margin: 0 auto;
   min-height: 0;
   height: 100%;
   overflow: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.dash-view-inner {
+  width: 100%;
+  max-width: calc(1440px + (var(--dashboard-inline-gutter) * 2));
+  margin: 0 auto;
+  min-height: 100%;
+  padding-inline: var(--dashboard-inline-gutter);
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
 }
@@ -950,6 +964,10 @@
 }
 
 @media (max-width: 1023px) {
+  :host {
+    --dashboard-inline-gutter: 10px;
+  }
+
   .snap-section {
     padding: 10px;
   }
