@@ -523,9 +523,9 @@
       </button>
       <span class="divider" *ngIf="!isPhone" aria-hidden="true"></span>
       <div class="zoom-control" *ngIf="!isPhone">
-        <span class="label">Zoom</span>
+        <span class="label" *ngIf="showZoomMeta">Zoom</span>
         <input type="range" min="5" max="300" step="1" [ngModel]="zoomPercent" (ngModelChange)="onZoomSlider($event)" />
-        <span class="value">{{ zoomPercent }}%</span>
+        <span class="value" *ngIf="showZoomMeta">{{ zoomPercent }}%</span>
       </div>
       <span class="divider" *ngIf="!isPhone" aria-hidden="true"></span>
       <span class="toast" *ngIf="toastMsg">{{ toastMsg }}</span>
@@ -544,23 +544,23 @@
         <i class="fa-solid fa-floppy-disk"></i>
       </button>
       <span class="divider before-run" aria-hidden="true"></span>
-      <button class="run-btn" *ngIf="!isRunBusy(); else stopRunBtn" (click)="runFlow()" [disabled]="isProduction" title="Lancer" aria-label="Lancer">
+      <button class="run-btn" [class.icon-only]="!showDesktopActionText" *ngIf="!isRunBusy(); else stopRunBtn" (click)="runFlow()" [disabled]="isProduction" title="Lancer" aria-label="Lancer">
         <i class="fa-solid fa-play"></i>
-        <span *ngIf="!isTabletOrBelow">Lancer</span>
+        <span *ngIf="showDesktopActionText">Lancer</span>
       </button>
       <ng-template #stopRunBtn>
-        <button class="run-btn" (click)="stopLastRun()" title="Stop" aria-label="Stop">
+        <button class="run-btn" [class.icon-only]="!showDesktopActionText" (click)="stopLastRun()" title="Stop" aria-label="Stop">
           <i class="fa-solid fa-stop"></i>
-          <span *ngIf="!isTabletOrBelow">Stop</span>
+          <span *ngIf="showDesktopActionText">Stop</span>
         </button>
       </ng-template>
-      <button class="deploy-btn" *ngIf="!isProduction" (click)="deployFlow()" [disabled]="deploying" title="Déployer en production" aria-label="Déployer">
+      <button class="deploy-btn" [class.icon-only]="!showDesktopActionText" *ngIf="!isProduction" (click)="deployFlow()" [disabled]="deploying" title="Déployer en production" aria-label="Déployer">
         <i class="fa-solid fa-rocket"></i>
-        <span *ngIf="!isTabletOrBelow">{{ deploying ? 'Déploiement...' : 'Déployer' }}</span>
+        <span *ngIf="showDesktopActionText">{{ deploying ? 'Déploiement...' : 'Déployer' }}</span>
       </button>
-      <button class="undeploy-btn" *ngIf="isProduction" (click)="undeployFlow()" [disabled]="undeploying" title="Arrêter la production" aria-label="Arrêter">
+      <button class="undeploy-btn" [class.icon-only]="!showDesktopActionText" *ngIf="isProduction" (click)="undeployFlow()" [disabled]="undeploying" title="Arrêter la production" aria-label="Arrêter">
         <i class="fa-solid fa-stop"></i>
-        <span *ngIf="!isTabletOrBelow">{{ undeploying ? 'Arrêt...' : 'Arrêter prod.' }}</span>
+        <span *ngIf="showDesktopActionText">{{ undeploying ? 'Arrêt...' : 'Arrêter prod.' }}</span>
       </button>
     </div>
   </div>

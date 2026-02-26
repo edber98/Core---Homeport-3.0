@@ -263,16 +263,16 @@
 .edge-labels .badge.delete i { font-size:14px; color:#b91c1c; }
 
 .bottom-bar { position: absolute; left: 0; right: 0; bottom: 12px; z-index: 20; display:flex; justify-content:center; pointer-events:none; }
-.bottom-bar .actions { pointer-events:auto; display:flex; align-items:center; gap:8px; background:#fff; border:1px solid #e5e7eb; border-radius:10px; padding:8px 12px; box-shadow:0 8px 20px rgba(0,0,0,.08); }
+.bottom-bar .actions { pointer-events:auto; display:flex; align-items:center; gap:2px; background:#fff; border:1px solid #e5e7eb; border-radius:10px; padding:8px 12px; box-shadow:0 8px 20px rgba(0,0,0,.08); }
 .bottom-bar .actions .spacer { flex: 1 1 auto; }
 .bottom-bar button, .bottom-bar .import-btn { background:#1677ff; color:#fff; border:none; border-radius:6px; padding:6px 10px; cursor:pointer; font-size:12px; }
 .bottom-bar .icon-btn { background:transparent; color:#111; border:none; border-radius:8px; padding:6px 8px; height:32px; }.bottom-bar .icon-btn i { font-size:16px; }
 .bottom-bar .icon-btn:disabled { color:#bbb; background:transparent; cursor:not-allowed; }.bottom-bar .toast { color:#111; background:#fff; border:1px solid #e5e7eb; border-radius:6px; padding:6px 10px; font-size:12px; }
 .bottom-bar .icon-btn:hover:not(:disabled), .bottom-bar .import-btn:hover:not(:disabled) { background:rgba(22,119,255,0.1); color:#1677ff; box-shadow:0 4px 12px rgba(22,119,255,0.18); transform: translateY(-1px); }
 .bottom-bar .run-btn:hover:not(:disabled) { background:#0f66e8; box-shadow:0 6px 16px rgba(22,119,255,0.25); transform: translateY(-1px); }
-.bottom-bar .zoom-control { display:inline-flex; align-items:center; gap:8px; padding:0 8px; background:transparent; border:none; border-radius:8px; height:32px; box-sizing:border-box; }.bottom-bar .zoom-control .label { font-size:12px; color:#111; }
-.bottom-bar .zoom-control input[type=range] { width: 120px; }
-.bottom-bar .zoom-control .value { font-size:12px; color:#111; min-width: 44px; text-align:right; }
+.bottom-bar .zoom-control { display:inline-flex; align-items:center; gap:6px; padding:0 6px; background:transparent; border:none; border-radius:8px; height:32px; box-sizing:border-box; }.bottom-bar .zoom-control .label { font-size:12px; color:#111; }
+.bottom-bar .zoom-control input[type=range] { width: 96px; }
+.bottom-bar .zoom-control .value { font-size:12px; color:#111; min-width: 40px; text-align:right; }
 /* Desktop-only visibility helper (hide on tablet/mobile) */
 .desktop-only { display: inline-flex; }
 @media (max-width: 1280px) {
@@ -285,17 +285,26 @@
 .bottom-bar .import-btn { display:inline-flex; align-items:center; height:32px; border:none; background:transparent; }
 .bottom-bar .divider { width:1px; height:28px; margin:0 2px; background:#e5e7eb; }
 .bottom-bar .divider.before-run { margin: 0 4px 0 2px; }
-.bottom-bar .run-btn { display:inline-flex; align-items:center; gap:10px; height:32px; padding:0 12px; border:none; border-radius:8px; background:#1677ff; color:#fff; cursor:pointer; font-size:12px; }
+.bottom-bar .run-btn { display:inline-flex; align-items:center; gap:8px; height:32px; padding:0 10px 0 7px; border:none; border-radius:8px; background:#1677ff; color:#fff; cursor:pointer; font-size:12px; }
 .bottom-bar .run-btn i { font-size:14px; }
 .bottom-bar .run-btn:disabled { opacity:0.5; cursor:not-allowed; }
-.bottom-bar .deploy-btn { display:inline-flex; align-items:center; gap:8px; height:32px; padding:0 12px; border:none; border-radius:8px; background:#059669; color:#fff; cursor:pointer; font-size:12px; transition: background .15s, box-shadow .15s, transform .08s; }
+.bottom-bar .deploy-btn { display:inline-flex; align-items:center; gap:8px; height:32px; padding:0 10px 0 7px; border:none; border-radius:8px; background:#059669; color:#fff; cursor:pointer; font-size:12px; transition: background .15s, box-shadow .15s, transform .08s; }
 .bottom-bar .deploy-btn:hover:not(:disabled) { background:#047857; box-shadow:0 6px 16px rgba(5,150,105,0.25); transform: translateY(-1px); }
 .bottom-bar .deploy-btn:disabled { opacity:0.6; cursor:not-allowed; }
 .bottom-bar .deploy-btn i { font-size:13px; }
-.bottom-bar .undeploy-btn { display:inline-flex; align-items:center; gap:8px; height:32px; padding:0 12px; border:none; border-radius:8px; background:#dc2626; color:#fff; cursor:pointer; font-size:12px; transition: background .15s, box-shadow .15s, transform .08s; }
+.bottom-bar .undeploy-btn { display:inline-flex; align-items:center; gap:8px; height:32px; padding:0 10px 0 7px; border:none; border-radius:8px; background:#dc2626; color:#fff; cursor:pointer; font-size:12px; transition: background .15s, box-shadow .15s, transform .08s; }
 .bottom-bar .undeploy-btn:hover:not(:disabled) { background:#b91c1c; box-shadow:0 6px 16px rgba(220,38,38,0.25); transform: translateY(-1px); }
 .bottom-bar .undeploy-btn:disabled { opacity:0.6; cursor:not-allowed; }
 .bottom-bar .undeploy-btn i { font-size:13px; }
+.bottom-bar .run-btn.icon-only,
+.bottom-bar .deploy-btn.icon-only,
+.bottom-bar .undeploy-btn.icon-only {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  gap: 0;
+  justify-content: center;
+}
 :host ::ng-deep  .ant-tabs-top > .ant-tabs-nav, .ant-tabs-bottom > .ant-tabs-nav, .ant-tabs-top > div > .ant-tabs-nav, .ant-tabs-bottom > div > .ant-tabs-nav {
     margin: 0 0 0px 0;
 }

@@ -591,6 +591,10 @@ export class FlowBuilderComponent {
   isPhone = false;
   // Width-based responsive flag (<= 1280px): use drawers and single-column grid
   isTabletOrBelow = false;
+  // Show "Zoom" label + percentage only on very large desktops
+  showZoomMeta = true;
+  private readonly zoomMetaWideDesktopMinWidth = 1760;
+  get showDesktopActionText(): boolean { return !this.isTabletOrBelow && this.showZoomMeta; }
 
   // Whether a run is currently in progress (backend or local)
   isRunBusy(): boolean {
@@ -1700,6 +1704,9 @@ export class FlowBuilderComponent {
       const isDesktop = (width >= 1536) && !coarse;
       const flag = !isDesktop;
       this.isTabletOrBelow = flag;
+      // On medium desktops (where run/deploy labels are visible), keep only the zoom slider.
+      // Restore full zoom meta on very wide desktops.
+      this.showZoomMeta = flag || width >= this.zoomMetaWideDesktopMinWidth;
       // Normalize panel states when crossing the breakpoint to avoid double-tap feeling
       if (flag !== this.lastTabletFlag) {
         if (flag) { this.leftPanelOpen = false; this.rightPanelOpen = false; }
