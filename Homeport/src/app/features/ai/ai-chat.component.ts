@@ -360,14 +360,14 @@ interface StreamTool {
       <!-- Normal text input -->
       <div class="input-row" *ngIf="!audio.recording()">
         <div class="input-prefix">
-          <button nz-button nzType="text" nzSize="small" class="voice-btn"
+          <button nz-button nzType="text" nzSize="small" nzShape="circle" class="voice-btn"
             (click)="toggleMic()"
             [disabled]="ai.streaming() || audio.transcribing()"
             nz-tooltip nzTooltipTitle="Enregistrement vocal">
             <span nz-icon [nzType]="audio.transcribing() ? 'loading' : 'audio'" nzTheme="outline"
               [nzSpin]="audio.transcribing()"></span>
           </button>
-          <button nz-button nzType="text" nzSize="small" class="attach-btn"
+          <button nz-button nzType="text" nzSize="small" nzShape="circle" class="attach-btn"
             (click)="fileInput.click()"
             [disabled]="ai.streaming() || pendingAttachments.length >= maxFiles"
             nz-tooltip nzTooltipTitle="Joindre un fichier">
@@ -385,12 +385,12 @@ interface StreamTool {
           [disabled]="audio.transcribing()">
         </textarea>
         <div class="input-suffix">
-          <button *ngIf="ai.streaming()" nz-button nzType="text" nzSize="small" nzDanger (click)="stopStream()">
+          <button *ngIf="ai.streaming()" nz-button nzType="text" nzSize="small" nzShape="circle" nzDanger (click)="stopStream()">
             <span nz-icon nzType="pause-circle" nzTheme="outline"></span>
           </button>
-          <button *ngIf="!ai.streaming()" nz-button nzType="text" nzSize="small" class="chat-send-btn" (click)="send()"
+          <button *ngIf="!ai.streaming()" nz-button nzType="primary" nzSize="small" nzShape="circle" class="chat-send-btn" (click)="send()"
             [disabled]="!inputText.trim() && !pendingAttachments.length">
-            <span nz-icon nzType="send" nzTheme="outline"></span>
+            <i class="fa-solid fa-arrow-up"></i>
           </button>
         </div>
       </div>
@@ -481,25 +481,64 @@ interface StreamTool {
     .thinking-inline { display: flex; align-items: center; gap: 5px; padding: 4px 0; opacity: 0.7; }
     .avatar-error { background: #fff2f0 !important; color: #ff4d4f !important; }
     .content-error { background: #fff2f0 !important; color: #ff4d4f; border: 1px solid #ffccc7; display: flex; align-items: center; }
-    .input-bar { padding: 8px 16px 12px; border-top: 1px solid #f0f0f0; }
-    .input-row { display: flex; align-items: flex-start; gap: 4px; border: 1px solid #d9d9d9; border-radius: 8px; padding: 4px 8px; transition: border-color 0.2s; }
-    .input-row:focus-within { border-color: #1677ff; }
-    .input-row textarea { flex: 1; border: none !important; outline: none !important; box-shadow: none !important; resize: none; padding: 4px 0; font-size: 14px; line-height: 1.5; background: transparent; }
+    .input-bar { padding: 8px 16px 12px; }
+    .input-row { display: flex; align-items: center; gap: 6px; border: 1px solid #dbe4ef; border-radius: 20px; padding: 5px 12px; transition: border-color 0.2s, box-shadow 0.2s; background: #fff; }
+    .input-row:hover,
+    .input-row:focus-within {
+      border-color: #1677ff;
+      box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.15);
+    }
+    .input-row textarea { flex: 1; min-width: 0; min-height: 30px; border: none !important; outline: none !important; box-shadow: none !important; resize: none; padding: 6px 4px; font-size: 13px; line-height: 1.4; background: transparent; }
     .input-row textarea:focus { box-shadow: none !important; }
-    .input-prefix, .input-suffix { display: flex; align-items: center; flex-shrink: 0; height: 29px; }
+    .input-prefix, .input-suffix { display: flex; align-items: center; flex-shrink: 0; gap: 6px; }
     .voice-btn,
-    .chat-send-btn {
+    .attach-btn {
       border-radius: 8px;
+      transition: background .15s, color .15s, box-shadow .15s, transform .08s;
+    }
+    .chat-send-btn {
+      border-radius: 50% !important;
+      width: 30px;
+      min-width: 30px;
+      height: 30px;
+      padding: 0 !important;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       transition: background .15s, color .15s, box-shadow .15s, transform .08s;
     }
     .voice-btn:hover:not(:disabled),
     .voice-btn:focus-visible:not(:disabled),
+    .attach-btn:hover:not(:disabled),
+    .attach-btn:focus-visible:not(:disabled),
     .chat-send-btn:hover:not(:disabled),
     .chat-send-btn:focus-visible:not(:disabled) {
       background: rgba(22,119,255,0.1) !important;
       color: #1677ff !important;
       box-shadow: 0 4px 12px rgba(22,119,255,0.18);
       transform: translateY(-1px);
+    }
+    .chat-send-btn.ant-btn-primary,
+    .chat-send-btn.ant-btn-primary:not(:disabled) {
+      background: #1677ff;
+      border-color: #1677ff;
+      color: #fff !important;
+    }
+    .chat-send-btn.ant-btn-primary:hover,
+    .chat-send-btn.ant-btn-primary:focus-visible {
+      background: #4096ff;
+      border-color: #4096ff;
+      color: #fff !important;
+    }
+    .chat-send-btn.ant-btn-primary:active {
+      background: #0958d9;
+      border-color: #0958d9;
+    }
+    .chat-send-btn.ant-btn-primary[disabled],
+    .chat-send-btn.ant-btn-primary:disabled {
+      background: #91caff;
+      border-color: #91caff;
+      color: #fff !important;
     }
     .recording-row { align-items: center !important; gap: 8px !important; padding: 6px 12px !important; overflow: hidden; }
     .waveform-canvas { flex: 1; width: 0; height: 32px; min-width: 0; display: block; }
@@ -531,14 +570,6 @@ interface StreamTool {
     .att-warn { font-size: 12px; color: #ff4d4f; flex-shrink: 0; }
     .att-remove { padding: 0 !important; min-width: auto !important; height: auto !important; color: #999 !important; font-size: 10px !important; }
     .att-remove:hover { color: #ff4d4f !important; }
-    .attach-btn { border-radius: 8px; transition: background .15s, color .15s, box-shadow .15s, transform .08s; }
-    .attach-btn:hover:not(:disabled),
-    .attach-btn:focus-visible:not(:disabled) {
-      background: rgba(22,119,255,0.1) !important;
-      color: #1677ff !important;
-      box-shadow: 0 4px 12px rgba(22,119,255,0.18);
-      transform: translateY(-1px);
-    }
   `]
 })
 export class AiChatComponent {

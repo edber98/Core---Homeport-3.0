@@ -13,7 +13,7 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { AiService, AiThread, AiAvailableAgent } from './ai.service';
+import { AiService, AiThread, AiAvailableAgent, AiAttachment, AI_MAX_FILES, AI_MAX_FILE_SIZE } from './ai.service';
 import { AiAudioService } from './ai-audio.service';
 import { ApiClientService } from '../../services/api-client.service';
 import { AccessControlService } from '../../services/access-control.service';
@@ -118,12 +118,26 @@ import { AiSettingsComponent } from './ai-settings.component';
         <ng-template #assistantHeroInput>
           <div class="assistant-view assistant-floating">
             <div class="ai-content ai-floating-content">
-              <div class="ai-main">
+              <div class="ai-main" [class.has-center-files]="centerPendingAttachments.length > 0">
                 <div class="ai-header ai-header-center">
                   <div class="ai-icon-wrap"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
                   <div class="ai-header-copy">
                     <div class="ai-title">Assistant IA</div>
                     <div class="ai-subtitle">Posez une question sur vos workflows</div>
+                  </div>
+                </div>
+                <div class="att-previews" *ngIf="centerPendingAttachments.length">
+                  <div class="att-chip" *ngFor="let att of centerPendingAttachments; let i = index"
+                       [class.att-uploading]="att.uploading" [class.att-error]="!!att.error">
+                    <img *ngIf="att.previewUrl && isImage(att.mimeType)" [src]="att.previewUrl" class="att-thumb" />
+                    <span *ngIf="!att.previewUrl || !isImage(att.mimeType)" nz-icon nzType="file" nzTheme="outline" class="att-icon"></span>
+                    <span class="att-name" [title]="att.name">{{ att.name }}</span>
+                    <span class="att-size">{{ formatFileSize(att.size) }}</span>
+                    <span nz-icon *ngIf="att.uploading" nzType="loading" nzTheme="outline" class="att-loading"></span>
+                    <span nz-icon *ngIf="att.error" nzType="warning" nzTheme="outline" class="att-warn" [title]="att.error"></span>
+                    <button nz-button nzType="text" nzSize="small" class="att-remove" (click)="removeCenterAttachment(i)">
+                      <span nz-icon nzType="close" nzTheme="outline"></span>
+                    </button>
                   </div>
                 </div>
                 <div class="ai-input-row">
@@ -144,6 +158,20 @@ import { AiSettingsComponent } from './ai-settings.component';
                         [class.fa-stop]="audioService.recording()"
                       ></i>
                     </button>
+                    <button
+                      nz-button
+                      nzType="text"
+                      nzSize="small"
+                      nzShape="circle"
+                      class="ai-attach-btn"
+                      [class.has-files]="centerPendingAttachments.length > 0"
+                      (click)="centerFileInput.click()"
+                      [disabled]="ai.streaming() || centerPendingAttachments.length >= maxCenterFiles"
+                      nz-tooltip nzTooltipTitle="Joindre un fichier"
+                    >
+                      <span nz-icon nzType="paper-clip" nzTheme="outline"></span>
+                    </button>
+                    <input #centerFileInput type="file" multiple hidden (change)="onCenterFilesSelected($event)" />
                     <textarea
                       nz-input
                       #aiInputEl
@@ -161,7 +189,7 @@ import { AiSettingsComponent } from './ai-settings.component';
                       nzShape="circle"
                       class="ai-send-btn"
                       (click)="sendAiMessage()"
-                      [disabled]="!aiInput.trim()"
+                      [disabled]="!aiInput.trim() && !centerPendingAttachments.length"
                     >
                       <i class="fa-solid fa-arrow-up"></i>
                     </button>
@@ -385,7 +413,9 @@ import { AiSettingsComponent } from './ai-settings.component';
     .assistant-floating { position: relative; min-height: clamp(340px, 60vh, 560px); display: flex; align-items: center; justify-content: center; }
     .ai-floating-content { position: relative; z-index: 1; width: min(100%, 760px); align-items: center; text-align: center; }
     .ai-content { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; gap: 10px; }
-    .ai-main { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; gap: 10px; justify-content: flex-start; }
+    .ai-main { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; gap: 0; justify-content: flex-start; }
+    .ai-main > .ai-header { margin-bottom: 10px; }
+    .ai-main.has-center-files { transform: translateY(-10px); }
     .ai-floating-content .ai-main { flex: 0 0 auto; width: 100%; }
     .ai-header { display: flex; align-items: center; gap: 10px; }
     .ai-header-center { display: grid; grid-template-columns: 36px auto 36px; align-items: center; justify-content: center; column-gap: 10px; }
@@ -402,9 +432,12 @@ import { AiSettingsComponent } from './ai-settings.component';
       box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.15);
     }
     .ai-mic-btn { align-self: center; flex-shrink: 0; margin-top: 0; }
+    .ai-attach-btn { align-self: center; flex-shrink: 0; margin-top: 0; }
+    .ai-attach-btn.has-files { color: #1677ff !important; }
     .ai-input-shell .ai-send-btn.ant-btn-primary { background: #1677ff; border-color: #1677ff; color: #ffffff; align-self: center; flex-shrink: 0; margin-top: 0; }
     .ai-input-shell.ai-input-shell-multiline { align-items: flex-end; }
     .ai-input-shell.ai-input-shell-multiline .ai-mic-btn,
+    .ai-input-shell.ai-input-shell-multiline .ai-attach-btn,
     .ai-input-shell.ai-input-shell-multiline .ai-send-btn.ant-btn-primary { align-self: flex-end; }
     .ai-input-shell .ai-send-btn.ant-btn-primary:hover,
     .ai-input-shell .ai-send-btn.ant-btn-primary:focus { background: #4096ff; border-color: #4096ff; }
@@ -413,14 +446,26 @@ import { AiSettingsComponent } from './ai-settings.component';
     .ai-input-shell .ai-send-btn.ant-btn-primary:disabled { background: #91caff; border-color: #91caff; color: #ffffff; }
     .ai-input { flex: 1 1 auto; min-width: 0; min-height: 30px; border: 0 !important; box-shadow: none !important; resize: none; background: transparent; font-size: 13px !important; line-height: 1.4; padding: 6px 4px; overflow-y: auto; }
     .ai-input:focus { outline: none; }
+    .att-previews { display: flex; flex-wrap: wrap; justify-content: flex-start; gap: 6px; padding: 0 8px 0; margin-bottom: 0; width: 100%; }
+    .att-chip { display: inline-flex; align-items: center; gap: 4px; background: #f5f5f5; border: 1px solid #e8e8e8; border-radius: 6px; padding: 3px 6px; font-size: 12px; max-width: 260px; }
+    .att-chip.att-uploading { opacity: 0.7; }
+    .att-chip.att-error { border-color: #ff4d4f; background: #fff2f0; }
+    .att-thumb { width: 28px; height: 28px; object-fit: cover; border-radius: 4px; flex-shrink: 0; }
+    .att-icon { font-size: 16px; color: #999; flex-shrink: 0; }
+    .att-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 130px; color: #333; }
+    .att-size { color: #999; font-size: 10px; flex-shrink: 0; }
+    .att-loading { font-size: 12px; color: #1677ff; flex-shrink: 0; }
+    .att-warn { font-size: 12px; color: #ff4d4f; flex-shrink: 0; }
+    .att-remove { padding: 0 !important; min-width: auto !important; height: auto !important; color: #999 !important; font-size: 10px !important; }
+    .att-remove:hover { color: #ff4d4f !important; }
     .mic-recording { color: #ef4444 !important; animation: mic-pulse 1s infinite; }
     @keyframes mic-pulse {
       0%, 100% { opacity: 1; }
       50% { opacity: 0.4; }
     }
-    .ai-recording-bar { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #ef4444; }
+    .ai-recording-bar { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #ef4444; margin-top: 10px; }
     .rec-dot { width: 8px; height: 8px; border-radius: 50%; background: #ef4444; animation: mic-pulse 1s infinite; }
-    .ai-transcribing { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #64748b; justify-content: center; }
+    .ai-transcribing { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #64748b; justify-content: center; margin-top: 10px; }
     .ai-hints { display: flex; justify-content: center; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
     .ai-hint {
       cursor: pointer;
@@ -502,7 +547,8 @@ import { AiSettingsComponent } from './ai-settings.component';
       .fp-sidebar:not(.collapsed) { width: 260px; position: absolute; z-index: 10; height: 100%; box-shadow: 2px 0 8px rgba(0,0,0,0.1); }
       .assistant-floating { min-height: clamp(300px, 66vh, 460px); }
       .ai-header-center { grid-template-columns: 36px auto 36px; column-gap: 8px; }
-      .ai-content, .ai-main { gap: 8px; }
+      .ai-content { gap: 8px; }
+      .ai-main > .ai-header { margin-bottom: 8px; }
       .ai-hints { margin-top: 2px; }
       .ai-hint { min-height: 28px; padding: 3px 8px; }
     }
@@ -520,6 +566,8 @@ export class AiFullpageComponent implements OnInit, OnDestroy, AfterViewInit {
   aiInput = '';
   aiInputPlaceholder = '';
   aiInputMultiline = false;
+  centerPendingAttachments: AiAttachment[] = [];
+  maxCenterFiles = AI_MAX_FILES;
   sidebarCollapsed = false;
   showSettings = false;
   regeneratingTitle = false;
@@ -631,6 +679,7 @@ export class AiFullpageComponent implements OnInit, OnDestroy, AfterViewInit {
 
   async newThread() {
     this.showSettings = false;
+    this.clearCenterAttachments();
     await this.ai.createThread('chat', undefined, this.selectedAgentId);
     this.loadThreads();
     this.cdr.detectChanges();
@@ -638,7 +687,22 @@ export class AiFullpageComponent implements OnInit, OnDestroy, AfterViewInit {
 
   async sendAiMessage() {
     const text = (this.aiInput || '').trim();
-    if (!text || this.ai.streaming()) return;
+    if ((!text && !this.centerPendingAttachments.length) || this.ai.streaming()) return;
+
+    const stillUploading = this.centerPendingAttachments.some(a => a.uploading);
+    if (stillUploading) {
+      this.nzMsg.warning('Uploads en cours, patiente...');
+      return;
+    }
+
+    const withErrors = this.centerPendingAttachments.filter(a => a.error);
+    if (withErrors.length) {
+      this.nzMsg.warning('Certains fichiers ont échoué. Retire-les avant d\'envoyer.');
+      return;
+    }
+
+    const centerAttachments = [...this.centerPendingAttachments];
+    this.centerPendingAttachments = [];
     this.aiInput = '';
     this.showSettings = false;
     this.scheduleAiInputLayoutRefresh();
@@ -651,11 +715,12 @@ export class AiFullpageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     const chat = await this.waitForThreadChat();
     if (chat) {
+      if (centerAttachments.length) chat.pendingAttachments = [...chat.pendingAttachments, ...centerAttachments];
       chat.inputText = text;
-      await chat.send();
+      if (text || chat.pendingAttachments.length) await chat.send();
     } else {
       // Fallback safety path if chat view is not mounted yet.
-      await this.ai.quickSend(text);
+      await this.ai.quickSend(text, undefined, centerAttachments);
     }
 
     this.cdr.detectChanges();
@@ -664,6 +729,69 @@ export class AiFullpageComponent implements OnInit, OnDestroy, AfterViewInit {
   sendHint(text: string) {
     this.aiInput = text;
     this.sendAiMessage();
+  }
+
+  private addCenterFiles(files: File[]) {
+    const remaining = AI_MAX_FILES - this.centerPendingAttachments.length;
+    if (remaining <= 0) {
+      this.nzMsg.warning(`Maximum ${AI_MAX_FILES} fichiers par message`);
+      return;
+    }
+
+    const toAdd = files.slice(0, remaining);
+    for (const file of toAdd) {
+      if (file.size > AI_MAX_FILE_SIZE) {
+        this.nzMsg.error(`"${file.name}" dépasse la limite de 20 Mo`);
+        continue;
+      }
+
+      const att: AiAttachment = {
+        fileId: '',
+        name: file.name,
+        mimeType: file.type || 'application/octet-stream',
+        size: file.size,
+        uploading: true,
+        previewUrl: this.isImage(file.type) ? URL.createObjectURL(file) : undefined,
+      };
+      this.centerPendingAttachments = [...this.centerPendingAttachments, att];
+      const idx = this.centerPendingAttachments.length - 1;
+
+      this.ai.uploadFile(file).subscribe({
+        next: (ref) => {
+          this.centerPendingAttachments = this.centerPendingAttachments.map((a, i) =>
+            i === idx ? { ...a, fileId: ref.fileId, uploading: false, error: undefined } : a
+          );
+          this.cdr.detectChanges();
+        },
+        error: (err) => {
+          this.centerPendingAttachments = this.centerPendingAttachments.map((a, i) =>
+            i === idx ? { ...a, uploading: false, error: err?.message || 'Échec upload' } : a
+          );
+          this.cdr.detectChanges();
+        },
+      });
+    }
+
+    if (files.length > remaining) {
+      this.nzMsg.warning(`Maximum ${AI_MAX_FILES} fichiers par message`);
+    }
+
+    this.cdr.detectChanges();
+  }
+
+  onCenterFilesSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const files = input.files?.length ? Array.from(input.files) : [];
+    input.value = '';
+    if (!files.length) return;
+    this.addCenterFiles(files);
+  }
+
+  removeCenterAttachment(index: number) {
+    const att = this.centerPendingAttachments[index];
+    if (att?.previewUrl) URL.revokeObjectURL(att.previewUrl);
+    this.centerPendingAttachments = this.centerPendingAttachments.filter((_, i) => i !== index);
+    this.cdr.detectChanges();
   }
 
   onAiInputChanged() {
@@ -719,6 +847,16 @@ export class AiFullpageComponent implements OnInit, OnDestroy, AfterViewInit {
     return this.threadChatRef || null;
   }
 
+  formatFileSize(bytes: number): string {
+    if (bytes < 1024) return `${bytes} o`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} Ko`;
+    return `${(bytes / (1024 * 1024)).toFixed(1)} Mo`;
+  }
+
+  isImage(mimeType: string): boolean {
+    return mimeType?.startsWith('image/') || false;
+  }
+
   private refreshAiInputMultilineState() {
     const el = this.aiInputElRef?.nativeElement;
     if (!el) {
@@ -744,8 +882,16 @@ export class AiFullpageComponent implements OnInit, OnDestroy, AfterViewInit {
       : 'Ex : Quels flows ont des erreurs ? (Entrée pour envoyer, Maj + Entrée pour un retour à la ligne)';
   }
 
+  private clearCenterAttachments() {
+    for (const att of this.centerPendingAttachments) {
+      if (att.previewUrl) URL.revokeObjectURL(att.previewUrl);
+    }
+    this.centerPendingAttachments = [];
+  }
+
   async selectThread(thread: AiThread) {
     this.showSettings = false;
+    this.clearCenterAttachments();
     await this.ai.loadThread(thread.id || thread._id);
     this.cdr.detectChanges();
   }
