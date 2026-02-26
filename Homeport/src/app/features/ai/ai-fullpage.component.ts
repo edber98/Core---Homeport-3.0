@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef, OnInit, OnDestroy, effect } from '@angular/core';
+import { Component, ChangeDetectorRef, OnInit, OnDestroy, AfterViewInit, HostListener, ElementRef, ViewChild, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -10,8 +10,11 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzPopoverModule } from 'ng-zorro-antd/popover';
 import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzTagModule } from 'ng-zorro-antd/tag';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { AiService, AiThread, AiAvailableAgent } from './ai.service';
+import { AiAudioService } from './ai-audio.service';
 import { ApiClientService } from '../../services/api-client.service';
 import { AccessControlService } from '../../services/access-control.service';
 import { AiChatComponent } from './ai-chat.component';
@@ -20,7 +23,7 @@ import { AiSettingsComponent } from './ai-settings.component';
 @Component({
   selector: 'ai-fullpage',
   standalone: true,
-  imports: [CommonModule, FormsModule, NzButtonModule, NzIconModule, NzSelectModule, NzInputModule, NzEmptyModule, NzToolTipModule, NzPopconfirmModule, NzPopoverModule, AiChatComponent, AiSettingsComponent],
+  imports: [CommonModule, FormsModule, NzButtonModule, NzIconModule, NzSelectModule, NzInputModule, NzTagModule, NzSpinModule, NzEmptyModule, NzToolTipModule, NzPopconfirmModule, NzPopoverModule, AiChatComponent, AiSettingsComponent],
   template: `
     <div class="fp-layout">
       <!-- Sidebar -->
@@ -112,17 +115,86 @@ import { AiSettingsComponent } from './ai-settings.component';
         <!-- Settings overlay -->
         <ai-settings *ngIf="showSettings" class="fp-settings"></ai-settings>
 
+        <ng-template #assistantHeroInput>
+          <div class="assistant-view assistant-floating">
+            <div class="ai-content ai-floating-content">
+              <div class="ai-main">
+                <div class="ai-header ai-header-center">
+                  <div class="ai-icon-wrap"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+                  <div class="ai-header-copy">
+                    <div class="ai-title">Assistant IA</div>
+                    <div class="ai-subtitle">Posez une question sur vos workflows</div>
+                  </div>
+                </div>
+                <div class="ai-input-row">
+                  <div class="ai-input-shell" [class.ai-input-shell-multiline]="aiInputMultiline">
+                    <button
+                      nz-button
+                      nzType="text"
+                      nzSize="small"
+                      nzShape="circle"
+                      class="ai-mic-btn"
+                      [class.mic-recording]="audioService.recording()"
+                      (click)="toggleMic()"
+                      [nz-tooltip]="audioService.recording() ? 'Arrêter l\\'enregistrement' : 'Dicter un message'"
+                    >
+                      <i
+                        class="fa-solid"
+                        [class.fa-microphone]="!audioService.recording()"
+                        [class.fa-stop]="audioService.recording()"
+                      ></i>
+                    </button>
+                    <textarea
+                      nz-input
+                      #aiInputEl
+                      [(ngModel)]="aiInput"
+                      [nzAutosize]="{ minRows: 1, maxRows: 5 }"
+                      [placeholder]="aiInputPlaceholder"
+                      (keydown)="onAiInputKeydown($event)"
+                      (input)="onAiInputChanged()"
+                      class="ai-input"
+                    ></textarea>
+                    <button
+                      nz-button
+                      nzType="primary"
+                      nzSize="small"
+                      nzShape="circle"
+                      class="ai-send-btn"
+                      (click)="sendAiMessage()"
+                      [disabled]="!aiInput.trim()"
+                    >
+                      <i class="fa-solid fa-arrow-up"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="ai-recording-bar" *ngIf="audioService.recording()">
+                  <span class="rec-dot"></span>
+                  <span>Enregistrement en cours… {{ audioService.recordingDuration() }}s</span>
+                </div>
+                <div class="ai-transcribing" *ngIf="audioService.transcribing()">
+                  <nz-spin nzSimple nzSize="small"></nz-spin>
+                  <span>Transcription…</span>
+                </div>
+              </div>
+              <div class="ai-hints">
+                <nz-tag class="ai-hint" (click)="sendHint('Résumé de mes workflows')">
+                  <i class="fa-solid fa-list-check"></i> Résumé workflows
+                </nz-tag>
+                <nz-tag class="ai-hint" (click)="sendHint('Quels flows ont des erreurs ?')">
+                  <i class="fa-solid fa-triangle-exclamation"></i> Erreurs récentes
+                </nz-tag>
+                <nz-tag class="ai-hint" (click)="sendHint('Crée-moi un workflow')">
+                  <i class="fa-solid fa-plus"></i> Créer un workflow
+                </nz-tag>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+
         <!-- Chat or empty state -->
         <ng-container *ngIf="!showSettings">
           <div class="fp-empty" *ngIf="!ai.currentThread()">
-            <div class="empty-content">
-              <span nz-icon nzType="robot" nzTheme="outline" class="empty-icon"></span>
-              <h3>Assistant IA</h3>
-              <p>Sélectionnez une conversation ou créez-en une nouvelle.</p>
-              <button nz-button nzType="primary" class="new-thread-btn" (click)="newThread()">
-                <span nz-icon nzType="plus" nzTheme="outline"></span> Nouvelle conversation
-              </button>
-            </div>
+            <ng-container [ngTemplateOutlet]="assistantHeroInput"></ng-container>
           </div>
 
           <!-- Chat header + chat -->
@@ -214,7 +286,12 @@ import { AiSettingsComponent } from './ai-settings.component';
                 </div>
               </ng-template>
             </div>
-            <ai-chat class="fp-chat"></ai-chat>
+            <div class="fp-chat-wrap">
+              <ai-chat #threadChat class="fp-chat"></ai-chat>
+              <div class="fp-chat-empty-overlay" *ngIf="ai.messages().length === 0 && !ai.streaming() && !ai.pendingQuestion()">
+                <ng-container [ngTemplateOutlet]="assistantHeroInput"></ng-container>
+              </div>
+            </div>
           </ng-container>
         </ng-container>
       </div>
@@ -302,10 +379,73 @@ import { AiSettingsComponent } from './ai-settings.component';
     /* Main */
     .fp-main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
     .fp-empty { flex: 1; display: flex; align-items: center; justify-content: center; }
-    .empty-content { text-align: center; color: #999; }
-    .empty-icon { font-size: 48px; color: #d9d9d9; margin-bottom: 12px; }
-    .empty-content h3 { font-size: 18px; color: #333; margin: 0 0 8px; }
-    .empty-content p { margin: 0 0 16px; font-size: 14px; }
+    .fp-chat-wrap { position: relative; flex: 1; min-height: 0; display: flex; }
+    .fp-chat-empty-overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: 0 20px; background: #fff; z-index: 2; }
+    .assistant-view { width: min(100%, 920px); margin: 0 auto; }
+    .assistant-floating { position: relative; min-height: clamp(340px, 60vh, 560px); display: flex; align-items: center; justify-content: center; }
+    .ai-floating-content { position: relative; z-index: 1; width: min(100%, 760px); align-items: center; text-align: center; }
+    .ai-content { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; gap: 10px; }
+    .ai-main { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; gap: 10px; justify-content: flex-start; }
+    .ai-floating-content .ai-main { flex: 0 0 auto; width: 100%; }
+    .ai-header { display: flex; align-items: center; gap: 10px; }
+    .ai-header-center { display: grid; grid-template-columns: 36px auto 36px; align-items: center; justify-content: center; column-gap: 10px; }
+    .ai-header-center::after { content: ''; width: 36px; height: 36px; }
+    .ai-header-copy { text-align: center; }
+    .ai-icon-wrap { width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg, #0284c7, #0ea5e9); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 15px; flex-shrink: 0; }
+    .ai-title { font-weight: 600; font-size: 14px; color: #0f172a; }
+    .ai-subtitle { font-size: 11px; color: #64748b; }
+    .ai-input-row { display: flex; gap: 0; width: 100%; }
+    .ai-input-shell { flex: 1; min-width: 0; display: flex; align-items: center; gap: 6px; padding: 5px 12px; border: 1px solid #dbe4ef; border-radius: 20px; background: #ffffff; transition: border-color 0.15s ease, box-shadow 0.15s ease; }
+    .ai-input-shell:hover,
+    .ai-input-shell:focus-within {
+      border-color: #1677ff;
+      box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.15);
+    }
+    .ai-mic-btn { align-self: center; flex-shrink: 0; margin-top: 0; }
+    .ai-input-shell .ai-send-btn.ant-btn-primary { background: #1677ff; border-color: #1677ff; color: #ffffff; align-self: center; flex-shrink: 0; margin-top: 0; }
+    .ai-input-shell.ai-input-shell-multiline { align-items: flex-end; }
+    .ai-input-shell.ai-input-shell-multiline .ai-mic-btn,
+    .ai-input-shell.ai-input-shell-multiline .ai-send-btn.ant-btn-primary { align-self: flex-end; }
+    .ai-input-shell .ai-send-btn.ant-btn-primary:hover,
+    .ai-input-shell .ai-send-btn.ant-btn-primary:focus { background: #4096ff; border-color: #4096ff; }
+    .ai-input-shell .ai-send-btn.ant-btn-primary:active { background: #0958d9; border-color: #0958d9; }
+    .ai-input-shell .ai-send-btn.ant-btn-primary[disabled],
+    .ai-input-shell .ai-send-btn.ant-btn-primary:disabled { background: #91caff; border-color: #91caff; color: #ffffff; }
+    .ai-input { flex: 1 1 auto; min-width: 0; min-height: 30px; border: 0 !important; box-shadow: none !important; resize: none; background: transparent; font-size: 13px !important; line-height: 1.4; padding: 6px 4px; overflow-y: auto; }
+    .ai-input:focus { outline: none; }
+    .mic-recording { color: #ef4444 !important; animation: mic-pulse 1s infinite; }
+    @keyframes mic-pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+    .ai-recording-bar { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #ef4444; }
+    .rec-dot { width: 8px; height: 8px; border-radius: 50%; background: #ef4444; animation: mic-pulse 1s infinite; }
+    .ai-transcribing { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #64748b; justify-content: center; }
+    .ai-hints { display: flex; justify-content: center; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+    .ai-hint {
+      cursor: pointer;
+      font-size: 11px;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      background: #ffffff;
+      border: 1px solid #dbeafe;
+      color: #334155;
+      margin: 0 !important;
+      transition: background-color .15s ease, color .15s ease, box-shadow .15s ease, border-color .15s ease, transform .02s ease;
+    }
+    .ai-hint i { font-size: 10px; color: #64748b; }
+    .ai-hint:hover {
+      border-color: #c7dbff;
+      background: rgba(22, 119, 255, 0.1);
+      color: #1677ff;
+      box-shadow: 0 4px 12px rgba(22, 119, 255, 0.18);
+      transform: translateY(-1px);
+    }
+    .ai-hint:hover i { color: #1677ff; }
+    .ai-hint:active { transform: translateY(0.5px); }
 
     .fp-chat-header { display: flex; align-items: center; gap: 10px; padding: 10px 20px; border-bottom: 1px solid #f0f0f0; flex-shrink: 0; }
     .chat-title { font-weight: 600; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -360,15 +500,26 @@ import { AiSettingsComponent } from './ai-settings.component';
     @media (max-width: 768px) {
       .fp-sidebar { width: 0; overflow: hidden; }
       .fp-sidebar:not(.collapsed) { width: 260px; position: absolute; z-index: 10; height: 100%; box-shadow: 2px 0 8px rgba(0,0,0,0.1); }
+      .assistant-floating { min-height: clamp(300px, 66vh, 460px); }
+      .ai-header-center { grid-template-columns: 36px auto 36px; column-gap: 8px; }
+      .ai-content, .ai-main { gap: 8px; }
+      .ai-hints { margin-top: 2px; }
+      .ai-hint { min-height: 28px; padding: 3px 8px; }
     }
   `]
 })
-export class AiFullpageComponent implements OnInit, OnDestroy {
+export class AiFullpageComponent implements OnInit, OnDestroy, AfterViewInit {
+  @ViewChild('aiInputEl') private aiInputElRef?: ElementRef<HTMLTextAreaElement>;
+  @ViewChild('threadChat') private threadChatRef?: AiChatComponent;
+
   threads: AiThread[] = [];
   systemAgents: AiAvailableAgent[] = [];
   customAgents: AiAvailableAgent[] = [];
   allAgents: AiAvailableAgent[] = [];
   selectedAgentId = 'general';
+  aiInput = '';
+  aiInputPlaceholder = '';
+  aiInputMultiline = false;
   sidebarCollapsed = false;
   showSettings = false;
   regeneratingTitle = false;
@@ -376,8 +527,9 @@ export class AiFullpageComponent implements OnInit, OnDestroy {
 
   private refreshInterval?: any;
   private titleDebounce?: any;
+  private aiInputLayoutRaf: number | null = null;
 
-  constructor(public ai: AiService, private cdr: ChangeDetectorRef, private router: Router, private nzMsg: NzMessageService, private apiClient: ApiClientService, private acl: AccessControlService) {
+  constructor(public ai: AiService, public audioService: AiAudioService, private cdr: ChangeDetectorRef, private router: Router, private nzMsg: NzMessageService, private apiClient: ApiClientService, private acl: AccessControlService) {
     // Sync currentThread changes (title, mode, flowId) back to local threads list in real-time
     effect(() => {
       const cur = this.ai.currentThread();
@@ -400,6 +552,7 @@ export class AiFullpageComponent implements OnInit, OnDestroy {
   ngOnInit() {
     // Set page context
     this.ai.setPageContext({ page: 'other' });
+    this.updateAiInputPlaceholder();
 
     // Load threads and agents
     this.loadThreads();
@@ -430,8 +583,23 @@ export class AiFullpageComponent implements OnInit, OnDestroy {
     this.refreshInterval = setInterval(() => this.loadThreads(), 30000);
   }
 
+  ngAfterViewInit() {
+    this.scheduleAiInputLayoutRefresh();
+  }
+
+  @HostListener('window:resize')
+  onWindowResize() {
+    this.updateAiInputPlaceholder();
+    this.scheduleAiInputLayoutRefresh();
+  }
+
   ngOnDestroy() {
     if (this.refreshInterval) clearInterval(this.refreshInterval);
+    if (this.titleDebounce) clearTimeout(this.titleDebounce);
+    if (this.aiInputLayoutRaf != null) {
+      cancelAnimationFrame(this.aiInputLayoutRaf);
+      this.aiInputLayoutRaf = null;
+    }
   }
 
   loadThreads() {
@@ -466,6 +634,114 @@ export class AiFullpageComponent implements OnInit, OnDestroy {
     await this.ai.createThread('chat', undefined, this.selectedAgentId);
     this.loadThreads();
     this.cdr.detectChanges();
+  }
+
+  async sendAiMessage() {
+    const text = (this.aiInput || '').trim();
+    if (!text || this.ai.streaming()) return;
+    this.aiInput = '';
+    this.showSettings = false;
+    this.scheduleAiInputLayoutRefresh();
+
+    if (!this.ai.currentThread()) {
+      await this.ai.createThread('chat', undefined, this.selectedAgentId);
+      this.loadThreads();
+      this.cdr.detectChanges();
+    }
+
+    const chat = await this.waitForThreadChat();
+    if (chat) {
+      chat.inputText = text;
+      await chat.send();
+    } else {
+      // Fallback safety path if chat view is not mounted yet.
+      await this.ai.quickSend(text);
+    }
+
+    this.cdr.detectChanges();
+  }
+
+  sendHint(text: string) {
+    this.aiInput = text;
+    this.sendAiMessage();
+  }
+
+  onAiInputChanged() {
+    this.scheduleAiInputLayoutRefresh();
+  }
+
+  onAiInputKeydown(event: KeyboardEvent) {
+    if (event.key !== 'Enter') return;
+    if (event.isComposing) return;
+    if (event.shiftKey) return;
+    event.preventDefault();
+    this.sendAiMessage();
+  }
+
+  async toggleMic() {
+    if (this.audioService.recording()) {
+      try {
+        const blob = await this.audioService.stopAndGetBlob();
+        this.audioService.transcribe(blob).subscribe({
+          next: (text) => {
+            if (text?.trim()) {
+              this.aiInput = text.trim();
+              this.scheduleAiInputLayoutRefresh();
+              try { this.cdr.detectChanges(); } catch {}
+            }
+          },
+          error: () => {},
+        });
+      } catch {}
+    } else {
+      try {
+        await this.audioService.startRecording();
+      } catch {}
+    }
+  }
+
+  private scheduleAiInputLayoutRefresh() {
+    if (this.aiInputLayoutRaf != null) {
+      cancelAnimationFrame(this.aiInputLayoutRaf);
+    }
+    this.aiInputLayoutRaf = requestAnimationFrame(() => {
+      this.aiInputLayoutRaf = null;
+      this.refreshAiInputMultilineState();
+    });
+  }
+
+  private async waitForThreadChat(maxTicks = 25): Promise<AiChatComponent | null> {
+    for (let i = 0; i < maxTicks; i++) {
+      if (this.threadChatRef) return this.threadChatRef;
+      this.cdr.detectChanges();
+      await new Promise<void>(resolve => setTimeout(resolve, 0));
+    }
+    return this.threadChatRef || null;
+  }
+
+  private refreshAiInputMultilineState() {
+    const el = this.aiInputElRef?.nativeElement;
+    if (!el) {
+      this.aiInputMultiline = false;
+      return;
+    }
+    const styles = window.getComputedStyle(el);
+    const lineHeight = parseFloat(styles.lineHeight || '18') || 18;
+    const padTop = parseFloat(styles.paddingTop || '0') || 0;
+    const padBottom = parseFloat(styles.paddingBottom || '0') || 0;
+    const oneLineHeight = lineHeight + padTop + padBottom;
+    this.aiInputMultiline = el.scrollHeight > oneLineHeight + 2;
+  }
+
+  private updateAiInputPlaceholder() {
+    if (typeof window === 'undefined') {
+      this.aiInputPlaceholder = 'Ex : Quels flows ont des erreurs ?';
+      return;
+    }
+    const isMobileOrTablet = window.innerWidth <= 1023;
+    this.aiInputPlaceholder = isMobileOrTablet
+      ? 'Ex : Quels flows ont des erreurs ?'
+      : 'Ex : Quels flows ont des erreurs ? (Entrée pour envoyer, Maj + Entrée pour un retour à la ligne)';
   }
 
   async selectThread(thread: AiThread) {
