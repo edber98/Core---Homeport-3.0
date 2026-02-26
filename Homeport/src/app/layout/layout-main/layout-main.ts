@@ -103,6 +103,7 @@ export class LayoutMain implements OnInit {
       }
       this.siderInitDone = true;
       try { this.cdr.detectChanges(); } catch {}
+      this.updateLayoutCssVars();
 
       // Global confirm bridge: show styled NzModal for guard-originated confirmations
       this.confirm.requests$.subscribe((req: ConfirmRequest) => {
@@ -164,11 +165,23 @@ export class LayoutMain implements OnInit {
   get showSider(): boolean { return this.innerWidth >= 992; }
   get isXs(): boolean { return this.innerWidth <= 576; }
 
-  @HostListener('window:resize') onResize() { try { this.innerWidth = window.innerWidth; } catch { } }
+  @HostListener('window:resize') onResize() {
+    try { this.innerWidth = window.innerWidth; } catch { }
+    this.updateLayoutCssVars();
+  }
 
   onSiderCollapsedChange(v: boolean) {
     this.siderCollapsed = !!v;
     try { localStorage.setItem('layout.siderCollapsed', String(this.siderCollapsed)); } catch {}
+    this.updateLayoutCssVars();
+  }
+
+  private updateLayoutCssVars() {
+    try {
+      const root = document.documentElement;
+      const offset = this.showSider ? (this.siderCollapsed ? 80 : 220) : 0;
+      root.style.setProperty('--hp-main-left-offset', `${offset}px`);
+    } catch {}
   }
 
   openDrawer() { this.drawerVisible = true; }

@@ -342,10 +342,22 @@ nz-drawer { display: contents; }
   .canvas-host { height: 100%; }
   .left-bar { display: block; }
   /* Keep bottom bar visible above iOS browser UI */
-  .bottom-bar { position: fixed; left: 6px; right: 6px; bottom: calc(6px + env(safe-area-inset-bottom)); z-index: 90; }
+  .bottom-bar {
+    position: fixed;
+    left: calc(var(--hp-main-left-offset, 0px) + 6px);
+    right: 6px;
+    bottom: calc(6px + env(safe-area-inset-bottom));
+    z-index: 90;
+  }
   .bottom-bar .actions { gap: 4px; padding: 6px 10px; border-radius: 9px; }
   .bottom-bar .icon-btn, .bottom-bar .import-btn { width: 34px; height: 34px; }
-  .bottom-bar .run-btn { height: 30px; padding: 0 10px; }
+  .bottom-bar .run-btn, .bottom-bar .deploy-btn, .bottom-bar .undeploy-btn {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    gap: 0;
+    justify-content: center;
+  }
   .bottom-bar .divider { height: 24px; margin: 0 2px; }
   .bottom-bar .divider.before-run { margin: 0 4px 0 2px; }
 }

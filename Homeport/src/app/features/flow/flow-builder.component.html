@@ -546,21 +546,21 @@
       <span class="divider before-run" aria-hidden="true"></span>
       <button class="run-btn" *ngIf="!isRunBusy(); else stopRunBtn" (click)="runFlow()" [disabled]="isProduction" title="Lancer" aria-label="Lancer">
         <i class="fa-solid fa-play"></i>
-        <span *ngIf="!isPhone">Lancer</span>
+        <span *ngIf="!isTabletOrBelow">Lancer</span>
       </button>
       <ng-template #stopRunBtn>
         <button class="run-btn" (click)="stopLastRun()" title="Stop" aria-label="Stop">
           <i class="fa-solid fa-stop"></i>
-          <span *ngIf="!isPhone">Stop</span>
+          <span *ngIf="!isTabletOrBelow">Stop</span>
         </button>
       </ng-template>
       <button class="deploy-btn" *ngIf="!isProduction" (click)="deployFlow()" [disabled]="deploying" title="Déployer en production" aria-label="Déployer">
         <i class="fa-solid fa-rocket"></i>
-        <span *ngIf="!isPhone">{{ deploying ? 'Déploiement...' : 'Déployer' }}</span>
+        <span *ngIf="!isTabletOrBelow">{{ deploying ? 'Déploiement...' : 'Déployer' }}</span>
       </button>
       <button class="undeploy-btn" *ngIf="isProduction" (click)="undeployFlow()" [disabled]="undeploying" title="Arrêter la production" aria-label="Arrêter">
         <i class="fa-solid fa-stop"></i>
-        <span *ngIf="!isPhone">{{ undeploying ? 'Arrêt...' : 'Arrêter prod.' }}</span>
+        <span *ngIf="!isTabletOrBelow">{{ undeploying ? 'Arrêt...' : 'Arrêter prod.' }}</span>
       </button>
     </div>
   </div>
