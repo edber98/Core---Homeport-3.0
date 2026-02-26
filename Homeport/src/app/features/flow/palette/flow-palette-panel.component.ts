@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { NzInputModule } from 'ng-zorro-antd/input';
@@ -20,8 +20,8 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
       <div class="palette-search" [class.searching]="hasQuery()">
         <input nz-input [ngModel]="internalQuery" (ngModelChange)="onQueryInput($event)" placeholder="Rechercher un nœud (nom, catégorie)" />
       </div>
-      <div class="palette-scroll" *ngIf="!activeGroup">
-      <div class="search-results" *ngIf="hasQuery(); else browseMode">
+      <div class="palette-scroll" #providersScroll [class.overlay-open]="!!activeGroup">
+      <div class="search-results" *ngIf="hasQuery() && !activeGroup; else browseMode">
         <ng-container *ngFor="let g of filteredGroups(); let gi = index; trackBy: trackGroupFn">
           <button type="button" class="group-title search-group-title" [class.searching]="hasQuery()" (click)="openGroupFromSearch(g.group, g.index)" [attr.aria-label]="'Ouvrir ' + (g.group?.title || 'provider')">
             <span class="group-mini" *ngIf="g.group?.appId" [style.background]="g.group?.appColor || '#f3f4f6'">
@@ -93,7 +93,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
         <div class="empty" *ngIf="filteredGroups().length === 0">Aucun nœud trouvé.</div>
       </div>
       <ng-template #browseMode>
-        <div class="groups" *ngIf="!activeGroup">
+        <div class="groups">
           <button class="group-row" type="button" *ngFor="let g of groups; let gi = index; trackBy: trackGroupFn" (click)="openGroup(g, gi)">
           <span class="group-mini" *ngIf="g.appId" [style.background]="g.appColor || '#f3f4f6'">
             <img *ngIf="isOpenAiGroup(g)" [src]="openAiIconUrl" alt="icon" />
@@ -109,7 +109,15 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
       </ng-template>
       </div>
 
-        <div class="group-overlay" *ngIf="activeGroup">
+        <div class="group-overlay" *ngIf="activeGroup"
+          #groupOverlay
+          [class.swipe-animating]="overlaySwipeAnimating"
+          [class.swiping]="overlaySwipeX > 0"
+          [style.transform]="'translate3d(' + overlaySwipeX + 'px, 0, 0)'"
+          (touchstart)="onGroupOverlayTouchStart($event)"
+          (touchmove)="onGroupOverlayTouchMove($event)"
+          (touchend)="onGroupOverlayTouchEnd($event)"
+          (touchcancel)="onGroupOverlayTouchCancel()">
           <div class="palette-topbar group-topbar">
             <button type="button" class="back-btn" (click)="closeGroup()" aria-label="Retour aux groupes">
               <i class="fa-solid fa-arrow-left"></i>
@@ -220,6 +228,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
       box-shadow: none;
     }
     .palette .palette-scroll { flex: 1 1 auto; min-height: 0; overflow: auto; padding-right: 1px; }
+    .palette .palette-scroll.overlay-open { pointer-events: none; }
     .palette .palette-scroll { scrollbar-width: none; -ms-overflow-style: none; }
     .palette .palette-scroll::-webkit-scrollbar { width: 0; height: 0; }
     .palette .groups { display:flex; flex-direction: column; gap: 0; margin: 0; }
@@ -262,7 +271,9 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
     .palette .group-row i.fa-chevron-right { color:#94a3b8; font-size: 12px; }
     .palette .back-btn { width: 28px; height: 28px; padding: 0; border:0; background: transparent; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; }
     .palette .back-btn i { color:#6b7280; font-size:16px; }
-    .palette .group-overlay { position:absolute; inset:0; background:#fff; padding:0; overflow:hidden; z-index: 2; display:flex; flex-direction:column; }
+    .palette .group-overlay { position:absolute; inset:0; background:#fff; padding:0; overflow:hidden; z-index: 2; display:flex; flex-direction:column; touch-action: pan-y; will-change: transform; }
+    .palette .group-overlay.swipe-animating { transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 180ms ease; }
+    .palette .group-overlay.swiping { box-shadow: -12px 0 24px rgba(15, 23, 42, 0.12); }
     .palette .group-overlay .palette-search { margin: 6px 12px 16px; }
     .palette .group-overlay-scroll { flex: 1 1 auto; min-height: 0; overflow: auto; padding: 0 0 12px; }
     .palette .group-overlay-scroll { scrollbar-width: none; -ms-overflow-style: none; }
@@ -321,8 +332,34 @@ export class FlowPalettePanelComponent implements OnInit, OnDestroy, OnChanges {
   activeGroup: any | null = null;
   activeGroupIndex = -1;
   internalQuery = '';
+  private providersScrollTop = 0;
+  private restoreProvidersScrollPending = false;
+  private providersScrollEl?: ElementRef<HTMLDivElement>;
+  private groupOverlayEl?: ElementRef<HTMLDivElement>;
+  private overlayTouchActive = false;
+  private overlayTouchFromEdge = false;
+  private overlayTouchAxisLock: 'none' | 'x' | 'y' = 'none';
+  private overlayTouchStartX = 0;
+  private overlayTouchStartY = 0;
+  private overlayTouchLastX = 0;
+  private overlayTouchLastY = 0;
+  private overlayTouchStartAt = 0;
+  overlaySwipeX = 0;
+  overlaySwipeAnimating = false;
+  private overlayCloseTimer: ReturnType<typeof setTimeout> | null = null;
   private queryInput$ = new Subject<string>();
   private querySub?: Subscription;
+
+  @ViewChild('providersScroll')
+  set providersScrollRef(ref: ElementRef<HTMLDivElement> | undefined) {
+    this.providersScrollEl = ref;
+    this.restoreProvidersScrollIfNeeded();
+  }
+
+  @ViewChild('groupOverlay')
+  set groupOverlayRef(ref: ElementRef<HTMLDivElement> | undefined) {
+    this.groupOverlayEl = ref;
+  }
 
   // Function Inputs to keep parent logic
   @Input() trackGroupFn: (index: number, g: any) => any = (i, g) => g;
@@ -344,6 +381,10 @@ export class FlowPalettePanelComponent implements OnInit, OnDestroy, OnChanges {
       .subscribe((val) => this.queryChange.emit(val));
   }
   ngOnDestroy(): void {
+    if (this.overlayCloseTimer) {
+      clearTimeout(this.overlayCloseTimer);
+      this.overlayCloseTimer = null;
+    }
     this.querySub?.unsubscribe();
   }
   ngOnChanges(changes: SimpleChanges): void {
@@ -407,6 +448,7 @@ export class FlowPalettePanelComponent implements OnInit, OnDestroy, OnChanges {
     return this.groupItemsByTitle(items);
   }
   openGroup(g: any, index: number): void {
+    this.providersScrollTop = this.providersScrollEl?.nativeElement?.scrollTop || 0;
     this.activeGroup = g;
     this.activeGroupIndex = index;
   }
@@ -418,11 +460,133 @@ export class FlowPalettePanelComponent implements OnInit, OnDestroy, OnChanges {
     this.openGroup(g, index);
   }
   closeGroup(): void {
+    if (this.overlayCloseTimer) {
+      clearTimeout(this.overlayCloseTimer);
+      this.overlayCloseTimer = null;
+    }
     this.activeGroup = null;
     this.activeGroupIndex = -1;
+    this.restoreProvidersScrollPending = true;
+    this.restoreProvidersScrollIfNeeded();
+    this.onGroupOverlayTouchCancel(false);
   }
   searchGlobal(): void {
     this.closeGroup();
+  }
+
+  onGroupOverlayTouchStart(event: TouchEvent): void {
+    if (!this.isMobile || !this.activeGroup) return;
+    if (!event.touches || event.touches.length !== 1) return;
+    const touch = event.touches[0];
+    const overlayWidth = Math.max(280, this.groupOverlayEl?.nativeElement?.clientWidth || 320);
+    const swipeStartMaxX = overlayWidth * 0.5; // allow swipe-start anywhere on the left half
+    this.overlaySwipeAnimating = false;
+    this.overlayTouchActive = true;
+    this.overlayTouchFromEdge = touch.clientX <= swipeStartMaxX;
+    this.overlayTouchAxisLock = 'none';
+    this.overlayTouchStartX = touch.clientX;
+    this.overlayTouchStartY = touch.clientY;
+    this.overlayTouchLastX = touch.clientX;
+    this.overlayTouchLastY = touch.clientY;
+    this.overlayTouchStartAt = Date.now();
+  }
+
+  onGroupOverlayTouchMove(event: TouchEvent): void {
+    if (!this.overlayTouchActive || !event.touches || event.touches.length !== 1) return;
+    const touch = event.touches[0];
+    this.overlayTouchLastX = touch.clientX;
+    this.overlayTouchLastY = touch.clientY;
+    const dx = this.overlayTouchLastX - this.overlayTouchStartX;
+    const dy = this.overlayTouchLastY - this.overlayTouchStartY;
+
+    if (this.overlayTouchAxisLock === 'none') {
+      if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return;
+      if (!this.overlayTouchFromEdge) {
+        this.overlayTouchAxisLock = 'y';
+        return;
+      }
+      if (Math.abs(dx) > Math.abs(dy) * 1.2 && dx > 0) {
+        this.overlayTouchAxisLock = 'x';
+      } else if (Math.abs(dy) > Math.abs(dx)) {
+        this.overlayTouchAxisLock = 'y';
+      } else {
+        return;
+      }
+    }
+
+    if (this.overlayTouchAxisLock !== 'x') return;
+    event.preventDefault();
+    const overlayWidth = Math.max(280, this.groupOverlayEl?.nativeElement?.clientWidth || 320);
+    const maxTranslate = Math.round(overlayWidth * 0.92);
+    this.overlaySwipeX = Math.max(0, Math.min(maxTranslate, dx));
+  }
+
+  onGroupOverlayTouchEnd(event: TouchEvent): void {
+    if (!this.overlayTouchActive || !this.isMobile || !this.activeGroup) {
+      this.onGroupOverlayTouchCancel(false);
+      return;
+    }
+
+    const minSwipeDistance = 72;
+    const maxVerticalDrift = 56;
+    const maxSwipeDurationMs = 900;
+
+    const changed = event.changedTouches?.[0];
+    const endX = changed?.clientX ?? this.overlayTouchLastX;
+    const endY = changed?.clientY ?? this.overlayTouchLastY;
+    const dx = endX - this.overlayTouchStartX;
+    const dy = endY - this.overlayTouchStartY;
+    const elapsed = Date.now() - this.overlayTouchStartAt;
+
+    const overlayWidth = Math.max(280, this.groupOverlayEl?.nativeElement?.clientWidth || 320);
+    const dynamicTrigger = Math.round(overlayWidth * 0.26);
+    const validDistance = dx >= minSwipeDistance;
+    const passedDynamicTrigger = dx >= dynamicTrigger;
+    const validVerticalDrift = Math.abs(dy) <= maxVerticalDrift;
+    const validDuration = elapsed <= maxSwipeDurationMs;
+    const horizontalGesture = this.overlayTouchAxisLock === 'x';
+
+    const shouldClose = this.overlayTouchFromEdge && horizontalGesture && (validDistance || passedDynamicTrigger) && validVerticalDrift && validDuration;
+    if (shouldClose) {
+      this.overlaySwipeAnimating = true;
+      this.overlaySwipeX = overlayWidth;
+      this.clearOverlayTouchState();
+      if (this.overlayCloseTimer) clearTimeout(this.overlayCloseTimer);
+      this.overlayCloseTimer = setTimeout(() => {
+        this.overlayCloseTimer = null;
+        this.closeGroup();
+      }, 170);
+      return;
+    }
+    this.onGroupOverlayTouchCancel(true);
+  }
+
+  onGroupOverlayTouchCancel(animateBack = true): void {
+    if (animateBack && this.overlaySwipeX > 0) {
+      this.overlaySwipeAnimating = true;
+    } else {
+      this.overlaySwipeAnimating = false;
+    }
+    this.overlaySwipeX = 0;
+    this.clearOverlayTouchState();
+  }
+
+  private clearOverlayTouchState(): void {
+    this.overlayTouchActive = false;
+    this.overlayTouchFromEdge = false;
+    this.overlayTouchAxisLock = 'none';
+    this.overlayTouchStartX = 0;
+    this.overlayTouchStartY = 0;
+    this.overlayTouchLastX = 0;
+    this.overlayTouchLastY = 0;
+    this.overlayTouchStartAt = 0;
+  }
+
+  private restoreProvidersScrollIfNeeded(): void {
+    const el = this.providersScrollEl?.nativeElement;
+    if (!el || !this.restoreProvidersScrollPending) return;
+    el.scrollTop = this.providersScrollTop;
+    this.restoreProvidersScrollPending = false;
   }
   openAiIconUrl = 'https://assets.streamlinehq.com/image/private/w_240,h_240,ar_1/f_auto/v1/icons/technology/openai_1-moa3pqsiii7l4dkheifi8.png/openai_1-gv7rd0u7lcncyfalyjodt.png?_a=DATAg1AAZAA0';
   isOpenAiGroup(g: any): boolean {
