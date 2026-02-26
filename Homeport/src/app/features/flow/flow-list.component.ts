@@ -57,7 +57,7 @@ type FlowItem = { id: string; name: string; description?: string };
 
       <div class="empty" *ngIf="!loading && !error && filtered.length===0">Aucun élément trouvé.</div>
       <div class="grid" *ngIf="!loading && !error && filtered.length>0">
-        <div class="card" *ngFor="let it of filtered" [ngClass]="{ invalid: it.invalid }" (dblclick)="openEditor(it)">
+        <div class="card" *ngFor="let it of filtered" [ngClass]="{ invalid: it.invalid }" (click)="openEditor(it)">
           <div class="leading">
             <div class="icon-badge" aria-hidden="true"><i [class]="getIcon(it)"></i></div>
           </div>
@@ -111,10 +111,10 @@ type FlowItem = { id: string; name: string; description?: string };
             </nz-dropdown-menu>
           </div>
           <div class="trailing">
-            <button class="icon-btn" (click)="openEditor(it)" title="Éditeur">
+            <button class="icon-btn" (click)="openEditor(it); $event.stopPropagation()" title="Éditeur">
               <i class="fa-regular fa-pen-to-square"></i>
             </button>
-            <button class="icon-btn" (click)="openExecutions(it)" title="Exécutions">
+            <button class="icon-btn" (click)="openExecutions(it); $event.stopPropagation()" title="Exécutions">
               <i class="fa-solid fa-circle-play"></i>
             </button>
             <button class="icon-btn danger"

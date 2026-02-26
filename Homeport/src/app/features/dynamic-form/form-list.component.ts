@@ -48,17 +48,17 @@ type FormItem = { id: string; name: string; description?: string };
       </div>
       <div class="error" *ngIf="!loading && error">{{ error }}</div>
       <div class="grid" *ngIf="!loading && !error">
-        <div class="card" *ngFor="let it of filtered" (dblclick)="openBuilder(it)">
+        <div class="card" *ngFor="let it of filtered" (click)="openBuilder(it)">
           <div class="leading"><div class="icon-badge"><i class="fa-regular fa-rectangle-list"></i></div></div>
           <div class="content">
             <div class="title-row"><div class="name">{{ it.name }}</div></div>
             <div class="desc" *ngIf="it.description">{{ it.description }}</div>
           </div>
           <div class="trailing">
-            <button class="icon-btn" (click)="openBuilder(it)" title="Builder">
+            <button class="icon-btn" (click)="openBuilder(it); $event.stopPropagation()" title="Builder">
               <i class="fa-solid fa-screwdriver-wrench"></i>
             </button>
-            <button class="icon-btn" (click)="openViewer(it)" title="Viewer">
+            <button class="icon-btn" (click)="openViewer(it); $event.stopPropagation()" title="Viewer">
               <i class="fa-regular fa-eye"></i>
             </button>
             <button class="icon-btn danger"
