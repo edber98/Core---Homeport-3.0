@@ -410,18 +410,31 @@ interface StreamTool {
     </div>
   `,
   styles: [`
-    :host { display: flex; flex-direction: column; height: 100%; }
-    .messages { flex: 1; overflow-y: auto; padding: 12px 16px; display: flex; flex-direction: column; gap: 4px; }
+    :host { display: flex; flex-direction: column; height: 100%; min-width: 0; overflow-x: hidden; }
+    .messages { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 12px 16px; display: flex; flex-direction: column; gap: 4px; }
     .empty { flex: 1; display: flex; align-items: center; justify-content: center; }
     .streaming-msg .ai-msg { display: flex; gap: 10px; padding: 8px 0; }
     .streaming-msg .avatar { width: 32px; height: 32px; border-radius: 50%; background: #e6f4ff; color: #1677ff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 16px; }
     .streaming-msg .body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
-    .streaming-msg .content { background: #f5f5f5; border-radius: 12px 12px 12px 2px; padding: 8px 14px; max-width: 85%; word-break: break-word; line-height: 1.5; }
+    .streaming-msg .content { background: #f5f5f5; border-radius: 12px 12px 12px 2px; padding: 8px 14px; max-width: 85%; min-width: 0; overflow: hidden; word-break: break-word; line-height: 1.5; }
     .streaming-msg .content :host ::ng-deep p { margin: 0 0 4px; }
     .streaming-msg .content :host ::ng-deep p:last-child { margin: 0; }
     .streaming-msg .content :host ::ng-deep code { background: #e8e8e8; padding: 1px 4px; border-radius: 3px; font-size: 13px; }
-    .streaming-msg .content :host ::ng-deep pre { background: #e8e8e8; padding: 8px; border-radius: 6px; overflow-x: auto; }
-    .streaming-msg .content ::ng-deep table { border-collapse: collapse; width: 100%; margin: 8px 0; font-size: 13px; display: block; overflow-x: auto; max-width: 100%; }
+    .streaming-msg .content :host ::ng-deep pre { background: #e8e8e8; padding: 8px; border-radius: 6px; max-width: 100%; overflow-x: auto; }
+    .streaming-msg .content ::ng-deep .md-table-wrap {
+      margin: 8px 0;
+      max-width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .streaming-msg .content ::ng-deep .md-table-wrap > table {
+      border-collapse: collapse;
+      width: max-content;
+      min-width: 100%;
+      margin: 0;
+      font-size: 13px;
+    }
+    .streaming-msg .content ::ng-deep table { border-collapse: collapse; width: max-content; min-width: 100%; margin: 8px 0; font-size: 13px; }
     .streaming-msg .content ::ng-deep th, .streaming-msg .content ::ng-deep td { border: 1px solid #e8e8e8; padding: 6px 10px; text-align: left; white-space: nowrap; }
     .streaming-msg .content ::ng-deep th { background: #fafafa; font-weight: 600; font-size: 12px; }
     .streaming-msg .content ::ng-deep tr:nth-child(even) { background: #fafafa; }
@@ -433,6 +446,19 @@ interface StreamTool {
     .reasoning-text ::ng-deep p { margin: 0 0 4px; }
     .reasoning-text ::ng-deep p:last-child { margin: 0; }
     .reasoning-text ::ng-deep code { background: #e8e8e8; padding: 1px 3px; border-radius: 2px; font-size: 11px; }
+    .reasoning-text ::ng-deep pre { max-width: 100%; overflow-x: auto; }
+    .reasoning-text ::ng-deep .md-table-wrap {
+      margin: 8px 0;
+      max-width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .reasoning-text ::ng-deep .md-table-wrap > table {
+      width: max-content;
+      min-width: 100%;
+      margin: 0;
+    }
+    .reasoning-text ::ng-deep table { width: max-content; min-width: 100%; }
     .reasoning-text ::ng-deep ul, .reasoning-text ::ng-deep ol { margin: 2px 0; padding-left: 18px; }
     .reasoning-text ::ng-deep li { margin: 1px 0; }
     @keyframes pulse-reason { 0%, 100% { opacity: 0.9; } 50% { opacity: 0.75; } }
@@ -481,8 +507,8 @@ interface StreamTool {
     .thinking-inline { display: flex; align-items: center; gap: 5px; padding: 4px 0; opacity: 0.7; }
     .avatar-error { background: #fff2f0 !important; color: #ff4d4f !important; }
     .content-error { background: #fff2f0 !important; color: #ff4d4f; border: 1px solid #ffccc7; display: flex; align-items: center; }
-    .input-bar { padding: 8px 16px 12px; }
-    .input-row { display: flex; align-items: center; gap: 6px; border: 1px solid #dbe4ef; border-radius: 20px; padding: 5px 12px; transition: border-color 0.2s, box-shadow 0.2s; background: #fff; }
+    .input-bar { width: 100%; margin: 0; padding: 6px 0 12px; box-sizing: border-box; border-top: 1px solid rgba(15, 23, 42, 0.08); }
+    .input-row { display: flex; align-items: center; gap: 6px; border: 1px solid #dbe4ef; border-radius: 20px; padding: 5px 12px; margin-inline: clamp(10px, 2vw, 24px); transition: border-color 0.2s, box-shadow 0.2s; background: #fff; }
     .input-row:hover,
     .input-row:focus-within {
       border-color: #1677ff;
@@ -558,7 +584,7 @@ interface StreamTool {
     .question-msg .question-body { flex: 1; min-width: 0; max-width: 85%; }
     .interrupted-tag { padding: 4px 0; }
     .drag-over { border-color: #1677ff !important; background: rgba(22, 119, 255, 0.04); }
-    .att-previews { display: flex; flex-wrap: wrap; gap: 6px; padding: 6px 8px 2px; }
+    .att-previews { display: flex; flex-wrap: wrap; gap: 6px; padding: 0px 24px 2px; }
     .att-chip { display: inline-flex; align-items: center; gap: 4px; background: #f5f5f5; border: 1px solid #e8e8e8; border-radius: 6px; padding: 3px 6px; font-size: 12px; max-width: 200px; }
     .att-chip.att-uploading { opacity: 0.7; }
     .att-chip.att-error { border-color: #ff4d4f; background: #fff2f0; }
@@ -1099,11 +1125,18 @@ export class AiChatComponent {
   renderMd(src: string): string {
     try {
       const html = marked.parse(String(src || ''), { breaks: true, gfm: true }) as string;
-      return DOMPurify.sanitize(html, {
-        ALLOWED_TAGS: ['p', 'strong', 'em', 'code', 'pre', 'a', 'ul', 'ol', 'li', 'br', 'span', 'b', 'i', 'h1', 'h2', 'h3', 'h4', 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'blockquote', 'hr', 'img'],
+      const wrapped = this.wrapTablesForScroll(html);
+      return DOMPurify.sanitize(wrapped, {
+        ALLOWED_TAGS: ['div', 'p', 'strong', 'em', 'code', 'pre', 'a', 'ul', 'ol', 'li', 'br', 'span', 'b', 'i', 'h1', 'h2', 'h3', 'h4', 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'blockquote', 'hr', 'img'],
         ALLOWED_ATTR: ['href', 'target', 'rel', 'class', 'src', 'alt', 'loading', 'width', 'height'],
       });
     } catch { return src; }
+  }
+
+  private wrapTablesForScroll(html: string): string {
+    return String(html || '')
+      .replace(/<table(\b[^>]*)>/gi, '<div class="md-table-wrap"><table$1>')
+      .replace(/<\/table>/gi, '</table></div>');
   }
 
   // trackBy functions to avoid DOM thrashing during streaming

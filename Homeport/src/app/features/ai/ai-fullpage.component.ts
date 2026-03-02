@@ -99,19 +99,35 @@ import { AiSettingsComponent } from './ai-settings.component';
             </div>
           </div>
 
-          <!-- Settings link -->
-          <div class="sidebar-bottom">
-            <button nz-button nzType="text" nzSize="small" nzBlock (click)="showSettings = !showSettings"
-              [class.active-btn]="showSettings">
-              <span nz-icon nzType="setting" nzTheme="outline"></span>
-              Paramètres
-            </button>
-          </div>
         </ng-container>
+
+        <!-- Settings link -->
+        <div class="sidebar-bottom">
+          <button nz-button nzType="text" nzSize="small" [nzBlock]="!sidebarCollapsed" (click)="showSettings = !showSettings"
+            [class.active-btn]="showSettings" nz-tooltip [nzTooltipTitle]="sidebarCollapsed ? 'Paramètres' : null">
+            <span nz-icon nzType="setting" nzTheme="outline"></span>
+            <span *ngIf="!sidebarCollapsed">Paramètres</span>
+          </button>
+        </div>
       </div>
 
+      <div class="mobile-sidebar-backdrop" *ngIf="!sidebarCollapsed" (click)="sidebarCollapsed = true"></div>
+
       <!-- Main content -->
-      <div class="fp-main">
+      <div class="fp-main" [class.sidebar-collapsed]="sidebarCollapsed">
+        <button
+          *ngIf="sidebarCollapsed"
+          nz-button
+          nzType="text"
+          nzSize="small"
+          class="mobile-sidebar-open-btn"
+          (click)="sidebarCollapsed = false"
+          nz-tooltip
+          nzTooltipTitle="Afficher les conversations"
+        >
+          <span nz-icon nzType="menu-unfold" nzTheme="outline"></span>
+        </button>
+
         <!-- Settings overlay -->
         <ai-settings *ngIf="showSettings" class="fp-settings"></ai-settings>
 
@@ -327,13 +343,16 @@ import { AiSettingsComponent } from './ai-settings.component';
   `,
   styles: [`
     :host { display: block; height: 100%; }
-    .fp-layout { display: flex; height: 100%; background: #fff; }
+    .fp-layout { display: flex; height: 100%; background: #fff; position: relative; }
 
     /* Sidebar */
     .fp-sidebar { width: 300px; border-right: 1px solid #f0f0f0; display: flex; flex-direction: column; flex-shrink: 0; background: #fff; transition: width 0.2s ease; }
     .fp-sidebar.collapsed { width: 48px; }
-    .sidebar-header { display: flex; align-items: center; justify-content: space-between; padding: 12px; border-bottom: 1px solid #f0f0f0; }
-    .sidebar-title { font-weight: 600; font-size: 15px; }
+    .sidebar-header { display: flex; align-items: center; gap: 10px; padding: 10px 20px; border-bottom: 1px solid #f0f0f0; flex-shrink: 0; }
+    .sidebar-title { font-weight: 600; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .sidebar-toggle-btn { margin-left: auto; }
+    .fp-sidebar.collapsed .sidebar-header { justify-content: center; padding: 10px 0; }
+    .fp-sidebar.collapsed .sidebar-toggle-btn { margin-left: 0; }
     .sidebar-toggle-btn,
     .chat-action-btn {
       border-radius: 8px;
@@ -362,7 +381,8 @@ import { AiSettingsComponent } from './ai-settings.component';
     }
     .sidebar-new { padding: 8px 12px; }
     .sidebar-threads { flex: 1; overflow-y: auto; padding: 4px 8px; }
-    .sidebar-bottom { padding: 8px 12px; border-top: 1px solid #f0f0f0; }
+    .sidebar-bottom { padding: 8px 12px; border-top: 1px solid #f0f0f0; margin-top: auto; }
+    .fp-sidebar.collapsed .sidebar-bottom { padding: 8px 0; display: flex; justify-content: center; }
 
     .thread-item { padding: 10px 12px; border-radius: 8px; cursor: pointer; margin-bottom: 2px; position: relative; }
     .thread-item:hover { background: #e6f4ff; }
@@ -392,6 +412,9 @@ import { AiSettingsComponent } from './ai-settings.component';
       background: #1677ff;
       border-color: #1677ff;
       color: #fff;
+      height: auto;
+      padding-top: 4px;
+      padding-bottom: 4px;
     }
     .new-thread-btn.ant-btn-primary:hover,
     .new-thread-btn.ant-btn-primary:focus-visible {
@@ -405,9 +428,11 @@ import { AiSettingsComponent } from './ai-settings.component';
     }
 
     /* Main */
-    .fp-main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
-    .fp-empty { flex: 1; display: flex; align-items: center; justify-content: center; }
-    .fp-chat-wrap { position: relative; flex: 1; min-height: 0; display: flex; }
+    .fp-main { flex: 1; display: flex; flex-direction: column; min-width: 0; position: relative; }
+    .mobile-sidebar-open-btn { display: none; }
+    .mobile-sidebar-backdrop { display: none; }
+    .fp-empty { flex: 1; display: flex; align-items: center; justify-content: center; padding: 0 20px; }
+    .fp-chat-wrap { position: relative; flex: 1; min-height: 0; min-width: 0; display: flex; overflow: hidden; }
     .fp-chat-empty-overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: 0 20px; background: #fff; z-index: 2; }
     .assistant-view { width: min(100%, 920px); margin: 0 auto; }
     .assistant-floating { position: relative; min-height: clamp(340px, 60vh, 560px); display: flex; align-items: center; justify-content: center; }
@@ -538,13 +563,29 @@ import { AiSettingsComponent } from './ai-settings.component';
     .sp-link-text { display: flex; align-items: center; gap: 4px; font-size: 12px; color: #1677ff; cursor: pointer; }
     .sp-link-text:hover { text-decoration: underline; }
     .sp-no-link-text { font-size: 12px; color: #999; }
-    .fp-chat { flex: 1; min-height: 0; }
+    .fp-chat { flex: 1; min-height: 0; min-width: 0; overflow: hidden; }
     .fp-settings { flex: 1; overflow-y: auto; }
 
     /* Responsive */
     @media (max-width: 768px) {
-      .fp-sidebar { width: 0; overflow: hidden; }
-      .fp-sidebar:not(.collapsed) { width: 260px; position: absolute; z-index: 10; height: 100%; box-shadow: 2px 0 8px rgba(0,0,0,0.1); }
+      .fp-sidebar { width: 0; overflow: hidden; border-right: none; }
+      .fp-sidebar.collapsed { width: 0; border-right: none; }
+      .fp-sidebar:not(.collapsed) { width: 260px; position: absolute; z-index: 10; height: 100%; box-shadow: 2px 0 8px rgba(0,0,0,0.1); border-right: 1px solid #f0f0f0; }
+      .mobile-sidebar-backdrop {
+        display: block;
+        position: absolute;
+        inset: 0;
+        z-index: 9;
+        background: transparent;
+      }
+      .fp-main.sidebar-collapsed .fp-chat-header { padding: 10px 20px 10px 52px; }
+      .mobile-sidebar-open-btn {
+        display: inline-flex;
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        z-index: 11;
+      }
       .assistant-floating { min-height: clamp(300px, 66vh, 460px); }
       .ai-header-center { grid-template-columns: 36px auto 36px; column-gap: 8px; }
       .ai-content { gap: 8px; }

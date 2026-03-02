@@ -167,7 +167,7 @@ import { AiSettingsComponent } from './ai-settings.component';
     .linked-link:hover { background: rgba(22,119,255,0.1); }
     .agent-badge { display: flex; align-items: center; gap: 4px; font-size: 11px; color: #722ed1; background: #f9f0ff; padding: 1px 8px; border-radius: 10px; }
     .agent-dot { width: 6px; height: 6px; border-radius: 50%; background: #722ed1; }
-    .chat-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-height: 0; }
+    .chat-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-height: 0; min-width: 0; }
     .settings-area { flex: 1; overflow: hidden; min-height: 0; }
     .thread-settings-popover { width: 260px; }
     .tsp-field { margin-bottom: 10px; }
