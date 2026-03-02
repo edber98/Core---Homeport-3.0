@@ -1052,9 +1052,11 @@
 
   .dashboard-grid {
     min-height: 0;
-    height: 100%;
-    overflow: hidden;
-    grid-template-rows: auto auto auto minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
+    height: auto;
+    overflow: visible;
+    align-items: stretch;
+    grid-template-rows: none;
+    grid-auto-rows: auto;
   }
 
   .panel-topflows,
