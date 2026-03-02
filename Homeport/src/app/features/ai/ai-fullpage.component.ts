@@ -382,7 +382,7 @@ import { AiSettingsComponent } from './ai-settings.component';
     .sidebar-new { padding: 8px 12px; }
     .sidebar-threads { flex: 1; overflow-y: auto; padding: 4px 8px; }
     .sidebar-bottom { padding: 8px 12px; border-top: 1px solid #f0f0f0; margin-top: auto; }
-    .fp-sidebar.collapsed .sidebar-bottom { padding: 8px 0; display: flex; justify-content: center; }
+    .fp-sidebar.collapsed .sidebar-bottom { padding: 8px 0 22px; border-top: none; display: flex; justify-content: center; }
 
     .thread-item { padding: 10px 12px; border-radius: 8px; cursor: pointer; margin-bottom: 2px; position: relative; }
     .thread-item:hover { background: #e6f4ff; }
