@@ -293,7 +293,7 @@
           <i class="fa-solid fa-pen-to-square"></i>
         </button>
         <span class="flex-spacer"></span>
-        <button nz-button nzSize="small" class="apple-btn" (click)="aiChatOpen = !aiChatOpen" nz-tooltip [nzTooltipTitle]="!isMobile ? 'Assistant IA' : null" [nzTooltipTrigger]="'hover'" aria-label="Ouvrir l'assistant IA">
+        <button nz-button nzSize="small" class="apple-btn" (click)="openAiPanel()" nz-tooltip [nzTooltipTitle]="!isMobile ? 'Assistant IA' : null" [nzTooltipTrigger]="'hover'" aria-label="Ouvrir l'assistant IA">
           <i class="fa-solid fa-message"></i>
         </button>
         <button nz-button nzSize="small" class="apple-btn" (click)="openPanel('right', $event)" [disabled]="!selected" nz-tooltip [nzTooltipTitle]="!isMobile ? 'Inspector' : null" [nzTooltipTrigger]="'hover'" aria-label="Panneau droit">
@@ -309,7 +309,7 @@
       
     </ng-template>
     <nz-card [nzTitle]="previewTitle" nzSize="small" class="card fill no-chrome">
-      <div class="preview-frame" [style.width.px]="previewWidth || null">
+      <div #previewFrame class="preview-frame" [style.width.px]="previewWidth || null">
         <app-dynamic-form
         [schema]="schema"
         [value]="previewUseSim ? simValues : undefined"
@@ -336,7 +336,7 @@
       </div>
 
       <!-- History controls centered -->
-      <div class="history-bar">
+      <div class="history-bar" [style.left.px]="historyBarLeftPx">
         <div class="hb-left">
           <button nz-button nzSize="small" class="icon-btn" (click)="undo()" [disabled]="!canUndo" nz-tooltip nzTooltipTitle="Annuler" aria-label="Annuler">
             <i class="fa-solid fa-rotate-left"></i>
@@ -589,14 +589,28 @@
 </button>
 
 <!-- Responsive drawers (mobile) -->
-<nz-drawer [nzVisible]="leftDrawer" (nzOnClose)="leftDrawer=false" nzPlacement="left" [nzWidth]="360" [nzBodyStyle]="{padding:'0'}" [nzClosable]="false">
+<nz-drawer [nzVisible]="leftDrawer" (nzOnClose)="onLeftDrawerClose()" nzPlacement="left" [nzWidth]="360"
+  [nzBodyStyle]="{padding:'0'}" [nzClosable]="false" [nzMaskClosable]="true" nzWrapClassName="ios-safe-drawer">
   <ng-container *nzDrawerContent>
-    <ng-container [ngTemplateOutlet]="leftPanelContent"></ng-container>
+    <div class="drawer-swipe-zone"
+      (touchstart)="onDrawerTouchStart($event, 'left')"
+      (touchmove)="onDrawerTouchMove($event, 'left')"
+      (touchend)="onDrawerTouchEnd('left')"
+      (touchcancel)="onDrawerTouchEnd('left')">
+      <ng-container [ngTemplateOutlet]="leftPanelContent"></ng-container>
+    </div>
   </ng-container>
-  </nz-drawer>
+</nz-drawer>
 
-<nz-drawer [nzVisible]="rightDrawer" (nzOnClose)="rightDrawer=false" nzPlacement="right" [nzWidth]="360" [nzBodyStyle]="{padding:'0'}" [nzClosable]="false">
+<nz-drawer [nzVisible]="rightDrawer" (nzOnClose)="onRightDrawerClose()" nzPlacement="right" [nzWidth]="360"
+  [nzBodyStyle]="{padding:'0'}" [nzClosable]="false" [nzMaskClosable]="true" nzWrapClassName="ios-safe-drawer">
   <ng-container *nzDrawerContent>
-    <ng-container [ngTemplateOutlet]="rightPanelContent"></ng-container>
+    <div class="drawer-swipe-zone"
+      (touchstart)="onDrawerTouchStart($event, 'right')"
+      (touchmove)="onDrawerTouchMove($event, 'right')"
+      (touchend)="onDrawerTouchEnd('right')"
+      (touchcancel)="onDrawerTouchEnd('right')">
+      <ng-container [ngTemplateOutlet]="rightPanelContent"></ng-container>
+    </div>
   </ng-container>
 </nz-drawer>
