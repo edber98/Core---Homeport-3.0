@@ -1607,9 +1607,9 @@ export class DynamicFormBuilderComponent implements OnChanges, OnInit, AfterView
 
   // ---------- Canvas actions ----------
   addStep(): void {
-    this.ensureStepperMode();
-    const step: StepConfig = { title: 'Étape', fields: [], style: 'stack' } as any;
-    this.schema.steps!.push(step);
+    const migratedStep = this.ensureStepperMode();
+    const step: StepConfig = migratedStep || ({ title: 'Étape', fields: [], style: 'stack' } as any);
+    if (!migratedStep) this.schema.steps!.push(step);
     this.selectedField = null;
     this.select(step);
     this.refresh();
@@ -1913,9 +1913,9 @@ export class DynamicFormBuilderComponent implements OnChanges, OnInit, AfterView
 
   // Ajouts depuis l'aperçu
   onEditAddStep() {
-    this.ensureStepperMode();
-    const step: StepConfig = { title: 'Step', fields: [], style: 'stack' } as any;
-    this.schema.steps!.push(step);
+    const migratedStep = this.ensureStepperMode();
+    const step: StepConfig = migratedStep || ({ title: 'Step', fields: [], style: 'stack' } as any);
+    if (!migratedStep) this.schema.steps!.push(step);
     this.selectedField = null;
     this.select(step);
     this.refresh();
@@ -2504,11 +2504,18 @@ export class DynamicFormBuilderComponent implements OnChanges, OnInit, AfterView
     return f;
   }
 
-  private ensureStepperMode(): void {
-    if (!this.schema.steps) {
-      this.schema.steps = [];
+  private ensureStepperMode(): StepConfig | null {
+    if (this.schema.steps?.length) return null;
+    this.schema.steps = this.schema.steps || [];
+    const rootItems = Array.isArray(this.schema.fields) ? this.schema.fields : [];
+    if (rootItems.length) {
+      const migrated: StepConfig = { title: 'Étape 1', fields: rootItems as any, style: 'stack' } as any;
+      this.schema.steps.push(migrated);
       delete this.schema.fields;
+      return migrated;
     }
+    delete this.schema.fields;
+    return null;
   }
 
   private ensureFlatMode(): void {
@@ -3036,8 +3043,8 @@ export class DynamicFormBuilderComponent implements OnChanges, OnInit, AfterView
     return this.parseKey(this.dropdownKey);
   }
   ctxAddStep() {
-    this.ensureStepperMode();
-    const step = this.ctxActions.addStep(this.schema) as StepConfig;
+    const migratedStep = this.ensureStepperMode();
+    const step = (migratedStep || this.ctxActions.addStep(this.schema)) as StepConfig;
     this.select(step);
     this.refresh();
   }
