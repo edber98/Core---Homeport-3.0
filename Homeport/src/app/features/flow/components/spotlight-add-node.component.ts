@@ -15,7 +15,8 @@ import { AppProvider } from '../../../services/catalog.service';
             <i class="search-ico fa-solid fa-magnifying-glass" aria-hidden="true"></i>
             <i class="ai-ico fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i>
             <textarea #ta rows="1" class="search-input"
-              [placeholder]="placeholder || 'Rechercher un nœud ou décrire ce que tu veux…'"
+              [placeholder]="loading ? 'Chargement des connecteurs…' : (placeholder || 'Rechercher un nœud ou décrire ce que tu veux…')"
+              [disabled]="loading"
               [(ngModel)]="query"
               (ngModelChange)="onQueryChange($event)"
               (keydown)="onKeydown($event)"
@@ -38,54 +39,60 @@ import { AppProvider } from '../../../services/catalog.service';
         </div>
       </div>
 
-      <div class="ai-card" *ngIf="totalCount === 0 && looksLikePrompt(query)">
-        <div class="ai-top">
-          <div class="ai-title"><div class="spark" aria-hidden="true"><i class="fa-solid fa-wand-magic-sparkles"></i></div> Suggestions IA</div>
-          <div class="ai-actions">
-            <button type="button" class="btn" (click)="pick.emit(null)">Utiliser comme prompt</button>
-          </div>
-        </div>
-        <div class="ai-suggestions">
-          <div class="ai-suggestion" *ngFor="let s of buildAiSuggestions(query)">
-            <div class="s-head">{{ s.title }}</div>
-            <div class="s-body">{{ s.body }}</div>
-          </div>
-        </div>
+      <div class="loading-state" *ngIf="loading" role="status" aria-live="polite">
+        <span class="loading-spinner" aria-hidden="true"></span>
+        <span class="loading-text">Chargement des connecteurs…</span>
       </div>
 
-      <div class="list" role="listbox" aria-label="Résultats">
-        <ng-container *ngIf="itemsFlat.length; else empty">
-          <ng-container *ngFor="let g of groups">
-            <div class="group-title">
-              <span class="group-mini" *ngIf="g.appId" [style.background]="g.appColor || '#f3f4f6'">
-                <img *ngIf="g.appIconUrl" [src]="g.appIconUrl" alt="icon" />
-                <i *ngIf="!g.appIconUrl && g.appIconClass" [class]="g.appIconClass"></i>
-                <img *ngIf="!g.appIconUrl && !g.appIconClass" [src]="simpleIconUrlForApp(g.appId)" alt="icon" />
-              </span>
-              <span class="group-name">{{ g.title }}</span>
+      <ng-container *ngIf="!loading">
+        <div class="ai-card" *ngIf="totalCount === 0 && looksLikePrompt(query)">
+          <div class="ai-top">
+            <div class="ai-title"><div class="spark" aria-hidden="true"><i class="fa-solid fa-wand-magic-sparkles"></i></div> Suggestions IA</div>
+            <div class="ai-actions">
+              <button type="button" class="btn" (click)="pick.emit(null)">Utiliser comme prompt</button>
             </div>
-            <button type="button" class="item" *ngFor="let it of g.items" (mousemove)="hoverTo(it)" (click)="pick.emit(it)" [attr.aria-selected]="isActive(it) ? 'true' : 'false'">
-              <div class="row">
-                <div class="meta">
-                  <div class="label">{{ it.label }}</div>
-                  <div class="desc" *ngIf="it.template?.description as d">{{ d }}</div>
-                  <div class="desc" *ngIf="!it.template?.description && (it.template?.subtitle || it.template?.category)">
-                    {{ it.template?.subtitle || it.template?.category }}
+          </div>
+          <div class="ai-suggestions">
+            <div class="ai-suggestion" *ngFor="let s of buildAiSuggestions(query)">
+              <div class="s-head">{{ s.title }}</div>
+              <div class="s-body">{{ s.body }}</div>
+            </div>
+          </div>
+        </div>
+        <div class="list" role="listbox" aria-label="Résultats">
+          <ng-container *ngIf="itemsFlat.length; else empty">
+            <ng-container *ngFor="let g of groups">
+              <div class="group-title">
+                <span class="group-mini" *ngIf="g.appId" [style.background]="g.appColor || '#f3f4f6'">
+                  <img *ngIf="g.appIconUrl" [src]="g.appIconUrl" alt="icon" />
+                  <i *ngIf="!g.appIconUrl && g.appIconClass" [class]="g.appIconClass"></i>
+                  <img *ngIf="!g.appIconUrl && !g.appIconClass" [src]="simpleIconUrlForApp(g.appId)" alt="icon" />
+                </span>
+                <span class="group-name">{{ g.title }}</span>
+              </div>
+              <button type="button" class="item" *ngFor="let it of g.items" (mousemove)="hoverTo(it)" (click)="pick.emit(it)" [attr.aria-selected]="isActive(it) ? 'true' : 'false'">
+                <div class="row">
+                  <div class="meta">
+                    <div class="label">{{ it.label }}</div>
+                    <div class="desc" *ngIf="it.template?.description as d">{{ d }}</div>
+                    <div class="desc" *ngIf="!it.template?.description && (it.template?.subtitle || it.template?.category)">
+                      {{ it.template?.subtitle || it.template?.category }}
+                    </div>
+                  </div>
+                  <div class="app-chip" [style.background]="providerColor(it)" title="Provider">
+                    <ng-container [ngTemplateOutlet]="iconTpl" [ngTemplateOutletContext]="{ $implicit: it }"></ng-container>
                   </div>
                 </div>
-                <div class="app-chip" [style.background]="providerColor(it)" title="Provider">
-                  <ng-container [ngTemplateOutlet]="iconTpl" [ngTemplateOutletContext]="{ $implicit: it }"></ng-container>
-                </div>
-              </div>
-            </button>
+              </button>
+            </ng-container>
           </ng-container>
-        </ng-container>
-        <ng-template #empty>
-          <div class="ai-hint">
-            Aucun résultat. Appuyez sur Entrée pour utiliser l'assistant IA.
-          </div>
-        </ng-template>
-      </div>
+          <ng-template #empty>
+            <div class="ai-hint">
+              Aucun résultat. Appuyez sur Entrée pour utiliser l'assistant IA.
+            </div>
+          </ng-template>
+        </div>
+      </ng-container>
 
       <ng-template #iconTpl let-it>
         <ng-container [ngSwitch]="iconMode(it)">
@@ -116,6 +123,10 @@ import { AppProvider } from '../../../services/catalog.service';
     .hint-text { font-size:11px; color:#6b7280; }
     .search-meta { display:flex; justify-content:space-between; gap:10px; color:#6b7280; font-size:12px; padding:0 2px; }
     .muted { color:#6b7280; }
+    .loading-state { min-height: min(60vh, 420px); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; color:#64748b; padding: 8px 10px; }
+    .loading-spinner { width: 26px; height: 26px; border-radius:50%; border:3px solid #dbe4ef; border-top-color:#1677ff; animation: spotlight-spin .75s linear infinite; }
+    .loading-text { font-size:12px; font-weight:600; color:#475569; }
+    @keyframes spotlight-spin { to { transform: rotate(360deg); } }
     .list { max-height: min(60vh, 520px); overflow:auto; padding: 8px 10px; }
     .group-title { display:flex; align-items:center; justify-content:center; gap:8px; font-size:16px; font-weight:700; color:#111827; padding: 10px 6px; text-align:center; }
     .group-title .group-mini { width:22px; height:22px; display:inline-flex; align-items:center; justify-content:center; border-radius:6px; flex:none; }
@@ -152,6 +163,7 @@ import { AppProvider } from '../../../services/catalog.service';
 })
 export class SpotlightAddNodeComponent implements OnChanges, AfterViewInit {
   @Input() groups: Array<{ title: string; items: any[]; appId?: string; appColor?: string; appIconClass?: string; appIconUrl?: string }> = [];
+  @Input() loading: boolean = false;
   @Input() query: string = '';
   @Input() placeholder: string = '';
   @Input() totalCount: number = 0;
@@ -173,6 +185,7 @@ export class SpotlightAddNodeComponent implements OnChanges, AfterViewInit {
   isActive(it: any): boolean { const idx = this.itemsFlat.indexOf(it); return idx === this.activeIndex; }
   hoverTo(it: any) { const idx = this.itemsFlat.indexOf(it); if (idx >= 0) this.activeIndex = idx; }
   onKeydown(ev: KeyboardEvent) {
+    if (this.loading) return;
     if (ev.key === 'ArrowDown') { ev.preventDefault(); if (this.itemsFlat.length) this.activeIndex = Math.min(this.itemsFlat.length - 1, this.activeIndex + 1); return; }
     if (ev.key === 'ArrowUp') { ev.preventDefault(); if (this.itemsFlat.length) this.activeIndex = Math.max(0, this.activeIndex - 1); return; }
     if (ev.key === 'Enter' && !ev.shiftKey) { ev.preventDefault(); if (this.itemsFlat.length > 0) this.pick.emit(this.itemsFlat[this.activeIndex] || this.itemsFlat[0]); else this.pick.emit(null); return; }
