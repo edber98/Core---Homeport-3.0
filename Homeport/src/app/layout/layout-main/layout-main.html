@@ -28,14 +28,14 @@
       </div>
 </div> -->
 
-<nz-layout class="full-height">
+<nz-layout class="main-shell">
   <!-- Sider (desktop) -->
-  <nz-sider *ngIf="showSider" [nzCollapsible]="true" [(nzCollapsed)]="siderCollapsed" (nzCollapsedChange)="onSiderCollapsedChange($event)" [nzCollapsedWidth]="80" [nzTheme]="'light'" class="border-right-primary" nzWidth="220px">
+  <nz-sider *ngIf="showSider" [nzCollapsible]="true" [(nzCollapsed)]="siderCollapsed" (nzCollapsedChange)="onSiderCollapsedChange($event)" [nzCollapsedWidth]="80" [nzTheme]="'light'" class="border-right-primary main-sider" nzWidth="220px">
     <div class="logo" [class.collapsed]="siderCollapsed">
       <img src="/imgs/logo.png" alt="Kinn" />
       <span class="brand-text">Kinn</span>
     </div>
-    <ul nz-menu nzTheme="light" style="border:0px !important" nzMode="inline">
+    <ul nz-menu nzTheme="light" style="border:0px !important" nzMode="inline" class="sider-menu">
       <ng-container *ngFor="let it of menu">
         <li nz-submenu *ngIf="it.children?.length && (!it.adminOnly || isAdmin)">
           <span title>
