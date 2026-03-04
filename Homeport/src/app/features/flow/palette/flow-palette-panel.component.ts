@@ -18,98 +18,110 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
         <span class="s">Groupes & Templates</span>
       </div>
       <div class="palette-search" [class.searching]="hasQuery()">
-        <input nz-input [ngModel]="internalQuery" (ngModelChange)="onQueryInput($event)" placeholder="Rechercher un nœud (nom, catégorie)" />
+        <input
+          nz-input
+          [ngModel]="internalQuery"
+          (ngModelChange)="onQueryInput($event)"
+          [disabled]="loading"
+          placeholder="Rechercher un nœud (nom, catégorie)"
+        />
       </div>
       <div class="palette-scroll" #providersScroll [class.overlay-open]="!!activeGroup">
-      <div class="search-results" *ngIf="hasQuery() && !activeGroup; else browseMode">
-        <ng-container *ngFor="let g of filteredGroups(); let gi = index; trackBy: trackGroupFn">
-          <button type="button" class="group-title search-group-title" [class.searching]="hasQuery()" (click)="openGroupFromSearch(g.group, g.index)" [attr.aria-label]="'Ouvrir ' + (g.group?.title || 'provider')">
-            <span class="group-mini" *ngIf="g.group?.appId" [style.background]="g.group?.appColor || '#f3f4f6'">
-              <img *ngIf="isOpenAiGroup(g.group)" [src]="openAiIconUrl" alt="icon" />
-              <img *ngIf="!isOpenAiGroup(g.group) && g.group?.appIconUrl" [src]="g.group?.appIconUrl" alt="icon" />
-              <i *ngIf="!isOpenAiGroup(g.group) && !g.group?.appIconUrl && g.group?.appIconClass" [class]="g.group?.appIconClass" [style.color]="fgColor(g.group?.appColor)"></i>
-              <img *ngIf="!isOpenAiGroup(g.group) && !g.group?.appIconUrl && !g.group?.appIconClass" [src]="simpleIconUrlFn?.(g.group?.appId) || ''" alt="icon" />
-            </span>
-            <span class="group-name">{{ g.group?.title }}</span>
-            <span class="group-spacer" *ngIf="g.group?.appId"></span>
-          </button>
-          <ng-container *ngIf="groupItemsByTitleFor(g.items) as groupedItems">
-            <ng-container *ngFor="let section of groupedItems; let sgi = index; trackBy: trackSubGroupFn">
-              <div class="subgroup-title" *ngIf="section.title">{{ section.title }}</div>
-              <div class="items" cdkDropList [id]="(mode === 'drawer' ? 'drawer_search_group_' : 'outside_search_group_') + gi + '_sub_' + sgi"
-                   [cdkDropListData]="section.items" [cdkDropListSortingDisabled]="true" [cdkDropListDisabled]="dndDisabled"
-                   [cdkDropListConnectedTo]="(mode === 'drawer') ? [] : ['canvasList']"
-                   (cdkDropListDropped)="null">
-                <div class="item flat" *ngFor="let it of section.items; trackBy: trackItemFn"
-                     [class.dragging]="isDraggingFn?.(it)"
-                     [class.disabled]="isItemDisabledFn?.(it)"
-                     [attr.aria-disabled]="isItemDisabledFn?.(it) ? true : null"
-                     (click)="itemClick.emit(it)">
-                  <div class="meta">
-                    <div class="title-row">
-                      <span class="mini-icon" *ngIf="isTplIconUrl(it)">
-                        <img [src]="tplIconUrl(it)" alt="icon" style="width:14px;height:14px;" />
-                      </span>
-                      <span class="mini-icon" *ngIf="!isTplIconUrl(it) && tplIconClass(it)">
-                        <i class="mini" [class]="tplIconClass(it)"></i>
-                      </span>
-                      <span class="mini-icon" *ngIf="!isTplIconUrl(it) && !tplIconClass(it) && typeIconClassFn?.(it.template)">
-                        <i class="mini" [class]="typeIconClassFn?.(it.template)"></i>
-                      </span>
-                      <span class="title-pack">
-                        <span class="label">{{ it.label }}</span>
-                        <span class="start-dot" *ngIf="isStartLikeTpl(it.template)" nz-tooltip [nzTooltipTitle]="startLikeTooltip(it.template)"></span>
-                      </span>
-                      <span class="info" *ngIf="it.template?.description as d" nz-tooltip [nzTooltipTitle]="d">
-                        <i class="fa-solid fa-circle-question"></i>
-                      </span>
-                    </div>
-                  </div>
-                  <div class="drag-proxy" cdkDrag [cdkDragDisabled]="isMobile || isItemDisabledFn?.(it)"
-                       [cdkDragData]="{ label: it.label, template: it.template }"
-                       [cdkDragStartDelay]="(mode === 'drawer') ? 150 : 0"
-                       [cdkDragBoundary]="(mode === 'drawer') ? '.ant-drawer' : ''"
-                       [cdkDragRootElement]="(mode === 'drawer') ? '.ant-drawer' : ''"
-                       (cdkDragStarted)="dragStart.emit({item: it, $event: $event})"
-                       (cdkDragEnded)="dragEnd.emit({item: it, $event: $event})">
-                    <ng-template cdkDragPreview>
-                      <div class="item flat" style="background:#fff; border:1px solid #e5e7eb; border-radius:10px; padding:8px 10px; box-shadow:0 10px 24px rgba(0,0,0,.18); display:inline-flex; align-items:center; gap:10px; width: 233px">
-                        <div class="meta">
-                          <div class="title-row" style=" font-weight:600 !important; font-size: 12px !important;">
-                            <span class="mini-icon" *ngIf="miniIconClassFn?.(it)">
-                              <i class="mini" [class]="miniIconClassFn?.(it)"></i>
-                            </span>
+        <div class="palette-loading" *ngIf="loading" role="status" aria-live="polite">
+          <span class="palette-loading-spinner" aria-hidden="true"></span>
+          <span class="palette-loading-text">Chargement des connecteurs…</span>
+        </div>
+        <ng-container *ngIf="!loading">
+          <div class="search-results" *ngIf="hasQuery() && !activeGroup; else browseMode">
+            <ng-container *ngFor="let g of filteredGroups(); let gi = index; trackBy: trackGroupFn">
+              <button type="button" class="group-title search-group-title" [class.searching]="hasQuery()" (click)="openGroupFromSearch(g.group, g.index)" [attr.aria-label]="'Ouvrir ' + (g.group?.title || 'provider')">
+                <span class="group-mini" *ngIf="g.group?.appId" [style.background]="g.group?.appColor || '#f3f4f6'">
+                  <img *ngIf="isOpenAiGroup(g.group)" [src]="openAiIconUrl" alt="icon" />
+                  <img *ngIf="!isOpenAiGroup(g.group) && g.group?.appIconUrl" [src]="g.group?.appIconUrl" alt="icon" />
+                  <i *ngIf="!isOpenAiGroup(g.group) && !g.group?.appIconUrl && g.group?.appIconClass" [class]="g.group?.appIconClass" [style.color]="fgColor(g.group?.appColor)"></i>
+                  <img *ngIf="!isOpenAiGroup(g.group) && !g.group?.appIconUrl && !g.group?.appIconClass" [src]="simpleIconUrlFn?.(g.group?.appId) || ''" alt="icon" />
+                </span>
+                <span class="group-name">{{ g.group?.title }}</span>
+                <span class="group-spacer" *ngIf="g.group?.appId"></span>
+              </button>
+              <ng-container *ngIf="groupItemsByTitleFor(g.items) as groupedItems">
+                <ng-container *ngFor="let section of groupedItems; let sgi = index; trackBy: trackSubGroupFn">
+                  <div class="subgroup-title" *ngIf="section.title">{{ section.title }}</div>
+                  <div class="items" cdkDropList [id]="(mode === 'drawer' ? 'drawer_search_group_' : 'outside_search_group_') + gi + '_sub_' + sgi"
+                       [cdkDropListData]="section.items" [cdkDropListSortingDisabled]="true" [cdkDropListDisabled]="dndDisabled"
+                       [cdkDropListConnectedTo]="(mode === 'drawer') ? [] : ['canvasList']"
+                       (cdkDropListDropped)="null">
+                    <div class="item flat" *ngFor="let it of section.items; trackBy: trackItemFn"
+                         [class.dragging]="isDraggingFn?.(it)"
+                         [class.disabled]="isItemDisabledFn?.(it)"
+                         [attr.aria-disabled]="isItemDisabledFn?.(it) ? true : null"
+                         (click)="itemClick.emit(it)">
+                      <div class="meta">
+                        <div class="title-row">
+                          <span class="mini-icon" *ngIf="isTplIconUrl(it)">
+                            <img [src]="tplIconUrl(it)" alt="icon" style="width:14px;height:14px;" />
+                          </span>
+                          <span class="mini-icon" *ngIf="!isTplIconUrl(it) && tplIconClass(it)">
+                            <i class="mini" [class]="tplIconClass(it)"></i>
+                          </span>
+                          <span class="mini-icon" *ngIf="!isTplIconUrl(it) && !tplIconClass(it) && typeIconClassFn?.(it.template)">
+                            <i class="mini" [class]="typeIconClassFn?.(it.template)"></i>
+                          </span>
+                          <span class="title-pack">
                             <span class="label">{{ it.label }}</span>
-                          </div>
+                            <span class="start-dot" *ngIf="isStartLikeTpl(it.template)" nz-tooltip [nzTooltipTitle]="startLikeTooltip(it.template)"></span>
+                          </span>
+                          <span class="info" *ngIf="it.template?.description as d" nz-tooltip [nzTooltipTitle]="d">
+                            <i class="fa-solid fa-circle-question"></i>
+                          </span>
                         </div>
                       </div>
-                    </ng-template>
+                      <div class="drag-proxy" cdkDrag [cdkDragDisabled]="isMobile || isItemDisabledFn?.(it)"
+                           [cdkDragData]="{ label: it.label, template: it.template }"
+                           [cdkDragStartDelay]="(mode === 'drawer') ? 150 : 0"
+                           [cdkDragBoundary]="(mode === 'drawer') ? '.ant-drawer' : ''"
+                           [cdkDragRootElement]="(mode === 'drawer') ? '.ant-drawer' : ''"
+                           (cdkDragStarted)="dragStart.emit({item: it, $event: $event})"
+                           (cdkDragEnded)="dragEnd.emit({item: it, $event: $event})">
+                        <ng-template cdkDragPreview>
+                          <div class="item flat" style="background:#fff; border:1px solid #e5e7eb; border-radius:10px; padding:8px 10px; box-shadow:0 10px 24px rgba(0,0,0,.18); display:inline-flex; align-items:center; gap:10px; width: 233px">
+                            <div class="meta">
+                              <div class="title-row" style=" font-weight:600 !important; font-size: 12px !important;">
+                                <span class="mini-icon" *ngIf="miniIconClassFn?.(it)">
+                                  <i class="mini" [class]="miniIconClassFn?.(it)"></i>
+                                </span>
+                                <span class="label">{{ it.label }}</span>
+                              </div>
+                            </div>
+                          </div>
+                        </ng-template>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
+                </ng-container>
+              </ng-container>
             </ng-container>
-          </ng-container>
+            <div class="empty" *ngIf="filteredGroups().length === 0">Aucun nœud trouvé.</div>
+          </div>
+          <ng-template #browseMode>
+            <div class="groups">
+              <button class="group-row" type="button" *ngFor="let g of groups; let gi = index; trackBy: trackGroupFn" (click)="openGroup(g, gi)">
+              <span class="group-mini" *ngIf="g.appId" [style.background]="g.appColor || '#f3f4f6'">
+                <img *ngIf="isOpenAiGroup(g)" [src]="openAiIconUrl" alt="icon" />
+                <img *ngIf="!isOpenAiGroup(g) && g.appIconUrl" [src]="g.appIconUrl" alt="icon" />
+                <i *ngIf="!isOpenAiGroup(g) && !g.appIconUrl && g.appIconClass" [class]="g.appIconClass" [style.color]="fgColor(g.appColor)"></i>
+                <img *ngIf="!isOpenAiGroup(g) && !g.appIconUrl && !g.appIconClass" [src]="simpleIconUrlFn?.(g.appId) || ''" alt="icon" />
+              </span>
+                <span class="group-name">{{ g.title }}</span>
+                <span class="group-count">{{ g.items?.length || 0 }}</span>
+                <i class="fa-solid fa-chevron-right"></i>
+              </button>
+            </div>
+          </ng-template>
         </ng-container>
-        <div class="empty" *ngIf="filteredGroups().length === 0">Aucun nœud trouvé.</div>
-      </div>
-      <ng-template #browseMode>
-        <div class="groups">
-          <button class="group-row" type="button" *ngFor="let g of groups; let gi = index; trackBy: trackGroupFn" (click)="openGroup(g, gi)">
-          <span class="group-mini" *ngIf="g.appId" [style.background]="g.appColor || '#f3f4f6'">
-            <img *ngIf="isOpenAiGroup(g)" [src]="openAiIconUrl" alt="icon" />
-            <img *ngIf="!isOpenAiGroup(g) && g.appIconUrl" [src]="g.appIconUrl" alt="icon" />
-            <i *ngIf="!isOpenAiGroup(g) && !g.appIconUrl && g.appIconClass" [class]="g.appIconClass" [style.color]="fgColor(g.appColor)"></i>
-            <img *ngIf="!isOpenAiGroup(g) && !g.appIconUrl && !g.appIconClass" [src]="simpleIconUrlFn?.(g.appId) || ''" alt="icon" />
-          </span>
-            <span class="group-name">{{ g.title }}</span>
-            <span class="group-count">{{ g.items?.length || 0 }}</span>
-            <i class="fa-solid fa-chevron-right"></i>
-          </button>
-        </div>
-      </ng-template>
       </div>
 
-        <div class="group-overlay" *ngIf="activeGroup"
+        <div class="group-overlay" *ngIf="activeGroup && !loading"
           #groupOverlay
           [class.swipe-animating]="overlaySwipeAnimating"
           [class.swiping]="overlaySwipeX > 0"
@@ -231,6 +243,10 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
     .palette .palette-scroll.overlay-open { pointer-events: none; }
     .palette .palette-scroll { scrollbar-width: none; -ms-overflow-style: none; }
     .palette .palette-scroll::-webkit-scrollbar { width: 0; height: 0; }
+    .palette .palette-loading { min-height: 200px; height: 100%; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; color:#64748b; }
+    .palette .palette-loading-spinner { width: 24px; height: 24px; border-radius: 50%; border: 3px solid #dbe4ef; border-top-color: #1677ff; animation: palette-spin .75s linear infinite; }
+    .palette .palette-loading-text { font-size: 12px; font-weight: 500; color:#475569; }
+    @keyframes palette-spin { to { transform: rotate(360deg); } }
     .palette .groups { display:flex; flex-direction: column; gap: 0; margin: 0; }
     .palette .group-title { font-weight: 600; font-size: 13px; color:#111; margin: 10px 0 8px; }
     .palette .group-title .group-mini { width: 18px; height: 18px; display:inline-flex; align-items:center; justify-content:center; border-radius:5px; margin-right:6px; vertical-align: text-bottom; }
@@ -326,6 +342,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 export class FlowPalettePanelComponent implements OnInit, OnDestroy, OnChanges {
   @Input() mode: 'drawer' | 'outside' = 'outside';
   @Input() groups: any[] = [];
+  @Input() loading = false;
   @Input() query = '';
   @Input() isMobile = false;
   @Input() dndDisabled = false;

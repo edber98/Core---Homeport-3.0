@@ -3,7 +3,7 @@
   [class.left-panel-open]="!isTabletOrBelow && leftPanelOpen">
   <!-- Reusable left panel content (desktop + drawer) -->
   <ng-template #leftPanelContent let-mode="mode">
-    <flow-palette-panel [mode]="'outside'" [groups]="paletteGroups" [query]="paletteQuery" [isMobile]="isMobile"
+    <flow-palette-panel [mode]="'outside'" [groups]="paletteGroups" [loading]="paletteConnectorsLoading" [query]="paletteQuery" [isMobile]="isMobile"
       [dndDisabled]="dndDisabled" [trackGroupFn]="trackGroup" [trackItemFn]="trackItem"
       [miniIconClassFn]="miniIconClass.bind(this)" [simpleIconUrlFn]="simpleIconUrl.bind(this)" [typeIconClassFn]="typeIconClass.bind(this)"
       [isItemDisabledFn]="isPaletteItemDisabled.bind(this)" [isDraggingFn]="isDragging.bind(this)"
@@ -330,6 +330,7 @@
           <ng-container *ngIf="addNodeContentVisible">
               <spotlight-add-node
                 [groups]="addNodeGroups"
+                [loading]="paletteConnectorsLoading"
                 [query]="addNodeQuery"
                 [totalCount]="addNodeCandidates.length"
                 [getAppByIdFn]="getAppById.bind(this)"

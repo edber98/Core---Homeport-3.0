@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef, OnInit, OnDestroy, effect } from '@angular/core';
+import { Component, ChangeDetectorRef, OnInit, OnDestroy, AfterViewInit, HostListener, ElementRef, ViewChild, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -10,8 +10,11 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzPopoverModule } from 'ng-zorro-antd/popover';
 import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzTagModule } from 'ng-zorro-antd/tag';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { AiService, AiThread, AiAvailableAgent } from './ai.service';
+import { AiService, AiThread, AiAvailableAgent, AiAttachment, AI_MAX_FILES, AI_MAX_FILE_SIZE } from './ai.service';
+import { AiAudioService } from './ai-audio.service';
 import { ApiClientService } from '../../services/api-client.service';
 import { AccessControlService } from '../../services/access-control.service';
 import { AiChatComponent } from './ai-chat.component';
@@ -20,7 +23,7 @@ import { AiSettingsComponent } from './ai-settings.component';
 @Component({
   selector: 'ai-fullpage',
   standalone: true,
-  imports: [CommonModule, FormsModule, NzButtonModule, NzIconModule, NzSelectModule, NzInputModule, NzEmptyModule, NzToolTipModule, NzPopconfirmModule, NzPopoverModule, AiChatComponent, AiSettingsComponent],
+  imports: [CommonModule, FormsModule, NzButtonModule, NzIconModule, NzSelectModule, NzInputModule, NzTagModule, NzSpinModule, NzEmptyModule, NzToolTipModule, NzPopconfirmModule, NzPopoverModule, AiChatComponent, AiSettingsComponent],
   template: `
     <div class="fp-layout">
       <!-- Sidebar -->
@@ -96,33 +99,146 @@ import { AiSettingsComponent } from './ai-settings.component';
             </div>
           </div>
 
-          <!-- Settings link -->
-          <div class="sidebar-bottom">
-            <button nz-button nzType="text" nzSize="small" nzBlock (click)="showSettings = !showSettings"
-              [class.active-btn]="showSettings">
-              <span nz-icon nzType="setting" nzTheme="outline"></span>
-              Paramètres
-            </button>
-          </div>
         </ng-container>
+
+        <!-- Settings link -->
+        <div class="sidebar-bottom">
+          <button nz-button nzType="text" nzSize="small" [nzBlock]="!sidebarCollapsed" (click)="showSettings = !showSettings"
+            [class.active-btn]="showSettings" nz-tooltip [nzTooltipTitle]="sidebarCollapsed ? 'Paramètres' : null">
+            <span nz-icon nzType="setting" nzTheme="outline"></span>
+            <span *ngIf="!sidebarCollapsed">Paramètres</span>
+          </button>
+        </div>
       </div>
 
+      <div class="mobile-sidebar-backdrop" *ngIf="!sidebarCollapsed" (click)="sidebarCollapsed = true"></div>
+
       <!-- Main content -->
-      <div class="fp-main">
+      <div class="fp-main" [class.sidebar-collapsed]="sidebarCollapsed">
+        <button
+          *ngIf="sidebarCollapsed"
+          nz-button
+          nzType="text"
+          nzSize="small"
+          class="mobile-sidebar-open-btn"
+          (click)="sidebarCollapsed = false"
+          nz-tooltip
+          nzTooltipTitle="Afficher les conversations"
+        >
+          <span nz-icon nzType="menu-unfold" nzTheme="outline"></span>
+        </button>
+
         <!-- Settings overlay -->
         <ai-settings *ngIf="showSettings" class="fp-settings"></ai-settings>
+
+        <ng-template #assistantHeroInput>
+          <div class="assistant-view assistant-floating">
+            <div class="ai-content ai-floating-content">
+              <div class="ai-main" [class.has-center-files]="centerPendingAttachments.length > 0">
+                <div class="ai-header ai-header-center">
+                  <div class="ai-icon-wrap"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+                  <div class="ai-header-copy">
+                    <div class="ai-title">Assistant IA</div>
+                    <div class="ai-subtitle">Posez une question sur vos workflows</div>
+                  </div>
+                </div>
+                <div class="att-previews" *ngIf="centerPendingAttachments.length">
+                  <div class="att-chip" *ngFor="let att of centerPendingAttachments; let i = index"
+                       [class.att-uploading]="att.uploading" [class.att-error]="!!att.error">
+                    <img *ngIf="att.previewUrl && isImage(att.mimeType)" [src]="att.previewUrl" class="att-thumb" />
+                    <span *ngIf="!att.previewUrl || !isImage(att.mimeType)" nz-icon nzType="file" nzTheme="outline" class="att-icon"></span>
+                    <span class="att-name" [title]="att.name">{{ att.name }}</span>
+                    <span class="att-size">{{ formatFileSize(att.size) }}</span>
+                    <span nz-icon *ngIf="att.uploading" nzType="loading" nzTheme="outline" class="att-loading"></span>
+                    <span nz-icon *ngIf="att.error" nzType="warning" nzTheme="outline" class="att-warn" [title]="att.error"></span>
+                    <button nz-button nzType="text" nzSize="small" class="att-remove" (click)="removeCenterAttachment(i)">
+                      <span nz-icon nzType="close" nzTheme="outline"></span>
+                    </button>
+                  </div>
+                </div>
+                <div class="ai-input-row">
+                  <div class="ai-input-shell" [class.ai-input-shell-multiline]="aiInputMultiline">
+                    <button
+                      nz-button
+                      nzType="text"
+                      nzSize="small"
+                      nzShape="circle"
+                      class="ai-mic-btn"
+                      [class.mic-recording]="audioService.recording()"
+                      (click)="toggleMic()"
+                      [nz-tooltip]="audioService.recording() ? 'Arrêter l\\'enregistrement' : 'Dicter un message'"
+                    >
+                      <i
+                        class="fa-solid"
+                        [class.fa-microphone]="!audioService.recording()"
+                        [class.fa-stop]="audioService.recording()"
+                      ></i>
+                    </button>
+                    <button
+                      nz-button
+                      nzType="text"
+                      nzSize="small"
+                      nzShape="circle"
+                      class="ai-attach-btn"
+                      [class.has-files]="centerPendingAttachments.length > 0"
+                      (click)="centerFileInput.click()"
+                      [disabled]="ai.streaming() || centerPendingAttachments.length >= maxCenterFiles"
+                      nz-tooltip nzTooltipTitle="Joindre un fichier"
+                    >
+                      <span nz-icon nzType="paper-clip" nzTheme="outline"></span>
+                    </button>
+                    <input #centerFileInput type="file" multiple hidden (change)="onCenterFilesSelected($event)" />
+                    <textarea
+                      nz-input
+                      #aiInputEl
+                      [(ngModel)]="aiInput"
+                      [nzAutosize]="{ minRows: 1, maxRows: 5 }"
+                      [placeholder]="aiInputPlaceholder"
+                      (keydown)="onAiInputKeydown($event)"
+                      (input)="onAiInputChanged()"
+                      class="ai-input"
+                    ></textarea>
+                    <button
+                      nz-button
+                      nzType="primary"
+                      nzSize="small"
+                      nzShape="circle"
+                      class="ai-send-btn"
+                      (click)="sendAiMessage()"
+                      [disabled]="!aiInput.trim() && !centerPendingAttachments.length"
+                    >
+                      <i class="fa-solid fa-arrow-up"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="ai-recording-bar" *ngIf="audioService.recording()">
+                  <span class="rec-dot"></span>
+                  <span>Enregistrement en cours… {{ audioService.recordingDuration() }}s</span>
+                </div>
+                <div class="ai-transcribing" *ngIf="audioService.transcribing()">
+                  <nz-spin nzSimple nzSize="small"></nz-spin>
+                  <span>Transcription…</span>
+                </div>
+              </div>
+              <div class="ai-hints">
+                <nz-tag class="ai-hint" (click)="sendHint('Résumé de mes workflows')">
+                  <i class="fa-solid fa-list-check"></i> Résumé workflows
+                </nz-tag>
+                <nz-tag class="ai-hint" (click)="sendHint('Quels flows ont des erreurs ?')">
+                  <i class="fa-solid fa-triangle-exclamation"></i> Erreurs récentes
+                </nz-tag>
+                <nz-tag class="ai-hint" (click)="sendHint('Crée-moi un workflow')">
+                  <i class="fa-solid fa-plus"></i> Créer un workflow
+                </nz-tag>
+              </div>
+            </div>
+          </div>
+        </ng-template>
 
         <!-- Chat or empty state -->
         <ng-container *ngIf="!showSettings">
           <div class="fp-empty" *ngIf="!ai.currentThread()">
-            <div class="empty-content">
-              <span nz-icon nzType="robot" nzTheme="outline" class="empty-icon"></span>
-              <h3>Assistant IA</h3>
-              <p>Sélectionnez une conversation ou créez-en une nouvelle.</p>
-              <button nz-button nzType="primary" class="new-thread-btn" (click)="newThread()">
-                <span nz-icon nzType="plus" nzTheme="outline"></span> Nouvelle conversation
-              </button>
-            </div>
+            <ng-container [ngTemplateOutlet]="assistantHeroInput"></ng-container>
           </div>
 
           <!-- Chat header + chat -->
@@ -214,7 +330,12 @@ import { AiSettingsComponent } from './ai-settings.component';
                 </div>
               </ng-template>
             </div>
-            <ai-chat class="fp-chat"></ai-chat>
+            <div class="fp-chat-wrap">
+              <ai-chat #threadChat class="fp-chat"></ai-chat>
+              <div class="fp-chat-empty-overlay" *ngIf="ai.messages().length === 0 && !ai.streaming() && !ai.pendingQuestion()">
+                <ng-container [ngTemplateOutlet]="assistantHeroInput"></ng-container>
+              </div>
+            </div>
           </ng-container>
         </ng-container>
       </div>
@@ -222,13 +343,16 @@ import { AiSettingsComponent } from './ai-settings.component';
   `,
   styles: [`
     :host { display: block; height: 100%; }
-    .fp-layout { display: flex; height: 100%; background: #fff; }
+    .fp-layout { display: flex; height: 100%; background: #fff; position: relative; }
 
     /* Sidebar */
     .fp-sidebar { width: 300px; border-right: 1px solid #f0f0f0; display: flex; flex-direction: column; flex-shrink: 0; background: #fff; transition: width 0.2s ease; }
     .fp-sidebar.collapsed { width: 48px; }
-    .sidebar-header { display: flex; align-items: center; justify-content: space-between; padding: 12px; border-bottom: 1px solid #f0f0f0; }
-    .sidebar-title { font-weight: 600; font-size: 15px; }
+    .sidebar-header { display: flex; align-items: center; gap: 10px; padding: 10px 20px; border-bottom: 1px solid #f0f0f0; flex-shrink: 0; }
+    .sidebar-title { font-weight: 600; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .sidebar-toggle-btn { margin-left: auto; }
+    .fp-sidebar.collapsed .sidebar-header { justify-content: center; padding: 10px 0; }
+    .fp-sidebar.collapsed .sidebar-toggle-btn { margin-left: 0; }
     .sidebar-toggle-btn,
     .chat-action-btn {
       border-radius: 8px;
@@ -257,7 +381,8 @@ import { AiSettingsComponent } from './ai-settings.component';
     }
     .sidebar-new { padding: 8px 12px; }
     .sidebar-threads { flex: 1; overflow-y: auto; padding: 4px 8px; }
-    .sidebar-bottom { padding: 8px 12px; border-top: 1px solid #f0f0f0; }
+    .sidebar-bottom { padding: 8px 12px; border-top: 1px solid #f0f0f0; margin-top: auto; }
+    .fp-sidebar.collapsed .sidebar-bottom { padding: 8px 0 22px; border-top: none; display: flex; justify-content: center; }
 
     .thread-item { padding: 10px 12px; border-radius: 8px; cursor: pointer; margin-bottom: 2px; position: relative; }
     .thread-item:hover { background: #e6f4ff; }
@@ -287,6 +412,9 @@ import { AiSettingsComponent } from './ai-settings.component';
       background: #1677ff;
       border-color: #1677ff;
       color: #fff;
+      height: auto;
+      padding-top: 4px;
+      padding-bottom: 4px;
     }
     .new-thread-btn.ant-btn-primary:hover,
     .new-thread-btn.ant-btn-primary:focus-visible {
@@ -300,12 +428,94 @@ import { AiSettingsComponent } from './ai-settings.component';
     }
 
     /* Main */
-    .fp-main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
-    .fp-empty { flex: 1; display: flex; align-items: center; justify-content: center; }
-    .empty-content { text-align: center; color: #999; }
-    .empty-icon { font-size: 48px; color: #d9d9d9; margin-bottom: 12px; }
-    .empty-content h3 { font-size: 18px; color: #333; margin: 0 0 8px; }
-    .empty-content p { margin: 0 0 16px; font-size: 14px; }
+    .fp-main { flex: 1; display: flex; flex-direction: column; min-width: 0; position: relative; }
+    .mobile-sidebar-open-btn { display: none; }
+    .mobile-sidebar-backdrop { display: none; }
+    .fp-empty { flex: 1; display: flex; align-items: center; justify-content: center; padding: 0 20px; }
+    .fp-chat-wrap { position: relative; flex: 1; min-height: 0; min-width: 0; display: flex; overflow: hidden; }
+    .fp-chat-empty-overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: 0 20px; background: #fff; z-index: 2; }
+    .assistant-view { width: min(100%, 920px); margin: 0 auto; }
+    .assistant-floating { position: relative; min-height: clamp(340px, 60vh, 560px); display: flex; align-items: center; justify-content: center; }
+    .ai-floating-content { position: relative; z-index: 1; width: min(100%, 760px); align-items: center; text-align: center; }
+    .ai-content { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; gap: 10px; }
+    .ai-main { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; gap: 0; justify-content: flex-start; }
+    .ai-main > .ai-header { margin-bottom: 10px; }
+    .ai-main.has-center-files { transform: translateY(-10px); }
+    .ai-floating-content .ai-main { flex: 0 0 auto; width: 100%; }
+    .ai-header { display: flex; align-items: center; gap: 10px; }
+    .ai-header-center { display: grid; grid-template-columns: 36px auto 36px; align-items: center; justify-content: center; column-gap: 10px; }
+    .ai-header-center::after { content: ''; width: 36px; height: 36px; }
+    .ai-header-copy { text-align: center; }
+    .ai-icon-wrap { width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg, #0284c7, #0ea5e9); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 15px; flex-shrink: 0; }
+    .ai-title { font-weight: 600; font-size: 14px; color: #0f172a; }
+    .ai-subtitle { font-size: 11px; color: #64748b; }
+    .ai-input-row { display: flex; gap: 0; width: 100%; }
+    .ai-input-shell { flex: 1; min-width: 0; display: flex; align-items: center; gap: 6px; padding: 5px 12px; border: 1px solid #dbe4ef; border-radius: 20px; background: #ffffff; transition: border-color 0.15s ease, box-shadow 0.15s ease; }
+    .ai-input-shell:hover,
+    .ai-input-shell:focus-within {
+      border-color: #1677ff;
+      box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.15);
+    }
+    .ai-mic-btn { align-self: center; flex-shrink: 0; margin-top: 0; }
+    .ai-attach-btn { align-self: center; flex-shrink: 0; margin-top: 0; }
+    .ai-attach-btn.has-files { color: #1677ff !important; }
+    .ai-input-shell .ai-send-btn.ant-btn-primary { background: #1677ff; border-color: #1677ff; color: #ffffff; align-self: center; flex-shrink: 0; margin-top: 0; }
+    .ai-input-shell.ai-input-shell-multiline { align-items: flex-end; }
+    .ai-input-shell.ai-input-shell-multiline .ai-mic-btn,
+    .ai-input-shell.ai-input-shell-multiline .ai-attach-btn,
+    .ai-input-shell.ai-input-shell-multiline .ai-send-btn.ant-btn-primary { align-self: flex-end; }
+    .ai-input-shell .ai-send-btn.ant-btn-primary:hover,
+    .ai-input-shell .ai-send-btn.ant-btn-primary:focus { background: #4096ff; border-color: #4096ff; }
+    .ai-input-shell .ai-send-btn.ant-btn-primary:active { background: #0958d9; border-color: #0958d9; }
+    .ai-input-shell .ai-send-btn.ant-btn-primary[disabled],
+    .ai-input-shell .ai-send-btn.ant-btn-primary:disabled { background: #91caff; border-color: #91caff; color: #ffffff; }
+    .ai-input { flex: 1 1 auto; min-width: 0; min-height: 30px; border: 0 !important; box-shadow: none !important; resize: none; background: transparent; font-size: 13px !important; line-height: 1.4; padding: 6px 4px; overflow-y: auto; }
+    .ai-input:focus { outline: none; }
+    .att-previews { display: flex; flex-wrap: wrap; justify-content: flex-start; gap: 6px; padding: 0 8px 0; margin-bottom: 0; width: 100%; }
+    .att-chip { display: inline-flex; align-items: center; gap: 4px; background: #f5f5f5; border: 1px solid #e8e8e8; border-radius: 6px; padding: 3px 6px; font-size: 12px; max-width: 260px; }
+    .att-chip.att-uploading { opacity: 0.7; }
+    .att-chip.att-error { border-color: #ff4d4f; background: #fff2f0; }
+    .att-thumb { width: 28px; height: 28px; object-fit: cover; border-radius: 4px; flex-shrink: 0; }
+    .att-icon { font-size: 16px; color: #999; flex-shrink: 0; }
+    .att-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 130px; color: #333; }
+    .att-size { color: #999; font-size: 10px; flex-shrink: 0; }
+    .att-loading { font-size: 12px; color: #1677ff; flex-shrink: 0; }
+    .att-warn { font-size: 12px; color: #ff4d4f; flex-shrink: 0; }
+    .att-remove { padding: 0 !important; min-width: auto !important; height: auto !important; color: #999 !important; font-size: 10px !important; }
+    .att-remove:hover { color: #ff4d4f !important; }
+    .mic-recording { color: #ef4444 !important; animation: mic-pulse 1s infinite; }
+    @keyframes mic-pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+    .ai-recording-bar { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #ef4444; margin-top: 10px; }
+    .rec-dot { width: 8px; height: 8px; border-radius: 50%; background: #ef4444; animation: mic-pulse 1s infinite; }
+    .ai-transcribing { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #64748b; justify-content: center; margin-top: 10px; }
+    .ai-hints { display: flex; justify-content: center; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+    .ai-hint {
+      cursor: pointer;
+      font-size: 11px;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      background: #ffffff;
+      border: 1px solid #dbeafe;
+      color: #334155;
+      margin: 0 !important;
+      transition: background-color .15s ease, color .15s ease, box-shadow .15s ease, border-color .15s ease, transform .02s ease;
+    }
+    .ai-hint i { font-size: 10px; color: #64748b; }
+    .ai-hint:hover {
+      border-color: #c7dbff;
+      background: rgba(22, 119, 255, 0.1);
+      color: #1677ff;
+      box-shadow: 0 4px 12px rgba(22, 119, 255, 0.18);
+      transform: translateY(-1px);
+    }
+    .ai-hint:hover i { color: #1677ff; }
+    .ai-hint:active { transform: translateY(0.5px); }
 
     .fp-chat-header { display: flex; align-items: center; gap: 10px; padding: 10px 20px; border-bottom: 1px solid #f0f0f0; flex-shrink: 0; }
     .chat-title { font-weight: 600; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -353,22 +563,52 @@ import { AiSettingsComponent } from './ai-settings.component';
     .sp-link-text { display: flex; align-items: center; gap: 4px; font-size: 12px; color: #1677ff; cursor: pointer; }
     .sp-link-text:hover { text-decoration: underline; }
     .sp-no-link-text { font-size: 12px; color: #999; }
-    .fp-chat { flex: 1; min-height: 0; }
+    .fp-chat { flex: 1; min-height: 0; min-width: 0; overflow: hidden; }
     .fp-settings { flex: 1; overflow-y: auto; }
 
     /* Responsive */
     @media (max-width: 768px) {
-      .fp-sidebar { width: 0; overflow: hidden; }
-      .fp-sidebar:not(.collapsed) { width: 260px; position: absolute; z-index: 10; height: 100%; box-shadow: 2px 0 8px rgba(0,0,0,0.1); }
+      .fp-sidebar { width: 0; overflow: hidden; border-right: none; }
+      .fp-sidebar.collapsed { width: 0; border-right: none; }
+      .fp-sidebar:not(.collapsed) { width: 260px; position: absolute; z-index: 10; height: 100%; box-shadow: 2px 0 8px rgba(0,0,0,0.1); border-right: 1px solid #f0f0f0; }
+      .mobile-sidebar-backdrop {
+        display: block;
+        position: absolute;
+        inset: 0;
+        z-index: 9;
+        background: transparent;
+      }
+      .fp-main.sidebar-collapsed .fp-chat-header { padding: 10px 20px 10px 52px; }
+      .mobile-sidebar-open-btn {
+        display: inline-flex;
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        z-index: 11;
+      }
+      .assistant-floating { min-height: clamp(300px, 66vh, 460px); }
+      .ai-header-center { grid-template-columns: 36px auto 36px; column-gap: 8px; }
+      .ai-content { gap: 8px; }
+      .ai-main > .ai-header { margin-bottom: 8px; }
+      .ai-hints { margin-top: 2px; }
+      .ai-hint { min-height: 28px; padding: 3px 8px; }
     }
   `]
 })
-export class AiFullpageComponent implements OnInit, OnDestroy {
+export class AiFullpageComponent implements OnInit, OnDestroy, AfterViewInit {
+  @ViewChild('aiInputEl') private aiInputElRef?: ElementRef<HTMLTextAreaElement>;
+  @ViewChild('threadChat') private threadChatRef?: AiChatComponent;
+
   threads: AiThread[] = [];
   systemAgents: AiAvailableAgent[] = [];
   customAgents: AiAvailableAgent[] = [];
   allAgents: AiAvailableAgent[] = [];
   selectedAgentId = 'general';
+  aiInput = '';
+  aiInputPlaceholder = '';
+  aiInputMultiline = false;
+  centerPendingAttachments: AiAttachment[] = [];
+  maxCenterFiles = AI_MAX_FILES;
   sidebarCollapsed = false;
   showSettings = false;
   regeneratingTitle = false;
@@ -376,8 +616,9 @@ export class AiFullpageComponent implements OnInit, OnDestroy {
 
   private refreshInterval?: any;
   private titleDebounce?: any;
+  private aiInputLayoutRaf: number | null = null;
 
-  constructor(public ai: AiService, private cdr: ChangeDetectorRef, private router: Router, private nzMsg: NzMessageService, private apiClient: ApiClientService, private acl: AccessControlService) {
+  constructor(public ai: AiService, public audioService: AiAudioService, private cdr: ChangeDetectorRef, private router: Router, private nzMsg: NzMessageService, private apiClient: ApiClientService, private acl: AccessControlService) {
     // Sync currentThread changes (title, mode, flowId) back to local threads list in real-time
     effect(() => {
       const cur = this.ai.currentThread();
@@ -400,6 +641,7 @@ export class AiFullpageComponent implements OnInit, OnDestroy {
   ngOnInit() {
     // Set page context
     this.ai.setPageContext({ page: 'other' });
+    this.updateAiInputPlaceholder();
 
     // Load threads and agents
     this.loadThreads();
@@ -430,8 +672,23 @@ export class AiFullpageComponent implements OnInit, OnDestroy {
     this.refreshInterval = setInterval(() => this.loadThreads(), 30000);
   }
 
+  ngAfterViewInit() {
+    this.scheduleAiInputLayoutRefresh();
+  }
+
+  @HostListener('window:resize')
+  onWindowResize() {
+    this.updateAiInputPlaceholder();
+    this.scheduleAiInputLayoutRefresh();
+  }
+
   ngOnDestroy() {
     if (this.refreshInterval) clearInterval(this.refreshInterval);
+    if (this.titleDebounce) clearTimeout(this.titleDebounce);
+    if (this.aiInputLayoutRaf != null) {
+      cancelAnimationFrame(this.aiInputLayoutRaf);
+      this.aiInputLayoutRaf = null;
+    }
   }
 
   loadThreads() {
@@ -463,13 +720,219 @@ export class AiFullpageComponent implements OnInit, OnDestroy {
 
   async newThread() {
     this.showSettings = false;
+    this.clearCenterAttachments();
     await this.ai.createThread('chat', undefined, this.selectedAgentId);
     this.loadThreads();
     this.cdr.detectChanges();
   }
 
+  async sendAiMessage() {
+    const text = (this.aiInput || '').trim();
+    if ((!text && !this.centerPendingAttachments.length) || this.ai.streaming()) return;
+
+    const stillUploading = this.centerPendingAttachments.some(a => a.uploading);
+    if (stillUploading) {
+      this.nzMsg.warning('Uploads en cours, patiente...');
+      return;
+    }
+
+    const withErrors = this.centerPendingAttachments.filter(a => a.error);
+    if (withErrors.length) {
+      this.nzMsg.warning('Certains fichiers ont échoué. Retire-les avant d\'envoyer.');
+      return;
+    }
+
+    const centerAttachments = [...this.centerPendingAttachments];
+    this.centerPendingAttachments = [];
+    this.aiInput = '';
+    this.showSettings = false;
+    this.scheduleAiInputLayoutRefresh();
+
+    if (!this.ai.currentThread()) {
+      await this.ai.createThread('chat', undefined, this.selectedAgentId);
+      this.loadThreads();
+      this.cdr.detectChanges();
+    }
+
+    const chat = await this.waitForThreadChat();
+    if (chat) {
+      if (centerAttachments.length) chat.pendingAttachments = [...chat.pendingAttachments, ...centerAttachments];
+      chat.inputText = text;
+      if (text || chat.pendingAttachments.length) await chat.send();
+    } else {
+      // Fallback safety path if chat view is not mounted yet.
+      await this.ai.quickSend(text, undefined, centerAttachments);
+    }
+
+    this.cdr.detectChanges();
+  }
+
+  sendHint(text: string) {
+    this.aiInput = text;
+    this.sendAiMessage();
+  }
+
+  private addCenterFiles(files: File[]) {
+    const remaining = AI_MAX_FILES - this.centerPendingAttachments.length;
+    if (remaining <= 0) {
+      this.nzMsg.warning(`Maximum ${AI_MAX_FILES} fichiers par message`);
+      return;
+    }
+
+    const toAdd = files.slice(0, remaining);
+    for (const file of toAdd) {
+      if (file.size > AI_MAX_FILE_SIZE) {
+        this.nzMsg.error(`"${file.name}" dépasse la limite de 20 Mo`);
+        continue;
+      }
+
+      const att: AiAttachment = {
+        fileId: '',
+        name: file.name,
+        mimeType: file.type || 'application/octet-stream',
+        size: file.size,
+        uploading: true,
+        previewUrl: this.isImage(file.type) ? URL.createObjectURL(file) : undefined,
+      };
+      this.centerPendingAttachments = [...this.centerPendingAttachments, att];
+      const idx = this.centerPendingAttachments.length - 1;
+
+      this.ai.uploadFile(file).subscribe({
+        next: (ref) => {
+          this.centerPendingAttachments = this.centerPendingAttachments.map((a, i) =>
+            i === idx ? { ...a, fileId: ref.fileId, uploading: false, error: undefined } : a
+          );
+          this.cdr.detectChanges();
+        },
+        error: (err) => {
+          this.centerPendingAttachments = this.centerPendingAttachments.map((a, i) =>
+            i === idx ? { ...a, uploading: false, error: err?.message || 'Échec upload' } : a
+          );
+          this.cdr.detectChanges();
+        },
+      });
+    }
+
+    if (files.length > remaining) {
+      this.nzMsg.warning(`Maximum ${AI_MAX_FILES} fichiers par message`);
+    }
+
+    this.cdr.detectChanges();
+  }
+
+  onCenterFilesSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const files = input.files?.length ? Array.from(input.files) : [];
+    input.value = '';
+    if (!files.length) return;
+    this.addCenterFiles(files);
+  }
+
+  removeCenterAttachment(index: number) {
+    const att = this.centerPendingAttachments[index];
+    if (att?.previewUrl) URL.revokeObjectURL(att.previewUrl);
+    this.centerPendingAttachments = this.centerPendingAttachments.filter((_, i) => i !== index);
+    this.cdr.detectChanges();
+  }
+
+  onAiInputChanged() {
+    this.scheduleAiInputLayoutRefresh();
+  }
+
+  onAiInputKeydown(event: KeyboardEvent) {
+    if (event.key !== 'Enter') return;
+    if (event.isComposing) return;
+    if (event.shiftKey) return;
+    event.preventDefault();
+    this.sendAiMessage();
+  }
+
+  async toggleMic() {
+    if (this.audioService.recording()) {
+      try {
+        const blob = await this.audioService.stopAndGetBlob();
+        this.audioService.transcribe(blob).subscribe({
+          next: (text) => {
+            if (text?.trim()) {
+              this.aiInput = text.trim();
+              this.scheduleAiInputLayoutRefresh();
+              try { this.cdr.detectChanges(); } catch {}
+            }
+          },
+          error: () => {},
+        });
+      } catch {}
+    } else {
+      try {
+        await this.audioService.startRecording();
+      } catch {}
+    }
+  }
+
+  private scheduleAiInputLayoutRefresh() {
+    if (this.aiInputLayoutRaf != null) {
+      cancelAnimationFrame(this.aiInputLayoutRaf);
+    }
+    this.aiInputLayoutRaf = requestAnimationFrame(() => {
+      this.aiInputLayoutRaf = null;
+      this.refreshAiInputMultilineState();
+    });
+  }
+
+  private async waitForThreadChat(maxTicks = 25): Promise<AiChatComponent | null> {
+    for (let i = 0; i < maxTicks; i++) {
+      if (this.threadChatRef) return this.threadChatRef;
+      this.cdr.detectChanges();
+      await new Promise<void>(resolve => setTimeout(resolve, 0));
+    }
+    return this.threadChatRef || null;
+  }
+
+  formatFileSize(bytes: number): string {
+    if (bytes < 1024) return `${bytes} o`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} Ko`;
+    return `${(bytes / (1024 * 1024)).toFixed(1)} Mo`;
+  }
+
+  isImage(mimeType: string): boolean {
+    return mimeType?.startsWith('image/') || false;
+  }
+
+  private refreshAiInputMultilineState() {
+    const el = this.aiInputElRef?.nativeElement;
+    if (!el) {
+      this.aiInputMultiline = false;
+      return;
+    }
+    const styles = window.getComputedStyle(el);
+    const lineHeight = parseFloat(styles.lineHeight || '18') || 18;
+    const padTop = parseFloat(styles.paddingTop || '0') || 0;
+    const padBottom = parseFloat(styles.paddingBottom || '0') || 0;
+    const oneLineHeight = lineHeight + padTop + padBottom;
+    this.aiInputMultiline = el.scrollHeight > oneLineHeight + 2;
+  }
+
+  private updateAiInputPlaceholder() {
+    if (typeof window === 'undefined') {
+      this.aiInputPlaceholder = 'Ex : Quels flows ont des erreurs ?';
+      return;
+    }
+    const isMobileOrTablet = window.innerWidth <= 1023;
+    this.aiInputPlaceholder = isMobileOrTablet
+      ? 'Ex : Quels flows ont des erreurs ?'
+      : 'Ex : Quels flows ont des erreurs ? (Entrée pour envoyer, Maj + Entrée pour un retour à la ligne)';
+  }
+
+  private clearCenterAttachments() {
+    for (const att of this.centerPendingAttachments) {
+      if (att.previewUrl) URL.revokeObjectURL(att.previewUrl);
+    }
+    this.centerPendingAttachments = [];
+  }
+
   async selectThread(thread: AiThread) {
     this.showSettings = false;
+    this.clearCenterAttachments();
     await this.ai.loadThread(thread.id || thread._id);
     this.cdr.detectChanges();
   }

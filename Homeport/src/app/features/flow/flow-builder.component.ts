@@ -760,6 +760,10 @@ export class FlowBuilderComponent {
   onRightDrawerClose() { this.rightDrawer = false; this.prepOpenDrawer = false; this.clearDrawerShellSwipe('right', false); this.resetDrawerSwipe('right'); this.updateGlobalBlockers(); }
   // Palette search and groups (materialized to avoid re-creating arrays each CD cycle)
   paletteQuery = '';
+  paletteConnectorsLoading = true;
+  private paletteTemplatesLoading = true;
+  private paletteWorkspaceLoadCycle = 0;
+  private paletteWorkspacePending: { filters: boolean; flows: boolean } = { filters: false, flows: false };
   paletteGroups: { title: string; items: any[]; appId?: string; appColor?: string; appIconClass?: string; appIconUrl?: string }[] = [];
   // Header labels
   headerTitle = 'Flow Builder';
@@ -868,22 +872,54 @@ export class FlowBuilderComponent {
       });
     } catch {}
     try {
+      const paletteCycle = this.startPaletteWorkspaceLoadCycle();
       this.catalog.listApps().subscribe(list => this.zone.run(() => {
         (list || []).forEach(a => this.appsMap.set(a.id, a));
         try { this.cdr.detectChanges(); } catch { }
       }));
       // Load palette from Node Templates list (dynamic source)
-      this.catalog.listNodeTemplates().subscribe(tpls => this.zone.run(() => {
-        try {
-          this.allTemplates = tpls || [];
-          this.applyWorkspaceTemplateFilter();
-        } catch { }
-      }));
+      this.paletteTemplatesLoading = true;
+      this.refreshPaletteLoadingState();
+      this.catalog.listNodeTemplates().subscribe({
+        next: (tpls) => this.zone.run(() => {
+          try {
+            this.allTemplates = tpls || [];
+            this.applyWorkspaceTemplateFilter(this.paletteWorkspaceLoadCycle || paletteCycle);
+          } finally {
+            const wasLoading = this.paletteConnectorsLoading;
+            this.paletteTemplatesLoading = false;
+            this.refreshPaletteLoadingState();
+            if (wasLoading && !this.paletteConnectorsLoading && this.addNodeVisible && !this.addNodeAiMode) {
+              this.rebuildAddNodeCandidates();
+              this.addNodeActiveIdx = this.addNodeCandidates.length ? 0 : -1;
+            }
+            try { this.cdr.detectChanges(); } catch { }
+          }
+        }),
+        error: () => this.zone.run(() => {
+          this.allTemplates = [];
+          this.items = [];
+          this.rebuildPaletteGroups();
+          const wasLoading = this.paletteConnectorsLoading;
+          this.paletteTemplatesLoading = false;
+          this.refreshPaletteLoadingState();
+          this.finishPaletteWorkspaceLoadStep('filters', this.paletteWorkspaceLoadCycle || paletteCycle);
+          if (wasLoading && !this.paletteConnectorsLoading && this.addNodeVisible && !this.addNodeAiMode) {
+            this.rebuildAddNodeCandidates();
+            this.addNodeActiveIdx = this.addNodeCandidates.length ? 0 : -1;
+          }
+          try { this.cdr.detectChanges(); } catch { }
+        }),
+      });
       // Load flows to expose in "Workflows" palette group (scoped to current workspace)
-      this.loadFlowsForWorkspace();
+      this.loadFlowsForWorkspace(paletteCycle);
       // Recompute palette when workspace changes
       try {
-        this.acl.changes$.pipe(auditTime(50)).subscribe(() => this.zone.run(() => { this.applyWorkspaceTemplateFilter(); this.loadFlowsForWorkspace(); }));
+        this.acl.changes$.pipe(auditTime(50)).subscribe(() => this.zone.run(() => {
+          const cycle = this.startPaletteWorkspaceLoadCycle();
+          this.applyWorkspaceTemplateFilter(cycle);
+          this.loadFlowsForWorkspace(cycle);
+        }));
       } catch { }
     } catch { }
     // Load flow by id if provided
@@ -1361,16 +1397,59 @@ export class FlowBuilderComponent {
     try { this.aiService.setPageContext({ page: 'other' }); } catch {}
   }
 
-  private loadFlowsForWorkspace(){
+  private refreshPaletteLoadingState() {
+    this.paletteConnectorsLoading =
+      this.paletteTemplatesLoading ||
+      this.paletteWorkspacePending.filters ||
+      this.paletteWorkspacePending.flows;
+  }
+
+  private startPaletteWorkspaceLoadCycle(): number {
+    const cycle = ++this.paletteWorkspaceLoadCycle;
+    this.paletteWorkspacePending = { filters: true, flows: true };
+    this.refreshPaletteLoadingState();
+    return cycle;
+  }
+
+  private finishPaletteWorkspaceLoadStep(step: 'filters' | 'flows', cycle: number) {
+    if (cycle !== this.paletteWorkspaceLoadCycle) return;
+    const wasLoading = this.paletteConnectorsLoading;
+    this.paletteWorkspacePending = { ...this.paletteWorkspacePending, [step]: false };
+    this.refreshPaletteLoadingState();
+    if (wasLoading && !this.paletteConnectorsLoading && this.addNodeVisible && !this.addNodeAiMode) {
+      this.rebuildAddNodeCandidates();
+      this.addNodeActiveIdx = this.addNodeCandidates.length ? 0 : -1;
+    }
+    try { this.cdr.detectChanges(); } catch {}
+  }
+
+  private loadFlowsForWorkspace(cycle: number = this.paletteWorkspaceLoadCycle){
     try {
       const ws = this.acl.currentWorkspaceId();
-      if (!ws) { this.allFlows = []; this.rebuildPaletteGroups(); return; }
-      this.catalog.listFlows(ws).subscribe(list => this.zone.run(() => {
-        this.allFlows = list || [];
+      if (!ws) {
+        this.allFlows = [];
         this.rebuildPaletteGroups();
-        try { this.cdr.detectChanges(); } catch {}
-      }));
-    } catch { this.allFlows = []; this.rebuildPaletteGroups(); }
+        this.finishPaletteWorkspaceLoadStep('flows', cycle);
+        return;
+      }
+      this.catalog.listFlows(ws).subscribe({
+        next: (list) => this.zone.run(() => {
+          this.allFlows = list || [];
+          this.rebuildPaletteGroups();
+          try { this.cdr.detectChanges(); } catch {}
+          this.finishPaletteWorkspaceLoadStep('flows', cycle);
+        }),
+        error: () => this.zone.run(() => {
+          this.allFlows = [];
+          this.rebuildPaletteGroups();
+          this.finishPaletteWorkspaceLoadStep('flows', cycle);
+        }),
+      });
+    } catch {
+      this.allFlows = [];
+      this.rebuildPaletteGroups();
+      this.finishPaletteWorkspaceLoadStep('flows', cycle);
+    }
   }
 
   private beforeUnloadHandler = (e: BeforeUnloadEvent) => {
@@ -1486,19 +1565,34 @@ export class FlowBuilderComponent {
 
 
 
-  private applyWorkspaceTemplateFilter() {
+  private applyWorkspaceTemplateFilter(cycle: number = this.paletteWorkspaceLoadCycle) {
     try {
       const ws = this.acl.currentWorkspaceId();
-      this.acl.listAllowedTemplates(ws).subscribe(ids => {
-        const allow = Array.isArray(ids) ? ids : [];
-        this.allowedTplIds = new Set(allow);
-        const filtered = allow.length === 0 ? [] : (this.allTemplates || []).filter(t => allow.includes((t as any).id));
-        this.items = this.paletteSvc.toPaletteItems(filtered);
+      if (!ws) {
+        this.allowedTplIds = new Set<string>();
+        this.items = [];
         this.rebuildPaletteGroups();
-        try { this.cdr.detectChanges(); } catch { }
-        this.recomputeValidation();
+        this.finishPaletteWorkspaceLoadStep('filters', cycle);
+        return;
+      }
+      this.acl.listAllowedTemplates(ws).subscribe({
+        next: (ids) => {
+          const allow = Array.isArray(ids) ? ids : [];
+          this.allowedTplIds = new Set(allow);
+          const filtered = allow.length === 0 ? [] : (this.allTemplates || []).filter(t => allow.includes((t as any).id));
+          this.items = this.paletteSvc.toPaletteItems(filtered);
+          this.rebuildPaletteGroups();
+          try { this.cdr.detectChanges(); } catch { }
+          this.recomputeValidation();
+          this.finishPaletteWorkspaceLoadStep('filters', cycle);
+        },
+        error: () => {
+          this.finishPaletteWorkspaceLoadStep('filters', cycle);
+        }
       });
-    } catch { }
+    } catch {
+      this.finishPaletteWorkspaceLoadStep('filters', cycle);
+    }
   }
 
   // Resolve mini icon for palette: use only template.icon if it is a class (no app logo fallback)
@@ -2010,8 +2104,14 @@ export class FlowBuilderComponent {
     this.addNodeSourceId = String(nodeId);
     this.addNodeSourceHandle = String(handleId);
     this.addNodeQuery = '';
-    this.rebuildAddNodeCandidates();
-    this.addNodeActiveIdx = this.addNodeCandidates.length ? 0 : -1;
+    if (this.paletteConnectorsLoading) {
+      this.addNodeCandidates = [];
+      this.addNodeGroups = [];
+      this.addNodeActiveIdx = -1;
+    } else {
+      this.rebuildAddNodeCandidates();
+      this.addNodeActiveIdx = this.addNodeCandidates.length ? 0 : -1;
+    }
     this.addNodeContentVisible = true;
     this.addNodeVisible = true;
   }
@@ -2255,8 +2355,14 @@ export class FlowBuilderComponent {
       this.addNodeSourceId = null;
       this.addNodeSourceHandle = null;
       this.addNodeQuery = '';
-      this.rebuildAddNodeCandidates();
-      this.addNodeActiveIdx = this.addNodeCandidates.length ? 0 : -1;
+      if (this.paletteConnectorsLoading) {
+        this.addNodeCandidates = [];
+        this.addNodeGroups = [];
+        this.addNodeActiveIdx = -1;
+      } else {
+        this.rebuildAddNodeCandidates();
+        this.addNodeActiveIdx = this.addNodeCandidates.length ? 0 : -1;
+      }
       this.addNodeContentVisible = true;
       this.addNodeVisible = true;
     } catch {}
