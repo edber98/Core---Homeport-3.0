@@ -261,23 +261,49 @@ interface ProcessedSegment {
     .avatar { width: 32px; height: 32px; border-radius: 50%; background: #f0f0f0; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 16px; }
     .ai-msg.assistant .avatar { background: #e6f4ff; color: #1677ff; }
     .body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
-    .content { max-width: 85%; word-break: break-word; line-height: 1.5; }
+    .content { max-width: 85%; min-width: 0; overflow: hidden; word-break: break-word; line-height: 1.5; }
     .content :host ::ng-deep p { margin: 0 0 4px; }
     .content :host ::ng-deep p:last-child { margin: 0; }
     .content :host ::ng-deep code { background: #f0f0f0; padding: 1px 4px; border-radius: 3px; font-size: 13px; }
-    .content :host ::ng-deep pre { background: #f0f0f0; padding: 8px; border-radius: 6px; overflow-x: auto; }
+    .content :host ::ng-deep pre { background: #f0f0f0; padding: 8px; border-radius: 6px; max-width: 100%; overflow-x: auto; }
     .content ::ng-deep img { max-width: 100%; border-radius: 8px; cursor: pointer; transition: opacity 0.2s; }
     .content ::ng-deep img:hover { opacity: 0.85; }
-    .content ::ng-deep table { border-collapse: collapse; width: 100%; margin: 8px 0; font-size: 13px; display: block; overflow-x: auto; max-width: 100%; }
+    .content ::ng-deep .md-table-wrap {
+      margin: 8px 0;
+      max-width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .content ::ng-deep .md-table-wrap > table {
+      border-collapse: collapse;
+      width: max-content;
+      min-width: 100%;
+      margin: 0;
+      font-size: 13px;
+    }
+    .content ::ng-deep table { border-collapse: collapse; width: max-content; min-width: 100%; margin: 8px 0; font-size: 13px; }
     .content ::ng-deep th, .content ::ng-deep td { border: 1px solid #e8e8e8; padding: 6px 10px; text-align: left; white-space: nowrap; }
     .content ::ng-deep th { background: #fafafa; font-weight: 600; font-size: 12px; }
     .content ::ng-deep tr:nth-child(even) { background: #fafafa; }
-    .reasoning-block { border-left: 3px solid #d9d9d9; padding: 6px 12px; margin: 4px 0; border-radius: 0 8px 8px 0; opacity: 0.85; max-width: 85%; }
+    .reasoning-block { border-left: 3px solid #d9d9d9; padding: 6px 12px; margin: 4px 0; border-radius: 0 8px 8px 0; opacity: 0.85; max-width: 85%; min-width: 0; overflow: hidden; }
     .reasoning-header { display: flex; align-items: center; gap: 4px; font-size: 11px; color: #999; margin-bottom: 4px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.3px; }
-    .reasoning-text { font-size: 12px; color: #666; line-height: 1.6; margin-bottom: 6px; word-break: break-word; }
+    .reasoning-text { font-size: 12px; color: #666; line-height: 1.6; margin-bottom: 6px; word-break: break-word; overflow: hidden; }
     .reasoning-text ::ng-deep p { margin: 0 0 4px; }
     .reasoning-text ::ng-deep p:last-child { margin: 0; }
     .reasoning-text ::ng-deep code { background: #e8e8e8; padding: 1px 3px; border-radius: 2px; font-size: 11px; }
+    .reasoning-text ::ng-deep pre { max-width: 100%; overflow-x: auto; }
+    .reasoning-text ::ng-deep .md-table-wrap {
+      margin: 8px 0;
+      max-width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .reasoning-text ::ng-deep .md-table-wrap > table {
+      width: max-content;
+      min-width: 100%;
+      margin: 0;
+    }
+    .reasoning-text ::ng-deep table { width: max-content; min-width: 100%; }
     .reasoning-text ::ng-deep ul, .reasoning-text ::ng-deep ol { margin: 2px 0; padding-left: 18px; }
     .reasoning-text ::ng-deep li { margin: 1px 0; }
     .tool-summary { margin-top: 4px; }
@@ -414,11 +440,18 @@ export class AiMessageComponent {
   renderMarkdown(src: string): string {
     try {
       const html = marked.parse(String(src || ''), { breaks: true, gfm: true }) as string;
-      return DOMPurify.sanitize(html, {
-        ALLOWED_TAGS: ['p', 'strong', 'em', 'code', 'pre', 'a', 'ul', 'ol', 'li', 'br', 'span', 'b', 'i', 'h1', 'h2', 'h3', 'h4', 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'blockquote', 'hr', 'img'],
+      const wrapped = this.wrapTablesForScroll(html);
+      return DOMPurify.sanitize(wrapped, {
+        ALLOWED_TAGS: ['div', 'p', 'strong', 'em', 'code', 'pre', 'a', 'ul', 'ol', 'li', 'br', 'span', 'b', 'i', 'h1', 'h2', 'h3', 'h4', 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'blockquote', 'hr', 'img'],
         ALLOWED_ATTR: ['href', 'target', 'rel', 'class', 'src', 'alt', 'loading', 'width', 'height'],
       });
     } catch { return src; }
+  }
+
+  private wrapTablesForScroll(html: string): string {
+    return String(html || '')
+      .replace(/<table(\b[^>]*)>/gi, '<div class="md-table-wrap"><table$1>')
+      .replace(/<\/table>/gi, '</table></div>');
   }
 
   toolDisplayName(tc: AiToolCall): string {
