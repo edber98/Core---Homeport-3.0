@@ -80,11 +80,12 @@
 /* Drag preview caret */
 .drop-caret {
   position: absolute;
-  width: 2px;
+  width: 3px;
   background: #1890ff;
   border-radius: 1px;
   z-index: 5;
   pointer-events: none;
+  box-shadow: 0 0 0 1px rgba(24, 144, 255, 0.18), 0 0 8px rgba(24, 144, 255, 0.35);
 }
 
 /* Formula action button inside addon-before */

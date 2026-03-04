@@ -76,6 +76,8 @@ export class ExpressionEditorComponent implements OnInit, OnDestroy, OnChanges, 
   dragCaretTop = 0;
   dragCaretHeight = 18;
   private dropProcessing = false;
+  private hasCoarsePointer = false;
+  private dragKeyboardSuppressed = false;
   // suggestion state
   showMenu = false;
   popoverPlacement: 'bottomLeft'|'bottom'|'bottomRight'|'topLeft'|'top'|'topRight' = 'bottomLeft';
@@ -103,7 +105,9 @@ export class ExpressionEditorComponent implements OnInit, OnDestroy, OnChanges, 
 
   constructor(private sandbox: ExpressionSandboxService, private zone: NgZone, private cdr: ChangeDetectorRef) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.hasCoarsePointer = this.detectCoarsePointer();
+  }
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['value'] || changes['context']) this.updatePreview();
     if (changes['context'] && this.showMenu) {
@@ -346,25 +350,34 @@ export class ExpressionEditorComponent implements OnInit, OnDestroy, OnChanges, 
         e.stopPropagation(); (e as any).stopImmediatePropagation?.();
         try { dt.dropEffect = 'copy'; } catch {}
         const pos = this.view.posAtCoords({ x: e.clientX, y: e.clientY });
-        if (pos != null) {
+        const anchor = pos != null ? pos : this.view.state.selection.main.head;
+        // On touch devices (mobile/tablet), avoid forcing focus during drag:
+        // keep visual insertion targeting, but suppress keyboard once per drag session.
+        if (!this.shouldSuppressFocusOnDrag()) {
           this.view.focus();
-          this.view.dispatch({ selection: { anchor: pos } });
-          this.ensureCaretVisible();
-          this.updateDragCaret(pos);
+          this.dragKeyboardSuppressed = false;
+        } else {
+          if (!this.dragKeyboardSuppressed) {
+            this.blurActiveEditable();
+            this.dragKeyboardSuppressed = true;
+          }
         }
+        this.view.dispatch({ selection: { anchor } });
+        this.ensureCaretVisible();
+        this.updateDragCaret(anchor);
       }
     };
     const onDrop = (e: DragEvent) => {
       const dt = e.dataTransfer;
       if (!dt) return;
-      if (this.dropProcessing) { e.preventDefault(); return; }
+      if (this.dropProcessing) { e.preventDefault(); this.dragKeyboardSuppressed = false; return; }
       this.dropProcessing = true;
       const raw = dt.getData('application/x-expression-tag')
         || dt.getData('text/plain')
         || dt.getData('text')
         || dt.getData('public.utf8-plain-text')
         || dt.getData('com.apple.traditional-mac-plain-text');
-      if (raw == null || raw === '') { this.dropProcessing = false; return; }
+      if (raw == null || raw === '') { this.dropProcessing = false; this.dragKeyboardSuppressed = false; return; }
       try {
         if (e.cancelable) e.preventDefault();
         e.stopPropagation(); (e as any).stopImmediatePropagation?.();
@@ -374,11 +387,11 @@ export class ExpressionEditorComponent implements OnInit, OnDestroy, OnChanges, 
         this.insertTagAt(data, insertAt);
         this.hideDragCaret();
       } catch {}
-      setTimeout(() => { this.dropProcessing = false; }, 0);
+      setTimeout(() => { this.dropProcessing = false; this.dragKeyboardSuppressed = false; }, 0);
     };
     host.addEventListener('dragover', onDragOver, { capture: true });
     host.addEventListener('drop', onDrop, { capture: true });
-    host.addEventListener('dragleave', () => { this.hideDragCaret(); }, { capture: true });
+    host.addEventListener('dragleave', () => { this.hideDragCaret(); this.dragKeyboardSuppressed = false; }, { capture: true });
   }
 
   private keyCapture = (event: KeyboardEvent) => {
@@ -808,6 +821,33 @@ export class ExpressionEditorComponent implements OnInit, OnDestroy, OnChanges, 
     if (mode === 'afterClose') return from + replacement.length; // after '}}'
     // endInner: after '{{ ' + inner
     return from + 3 + innerLen; // 2 braces + space + inner length
+  }
+
+  private detectCoarsePointer(): boolean {
+    try {
+      if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return false;
+      return !!window.matchMedia('(pointer: coarse)').matches;
+    } catch { return false; }
+  }
+
+  private shouldSuppressFocusOnDrag(): boolean {
+    if (this.hasCoarsePointer) return true;
+    try {
+      if (typeof window === 'undefined') return false;
+      // Tablet/mobile responsive layouts used in the flow builder.
+      return (window.innerWidth || 0) <= 1280;
+    } catch { return false; }
+  }
+
+  private blurActiveEditable() {
+    try {
+      if (typeof document === 'undefined') return;
+      const el = document.activeElement as HTMLElement | null;
+      if (!el) return;
+      const tag = String(el.tagName || '').toLowerCase();
+      const editable = tag === 'input' || tag === 'textarea' || tag === 'select' || !!el.isContentEditable;
+      if (editable && typeof (el as any).blur === 'function') (el as any).blur();
+    } catch {}
   }
 
   private ensureCaretVisible() {

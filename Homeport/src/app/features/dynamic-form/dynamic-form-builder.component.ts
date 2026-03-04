@@ -1,7 +1,7 @@
 // dynamic-form-builder.component.ts
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
-import { Component, HostListener, ViewChild, Input, Output, EventEmitter, OnChanges, OnInit, OnDestroy, SimpleChanges } from '@angular/core';
+import { Component, HostListener, ViewChild, ElementRef, Input, Output, EventEmitter, OnChanges, OnInit, OnDestroy, AfterViewInit, SimpleChanges } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { skip } from 'rxjs/operators';
@@ -107,7 +107,7 @@ type Issue = { level: 'blocker'|'error'|'warning'; message: string; actions?: Ar
   templateUrl: './dynamic-form-builder.component.html',
   styleUrl: './dynamic-form-builder.component.scss',
 })
-export class DynamicFormBuilderComponent implements OnChanges, OnInit, OnDestroy {
+export class DynamicFormBuilderComponent implements OnChanges, OnInit, AfterViewInit, OnDestroy {
   // Schéma en cours d’édition
   schema: FormSchema = { title: 'Nouveau formulaire' };
   // Embedding API
@@ -196,6 +196,10 @@ export class DynamicFormBuilderComponent implements OnChanges, OnInit, OnDestroy
 
   // Référence direct à l'aperçu pour piloter la navigation des steps
   @ViewChild(DynamicForm) private df?: DynamicForm;
+  @ViewChild('previewFrame', { read: ElementRef }) private previewFrameRef?: ElementRef<HTMLElement>;
+  historyBarLeftPx: number | null = null;
+  private historyBarRafId: number | null = null;
+  private previewFrameResizeObs: ResizeObserver | null = null;
 
   // Grille / breakpoint en édition
   gridBp: 'xs'|'sm'|'md'|'lg'|'xl' = 'xs';
@@ -236,15 +240,154 @@ export class DynamicFormBuilderComponent implements OnChanges, OnInit, OnDestroy
   leftDrawer = false;
   rightDrawer = false;
   isMobile = (typeof window !== 'undefined') ? window.innerWidth <= 1280 : false;
+  // Swipe-to-close state for responsive drawers
+  leftDrawerSwipeX = 0;
+  rightDrawerSwipeX = 0;
+  private drawerSwipeSide: 'left' | 'right' | null = null;
+  private drawerSwipeMode: 'idle' | 'pending' | 'horizontal' | 'vertical' = 'idle';
+  private drawerSwipeStartX = 0;
+  private drawerSwipeStartY = 0;
+  private readonly drawerSwipeIntentThresh = 12; // px
+  private readonly drawerSwipeCloseThresh = 72; // px
+  private readonly drawerSwipeMaxShift = 220; // px
   // AI Chat popover visibility
   aiChatOpen = false;
 
   openPanel(where: 'left'|'right', _ev?: MouseEvent) {
-    if (where === 'left') this.leftDrawer = true; else this.rightDrawer = true;
+    this.resetDrawerSwipe();
+    this.clearDrawerShellSwipe('left', false);
+    this.clearDrawerShellSwipe('right', false);
+    if (where === 'left') {
+      this.rightDrawer = false;
+      this.leftDrawer = true;
+    } else {
+      this.leftDrawer = false;
+      this.rightDrawer = true;
+    }
   }
   mobileAddSection() { this.addSectionFromToolbar(); }
   mobileAddField() { this.addFieldFromToolbar(); }
   mobileToggleEdit() { this.toggleEditMode(); }
+
+  onLeftDrawerClose() {
+    this.leftDrawer = false;
+    this.clearDrawerShellSwipe('left', false);
+    this.resetDrawerSwipe('left');
+  }
+
+  onRightDrawerClose() {
+    this.rightDrawer = false;
+    this.clearDrawerShellSwipe('right', false);
+    this.resetDrawerSwipe('right');
+  }
+
+  onDrawerTouchStart(ev: TouchEvent, side: 'left' | 'right') {
+    try {
+      if (!this.isMobile) return;
+      if (side === 'left' && !this.leftDrawer) return;
+      if (side === 'right' && !this.rightDrawer) return;
+      const t = ev.touches && ev.touches[0];
+      if (!t) return;
+      this.clearDrawerShellSwipe(side, false);
+      this.drawerSwipeSide = side;
+      this.drawerSwipeMode = 'pending';
+      this.drawerSwipeStartX = t.clientX;
+      this.drawerSwipeStartY = t.clientY;
+      if (side === 'left') this.leftDrawerSwipeX = 0;
+      else this.rightDrawerSwipeX = 0;
+    } catch {}
+  }
+
+  onDrawerTouchMove(ev: TouchEvent, side: 'left' | 'right') {
+    try {
+      if (this.drawerSwipeSide !== side) return;
+      if (this.drawerSwipeMode === 'idle') return;
+      const t = ev.touches && ev.touches[0];
+      if (!t) return;
+      const dx = t.clientX - this.drawerSwipeStartX;
+      const dy = t.clientY - this.drawerSwipeStartY;
+      const absX = Math.abs(dx);
+      const absY = Math.abs(dy);
+      if (this.drawerSwipeMode === 'pending') {
+        if (absX < this.drawerSwipeIntentThresh && absY < this.drawerSwipeIntentThresh) return;
+        this.drawerSwipeMode = absX > (absY + 4) ? 'horizontal' : 'vertical';
+      }
+      if (this.drawerSwipeMode !== 'horizontal') return;
+
+      const shift = side === 'left'
+        ? Math.max(-this.drawerSwipeMaxShift, Math.min(0, dx))
+        : Math.min(this.drawerSwipeMaxShift, Math.max(0, dx));
+      if (side === 'left') this.leftDrawerSwipeX = shift;
+      else this.rightDrawerSwipeX = shift;
+      this.applyDrawerShellSwipe(side, shift);
+      if (shift !== 0) ev.preventDefault();
+    } catch {}
+  }
+
+  onDrawerTouchEnd(side: 'left' | 'right') {
+    try {
+      if (this.drawerSwipeSide !== side) { this.resetDrawerSwipe(side); return; }
+      const shift = side === 'left' ? this.leftDrawerSwipeX : this.rightDrawerSwipeX;
+      const shouldClose = side === 'left'
+        ? shift <= -this.drawerSwipeCloseThresh
+        : shift >= this.drawerSwipeCloseThresh;
+      this.clearDrawerShellSwipe(side, !shouldClose);
+      this.resetDrawerSwipe(side);
+      if (!shouldClose) return;
+      if (side === 'left') this.onLeftDrawerClose();
+      else this.onRightDrawerClose();
+    } catch {
+      this.clearDrawerShellSwipe(side, false);
+      this.resetDrawerSwipe(side);
+    }
+  }
+
+  private getDrawerShell(side: 'left' | 'right'): HTMLElement | null {
+    try {
+      const sel = side === 'left'
+        ? '.ios-safe-drawer.ant-drawer-left .ant-drawer-content-wrapper'
+        : '.ios-safe-drawer.ant-drawer-right .ant-drawer-content-wrapper';
+      return document.querySelector(sel) as HTMLElement | null;
+    } catch { return null; }
+  }
+
+  private applyDrawerShellSwipe(side: 'left' | 'right', shift: number) {
+    try {
+      const shell = this.getDrawerShell(side);
+      if (!shell) return;
+      shell.style.setProperty('transition', 'none', 'important');
+      shell.style.setProperty('transform', `translate3d(${shift}px, 0, 0)`, 'important');
+    } catch {}
+  }
+
+  private clearDrawerShellSwipe(side: 'left' | 'right', animateBack: boolean) {
+    try {
+      const shell = this.getDrawerShell(side);
+      if (!shell) return;
+      if (!animateBack) {
+        shell.style.removeProperty('transition');
+        shell.style.removeProperty('transform');
+        return;
+      }
+      shell.style.removeProperty('transition');
+      requestAnimationFrame(() => {
+        try { shell.style.removeProperty('transform'); } catch {}
+      });
+    } catch {}
+  }
+
+  private resetDrawerSwipe(side?: 'left' | 'right') {
+    try {
+      if (!side || side === 'left') this.leftDrawerSwipeX = 0;
+      if (!side || side === 'right') this.rightDrawerSwipeX = 0;
+      if (!side || this.drawerSwipeSide === side) {
+        this.drawerSwipeSide = null;
+        this.drawerSwipeMode = 'idle';
+        this.drawerSwipeStartX = 0;
+        this.drawerSwipeStartY = 0;
+      }
+    } catch {}
+  }
 
   // Load AI-generated schema from chat
   applyAiSchema(s: any) {
@@ -1464,9 +1607,9 @@ export class DynamicFormBuilderComponent implements OnChanges, OnInit, OnDestroy
 
   // ---------- Canvas actions ----------
   addStep(): void {
-    this.ensureStepperMode();
-    const step: StepConfig = { title: 'Étape', fields: [], style: 'stack' } as any;
-    this.schema.steps!.push(step);
+    const migratedStep = this.ensureStepperMode();
+    const step: StepConfig = migratedStep || ({ title: 'Étape', fields: [], style: 'stack' } as any);
+    if (!migratedStep) this.schema.steps!.push(step);
     this.selectedField = null;
     this.select(step);
     this.refresh();
@@ -1770,9 +1913,9 @@ export class DynamicFormBuilderComponent implements OnChanges, OnInit, OnDestroy
 
   // Ajouts depuis l'aperçu
   onEditAddStep() {
-    this.ensureStepperMode();
-    const step: StepConfig = { title: 'Step', fields: [], style: 'stack' } as any;
-    this.schema.steps!.push(step);
+    const migratedStep = this.ensureStepperMode();
+    const step: StepConfig = migratedStep || ({ title: 'Step', fields: [], style: 'stack' } as any);
+    if (!migratedStep) this.schema.steps!.push(step);
     this.selectedField = null;
     this.select(step);
     this.refresh();
@@ -2250,7 +2393,34 @@ export class DynamicFormBuilderComponent implements OnChanges, OnInit, OnDestroy
   }
   @HostListener('window:resize') onResize() {
     this.updateAutoBp();
+    const wasMobile = this.isMobile;
     this.isMobile = (typeof window !== 'undefined') ? window.innerWidth <= 1280 : this.isMobile;
+    if (wasMobile && !this.isMobile) {
+      this.onLeftDrawerClose();
+      this.onRightDrawerClose();
+    }
+    this.scheduleHistoryBarRecenter();
+  }
+
+  private scheduleHistoryBarRecenter() {
+    if (typeof window === 'undefined') return;
+    if (this.historyBarRafId != null) {
+      try { window.cancelAnimationFrame(this.historyBarRafId); } catch {}
+    }
+    this.historyBarRafId = window.requestAnimationFrame(() => {
+      this.historyBarRafId = null;
+      this.updateHistoryBarCenter();
+    });
+  }
+
+  private updateHistoryBarCenter() {
+    try {
+      const preview = this.previewFrameRef?.nativeElement;
+      if (!preview) return;
+      const rect = preview.getBoundingClientRect();
+      if (!rect.width || rect.width <= 0) return;
+      this.historyBarLeftPx = Math.round(rect.left + (rect.width / 2));
+    } catch {}
   }
   @HostListener('wheel', ['$event']) onPanelWheel(ev: WheelEvent) {
     const target = ev.target as HTMLElement | null;
@@ -2334,11 +2504,18 @@ export class DynamicFormBuilderComponent implements OnChanges, OnInit, OnDestroy
     return f;
   }
 
-  private ensureStepperMode(): void {
-    if (!this.schema.steps) {
-      this.schema.steps = [];
+  private ensureStepperMode(): StepConfig | null {
+    if (this.schema.steps?.length) return null;
+    this.schema.steps = this.schema.steps || [];
+    const rootItems = Array.isArray(this.schema.fields) ? this.schema.fields : [];
+    if (rootItems.length) {
+      const migrated: StepConfig = { title: 'Étape 1', fields: rootItems as any, style: 'stack' } as any;
+      this.schema.steps.push(migrated);
       delete this.schema.fields;
+      return migrated;
     }
+    delete this.schema.fields;
+    return null;
   }
 
   private ensureFlatMode(): void {
@@ -2625,9 +2802,32 @@ export class DynamicFormBuilderComponent implements OnChanges, OnInit, OnDestroy
     this.initAiIntegration();
   }
 
+  ngAfterViewInit(): void {
+    this.scheduleHistoryBarRecenter();
+    try {
+      if (typeof ResizeObserver !== 'undefined' && this.previewFrameRef?.nativeElement) {
+        this.previewFrameResizeObs = new ResizeObserver(() => this.scheduleHistoryBarRecenter());
+        this.previewFrameResizeObs.observe(this.previewFrameRef.nativeElement);
+        const builder = this.previewFrameRef.nativeElement.closest('.builder');
+        if (builder instanceof HTMLElement) this.previewFrameResizeObs.observe(builder);
+      }
+    } catch {}
+    try { setTimeout(() => this.scheduleHistoryBarRecenter(), 0); } catch {}
+  }
+
   ngOnDestroy(): void {
     this.routeParamSub?.unsubscribe();
     this.aiSub?.unsubscribe();
+    try {
+      this.previewFrameResizeObs?.disconnect();
+      this.previewFrameResizeObs = null;
+    } catch {}
+    try {
+      if (this.historyBarRafId != null && typeof window !== 'undefined') {
+        window.cancelAnimationFrame(this.historyBarRafId);
+      }
+      this.historyBarRafId = null;
+    } catch {}
   }
 
   // ── AI Integration ──
@@ -2843,8 +3043,8 @@ export class DynamicFormBuilderComponent implements OnChanges, OnInit, OnDestroy
     return this.parseKey(this.dropdownKey);
   }
   ctxAddStep() {
-    this.ensureStepperMode();
-    const step = this.ctxActions.addStep(this.schema) as StepConfig;
+    const migratedStep = this.ensureStepperMode();
+    const step = (migratedStep || this.ctxActions.addStep(this.schema)) as StepConfig;
     this.select(step);
     this.refresh();
   }
