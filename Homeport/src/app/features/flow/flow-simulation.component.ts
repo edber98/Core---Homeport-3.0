@@ -77,7 +77,7 @@ import { backAwareCurve } from './edge-curves';
     /* Panel toggle FAB (local copy to match Flow Builder look) */
     .panel-toggle-fab { position: absolute; left: 12px; top: 12px; width: 40px; height: 40px; border-radius: 12px; padding: 0; display:inline-flex; align-items:center; justify-content:center; background:#fff; border:1px solid #e5e7eb; box-shadow: 0 8px 20px rgba(0,0,0,0.12); z-index: 3000; }
     .panel-toggle-fab i { font-size: 16px; color:#111; }
-    @media (max-width: 768px) { .panel-toggle-fab { top: 62px; } }
+    @media (max-width: 768px) { .panel-toggle-fab { top: 12px; } }
     @media (max-width: 1024px) { .viewer { grid-template-columns: 1fr; } .left-panel { display:none; } }
     /* Avoid nz-drawer host taking layout space (same fix as Console AI/Executions) */
     nz-drawer { display: contents; }

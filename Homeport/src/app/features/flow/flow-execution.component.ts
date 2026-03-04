@@ -677,7 +677,7 @@ import { NodeExecResultDialogComponent } from './node-exec-result-dialog.compone
     }
     @media (max-width: 768px) {
       .flow-exec .viewer { padding-bottom: 0 !important; }
-      .panel-toggle-fab { top: 62px; }
+      .panel-toggle-fab { top: 12px; }
     }
     /* Ensure nz-drawer host does not take layout space */
     nz-drawer { display: contents; }
