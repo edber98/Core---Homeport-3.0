@@ -8,7 +8,6 @@ variables:
   BACK_FILE: kinn-backend.tar
   FRONT_FILE: kinn_homeport.tar
   GIT_CLEAN_FLAGS: -ffdx -e API/uploads/ -e API/logs/ -e mongo -e letsencrypt
-  GIT_STRATEGY: clone
   # Variables globales pour le pipeline "-2" (deploy_production/kinn)
   BACK_IMAGE_2: kinn-backend-2:$CI_COMMIT_REF_SLUG
   FRONT_IMAGE_2: kinn_homeport-2:$CI_COMMIT_REF_SLUG
