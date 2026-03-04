@@ -14,7 +14,7 @@ variables:
   BACK_FILE_2: kinn-backend-2.tar
   FRONT_FILE_2: kinn_homeport-2.tar
   COMPOSE_FILE_2: docker-compose-2.yaml
- 
+
 build:
   stage: build
   tags: 
