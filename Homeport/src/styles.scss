@@ -943,3 +943,53 @@ body.hp-drawer-open {
 .driver-active .driver-highlighted-element {
   z-index: 300000 !important;
 }
+/* Bring CDK modals above driver.js overlay when a tour triggers a modal (e.g. create flow) */
+.driver-active .cdk-overlay-container {
+  z-index: 400000 !important;
+}
+.driver-active .cdk-overlay-container .ant-modal {
+  z-index: 400010 !important;
+}
+/* Floating hint: shown when driver overlay is dismissed during navigate actions */
+.tour-floating-hint {
+  position: fixed;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 400020;
+  background: #fffbe6;
+  border: 1px solid #ffe58f;
+  border-radius: 10px;
+  padding: 12px 20px;
+  font-size: 14px;
+  color: #ad6800;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  animation: floatHintIn 0.3s ease;
+  max-width: calc(100vw - 32px);
+}
+.tour-floating-hint-icon {
+  font-size: 18px;
+}
+.tour-floating-hint-text {
+  flex: 1;
+}
+.tour-floating-hint-close {
+  background: none;
+  border: none;
+  color: #ad6800;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 0 0 0 8px;
+  line-height: 1;
+  opacity: 0.6;
+}
+.tour-floating-hint-close:hover {
+  opacity: 1;
+}
+@keyframes floatHintIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}

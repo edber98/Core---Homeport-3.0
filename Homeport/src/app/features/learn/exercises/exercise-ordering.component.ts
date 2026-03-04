@@ -33,6 +33,9 @@ import { OrderingData } from '../learn-curriculum';
       </div>
       <nz-alert *ngIf="submitted && allCorrect" nzType="success" nzMessage="L'ordre est correct !" nzShowIcon></nz-alert>
       <nz-alert *ngIf="submitted && !allCorrect" nzType="error" nzMessage="L'ordre n'est pas tout à fait correct. Les éléments bien placés sont en vert." nzShowIcon></nz-alert>
+      <div class="ord-actions" *ngIf="submitted && !allCorrect">
+        <button nz-button nzType="primary" (click)="shuffle()">Réessayer</button>
+      </div>
     </div>
   `,
   styles: [`

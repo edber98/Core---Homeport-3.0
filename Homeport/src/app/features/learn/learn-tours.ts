@@ -30,6 +30,8 @@ export interface TourStep {
   action?: TourStepAction;
   /** Delay (ms) before displaying this step (e.g. after navigation) */
   preDelay?: number;
+  /** Called before the step is highlighted (e.g. open a panel) */
+  preAction?: () => void;
 }
 
 export interface TourDefinition {
@@ -43,6 +45,26 @@ export interface TourDefinition {
   /** Module this tour belongs to */
   module: string;
   steps: TourStep[];
+}
+
+// ─── Helpers ─────────────────────────────────────────────────────────
+
+/** Click a toggle button if the panel has the .closed class */
+function openPanelIfClosed(panelSelector: string, toggleBtnSelector: string): void {
+  const panel = document.querySelector(panelSelector);
+  if (panel?.classList.contains('closed')) {
+    const btn = document.querySelector(toggleBtnSelector) as HTMLElement;
+    btn?.click();
+  }
+}
+
+/** Click a toggle button if the panel is open (no .closed class) */
+function closePanelIfOpen(panelSelector: string, toggleBtnSelector: string): void {
+  const panel = document.querySelector(panelSelector);
+  if (panel && !panel.classList.contains('closed')) {
+    const btn = document.querySelector(toggleBtnSelector) as HTMLElement;
+    btn?.click();
+  }
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -184,23 +206,21 @@ const tourFlowBuilder: TourDefinition = {
   module: 'flows',
   steps: [
     {
-      element: '.grid',
+      element: '.list-page',
       title: 'Vos flows',
-      description: 'Voici la liste de vos workflows. Cliquez sur un flow pour ouvrir l\'éditeur visuel.',
+      description: 'Voici la liste de vos workflows. Vous allez en ouvrir un (ou en créer un nouveau) pour découvrir l\'éditeur.',
       side: 'bottom',
-      optional: true,
     },
     {
-      element: '.grid .ant-card:first-child',
+      element: () => document.querySelector('.grid .ant-card:first-child') || document.querySelector('.page-header .ant-btn-primary'),
       title: 'Ouvrez un flow',
-      description: 'Cliquez sur un flow pour entrer dans le Flow Builder.',
+      description: 'Cliquez sur un flow existant ou créez-en un nouveau pour entrer dans le Flow Builder.',
       side: 'right',
-      optional: true,
       action: {
         type: 'navigate',
         urlMatch: '/flow-builder',
         timeout: 120000,
-        hint: 'Cliquez sur un flow pour continuer',
+        hint: 'Cliquez sur un flow ou créez-en un pour continuer',
       },
     },
     {
@@ -209,21 +229,15 @@ const tourFlowBuilder: TourDefinition = {
       description: 'Votre espace de travail visuel. Glissez, zoomez et connectez vos nœuds ici.',
       side: 'left',
       optional: true,
-      preDelay: 1000,
-    },
-    {
-      element: () => document.querySelector('.left-bar'),
-      title: 'La barre latérale',
-      description: 'Accès rapide aux paramètres du flow, à la palette de nœuds et aux options d\'affichage.',
-      side: 'right',
-      optional: true,
+      preDelay: 1200,
     },
     {
       element: () => document.querySelector('.left-panel'),
       title: 'Le panneau gauche',
-      description: 'Affiche les détails du nœud sélectionné : configuration, arguments et informations.',
+      description: 'La palette de nœuds, les paramètres du flow et les options d\'affichage. Cliquez sur un nœud pour voir sa configuration ici.',
       side: 'right',
       optional: true,
+      preAction: () => openPanelIfClosed('.left-panel', '.panel-toggle-fab.left'),
     },
     {
       element: () => document.querySelector('.right-panel'),
@@ -231,6 +245,7 @@ const tourFlowBuilder: TourDefinition = {
       description: 'Panneau d\'inspection et de configuration avancée du nœud sélectionné.',
       side: 'left',
       optional: true,
+      preAction: () => openPanelIfClosed('.right-panel', 'button[aria-label="Ouvrir ou fermer le panneau droit"]'),
     },
     {
       element: () => document.querySelector('.bottom-bar'),
@@ -266,6 +281,10 @@ const tourFlowBuilder: TourDefinition = {
       description: 'Ajoutez des nœuds depuis la palette, connectez-les et configurez chaque étape de votre automatisation.',
       side: 'bottom',
       optional: true,
+      preAction: () => {
+        closePanelIfOpen('.left-panel', '.panel-toggle-fab.left');
+        closePanelIfOpen('.right-panel', 'button[aria-label="Ouvrir ou fermer le panneau droit"]');
+      },
     },
   ],
 };
@@ -282,23 +301,21 @@ const tourFormBuilder: TourDefinition = {
   module: 'forms',
   steps: [
     {
-      element: '.grid',
+      element: '.list-page',
       title: 'Vos formulaires',
-      description: 'Voici la liste de vos formulaires. Cliquez sur un formulaire pour ouvrir l\'éditeur.',
+      description: 'Voici la liste de vos formulaires. Vous allez en ouvrir un (ou en créer un nouveau) pour découvrir l\'éditeur.',
       side: 'bottom',
-      optional: true,
     },
     {
-      element: '.grid .ant-card:first-child',
+      element: () => document.querySelector('.grid .ant-card:first-child') || document.querySelector('.page-header .ant-btn-primary'),
       title: 'Ouvrez un formulaire',
-      description: 'Cliquez sur un formulaire pour entrer dans le Form Builder.',
+      description: 'Cliquez sur un formulaire existant ou créez-en un nouveau pour entrer dans le Form Builder.',
       side: 'right',
-      optional: true,
       action: {
         type: 'navigate',
         urlMatch: '/dynamic-form',
         timeout: 120000,
-        hint: 'Cliquez sur un formulaire pour continuer',
+        hint: 'Cliquez sur un formulaire ou créez-en un pour continuer',
       },
     },
     {
@@ -307,7 +324,7 @@ const tourFormBuilder: TourDefinition = {
       description: 'Le Form Builder vous permet de créer des formulaires dynamiques avec un éditeur visuel.',
       side: 'bottom',
       optional: true,
-      preDelay: 800,
+      preDelay: 1000,
     },
     {
       element: () => document.querySelector('.builder > .left'),
@@ -521,6 +538,283 @@ const tourCredentials: TourDefinition = {
 };
 
 // ═══════════════════════════════════════════════════════════════════
+// Tour 7 — Créer un flow pas à pas
+// ═══════════════════════════════════════════════════════════════════
+const tourCreateFlow: TourDefinition = {
+  id: 'tour-create-flow',
+  title: 'Créer un flow pas à pas',
+  description: 'Créez votre premier workflow de A à Z avec un accompagnement étape par étape.',
+  targetRoute: '/flows',
+  navigationDelay: 600,
+  module: 'flows',
+  steps: [
+    // ── Étape 1 : créer ou ouvrir un flow ──
+    {
+      element: '.page-header .ant-btn-primary',
+      title: '1. Créez un nouveau flow',
+      description: 'Cliquez sur ce bouton pour créer un nouveau workflow. Donnez-lui un nom, par exemple « Mon premier flow ».',
+      side: 'bottom',
+      optional: true,
+      action: {
+        type: 'navigate',
+        urlMatch: '/flow-builder',
+        timeout: 120000,
+        hint: 'Créez un nouveau flow ou ouvrez-en un existant pour continuer',
+      },
+    },
+    // ── Étape 2 : découvrir le canvas ──
+    {
+      element: () => document.querySelector('.canvas-host'),
+      title: '2. Le canvas',
+      description: 'Votre espace de travail. Si le flow est vide, vous verrez un bouton « Créer le premier nœud » au centre.',
+      side: 'bottom',
+      optional: true,
+      preDelay: 1200,
+      preAction: () => {
+        closePanelIfOpen('.left-panel', '.panel-toggle-fab.left');
+        closePanelIfOpen('.right-panel', 'button[aria-label="Ouvrir ou fermer le panneau droit"]');
+      },
+    },
+    // ── Étape 3 : ajouter le nœud Start ──
+    {
+      element: () => document.querySelector('.empty-starter .starter-card') || document.querySelector('.panel-toggle-fab.left'),
+      title: '3. Ajoutez un nœud Start',
+      description: 'Tout flow commence par un nœud <b>Start</b>. Cliquez sur « Créer le premier nœud » (ou ouvrez la palette à gauche) puis cherchez <b>« Start »</b>.',
+      side: 'right',
+      optional: true,
+      action: {
+        type: 'dom',
+        domSelector: '.add-node-modal .ant-modal-content, .left-panel:not(.closed) flow-palette-panel',
+        timeout: 60000,
+        hint: 'Ouvrez la palette et cherchez « Start »',
+      },
+    },
+    // ── Étape 4 : choisir le nœud Start ──
+    {
+      element: () => document.querySelector('.add-node-modal .ant-modal-content') || document.querySelector('.left-panel flow-palette-panel'),
+      title: '4. Sélectionnez « Start »',
+      description: 'Cherchez <b>Start</b> dans la barre de recherche et cliquez dessus. C\'est le point d\'entrée de votre flow — il déclenche l\'exécution.',
+      side: 'right',
+      optional: true,
+      preDelay: 500,
+      action: {
+        type: 'dom',
+        domSelector: '.node-card',
+        timeout: 120000,
+        hint: 'Sélectionnez le nœud « Start » pour l\'ajouter au canvas',
+      },
+    },
+    // ── Étape 5 : le nœud Start est créé ──
+    {
+      element: () => document.querySelector('.node-card'),
+      title: '5. Votre nœud Start est créé !',
+      description: 'Le nœud Start apparaît sur le canvas. C\'est le déclencheur de votre flow. Maintenant, ajoutez une <b>action</b> après celui-ci.',
+      side: 'bottom',
+      optional: true,
+      preDelay: 800,
+    },
+    // ── Étape 6 : ajouter un nœud fonction ──
+    {
+      element: () => document.querySelector('.left-panel'),
+      title: '6. Ajoutez un nœud fonction',
+      description: 'Ouvrez la palette et ajoutez un nœud de type <b>fonction</b> (ex : <b>Requête HTTP</b>, <b>Envoyer un email</b>, ou tout autre nœud d\'action). C\'est l\'opération que votre flow exécutera.',
+      side: 'right',
+      optional: true,
+      preAction: () => openPanelIfClosed('.left-panel', '.panel-toggle-fab.left'),
+    },
+    // ── Étape 7 : configurer le nœud ──
+    {
+      element: () => document.querySelector('.right-panel'),
+      title: '7. Configurez le nœud',
+      description: 'Cliquez sur votre nœud et remplissez ses paramètres dans le panneau droit : URL, destinataire, message… selon le type choisi.',
+      side: 'left',
+      optional: true,
+      preAction: () => openPanelIfClosed('.right-panel', 'button[aria-label="Ouvrir ou fermer le panneau droit"]'),
+    },
+    // ── Étape 8 : les connexions ──
+    {
+      element: () => document.querySelector('.canvas-host'),
+      title: '8. Connectez Start → Action',
+      description: 'Tirez une ligne du <b>handle de sortie</b> (point à droite) du nœud Start vers le <b>handle d\'entrée</b> (point à gauche) de votre nœud fonction. C\'est ce lien qui définit l\'ordre d\'exécution.',
+      side: 'bottom',
+      optional: true,
+      preAction: () => {
+        closePanelIfOpen('.left-panel', '.panel-toggle-fab.left');
+        closePanelIfOpen('.right-panel', 'button[aria-label="Ouvrir ou fermer le panneau droit"]');
+      },
+    },
+    // ── Étape 9 : sauvegarder ──
+    {
+      element: () => document.querySelector('.deploy-btn'),
+      title: '9. Sauvegardez',
+      description: 'Cliquez sur <b>Déployer</b> pour sauvegarder et activer votre flow. Il sera prêt à être déclenché.',
+      side: 'top',
+      optional: true,
+    },
+    // ── Étape 10 : exécuter ──
+    {
+      element: () => document.querySelector('.run-btn'),
+      title: '10. Testez votre flow',
+      description: 'Cliquez sur <b>Exécuter</b> pour lancer votre flow. Le nœud Start déclenchera votre nœud fonction, et vous verrez le résultat de chaque étape.',
+      side: 'top',
+      optional: true,
+    },
+    // ── Fin ──
+    {
+      element: () => document.querySelector('.canvas-host'),
+      title: 'Bravo !',
+      description: 'Vous avez créé un flow <b>Start → Action</b> fonctionnel ! Pour aller plus loin, ajoutez des <b>Conditions</b> pour créer des branches, des <b>Boucles</b> pour itérer, ou des nœuds <b>Agent IA</b> pour des traitements intelligents.',
+      side: 'bottom',
+      optional: true,
+    },
+  ],
+};
+
+// ═══════════════════════════════════════════════════════════════════
+// Tour 8 — Créer un formulaire pas à pas
+// ═══════════════════════════════════════════════════════════════════
+const tourCreateForm: TourDefinition = {
+  id: 'tour-create-form',
+  title: 'Créer un formulaire pas à pas',
+  description: 'Construisez votre premier formulaire dynamique avec un accompagnement étape par étape.',
+  targetRoute: '/forms',
+  navigationDelay: 600,
+  module: 'forms',
+  steps: [
+    // ── Étape 1 : créer ou ouvrir un formulaire ──
+    {
+      element: () => document.querySelector('.page-header .ant-btn-primary'),
+      title: '1. Créez un formulaire',
+      description: 'Cliquez sur ce bouton pour créer un nouveau formulaire.',
+      side: 'bottom',
+      optional: true,
+      action: {
+        type: 'navigate',
+        urlMatch: '/dynamic-form',
+        timeout: 120000,
+        hint: 'Créez un formulaire ou ouvrez-en un existant pour continuer',
+      },
+    },
+    // ── Étape 2 : vue d'ensemble ──
+    {
+      element: () => document.querySelector('.builder'),
+      title: '2. Le Form Builder',
+      description: 'L\'éditeur se compose de 3 zones : la <b>palette</b> à gauche, l\'<b>aperçu</b> au centre et l\'<b>inspecteur</b> à droite.',
+      side: 'bottom',
+      optional: true,
+      preDelay: 1000,
+    },
+    // ── Étape 3 : ajouter une étape ──
+    {
+      element: () => document.querySelector('.actions-grid'),
+      title: '3. Ajoutez une étape',
+      description: 'Cliquez sur <b>Étape</b> pour créer une première étape. Les étapes permettent de diviser un long formulaire en sections.',
+      side: 'right',
+      optional: true,
+      action: {
+        type: 'click',
+        clickTarget: 'button[aria-label="Ajouter une étape"]',
+        timeout: 60000,
+        hint: 'Cliquez sur « Étape » pour ajouter une première étape',
+      },
+    },
+    // ── Étape 4 : les champs rapides ──
+    {
+      element: () => document.querySelector('.quick-grid'),
+      title: '4. Ajoutez un champ texte',
+      description: 'La grille de champs rapides permet d\'ajouter un champ en un clic. Cliquez sur <b>Texte</b> pour ajouter un champ texte.',
+      side: 'right',
+      optional: true,
+      preDelay: 400,
+      action: {
+        type: 'click',
+        clickTarget: 'button[aria-label="Ajouter champ texte"]',
+        timeout: 60000,
+        hint: 'Cliquez sur « Texte » pour ajouter un champ',
+      },
+    },
+    // ── Étape 5 : voir le champ dans l'aperçu ──
+    {
+      element: () => document.querySelector('.preview-frame'),
+      title: '5. L\'aperçu se met à jour',
+      description: 'Le champ apparaît immédiatement dans l\'aperçu au centre. Le formulaire se construit en temps réel.',
+      side: 'left',
+      optional: true,
+      preDelay: 400,
+    },
+    // ── Étape 6 : configurer dans l'inspecteur ──
+    {
+      element: () => document.querySelector('.builder > .right'),
+      title: '6. Configurez le champ',
+      description: 'L\'inspecteur à droite affiche les propriétés du champ sélectionné : <b>label</b>, <b>placeholder</b>, <b>validateurs</b>, <b>conditions</b>…',
+      side: 'left',
+      optional: true,
+    },
+    // ── Étape 7 : ajouter un champ email ──
+    {
+      element: () => document.querySelector('.quick-grid'),
+      title: '7. Ajoutez un champ email',
+      description: 'Ajoutez un deuxième champ pour enrichir votre formulaire. Cliquez sur <b>Email</b>.',
+      side: 'right',
+      optional: true,
+      action: {
+        type: 'click',
+        clickTarget: 'button[aria-label="Ajouter email"]',
+        timeout: 60000,
+        hint: 'Cliquez sur « Email » pour ajouter un champ email',
+      },
+    },
+    // ── Étape 8 : ajouter un champ nombre ──
+    {
+      element: () => document.querySelector('.quick-grid'),
+      title: '8. Et un champ nombre',
+      description: 'Continuez à ajouter des champs. Cliquez sur <b>Nombre</b>.',
+      side: 'right',
+      optional: true,
+      preDelay: 400,
+      action: {
+        type: 'click',
+        clickTarget: 'button[aria-label="Ajouter nombre"]',
+        timeout: 60000,
+        hint: 'Cliquez sur « Nombre » pour ajouter un champ nombre',
+      },
+    },
+    // ── Étape 9 : aperçu enrichi ──
+    {
+      element: () => document.querySelector('.preview-frame'),
+      title: '9. Votre formulaire prend forme',
+      description: 'Vous avez maintenant 3 champs. Vous pouvez les <b>réorganiser</b> par glisser-déposer dans l\'aperçu.',
+      side: 'left',
+      optional: true,
+      preDelay: 400,
+    },
+    // ── Étape 10 : sauvegarder ──
+    {
+      element: () => document.querySelector('.hb-right button[aria-label="Sauvegarder"]') || document.querySelector('.history-bar'),
+      title: '10. Sauvegardez',
+      description: 'Cliquez sur le bouton <b>Sauvegarder</b> dans la barre d\'outils pour enregistrer votre formulaire.',
+      side: 'top',
+      optional: true,
+      action: {
+        type: 'click',
+        clickTarget: 'button[aria-label="Sauvegarder"]',
+        timeout: 60000,
+        hint: 'Sauvegardez votre formulaire pour continuer',
+      },
+    },
+    // ── Fin ──
+    {
+      element: () => document.querySelector('.builder'),
+      title: 'Bravo !',
+      description: 'Votre premier formulaire est créé et sauvegardé. Explorez les sections, les conditions (visibleIf) et les styles pour aller plus loin.',
+      side: 'top',
+      optional: true,
+      preDelay: 600,
+    },
+  ],
+};
+
+// ═══════════════════════════════════════════════════════════════════
 // Exports
 // ═══════════════════════════════════════════════════════════════════
 
@@ -531,6 +825,8 @@ export const TOURS: TourDefinition[] = [
   tourFormBuilder,
   tourAi,
   tourCredentials,
+  tourCreateFlow,
+  tourCreateForm,
 ];
 
 export function getTourById(id: string): TourDefinition | undefined {

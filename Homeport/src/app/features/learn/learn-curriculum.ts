@@ -15,7 +15,7 @@ export interface LearnLesson {
   blocks: LearnBlock[];
 }
 
-export type LearnBlock = TheoryBlock | TipBlock | ImageBlock | ExerciseBlock;
+export type LearnBlock = TheoryBlock | TipBlock | ImageBlock | ExerciseBlock | StepperBlock | DemoBlock;
 
 export interface TheoryBlock  { type: 'theory'; markdown: string; }
 export interface TipBlock     { type: 'tip'; markdown: string; }
@@ -26,7 +26,31 @@ export interface ExerciseBlock {
   exerciseType: 'quiz' | 'expression' | 'drag-match' | 'fill-blank' | 'ordering';
   id: string;
   title: string;
+  /** If true (default), blocks subsequent content until completed */
+  blocking?: boolean;
   data: QuizData | ExpressionData | DragMatchData | FillBlankData | OrderingData;
+}
+
+// ─── Stepper ────────────────────────────────────────────────────────
+
+export interface StepperBlock {
+  type: 'stepper';
+  steps: StepperStep[];
+}
+
+export interface StepperStep {
+  label: string;
+  blocks: LearnBlock[];
+}
+
+// ─── Demo ───────────────────────────────────────────────────────────
+
+export interface DemoBlock {
+  type: 'demo';
+  demoId: string;
+  title: string;
+  description?: string;
+  height?: number;
 }
 
 // ─── Exercise data types ────────────────────────────────────────────
@@ -67,8 +91,8 @@ export interface OrderingData {
 
 export const MODULE_TOUR_MAP: Record<string, string[]> = {
   'getting-started': ['tour-interface'],
-  'flows': ['tour-flow-list', 'tour-flow-builder'],
-  'forms': ['tour-form-builder'],
+  'flows': ['tour-flow-list', 'tour-flow-builder', 'tour-create-flow'],
+  'forms': ['tour-form-builder', 'tour-create-form'],
   'providers': ['tour-credentials'],
   'ai': ['tour-ai'],
 };
@@ -270,13 +294,47 @@ Après l'exécution, chaque nœud affiche son résultat. Vous pouvez cliquer des
           {
             type: 'exercise', exerciseType: 'quiz', id: 'gs-first-q1',
             title: 'Le Flow Builder',
+            blocking: false,
             data: {
               question: 'Quel nœud est toujours présent par défaut quand vous créez un nouveau flow ?',
               options: ['HTTP Request', 'Start', 'Condition', 'End'],
               correctIndex: 1,
               explanation: 'Chaque flow commence avec un nœud « Start » qui définit le point d\'entrée de l\'exécution.'
             } as QuizData
-          }
+          },
+          // ── Interactive stepper ──
+          {
+            type: 'stepper',
+            steps: [
+              {
+                label: 'Créer',
+                blocks: [
+                  { type: 'theory', markdown: `## 1. Créez un nouveau flow\nAllez dans **Flows** et cliquez sur **+ Nouveau flow**. Donnez-lui un nom, par exemple « Mon premier flow ».` },
+                ]
+              },
+              {
+                label: 'Nœuds',
+                blocks: [
+                  { type: 'theory', markdown: `## 2. Ajoutez des nœuds\nOuvrez la palette de nœuds et glissez les opérations sur le canvas. Chaque nœud représente une étape de votre automatisation.` },
+                  { type: 'demo', demoId: 'drag-nodes', title: 'Essayez !', description: 'Glissez les nœuds dans les emplacements pour reconstituer un flow.' },
+                ]
+              },
+              {
+                label: 'Connexions',
+                blocks: [
+                  { type: 'theory', markdown: `## 3. Connectez les nœuds\nTirez une ligne du handle de sortie d'un nœud vers le handle d'entrée du suivant. Les données circuleront le long de cette connexion.` },
+                  { type: 'demo', demoId: 'connect-nodes', title: 'Dessinez une connexion', description: 'Reliez les deux nœuds en tirant depuis le handle vert.' },
+                ]
+              },
+              {
+                label: 'Expressions',
+                blocks: [
+                  { type: 'theory', markdown: `## 4. Utilisez des expressions\nLes expressions \`{{ }}\` permettent d'injecter des données dynamiques dans les champs de configuration.` },
+                  { type: 'demo', demoId: 'expression-eval', title: 'Testez une expression', description: 'Écrivez une expression pour extraire une valeur du contexte.' },
+                ]
+              },
+            ]
+          } as StepperBlock
         ]
       }
     ]

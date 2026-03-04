@@ -36,6 +36,9 @@ import { ExpressionData } from '../learn-curriculum';
       <div *ngIf="submitted && !isCorrect">
         <nz-alert nzType="error" [nzMessage]="'Résultat attendu : ' + data.expectedOutput" nzShowIcon></nz-alert>
       </div>
+      <div class="expr-actions" *ngIf="submitted && !isCorrect">
+        <button nz-button nzType="primary" (click)="retry()">Réessayer</button>
+      </div>
     </div>
   `,
   styles: [`
@@ -85,5 +88,12 @@ export class ExerciseExpressionComponent {
     // Accept either the raw expression or wrapped in {{ }}
     this.isCorrect = val === expected || normalized === expected || val === `{{ ${expected} }}` || val === `{{${expected}}}`;
     this.completed.emit(this.isCorrect);
+  }
+
+  retry() {
+    this.submitted = false;
+    this.isCorrect = false;
+    this.userInput = '';
+    this.showHint = false;
   }
 }

@@ -1,5 +1,6 @@
 import { Injectable, NgZone } from '@angular/core';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
+import { Subscription, filter, take } from 'rxjs';
 import { driver, type DriveStep, type Driver, type AllowedButtons } from 'driver.js';
 
 import { TourDefinition, TourStep, TourStepAction } from './learn-tours';
@@ -10,10 +11,24 @@ export class LearnTourService {
 
   private current: Driver | null = null;
   private currentTourId: string | null = null;
-  /** Filtered tour steps (mirrors driveSteps by index) */
   private tourSteps: TourStep[] = [];
-  /** Cleanup functions for active action listeners */
+
+  /** Cleanup functions for inline actions (click / dom) */
   private actionCleanups: (() => void)[] = [];
+
+  /**
+   * Navigate-action state — lives OUTSIDE actionCleanups
+   * so it survives driver.destroy() during navigate pause.
+   */
+  private navSub: Subscription | null = null;
+  private navTimer: number | null = null;
+  private navResolved = false;
+
+  /**
+   * Flag: when true, onDestroyStarted / onDeselected must NOT
+   * clean up navigate state (we're pausing, not quitting).
+   */
+  private isPausing = false;
 
   constructor(
     private zone: NgZone,
@@ -21,11 +36,11 @@ export class LearnTourService {
     private progress: LearnProgressService,
   ) {}
 
-  /** Start a guided tour. Navigates if needed, then launches driver.js */
+  // ── Public API ───────────────────────────────────────────────────
+
   async startTour(tour: TourDefinition): Promise<void> {
     this.destroyCurrent();
 
-    // Navigate to target route if needed
     if (tour.targetRoute) {
       const currentUrl = this.router.url.split('?')[0];
       if (currentUrl !== tour.targetRoute) {
@@ -33,21 +48,17 @@ export class LearnTourService {
       }
     }
 
-    // Wait for page to render
     await this.delay(tour.navigationDelay);
 
-    // Filter steps: keep lazy (function) elements always, filter static ones
+    // Filter: keep lazy elements always, filter static by DOM presence
     const filteredSteps: TourStep[] = [];
     for (const step of tour.steps) {
       if (typeof step.element === 'function') {
-        // Lazy elements are always included — resolved at display time
         filteredSteps.push(step);
       } else {
-        const el = document.querySelector(step.element);
-        if (el) {
+        if (document.querySelector(step.element)) {
           filteredSteps.push(step);
         }
-        // If not found and not optional, skip (can't show without element)
       }
     }
 
@@ -55,10 +66,39 @@ export class LearnTourService {
 
     this.tourSteps = filteredSteps;
     this.currentTourId = tour.id;
+    this.launchDriver(0);
+  }
 
-    const driveSteps = filteredSteps.map((s, i) => this.buildDriveStep(s, i));
+  /** Full stop — cleans everything and kills the tour */
+  destroyCurrent(): void {
+    this.cleanupActionListeners();
+    this.cleanupNavigate();
+    this.removeFloatingHint();
+    if (this.current) {
+      this.isPausing = true; // prevent re-entrant cleanup
+      const d = this.current;
+      this.current = null;
+      this.currentTourId = null;
+      this.tourSteps = [];
+      try { d.destroy(); } catch { /* already destroyed */ }
+      this.isPausing = false;
+    } else {
+      this.currentTourId = null;
+      this.tourSteps = [];
+    }
+  }
 
-    // Run driver.js outside Angular zone to avoid triggering change detection on each frame
+  // ── Driver lifecycle ─────────────────────────────────────────────
+
+  private launchDriver(fromIndex: number): void {
+    const steps = this.tourSteps.slice(fromIndex);
+    if (steps.length === 0) {
+      this.markTourComplete();
+      return;
+    }
+
+    const driveSteps = steps.map((s, i) => this.buildDriveStep(s, fromIndex + i));
+
     this.zone.runOutsideAngular(() => {
       this.current = driver({
         showProgress: true,
@@ -70,29 +110,33 @@ export class LearnTourService {
         nextBtnText: 'Suivant',
         prevBtnText: 'Précédent',
         doneBtnText: 'Terminer',
-        progressText: '{{current}} / {{total}}',
+        progressText: `{{current}} / ${this.tourSteps.length}`,
         steps: driveSteps,
+
         onNextClick: (_el, _step, opts) => {
           const d = opts.driver;
           if (!d.hasNextStep()) {
             d.destroy();
             return;
           }
-          const nextIdx = (d.getActiveIndex() ?? 0) + 1;
-          const nextTourStep = this.tourSteps[nextIdx];
+          const localIdx = d.getActiveIndex() ?? 0;
+          const globalIdx = fromIndex + localIdx + 1;
+          const nextTourStep = this.tourSteps[globalIdx];
           if (nextTourStep?.preDelay) {
-            setTimeout(() => d.moveNext(), nextTourStep.preDelay);
+            setTimeout(() => { if (d.isActive()) d.moveNext(); }, nextTourStep.preDelay);
           } else {
             d.moveNext();
           }
         },
+
         onDestroyStarted: () => {
-          this.cleanupActionListeners();
-          this.zone.run(() => {
-            if (this.currentTourId) {
-              this.progress.completeTour(this.currentTourId);
-            }
-          });
+          if (!this.isPausing) {
+            // User-initiated close (X button, overlay click, "Terminer")
+            this.cleanupActionListeners();
+            this.cleanupNavigate();
+            this.removeFloatingHint();
+            this.markTourComplete();
+          }
           this.current?.destroy();
         },
       });
@@ -101,11 +145,20 @@ export class LearnTourService {
     });
   }
 
-  /** Convert a TourStep into a driver.js DriveStep */
-  private buildDriveStep(step: TourStep, _index: number): DriveStep {
-    const hasAction = !!step.action;
+  private markTourComplete(): void {
+    this.zone.run(() => {
+      if (this.currentTourId) {
+        this.progress.completeTour(this.currentTourId);
+      }
+    });
+  }
 
-    // Build description with optional action hint
+  // ── Step building ────────────────────────────────────────────────
+
+  private buildDriveStep(step: TourStep, globalIndex: number): DriveStep {
+    const isNavigateAction = step.action?.type === 'navigate';
+    const hasInlineAction = !!step.action && !isNavigateAction;
+
     let description = step.description;
     if (step.action?.hint) {
       description += `<div class="tour-action-hint">${step.action.hint}</div>`;
@@ -117,9 +170,13 @@ export class LearnTourService {
         description,
         side: step.side || 'bottom',
         align: 'center',
-        ...(hasAction ? { disableButtons: ['next' as AllowedButtons] } : {}),
       },
     };
+
+    // Disable buttons for action steps
+    if (hasInlineAction || isNavigateAction) {
+      ds.popover!.disableButtons = ['next' as AllowedButtons, 'previous' as AllowedButtons];
+    }
 
     // Element: string or lazy function
     if (typeof step.element === 'function') {
@@ -129,43 +186,145 @@ export class LearnTourService {
       ds.element = step.element;
     }
 
-    // Action hooks: set up listener when step becomes active, clean up when deselected
-    if (hasAction) {
+    // Navigate action: pause driver, wait for URL, resume
+    if (isNavigateAction) {
+      ds.onHighlighted = () => {
+        this.runPreActionAndRefresh(step);
+        this.setupNavigateAction(step.action!, globalIndex);
+      };
+      // onDeselected: only cleanup if NOT pausing (user went "previous")
+      ds.onDeselected = () => {
+        if (!this.isPausing) {
+          this.cleanupNavigate();
+          this.cleanupActionListeners();
+        }
+      };
+    }
+    // Inline actions (click / dom)
+    else if (hasInlineAction) {
       ds.onHighlighted = (el, _driveStep, opts) => {
-        this.setupActionListener(step.action!, opts.driver, el);
+        this.runPreActionAndRefresh(step);
+        this.setupInlineAction(step.action!, opts.driver, el, globalIndex);
       };
       ds.onDeselected = () => {
         this.cleanupActionListeners();
+      };
+    }
+    // No action — just preAction
+    else if (step.preAction) {
+      ds.onHighlighted = () => {
+        this.runPreActionAndRefresh(step);
       };
     }
 
     return ds;
   }
 
-  /** Set up a listener for an interactive action step */
-  private setupActionListener(action: TourStepAction, d: Driver, el?: Element): void {
+  // ── Navigate action (pause / resume) ─────────────────────────────
+
+  private setupNavigateAction(action: TourStepAction, globalIndex: number): void {
+    this.navResolved = false;
+    const timeout = action.timeout ?? 60000;
+
+    const resumeAfterNav = () => {
+      if (this.navResolved) return;
+      this.navResolved = true;
+
+      // Clean navigate state
+      this.cleanupNavigate();
+      this.removeFloatingHint();
+
+      // Destroy driver if still alive
+      if (this.current) {
+        this.isPausing = true;
+        const d = this.current;
+        this.current = null;
+        try { d.destroy(); } catch { /* ok */ }
+        this.isPausing = false;
+      }
+
+      // Resume from next step after preDelay
+      const nextStep = this.tourSteps[globalIndex + 1];
+      const waitMs = nextStep?.preDelay ?? 800;
+      setTimeout(() => {
+        if (this.currentTourId) {
+          this.launchDriver(globalIndex + 1);
+        }
+      }, waitMs);
+    };
+
+    // 1) Subscribe to NavigationEnd FIRST (before destroying driver)
+    this.navSub = this.zone.run(() =>
+      this.router.events.pipe(
+        filter((e): e is NavigationEnd => e instanceof NavigationEnd),
+        filter(e => e.urlAfterRedirects.includes(action.urlMatch!)),
+        take(1),
+      ).subscribe(() => resumeAfterNav()),
+    );
+
+    // 2) Check if already at the target URL
+    if (this.router.url.includes(action.urlMatch!)) {
+      resumeAfterNav();
+      return;
+    }
+
+    // 3) Safety timeout
+    this.navTimer = window.setTimeout(resumeAfterNav, timeout);
+
+    // 4) Show floating hint with close button
+    if (action.hint) {
+      this.showFloatingHint(action.hint, () => {
+        // User clicked ✕ on the hint → cancel tour
+        this.destroyCurrent();
+      });
+    }
+
+    // 5) Destroy driver after 600ms to free overlay for user interaction
+    setTimeout(() => {
+      if (this.navResolved) return;
+      if (this.current) {
+        this.isPausing = true;
+        const d = this.current;
+        this.current = null;
+        try { d.destroy(); } catch { /* ok */ }
+        this.isPausing = false;
+      }
+    }, 600);
+  }
+
+  /** Clean navigate-specific state (subscription + timer) */
+  private cleanupNavigate(): void {
+    if (this.navSub) {
+      this.navSub.unsubscribe();
+      this.navSub = null;
+    }
+    if (this.navTimer != null) {
+      clearTimeout(this.navTimer);
+      this.navTimer = null;
+    }
+  }
+
+  // ── Inline actions (click / dom) ─────────────────────────────────
+
+  private setupInlineAction(action: TourStepAction, d: Driver, el?: Element, globalIndex?: number): void {
     const timeout = action.timeout ?? 60000;
     let resolved = false;
 
     const advance = () => {
       if (resolved) return;
       resolved = true;
-      // Small transition delay before moving
       setTimeout(() => {
         if (!d.isActive()) return;
-        const nextIdx = (d.getActiveIndex() ?? 0) + 1;
-        const nextStep = this.tourSteps[nextIdx];
+        const nextStep = globalIndex != null ? this.tourSteps[globalIndex + 1] : undefined;
         if (nextStep?.preDelay) {
-          setTimeout(() => {
-            if (d.isActive()) d.moveNext();
-          }, nextStep.preDelay);
+          setTimeout(() => { if (d.isActive()) d.moveNext(); }, nextStep.preDelay);
         } else {
-          d.moveNext();
+          if (d.isActive()) d.moveNext();
         }
       }, 300);
     };
 
-    // Safety timeout: auto-advance after N seconds
+    // Safety timeout
     const timer = window.setTimeout(advance, timeout);
     this.actionCleanups.push(() => clearTimeout(timer));
 
@@ -179,22 +338,15 @@ export class LearnTourService {
           target.addEventListener('click', handler, { once: true });
           this.actionCleanups.push(() => target.removeEventListener('click', handler));
         } else {
-          // Target not found — auto-advance after short delay
           setTimeout(advance, 1000);
         }
         break;
       }
-      case 'navigate': {
-        const interval = window.setInterval(() => {
-          if (this.router.url.includes(action.urlMatch!)) {
-            clearInterval(interval);
-            advance();
-          }
-        }, 200);
-        this.actionCleanups.push(() => clearInterval(interval));
-        break;
-      }
       case 'dom': {
+        if (action.domSelector && document.querySelector(action.domSelector)) {
+          advance();
+          return;
+        }
         const interval = window.setInterval(() => {
           if (document.querySelector(action.domSelector!)) {
             clearInterval(interval);
@@ -207,25 +359,58 @@ export class LearnTourService {
     }
   }
 
-  /** Clean up all active action listeners and timers */
+  // ── Floating hint ────────────────────────────────────────────────
+
+  private floatingHintEl: HTMLElement | null = null;
+
+  private showFloatingHint(text: string, onClose?: () => void): void {
+    this.removeFloatingHint();
+    const el = document.createElement('div');
+    el.className = 'tour-floating-hint';
+    el.innerHTML = `<span class="tour-floating-hint-icon">👆</span><span class="tour-floating-hint-text">${text}</span>`;
+
+    // Close button
+    const closeBtn = document.createElement('button');
+    closeBtn.className = 'tour-floating-hint-close';
+    closeBtn.innerHTML = '✕';
+    closeBtn.addEventListener('click', () => {
+      if (onClose) onClose();
+      else this.removeFloatingHint();
+    });
+    el.appendChild(closeBtn);
+
+    document.body.appendChild(el);
+    this.floatingHintEl = el;
+  }
+
+  private removeFloatingHint(): void {
+    if (this.floatingHintEl) {
+      this.floatingHintEl.remove();
+      this.floatingHintEl = null;
+    }
+  }
+
+  // ── preAction + refresh ─────────────────────────────────────────
+
+  /**
+   * Run step.preAction() (e.g. open a panel), then after a DOM reflow
+   * call driver.refresh() so the highlight repositions correctly.
+   */
+  private runPreActionAndRefresh(step: TourStep): void {
+    if (!step.preAction) return;
+    step.preAction();
+    // Wait for Angular change detection + CSS transition to start,
+    // then refresh the driver overlay position.
+    setTimeout(() => this.current?.refresh(), 350);
+  }
+
+  // ── Utilities ────────────────────────────────────────────────────
+
   private cleanupActionListeners(): void {
     for (const fn of this.actionCleanups) {
       try { fn(); } catch { /* ignore */ }
     }
     this.actionCleanups = [];
-  }
-
-  /** Destroy the currently active tour */
-  destroyCurrent(): void {
-    this.cleanupActionListeners();
-    if (this.current) {
-      // Temporarily remove the callback to avoid double-marking
-      const d = this.current;
-      this.current = null;
-      this.currentTourId = null;
-      this.tourSteps = [];
-      try { d.destroy(); } catch { /* already destroyed */ }
-    }
   }
 
   private delay(ms: number): Promise<void> {

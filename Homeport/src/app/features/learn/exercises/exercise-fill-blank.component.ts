@@ -41,6 +41,9 @@ interface BlankState {
       </div>
       <nz-alert *ngIf="submitted && allCorrect" nzType="success" nzMessage="Toutes les réponses sont correctes !" nzShowIcon></nz-alert>
       <nz-alert *ngIf="submitted && !allCorrect" nzType="error" nzMessage="Certaines réponses sont incorrectes. Les bonnes réponses sont affichées." nzShowIcon></nz-alert>
+      <div class="fb-actions" *ngIf="submitted && !allCorrect">
+        <button nz-button nzType="primary" (click)="retry()">Réessayer</button>
+      </div>
     </div>
   `,
   styles: [`
@@ -94,5 +97,11 @@ export class ExerciseFillBlankComponent implements OnInit {
     });
     this.allCorrect = this.blanks.every(b => b.correct);
     this.completed.emit(this.allCorrect);
+  }
+
+  retry() {
+    this.submitted = false;
+    this.allCorrect = false;
+    this.blanks = this.data.blanks.map(() => ({ value: '', correct: undefined }));
   }
 }

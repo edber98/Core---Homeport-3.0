@@ -35,6 +35,9 @@ import { QuizData } from '../learn-curriculum';
       </div>
       <nz-alert *ngIf="submitted && isCorrect" nzType="success" [nzMessage]="data.explanation || 'Bonne réponse !'" nzShowIcon></nz-alert>
       <nz-alert *ngIf="submitted && !isCorrect" nzType="error" [nzMessage]="'Mauvaise réponse. ' + (data.explanation || '')" nzShowIcon></nz-alert>
+      <div class="quiz-actions" *ngIf="submitted && !isCorrect">
+        <button nz-button nzType="primary" (click)="retry()">Réessayer</button>
+      </div>
     </div>
   `,
   styles: [`
@@ -82,5 +85,11 @@ export class ExerciseQuizComponent {
     this.submitted = true;
     this.isCorrect = this.selectedIndex === this.data.correctIndex;
     this.completed.emit(this.isCorrect);
+  }
+
+  retry() {
+    this.submitted = false;
+    this.isCorrect = false;
+    this.selectedIndex = null;
   }
 }

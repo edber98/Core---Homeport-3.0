@@ -48,6 +48,9 @@ interface MatchSlot {
       </div>
       <nz-alert *ngIf="submitted && allCorrect" nzType="success" nzMessage="Toutes les associations sont correctes !" nzShowIcon></nz-alert>
       <nz-alert *ngIf="submitted && !allCorrect" nzType="error" nzMessage="Certaines associations sont incorrectes. Les bonnes réponses sont indiquées en vert." nzShowIcon></nz-alert>
+      <div class="dm-actions" *ngIf="submitted && !allCorrect">
+        <button nz-button nzType="primary" (click)="retry()">Réessayer</button>
+      </div>
     </div>
   `,
   styles: [`
@@ -149,6 +152,8 @@ export class ExerciseDragMatchComponent implements OnInit {
   }
 
   reset() { this.initState(); }
+
+  retry() { this.initState(); }
 
   private shuffle<T>(arr: T[]): T[] {
     const a = [...arr];
