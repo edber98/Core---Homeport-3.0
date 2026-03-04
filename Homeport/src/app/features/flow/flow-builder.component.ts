@@ -2405,15 +2405,14 @@ export class FlowBuilderComponent {
           const el = this.flowHost?.nativeElement?.querySelector(`.node-card[data-node-id=\"${CSS.escape(nodeId)}\"]`) as HTMLElement | null;
           const ok = !!(el && el.getBoundingClientRect && el.getBoundingClientRect().width > 0 && el.getBoundingClientRect().height > 0);
           if (ok) {
-            this.centerOnNodeId(nodeId);
-            if (typeof setZoomPercent === 'number') this.applyZoomPercent(setZoomPercent);
+            this.centerOnNodeId(nodeId, setZoomPercent);
             return;
           }
         } catch {}
-        if (Date.now() - start < timeoutMs) { setTimeout(attempt, 50); } else { try { this.centerOnNodeId(nodeId); if (typeof setZoomPercent === 'number') this.applyZoomPercent(setZoomPercent); } catch {} }
+        if (Date.now() - start < timeoutMs) { setTimeout(attempt, 50); } else { try { this.centerOnNodeId(nodeId, setZoomPercent); } catch {} }
       };
       setTimeout(attempt, 0);
-    } catch { try { this.centerOnNodeId(nodeId); if (typeof setZoomPercent === 'number') this.applyZoomPercent(setZoomPercent); } catch {} }
+    } catch { try { this.centerOnNodeId(nodeId, setZoomPercent); } catch {} }
   }
   onExternalDrop(event: any) {
     // logs disabled
@@ -5126,7 +5125,7 @@ export class FlowBuilderComponent {
     } catch { }
   }
 
-  private centerOnNodeId(nodeId: string) {
+  private centerOnNodeId(nodeId: string, zoomPercent?: number) {
     const n = this.nodes.find(nn => nn.id === nodeId);
     if (!n) return;
     const p = n.point || { x: 0, y: 0 };
@@ -5141,7 +5140,7 @@ export class FlowBuilderComponent {
     } catch { }
     const wx = p.x + (w / 2);
     const wy = p.y + (h / 2);
-    this.centerViewportOnWorldPoint(wx, wy, 250);
+    this.centerViewportOnWorldPoint(wx, wy, 250, zoomPercent);
   }
 
   onIssueClick(it: { kind: 'node' | 'flow'; nodeId?: string; message: string }) {
@@ -5156,13 +5155,16 @@ export class FlowBuilderComponent {
     } catch { }
   }
 
-  private centerViewportOnWorldPoint(wx: number, wy: number, duration = 0) {
+  private centerViewportOnWorldPoint(wx: number, wy: number, duration = 0, zoomPercent?: number) {
     try {
       const vs: any = this.flow?.viewportService;
       if (!vs || !this.flowHost?.nativeElement) return;
       const vp = this.flow.viewportService.readableViewport();
       const rect = this.flowHost.nativeElement.getBoundingClientRect();
-      const state = this.fbUtils.centerViewportOnWorldPoint(vp, rect, wx, wy);
+      const targetZoom = (typeof zoomPercent === 'number')
+        ? Math.max(0.05, Math.min(3, (Number(zoomPercent) || 0) / 100))
+        : (vp.zoom || 1);
+      const state = this.fbUtils.centerViewportOnWorldPoint({ ...vp, zoom: targetZoom }, rect, wx, wy);
       (vs as any).writableViewport.set({ changeType: 'absolute', state, duration });
       try { vs.triggerViewportChangeEvent?.('end'); } catch { }
     } catch { }
