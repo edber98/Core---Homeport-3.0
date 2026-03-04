@@ -841,3 +841,155 @@ body {
 body.hp-drawer-open {
   overflow: hidden !important;
 }
+
+/* ─── driver.js Guided Tour overrides ───────────────────────────── */
+.driver-popover.kinn-tour-popover {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  border-radius: 8px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+  max-width: 380px;
+}
+.driver-popover.kinn-tour-popover .driver-popover-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #0f172a;
+}
+.driver-popover.kinn-tour-popover .driver-popover-description {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #374151;
+}
+.driver-popover.kinn-tour-popover .driver-popover-progress-text {
+  font-size: 12px;
+  color: #9ca3af;
+}
+.driver-popover.kinn-tour-popover .driver-popover-next-btn {
+  background: #111111;
+  color: #fff;
+  border: 1px solid #111111;
+  border-radius: 6px;
+  font-size: 13px;
+  padding: 4px 14px;
+  text-shadow: none;
+}
+.driver-popover.kinn-tour-popover .driver-popover-next-btn:hover {
+  background: #333;
+}
+.driver-popover.kinn-tour-popover .driver-popover-prev-btn {
+  background: #fff;
+  color: #374151;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 13px;
+  padding: 4px 14px;
+  text-shadow: none;
+}
+.driver-popover.kinn-tour-popover .driver-popover-prev-btn:hover {
+  background: #f9fafb;
+  border-color: #9ca3af;
+}
+.driver-popover.kinn-tour-popover .driver-popover-close-btn {
+  color: #9ca3af;
+}
+.driver-popover.kinn-tour-popover .driver-popover-close-btn:hover {
+  color: #374151;
+}
+.driver-popover.kinn-tour-popover .tour-action-hint {
+  margin-top: 10px;
+  padding: 8px 12px;
+  background: #fffbe6;
+  border: 1px solid #ffe58f;
+  border-radius: 6px;
+  font-size: 13px;
+  color: #ad6800;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.driver-popover.kinn-tour-popover .tour-action-hint::before {
+  content: '\1F446';
+}
+/* Responsive tour: tablet & mobile */
+@media (max-width: 768px) {
+  .driver-popover.kinn-tour-popover {
+    max-width: calc(100vw - 32px);
+    font-size: 13px;
+  }
+  .driver-popover.kinn-tour-popover .driver-popover-title {
+    font-size: 15px;
+  }
+  .driver-popover.kinn-tour-popover .driver-popover-description {
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  .driver-popover.kinn-tour-popover .driver-popover-footer {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .driver-popover.kinn-tour-popover .driver-popover-next-btn,
+  .driver-popover.kinn-tour-popover .driver-popover-prev-btn {
+    padding: 6px 16px;
+    font-size: 14px;
+    min-height: 36px;
+  }
+}
+/* Ensure tour overlay sits above everything including cdk-overlay-container */
+.driver-active .driver-overlay {
+  z-index: 300000 !important;
+}
+.driver-active .driver-popover {
+  z-index: 300001 !important;
+}
+.driver-active .driver-highlighted-element {
+  z-index: 300000 !important;
+}
+/* Bring CDK modals above driver.js overlay when a tour triggers a modal (e.g. create flow) */
+.driver-active .cdk-overlay-container {
+  z-index: 400000 !important;
+}
+.driver-active .cdk-overlay-container .ant-modal {
+  z-index: 400010 !important;
+}
+/* Floating hint: shown when driver overlay is dismissed during navigate actions */
+.tour-floating-hint {
+  position: fixed;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 400020;
+  background: #fffbe6;
+  border: 1px solid #ffe58f;
+  border-radius: 10px;
+  padding: 12px 20px;
+  font-size: 14px;
+  color: #ad6800;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  animation: floatHintIn 0.3s ease;
+  max-width: calc(100vw - 32px);
+}
+.tour-floating-hint-icon {
+  font-size: 18px;
+}
+.tour-floating-hint-text {
+  flex: 1;
+}
+.tour-floating-hint-close {
+  background: none;
+  border: none;
+  color: #ad6800;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 0 0 0 8px;
+  line-height: 1;
+  opacity: 0.6;
+}
+.tour-floating-hint-close:hover {
+  opacity: 1;
+}
+@keyframes floatHintIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}

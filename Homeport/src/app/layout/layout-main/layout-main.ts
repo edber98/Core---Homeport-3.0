@@ -73,6 +73,7 @@ export class LayoutMain implements OnInit {
     { label: 'Plugin Repos', icon: 'database', route: '/plugin-repos', adminOnly: true },
     { label: 'Notifications', icon: 'bell', route: '/notifications' },
     { label: 'Debugging', icon: 'tool', route: '/debug' },
+    { label: 'Apprendre', icon: 'read', route: '/learn' },
     { label: 'Paramètres', icon: 'setting', route: '/settings' },
   ];
   drawerVisible = false;
