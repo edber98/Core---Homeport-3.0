@@ -15,7 +15,7 @@ import { FormsModule } from '@angular/forms';
   imports: [CommonModule, FormsModule, FlowAdvancedCenterPanelComponent, JsonSchemaViewerV2Component, DynamicForm, FlowViewerSettingsNodeComponent, NzSelectModule],
   host: { '[class.tablet-portrait]': 'isTablet && isPortrait' },
   template: `
-    <div class="overlay" (click)="close.emit()"></div>
+    <div class="overlay" *ngIf="!isMobile" (click)="close.emit()"></div>
     <!-- Desktop/tablet layout -->
     <div class="dialog" *ngIf="!isMobile" (click)="$event.stopPropagation()" (dragover)="swallowDrag($event)" (drop)="swallowDrop($event)">
       <div class="header"></div>
@@ -264,6 +264,14 @@ import { FormsModule } from '@angular/forms';
     .m-backdrop { position:absolute; inset:0; z-index:1; }
     .m-dialog { position:relative; z-index:2; width: min(92vw, 520px); height: min(calc(var(--vh, 1vh) * 88), 720px); background:#fff; border:1px solid rgba(0,0,0,0.06); border-radius: 16px; box-shadow: 0 12px 24px rgba(0,0,0,0.06); display:flex; flex-direction: column; overflow:hidden; }
     :host(.tablet-portrait) .m-dialog { width: min(96vw, 920px); height: min(calc(var(--vh, 1vh) * 94), 940px); }
+    @supports (height: 100dvh) {
+      .m-dialog {
+        height: min(calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 12px), 720px);
+      }
+      :host(.tablet-portrait) .m-dialog {
+        height: min(calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 12px), 940px);
+      }
+    }
     .m-body { position:relative; flex:1 1 auto; min-height:0; overflow:hidden; touch-action: pan-y; -webkit-overflow-scrolling: touch; background:#fff; padding-top: env(safe-area-inset-top); }
     .m-footer { display:flex; align-items:center; justify-content:center; padding: 10px 12px calc(10px + env(safe-area-inset-bottom)) 12px; border-top:0; background:#fff; }
     .dots { display:flex; gap:8px; }

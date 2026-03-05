@@ -3,6 +3,7 @@ html, body {
     margin: 0;
     height: 100%;
     min-height: 100%;
+    background: #fff;
 }
 /* Prefer dynamic/small viewport units on mobile to avoid 100vh bugs */
 @supports (height: 100svh) {
@@ -38,12 +39,13 @@ body {
   .wide-tip.ant-tooltip, .cdk-overlay-pane.wide-tip { max-width: 92vw !important; }
 }
 /* Ensure Angular root fills viewport so grid children can size correctly */
-app-root { display:block; height:100%; }
+app-root { display:block; height:100%; background: #fff; }
 /* CDK overlay scroll-block can break iOS input focus; relax when overlays are open */
 body.cdk-global-scrollblock { overflow: auto !important; -webkit-overflow-scrolling: touch; }
 
 /* Global UI vars */
 :root {
+    color-scheme: light;
     --hp-menu-hover-bg: radial-gradient(100% 100% at 100% 0%, #f5f7ff 0%, #eaeefc 100%);
 }
 

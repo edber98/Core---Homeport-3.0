@@ -14,7 +14,7 @@ import { NzBadgeModule } from 'ng-zorro-antd/badge';
   standalone: true,
   imports: [CommonModule, FormsModule, FlowAdvancedCenterPanelComponent, JsonSchemaViewerComponent, NzBadgeModule, DynamicForm],
   template: `
-    <div class="overlay" (click)="onBackdrop($event)" [class.enter]="centerVisible"></div>
+    <div class="overlay" *ngIf="!isMobile" (click)="onBackdrop($event)" [class.enter]="centerVisible"></div>
     <!-- Desktop / tablet layout with wings (classic appearance) -->
     <div class="bundle" *ngIf="!isMobile" [class.center-visible]="centerVisible" [class.wings-visible]="wingsVisible">
       <div class="wing left" aria-label="Input wing" *ngIf="hasInput(model)">
@@ -144,6 +144,11 @@ import { NzBadgeModule } from 'ng-zorro-antd/badge';
     /* Mobile single-panel shell */
     .m-shell { position: fixed; inset:0; z-index: 100001; display:flex; align-items:center; justify-content:center; }
     .m-dialog { position:relative; width: min(92vw, 520px); height: min(88vh, 720px); background:#fff; border:1px solid rgba(0,0,0,0.06); border-radius: 16px; box-shadow: 0 12px 24px rgba(0,0,0,0.06); transform: translateY(8px); opacity:0; transition: opacity .22s ease, transform .26s ease; display:flex; flex-direction: column; overflow:hidden; }
+    @supports (height: 100dvh) {
+      .m-dialog {
+        height: min(calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 12px), 720px);
+      }
+    }
     .m-dialog.enter { opacity:1; transform: translateY(0); }
     .m-header { display:flex; align-items:center; justify-content:space-between; padding: calc(8px + env(safe-area-inset-top)) 12px 8px 12px; border-bottom:1px solid #f0f0f0; }
     .m-header .title { font-weight:600; font-size:14px; color:#111; }
