@@ -144,10 +144,20 @@
                                       [nzBorderless]="$any(field).cron?.borderless || false"
                                       [nzCollapseDisable]="$any(field).cron?.collapseDisable || false"></nz-cron-expression>
 
-                  <nz-select *ngIf="field.type==='select'" [formControlName]="key" nzAllowClear nzShowSearch>
-                    <nz-option *ngFor="let opt of (field.options || [])"
-                              [nzLabel]="opt.label || ''" [nzValue]="opt.value"></nz-option>
-                  </nz-select>
+                  <ng-container *ngIf="field.type==='select'">
+                    <select *ngIf="useNativeSelect; else zorroSelectField"
+                            class="df-native-select"
+                            [formControlName]="key">
+                      <option [ngValue]="null">{{ field.placeholder || 'Sélectionner' }}</option>
+                      <option *ngFor="let opt of (field.options || [])" [ngValue]="opt.value">{{ opt.label || '' }}</option>
+                    </select>
+                    <ng-template #zorroSelectField>
+                      <nz-select [formControlName]="key" nzAllowClear nzShowSearch>
+                        <nz-option *ngFor="let opt of (field.options || [])"
+                                  [nzLabel]="opt.label || ''" [nzValue]="opt.value"></nz-option>
+                      </nz-select>
+                    </ng-template>
+                  </ng-container>
 
                   <nz-radio-group *ngIf="field.type==='radio'" [formControlName]="key">
                     <label nz-radio *ngFor="let opt of (field.options || [])" [nzValue]="opt.value">{{ opt.label || '' }}</label>

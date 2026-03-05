@@ -63,6 +63,8 @@ export class DynamicForm implements OnInit, OnChanges {
   @Input() hideActions = false;
   // Force-disable expression editor UI
   @Input() disableExpressions = false;
+  // Use native select on mobile/tablet instead of nz-select (for better OS dropdown behavior)
+  @Input() nativeSelectOnMobile = false;
   @Input() editMode = false;
   @Input() forceBp?: 'xs'|'sm'|'md'|'lg'|'xl';
   @Input() selectedField: FieldConfig | null = null;

@@ -41,6 +41,7 @@ export class Fields implements OnInit, OnDestroy {
   @Input() ctx: any = {};
   @Input() exprPreviewShowErrors = true;
   @Input() disableExpressions = false;
+  @Input() nativeSelectOnMobile = false;
 
   // exposé si besoin
   isInputField = isInputField;
@@ -50,6 +51,7 @@ export class Fields implements OnInit, OnDestroy {
   // Secret input visibility
   secretVisible = false;
   isLgUp = false;
+  isMobileOrTablet = false;
 
   // Final flag used for ExpressionEditor preview errors: combine global + field-level
   get showPreviewErrors(): boolean {
@@ -98,6 +100,11 @@ export class Fields implements OnInit, OnDestroy {
   private updateViewport(): void {
     if (typeof window === 'undefined') return;
     this.isLgUp = window.innerWidth >= 992;
+    this.isMobileOrTablet = window.innerWidth <= 1023;
+  }
+
+  get useNativeSelect(): boolean {
+    return this.nativeSelectOnMobile && this.isMobileOrTablet;
   }
 
   /** champ required ? */

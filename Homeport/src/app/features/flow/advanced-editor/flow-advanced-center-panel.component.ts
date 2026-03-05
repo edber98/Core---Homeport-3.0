@@ -62,9 +62,19 @@ import { environment } from '../../../../environments/environment';
                     </button>
                   </div>
                   <div class="row">
-                    <nz-select class="form-select" [(ngModel)]="selectedFormId" nzShowSearch nzAllowClear nzPlaceHolder="Sélectionner un formulaire">
-                      <nz-option *ngFor="let f of forms; trackBy: trackForm" [nzValue]="f.id" [nzLabel]="f.name"></nz-option>
-                    </nz-select>
+                    <ng-container *ngIf="useNativeSelect; else formSelectDesktop">
+                      <select class="wf-native-select form-select"
+                        [ngModel]="selectedFormId"
+                        (ngModelChange)="selectedFormId = $event || null">
+                        <option [ngValue]="null">Sélectionner un formulaire</option>
+                        <option *ngFor="let f of forms; trackBy: trackForm" [ngValue]="f.id">{{ f.name }}</option>
+                      </select>
+                    </ng-container>
+                    <ng-template #formSelectDesktop>
+                      <nz-select class="form-select" [(ngModel)]="selectedFormId" nzShowSearch nzAllowClear nzPlaceHolder="Sélectionner un formulaire">
+                        <nz-option *ngFor="let f of forms; trackBy: trackForm" [nzValue]="f.id" [nzLabel]="f.name"></nz-option>
+                      </nz-select>
+                    </ng-template>
                     <button nz-button nzSize="small" class="apple-btn" (click)="applySelectedForm()" [disabled]="!selectedFormId || formsLoading">
                       Importer
                     </button>
@@ -86,9 +96,19 @@ import { environment } from '../../../../environments/environment';
                     <span *ngIf="testDurationMs != null"> <ng-container *ngIf="testStartedAt != null">· </ng-container>{{ testDurationMs }} ms</span>
                   </div>
                   <div class="attempt-selects" *ngIf="attemptOptions?.length">
-                    <nz-select class="attempt" [ngModel]="selectedAttemptIdx" (ngModelChange)="selectedAttemptIdxChange.emit($event)" nzPlaceHolder="Tentative">
-                      <nz-option *ngFor="let op of attemptOptions; trackBy: trackAttempt" [nzValue]="op.idx" [nzLabel]="op.label"></nz-option>
-                    </nz-select>
+                    <ng-container *ngIf="useNativeSelect; else attemptDesktop">
+                      <select class="wf-native-select attempt"
+                        [ngModel]="selectedAttemptIdx"
+                        (ngModelChange)="onAttemptChange($event)">
+                        <option [ngValue]="null">Tentative</option>
+                        <option *ngFor="let op of attemptOptions; trackBy: trackAttempt" [ngValue]="op.idx">{{ op.label }}</option>
+                      </select>
+                    </ng-container>
+                    <ng-template #attemptDesktop>
+                      <nz-select class="attempt" [ngModel]="selectedAttemptIdx" (ngModelChange)="selectedAttemptIdxChange.emit($event)" nzPlaceHolder="Tentative">
+                        <nz-option *ngFor="let op of attemptOptions; trackBy: trackAttempt" [nzValue]="op.idx" [nzLabel]="op.label"></nz-option>
+                      </nz-select>
+                    </ng-template>
                   </div>
                 </div>
               </div>
@@ -112,12 +132,23 @@ import { environment } from '../../../../environments/environment';
                 <div class="subtitle-row" *ngIf="!allowWithout">Requis pour ce nœud</div>
                 <div class="subtitle-row" *ngIf="allowWithout">Optionnel (peut s'exécuter sans)</div>
                 <div class="control-row">
-                  <nz-select class="cred-select" [ngClass]="{ error: credRequired && !selectedCredId }"
-                    [(ngModel)]="selectedCredId" [nzAllowClear]="allowWithout"
-                    [nzPlaceHolder]="allowWithout ? 'Aucun (optionnel)' : 'Sélectionner'" (ngModelChange)="onCredChange($event)"
-                    [nzDropdownStyle]="{ zIndex: '200010' }" [nzDropdownClassName]="'in-advanced-editor'" nzShowSearch>
-                    <nz-option *ngFor="let c of credentials" [nzValue]="c.id" [nzLabel]="c.name"></nz-option>
-                  </nz-select>
+                  <ng-container *ngIf="useNativeSelect; else credSelectDesktop">
+                    <select class="wf-native-select cred-select" [ngClass]="{ error: credRequired && !selectedCredId }"
+                      [ngModel]="selectedCredId"
+                      (ngModelChange)="onCredChange($event)">
+                      <option *ngIf="allowWithout" [ngValue]="null">Aucun (optionnel)</option>
+                      <option *ngIf="!allowWithout" [ngValue]="null" disabled>Sélectionner</option>
+                      <option *ngFor="let c of credentials" [ngValue]="c.id">{{ c.name }}</option>
+                    </select>
+                  </ng-container>
+                  <ng-template #credSelectDesktop>
+                    <nz-select class="cred-select" [ngClass]="{ error: credRequired && !selectedCredId }"
+                      [(ngModel)]="selectedCredId" [nzAllowClear]="allowWithout"
+                      [nzPlaceHolder]="allowWithout ? 'Aucun (optionnel)' : 'Sélectionner'" (ngModelChange)="onCredChange($event)"
+                      [nzDropdownStyle]="{ zIndex: '200010' }" [nzDropdownClassName]="'in-advanced-editor'" nzShowSearch>
+                      <nz-option *ngFor="let c of credentials" [nzValue]="c.id" [nzLabel]="c.name"></nz-option>
+                    </nz-select>
+                  </ng-template>
                   <button nz-button class="apple-btn icon-only cred-add-btn" (click)="openCreateCred()" [disabled]="!currentProvider" nz-tooltip nzTooltipTitle="Nouveau">
                     <i nz-icon nzType="plus"></i>
                   </button>
@@ -130,6 +161,7 @@ import { environment } from '../../../../environments/environment';
                   [schema]="s"
                   [value]="model?.context || {}"
                   [ctx]="ctx"
+                  [nativeSelectOnMobile]="true"
                   [hideActions]="true"
                   (valueChange)="onValue($event)"
                   (valueCommitted)="onValueCommitted($event)"
@@ -257,6 +289,59 @@ import { environment } from '../../../../environments/environment';
     .start-form-import .label { font-weight:600; font-size:12px; color:#111; }
     .start-form-import .hint { font-size:12px; color:#6b7280; }
     .start-form-import .form-select { flex: 1 1 auto; min-width: 0; }
+    .wf-native-select {
+      width: 100%;
+      height: 32px;
+      border: 1px solid #cfd8e6;
+      border-radius: 10px;
+      padding: 0 30px 0 10px;
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 1.2;
+      color: #0f172a;
+      background: #fff;
+      outline: none;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.95), 0 1px 2px rgba(15, 23, 42, 0.05);
+      background-image:
+        linear-gradient(45deg, transparent 50%, #64748b 50%),
+        linear-gradient(135deg, #64748b 50%, transparent 50%);
+      background-position:
+        calc(100% - 13px) calc(50% - 2px),
+        calc(100% - 8px) calc(50% - 2px);
+      background-size: 5px 5px, 5px 5px;
+      background-repeat: no-repeat;
+      transition: border-color .18s ease, box-shadow .18s ease, background-color .18s ease, transform .1s ease, color .18s ease;
+    }
+    .wf-native-select:hover {
+      border-color: #1677ff;
+      background: #fff;
+      box-shadow: 0 2px 6px rgba(22, 119, 255, 0.15);
+    }
+    .wf-native-select:focus {
+      border-color: #1677ff;
+      box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.15);
+      background: #fff;
+      color: #0958d9;
+    }
+    .wf-native-select:active { transform: translateY(1px); }
+    .wf-native-select option {
+      font-size: 12px;
+      font-weight: 500;
+      color: #0f172a;
+      background: #fff;
+    }
+    .wf-native-select option:checked {
+      color: #0958d9;
+      background: #e6f4ff;
+    }
+    .wf-native-select option[disabled] { color: #94a3b8; }
+    .wf-native-select.error {
+      border-color: #ff4d4f;
+      box-shadow: 0 0 0 2px rgba(255,77,79,0.12);
+    }
     /* Error style when credentials required but missing */
     :host ::ng-deep .cred-select.error .ant-select-selector { border-color: #ff4d4f !important; box-shadow: 0 0 0 2px rgba(255,77,79,0.12) !important; }
     /* Make tabs fill available height and allow inner scrolling */
@@ -311,11 +396,25 @@ export class FlowAdvancedCenterPanelComponent {
   forms: FormSummary[] = [];
   formsLoading = false;
   selectedFormId: string | null = null;
+  useNativeSelect = false;
 
   private lastModelId: string | null = null;
   private lastTemplateSig: string | null = null;
   dfVisible = true;
-  constructor(private cdr: ChangeDetectorRef, private zone: NgZone, private catalog: CatalogService, private acl: AccessControlService, private router: Router, private msg: NzMessageService) {}
+  constructor(private cdr: ChangeDetectorRef, private zone: NgZone, private catalog: CatalogService, private acl: AccessControlService, private router: Router, private msg: NzMessageService) {
+    this.updateSelectMode();
+  }
+
+  @HostListener('window:resize')
+  onWindowResize() { this.updateSelectMode(); }
+
+  private updateSelectMode() {
+    try {
+      this.useNativeSelect = window.innerWidth <= 1023;
+    } catch {
+      this.useNativeSelect = false;
+    }
+  }
 
   // Credentials state
   credVisible = false;
@@ -618,6 +717,13 @@ export class FlowAdvancedCenterPanelComponent {
       const hasMany = (this.attemptOptions || []).some(o => o.exec === op.exec && o.idx !== op.idx);
       return hasMany ? `Tentative #${op.occur + 1}` : `Tentative #1`;
     } catch { return null; }
+  }
+
+  onAttemptChange(v: any) {
+    if (v == null || v === '') return;
+    const next = typeof v === 'number' ? v : Number(v);
+    if (!Number.isFinite(next)) return;
+    this.selectedAttemptIdxChange.emit(next);
   }
 
   onCredChange(id: string | null) {
