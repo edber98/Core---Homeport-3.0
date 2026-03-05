@@ -17,7 +17,7 @@ import { Router } from '@angular/router';
   <div class="list-page">
     <div class="container">
       <div class="page-header">
-        <div>
+        <div class="intro">
           <h1>Paramètres</h1>
           <p>Gérer les données locales (catalogues, gabarits, apps) et réinitialiser aux valeurs par défaut.</p>
         </div>
@@ -76,16 +76,17 @@ import { Router } from '@angular/router';
         <p>Purger le stockage local et se déconnecter pour forcer la reconnexion au backend sans données résiduelles.</p>
         <div class="actions">
           <button nz-button nzType="default" class="action-blue" (click)="purgeAndLogout()">Purger localStorage + Logout</button>
-          <button nz-button nzType="default" class="action-blue" (click)="logWorkspaceState()">Console: Workspace state</button>
+          <button nz-button nzType="default" class="action-blue workspace-state-btn" (click)="logWorkspaceState()">Console: Workspace state</button>
         </div>
       </div>
     </div>
   </div>
   `,
   styles: [`
-    .list-page { padding: 20px; }
-    .container { max-width: 960px; margin: 0 auto; }
-    .page-header { display:flex; align-items:flex-end; justify-content:space-between; margin-bottom: 16px; }
+    .list-page { padding: 20px; max-width: 100%; }
+    .container { max-width: 960px; width: 100%; min-width: 0; margin: 0 auto; }
+    .page-header { display:flex; align-items:flex-end; justify-content:space-between; gap: 10px; margin-bottom: 16px; min-width: 0; }
+    .page-header .intro { min-width: 0; }
     .page-header h1 { margin: 0; font-size: 22px; font-weight: 650; letter-spacing: -0.02em; }
     .page-header p { margin: 4px 0 0; color:#6b7280; }
     .page-header .actions .primary { background:#1677ff; border-color:#1677ff; }
@@ -107,6 +108,15 @@ import { Router } from '@angular/router';
     .action-red { background:#ef4444; border-color:#ef4444; color:#fff; }
     .action-red:hover { background:#dc2626; border-color:#dc2626; color:#fff; }
     .result { margin-top: 12px; color:#0f172a; }
+    @media (max-width: 640px) {
+      .page-header { flex-direction: column; align-items: stretch; }
+      .page-header .actions { width: 100%; }
+      .page-header .actions .primary { width: 100%; }
+      .card .row { flex-direction: column; align-items: stretch; }
+      .card .row label { width: auto; }
+      .card .actions { flex-wrap: wrap; }
+      .workspace-state-btn { display: none; }
+    }
   `]
 })
 export class AppSettingsComponent {
