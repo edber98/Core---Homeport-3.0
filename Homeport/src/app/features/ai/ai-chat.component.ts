@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild, ChangeDetectorRef, effect, inject } from '@angular/core';
+import { Component, ElementRef, ViewChild, ChangeDetectorRef, effect, inject, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { trigger, transition, style, animate } from '@angular/animations';
@@ -598,7 +598,7 @@ interface StreamTool {
     .att-remove:hover { color: #ff4d4f !important; }
   `]
 })
-export class AiChatComponent {
+export class AiChatComponent implements AfterViewInit {
   inputText = '';
   segments: StreamSegment[] = [];
   streamError: string | null = null;
@@ -649,6 +649,11 @@ export class AiChatComponent {
         this.drawWaveform(data, this.waveformCanvas.nativeElement);
       }
     });
+  }
+
+  ngAfterViewInit() {
+    // Ensure initial render lands on the latest messages when the chat view mounts.
+    if (this.ai.messages().length) this.forceScrollToBottom();
   }
 
   private drawWaveform(data: Uint8Array, canvas: HTMLCanvasElement) {
@@ -1343,18 +1348,33 @@ export class AiChatComponent {
   /** Scroll to bottom only if user was already at the bottom */
   private scrollToBottom() {
     if (!this._userAtBottom) return;
-    try {
-      const el = this.scrollContainer?.nativeElement;
-      if (el) setTimeout(() => { el.scrollTop = el.scrollHeight; this._userAtBottom = true; }, 0);
-    } catch {}
+    this.applyScrollToBottomWithRetry(6);
   }
 
   /** Force scroll to bottom (e.g. when sending a new message) */
   private forceScrollToBottom() {
     this._userAtBottom = true;
+    this.applyScrollToBottomWithRetry(8);
+  }
+
+  /** Public helper for parent views after thread switch. */
+  scrollToLatest() {
+    this.forceScrollToBottom();
+  }
+
+  private applyScrollToBottomWithRetry(retries: number) {
     try {
-      const el = this.scrollContainer?.nativeElement;
-      if (el) setTimeout(() => { el.scrollTop = el.scrollHeight; }, 0);
+      const attempt = (remaining: number) => {
+        const el = this.scrollContainer?.nativeElement;
+        if (el) {
+          el.scrollTop = el.scrollHeight;
+          this._userAtBottom = true;
+          return;
+        }
+        if (remaining <= 0) return;
+        setTimeout(() => attempt(remaining - 1), 16);
+      };
+      setTimeout(() => attempt(retries), 0);
     } catch {}
   }
 }

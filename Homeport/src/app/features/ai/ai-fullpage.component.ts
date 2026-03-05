@@ -103,7 +103,7 @@ import { AiSettingsComponent } from './ai-settings.component';
 
         <!-- Settings link -->
         <div class="sidebar-bottom">
-          <button nz-button nzType="text" nzSize="small" [nzBlock]="!sidebarCollapsed" (click)="showSettings = !showSettings"
+          <button nz-button nzType="text" nzSize="small" [nzBlock]="!sidebarCollapsed" (click)="toggleSettingsFromSidebar()"
             [class.active-btn]="showSettings" nz-tooltip [nzTooltipTitle]="sidebarCollapsed ? 'Paramètres' : null">
             <span nz-icon nzType="setting" nzTheme="outline"></span>
             <span *ngIf="!sidebarCollapsed">Paramètres</span>
@@ -279,32 +279,82 @@ import { AiSettingsComponent } from './ai-settings.component';
                   </div>
                   <div class="sp-field">
                     <label>Agent</label>
-                    <nz-select nzSize="small" style="width:100%"
-                      [ngModel]="ai.currentThread()?.agentId || 'general'"
-                      (ngModelChange)="updateThreadAgent($event)"
-                      nzShowSearch>
-                      <nz-option *ngFor="let a of allAgents" [nzValue]="a.id" [nzLabel]="a.name"></nz-option>
-                    </nz-select>
+                    <ng-container *ngIf="threadSettingsUseNative; else spAgentDesktop">
+                      <select class="sp-native-select"
+                        [ngModel]="ai.currentThread()?.agentId || 'general'"
+                        (ngModelChange)="updateThreadAgent($event)">
+                        <option value="general">Assistant général</option>
+                        <optgroup *ngIf="systemAgents.length" label="Agents système">
+                          <ng-container *ngFor="let a of systemAgents">
+                            <option *ngIf="a.id !== 'general'" [value]="a.id">{{ a.name }}</option>
+                          </ng-container>
+                        </optgroup>
+                        <optgroup *ngIf="customAgents.length" label="Agents personnalisés">
+                          <option *ngFor="let a of customAgents" [value]="a.id">{{ a.name }}</option>
+                        </optgroup>
+                      </select>
+                    </ng-container>
+                    <ng-template #spAgentDesktop>
+                      <nz-select class="sp-zorro-select" nzSize="small" style="width:100%"
+                        nzShowSearch
+                        nzDropdownClassName="thread-settings-select-dropdown"
+                        [ngModel]="ai.currentThread()?.agentId || 'general'"
+                        (ngModelChange)="updateThreadAgent($event)">
+                        <nz-option nzValue="general" nzLabel="Assistant général"></nz-option>
+                        <nz-option-group *ngIf="systemAgents.length" nzLabel="Agents système">
+                          <ng-container *ngFor="let a of systemAgents">
+                            <nz-option *ngIf="a.id !== 'general'" [nzValue]="a.id" [nzLabel]="a.name"></nz-option>
+                          </ng-container>
+                        </nz-option-group>
+                        <nz-option-group *ngIf="customAgents.length" nzLabel="Agents personnalisés">
+                          <nz-option *ngFor="let a of customAgents" [nzValue]="a.id" [nzLabel]="a.name"></nz-option>
+                        </nz-option-group>
+                      </nz-select>
+                    </ng-template>
                   </div>
                   <div class="sp-field">
                     <label>Mode</label>
-                    <nz-select nzSize="small" style="width:100%"
-                      [ngModel]="ai.currentThread()?.mode"
-                      (ngModelChange)="updateThreadMode($event)">
-                      <nz-option nzValue="chat" nzLabel="Chat"></nz-option>
-                      <nz-option nzValue="workflow" nzLabel="Workflow"></nz-option>
-                      <nz-option nzValue="form" nzLabel="Formulaire"></nz-option>
-                    </nz-select>
+                    <ng-container *ngIf="threadSettingsUseNative; else spModeDesktop">
+                      <select class="sp-native-select"
+                        [ngModel]="ai.currentThread()?.mode"
+                        (ngModelChange)="updateThreadMode($event)">
+                        <option value="chat">Chat (libre)</option>
+                        <option value="workflow">Workflow (lié au flow)</option>
+                        <option value="form">Formulaire (lié au form)</option>
+                      </select>
+                    </ng-container>
+                    <ng-template #spModeDesktop>
+                      <nz-select class="sp-zorro-select" nzSize="small" style="width:100%"
+                        nzDropdownClassName="thread-settings-select-dropdown"
+                        [ngModel]="ai.currentThread()?.mode"
+                        (ngModelChange)="updateThreadMode($event)">
+                        <nz-option nzValue="chat" nzLabel="Chat (libre)"></nz-option>
+                        <nz-option nzValue="workflow" nzLabel="Workflow (lié au flow)"></nz-option>
+                        <nz-option nzValue="form" nzLabel="Formulaire (lié au form)"></nz-option>
+                      </nz-select>
+                    </ng-template>
                   </div>
                   <div class="sp-field">
                     <label>Autonomie</label>
-                    <nz-select nzSize="small" style="width:100%"
-                      [ngModel]="ai.currentThread()?.metadata?.autonomyLevel || 'autonomous'"
-                      (ngModelChange)="updateThreadAutonomy($event)">
-                      <nz-option nzValue="prudent" nzLabel="Prudent"></nz-option>
-                      <nz-option nzValue="balanced" nzLabel="Équilibré"></nz-option>
-                      <nz-option nzValue="autonomous" nzLabel="Autonome"></nz-option>
-                    </nz-select>
+                    <ng-container *ngIf="threadSettingsUseNative; else spAutonomyDesktop">
+                      <select class="sp-native-select"
+                        [ngModel]="ai.currentThread()?.metadata?.autonomyLevel || 'autonomous'"
+                        (ngModelChange)="updateThreadAutonomy($event)">
+                        <option value="prudent">Prudent (confirme les écritures)</option>
+                        <option value="balanced">Équilibré (confirme les actions sensibles)</option>
+                        <option value="autonomous">Autonome (agit directement)</option>
+                      </select>
+                    </ng-container>
+                    <ng-template #spAutonomyDesktop>
+                      <nz-select class="sp-zorro-select" nzSize="small" style="width:100%"
+                        nzDropdownClassName="thread-settings-select-dropdown"
+                        [ngModel]="ai.currentThread()?.metadata?.autonomyLevel || 'autonomous'"
+                        (ngModelChange)="updateThreadAutonomy($event)">
+                        <nz-option nzValue="prudent" nzLabel="Prudent (confirme les écritures)"></nz-option>
+                        <nz-option nzValue="balanced" nzLabel="Équilibré (confirme les actions sensibles)"></nz-option>
+                        <nz-option nzValue="autonomous" nzLabel="Autonome (agit directement)"></nz-option>
+                      </nz-select>
+                    </ng-template>
                   </div>
                   <div class="sp-divider"></div>
                   <div class="sp-field">
@@ -320,11 +370,26 @@ import { AiSettingsComponent } from './ai-settings.component';
                     </div>
                     <div class="sp-no-link" *ngIf="!ai.currentThread()?.flowId && !ai.currentThread()?.metadata?.formId">
                       <span class="sp-no-link-text">Aucun</span>
-                      <nz-select nzSize="small" nzPlaceHolder="Lier un workflow..." nzShowSearch nzAllowClear
-                        style="width:100%;margin-top:4px"
-                        (ngModelChange)="linkToFlow($event)" [ngModel]="null">
-                        <nz-option *ngFor="let f of recentFlows" [nzValue]="f.id" [nzLabel]="f.name"></nz-option>
-                      </nz-select>
+                      <ng-container *ngIf="threadSettingsUseNative; else spFlowDesktop">
+                        <select class="sp-native-select sp-no-link-select"
+                          (ngModelChange)="linkToFlow($event)"
+                          [ngModel]="''">
+                          <option value="" disabled>Lier un workflow...</option>
+                          <option *ngFor="let f of recentFlows" [value]="f.id">Workflow: {{ f.name }}</option>
+                        </select>
+                      </ng-container>
+                      <ng-template #spFlowDesktop>
+                        <nz-select class="sp-zorro-select sp-zorro-link-select" nzSize="small"
+                          nzPlaceHolder="Lier un workflow..."
+                          nzShowSearch
+                          nzAllowClear
+                          nzDropdownClassName="thread-settings-select-dropdown"
+                          style="width:100%;margin-top:4px"
+                          (ngModelChange)="linkToFlow($event)"
+                          [ngModel]="null">
+                          <nz-option *ngFor="let f of recentFlows" [nzValue]="f.id" [nzLabel]="'Workflow: ' + f.name"></nz-option>
+                        </nz-select>
+                      </ng-template>
                     </div>
                   </div>
                 </div>
@@ -529,16 +594,39 @@ import { AiSettingsComponent } from './ai-settings.component';
       line-height: 1.15;
       padding: 4px 6px;
     }
+    ::ng-deep .thread-settings-popover .settings-popover .ant-input {
+      transition: border-color .18s ease, box-shadow .18s ease, background-color .18s ease;
+    }
+    ::ng-deep .thread-settings-popover .settings-popover .sp-zorro-select .ant-select-selector {
+      height: 30px !important;
+      border: 1px solid #cfd8e6 !important;
+      border-radius: 10px !important;
+      padding: 0 10px !important;
+      background: #fff !important;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.95), 0 1px 2px rgba(15, 23, 42, 0.05);
+      transition: border-color .18s ease, box-shadow .18s ease, background-color .18s ease, color .18s ease !important;
+    }
+    ::ng-deep .thread-settings-popover .settings-popover .sp-zorro-select .ant-select-selection-item,
+    ::ng-deep .thread-settings-popover .settings-popover .sp-zorro-select .ant-select-selection-placeholder {
+      line-height: 28px !important;
+      font-size: 12px !important;
+      font-weight: 500;
+    }
+    ::ng-deep .thread-settings-popover .settings-popover .sp-zorro-select .ant-select-arrow {
+      color: #64748b;
+    }
     ::ng-deep .thread-settings-popover .settings-popover .ant-input:hover,
-    ::ng-deep .thread-settings-popover .settings-popover .ant-select:not(.ant-select-disabled):hover .ant-select-selector,
-    ::ng-deep .thread-settings-popover .settings-popover .ant-select-selector:hover {
+    ::ng-deep .thread-settings-popover .settings-popover .sp-zorro-select:not(.ant-select-disabled):hover .ant-select-selector,
+    ::ng-deep .thread-settings-popover .settings-popover .sp-zorro-select .ant-select-selector:hover,
+    .thread-settings-popover .settings-popover .sp-native-select:hover {
       border-color: #1677ff !important;
     }
     ::ng-deep .thread-settings-popover .settings-popover .ant-input:focus,
     ::ng-deep .thread-settings-popover .settings-popover .ant-input-focused,
-    ::ng-deep .thread-settings-popover .settings-popover .ant-select-focused .ant-select-selector,
-    ::ng-deep .thread-settings-popover .settings-popover .ant-select-open .ant-select-selector,
-    ::ng-deep .thread-settings-popover .settings-popover .ant-select.ant-select-focused:not(.ant-select-disabled):not(.ant-select-customize-input) .ant-select-selector {
+    ::ng-deep .thread-settings-popover .settings-popover .sp-zorro-select.ant-select-focused .ant-select-selector,
+    ::ng-deep .thread-settings-popover .settings-popover .sp-zorro-select.ant-select-open .ant-select-selector,
+    ::ng-deep .thread-settings-popover .settings-popover .sp-zorro-select.ant-select.ant-select-focused:not(.ant-select-disabled):not(.ant-select-customize-input) .ant-select-selector,
+    .thread-settings-popover .settings-popover .sp-native-select:focus {
       border-color: #1677ff !important;
       box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.15) !important;
     }
@@ -554,15 +642,125 @@ import { AiSettingsComponent } from './ai-settings.component';
       z-index: 1;
       box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.15) !important;
     }
-    .settings-popover { width: 280px; }
-    .sp-field { margin-bottom: 10px; }
+    .settings-popover {
+      width: 280px;
+      transform-origin: top right;
+      animation: settingsPopoverIn 180ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .sp-field {
+      margin-bottom: 10px;
+      animation: settingsFieldIn 220ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+    .sp-field:nth-child(1) { animation-delay: 16ms; }
+    .sp-field:nth-child(2) { animation-delay: 28ms; }
+    .sp-field:nth-child(3) { animation-delay: 40ms; }
+    .sp-field:nth-child(4) { animation-delay: 52ms; }
+    .sp-field:nth-child(5) { animation-delay: 64ms; }
     .sp-field:last-child { margin-bottom: 0; }
     .sp-field label { display: block; font-size: 11px; color: #999; margin-bottom: 3px; text-transform: uppercase; font-weight: 500; }
+    .sp-native-select {
+      width: 100%;
+      height: 30px;
+      border: 1px solid #cfd8e6;
+      border-radius: 10px;
+      padding: 0 30px 0 10px;
+      font-size: 12px;
+      font-weight: 500;
+      background: #fff;
+      color: #0f172a;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.95), 0 1px 2px rgba(15, 23, 42, 0.05);
+      outline: none;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      background-image:
+        linear-gradient(45deg, transparent 50%, #64748b 50%),
+        linear-gradient(135deg, #64748b 50%, transparent 50%);
+      background-position:
+        calc(100% - 13px) calc(50% - 2px),
+        calc(100% - 8px) calc(50% - 2px);
+      background-size: 5px 5px, 5px 5px;
+      background-repeat: no-repeat;
+      transition: border-color .18s ease, box-shadow .18s ease, background-color .18s ease, transform .1s ease, color .18s ease;
+    }
+    .sp-native-select:hover {
+      border-color: #1677ff;
+      background: #fff;
+      box-shadow: 0 2px 6px rgba(22, 119, 255, 0.15);
+    }
+    .sp-native-select:focus {
+      border-color: #1677ff;
+      box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.15);
+      background: #fff;
+      color: #0958d9;
+    }
+    .sp-native-select:active {
+      transform: translateY(1px);
+    }
+    .sp-native-select option {
+      font-size: 12px;
+      font-weight: 500;
+      color: #0f172a;
+      background: #fff;
+    }
+    .sp-native-select option:checked {
+      color: #0958d9;
+      background: #e6f4ff;
+    }
+    .sp-native-select option[disabled] {
+      color: #94a3b8;
+    }
+    .sp-native-select optgroup {
+      font-size: 11px;
+      font-weight: 700;
+      color: #64748b;
+      background: #f8fafc;
+    }
+    ::ng-deep .thread-settings-select-dropdown.ant-select-dropdown {
+      border-radius: 12px;
+      border: 1px solid #d6e4ff;
+      padding: 6px;
+      box-shadow: 0 10px 26px rgba(15, 23, 42, 0.16);
+      background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+    }
+    ::ng-deep .thread-settings-select-dropdown .ant-select-item-group {
+      color: #64748b;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 6px 8px;
+    }
+    ::ng-deep .thread-settings-select-dropdown .ant-select-item-option {
+      border-radius: 8px;
+      min-height: 30px;
+      padding: 6px 10px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    ::ng-deep .thread-settings-select-dropdown .ant-select-item-option-active:not(.ant-select-item-option-disabled) {
+      background: #eef5ff;
+    }
+    ::ng-deep .thread-settings-select-dropdown .ant-select-item-option-selected:not(.ant-select-item-option-disabled) {
+      background: #e6f4ff;
+      color: #0958d9;
+      font-weight: 600;
+    }
+    ::ng-deep .thread-settings-select-dropdown .ant-select-item-option-grouped {
+      padding-left: 16px;
+    }
+    .sp-no-link-select { margin-top: 4px; }
     .sp-divider { border-top: 1px solid #f0f0f0; margin: 8px 0; }
     .sp-link { display: flex; align-items: center; gap: 4px; }
     .sp-link-text { display: flex; align-items: center; gap: 4px; font-size: 12px; color: #1677ff; cursor: pointer; }
     .sp-link-text:hover { text-decoration: underline; }
     .sp-no-link-text { font-size: 12px; color: #999; }
+    @keyframes settingsPopoverIn {
+      from { opacity: 0; transform: translateY(-6px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    @keyframes settingsFieldIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
     .fp-chat { flex: 1; min-height: 0; min-width: 0; overflow: hidden; }
     .fp-settings { flex: 1; overflow-y: auto; }
 
@@ -609,6 +807,7 @@ export class AiFullpageComponent implements OnInit, OnDestroy, AfterViewInit {
   aiInputMultiline = false;
   centerPendingAttachments: AiAttachment[] = [];
   maxCenterFiles = AI_MAX_FILES;
+  threadSettingsUseNative = false;
   sidebarCollapsed = false;
   showSettings = false;
   regeneratingTitle = false;
@@ -641,6 +840,7 @@ export class AiFullpageComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnInit() {
     // Set page context
     this.ai.setPageContext({ page: 'other' });
+    this.updateThreadSettingsSelectMode();
     this.updateAiInputPlaceholder();
 
     // Load threads and agents
@@ -678,8 +878,17 @@ export class AiFullpageComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @HostListener('window:resize')
   onWindowResize() {
+    this.updateThreadSettingsSelectMode();
     this.updateAiInputPlaceholder();
     this.scheduleAiInputLayoutRefresh();
+  }
+
+  private updateThreadSettingsSelectMode() {
+    try {
+      this.threadSettingsUseNative = window.innerWidth <= 768;
+    } catch {
+      this.threadSettingsUseNative = false;
+    }
   }
 
   ngOnDestroy() {
@@ -716,6 +925,11 @@ export class AiFullpageComponent implements OnInit, OnDestroy, AfterViewInit {
 
   onAgentChange(agentId: string) {
     this.ai.selectedAgentId.set(agentId);
+  }
+
+  toggleSettingsFromSidebar() {
+    this.showSettings = !this.showSettings;
+    if (this.shouldAutoCloseSidebarNav()) this.sidebarCollapsed = true;
   }
 
   async newThread() {
@@ -933,8 +1147,15 @@ export class AiFullpageComponent implements OnInit, OnDestroy, AfterViewInit {
   async selectThread(thread: AiThread) {
     this.showSettings = false;
     this.clearCenterAttachments();
+    if (this.shouldAutoCloseSidebarNav()) this.sidebarCollapsed = true;
     await this.ai.loadThread(thread.id || thread._id);
+    const chat = await this.waitForThreadChat();
+    if (chat) chat.scrollToLatest();
     this.cdr.detectChanges();
+  }
+
+  private shouldAutoCloseSidebarNav(): boolean {
+    try { return window.innerWidth <= 1023; } catch { return false; }
   }
 
   deleteThread(thread: AiThread) {

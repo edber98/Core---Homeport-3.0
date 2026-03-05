@@ -118,32 +118,82 @@ import { AiSettingsComponent } from './ai-settings.component';
               </div>
               <div class="tsp-field">
                 <label>Agent</label>
-                <nz-select nzSize="small" style="width:100%"
-                  [ngModel]="ai.currentThread()?.agentId || 'general'"
-                  (ngModelChange)="updateThreadAgent($event)"
-                  nzShowSearch>
-                  <nz-option *ngFor="let a of allAgents" [nzValue]="a.id" [nzLabel]="a.name"></nz-option>
-                </nz-select>
+                <ng-container *ngIf="threadSettingsUseNative; else tspAgentDesktop">
+                  <select class="tsp-native-select"
+                    [ngModel]="ai.currentThread()?.agentId || 'general'"
+                    (ngModelChange)="updateThreadAgent($event)">
+                    <option value="general">Assistant général</option>
+                    <optgroup *ngIf="systemAgents.length" label="Agents système">
+                      <ng-container *ngFor="let a of systemAgents">
+                        <option *ngIf="a.id !== 'general'" [value]="a.id">{{ a.name }}</option>
+                      </ng-container>
+                    </optgroup>
+                    <optgroup *ngIf="customAgents.length" label="Agents personnalisés">
+                      <option *ngFor="let a of customAgents" [value]="a.id">{{ a.name }}</option>
+                    </optgroup>
+                  </select>
+                </ng-container>
+                <ng-template #tspAgentDesktop>
+                  <nz-select class="tsp-zorro-select" nzSize="small" style="width:100%"
+                    nzShowSearch
+                    nzDropdownClassName="thread-settings-select-dropdown"
+                    [ngModel]="ai.currentThread()?.agentId || 'general'"
+                    (ngModelChange)="updateThreadAgent($event)">
+                    <nz-option nzValue="general" nzLabel="Assistant général"></nz-option>
+                    <nz-option-group *ngIf="systemAgents.length" nzLabel="Agents système">
+                      <ng-container *ngFor="let a of systemAgents">
+                        <nz-option *ngIf="a.id !== 'general'" [nzValue]="a.id" [nzLabel]="a.name"></nz-option>
+                      </ng-container>
+                    </nz-option-group>
+                    <nz-option-group *ngIf="customAgents.length" nzLabel="Agents personnalisés">
+                      <nz-option *ngFor="let a of customAgents" [nzValue]="a.id" [nzLabel]="a.name"></nz-option>
+                    </nz-option-group>
+                  </nz-select>
+                </ng-template>
               </div>
               <div class="tsp-field">
                 <label>Mode</label>
-                <nz-select nzSize="small" style="width:100%"
-                  [ngModel]="ai.currentThread()?.mode"
-                  (ngModelChange)="updateThreadMode($event)">
-                  <nz-option nzValue="chat" nzLabel="Chat"></nz-option>
-                  <nz-option nzValue="workflow" nzLabel="Workflow"></nz-option>
-                  <nz-option nzValue="form" nzLabel="Formulaire"></nz-option>
-                </nz-select>
+                <ng-container *ngIf="threadSettingsUseNative; else tspModeDesktop">
+                  <select class="tsp-native-select"
+                    [ngModel]="ai.currentThread()?.mode"
+                    (ngModelChange)="updateThreadMode($event)">
+                    <option value="chat">Chat (libre)</option>
+                    <option value="workflow">Workflow (lié au flow)</option>
+                    <option value="form">Formulaire (lié au form)</option>
+                  </select>
+                </ng-container>
+                <ng-template #tspModeDesktop>
+                  <nz-select class="tsp-zorro-select" nzSize="small" style="width:100%"
+                    nzDropdownClassName="thread-settings-select-dropdown"
+                    [ngModel]="ai.currentThread()?.mode"
+                    (ngModelChange)="updateThreadMode($event)">
+                    <nz-option nzValue="chat" nzLabel="Chat (libre)"></nz-option>
+                    <nz-option nzValue="workflow" nzLabel="Workflow (lié au flow)"></nz-option>
+                    <nz-option nzValue="form" nzLabel="Formulaire (lié au form)"></nz-option>
+                  </nz-select>
+                </ng-template>
               </div>
               <div class="tsp-field">
                 <label>Autonomie</label>
-                <nz-select nzSize="small" style="width:100%"
-                  [ngModel]="ai.currentThread()?.metadata?.autonomyLevel || 'autonomous'"
-                  (ngModelChange)="updateThreadAutonomy($event)">
-                  <nz-option nzValue="prudent" nzLabel="Prudent"></nz-option>
-                  <nz-option nzValue="balanced" nzLabel="Équilibré"></nz-option>
-                  <nz-option nzValue="autonomous" nzLabel="Autonome"></nz-option>
-                </nz-select>
+                <ng-container *ngIf="threadSettingsUseNative; else tspAutonomyDesktop">
+                  <select class="tsp-native-select"
+                    [ngModel]="ai.currentThread()?.metadata?.autonomyLevel || 'autonomous'"
+                    (ngModelChange)="updateThreadAutonomy($event)">
+                    <option value="prudent">Prudent (confirme les écritures)</option>
+                    <option value="balanced">Équilibré (confirme les actions sensibles)</option>
+                    <option value="autonomous">Autonome (agit directement)</option>
+                  </select>
+                </ng-container>
+                <ng-template #tspAutonomyDesktop>
+                  <nz-select class="tsp-zorro-select" nzSize="small" style="width:100%"
+                    nzDropdownClassName="thread-settings-select-dropdown"
+                    [ngModel]="ai.currentThread()?.metadata?.autonomyLevel || 'autonomous'"
+                    (ngModelChange)="updateThreadAutonomy($event)">
+                    <nz-option nzValue="prudent" nzLabel="Prudent (confirme les écritures)"></nz-option>
+                    <nz-option nzValue="balanced" nzLabel="Équilibré (confirme les actions sensibles)"></nz-option>
+                    <nz-option nzValue="autonomous" nzLabel="Autonome (agit directement)"></nz-option>
+                  </nz-select>
+                </ng-template>
               </div>
             </div>
           </ng-template>
@@ -178,16 +228,158 @@ import { AiSettingsComponent } from './ai-settings.component';
     .agent-dot { width: 6px; height: 6px; border-radius: 50%; background: #722ed1; }
     .chat-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-height: 0; min-width: 0; }
     .settings-area { flex: 1; overflow: hidden; min-height: 0; }
-    .thread-settings-popover { width: 260px; }
-    .tsp-field { margin-bottom: 10px; }
+    .thread-settings-popover {
+      width: 260px;
+      transform-origin: top right;
+      animation: panelSettingsIn 180ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .tsp-field {
+      margin-bottom: 10px;
+      animation: panelFieldIn 220ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+    .tsp-field:nth-child(1) { animation-delay: 16ms; }
+    .tsp-field:nth-child(2) { animation-delay: 28ms; }
+    .tsp-field:nth-child(3) { animation-delay: 40ms; }
+    .tsp-field:nth-child(4) { animation-delay: 52ms; }
     .tsp-field:last-child { margin-bottom: 0; }
     .tsp-field label { display: block; font-size: 11px; color: #999; margin-bottom: 3px; text-transform: uppercase; font-weight: 500; }
+    :host ::ng-deep .thread-settings-popover .tsp-zorro-select .ant-select-selector {
+      height: 30px !important;
+      border: 1px solid #cfd8e6 !important;
+      border-radius: 10px !important;
+      padding: 0 10px !important;
+      background: #fff !important;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.95), 0 1px 2px rgba(15, 23, 42, 0.05);
+      transition: border-color .18s ease, box-shadow .18s ease, background-color .18s ease, color .18s ease !important;
+    }
+    :host ::ng-deep .thread-settings-popover .tsp-zorro-select .ant-select-selection-item,
+    :host ::ng-deep .thread-settings-popover .tsp-zorro-select .ant-select-selection-placeholder {
+      line-height: 28px !important;
+      font-size: 12px !important;
+      font-weight: 500;
+    }
+    :host ::ng-deep .thread-settings-popover .tsp-zorro-select .ant-select-arrow {
+      color: #64748b;
+    }
+    :host ::ng-deep .thread-settings-popover .tsp-zorro-select:not(.ant-select-disabled):hover .ant-select-selector,
+    :host ::ng-deep .thread-settings-popover .tsp-zorro-select .ant-select-selector:hover {
+      border-color: #1677ff !important;
+      background: #fff !important;
+      box-shadow: 0 2px 6px rgba(22, 119, 255, 0.15) !important;
+    }
+    :host ::ng-deep .thread-settings-popover .tsp-zorro-select.ant-select-focused .ant-select-selector,
+    :host ::ng-deep .thread-settings-popover .tsp-zorro-select.ant-select-open .ant-select-selector,
+    :host ::ng-deep .thread-settings-popover .tsp-zorro-select.ant-select.ant-select-focused:not(.ant-select-disabled):not(.ant-select-customize-input) .ant-select-selector {
+      border-color: #1677ff !important;
+      box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.15) !important;
+      background: #fff !important;
+    }
+    .tsp-native-select {
+      width: 100%;
+      height: 30px;
+      border: 1px solid #cfd8e6;
+      border-radius: 10px;
+      padding: 0 30px 0 10px;
+      font-size: 12px;
+      font-weight: 500;
+      background: #fff;
+      color: #0f172a;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.95), 0 1px 2px rgba(15, 23, 42, 0.05);
+      outline: none;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      background-image:
+        linear-gradient(45deg, transparent 50%, #64748b 50%),
+        linear-gradient(135deg, #64748b 50%, transparent 50%);
+      background-position:
+        calc(100% - 13px) calc(50% - 2px),
+        calc(100% - 8px) calc(50% - 2px);
+      background-size: 5px 5px, 5px 5px;
+      background-repeat: no-repeat;
+      transition: border-color .18s ease, box-shadow .18s ease, background-color .18s ease, transform .1s ease, color .18s ease;
+    }
+    .tsp-native-select:hover {
+      border-color: #1677ff;
+      background: #fff;
+      box-shadow: 0 2px 6px rgba(22, 119, 255, 0.15);
+    }
+    .tsp-native-select:focus {
+      border-color: #1677ff;
+      box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.15);
+      background: #fff;
+      color: #0958d9;
+    }
+    .tsp-native-select:active {
+      transform: translateY(1px);
+    }
+    .tsp-native-select option {
+      font-size: 12px;
+      font-weight: 500;
+      color: #0f172a;
+      background: #fff;
+    }
+    .tsp-native-select option:checked {
+      color: #0958d9;
+      background: #e6f4ff;
+    }
+    .tsp-native-select option[disabled] {
+      color: #94a3b8;
+    }
+    .tsp-native-select optgroup {
+      font-size: 11px;
+      font-weight: 700;
+      color: #64748b;
+      background: #f8fafc;
+    }
+    :host ::ng-deep .thread-settings-select-dropdown.ant-select-dropdown {
+      border-radius: 12px;
+      border: 1px solid #d6e4ff;
+      padding: 6px;
+      box-shadow: 0 10px 26px rgba(15, 23, 42, 0.16);
+      background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+    }
+    :host ::ng-deep .thread-settings-select-dropdown .ant-select-item-group {
+      color: #64748b;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 6px 8px;
+    }
+    :host ::ng-deep .thread-settings-select-dropdown .ant-select-item-option {
+      border-radius: 8px;
+      min-height: 30px;
+      padding: 6px 10px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    :host ::ng-deep .thread-settings-select-dropdown .ant-select-item-option-active:not(.ant-select-item-option-disabled) {
+      background: #eef5ff;
+    }
+    :host ::ng-deep .thread-settings-select-dropdown .ant-select-item-option-selected:not(.ant-select-item-option-disabled) {
+      background: #e6f4ff;
+      color: #0958d9;
+      font-weight: 600;
+    }
+    :host ::ng-deep .thread-settings-select-dropdown .ant-select-item-option-grouped {
+      padding-left: 16px;
+    }
+    @keyframes panelSettingsIn {
+      from { opacity: 0; transform: translateY(-6px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    @keyframes panelFieldIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
   `]
 })
 export class AiPanelComponent implements OnInit {
   view: 'chat' | 'history' | 'settings' = 'chat';
   threads: AiThread[] = [];
   allAgents: AiAvailableAgent[] = [];
+  systemAgents: AiAvailableAgent[] = [];
+  customAgents: AiAvailableAgent[] = [];
+  threadSettingsUseNative = false;
   drawerWidth: number | string = 460;
   private titleDebounce?: any;
   private drawerSwipeX = 0;
@@ -204,6 +396,7 @@ export class AiPanelComponent implements OnInit {
   private updateDrawerWidth() {
     const w = window.innerWidth;
     this.drawerWidth = w < 576 ? '100%' : w < 768 ? '90%' : 460;
+    this.threadSettingsUseNative = w <= 768;
   }
 
   constructor(public ai: AiService, private cdr: ChangeDetectorRef, private router: Router) {
@@ -236,7 +429,10 @@ export class AiPanelComponent implements OnInit {
   loadAgents() {
     this.ai.loadAvailableAgents().subscribe({
       next: (res: any) => {
-        this.allAgents = res?.data || res || [];
+        const list = res?.data || res || [];
+        this.allAgents = list;
+        this.systemAgents = list.filter((a: AiAvailableAgent) => a.type === 'system');
+        this.customAgents = list.filter((a: AiAvailableAgent) => a.type === 'custom');
         this.cdr.detectChanges();
       },
     });

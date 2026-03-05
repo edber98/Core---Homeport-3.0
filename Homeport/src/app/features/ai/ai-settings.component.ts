@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef, OnInit, OnDestroy } from '@angular/core';
+import { Component, ChangeDetectorRef, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NzSelectModule } from 'ng-zorro-antd/select';
@@ -34,7 +34,23 @@ import { ApiClientService } from '../../services/api-client.service';
             <div class="settings-section">
               <div class="section-title">Agent actif</div>
               <div class="section-desc">Choisir l'agent pour les nouvelles conversations</div>
+              <select
+                *ngIf="settingsUseNativeSelect"
+                class="as-native-select"
+                [(ngModel)]="selectedAgentId"
+                (ngModelChange)="onAgentChange($event)">
+                <option value="general">Assistant général</option>
+                <optgroup *ngIf="systemAgents.length" label="Agents système">
+                  <ng-container *ngFor="let a of systemAgents">
+                    <option *ngIf="a.id !== 'general'" [value]="a.id">{{ a.name }}</option>
+                  </ng-container>
+                </optgroup>
+                <optgroup *ngIf="customAgents.length" label="Agents personnalisés">
+                  <option *ngFor="let a of customAgents" [value]="a.id">{{ a.name }}</option>
+                </optgroup>
+              </select>
               <nz-select
+                *ngIf="!settingsUseNativeSelect"
                 class="active-agent-select"
                 [(ngModel)]="selectedAgentId"
                 (ngModelChange)="onAgentChange($event)"
@@ -127,13 +143,23 @@ import { ApiClientService } from '../../services/api-client.service';
                     <nz-select [(ngModel)]="editBlockedTools" nzMode="tags" nzPlaceHolder="Noms des outils à bloquer" nzSize="small" style="width: 100%"></nz-select>
                     <div class="field-hint">Ex : deploy_flow, undeploy_flow</div>
                     <label class="ca-label">Comportement du routeur</label>
-                    <nz-select [(ngModel)]="editRouterBehavior" nzSize="small" style="width: 100%">
+                    <select *ngIf="settingsUseNativeSelect" class="as-native-select" [(ngModel)]="editRouterBehavior">
+                      <option value="auto">Auto (routeur en chat uniquement)</option>
+                      <option value="skip">Direct (pas de routeur)</option>
+                      <option value="force">Forcer (toujours via le routeur)</option>
+                    </select>
+                    <nz-select *ngIf="!settingsUseNativeSelect" [(ngModel)]="editRouterBehavior" nzSize="small" style="width: 100%">
                       <nz-option nzValue="auto" nzLabel="Auto (routeur en chat uniquement)"></nz-option>
                       <nz-option nzValue="skip" nzLabel="Direct (pas de routeur)"></nz-option>
                       <nz-option nzValue="force" nzLabel="Forcer (toujours via le routeur)"></nz-option>
                     </nz-select>
                     <label class="ca-label">Niveau d'autonomie</label>
-                    <nz-select [(ngModel)]="editAutonomyLevel" nzSize="small" style="width: 100%">
+                    <select *ngIf="settingsUseNativeSelect" class="as-native-select" [(ngModel)]="editAutonomyLevel">
+                      <option value="prudent">Prudent (confirme les écritures)</option>
+                      <option value="balanced">Équilibré (confirme les destructives)</option>
+                      <option value="autonomous">Autonome (agit directement)</option>
+                    </select>
+                    <nz-select *ngIf="!settingsUseNativeSelect" [(ngModel)]="editAutonomyLevel" nzSize="small" style="width: 100%">
                       <nz-option nzValue="prudent" nzLabel="Prudent (confirme les écritures)"></nz-option>
                       <nz-option nzValue="balanced" nzLabel="Équilibré (confirme les destructives)"></nz-option>
                       <nz-option nzValue="autonomous" nzLabel="Autonome (agit directement)"></nz-option>
@@ -177,13 +203,23 @@ import { ApiClientService } from '../../services/api-client.service';
                 </div>
                 <div class="field-hint">Vide = tous les groupes (par défaut)</div>
                 <label class="ca-label">Niveau d'autonomie</label>
-                <nz-select [(ngModel)]="newAgentAutonomyLevel" nzSize="small" style="width: 100%">
+                <select *ngIf="settingsUseNativeSelect" class="as-native-select" [(ngModel)]="newAgentAutonomyLevel">
+                  <option value="prudent">Prudent (confirme les écritures)</option>
+                  <option value="balanced">Équilibré (confirme les destructives)</option>
+                  <option value="autonomous">Autonome (agit directement)</option>
+                </select>
+                <nz-select *ngIf="!settingsUseNativeSelect" [(ngModel)]="newAgentAutonomyLevel" nzSize="small" style="width: 100%">
                   <nz-option nzValue="prudent" nzLabel="Prudent (confirme les écritures)"></nz-option>
                   <nz-option nzValue="balanced" nzLabel="Équilibré (confirme les destructives)"></nz-option>
                   <nz-option nzValue="autonomous" nzLabel="Autonome (agit directement)"></nz-option>
                 </nz-select>
                 <label class="ca-label">Comportement du routeur</label>
-                <nz-select [(ngModel)]="newAgentRouterBehavior" nzSize="small" style="width: 100%">
+                <select *ngIf="settingsUseNativeSelect" class="as-native-select" [(ngModel)]="newAgentRouterBehavior">
+                  <option value="auto">Auto</option>
+                  <option value="skip">Direct</option>
+                  <option value="force">Forcer le routeur</option>
+                </select>
+                <nz-select *ngIf="!settingsUseNativeSelect" [(ngModel)]="newAgentRouterBehavior" nzSize="small" style="width: 100%">
                   <nz-option nzValue="auto" nzLabel="Auto"></nz-option>
                   <nz-option nzValue="skip" nzLabel="Direct"></nz-option>
                   <nz-option nzValue="force" nzLabel="Forcer le routeur"></nz-option>
@@ -321,7 +357,11 @@ import { ApiClientService } from '../../services/api-client.service';
                 <label class="ca-label">Nom</label>
                 <input nz-input [(ngModel)]="newMcpName" placeholder="Ex : Mon serveur CRM" nzSize="small" />
                 <label class="ca-label">Transport</label>
-                <nz-select [(ngModel)]="newMcpTransport" nzSize="small" style="width: 100%">
+                <select *ngIf="settingsUseNativeSelect" class="as-native-select" [(ngModel)]="newMcpTransport">
+                  <option value="stdio">stdio (commande locale)</option>
+                  <option value="sse">SSE/HTTP (URL distante)</option>
+                </select>
+                <nz-select *ngIf="!settingsUseNativeSelect" [(ngModel)]="newMcpTransport" nzSize="small" style="width: 100%">
                   <nz-option nzValue="stdio" nzLabel="stdio (commande locale)"></nz-option>
                   <nz-option nzValue="sse" nzLabel="SSE/HTTP (URL distante)"></nz-option>
                 </nz-select>
@@ -425,6 +465,64 @@ import { ApiClientService } from '../../services/api-client.service';
     .ca-desc { font-size: 12px; color: #666; margin-top: 2px; }
     .ca-edit { display: flex; flex-direction: column; gap: 4px; margin-top: 8px; padding-top: 8px; border-top: 1px solid #f0f0f0; }
     .ca-label { font-size: 11px; font-weight: 600; color: #666; margin-top: 4px; }
+    .as-native-select {
+      width: 100%;
+      height: 30px;
+      border: 1px solid #cfd8e6;
+      border-radius: 10px;
+      padding: 0 30px 0 10px;
+      font-size: 12px;
+      font-weight: 500;
+      background: #fff;
+      color: #0f172a;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.95), 0 1px 2px rgba(15, 23, 42, 0.05);
+      outline: none;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      background-image:
+        linear-gradient(45deg, transparent 50%, #64748b 50%),
+        linear-gradient(135deg, #64748b 50%, transparent 50%);
+      background-position:
+        calc(100% - 13px) calc(50% - 2px),
+        calc(100% - 8px) calc(50% - 2px);
+      background-size: 5px 5px, 5px 5px;
+      background-repeat: no-repeat;
+      transition: border-color .18s ease, box-shadow .18s ease, background-color .18s ease, transform .1s ease, color .18s ease;
+    }
+    .as-native-select:hover {
+      border-color: #1677ff;
+      background: #fff;
+      box-shadow: 0 2px 6px rgba(22, 119, 255, 0.15);
+    }
+    .as-native-select:focus {
+      border-color: #1677ff;
+      box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.15);
+      background: #fff;
+      color: #0958d9;
+    }
+    .as-native-select:active {
+      transform: translateY(1px);
+    }
+    .as-native-select option {
+      font-size: 12px;
+      font-weight: 500;
+      color: #0f172a;
+      background: #fff;
+    }
+    .as-native-select option:checked {
+      color: #0958d9;
+      background: #e6f4ff;
+    }
+    .as-native-select option[disabled] {
+      color: #94a3b8;
+    }
+    .as-native-select optgroup {
+      font-size: 11px;
+      font-weight: 700;
+      color: #64748b;
+      background: #f8fafc;
+    }
     .create-agent { margin-top: 4px; }
     .create-agent-btn.ant-btn-dashed:hover:not(:disabled),
     .create-agent-btn.ant-btn-dashed:focus-visible:not(:disabled) {
@@ -543,10 +641,16 @@ import { ApiClientService } from '../../services/api-client.service';
     .mcp-server-item { padding: 10px 12px; background: #fafafa; border-radius: 8px; border: 1px solid #f0f0f0; }
     .mcp-status { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #d9d9d9; }
     .mcp-status.connected { background: #52c41a; }
+    @media (max-width: 768px) {
+      :host-context(.fp-main.sidebar-collapsed) ::ng-deep .settings-container .ant-tabs-nav {
+        margin-left: 44px;
+      }
+    }
   `]
 })
 export class AiSettingsComponent implements OnInit, OnDestroy {
   selectedAgentId = 'general';
+  settingsUseNativeSelect = false;
   systemAgents: AiAvailableAgent[] = [];
   customAgents: AiAvailableAgent[] = [];
   customInstructions = '';
@@ -612,6 +716,7 @@ export class AiSettingsComponent implements OnInit, OnDestroy {
   constructor(private ai: AiService, private cdr: ChangeDetectorRef, private acl: AccessControlService, private apiClient: ApiClientService) {}
 
   ngOnInit() {
+    this.updateSelectMode();
     this.isAdmin = (this.acl.currentUser()?.role || 'member') === 'admin';
 
     this.instructions$.pipe(
@@ -627,9 +732,22 @@ export class AiSettingsComponent implements OnInit, OnDestroy {
     this.loadAll();
   }
 
+  @HostListener('window:resize')
+  onWindowResize() {
+    this.updateSelectMode();
+  }
+
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  private updateSelectMode() {
+    try {
+      this.settingsUseNativeSelect = window.innerWidth <= 768;
+    } catch {
+      this.settingsUseNativeSelect = false;
+    }
   }
 
   loadAll() {
