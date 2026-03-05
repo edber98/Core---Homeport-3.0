@@ -117,6 +117,14 @@ nz-layout.main-shell > nz-layout {
   padding-bottom: 56px; /* keep last item visible above collapse trigger */
   -webkit-overflow-scrolling: touch;
   overscroll-behavior: contain;
+  -ms-overflow-style: none;  /* IE/Edge legacy */
+  scrollbar-width: none;     /* Firefox */
+}
+
+.sider-menu::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;             /* Chrome/Safari/Opera */
 }
 
 nz-breadcrumb {
