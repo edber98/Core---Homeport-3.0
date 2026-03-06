@@ -24,6 +24,10 @@
             <!-- Step -->
             <span *ngIf="node.key.startsWith('step:') && !node.isLeaf; else notStep"
                   (contextmenu)="openTreeMenu($event, menuStep, node.key)"
+                  (touchstart)="onNodeTouchStart($event, node.key, menuStepTouchDelete)"
+                  (touchmove)="onNodeTouchMove($event)"
+                  (touchend)="onNodeTouchEnd($event)"
+                  (touchcancel)="onNodeTouchCancel()"
                   class="tree-node-label">
               <i class="tree-node-icon" [ngClass]="iconForNode(node)"></i>
               <span class="tree-node-text">{{ node.title }}</span>
@@ -32,6 +36,10 @@
               <!-- Section (any non-leaf that is not step/root) -->
               <span *ngIf="!node.isLeaf; else leafField"
                     (contextmenu)="openTreeMenu($event, menuSection, node.key)"
+                    (touchstart)="onNodeTouchStart($event, node.key, menuSectionTouchDelete)"
+                    (touchmove)="onNodeTouchMove($event)"
+                    (touchend)="onNodeTouchEnd($event)"
+                    (touchcancel)="onNodeTouchCancel()"
                     class="tree-node-label">
                 <i class="tree-node-icon" [ngClass]="iconForNode(node)"></i>
                 <span class="tree-node-text">{{ node.title }}</span>
@@ -40,6 +48,10 @@
             <!-- Field -->
             <ng-template #leafField>
               <span (contextmenu)="openTreeMenu($event, menuField, node.key)"
+                    (touchstart)="onNodeTouchStart($event, node.key, menuFieldTouchDelete)"
+                    (touchmove)="onNodeTouchMove($event)"
+                    (touchend)="onNodeTouchEnd($event)"
+                    (touchcancel)="onNodeTouchCancel()"
                     class="tree-node-label">
                 <i class="tree-node-icon" [ngClass]="iconForNode(node)"></i>
                 <span class="tree-node-text">{{ node.title }}</span>
@@ -95,6 +107,22 @@
           <li nz-menu-item (click)="onCtxFieldInsertBefore()">Insérer un field avant</li>
           <li nz-menu-item (click)="onCtxFieldInsertAfter()">Insérer un field après</li>
           <li nz-menu-item nzDanger (click)="onCtxFieldDelete()">Supprimer</li>
+        </ul>
+      </nz-dropdown-menu>
+      <!-- Menus long-press mobile/tablette: suppression uniquement -->
+      <nz-dropdown-menu #menuStepTouchDelete="nzDropdownMenu">
+        <ul nz-menu>
+          <li nz-menu-item nzDanger (click)="onCtxStepDelete()"><i class="fa-regular fa-trash-can"></i>&nbsp;Supprimer l'étape</li>
+        </ul>
+      </nz-dropdown-menu>
+      <nz-dropdown-menu #menuSectionTouchDelete="nzDropdownMenu">
+        <ul nz-menu>
+          <li nz-menu-item nzDanger (click)="onCtxSectionDelete()"><i class="fa-regular fa-trash-can"></i>&nbsp;Supprimer</li>
+        </ul>
+      </nz-dropdown-menu>
+      <nz-dropdown-menu #menuFieldTouchDelete="nzDropdownMenu">
+        <ul nz-menu>
+          <li nz-menu-item nzDanger (click)="onCtxFieldDelete()"><i class="fa-regular fa-trash-can"></i>&nbsp;Supprimer</li>
         </ul>
       </nz-dropdown-menu>
       <nz-dropdown-menu #menuRoot="nzDropdownMenu">

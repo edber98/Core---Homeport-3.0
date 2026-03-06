@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { NzFormModule } from 'ng-zorro-antd/form';
@@ -48,10 +48,18 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
                   <span>Mode</span>
                 </nz-form-label>
                 <nz-form-control>
-                  <nz-select id="sec_mode" formControlName="sec_mode">
-                    <nz-option nzValue="normal" nzLabel="Normal"></nz-option>
-                    <nz-option nzValue="array" nzLabel="Array (liste d'items)"></nz-option>
-                  </nz-select>
+                  <ng-container *ngIf="!isMobileOrTablet; else nativeSecMode">
+                    <nz-select id="sec_mode" formControlName="sec_mode">
+                      <nz-option nzValue="normal" nzLabel="Normal"></nz-option>
+                      <nz-option nzValue="array" nzLabel="Array (liste d'items)"></nz-option>
+                    </nz-select>
+                  </ng-container>
+                  <ng-template #nativeSecMode>
+                    <select id="sec_mode" class="native-select" formControlName="sec_mode">
+                      <option value="normal">Normal</option>
+                      <option value="array">Array (liste d'items)</option>
+                    </select>
+                  </ng-template>
                 </nz-form-control>
               </nz-form-item>
               <nz-form-item *ngIf="group.get('sec_mode')?.value === 'array'">
@@ -114,12 +122,22 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
                       <span>Disposition</span>
                     </nz-form-label>
                     <nz-form-control>
-                      <nz-select formControlName="sec_ui_layout" style="min-width:140px;">
-                        <nz-option nzValue="" nzLabel="Hériter"></nz-option>
-                        <nz-option nzValue="horizontal" nzLabel="Horizontal"></nz-option>
-                        <nz-option nzValue="vertical" nzLabel="Vertical"></nz-option>
-                        <nz-option nzValue="inline" nzLabel="En ligne"></nz-option>
-                      </nz-select>
+                      <ng-container *ngIf="!isMobileOrTablet; else nativeSecUiLayout">
+                        <nz-select formControlName="sec_ui_layout" style="min-width:140px;">
+                          <nz-option nzValue="" nzLabel="Hériter"></nz-option>
+                          <nz-option nzValue="horizontal" nzLabel="Horizontal"></nz-option>
+                          <nz-option nzValue="vertical" nzLabel="Vertical"></nz-option>
+                          <nz-option nzValue="inline" nzLabel="En ligne"></nz-option>
+                        </nz-select>
+                      </ng-container>
+                      <ng-template #nativeSecUiLayout>
+                        <select class="native-select" formControlName="sec_ui_layout" style="min-width:140px;">
+                          <option value="">Hériter</option>
+                          <option value="horizontal">Horizontal</option>
+                          <option value="vertical">Vertical</option>
+                          <option value="inline">En ligne</option>
+                        </select>
+                      </ng-template>
                     </nz-form-control>
                   </nz-form-item>
                   <nz-form-item>
@@ -127,11 +145,20 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
                       <span>Alignement des libellés</span>
                     </nz-form-label>
                     <nz-form-control>
-                      <nz-select formControlName="sec_ui_labelAlign" style="min-width:140px;">
-                        <nz-option nzValue="" nzLabel="Hériter"></nz-option>
-                        <nz-option nzValue="left" nzLabel="Gauche"></nz-option>
-                        <nz-option nzValue="right" nzLabel="Droite"></nz-option>
-                      </nz-select>
+                      <ng-container *ngIf="!isMobileOrTablet; else nativeSecUiLabelAlign">
+                        <nz-select formControlName="sec_ui_labelAlign" style="min-width:140px;">
+                          <nz-option nzValue="" nzLabel="Hériter"></nz-option>
+                          <nz-option nzValue="left" nzLabel="Gauche"></nz-option>
+                          <nz-option nzValue="right" nzLabel="Droite"></nz-option>
+                        </nz-select>
+                      </ng-container>
+                      <ng-template #nativeSecUiLabelAlign>
+                        <select class="native-select" formControlName="sec_ui_labelAlign" style="min-width:140px;">
+                          <option value="">Hériter</option>
+                          <option value="left">Gauche</option>
+                          <option value="right">Droite</option>
+                        </select>
+                      </ng-template>
                     </nz-form-control>
                   </nz-form-item>
                   <nz-form-item>
@@ -139,11 +166,20 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
                       <span>Libellés au-dessus</span>
                     </nz-form-label>
                     <nz-form-control>
-                      <nz-select formControlName="sec_ui_labelsOnTop" style="min-width:140px;">
-                        <nz-option [nzValue]="null" nzLabel="Hériter"></nz-option>
-                        <nz-option [nzValue]="true" nzLabel="Oui"></nz-option>
-                        <nz-option [nzValue]="false" nzLabel="Non"></nz-option>
-                      </nz-select>
+                      <ng-container *ngIf="!isMobileOrTablet; else nativeSecUiLabelsOnTop">
+                        <nz-select formControlName="sec_ui_labelsOnTop" style="min-width:140px;">
+                          <nz-option [nzValue]="null" nzLabel="Hériter"></nz-option>
+                          <nz-option [nzValue]="true" nzLabel="Oui"></nz-option>
+                          <nz-option [nzValue]="false" nzLabel="Non"></nz-option>
+                        </nz-select>
+                      </ng-container>
+                      <ng-template #nativeSecUiLabelsOnTop>
+                        <select class="native-select" formControlName="sec_ui_labelsOnTop" style="min-width:140px;">
+                          <option [ngValue]="null">Hériter</option>
+                          <option [ngValue]="true">Oui</option>
+                          <option [ngValue]="false">Non</option>
+                        </select>
+                      </ng-template>
                     </nz-form-control>
                   </nz-form-item>
                   <nz-form-item>
@@ -316,10 +352,16 @@ export class InspectorSectionComponent {
   @Output() openCondition = new EventEmitter<void>();
 
   activeTab: 'general'|'logic'|'json' = 'general';
+  isMobileOrTablet = (typeof window !== 'undefined') ? window.innerWidth <= 1280 : false;
   sectionsOpen = {
     ui: false,
     spacing: false,
   };
+
+  @HostListener('window:resize')
+  onWindowResize() {
+    this.isMobileOrTablet = (typeof window !== 'undefined') ? window.innerWidth <= 1280 : this.isMobileOrTablet;
+  }
 
   toggleSection(key: keyof InspectorSectionComponent['sectionsOpen']) {
     this.sectionsOpen[key] = !this.sectionsOpen[key];

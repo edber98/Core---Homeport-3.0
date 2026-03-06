@@ -71,6 +71,13 @@ export class ContextPanelComponent {
   @Output() doExport = new EventEmitter<void>();
 
   currentCtxKey: string | null = null;
+  private longPressTimer: ReturnType<typeof setTimeout> | null = null;
+  private longPressStartX = 0;
+  private longPressStartY = 0;
+  private longPressTriggered = false;
+  private suppressTreeClickUntil = 0;
+  private readonly longPressDelayMs = 500;
+  private readonly longPressMoveThresholdPx = 12;
   constructor(private dropdown: NzContextMenuService) {}
 
   iconForNode(node: any): string {
@@ -100,6 +107,7 @@ export class ContextPanelComponent {
   }
 
   onTreeClick(evt: any) {
+    if (Date.now() < this.suppressTreeClickUntil) return;
     const key = evt?.node?.key as string | undefined;
     if (key) this.treeClick.emit(key);
   }
@@ -116,6 +124,63 @@ export class ContextPanelComponent {
     this.currentCtxKey = key;
     // Delay slightly to avoid conflicts with nz-tree internal handlers and DOM refresh
     setTimeout(() => this.dropdown.create(event, menu), 0);
+  }
+
+  onNodeTouchStart(event: TouchEvent, key: string, menu: NzDropdownMenuComponent | null) {
+    if (!menu || !this.isMobileOrTablet()) return;
+    const t = event.touches && event.touches[0];
+    if (!t) return;
+    this.cancelLongPress();
+    this.longPressStartX = t.clientX;
+    this.longPressStartY = t.clientY;
+    this.longPressTriggered = false;
+    this.longPressTimer = setTimeout(() => {
+      this.longPressTimer = null;
+      this.longPressTriggered = true;
+      this.suppressTreeClickUntil = Date.now() + 700;
+      this.openTreeMenuAt(t.clientX, t.clientY, menu, key);
+    }, this.longPressDelayMs);
+  }
+
+  onNodeTouchMove(event: TouchEvent) {
+    if (!this.longPressTimer) return;
+    const t = event.touches && event.touches[0];
+    if (!t) return;
+    const dx = Math.abs(t.clientX - this.longPressStartX);
+    const dy = Math.abs(t.clientY - this.longPressStartY);
+    if (dx > this.longPressMoveThresholdPx || dy > this.longPressMoveThresholdPx) this.cancelLongPress();
+  }
+
+  onNodeTouchEnd(event: TouchEvent) {
+    if (this.longPressTriggered) {
+      try { event.preventDefault(); } catch {}
+      try { event.stopPropagation(); } catch {}
+      this.longPressTriggered = false;
+    }
+    this.cancelLongPress();
+  }
+
+  onNodeTouchCancel() {
+    this.cancelLongPress();
+  }
+
+  private openTreeMenuAt(x: number, y: number, menu: NzDropdownMenuComponent, key: string) {
+    this.currentCtxKey = key;
+    const init: MouseEventInit = { clientX: x, clientY: y, bubbles: true, cancelable: true };
+    if (typeof window !== 'undefined') init.view = window;
+    const evt = new MouseEvent('contextmenu', init);
+    setTimeout(() => this.dropdown.create(evt, menu), 0);
+  }
+
+  private cancelLongPress() {
+    if (this.longPressTimer) {
+      clearTimeout(this.longPressTimer);
+      this.longPressTimer = null;
+    }
+  }
+
+  private isMobileOrTablet(): boolean {
+    return typeof window !== 'undefined' ? window.innerWidth <= 1280 : false;
   }
 
   // Root

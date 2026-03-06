@@ -48,11 +48,20 @@
                 <i *ngIf="hasSections" nz-icon nzType="info-circle" nzTheme="outline" nz-tooltip nzTooltipTitle="Inline indisponible: des sections sont présentes."></i>
               </nz-form-label>
               <nz-form-control>
-                <nz-select id="ui_layout" formControlName="ui_layout">
-                  <nz-option nzValue="horizontal" nzLabel="horizontal"></nz-option>
-                  <nz-option nzValue="vertical" nzLabel="vertical"></nz-option>
-                  <nz-option nzValue="inline" nzLabel="inline" [nzDisabled]="hasSections"></nz-option>
-                </nz-select>
+                <ng-container *ngIf="!isMobileOrTablet; else nativeUiLayout">
+                  <nz-select id="ui_layout" formControlName="ui_layout">
+                    <nz-option nzValue="horizontal" nzLabel="horizontal"></nz-option>
+                    <nz-option nzValue="vertical" nzLabel="vertical"></nz-option>
+                    <nz-option nzValue="inline" nzLabel="inline" [nzDisabled]="hasSections"></nz-option>
+                  </nz-select>
+                </ng-container>
+                <ng-template #nativeUiLayout>
+                  <select id="ui_layout" class="native-select" formControlName="ui_layout">
+                    <option value="horizontal">horizontal</option>
+                    <option value="vertical">vertical</option>
+                    <option value="inline" [disabled]="hasSections">inline</option>
+                  </select>
+                </ng-template>
               </nz-form-control>
             </nz-form-item>
 
@@ -61,10 +70,18 @@
                 <span>Alignement des libellés</span>
               </nz-form-label>
               <nz-form-control>
-                <nz-select id="ui_labelAlign" formControlName="ui_labelAlign">
-                  <nz-option nzValue="left" nzLabel="left"></nz-option>
-                  <nz-option nzValue="right" nzLabel="right"></nz-option>
-                </nz-select>
+                <ng-container *ngIf="!isMobileOrTablet; else nativeLabelAlign">
+                  <nz-select id="ui_labelAlign" formControlName="ui_labelAlign">
+                    <nz-option nzValue="left" nzLabel="left"></nz-option>
+                    <nz-option nzValue="right" nzLabel="right"></nz-option>
+                  </nz-select>
+                </ng-container>
+                <ng-template #nativeLabelAlign>
+                  <select id="ui_labelAlign" class="native-select" formControlName="ui_labelAlign">
+                    <option value="left">left</option>
+                    <option value="right">right</option>
+                  </select>
+                </ng-template>
               </nz-form-control>
             </nz-form-item>
 

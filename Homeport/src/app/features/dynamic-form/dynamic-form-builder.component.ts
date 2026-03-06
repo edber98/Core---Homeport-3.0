@@ -261,9 +261,15 @@ export class DynamicFormBuilderComponent implements OnChanges, OnInit, AfterView
       this.rightDrawer = false;
       this.leftDrawer = true;
     } else {
+      if (!this.selected) this.select(this.schema);
       this.leftDrawer = false;
       this.rightDrawer = true;
     }
+  }
+
+  openFormSettingsFromLeftPanel() {
+    this.select(this.schema);
+    if (this.isMobile) this.openPanel('right');
   }
   mobileAddSection() { this.addSectionFromToolbar(); }
   mobileAddField() { this.addFieldFromToolbar(); }

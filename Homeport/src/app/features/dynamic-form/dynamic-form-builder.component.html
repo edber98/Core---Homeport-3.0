@@ -11,7 +11,7 @@
       <nz-card [nzTitle]="paletteTitle" nzSize="small" class="card left-panel-card">
         <div class="actions-top">
           <button nz-button nzType="default" nzSize="small" class="form-settings-btn"
-                  (click)="select(schema)" aria-label="Paramètres du formulaire">
+                  (click)="openFormSettingsFromLeftPanel()" aria-label="Paramètres du formulaire">
             <i class="fa-solid fa-sliders"></i>
             <span>Paramètres du formulaire</span>
           </button>
@@ -137,7 +137,7 @@
           [canAddFieldBtn]="canAddFieldBtn()"
           [json]="json"
           [activeTab]="leftTab"
-          (selectFormSettings)="select(schema)"
+          (selectFormSettings)="openFormSettingsFromLeftPanel()"
           (addStep)="addStep()"
           (addSection)="addSectionFromToolbar()"
           (addSectionArray)="addArraySectionFromToolbar()"
@@ -296,7 +296,7 @@
           <button nz-button nzSize="small" class="apple-btn" (click)="openAiPanel()" nz-tooltip [nzTooltipTitle]="!isMobile ? 'Assistant IA' : null" [nzTooltipTrigger]="'hover'" aria-label="Ouvrir l'assistant IA">
             <i class="fa-solid fa-message"></i>
           </button>
-          <button nz-button nzSize="small" class="apple-btn" (click)="openPanel('right', $event)" [disabled]="!selected" nz-tooltip [nzTooltipTitle]="!isMobile ? 'Inspector' : null" [nzTooltipTrigger]="'hover'" aria-label="Panneau droit">
+          <button nz-button nzSize="small" class="apple-btn" (click)="openPanel('right', $event)" nz-tooltip [nzTooltipTitle]="!isMobile ? 'Inspector' : null" [nzTooltipTrigger]="'hover'" aria-label="Panneau droit">
             <i class="fa-solid fa-sliders"></i>
           </button>
         </div>

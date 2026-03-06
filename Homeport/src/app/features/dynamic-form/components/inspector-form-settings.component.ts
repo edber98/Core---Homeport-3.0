@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostListener, Input, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { NzFormModule } from 'ng-zorro-antd/form';
@@ -34,6 +34,7 @@ export class InspectorFormSettingsComponent implements OnInit, OnDestroy {
   buttonSpacing!: FormGroup;
   private subs: Subscription[] = [];
   activeTab: 'general'|'logic'|'json' = 'general';
+  isMobileOrTablet = (typeof window !== 'undefined') ? window.innerWidth <= 1280 : false;
   sectionsOpen = {
     ui: false,
     actions: false,
@@ -54,6 +55,11 @@ export class InspectorFormSettingsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subs.forEach(s => s.unsubscribe());
+  }
+
+  @HostListener('window:resize')
+  onWindowResize() {
+    this.isMobileOrTablet = (typeof window !== 'undefined') ? window.innerWidth <= 1280 : this.isMobileOrTablet;
   }
 
   toggleSection(key: keyof InspectorFormSettingsComponent['sectionsOpen']) {

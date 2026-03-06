@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, OnChanges, OnDestroy, DoCheck, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, Output, OnChanges, OnDestroy, DoCheck, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
@@ -35,23 +35,44 @@ import { Subscription } from 'rxjs';
               <nz-form-item [class.span-2]="group.get('type')?.value==='textblock'">
                 <nz-form-label nzFor="fld_type" nzTooltipTitle="Type de champ (texte, nombre, date…)"><span>Type de champ</span></nz-form-label>
                 <nz-form-control>
-                  <nz-select id="fld_type" formControlName="type">
-                    <nz-option nzValue="text" nzLabel="text"></nz-option>
-                    <nz-option nzValue="textarea" nzLabel="textarea"></nz-option>
-                    <nz-option nzValue="number" nzLabel="number"></nz-option>
-                    <nz-option nzValue="date" nzLabel="date"></nz-option>
-                    <nz-option nzValue="cron" nzLabel="cron"></nz-option>
-                    <nz-option nzValue="select" nzLabel="select"></nz-option>
-                    <nz-option nzValue="radio" nzLabel="radio"></nz-option>
-                    <nz-option nzValue="checkbox" nzLabel="checkbox"></nz-option>
-                    <nz-option nzValue="file" nzLabel="file"></nz-option>
-                    <nz-option nzValue="email" nzLabel="email"></nz-option>
-                    <nz-option nzValue="tel" nzLabel="tel"></nz-option>
-                    <nz-option nzValue="color" nzLabel="color"></nz-option>
-                    <nz-option nzValue="tags" nzLabel="tags"></nz-option>
-                    <nz-option nzValue="schema_builder" nzLabel="schema_builder"></nz-option>
-                    <nz-option nzValue="textblock" nzLabel="textblock"></nz-option>
-                  </nz-select>
+                  <ng-container *ngIf="!isMobileOrTablet; else nativeFieldType">
+                    <nz-select id="fld_type" formControlName="type">
+                      <nz-option nzValue="text" nzLabel="text"></nz-option>
+                      <nz-option nzValue="textarea" nzLabel="textarea"></nz-option>
+                      <nz-option nzValue="number" nzLabel="number"></nz-option>
+                      <nz-option nzValue="date" nzLabel="date"></nz-option>
+                      <nz-option nzValue="cron" nzLabel="cron"></nz-option>
+                      <nz-option nzValue="select" nzLabel="select"></nz-option>
+                      <nz-option nzValue="radio" nzLabel="radio"></nz-option>
+                      <nz-option nzValue="checkbox" nzLabel="checkbox"></nz-option>
+                      <nz-option nzValue="file" nzLabel="file"></nz-option>
+                      <nz-option nzValue="email" nzLabel="email"></nz-option>
+                      <nz-option nzValue="tel" nzLabel="tel"></nz-option>
+                      <nz-option nzValue="color" nzLabel="color"></nz-option>
+                      <nz-option nzValue="tags" nzLabel="tags"></nz-option>
+                      <nz-option nzValue="schema_builder" nzLabel="schema_builder"></nz-option>
+                      <nz-option nzValue="textblock" nzLabel="textblock"></nz-option>
+                    </nz-select>
+                  </ng-container>
+                  <ng-template #nativeFieldType>
+                    <select id="fld_type" class="native-select" formControlName="type">
+                      <option value="text">text</option>
+                      <option value="textarea">textarea</option>
+                      <option value="number">number</option>
+                      <option value="date">date</option>
+                      <option value="cron">cron</option>
+                      <option value="select">select</option>
+                      <option value="radio">radio</option>
+                      <option value="checkbox">checkbox</option>
+                      <option value="file">file</option>
+                      <option value="email">email</option>
+                      <option value="tel">tel</option>
+                      <option value="color">color</option>
+                      <option value="tags">tags</option>
+                      <option value="schema_builder">schema_builder</option>
+                      <option value="textblock">textblock</option>
+                    </select>
+                  </ng-template>
                 </nz-form-control>
               </nz-form-item>
               <ng-container *ngIf="group.get('type')?.value !== 'textblock'">
@@ -108,12 +129,22 @@ import { Subscription } from 'rxjs';
                 <nz-form-item>
                   <nz-form-label nzTooltipTitle="Format d'affichage de la date (ex: dd/MM/yyyy, yyyy-MM-dd)"><span>Format</span></nz-form-label>
                   <nz-form-control>
-                    <nz-select formControlName="date_format">
-                      <nz-option nzValue="dd/MM/yyyy" nzLabel="dd/MM/yyyy (31/12/2024)"></nz-option>
-                      <nz-option nzValue="yyyy-MM-dd" nzLabel="yyyy-MM-dd (2024-12-31)"></nz-option>
-                      <nz-option nzValue="dd/MM/yyyy HH:mm" nzLabel="dd/MM/yyyy HH:mm (31/12/2024 14:30)"></nz-option>
-                      <nz-option nzValue="yyyy-MM-dd HH:mm" nzLabel="yyyy-MM-dd HH:mm (2024-12-31 14:30)"></nz-option>
-                    </nz-select>
+                    <ng-container *ngIf="!isMobileOrTablet; else nativeDateFormat">
+                      <nz-select formControlName="date_format">
+                        <nz-option nzValue="dd/MM/yyyy" nzLabel="dd/MM/yyyy (31/12/2024)"></nz-option>
+                        <nz-option nzValue="yyyy-MM-dd" nzLabel="yyyy-MM-dd (2024-12-31)"></nz-option>
+                        <nz-option nzValue="dd/MM/yyyy HH:mm" nzLabel="dd/MM/yyyy HH:mm (31/12/2024 14:30)"></nz-option>
+                        <nz-option nzValue="yyyy-MM-dd HH:mm" nzLabel="yyyy-MM-dd HH:mm (2024-12-31 14:30)"></nz-option>
+                      </nz-select>
+                    </ng-container>
+                    <ng-template #nativeDateFormat>
+                      <select class="native-select" formControlName="date_format">
+                        <option value="dd/MM/yyyy">dd/MM/yyyy (31/12/2024)</option>
+                        <option value="yyyy-MM-dd">yyyy-MM-dd (2024-12-31)</option>
+                        <option value="dd/MM/yyyy HH:mm">dd/MM/yyyy HH:mm (31/12/2024 14:30)</option>
+                        <option value="yyyy-MM-dd HH:mm">yyyy-MM-dd HH:mm (2024-12-31 14:30)</option>
+                      </select>
+                    </ng-template>
                   </nz-form-control>
                 </nz-form-item>
                 <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:8px;">
@@ -163,21 +194,39 @@ import { Subscription } from 'rxjs';
                   <nz-form-item>
                     <nz-form-label nzTooltipTitle="Cycle de vie du fichier"><span>Cycle de vie</span></nz-form-label>
                     <nz-form-control>
-                      <nz-select formControlName="file_lifecycle">
-                        <nz-option nzValue="temp" nzLabel="Temporaire"></nz-option>
-                        <nz-option nzValue="execution" nzLabel="Exécution"></nz-option>
-                        <nz-option nzValue="permanent" nzLabel="Permanent"></nz-option>
-                      </nz-select>
+                      <ng-container *ngIf="!isMobileOrTablet; else nativeFileLifecycle">
+                        <nz-select formControlName="file_lifecycle">
+                          <nz-option nzValue="temp" nzLabel="Temporaire"></nz-option>
+                          <nz-option nzValue="execution" nzLabel="Exécution"></nz-option>
+                          <nz-option nzValue="permanent" nzLabel="Permanent"></nz-option>
+                        </nz-select>
+                      </ng-container>
+                      <ng-template #nativeFileLifecycle>
+                        <select class="native-select" formControlName="file_lifecycle">
+                          <option value="temp">Temporaire</option>
+                          <option value="execution">Exécution</option>
+                          <option value="permanent">Permanent</option>
+                        </select>
+                      </ng-template>
                     </nz-form-control>
                   </nz-form-item>
                   <nz-form-item>
                     <nz-form-label nzTooltipTitle="Style d'affichage de la liste"><span>Style liste</span></nz-form-label>
                     <nz-form-control>
-                      <nz-select formControlName="file_listType">
-                        <nz-option nzValue="text" nzLabel="Texte"></nz-option>
-                        <nz-option nzValue="picture" nzLabel="Image"></nz-option>
-                        <nz-option nzValue="picture-card" nzLabel="Carte image"></nz-option>
-                      </nz-select>
+                      <ng-container *ngIf="!isMobileOrTablet; else nativeFileListType">
+                        <nz-select formControlName="file_listType">
+                          <nz-option nzValue="text" nzLabel="Texte"></nz-option>
+                          <nz-option nzValue="picture" nzLabel="Image"></nz-option>
+                          <nz-option nzValue="picture-card" nzLabel="Carte image"></nz-option>
+                        </nz-select>
+                      </ng-container>
+                      <ng-template #nativeFileListType>
+                        <select class="native-select" formControlName="file_listType">
+                          <option value="text">Texte</option>
+                          <option value="picture">Image</option>
+                          <option value="picture-card">Carte image</option>
+                        </select>
+                      </ng-template>
                     </nz-form-control>
                   </nz-form-item>
                 </div>
@@ -261,11 +310,20 @@ import { Subscription } from 'rxjs';
                       <nz-form-item>
                         <nz-form-label nzTooltipTitle="Taille du composant cron"><span>Taille du cron</span></nz-form-label>
                         <nz-form-control>
-                          <nz-select formControlName="cron_size">
-                            <nz-option nzValue="default" nzLabel="default"></nz-option>
-                            <nz-option nzValue="small" nzLabel="small"></nz-option>
-                            <nz-option nzValue="large" nzLabel="large"></nz-option>
-                          </nz-select>
+                          <ng-container *ngIf="!isMobileOrTablet; else nativeCronSize">
+                            <nz-select formControlName="cron_size">
+                              <nz-option nzValue="default" nzLabel="default"></nz-option>
+                              <nz-option nzValue="small" nzLabel="small"></nz-option>
+                              <nz-option nzValue="large" nzLabel="large"></nz-option>
+                            </nz-select>
+                          </ng-container>
+                          <ng-template #nativeCronSize>
+                            <select class="native-select" formControlName="cron_size">
+                              <option value="default">default</option>
+                              <option value="small">small</option>
+                              <option value="large">large</option>
+                            </select>
+                          </ng-template>
                         </nz-form-control>
                       </nz-form-item>
                       <nz-form-item class="switch-left">
@@ -280,10 +338,18 @@ import { Subscription } from 'rxjs';
                       <nz-form-item>
                         <nz-form-label nzTooltipTitle="Mode par défaut à l’ouverture"><span>Mode par défaut</span></nz-form-label>
                         <nz-form-control>
-                          <nz-select formControlName="expression_defaultMode">
-                            <nz-option nzValue="val" nzLabel="Valeur"></nz-option>
-                            <nz-option nzValue="expr" nzLabel="Expression"></nz-option>
-                          </nz-select>
+                          <ng-container *ngIf="!isMobileOrTablet; else nativeExpressionDefaultMode">
+                            <nz-select formControlName="expression_defaultMode">
+                              <nz-option nzValue="val" nzLabel="Valeur"></nz-option>
+                              <nz-option nzValue="expr" nzLabel="Expression"></nz-option>
+                            </nz-select>
+                          </ng-container>
+                          <ng-template #nativeExpressionDefaultMode>
+                            <select class="native-select" formControlName="expression_defaultMode">
+                              <option value="val">Valeur</option>
+                              <option value="expr">Expression</option>
+                            </select>
+                          </ng-template>
                         </nz-form-control>
                       </nz-form-item>
                       <nz-form-item class="switch-left">
@@ -301,10 +367,18 @@ import { Subscription } from 'rxjs';
                       <nz-form-item *ngIf="group.get('expression_showDialogAction')?.value === true">
                         <nz-form-label nzTooltipTitle="Mode du dialogue"><span>Mode dialogue</span></nz-form-label>
                         <nz-form-control>
-                          <nz-select formControlName="expression_dialogMode">
-                            <nz-option nzValue="textarea" nzLabel="Textarea"></nz-option>
-                            <nz-option nzValue="editor" nzLabel="Éditeur avancé"></nz-option>
-                          </nz-select>
+                          <ng-container *ngIf="!isMobileOrTablet; else nativeExpressionDialogMode">
+                            <nz-select formControlName="expression_dialogMode">
+                              <nz-option nzValue="textarea" nzLabel="Textarea"></nz-option>
+                              <nz-option nzValue="editor" nzLabel="Éditeur avancé"></nz-option>
+                            </nz-select>
+                          </ng-container>
+                          <ng-template #nativeExpressionDialogMode>
+                            <select class="native-select" formControlName="expression_dialogMode">
+                              <option value="textarea">Textarea</option>
+                              <option value="editor">Éditeur avancé</option>
+                            </select>
+                          </ng-template>
                         </nz-form-control>
                       </nz-form-item>
                       <nz-form-item class="switch-left">
@@ -322,11 +396,20 @@ import { Subscription } from 'rxjs';
                       <nz-form-item>
                         <nz-form-label nzTooltipTitle="Position des suggestions"><span>Suggestions</span></nz-form-label>
                         <nz-form-control>
-                          <nz-select formControlName="expression_suggestionPlacement">
-                            <nz-option nzValue="auto" nzLabel="Auto"></nz-option>
-                            <nz-option nzValue="top" nzLabel="Haut"></nz-option>
-                            <nz-option nzValue="bottom" nzLabel="Bas"></nz-option>
-                          </nz-select>
+                          <ng-container *ngIf="!isMobileOrTablet; else nativeExpressionSuggestionPlacement">
+                            <nz-select formControlName="expression_suggestionPlacement">
+                              <nz-option nzValue="auto" nzLabel="Auto"></nz-option>
+                              <nz-option nzValue="top" nzLabel="Haut"></nz-option>
+                              <nz-option nzValue="bottom" nzLabel="Bas"></nz-option>
+                            </nz-select>
+                          </ng-container>
+                          <ng-template #nativeExpressionSuggestionPlacement>
+                            <select class="native-select" formControlName="expression_suggestionPlacement">
+                              <option value="auto">Auto</option>
+                              <option value="top">Haut</option>
+                              <option value="bottom">Bas</option>
+                            </select>
+                          </ng-template>
                         </nz-form-control>
                       </nz-form-item>
                       <nz-form-item class="switch-left">
@@ -560,6 +643,7 @@ export class InspectorFieldComponent implements OnChanges, OnDestroy, DoCheck {
     ui: false,
     advanced: false,
   };
+  isMobileOrTablet = (typeof window !== 'undefined') ? window.innerWidth <= 1280 : false;
 
   setTab(tab: 'general'|'logic'|'json') { this.activeTab = tab; }
 
@@ -583,6 +667,11 @@ export class InspectorFieldComponent implements OnChanges, OnDestroy, DoCheck {
 
   hasOpenSections(): boolean {
     return Object.values(this.sectionsOpen).some(Boolean);
+  }
+
+  @HostListener('window:resize')
+  onWindowResize() {
+    this.isMobileOrTablet = (typeof window !== 'undefined') ? window.innerWidth <= 1280 : this.isMobileOrTablet;
   }
 
   ngOnChanges(_c: SimpleChanges) {

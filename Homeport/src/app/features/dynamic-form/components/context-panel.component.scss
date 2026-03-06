@@ -140,6 +140,9 @@
   align-items: center;
   gap: 6px;
   width: 100%;
+  -webkit-touch-callout: none;
+  user-select: none;
+  touch-action: pan-y;
 }
 
 .tree-node-icon {
