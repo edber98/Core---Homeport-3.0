@@ -677,13 +677,45 @@
 .center .ant-card-head,
 .right .ant-card-head { border-bottom: 0; background: transparent; }
 
-/* Drawer triggers inside preview header on tablet/mobile */
-.preview-extra-mobile { display: none; gap: 8px; align-items: center; height: 47px; padding: 0 8px; width: 100%; box-shadow: none; background: transparent; }
-.preview-extra-mobile .sep { width: 1px; height: 18px; background: #e5e7eb; display: inline-block; }
-.preview-extra-mobile .flex-spacer { flex: 1 1 auto; }
-.preview-extra-mobile .sep { display: none; }
+.preview-head {
+  width: 100%;
+  min-height: 47px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.preview-head-actions {
+  display: none;
+  align-items: center;
+  gap: 8px;
+}
+
 @media (max-width: 1280px) {
-  .preview-extra-mobile { display: inline-flex; background: transparent; border: 0; box-shadow: none; width: 100%; }
+  .preview-head {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 8px;
+    align-items: center;
+    width: 100%;
+    padding: 0 8px;
+  }
+
+  .preview-head-actions {
+    display: inline-flex;
+  }
+
+  .preview-head-actions--left {
+    justify-self: start;
+  }
+
+  .preview-head-actions--right {
+    justify-self: end;
+  }
+
+  .preview-head-title {
+    justify-self: center;
+  }
 }
 
 /* Keep drawer host out of layout flow and enable horizontal swipe-to-close gesture */

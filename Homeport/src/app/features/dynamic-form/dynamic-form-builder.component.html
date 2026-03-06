@@ -274,39 +274,31 @@
 
   <!-- CANVAS -->
   <div class="center">
-      <div class="preview-extra-mobile">
-        <button nz-button nzSize="small" class="apple-btn" (click)="openPanel('left', $event)" nz-tooltip [nzTooltipTitle]="!isMobile ? 'Palette & Contexte' : null" [nzTooltipTrigger]="'hover'" aria-label="Panneau gauche">
-          <i class="fa-solid fa-bars"></i>
-        </button>
-        <span class="sep"></span>
-        <button nz-button nzSize="small" class="apple-btn" (click)="mobileAddSection()" nz-tooltip [nzTooltipTitle]="!isMobile ? 'Ajouter une section' : null" [nzTooltipTrigger]="'hover'" aria-label="Ajouter une section">
-          <i class="fa-solid fa-layer-group"></i>
-        </button>
-        <button nz-button nzSize="small" class="apple-btn" (click)="mobileAddField()" nz-tooltip [nzTooltipTitle]="!isMobile ? 'Ajouter un champ' : null" [nzTooltipTrigger]="'hover'" aria-label="Ajouter un champ">
-          <i class="fa-solid fa-square-plus"></i>
-        </button>
-        <button nz-button nzSize="small" class="apple-btn" (click)="addStep()" nz-tooltip [nzTooltipTitle]="!isMobile ? 'Ajouter une étape' : null" [nzTooltipTrigger]="'hover'" aria-label="Ajouter une étape">
-          <i class="fa-solid fa-list-ol"></i>
-        </button>
-        <span class="sep"></span>
-        <button nz-button nzSize="small" [ngClass]="{'apple-btn': !editMode}" [nzType]="editMode ? 'primary' : 'default'" (click)="mobileToggleEdit()" nz-tooltip [nzTooltipTitle]="!isMobile ? 'Mode édition' : null" [nzTooltipTrigger]="'hover'" aria-label="Basculer édition">
-          <i class="fa-solid fa-pen-to-square"></i>
-        </button>
-        <span class="flex-spacer"></span>
-        <button nz-button nzSize="small" class="apple-btn" (click)="openAiPanel()" nz-tooltip [nzTooltipTitle]="!isMobile ? 'Assistant IA' : null" [nzTooltipTrigger]="'hover'" aria-label="Ouvrir l'assistant IA">
-          <i class="fa-solid fa-message"></i>
-        </button>
-        <button nz-button nzSize="small" class="apple-btn" (click)="openPanel('right', $event)" [disabled]="!selected" nz-tooltip [nzTooltipTitle]="!isMobile ? 'Inspector' : null" [nzTooltipTrigger]="'hover'" aria-label="Panneau droit">
-          <i class="fa-solid fa-sliders"></i>
-        </button>
-      </div>
-      <nz-divider class="mobile-only no-margin" ></nz-divider>
     <ng-template #previewTitle>
-      <div class="card-title">
-        <span class="t">Aperçu éditable</span>
-        <span class="s">Rendu du formulaire</span>
+      <div class="preview-head">
+        <div class="preview-head-actions preview-head-actions--left">
+          <button nz-button nzSize="small" class="apple-btn" (click)="openPanel('left', $event)" nz-tooltip [nzTooltipTitle]="!isMobile ? 'Palette & Contexte' : null" [nzTooltipTrigger]="'hover'" aria-label="Panneau gauche">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <button nz-button nzSize="small" [ngClass]="{'apple-btn': !editMode}" [nzType]="editMode ? 'primary' : 'default'" (click)="mobileToggleEdit()" nz-tooltip [nzTooltipTitle]="!isMobile ? 'Mode édition' : null" [nzTooltipTrigger]="'hover'" aria-label="Basculer édition">
+            <i class="fa-solid fa-pen-to-square"></i>
+          </button>
+        </div>
+
+        <div class="card-title preview-head-title">
+          <span class="t">Aperçu éditable</span>
+          <span class="s">Rendu du formulaire</span>
+        </div>
+
+        <div class="preview-head-actions preview-head-actions--right">
+          <button nz-button nzSize="small" class="apple-btn" (click)="openAiPanel()" nz-tooltip [nzTooltipTitle]="!isMobile ? 'Assistant IA' : null" [nzTooltipTrigger]="'hover'" aria-label="Ouvrir l'assistant IA">
+            <i class="fa-solid fa-message"></i>
+          </button>
+          <button nz-button nzSize="small" class="apple-btn" (click)="openPanel('right', $event)" [disabled]="!selected" nz-tooltip [nzTooltipTitle]="!isMobile ? 'Inspector' : null" [nzTooltipTrigger]="'hover'" aria-label="Panneau droit">
+            <i class="fa-solid fa-sliders"></i>
+          </button>
+        </div>
       </div>
-      
     </ng-template>
     <nz-card [nzTitle]="previewTitle" nzSize="small" class="card fill no-chrome">
       <div #previewFrame class="preview-frame" [style.width.px]="previewWidth || null">
@@ -336,7 +328,7 @@
       </div>
 
       <!-- History controls centered -->
-      <div class="history-bar" [style.left.px]="historyBarLeftPx">
+      <div class="history-bar" *ngIf="editMode || !isMobile" [style.left.px]="historyBarLeftPx">
         <div class="hb-left">
           <button nz-button nzSize="small" class="icon-btn" (click)="undo()" [disabled]="!canUndo" nz-tooltip nzTooltipTitle="Annuler" aria-label="Annuler">
             <i class="fa-solid fa-rotate-left"></i>
