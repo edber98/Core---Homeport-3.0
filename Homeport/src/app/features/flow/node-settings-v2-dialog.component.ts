@@ -261,7 +261,18 @@ import { FormsModule } from '@angular/forms';
 
     /* Mobile single-panel shell */
     .m-shell { position: fixed; inset:0; z-index: 100001; display:flex; align-items:center; justify-content:center; pointer-events:auto; }
-    .m-backdrop { position:absolute; inset:0; z-index:1; }
+    .m-backdrop {
+      position: fixed;
+      left: 0;
+      top: env(safe-area-inset-top);
+      width: 100vw;
+      height: calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+      background: rgba(17,17,17,0.32);
+      z-index: 1;
+    }
+    @supports (height: 100dvh) {
+      .m-backdrop { height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom)); }
+    }
     .m-dialog { position:relative; z-index:2; width: min(92vw, 520px); height: min(calc(var(--vh, 1vh) * 88), 720px); background:#fff; border:1px solid rgba(0,0,0,0.06); border-radius: 16px; box-shadow: 0 12px 24px rgba(0,0,0,0.06); display:flex; flex-direction: column; overflow:hidden; }
     :host(.tablet-portrait) .m-dialog { width: min(96vw, 920px); height: min(calc(var(--vh, 1vh) * 94), 940px); }
     @supports (height: 100dvh) {

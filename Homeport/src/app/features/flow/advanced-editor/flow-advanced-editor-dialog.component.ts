@@ -58,6 +58,7 @@ import { NzBadgeModule } from 'ng-zorro-antd/badge';
 
     <!-- Mobile layout: true dialog with carousel and bottom dots -->
     <div class="m-shell" *ngIf="isMobile">
+      <div class="m-backdrop" (click)="startExit()"></div>
       <div class="m-dialog" [class.enter]="centerVisible">
         <div class="m-header">
           <div class="title">Configuration</div>
@@ -143,7 +144,19 @@ import { NzBadgeModule } from 'ng-zorro-antd/badge';
 
     /* Mobile single-panel shell */
     .m-shell { position: fixed; inset:0; z-index: 100001; display:flex; align-items:center; justify-content:center; }
-    .m-dialog { position:relative; width: min(92vw, 520px); height: min(88vh, 720px); background:#fff; border:1px solid rgba(0,0,0,0.06); border-radius: 16px; box-shadow: 0 12px 24px rgba(0,0,0,0.06); transform: translateY(8px); opacity:0; transition: opacity .22s ease, transform .26s ease; display:flex; flex-direction: column; overflow:hidden; }
+    .m-backdrop {
+      position: fixed;
+      left: 0;
+      top: env(safe-area-inset-top);
+      width: 100vw;
+      height: calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+      background: rgba(17,17,17,0.32);
+      z-index: 1;
+    }
+    @supports (height: 100dvh) {
+      .m-backdrop { height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom)); }
+    }
+    .m-dialog { position:relative; z-index:2; width: min(92vw, 520px); height: min(88vh, 720px); background:#fff; border:1px solid rgba(0,0,0,0.06); border-radius: 16px; box-shadow: 0 12px 24px rgba(0,0,0,0.06); transform: translateY(8px); opacity:0; transition: opacity .22s ease, transform .26s ease; display:flex; flex-direction: column; overflow:hidden; }
     @supports (height: 100dvh) {
       .m-dialog {
         height: min(calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 12px), 720px);
