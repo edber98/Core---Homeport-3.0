@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, NgZone, ElementRef, ViewChild } from '@angular/core';
+import { Component, NgZone, ElementRef, ViewChild, HostListener } from '@angular/core';
 import { FlowViewerComponent } from './flow-viewer.component';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzDrawerModule } from 'ng-zorro-antd/drawer';
@@ -88,9 +88,18 @@ import { NodeExecResultDialogComponent } from './node-exec-result-dialog.compone
             <div class="exec-actions-menu" *ngIf="activeMenuId === b.id"
               [ngStyle]="{ left: menuX + 'px', top: menuY + 'px' }"
               (click)="$event.stopPropagation()">
-              <button nz-button nzSize="small" (click)="onViewRunClick(b); closeMenu()" title="Voir détails"><i class="fa-solid fa-eye"></i></button>
-              <button nz-button nzSize="small" nzDanger (click)="cancelBackend(b.id); closeMenu()" title="Annuler"><i class="fa-solid fa-ban"></i></button>
-              <button nz-button nzSize="small" (click)="openInEditor(b); closeMenu()" title="Ouvrir dans l'éditeur"><i class="fa-solid fa-up-right-from-square"></i></button>
+              <button nz-button nzSize="small" (click)="onViewRunClick(b); closeMenu()" title="Voir détails">
+                <i class="fa-solid fa-eye"></i>
+                <span class="mi-label">Voir détails</span>
+              </button>
+              <button nz-button nzSize="small" nzDanger (click)="cancelBackend(b.id); closeMenu()" title="Annuler">
+                <i class="fa-solid fa-ban"></i>
+                <span class="mi-label">Annuler</span>
+              </button>
+              <button nz-button nzSize="small" (click)="openInEditor(b); closeMenu()" title="Ouvrir dans l'éditeur">
+                <i class="fa-solid fa-up-right-from-square"></i>
+                <span class="mi-label">Ouvrir dans l'éditeur</span>
+              </button>
             </div>
           </div>
         </div>
@@ -148,6 +157,9 @@ import { NodeExecResultDialogComponent } from './node-exec-result-dialog.compone
             [useStorage]="false"
             [showBottomBar]="true" [showRun]="false" [showSave]="false" [showCenterFlow]="true"
             (execBadgeClick)="onViewerExecBadgeClick($event)"></flow-viewer>
+          <div class="empty-selection-overlay" *ngIf="!hasSelectedExecution">
+            <div class="empty-selection-card">Aucune exécution sélectionnée</div>
+          </div>
         </div>
         <aside class="details-panel" *ngIf="rightPanelOpen && selectedBackendRun" #detailsPanel>
           <div class="panel-heading details-heading">
@@ -489,6 +501,7 @@ import { NodeExecResultDialogComponent } from './node-exec-result-dialog.compone
       border-radius: 10px;
       box-shadow: 0 10px 24px rgba(0,0,0,0.12);
     }
+    .exec-actions-menu .mi-label { display: none; }
     .exec-item.active { border-color:#1677ff; background:#f3f7ff; box-shadow: 0 0 0 2px rgba(22,119,255,0.12); }
     .exec-day { display:flex; flex-direction:column; gap:8px; }
     .exec-day-title {
@@ -572,6 +585,27 @@ import { NodeExecResultDialogComponent } from './node-exec-result-dialog.compone
     .viewer-layout.show-details { grid-template-columns: 1fr 320px; }
     .viewer-canvas-wrap { height:100%; min-height: 0; }
     .viewer-canvas { height: 100%; display:block; }
+    .empty-selection-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      z-index: 3;
+      padding: 16px;
+    }
+    .empty-selection-card {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 14px 18px;
+      color: #374151;
+      font-size: 14px;
+      font-weight: 600;
+      text-align: center;
+      max-width: min(92vw, 420px);
+    }
     .details-panel { border-left:1px solid #e5e7eb; background:#fff; height:100%; overflow:auto; padding:12px; min-width: 0; }
     .details-panel .panel-heading.details-heading {
       display:flex;
@@ -674,6 +708,27 @@ import { NodeExecResultDialogComponent } from './node-exec-result-dialog.compone
       .flow-exec > .side.executions, .flow-exec > section.viewer .details-panel { display: none; }
       /* Keep single column; drawer handles details */
       .viewer-layout.show-details { grid-template-columns: 1fr 0 !important; }
+      /* In drawer/compact mode, open actions menu under kebab and stack actions vertically */
+      .exec-actions-menu {
+        position: absolute;
+        top: 36px !important;
+        right: 6px !important;
+        left: auto !important;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 4px;
+        min-width: 190px;
+        max-width: calc(100% - 12px);
+      }
+      .exec-actions-menu .ant-btn {
+        width: 100%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 8px;
+      }
+      .exec-actions-menu .mi-label { display: inline; }
     }
     @media (max-width: 768px) {
       .flow-exec .viewer { padding-bottom: 0 !important; }
@@ -718,6 +773,7 @@ export class FlowExecutionComponent {
   counters = { launched: 0, completed: 0 };
   flowStats: any = { total: 0, running: 0, success: 0, error: 0, cancelled: 0, timed_out: 0, avgDurationMs: null };
   selectedRun: ExecutionRun | null = null;
+  get hasSelectedExecution(): boolean { return !!this.selectedBackendRun || !!this.selectedRun; }
 
   currentFlowId: string | null = null;
   hasFlowParam = false;
@@ -929,6 +985,15 @@ export class FlowExecutionComponent {
     this.menuY = ev.clientY;
     this.activeMenuId = b.id;
   }
+  @HostListener('document:pointerdown', ['$event'])
+  onDocumentPointerDown(ev: PointerEvent) {
+    if (!this.activeMenuId) return;
+    const target = ev.target as HTMLElement | null;
+    if (!target) { this.closeMenu(); return; }
+    if (target.closest('.exec-actions-menu')) return;
+    if (target.closest('.kebab')) return;
+    this.closeMenu();
+  }
   private templatesMap = new Map<string, any>();
   // Match builder visuals
   flowBackground: any = { type: 'dots', gap: 25, color: '#D4D8E0', size: 1.6, backgroundColor: '#F5F7FA' };
@@ -1062,13 +1127,32 @@ export class FlowExecutionComponent {
   }
 
   openAttemptResult(a: { nodeId: string }) {
+    try {
+      if (this.shouldCloseRightPanelForResultModal()) {
+        this.rightDrawer = false;
+        this.rightPanelOpen = false;
+      }
+    } catch {}
     this.execResultNodeId = String(a.nodeId);
     this.execResultOpen = true;
+    try { this.cdr.detectChanges(); } catch {}
   }
 
   closeExecResult() {
     this.execResultOpen = false;
     this.execResultNodeId = null;
+  }
+
+  private shouldCloseRightPanelForResultModal(): boolean {
+    try {
+      const w = window.innerWidth || 0;
+      const isPortrait = window.matchMedia?.('(orientation: portrait)')?.matches ?? (window.innerHeight >= window.innerWidth);
+      const isMobile = w <= 768;
+      const isTabletPortrait = this.isTabletOrBelow && isPortrait;
+      return isMobile || isTabletPortrait;
+    } catch {
+      return this.isTabletOrBelow;
+    }
   }
 
   get execResultAttempts(): any[] {
