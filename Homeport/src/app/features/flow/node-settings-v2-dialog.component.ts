@@ -111,6 +111,7 @@ import { FormsModule } from '@angular/forms';
     <div class="m-shell" *ngIf="isMobile">
       <div class="m-backdrop" (click)="close.emit()"></div>
       <div class="m-dialog enter" (click)="$event.stopPropagation()">
+        <button class="m-close" type="button" aria-label="Fermer" (click)="close.emit(); $event.stopPropagation()">✕</button>
         <div class="m-body" #carRef (touchstart)="onSwipeStart($event)" (touchmove)="onSwipeMove($event)" (touchend)="onSwipeEnd()">
           <div class="edge-sensor left"
                (touchstart)="onEdgeStart($event, 'left')"
@@ -274,6 +275,25 @@ import { FormsModule } from '@angular/forms';
       .m-backdrop { height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom)); }
     }
     .m-dialog { position:relative; z-index:2; width: min(92vw, 520px); height: min(calc(var(--vh, 1vh) * 88), 720px); background:#fff; border:1px solid rgba(0,0,0,0.06); border-radius: 16px; box-shadow: 0 12px 24px rgba(0,0,0,0.06); display:flex; flex-direction: column; overflow:hidden; }
+    .m-close {
+      position: absolute;
+      top: calc(8px + env(safe-area-inset-top));
+      right: 10px;
+      width: 30px;
+      height: 30px;
+      border-radius: 9px;
+      border: 1px solid #e5e7eb;
+      background: #fff;
+      color: #6b7280;
+      font-size: 14px;
+      line-height: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 6;
+    }
+    .m-close:hover { border-color:#c7dbff; background:#e8f1ff; color:#0b5ed7; }
     :host(.tablet-portrait) .m-dialog { width: min(96vw, 920px); height: min(calc(var(--vh, 1vh) * 94), 940px); }
     @supports (height: 100dvh) {
       .m-dialog {
