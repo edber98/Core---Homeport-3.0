@@ -119,14 +119,15 @@
         </div>
       </nz-card>
 
-      <nav class="left-tabs" role="tablist" aria-label="Sections du panneau gauche">
-        <button type="button" class="tab" role="tab" [class.active]="leftTab === 'structure'" [attr.aria-selected]="leftTab === 'structure'" (click)="leftTab = 'structure'">Structure</button>
-        <button type="button" class="tab" role="tab" [class.active]="leftTab === 'import'" [attr.aria-selected]="leftTab === 'import'" (click)="leftTab = 'import'">Import/export</button>
-        <button type="button" class="tab" role="tab" [class.active]="leftTab === 'scenarios'" [attr.aria-selected]="leftTab === 'scenarios'" (click)="leftTab = 'scenarios'">Scénarios</button>
-        <button type="button" class="tab" role="tab" [class.active]="leftTab === 'context'" [attr.aria-selected]="leftTab === 'context'" (click)="leftTab = 'context'">Contexte</button>
-      </nav>
+      <div class="left-tabs-shell">
+        <nav class="left-tabs" role="tablist" aria-label="Sections du panneau gauche">
+          <button type="button" class="tab" role="tab" [class.active]="leftTab === 'structure'" [attr.aria-selected]="leftTab === 'structure'" (click)="leftTab = 'structure'">Structure</button>
+          <button type="button" class="tab" role="tab" [class.active]="leftTab === 'import'" [attr.aria-selected]="leftTab === 'import'" (click)="leftTab = 'import'">Import/export</button>
+          <button type="button" class="tab" role="tab" [class.active]="leftTab === 'scenarios'" [attr.aria-selected]="leftTab === 'scenarios'" (click)="leftTab = 'scenarios'">Scénarios</button>
+          <button type="button" class="tab" role="tab" [class.active]="leftTab === 'context'" [attr.aria-selected]="leftTab === 'context'" (click)="leftTab = 'context'">Contexte</button>
+        </nav>
 
-      <div class="left-tab-content">
+        <div class="left-tab-content">
         <df-context-panel
           *ngIf="leftTab === 'structure' || leftTab === 'import'"
           [treeNodes]="treeNodes"
@@ -263,6 +264,7 @@
             <div style="color:#64748b; font-size:12px; margin-top:6px;">Ce JSON est passé à l'aperçu comme contexte des expressions (json/$json, env/$env, node/$node, now).</div>
           </nz-card>
         </ng-container>
+        </div>
       </div>
     </div>
   </ng-template>

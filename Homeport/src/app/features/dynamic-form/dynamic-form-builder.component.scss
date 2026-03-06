@@ -370,11 +370,23 @@
 }
 
 :host ::ng-deep .ant-drawer-body .left-panel {
-  padding: 0 8px 8px;
+  padding: 0 8px;
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  gap: 12px;
+}
+
+:host ::ng-deep .ant-drawer-body .left-panel .ant-card {
+  height: auto;
+  display: block;
 }
 
 :host ::ng-deep .ant-drawer-body .left-panel .ant-card-body {
   padding: 6px 8px;
+  overflow: visible;
 }
 
 :host ::ng-deep .ant-drawer-body .left-panel .ant-card-head {
@@ -382,11 +394,23 @@
 }
 
 :host ::ng-deep .ant-drawer-body .left-tabs {
-  padding: 0 8px;
+  padding: 4px;
+  margin: 0 4px;
+  flex: 0 0 auto;
+  position: sticky;
+  top: 0;
+  z-index: 12;
+  background: #f6f6f8;
 }
 
 :host ::ng-deep .ant-drawer-body .left-tab-content {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
   padding-top: 8px;
+  padding-bottom: calc(8px + env(safe-area-inset-bottom));
 }
 
 :host ::ng-deep .ant-drawer-body .left-tab-content .mt {
@@ -722,9 +746,25 @@
 nz-drawer { display: contents; }
 .drawer-swipe-zone {
   height: 100%;
+  flex: 1 1 auto;
+  min-height: 0;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
   touch-action: pan-y;
+}
+
+:host ::ng-deep .ios-safe-drawer .ant-drawer-content,
+:host ::ng-deep .ios-safe-drawer .ant-drawer-wrapper-body,
+:host ::ng-deep .ios-safe-drawer .ant-drawer-body {
+  height: 100%;
+  min-height: 0;
+}
+
+:host ::ng-deep .ios-safe-drawer .ant-drawer-body {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 /* Ensure left-panel cards inside drawers have no outer chrome */
