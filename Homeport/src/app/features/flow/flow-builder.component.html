@@ -403,8 +403,9 @@
     (click)="openAiPanel()" aria-label="Assistant IA" nz-tooltip nzTooltipTitle="Assistant IA">
     <i class="fa-solid fa-wand-magic-sparkles"></i>
   </button>
-  <button nz-button nzSize="small" class="panel-toggle-fab help-fab" [class.open]="shortcutsOpen"
+  <button *ngIf="!isPhone" nz-button nzSize="small" class="panel-toggle-fab help-fab" [class.open]="shortcutsOpen"
     nz-popover nzPopoverTrigger="click" [nzPopoverTitle]="'Raccourcis clavier'" [nzPopoverContent]="shortcutsTpl"
+    [nzPopoverPlacement]="isTabletOrBelow ? 'bottomRight' : 'leftTop'" [nzPopoverOverlayClassName]="'flow-shortcuts-popover'"
     [nzPopoverVisible]="shortcutsOpen" (nzPopoverVisibleChange)="shortcutsOpen = $event"
     type="button" aria-label="Afficher les raccourcis">
     <i class="fa-solid fa-keyboard"></i>

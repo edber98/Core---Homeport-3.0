@@ -51,10 +51,18 @@ import { NodeInspectorItemComponent } from './node-inspector-item.component';
             <nz-form-label>Exécution</nz-form-label>
             <nz-form-control>
               <div class="exec-row">
-                <nz-select [(ngModel)]="builderMode" name="builderModePanel" nzPlaceHolder="Mode">
-                  <nz-option nzValue="test" nzLabel="test"></nz-option>
-                  <nz-option nzValue="prod" nzLabel="prod"></nz-option>
-                </nz-select>
+                <ng-container *ngIf="useNativeSelect; else builderModeDesktopSelect">
+                  <select class="wf-native-select" [(ngModel)]="builderMode" name="builderModePanelNative">
+                    <option value="test">test</option>
+                    <option value="prod">prod</option>
+                  </select>
+                </ng-container>
+                <ng-template #builderModeDesktopSelect>
+                  <nz-select [(ngModel)]="builderMode" name="builderModePanel" nzPlaceHolder="Mode">
+                    <nz-option nzValue="test" nzLabel="test"></nz-option>
+                    <nz-option nzValue="prod" nzLabel="prod"></nz-option>
+                  </nz-select>
+                </ng-template>
               </div>
             </nz-form-control>
           </nz-form-item>
@@ -63,11 +71,23 @@ import { NodeInspectorItemComponent } from './node-inspector-item.component';
             <nz-form-label>Publication</nz-form-label>
             <nz-form-control>
               <div class="pub-row">
-                <nz-select [(ngModel)]="currentFlowStatus" (ngModelChange)="currentFlowStatusChange.emit($event); metaChange.emit()" name="flowStatusPanel" nzPlaceHolder="Statut">
-                  <nz-option nzValue="draft" nzLabel="brouillon"></nz-option>
-                  <nz-option nzValue="test" nzLabel="test"></nz-option>
-                  <nz-option nzValue="production" nzLabel="production"></nz-option>
-                </nz-select>
+                <ng-container *ngIf="useNativeSelect; else flowStatusDesktopSelect">
+                  <select class="wf-native-select"
+                    [ngModel]="currentFlowStatus"
+                    (ngModelChange)="currentFlowStatus = $event; currentFlowStatusChange.emit($event); metaChange.emit()"
+                    name="flowStatusPanelNative">
+                    <option value="draft">brouillon</option>
+                    <option value="test">test</option>
+                    <option value="production">production</option>
+                  </select>
+                </ng-container>
+                <ng-template #flowStatusDesktopSelect>
+                  <nz-select [(ngModel)]="currentFlowStatus" (ngModelChange)="currentFlowStatusChange.emit($event); metaChange.emit()" name="flowStatusPanel" nzPlaceHolder="Statut">
+                    <nz-option nzValue="draft" nzLabel="brouillon"></nz-option>
+                    <nz-option nzValue="test" nzLabel="test"></nz-option>
+                    <nz-option nzValue="production" nzLabel="production"></nz-option>
+                  </nz-select>
+                </ng-template>
                 <button nz-button class="apple-btn btn-save" nzType="default" type="button" (click)="save.emit()" [disabled]="!canSave" title="Enregistrer" aria-label="Enregistrer">
                   <i class="fa-solid fa-floppy-disk"></i><span class="lbl"></span>
                 </button>
@@ -80,10 +100,23 @@ import { NodeInspectorItemComponent } from './node-inspector-item.component';
             <nz-form-label>Exécutions récentes</nz-form-label>
             <nz-form-control>
               <div class="exec-select-row">
-                <nz-select class="flex-1" [(ngModel)]="selectedRecentId" name="recentRunSelect" nzPlaceHolder="Choisir une exécution"
-                           (nzScrollToBottom)="runsHasMore && loadMoreRuns.emit()">
-                  <nz-option *ngFor="let r of recentRuns" [nzValue]="r.id" [nzLabel]="(r.startedAt | date:'medium':'':'fr-FR') + ' — ' + (r.status || '—')"></nz-option>
-                </nz-select>
+                <ng-container *ngIf="useNativeSelect; else recentRunsDesktopSelect">
+                  <select class="wf-native-select flex-1"
+                    [ngModel]="selectedRecentId || ''"
+                    (ngModelChange)="selectedRecentId = $event || null"
+                    name="recentRunSelectNative">
+                    <option value="">Choisir une exécution</option>
+                    <option *ngFor="let r of recentRuns" [value]="r.id || ''">
+                      {{ (r.startedAt | date:'medium':'':'fr-FR') + ' — ' + (r.status || '—') }}
+                    </option>
+                  </select>
+                </ng-container>
+                <ng-template #recentRunsDesktopSelect>
+                  <nz-select class="flex-1" [(ngModel)]="selectedRecentId" name="recentRunSelect" nzPlaceHolder="Choisir une exécution"
+                             (nzScrollToBottom)="runsHasMore && loadMoreRuns.emit()">
+                    <nz-option *ngFor="let r of recentRuns" [nzValue]="r.id" [nzLabel]="(r.startedAt | date:'medium':'':'fr-FR') + ' — ' + (r.status || '—')"></nz-option>
+                  </nz-select>
+                </ng-template>
                 <button nz-button nzType="default" nzSize="small" class="apple-btn load-btn" [disabled]="!selectedRecentId" (click)="selectedRecentId && selectRun.emit(selectedRecentId)" title="Charger">
                   <i class="fa-solid fa-download"></i>
                 </button>
@@ -309,6 +342,25 @@ import { NodeInspectorItemComponent } from './node-inspector-item.component';
       background-color: #e7f0ff;
     }
     .exec-row { display:flex; gap: 8px; align-items:center; }
+    .wf-native-select {
+      width: 100%;
+      min-height: 32px;
+      border: 1px solid #d9e4ff;
+      border-radius: 8px;
+      background: #f3f7ff;
+      color: #111827;
+      font-size: 12px;
+      padding: 6px 30px 6px 10px;
+      outline: none;
+      box-sizing: border-box;
+      appearance: auto;
+      -webkit-appearance: menulist;
+    }
+    .wf-native-select:hover { border-color: #d1d5db; }
+    .wf-native-select:focus {
+      border-color: #1677ff;
+      box-shadow: 0 0 0 2px rgba(22,119,255,0.18);
+    }
     .exec-row .apple-btn { display:inline-flex; align-items:center; gap:6px; border-radius:8px; }
     .exec-row .apple-btn.icon-only { width:34px; height:34px; justify-content:center; }
     .exec-row .apple-btn .lbl { display:none; }
@@ -479,6 +531,7 @@ export class FlowRightPanelComponent implements OnChanges {
   @Input() runsHasMore = false;
   @Input() selectedRunId: string | null = null;
   selectedRecentId: string | null = null;
+  get useNativeSelect(): boolean { return this.mode === 'drawer'; }
   @Output() selectRun = new EventEmitter<string>();
   @Output() loadMoreRuns = new EventEmitter<void>();
   // no search field per request

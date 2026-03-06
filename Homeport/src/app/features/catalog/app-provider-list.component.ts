@@ -23,9 +23,6 @@ import { AccessControlService } from '../../services/access-control.service';
         </div>
         <div class="actions">
           <input [(ngModel)]="q" placeholder="Rechercher (nom, tags)" class="search"/>
-          <button nz-button class="icon-only search-action" (click)="doSearch()" aria-label="Rechercher">
-            <i class="fa-solid fa-search"></i>
-          </button>
           <button nz-button nzType="primary" class="primary with-text" (click)="create()" [disabled]="!isAdmin" title="Admin uniquement">
             <i class="fa-solid fa-plus"></i> Nouvelle app
           </button>
@@ -79,12 +76,10 @@ import { AccessControlService } from '../../services/access-control.service';
     .page-header .actions .search { width: 220px; max-width: 100%; min-width: 0; border:1px solid #e5e7eb; border-radius:8px; padding:6px 10px; outline:none; }
     .page-header .actions .primary { background:#1677ff; border-color:#1677ff; }
     .page-header .actions .primary[disabled] { background:#f3f4f6; border-color:#e5e7eb; color:#9ca3af; }
-    /* Icon-only buttons: hide by default, except explicit search-action */
+    /* Icon-only buttons: hidden by default (except explicit mobile primary) */
     .page-header .actions .icon-only { display:none; align-items:center; justify-content:center; padding: 6px 10px; }
     .page-header .actions .icon-only i { font-size: 14px; line-height: 1; }
-    .page-header .actions .icon-only.search-action:hover { border-color:#1677ff; color:#1677ff; }
     .page-header .actions .with-text i { margin-right: 6px; }
-    .page-header .actions .icon-only.search-action { display:inline-flex; }
     @media (max-width: 640px) {
       /* Stack header blocks; place actions on the next line as a single row */
       .page-header { flex-direction: column; align-items: stretch; }
@@ -160,5 +155,4 @@ export class AppProviderListComponent implements OnInit {
     if (!confirm(`Supprimer ${a.name || a.id} ?`)) return;
     this.catalog.deleteApp(a.id).subscribe(() => this.catalog.listApps().subscribe(list => this.zone.run(() => { this.apps = list || []; try { this.cdr.detectChanges(); } catch {} })));
   }
-  doSearch() { this.q = (this.q || '').trim(); }
 }

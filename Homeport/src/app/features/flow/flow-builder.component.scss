@@ -235,7 +235,7 @@
 .panel-toggle-fab.ai-chat-fab { z-index: 2100; }
 .panel-toggle-fab.ai-chat-fab i { color:#6b7280; }
 .panel-toggle-fab.help-fab i { color:#6b7280 !important; }
-.panel-toggle-fab.help-fab { top: 108px; color:#6b7280 !important; }
+.panel-toggle-fab.help-fab { top: 108px; color:#6b7280 !important; z-index: 2101; }
 .panel-toggle-fab.clear-run-fab i { color:#6b7280 !important; }
 
 .panel-toggle-fab.clear-run-fab { top: 156px; }
@@ -375,7 +375,7 @@ nz-drawer { display: contents; }
 @media (max-width: 768px) {
   .panel-toggle-fab { top: 12px; }
   .panel-toggle-fab.ai-chat-fab { top: 60px; }
-  .panel-toggle-fab.help-fab { top: 108px; }
+  .panel-toggle-fab.help-fab { top: 108px; display: inline-flex !important; }
   .panel-toggle-fab.clear-run-fab { top: 156px; }
 }
 
@@ -466,6 +466,7 @@ nz-drawer { display: contents; }
 .loading-overlay .text { margin-top: 10px; color: #374151; font-weight: 500; }
 @keyframes fb-spin { to { transform: rotate(360deg); } }
 .panel-toggle-fab.help-fab.open i { color:#1677ff; }
+:host ::ng-deep .flow-shortcuts-popover.ant-popover { z-index: 2150; max-width: min(92vw, 360px); }
 .node-card.spawn-lite {
   animation: node-bg-lite 650ms steps(6, end) both;
 }

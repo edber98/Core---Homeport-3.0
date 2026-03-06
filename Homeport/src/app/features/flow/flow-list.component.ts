@@ -36,9 +36,6 @@ type FlowItem = { id: string; name: string; description?: string };
         </div>
         <div class="actions">
           <input [(ngModel)]="q" placeholder="Rechercher un flow (nom, desc)" class="search"/>
-          <button nz-button class="icon-only search-action" (click)="doSearch()" aria-label="Rechercher">
-            <i class="fa-solid fa-search"></i>
-          </button>
           <button nz-button nzType="primary" class="primary with-text" (click)="openCreate()">
             <i class="fa-solid fa-plus"></i> Nouveau flow
           </button>
@@ -188,9 +185,7 @@ type FlowItem = { id: string; name: string; description?: string };
     .actions .search:focus { border-color:#d1d5db; }
     .actions .primary { background:#1677ff; border-color:#1677ff; }
     .actions .icon-only { display:none; align-items:center; justify-content:center; padding: 6px 10px; }
-    .actions .icon-only.search-action { display:inline-flex; }
     .actions .icon-only i { font-size: 14px; line-height: 1; }
-    .actions .icon-only.search-action:hover { border-color:#1677ff; color:#1677ff; }
     .actions .with-text i { margin-right: 6px; }
     @media (max-width: 640px) {
       .page-header { flex-direction: column; align-items: stretch; }
@@ -302,7 +297,6 @@ export class FlowListComponent implements OnInit, OnDestroy {
   creating = false;
   createError: string | null = null;
   draft: { name: string; description?: string; status?: 'draft'|'test'|'production'; enabled?: boolean } = { name: '', description: '', status: 'draft', enabled: false };
-  doSearch() { this.q = (this.q || '').trim(); }
   updatingIds = new Set<string>();
 
   private changesSub?: Subscription;
