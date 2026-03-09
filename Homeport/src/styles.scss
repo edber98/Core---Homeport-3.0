@@ -115,6 +115,28 @@ app-dashboard-home .panel-runs .panel-scroll::-webkit-scrollbar-button:vertical:
     touch-action: auto;
 }
 
+/* Dynamic form builder (mobile/tablet): ensure right inspector drawer is truly scrollable */
+.ios-safe-drawer-right .ant-drawer-body {
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    -webkit-overflow-scrolling: touch !important;
+    overscroll-behavior: contain;
+    touch-action: pan-y;
+}
+.ios-safe-drawer-right .drawer-swipe-zone--right {
+    display: block !important;
+    height: auto !important;
+    min-height: 100% !important;
+    overflow: visible !important;
+    touch-action: pan-y !important;
+}
+.ios-safe-drawer-right .drawer-swipe-zone--right .card.no-chrome.ant-card,
+.ios-safe-drawer-right .drawer-swipe-zone--right .card.no-chrome.ant-card > .ant-card-body {
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+}
+
 /* Ant Design menu hover: keep text dark (not white) */
 .ant-menu-light .ant-menu-item:not(.ant-menu-item-selected):hover,
 .ant-menu-light .ant-menu-submenu-title:not(.ant-menu-submenu-selected):hover,

@@ -27,7 +27,11 @@ import { AiSettingsComponent } from './ai-settings.component';
   template: `
     <div class="fp-layout">
       <!-- Sidebar -->
-      <div class="fp-sidebar" [class.collapsed]="sidebarCollapsed">
+      <div class="fp-sidebar" [class.collapsed]="sidebarCollapsed"
+        (touchstart)="onSidebarTouchStart($event)"
+        (touchmove)="onSidebarTouchMove($event)"
+        (touchend)="onSidebarTouchEnd()"
+        (touchcancel)="onSidebarTouchEnd()">
         <div class="sidebar-header">
           <span class="sidebar-title" *ngIf="!sidebarCollapsed">Conversations</span>
           <button nz-button nzType="text" nzSize="small" class="sidebar-toggle-btn" (click)="sidebarCollapsed = !sidebarCollapsed"
@@ -39,33 +43,48 @@ import { AiSettingsComponent } from './ai-settings.component';
         <ng-container *ngIf="!sidebarCollapsed">
           <!-- Agent selector -->
           <div class="sidebar-agent">
-            <nz-select
-              class="sidebar-agent-select"
-              [(ngModel)]="selectedAgentId"
-              (ngModelChange)="onAgentChange($event)"
-              nzPlaceHolder="Agent"
-              nzSize="small"
-              nzShowSearch
-              style="width: 100%"
-              [nzOptionHeightPx]="36">
-              <nz-option-group *ngIf="systemAgents.length" nzLabel="Système">
-                <nz-option *ngFor="let a of systemAgents" [nzValue]="a.id" [nzLabel]="a.name" nzCustomContent>
-                  <div class="agent-opt">
-                    <img *ngIf="a.icon" [src]="a.icon" class="agent-opt-icon" />
-                    <span *ngIf="!a.icon" nz-icon nzType="robot" nzTheme="outline" class="agent-opt-nz"></span>
-                    <span>{{ a.name }}</span>
-                  </div>
-                </nz-option>
-              </nz-option-group>
-              <nz-option-group *ngIf="customAgents.length" nzLabel="Personnalisés">
-                <nz-option *ngFor="let a of customAgents" [nzValue]="a.id" [nzLabel]="a.name" nzCustomContent>
-                  <div class="agent-opt">
-                    <span nz-icon nzType="user" nzTheme="outline" class="agent-opt-nz custom"></span>
-                    <span>{{ a.name }}</span>
-                  </div>
-                </nz-option>
-              </nz-option-group>
-            </nz-select>
+            <ng-container *ngIf="sidebarAgentUseNative; else sidebarAgentDesktop">
+              <select class="sp-native-select" [(ngModel)]="selectedAgentId" (ngModelChange)="onAgentChange($event)">
+                <option value="general">Assistant général</option>
+                <optgroup *ngIf="systemAgents.length" label="Système">
+                  <ng-container *ngFor="let a of systemAgents">
+                    <option *ngIf="a.id !== 'general'" [value]="a.id">{{ a.name }}</option>
+                  </ng-container>
+                </optgroup>
+                <optgroup *ngIf="customAgents.length" label="Personnalisés">
+                  <option *ngFor="let a of customAgents" [value]="a.id">{{ a.name }}</option>
+                </optgroup>
+              </select>
+            </ng-container>
+            <ng-template #sidebarAgentDesktop>
+              <nz-select
+                class="sidebar-agent-select"
+                [(ngModel)]="selectedAgentId"
+                (ngModelChange)="onAgentChange($event)"
+                nzPlaceHolder="Agent"
+                nzSize="small"
+                nzShowSearch
+                style="width: 100%"
+                [nzOptionHeightPx]="36">
+                <nz-option-group *ngIf="systemAgents.length" nzLabel="Système">
+                  <nz-option *ngFor="let a of systemAgents" [nzValue]="a.id" [nzLabel]="a.name" nzCustomContent>
+                    <div class="agent-opt">
+                      <img *ngIf="a.icon" [src]="a.icon" class="agent-opt-icon" />
+                      <span *ngIf="!a.icon" nz-icon nzType="robot" nzTheme="outline" class="agent-opt-nz"></span>
+                      <span>{{ a.name }}</span>
+                    </div>
+                  </nz-option>
+                </nz-option-group>
+                <nz-option-group *ngIf="customAgents.length" nzLabel="Personnalisés">
+                  <nz-option *ngFor="let a of customAgents" [nzValue]="a.id" [nzLabel]="a.name" nzCustomContent>
+                    <div class="agent-opt">
+                      <span nz-icon nzType="user" nzTheme="outline" class="agent-opt-nz custom"></span>
+                      <span>{{ a.name }}</span>
+                    </div>
+                  </nz-option>
+                </nz-option-group>
+              </nz-select>
+            </ng-template>
           </div>
 
           <!-- New thread button -->
@@ -808,6 +827,7 @@ export class AiFullpageComponent implements OnInit, OnDestroy, AfterViewInit {
   centerPendingAttachments: AiAttachment[] = [];
   maxCenterFiles = AI_MAX_FILES;
   threadSettingsUseNative = false;
+  sidebarAgentUseNative = false;
   sidebarCollapsed = false;
   showSettings = false;
   regeneratingTitle = false;
@@ -816,6 +836,11 @@ export class AiFullpageComponent implements OnInit, OnDestroy, AfterViewInit {
   private refreshInterval?: any;
   private titleDebounce?: any;
   private aiInputLayoutRaf: number | null = null;
+  private sidebarTouchStartX: number | null = null;
+  private sidebarTouchStartY: number | null = null;
+  private sidebarSwipeHandled = false;
+  private readonly sidebarSwipeCloseThreshold = 56;
+  private readonly sidebarSwipeMaxVerticalDelta = 44;
 
   constructor(public ai: AiService, public audioService: AiAudioService, private cdr: ChangeDetectorRef, private router: Router, private nzMsg: NzMessageService, private apiClient: ApiClientService, private acl: AccessControlService) {
     // Sync currentThread changes (title, mode, flowId) back to local threads list in real-time
@@ -841,7 +866,9 @@ export class AiFullpageComponent implements OnInit, OnDestroy, AfterViewInit {
     // Set page context
     this.ai.setPageContext({ page: 'other' });
     this.updateThreadSettingsSelectMode();
+    this.updateSidebarAgentSelectMode();
     this.updateAiInputPlaceholder();
+    if (this.shouldAutoCloseSidebarNav()) this.sidebarCollapsed = true;
 
     // Load threads and agents
     this.loadThreads();
@@ -879,8 +906,42 @@ export class AiFullpageComponent implements OnInit, OnDestroy, AfterViewInit {
   @HostListener('window:resize')
   onWindowResize() {
     this.updateThreadSettingsSelectMode();
+    this.updateSidebarAgentSelectMode();
     this.updateAiInputPlaceholder();
     this.scheduleAiInputLayoutRefresh();
+  }
+
+  onSidebarTouchStart(event: TouchEvent) {
+    if (this.sidebarCollapsed || !this.shouldAutoCloseSidebarNav()) return;
+    const touch = event.touches?.[0];
+    if (!touch) return;
+    this.sidebarTouchStartX = touch.clientX;
+    this.sidebarTouchStartY = touch.clientY;
+    this.sidebarSwipeHandled = false;
+  }
+
+  onSidebarTouchMove(event: TouchEvent) {
+    if (this.sidebarCollapsed || !this.shouldAutoCloseSidebarNav() || this.sidebarSwipeHandled) return;
+    if (this.sidebarTouchStartX == null || this.sidebarTouchStartY == null) return;
+    const touch = event.touches?.[0];
+    if (!touch) return;
+
+    const dx = touch.clientX - this.sidebarTouchStartX;
+    const dy = touch.clientY - this.sidebarTouchStartY;
+    const isLeftSwipe = dx <= -this.sidebarSwipeCloseThreshold;
+    const isMostlyHorizontal = Math.abs(dx) > Math.abs(dy) && Math.abs(dy) <= this.sidebarSwipeMaxVerticalDelta;
+
+    if (isLeftSwipe && isMostlyHorizontal) {
+      this.sidebarCollapsed = true;
+      this.sidebarSwipeHandled = true;
+      this.resetSidebarTouchTracking();
+      try { event.preventDefault(); } catch {}
+      this.cdr.detectChanges();
+    }
+  }
+
+  onSidebarTouchEnd() {
+    this.resetSidebarTouchTracking();
   }
 
   private updateThreadSettingsSelectMode() {
@@ -888,6 +949,14 @@ export class AiFullpageComponent implements OnInit, OnDestroy, AfterViewInit {
       this.threadSettingsUseNative = window.innerWidth <= 768;
     } catch {
       this.threadSettingsUseNative = false;
+    }
+  }
+
+  private updateSidebarAgentSelectMode() {
+    try {
+      this.sidebarAgentUseNative = window.innerWidth <= 1023;
+    } catch {
+      this.sidebarAgentUseNative = false;
     }
   }
 
@@ -1142,6 +1211,12 @@ export class AiFullpageComponent implements OnInit, OnDestroy, AfterViewInit {
       if (att.previewUrl) URL.revokeObjectURL(att.previewUrl);
     }
     this.centerPendingAttachments = [];
+  }
+
+  private resetSidebarTouchTracking() {
+    this.sidebarTouchStartX = null;
+    this.sidebarTouchStartY = null;
+    this.sidebarSwipeHandled = false;
   }
 
   async selectThread(thread: AiThread) {

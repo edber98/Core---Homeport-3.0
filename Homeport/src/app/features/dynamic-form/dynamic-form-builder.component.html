@@ -597,9 +597,10 @@
 </nz-drawer>
 
 <nz-drawer [nzVisible]="rightDrawer" (nzOnClose)="onRightDrawerClose()" nzPlacement="right" [nzWidth]="360"
-  [nzBodyStyle]="{padding:'0'}" [nzClosable]="false" [nzMaskClosable]="true" nzWrapClassName="ios-safe-drawer">
+  [nzBodyStyle]="{ padding: '0', overflowY: 'auto', overflowX: 'hidden', WebkitOverflowScrolling: 'touch' }"
+  [nzClosable]="false" [nzMaskClosable]="true" nzWrapClassName="ios-safe-drawer ios-safe-drawer-right">
   <ng-container *nzDrawerContent>
-    <div class="drawer-swipe-zone"
+    <div class="drawer-swipe-zone drawer-swipe-zone--right"
       (touchstart)="onDrawerTouchStart($event, 'right')"
       (touchmove)="onDrawerTouchMove($event, 'right')"
       (touchend)="onDrawerTouchEnd('right')"
