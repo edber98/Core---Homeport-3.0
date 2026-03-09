@@ -177,7 +177,7 @@ import { DynamicForm } from '../../modules/dynamic-form/dynamic-form';
       border: 1px solid var(--card-border);
       border-radius: 14px;
       padding: 10px 12px;
-      box-shadow: 0 6px 20px rgba(15, 23, 42, 0.05);
+      box-shadow: none;
     }
     .page-header .left { display:flex; align-items:left; gap:0px; min-width: 0; }
     .icon-btn.back {
@@ -227,7 +227,7 @@ import { DynamicForm } from '../../modules/dynamic-form/dynamic-form';
       border-radius: 14px;
       padding: 14px;
       min-width: 0;
-      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.04);
+      box-shadow: none;
     }
     .panel-title {
       font-weight: 700;
@@ -334,7 +334,7 @@ import { DynamicForm } from '../../modules/dynamic-form/dynamic-form';
       padding: 10px;
       width: min(100%, 280px);
       margin: 2px auto 8px;
-      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08);
+      box-shadow: none;
     }
     .node-card .header { display:flex; align-items:center; gap:8px; margin-bottom: 0; }
     .node-card .icon { width: 24px; height: 24px; display:inline-flex; align-items:center; justify-content:center; }
@@ -360,7 +360,7 @@ import { DynamicForm } from '../../modules/dynamic-form/dynamic-form';
       background:#fff;
       border:1px solid #e6ebf2;
       border-radius: 12px;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.8);
+      box-shadow: none;
       padding:12px;
     }
     @media (max-width: 640px) {

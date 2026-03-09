@@ -7,7 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { Subscription } from 'rxjs';
-import { auditTime } from 'rxjs/operators';
+import { auditTime, finalize, map, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'node-template-list',
@@ -31,10 +31,9 @@ import { auditTime } from 'rxjs/operators';
           </button>
         </div>
       </div>
-    <div class="loading" *ngIf="loading">
-      <div class="skeleton-grid">
-        <div class="skeleton-card" *ngFor="let _ of [1,2,3,4,5,6]"></div>
-      </div>
+    <div class="loading" *ngIf="loading" role="status" aria-live="polite">
+      <span class="loading-spinner" aria-hidden="true"></span>
+      <span class="loading-text">Chargement des templates…</span>
     </div>
     <div class="error" *ngIf="!loading && error">{{ error }}</div>
       <div class="empty" *ngIf="!loading && !error && filtered.length===0">Aucun élément trouvé.</div>
@@ -94,11 +93,10 @@ import { auditTime } from 'rxjs/operators';
       .actions .with-text { display:none; }
       .actions .primary.icon-only { display:inline-flex; }
     }
-    .loading .skeleton-grid { display:grid; gap:16px; grid-template-columns: 1fr; }
-    @media (min-width: 640px) { .loading .skeleton-grid { grid-template-columns: repeat(2, 1fr); } }
-    .skeleton-card { height: 96px; border-radius: 14px; background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%); border: 1px solid #ececec; position: relative; overflow: hidden; }
-    .skeleton-card:after { content:''; position:absolute; inset:0; transform: translateX(-100%); background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(0,0,0,0.05) 50%, rgba(255,255,255,0) 100%); animation: shimmer 1.2s infinite; }
-    @keyframes shimmer { 100% { transform: translateX(100%); } }
+    .loading { min-height: 200px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; color:#64748b; }
+    .loading-spinner { width:24px; height:24px; border-radius:50%; border:3px solid #dbe4ef; border-top-color:#1677ff; animation: list-spin .75s linear infinite; }
+    .loading-text { font-size: 12px; font-weight: 500; color:#475569; }
+    @keyframes list-spin { to { transform: rotate(360deg); } }
     .error { color:#b42318; background:#fee4e2; border:1px solid #fecaca; padding:10px 12px; border-radius:10px; display:inline-block; }
     .grid { display:grid; gap:16px; grid-template-columns: 1fr; min-width: 0; }
     @media (min-width: 640px) { .grid { grid-template-columns: repeat(2, 1fr); } }
@@ -130,6 +128,8 @@ export class NodeTemplateListComponent implements OnInit, OnDestroy {
   error: string | null = null;
   appsMap = new Map<string, AppProvider>();
   q = '';
+  private loadSub?: Subscription;
+  private loadTicket = 0;
   get filtered() {
     const s = (this.q || '').trim().toLowerCase();
     if (!s) return this.templates;
@@ -168,22 +168,48 @@ export class NodeTemplateListComponent implements OnInit, OnDestroy {
     this.catalog.listApps().subscribe(list => { (list||[]).forEach(a => this.appsMap.set(a.id, a)); });
     try { this.changesSub = this.acl.changes$.pipe(auditTime(50)).subscribe(() => this.load()); } catch {}
   }
-  ngOnDestroy(): void { try { this.changesSub?.unsubscribe(); } catch {} }
+  ngOnDestroy(): void {
+    try { this.changesSub?.unsubscribe(); } catch {}
+    try { this.loadSub?.unsubscribe(); } catch {}
+  }
 
   load() {
-    this.loading = true; this.error = null;
-    this.catalog.listNodeTemplates().subscribe({
-      next: list => { this.zone.run(() => {
-        const all = list || [];
-        const ws = this.acl.currentWorkspaceId();
-        this.acl.listAllowedTemplates(ws).subscribe(ids => {
-          const allow = Array.isArray(ids) ? ids : [];
-          this.templates = allow.length === 0 ? [] : all.filter(t => allow.includes((t as any).id));
+    const ticket = ++this.loadTicket;
+    this.loading = true;
+    this.error = null;
+    const ws = this.acl.currentWorkspaceId();
+    try { this.loadSub?.unsubscribe(); } catch {}
+
+    // ACL can be empty during app bootstrap; keep loading until context is ready.
+    if (!ws) return;
+
+    this.loadSub = this.catalog.listNodeTemplates().pipe(
+      switchMap((list) => this.acl.listAllowedTemplates(ws).pipe(
+        map((ids) => ({ list: list || [], ids: Array.isArray(ids) ? ids : [] }))
+      )),
+      finalize(() => {
+        if (ticket !== this.loadTicket) return;
+        this.zone.run(() => {
+          this.loading = false;
+          setTimeout(() => { try { this.cdr.detectChanges(); } catch {} }, 0);
+        });
+      })
+    ).subscribe({
+      next: ({ list, ids }) => {
+        if (ticket !== this.loadTicket) return;
+        this.zone.run(() => {
+          const allow = new Set(ids);
+          this.templates = allow.size === 0 ? [] : list.filter(t => allow.has((t as any).id));
           try { this.cdr.detectChanges(); } catch {}
         });
-      }); },
-      error: () => { this.zone.run(() => { this.error = 'Impossible de charger les templates.'; }); },
-      complete: () => { this.zone.run(() => { this.loading = false; setTimeout(() => { try { this.cdr.detectChanges(); } catch {} }, 0); }); }
+      },
+      error: () => {
+        if (ticket !== this.loadTicket) return;
+        this.zone.run(() => {
+          this.templates = [];
+          this.error = 'Impossible de charger les templates.';
+        });
+      }
     });
   }
   fgColor(bg?: string|null): string {

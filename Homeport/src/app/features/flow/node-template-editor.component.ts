@@ -44,7 +44,7 @@ import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
     </div>
 
     <form [formGroup]="form" class="form" nz-form nzLayout="vertical">
-      <div class="grid cols-2">
+      <div class="grid cols-2 section-card">
         <nz-form-item>
           <nz-form-label>Nom</nz-form-label>
           <nz-form-control><input nz-input formControlName="name" placeholder="Ex: SendMail"/></nz-form-control>
@@ -157,7 +157,7 @@ import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
       </div>
 
       <!-- Function-specific options -->
-      <div class="grid cols-2" *ngIf="form.get('type')?.value==='function'">
+      <div class="grid cols-2 section-card" *ngIf="form.get('type')?.value==='function'">
         <div>
           <div class="sub-header">
             <div class="card-title left"><span class="t">Options (function)</span><span class="s">Sorties, erreurs, identifiants</span></div>
@@ -246,7 +246,7 @@ import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
       <div class="ins-section-header" *ngIf="form.get('type')?.value!=='condition'">
         <div class="card-title"><span class="t">Handles v2</span><span class="s">Entrées / Sorties typées</span></div>
       </div>
-      <div class="grid cols-1" *ngIf="form.get('type')?.value!=='condition'">
+      <div class="grid cols-1 section-card" *ngIf="form.get('type')?.value!=='condition'">
         <div class="full-line">
           <div class="sub-header"><div class="card-title left"><span class="t">Entrées</span><span class="s">inputHandles</span></div></div>
           <div class="outputs">
@@ -339,7 +339,7 @@ import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
       <div class="ins-section-header" *ngIf="form.get('type')?.value!=='condition'">
         <div class="card-title"><span class="t">Linked Handles</span><span class="s">Cibles typées (ex: Tools, Memory)</span></div>
       </div>
-      <div class="grid cols-1" *ngIf="form.get('type')?.value!=='condition'">
+      <div class="grid cols-1 section-card" *ngIf="form.get('type')?.value!=='condition'">
         <div>
           <div class="outputs">
             <div class="row" *ngFor="let ctrl of linkedHandles.controls; let i=index" [formGroup]="ctrl">
@@ -369,7 +369,7 @@ import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
       <div class="ins-section-header" *ngIf="form.get('type')?.value==='condition'">
         <div class="card-title"><span class="t">Options (condition)</span><span class="s">Champ des branchements</span></div>
       </div>
-      <div class="grid cols-2" *ngIf="form.get('type')?.value==='condition'">
+      <div class="grid cols-2 section-card" *ngIf="form.get('type')?.value==='condition'">
         <nz-form-item class="span-2">
           <nz-form-label nzTooltipTitle="Champ du tableau dans args qui contient les items (ex: items)">output_array_field</nz-form-label>
           <nz-form-control><input nz-input formControlName="output_array_field" placeholder="items"/></nz-form-control>
@@ -380,32 +380,34 @@ import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
       <div class="ins-section-header args">
         <div class="card-title"><span class="t">Arguments</span><span class="s">Configuration spécifique</span></div>
       </div>
-      <div class="args-controls">
-        <label nz-checkbox formControlName="fb_preset_tpl" nz-tooltip="Vertical + colonnes 24 + expressions activées par défaut">Appliquer preset (Form Builder)</label>
-        <label nz-checkbox formControlName="show_args_json" nz-tooltip="Afficher/masquer l’éditeur JSON">Afficher JSON (Monaco)</label>
-        <span class="spacer"></span>
-        <button nz-button type="button" class="apple-btn" (click)="openFormBuilderRoute(); $event.preventDefault(); $event.stopPropagation();"><i nz-icon nzType="form"></i><span class="label">Form Builder…</span></button>
-      </div>
-      <div class="args-row" [class.json-visible]="form.get('show_args_json')?.value === true">
-        <div class="preview-col">
-          <div class="dialog-preview">
-            <div class="dialog-box">
-              <ng-container *ngIf="argsReady; else argsLoadingTpl">
-                <ng-container *ngIf="isFormSchema(argsObj); else invalidSchema">
-                  <app-dynamic-form [schema]="argsObj" [value]="{}" [forceBp]="'xs'"></app-dynamic-form>
+      <div class="section-card">
+        <div class="args-controls">
+          <label nz-checkbox formControlName="fb_preset_tpl" nz-tooltip="Vertical + colonnes 24 + expressions activées par défaut">Appliquer preset (Form Builder)</label>
+          <label nz-checkbox formControlName="show_args_json" nz-tooltip="Afficher/masquer l’éditeur JSON">Afficher JSON (Monaco)</label>
+          <span class="spacer"></span>
+          <button nz-button type="button" class="apple-btn" (click)="openFormBuilderRoute(); $event.preventDefault(); $event.stopPropagation();"><i nz-icon nzType="form"></i><span class="label">Form Builder…</span></button>
+        </div>
+        <div class="args-row" [class.json-visible]="form.get('show_args_json')?.value === true">
+          <div class="preview-col">
+            <div class="dialog-preview">
+              <div class="dialog-box">
+                <ng-container *ngIf="argsReady; else argsLoadingTpl">
+                  <ng-container *ngIf="isFormSchema(argsObj); else invalidSchema">
+                    <app-dynamic-form [schema]="argsObj" [value]="{}" [forceBp]="'xs'"></app-dynamic-form>
+                  </ng-container>
+                  <ng-template #invalidSchema>
+                    <div class="schema-hint">Le JSON ne ressemble pas à un schéma de formulaire (fields/steps). Corrigez ou utilisez le Form Builder.</div>
+                  </ng-template>
                 </ng-container>
-                <ng-template #invalidSchema>
-                  <div class="schema-hint">Le JSON ne ressemble pas à un schéma de formulaire (fields/steps). Corrigez ou utilisez le Form Builder.</div>
+                <ng-template #argsLoadingTpl>
+                  <div class="schema-loading">Chargement…</div>
                 </ng-template>
-              </ng-container>
-              <ng-template #argsLoadingTpl>
-                <div class="schema-loading">Chargement…</div>
-              </ng-template>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="json-col" *ngIf="form.get('show_args_json')?.value">
-          <monaco-json-editor class="json" [value]="argsJson" (valueChange)="onArgsChange($event)" [height]="220"></monaco-json-editor>
+          <div class="json-col" *ngIf="form.get('show_args_json')?.value">
+            <monaco-json-editor class="json" [value]="argsJson" (valueChange)="onArgsChange($event)" [height]="220"></monaco-json-editor>
+          </div>
         </div>
       </div>
     </form>
@@ -413,34 +415,150 @@ import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
   </div>
   `,
   styles: [`
-    .tpl-editor { padding: 12px; max-width: 1080px; margin: 0 auto; }
-    .header { display:flex; align-items:center; justify-content:space-between; margin-bottom: 12px; }
-    .header .left { display:flex; align-items:left; gap:0px; }
-    .header .actions { display:flex; gap:8px; }
-    .card-title, .ts { display:flex; flex-direction:column; align-items:flex-start; line-height:1.2; }
+    .tpl-editor {
+      --card-bg: #ffffff;
+      --card-border: #e6ebf2;
+      --ink: #0f172a;
+      --muted: #64748b;
+      padding: 14px;
+      width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+      max-width: 1080px;
+      margin: 0 auto;
+    }
+    .header {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+      margin-bottom: 14px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 10px 12px;
+      box-shadow: none;
+    }
+    .header .left { display:flex; align-items:flex-start; gap:2px; min-width:0; flex:1 1 auto; }
+    .header .actions { display:flex; gap:8px; flex:0 0 auto; }
+    .card-title, .ts { display:flex; flex-direction:column; align-items:flex-start; line-height:1.2; min-width: 0; }
     .card-title.left { align-items:flex-start; }
-    .card-title .t { font-weight:600; font-size:14px; }
-    .card-title .s { font-size:12px; color:#64748b; }
-    .icon-btn.back { width:32px; height:32px; display:inline-flex; align-items:center; justify-content:center; border:0; background:transparent; border-radius:8px; cursor:pointer; }
-    .icon-btn.back:hover { background:#f3f4f6; }
-    .icon-ghost { border:0; background:transparent; padding:6px; border-radius:8px; display:inline-flex; align-items:center; justify-content:center; color:#111; cursor:pointer; }
+    .card-title .t { font-weight:700; font-size:14px; color: var(--ink); }
+    .card-title .s { font-size:12px; color:var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+    .icon-btn.back {
+      width:32px;
+      height:32px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      border:0;
+      background:transparent;
+      border-radius:8px;
+      cursor:pointer;
+    }
+    .icon-btn.back:hover { background:#f1f5f9; }
+    .icon-ghost {
+      width:34px;
+      height:34px;
+      border:1px solid #cfe0ff;
+      background:#eaf2ff;
+      padding:0;
+      border-radius:10px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      color:#0b5ed7;
+      cursor:pointer;
+    }
     .icon-ghost[disabled] { opacity:.5; cursor:not-allowed; }
-    .icon-ghost:hover { background:#f5f5f5; }
-    .ins-section-header { display:flex; justify-content:center; padding:6px 0 8px; margin:12px 0 8px; border-bottom:1px solid #E2E1E4; }
-    .ins-section-header.args { margin-top: 18px; }
-    .sub-header { display:flex; align-items:flex-end; padding:6px 0 8px; margin:6px 0 8px; border-bottom:1px solid #E2E1E4; }
-    .form { display:block; }
-    .grid { display:grid; gap:8px; }
+    .icon-ghost:hover { background:#dce9ff; }
+    @media (max-width: 640px) {
+      .tpl-editor { padding: 10px; }
+      .header { align-items:flex-start; }
+      .header .actions { gap:6px; }
+    }
+
+    .form { display:flex; flex-direction:column; gap:14px; min-width:0; }
+    .grid { display:grid; gap:8px; width:100%; min-width:0; }
     .grid.cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .grid.cols-1 { grid-template-columns: 1fr; }
     .grid .span-2 { grid-column: span 2; }
     .full-line { grid-column: 1 / -1; }
-    @media (max-width: 960px) { .grid.cols-2 { grid-template-columns: 1fr; } }
-    .outputs { display:flex; flex-direction:column; gap:10px; }
-    .outputs .row { display:block; width:100%; min-width:0; padding:10px 12px; border-radius:8px; border: 0 !important; background: transparent !important; box-shadow: none !important; transition: none !important; }
-    .outputs .row:hover { background: transparent !important; }
+    @media (max-width: 960px) {
+      .grid.cols-2 { grid-template-columns: 1fr; }
+      .grid .span-2 { grid-column: span 1; }
+    }
+
+    .section-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 14px;
+      min-width: 0;
+      box-shadow: none;
+    }
+    .ins-section-header {
+      display:flex;
+      justify-content:center;
+      padding:2px 0;
+      margin:2px 0 -2px;
+    }
+    .ins-section-header.args { margin-top: 2px; }
+    .ins-section-header .card-title .t {
+      font-size: 12px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: #475569;
+    }
+    .ins-section-header .card-title .s { font-size: 11px; }
+    .sub-header { display:flex; align-items:flex-end; padding:0 0 6px; margin:2px 0 8px; border-bottom:1px solid #e6ebf2; }
+
+    :host ::ng-deep .section-card .ant-form-item { margin-bottom: 8px; }
+    :host ::ng-deep .section-card .ant-form-item-label > label { font-size: 12px; font-weight: 600; color: #334155; }
+    :host ::ng-deep .section-card .ant-input,
+    :host ::ng-deep .section-card .ant-select-selector,
+    :host ::ng-deep .section-card .ant-input-number,
+    :host ::ng-deep .section-card .ant-input-number-input-wrap {
+      background:#fff !important;
+      border-color:#d7e2f1 !important;
+      border-radius:10px !important;
+    }
+    :host ::ng-deep .section-card .ant-input:hover,
+    :host ::ng-deep .section-card .ant-select-selector:hover {
+      border-color:#c1d2ed !important;
+    }
+    :host ::ng-deep .section-card .ant-input:focus,
+    :host ::ng-deep .section-card .ant-select-focused .ant-select-selector {
+      border-color:#1677ff !important;
+      box-shadow: 0 0 0 2px rgba(22,119,255,0.16) !important;
+    }
+
+    .outputs { display:flex; flex-direction:column; gap:8px; }
+    .outputs .row {
+      display:block;
+      width:100%;
+      min-width:0;
+      padding:10px 12px;
+      border-radius:12px;
+      border: 1px solid #e8eef8 !important;
+      background: #f8fafc !important;
+      box-shadow: none !important;
+      transition: border-color .16s ease, background-color .16s ease;
+    }
+    .outputs .row:hover {
+      border-color:#d9e5f7 !important;
+      background:#f6f9ff !important;
+    }
     .outputs .row .row-top { display:flex; gap:10px; align-items:center; width:100%; min-width:0; }
-    .outputs .row .row-fields { display:grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap:10px; align-items:center; flex:1; min-width:0; width:100%; }
+    .outputs .row .row-fields {
+      display:grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap:10px;
+      align-items:center;
+      flex:1;
+      min-width:0;
+      width:100%;
+    }
     .outputs .row .row-fields > * { min-width:0; width:100%; }
     .outputs .row .row-actions { display:flex; gap:8px; align-items:center; flex:0 0 auto; }
     :host ::ng-deep .outputs .row .row-fields .ant-select { width:100%; min-width:0; }
@@ -450,14 +568,16 @@ import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
       .outputs .row .row-actions { width:100%; justify-content:flex-end; }
     }
     @media (max-width: 768px) {
+      .outputs .row { padding:10px; }
       .outputs .row .row-fields { grid-template-columns: 1fr; }
       .outputs .row .row-actions { justify-content:flex-start; }
     }
+
     .wf-native-select {
       width: 100%;
-      min-height: 32px;
-      border: 1px solid #d9e4ff;
-      border-radius: 8px;
+      min-height: 34px;
+      border: 1px solid #d7e2f1;
+      border-radius: 10px;
       background: #ffffff;
       color: #111827;
       font-size: 12px;
@@ -467,45 +587,55 @@ import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
       appearance: auto;
       -webkit-appearance: menulist;
     }
-    .wf-native-select:hover { border-color: #d1d5db; }
+    .wf-native-select:hover { border-color: #c1d2ed; }
     .wf-native-select:focus {
       border-color: #1677ff;
-      box-shadow: 0 0 0 2px rgba(22,119,255,0.18);
+      box-shadow: 0 0 0 2px rgba(22,119,255,0.16);
     }
     .wf-native-select.wf-native-select-multi {
-      min-height: 92px;
+      min-height: 96px;
       padding: 6px 10px;
       -webkit-appearance: listbox;
       appearance: listbox;
     }
-    .out-row-preview { margin-top: 6px; }
+
+    .out-row-preview { margin-top: 8px; }
     .outputs .drag { cursor: grab; color:#94a3b8; user-select:none; padding:0 4px; }
-    /* Drag animations */
     :host ::ng-deep .cdk-drag-animating { transition: transform 180ms cubic-bezier(0.2, 0, 0, 1); }
     :host ::ng-deep .cdk-drag-preview { box-shadow: 0 10px 24px rgba(0,0,0,0.18); border-radius: 10px; }
     :host ::ng-deep .cdk-drag-placeholder { opacity: .35; border:1px dashed #cbd5e1; border-radius:8px; }
-    /* Buttons hover/animation */
+
     .apple-btn { transition: background 160ms ease; }
     .apple-btn:hover { background: radial-gradient(100% 100% at 100% 0%, #f5f7ff 0%, #eaeefc 100%); }
-    /* Apply gradient to all NZ buttons in this view */
     :host ::ng-deep button[nz-button], :host ::ng-deep .ant-btn { transition: background 160ms ease; }
     :host ::ng-deep button[nz-button]:hover, :host ::ng-deep .ant-btn:hover { background: radial-gradient(100% 100% at 100% 0%, #f5f7ff 0%, #eaeefc 100%); }
-    .args-controls { display:flex; align-items:center; gap:12px; margin: 8px 0 10px; flex-wrap: wrap; }
+
+    .args-controls { display:flex; align-items:center; gap:10px; margin: 0 0 8px; flex-wrap: wrap; }
     .args-controls .spacer { flex: 1 1 auto; }
-    .args-row { display:grid; grid-template-columns: 1fr auto; gap:12px; align-items:flex-start; }
+    .args-row { display:grid; grid-template-columns: 1fr auto; gap:10px; align-items:flex-start; }
     .args-row.json-visible { grid-template-columns: 1fr 1fr; }
     .args-row .preview-col { min-width: 0; }
     .args-row .json-col { min-width: 0; }
     .args-row .json { width: 100%; max-width: 100%; }
     .args-row .actions { display:flex; flex-direction:column; gap:8px; min-width: 220px; }
-    /* Simulated dialog like flow-builder */
     .dialog-preview { display:flex; justify-content:center; padding: 6px 0; }
-    .dialog-box { max-width: 400px; width: 100%; background:#fff; border-right:1px solid #e5e7eb; border-left:1px solid #e5e7eb; padding:12px; }
+    .dialog-box {
+      max-width: 460px;
+      width: 100%;
+      background:#fff;
+      border:1px solid #e6ebf2;
+      border-radius: 12px;
+      box-shadow: none;
+      padding:12px;
+    }
     .schema-loading { color:#6b7280; font-size: 12px; padding: 8px 0; }
     .schema-hint { color:#6b7280; font-size: 12px; padding: 8px 0; }
     .json-visible .dialog-box { max-width: 100%; }
-    @media (max-width: 1024px) {
-      .args-row { grid-template-columns: 1fr; }
+    @media (max-width: 1024px) { .args-row { grid-template-columns: 1fr; } }
+    @media (max-width: 640px) {
+      .section-card { padding: 12px; }
+      .args-controls .spacer { display:none; }
+      .args-controls { align-items:flex-start; gap:10px; }
     }
     .fb-drawer { display:flex; flex-direction:column; height:100%; }
     .fb-header { display:flex; align-items:center; justify-content:space-between; padding:8px 12px; border-bottom:1px solid #ececec; }
