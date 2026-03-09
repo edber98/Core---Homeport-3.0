@@ -78,6 +78,35 @@
 .qb-rule nz-select[ng-reflect-nz-mode], .qb-rule nz-select { flex: 1 1 0; min-width: 0; }
 .qb-rule .op { width: 80px; flex: 0 0 80px; }
 .qb-rule .val { flex: 1 1 0; min-width: 0; }
+.qb-native-select {
+  width: 100%;
+  height: 32px;
+  border: 1px solid #d9e4ff;
+  border-radius: 8px;
+  padding: 0 26px 0 10px;
+  font-size: 12px;
+  background: #f3f7ff;
+  color: #0f172a;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image:
+    linear-gradient(45deg, transparent 50%, #64748b 50%),
+    linear-gradient(135deg, #64748b 50%, transparent 50%);
+  background-position:
+    calc(100% - 12px) calc(50% - 2px),
+    calc(100% - 7px) calc(50% - 2px);
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+}
+.qb-native-select:hover { border-color: #c7dbff; }
+.qb-native-select:focus {
+  border-color: #1677ff;
+  box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.15);
+}
+.qb-rule .qb-native-field { flex: 1 1 0; min-width: 0; }
+.qb-rule .qb-native-op { width: 80px; flex: 0 0 80px; }
 :host ::ng-deep .condition-builder-modal .qb-rule .ant-input,
 :host ::ng-deep .condition-builder-modal .qb-rule .ant-select-selector {
   background: #f3f7ff;

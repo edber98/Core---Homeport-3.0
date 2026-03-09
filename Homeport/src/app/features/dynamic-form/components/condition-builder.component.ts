@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormArray, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
@@ -18,6 +18,15 @@ import { NzDividerModule } from 'ng-zorro-antd/divider';
 export class ConditionBuilderComponent {
   @Input({ required: true }) group!: FormGroup; // conditionForm { logic, items[] }
   @Input() inputFieldKeys: string[] = [];
+  isMobileOrTablet = (typeof window !== 'undefined') ? window.innerWidth <= 1280 : false;
+  readonly operatorOptions = [
+    { value: '==', label: '==' },
+    { value: '!=', label: '!=' },
+    { value: '>', label: '>' },
+    { value: '>=', label: '>=' },
+    { value: '<', label: '<' },
+    { value: '<=', label: '<=' },
+  ];
 
   @Output() addConditionRow = new EventEmitter<void>();
   @Output() addConditionGroup = new EventEmitter<void>();
@@ -40,5 +49,10 @@ export class ConditionBuilderComponent {
   onChangeKind(i: number, v: any) {
     const kind = (v as 'rule'|'group');
     this.changeCondKind.emit({ index: i, kind });
+  }
+
+  @HostListener('window:resize')
+  onWindowResize() {
+    this.isMobileOrTablet = (typeof window !== 'undefined') ? window.innerWidth <= 1280 : this.isMobileOrTablet;
   }
 }
