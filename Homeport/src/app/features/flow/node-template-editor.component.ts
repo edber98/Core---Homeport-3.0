@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators, FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NzFormModule } from 'ng-zorro-antd/form';
@@ -52,21 +52,40 @@ import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
         <nz-form-item>
           <nz-form-label>Type</nz-form-label>
           <nz-form-control>
-            <nz-select formControlName="type" [nzShowSearch]="true" nzAllowClear>
-              <nz-option nzValue="function" nzLabel="function"></nz-option>
-              <nz-option nzValue="condition" nzLabel="condition"></nz-option>
-              <nz-option nzValue="start" nzLabel="start"></nz-option>
-              <nz-option nzValue="event" nzLabel="event"></nz-option>
-              <nz-option nzValue="endpoint" nzLabel="endpoint"></nz-option>
-              <nz-option nzValue="loop" nzLabel="loop"></nz-option>
-              <nz-option nzValue="end" nzLabel="end"></nz-option>
-              <nz-option nzValue="flow" nzLabel="flow"></nz-option>
-              <nz-option nzValue="agent" nzLabel="agent"></nz-option>
-              <nz-option nzValue="tool_ai" nzLabel="tool_ai"></nz-option>
-              <nz-option nzValue="memory" nzLabel="memory"></nz-option>
-              <nz-option nzValue="router" nzLabel="router"></nz-option>
-              <nz-option nzValue="choice" nzLabel="choice"></nz-option>
-            </nz-select>
+            <ng-container *ngIf="useNativeSelect; else tplTypeDesktop">
+              <select class="wf-native-select" formControlName="type">
+                <option value="function">function</option>
+                <option value="condition">condition</option>
+                <option value="start">start</option>
+                <option value="event">event</option>
+                <option value="endpoint">endpoint</option>
+                <option value="loop">loop</option>
+                <option value="end">end</option>
+                <option value="flow">flow</option>
+                <option value="agent">agent</option>
+                <option value="tool_ai">tool_ai</option>
+                <option value="memory">memory</option>
+                <option value="router">router</option>
+                <option value="choice">choice</option>
+              </select>
+            </ng-container>
+            <ng-template #tplTypeDesktop>
+              <nz-select formControlName="type" [nzShowSearch]="true" nzAllowClear>
+                <nz-option nzValue="function" nzLabel="function"></nz-option>
+                <nz-option nzValue="condition" nzLabel="condition"></nz-option>
+                <nz-option nzValue="start" nzLabel="start"></nz-option>
+                <nz-option nzValue="event" nzLabel="event"></nz-option>
+                <nz-option nzValue="endpoint" nzLabel="endpoint"></nz-option>
+                <nz-option nzValue="loop" nzLabel="loop"></nz-option>
+                <nz-option nzValue="end" nzLabel="end"></nz-option>
+                <nz-option nzValue="flow" nzLabel="flow"></nz-option>
+                <nz-option nzValue="agent" nzLabel="agent"></nz-option>
+                <nz-option nzValue="tool_ai" nzLabel="tool_ai"></nz-option>
+                <nz-option nzValue="memory" nzLabel="memory"></nz-option>
+                <nz-option nzValue="router" nzLabel="router"></nz-option>
+                <nz-option nzValue="choice" nzLabel="choice"></nz-option>
+              </nz-select>
+            </ng-template>
           </nz-form-control>
         </nz-form-item>
         <nz-form-item>
@@ -80,9 +99,17 @@ import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
         <nz-form-item>
           <nz-form-label>App / Logiciel</nz-form-label>
           <nz-form-control>
-            <nz-select formControlName="appId" nzAllowClear nzPlaceHolder="Ex: gmail">
-              <nz-option *ngFor="let a of apps" [nzValue]="a.id" [nzLabel]="a.title || a.name"></nz-option>
-            </nz-select>
+            <ng-container *ngIf="useNativeSelect; else appIdDesktop">
+              <select class="wf-native-select" formControlName="appId">
+                <option [ngValue]="null">Aucun</option>
+                <option *ngFor="let a of apps" [value]="a.id">{{ a.title || a.name }}</option>
+              </select>
+            </ng-container>
+            <ng-template #appIdDesktop>
+              <nz-select formControlName="appId" nzAllowClear nzPlaceHolder="Ex: gmail">
+                <nz-option *ngFor="let a of apps" [nzValue]="a.id" [nzLabel]="a.title || a.name"></nz-option>
+              </nz-select>
+            </ng-template>
           </nz-form-control>
         </nz-form-item>
         <nz-form-item>
@@ -138,11 +165,20 @@ import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
           <nz-form-item>
             <nz-form-label nzTooltipTitle="Classique = sortie unique, Multi-sortie = branches dynamiques par args, Schéma dynamique = output déterminé par un champ du formulaire">Sous-type</nz-form-label>
             <nz-form-control>
-              <nz-select formControlName="functionSubType">
-                <nz-option nzValue="classic" nzLabel="Classique"></nz-option>
-                <nz-option nzValue="multi_output" nzLabel="Multi-sortie (output_array_field)"></nz-option>
-                <nz-option nzValue="dynamic_schema" nzLabel="Schéma dynamique (output_schema_field)"></nz-option>
-              </nz-select>
+              <ng-container *ngIf="useNativeSelect; else functionSubTypeDesktop">
+                <select class="wf-native-select" formControlName="functionSubType">
+                  <option value="classic">Classique</option>
+                  <option value="multi_output">Multi-sortie (output_array_field)</option>
+                  <option value="dynamic_schema">Schéma dynamique (output_schema_field)</option>
+                </select>
+              </ng-container>
+              <ng-template #functionSubTypeDesktop>
+                <nz-select formControlName="functionSubType">
+                  <nz-option nzValue="classic" nzLabel="Classique"></nz-option>
+                  <nz-option nzValue="multi_output" nzLabel="Multi-sortie (output_array_field)"></nz-option>
+                  <nz-option nzValue="dynamic_schema" nzLabel="Schéma dynamique (output_schema_field)"></nz-option>
+                </nz-select>
+              </ng-template>
             </nz-form-control>
           </nz-form-item>
           <nz-form-item>
@@ -219,8 +255,22 @@ import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
                 <div class="row-fields">
                   <input nz-input formControlName="id" placeholder="id (ex: in, tools)"/>
                   <input nz-input formControlName="name" placeholder="Nom"/>
-                  <nz-select formControlName="type" [nzOptions]="knownTypeOptions" nzAllowClear nzShowSearch nz-tooltip [nzTooltipTitle]="'Type du handle: ' + (ctrl.value?.id || '')"></nz-select>
-                  <nz-select formControlName="accepts" nzMode="multiple" [nzOptions]="knownTypeOptions" nzPlaceHolder="Accepts…" nz-tooltip [nzTooltipTitle]="'Types acceptes pour: ' + (ctrl.value?.id || '')"></nz-select>
+                  <ng-container *ngIf="useNativeSelect; else inputHandleTypeDesktop">
+                    <select class="wf-native-select" formControlName="type" [attr.aria-label]="'Type du handle: ' + (ctrl.value?.id || '')">
+                      <option *ngFor="let opt of knownTypeOptions" [value]="opt.value">{{ opt.label }}</option>
+                    </select>
+                  </ng-container>
+                  <ng-template #inputHandleTypeDesktop>
+                    <nz-select formControlName="type" [nzOptions]="knownTypeOptions" nzAllowClear nzShowSearch nz-tooltip [nzTooltipTitle]="'Type du handle: ' + (ctrl.value?.id || '')"></nz-select>
+                  </ng-template>
+                  <ng-container *ngIf="useNativeSelect; else inputHandleAcceptsDesktop">
+                    <select class="wf-native-select wf-native-select-multi" formControlName="accepts" [attr.aria-label]="'Types acceptes pour: ' + (ctrl.value?.id || '')" multiple>
+                      <option *ngFor="let opt of knownTypeOptions" [value]="opt.value">{{ opt.label }}</option>
+                    </select>
+                  </ng-container>
+                  <ng-template #inputHandleAcceptsDesktop>
+                    <nz-select formControlName="accepts" nzMode="multiple" [nzOptions]="knownTypeOptions" nzPlaceHolder="Accepts…" nz-tooltip [nzTooltipTitle]="'Types acceptes pour: ' + (ctrl.value?.id || '')"></nz-select>
+                  </ng-template>
                   <label nz-checkbox formControlName="multiple" nz-tooltip="Autoriser plusieurs connexions entrantes vers ce handle">multiple</label>
                 </div>
                 <div class="row-actions">
@@ -239,7 +289,14 @@ import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
                 <div class="row-fields">
                   <input nz-input formControlName="id" placeholder="id (ex: ok, memory)"/>
                   <input nz-input formControlName="name" placeholder="Nom"/>
-                  <nz-select formControlName="type" [nzOptions]="knownTypeOptions" nzAllowClear nzShowSearch></nz-select>
+                  <ng-container *ngIf="useNativeSelect; else outputHandleTypeDesktop">
+                    <select class="wf-native-select" formControlName="type">
+                      <option *ngFor="let opt of knownTypeOptions" [value]="opt.value">{{ opt.label }}</option>
+                    </select>
+                  </ng-container>
+                  <ng-template #outputHandleTypeDesktop>
+                    <nz-select formControlName="type" [nzOptions]="knownTypeOptions" nzAllowClear nzShowSearch></nz-select>
+                  </ng-template>
                   <label nz-checkbox formControlName="multiple" nz-tooltip="Autoriser plusieurs connexions sortantes depuis ce handle">multiple</label>
                 </div>
                 <div class="row-actions">
@@ -290,7 +347,14 @@ import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
                 <div class="row-fields">
                   <input nz-input formControlName="id" placeholder="id (ex: tools)"/>
                   <input nz-input formControlName="name" placeholder="Nom"/>
-                  <nz-select formControlName="type" [nzOptions]="knownTypeOptions" nzAllowClear nzShowSearch></nz-select>
+                  <ng-container *ngIf="useNativeSelect; else linkedHandleTypeDesktop">
+                    <select class="wf-native-select" formControlName="type">
+                      <option *ngFor="let opt of knownTypeOptions" [value]="opt.value">{{ opt.label }}</option>
+                    </select>
+                  </ng-container>
+                  <ng-template #linkedHandleTypeDesktop>
+                    <nz-select formControlName="type" [nzOptions]="knownTypeOptions" nzAllowClear nzShowSearch></nz-select>
+                  </ng-template>
                   <label nz-checkbox formControlName="multiple" nz-tooltip="Autoriser plusieurs liens vers cette cible (link handle)">multiple</label>
                 </div>
                 <div class="row-actions"><button nz-button nzDanger (click)="removeLinkedHandle(i)" nz-tooltip="Supprimer"><i nz-icon nzType="delete"></i></button></div>
@@ -373,11 +437,47 @@ import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
     .full-line { grid-column: 1 / -1; }
     @media (max-width: 960px) { .grid.cols-2 { grid-template-columns: 1fr; } }
     .outputs { display:flex; flex-direction:column; gap:10px; }
-    .outputs .row { display:block; padding:10px 12px; border-radius:8px; border: 0 !important; background: transparent !important; box-shadow: none !important; transition: none !important; }
+    .outputs .row { display:block; width:100%; min-width:0; padding:10px 12px; border-radius:8px; border: 0 !important; background: transparent !important; box-shadow: none !important; transition: none !important; }
     .outputs .row:hover { background: transparent !important; }
-    .outputs .row .row-top { display:flex; gap:10px; align-items:center; }
-    .outputs .row .row-fields { display:grid; grid-template-columns: repeat(4, minmax(160px, 1fr)); gap:10px; align-items:center; flex:1; }
-    .outputs .row .row-actions { display:flex; gap:8px; align-items:center; }
+    .outputs .row .row-top { display:flex; gap:10px; align-items:center; width:100%; min-width:0; }
+    .outputs .row .row-fields { display:grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap:10px; align-items:center; flex:1; min-width:0; width:100%; }
+    .outputs .row .row-fields > * { min-width:0; width:100%; }
+    .outputs .row .row-actions { display:flex; gap:8px; align-items:center; flex:0 0 auto; }
+    :host ::ng-deep .outputs .row .row-fields .ant-select { width:100%; min-width:0; }
+    @media (max-width: 1280px) {
+      .outputs .row .row-top { flex-wrap: wrap; align-items:flex-start; }
+      .outputs .row .row-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .outputs .row .row-actions { width:100%; justify-content:flex-end; }
+    }
+    @media (max-width: 768px) {
+      .outputs .row .row-fields { grid-template-columns: 1fr; }
+      .outputs .row .row-actions { justify-content:flex-start; }
+    }
+    .wf-native-select {
+      width: 100%;
+      min-height: 32px;
+      border: 1px solid #d9e4ff;
+      border-radius: 8px;
+      background: #ffffff;
+      color: #111827;
+      font-size: 12px;
+      padding: 6px 30px 6px 10px;
+      outline: none;
+      box-sizing: border-box;
+      appearance: auto;
+      -webkit-appearance: menulist;
+    }
+    .wf-native-select:hover { border-color: #d1d5db; }
+    .wf-native-select:focus {
+      border-color: #1677ff;
+      box-shadow: 0 0 0 2px rgba(22,119,255,0.18);
+    }
+    .wf-native-select.wf-native-select-multi {
+      min-height: 92px;
+      padding: 6px 10px;
+      -webkit-appearance: listbox;
+      appearance: listbox;
+    }
     .out-row-preview { margin-top: 6px; }
     .outputs .drag { cursor: grab; color:#94a3b8; user-select:none; padding:0 4px; }
     /* Drag animations */
@@ -413,6 +513,7 @@ import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
 })
 export class NodeTemplateEditorComponent implements OnInit {
   form!: FormGroup;
+  useNativeSelect = false;
   saving = false;
   argsJson = '{\n  \n}';
   fbVisible = false;
@@ -446,7 +547,20 @@ export class NodeTemplateEditorComponent implements OnInit {
   ];
 
   apps: { id: string; name: string; title?: string }[] = [];
-  constructor(private fb: FormBuilder, private catalog: CatalogService, private route: ActivatedRoute, private router: Router, private modal: NzModalService) {}
+  constructor(private fb: FormBuilder, private catalog: CatalogService, private route: ActivatedRoute, private router: Router, private modal: NzModalService) {
+    this.updateSelectMode();
+  }
+
+  @HostListener('window:resize')
+  onWindowResize() { this.updateSelectMode(); }
+
+  private updateSelectMode() {
+    try {
+      this.useNativeSelect = window.innerWidth <= 1023;
+    } catch {
+      this.useNativeSelect = false;
+    }
+  }
 
   ngOnInit(): void {
     // Known data types used for typed handles

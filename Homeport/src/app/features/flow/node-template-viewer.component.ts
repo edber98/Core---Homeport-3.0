@@ -118,8 +118,8 @@ import { DynamicForm } from '../../modules/dynamic-form/dynamic-form';
       <div class="panel" *ngIf="view.type==='function'">
         <div class="panel-title">Function</div>
         <div class="kv">
-          <div><span class="k">authorize_catch_error</span><span class="v">{{ !!view.authorize_catch_error }}</span></div>
-          <div><span class="k">authorize_skip_error</span><span class="v">{{ !!view.authorize_skip_error }}</span></div>
+          <div class="kv-bool"><span class="k">authorize_catch_error</span><span class="v">{{ !!view.authorize_catch_error }}</span></div>
+          <div class="kv-bool"><span class="k">authorize_skip_error</span><span class="v">{{ !!view.authorize_skip_error }}</span></div>
         </div>
         <div class="panel-title" style="margin-top:8px;">Sorties</div>
         <div class="outputs readonly">
@@ -155,47 +155,188 @@ import { DynamicForm } from '../../modules/dynamic-form/dynamic-form';
   </div>
   `,
   styles: [`
-    .tpl-viewer { padding: 12px; max-width: 1080px; margin: 0 auto; }
-    .page-header { display:flex; align-items:center; justify-content:space-between; margin-bottom: 10px; }
-    .page-header .left { display:flex; align-items:left; gap:0px; }
-    .icon-btn.back { width:32px; height:32px; display:inline-flex; align-items:center; justify-content:center; border:0; background:transparent; border-radius:8px; cursor:pointer; }
-    .actions { display:flex; gap:8px; }
-    @media (max-width: 640px) { .apple-btn .label { display:none; } }
-    .card-title { display:flex; flex-direction:column; align-items:center; line-height:1.2; }
+    .tpl-viewer {
+      --card-bg: #ffffff;
+      --card-border: #e6ebf2;
+      --ink: #0f172a;
+      --muted: #64748b;
+      padding: 14px;
+      width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+      max-width: 1080px;
+      margin: 0 auto;
+    }
+    .page-header {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+      margin-bottom: 14px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 10px 12px;
+      box-shadow: 0 6px 20px rgba(15, 23, 42, 0.05);
+    }
+    .page-header .left { display:flex; align-items:left; gap:0px; min-width: 0; }
+    .icon-btn.back {
+      width:32px;
+      height:32px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      border:0;
+      background:transparent;
+      border-radius:8px;
+      cursor:pointer;
+    }
+    .icon-btn.back:hover { background: #f1f5f9; }
+    .actions { display:flex; gap:8px; flex-wrap: wrap; justify-content: flex-end; align-items: center; }
+    @media (max-width: 640px) {
+      .page-header { flex-direction: row; align-items: flex-start; }
+      .page-header .left { flex: 1 1 auto; min-width: 0; }
+      .actions { margin-left: auto; justify-content: flex-end; flex-wrap: nowrap; gap: 6px; }
+      .actions .apple-btn {
+        width: 34px;
+        height: 34px;
+        min-width: 34px;
+        padding: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .apple-btn .label { display:none; }
+    }
+    .card-title { display:flex; flex-direction:column; align-items:center; line-height:1.2; min-width: 0; }
     .card-title.left { align-items:flex-start; text-align:left; }
-    .card-title .t { font-weight:600; font-size:14px; }
-    .card-title .s { font-size:12px; color:#64748b; }
-    .grid { display:grid; gap:10px; }
+    .card-title .t { font-weight:700; font-size:14px; color: var(--ink); }
+    .card-title .s { font-size:12px; color:var(--muted); }
+
+    .grid { display:grid; gap:14px; width: 100%; min-width: 0; }
     .grid.cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .grid .span-2 { grid-column: span 2; }
-    @media (max-width: 960px) { .grid.cols-2 { grid-template-columns: 1fr; } }
-    .panel { background: transparent; border: none; border-radius: 0; padding: 6px 2px; }
-    .panel-title { font-weight:600; margin-bottom:8px; color:#6b7280; }
-    .out-tabs { display:flex; gap:6px; flex-wrap:wrap; margin: 6px 0; }
-    .out-tabs .tab { border:1px solid #e5e7eb; background:#fff; border-radius:8px; padding:4px 8px; cursor:pointer; }
-    .out-tabs .tab.active { background:#eef2ff; border-color:#c7d2fe; }
-    .panel-controls { display:flex; align-items:center; justify-content:flex-start; margin-bottom: 8px; }
-    .kv { display:flex; flex-direction:column; gap:6px; }
-    .kv .k { color:#6b7280; width:180px; display:inline-block; }
-    .kv .v { color:#111; }
+    @media (max-width: 960px) {
+      .grid.cols-2 { grid-template-columns: 1fr; }
+      .grid .span-2 { grid-column: span 1; }
+    }
+
+    .panel {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 14px;
+      min-width: 0;
+      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.04);
+    }
+    .panel-title {
+      font-weight: 700;
+      font-size: 12px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      color: #475569;
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    .panel-controls { display:flex; align-items:center; justify-content:flex-start; }
+
+    .kv { display:flex; flex-direction:column; gap:8px; }
+    .kv > div {
+      display:grid;
+      grid-template-columns: 180px minmax(0, 1fr);
+      gap: 10px;
+      align-items: start;
+      padding: 10px 12px;
+      border: 1px solid #edf1f6;
+      border-radius: 12px;
+      background: #f8fafc;
+    }
+    .kv .k {
+      color: var(--muted);
+      font-size: 11px;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      font-weight: 700;
+      display:inline-block;
+    }
+    .kv .v { color: var(--ink); min-width: 0; overflow-wrap: anywhere; }
     .kv .v.tags { display:inline-flex; gap:6px; flex-wrap: wrap; }
     .kv .v.app { display:inline-flex; align-items:center; gap:8px; }
     .kv .v.app .icon { width: 20px; height: 20px; border-radius:6px; display:inline-flex; align-items:center; justify-content:center; overflow:hidden; }
     .kv .v.app .icon img { width: 16px; height: 16px; object-fit: contain; }
-    .outputs { display:flex; flex-direction:column; gap:4px; }
-    .outputs.readonly .row { display:flex; align-items:center; gap:8px; padding:2px 0; }
+    @media (max-width: 640px) {
+      .kv > div {
+        grid-template-columns: 112px minmax(0, 1fr);
+        gap: 8px;
+      }
+      .kv > div.kv-bool {
+        grid-template-columns: minmax(0, 1fr) auto;
+      }
+      .kv > div.kv-bool .v {
+        justify-self: end;
+        text-align: right;
+        font-weight: 600;
+      }
+    }
+
+    .out-tabs { display:flex; gap:8px; flex-wrap:wrap; margin: 8px 0 4px; }
+    .out-tabs .tab {
+      border:1px solid #dbe3ee;
+      background:#fff;
+      border-radius:999px;
+      padding:5px 10px;
+      cursor:pointer;
+      color:#0f172a;
+      font-weight:600;
+      font-size:12px;
+    }
+    .out-tabs .tab.active {
+      background:#eaf2ff;
+      border-color:#bfd4ff;
+      color:#0b5ed7;
+    }
+
+    .outputs { display:flex; flex-direction:column; gap:6px; }
+    .outputs.readonly .row {
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding:7px 10px;
+      border-radius: 10px;
+      border: 1px solid #edf1f6;
+      background: #f8fafc;
+    }
     .outputs .idx { color:#64748b; font-variant-numeric: tabular-nums; min-width: 16px; text-align:right; }
     .outputs .arrow { color:#94a3b8; }
     .outputs .name { color:#111; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    .args { margin: 0; background:#f8fafc; color:#0f172a; padding:8px; border:none; border-radius: 0; max-height: 280px; overflow:auto; }
 
-    /* Preview styles cloned from flow-builder */
-    .preview-col { grid-column: span 2; margin-bottom: 8px; }
+    .args {
+      margin: 0;
+      background: #0b1220;
+      color: #dbe6ff;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid #1f2f46;
+      max-height: 320px;
+      overflow:auto;
+    }
+
+    .preview-col { grid-column: span 2; }
+    @media (max-width: 960px) { .preview-col { grid-column: span 1; } }
     @media (min-width: 960px) { .preview-col { grid-column: auto; } }
-    /* no preview toolbar in viewer */
-    .node-card { position: relative; background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 8px; width: 240px; box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
+    .node-card {
+      position: relative;
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 10px;
+      width: min(100%, 280px);
+      margin: 2px auto 8px;
+      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08);
+    }
     .node-card .header { display:flex; align-items:center; gap:8px; margin-bottom: 0; }
-    /* Preview icon sizing: slightly larger and centered */
     .node-card .icon { width: 24px; height: 24px; display:inline-flex; align-items:center; justify-content:center; }
     .node-card i.icon { font-size: 16px; line-height: 1; }
     .node-card .icon img { width: 20px; height: 20px; object-fit: contain; display:block; }
@@ -208,13 +349,24 @@ import { DynamicForm } from '../../modules/dynamic-form/dynamic-form';
     .node-card .outputs .out { display:flex; align-items:center; justify-content:center; width:16px; }
     .node-card .outputs .dot { width:8px; height:8px; border-radius:50%; background:#000; border:1px solid #fff; display:inline-block; box-shadow: 0 0 0 1px rgba(0,0,0,0.06); }
     .node-card .outputs .dot.error { background:#f759ab; }
-    /* Gradient hover on all buttons (no extra shadow/transform) */
+
     :host ::ng-deep button[nz-button], :host ::ng-deep .ant-btn { transition: background 160ms ease; }
     :host ::ng-deep button[nz-button]:hover, :host ::ng-deep .ant-btn:hover { background: radial-gradient(100% 100% at 100% 0%, #f5f7ff 0%, #eaeefc 100%); }
 
-    /* Simulate flow-builder node dialog sizing */
     .dialog-preview { display:flex; justify-content:center; padding: 6px 0; }
-    .dialog-box { max-width: 400px; width: 100%; background:#fff; border-right:1px solid #e5e7eb; border-left:1px solid #e5e7eb; padding:12px; }
+    .dialog-box {
+      max-width: 460px;
+      width: 100%;
+      background:#fff;
+      border:1px solid #e6ebf2;
+      border-radius: 12px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.8);
+      padding:12px;
+    }
+    @media (max-width: 640px) {
+      .tpl-viewer { padding: 10px; }
+      .panel { padding: 12px; }
+    }
   `]
 })
 export class NodeTemplateViewerComponent implements OnInit {
