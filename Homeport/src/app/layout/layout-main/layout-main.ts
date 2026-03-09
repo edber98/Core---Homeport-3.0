@@ -80,6 +80,11 @@ export class LayoutMain implements OnInit {
   innerWidth = typeof window !== 'undefined' ? window.innerWidth : 1200;
   siderCollapsed = false;
   private siderInitDone = false;
+  private drawerTouchStartX: number | null = null;
+  private drawerTouchStartY: number | null = null;
+  private drawerSwipeHandled = false;
+  private readonly drawerSwipeCloseThreshold = 56;
+  private readonly drawerSwipeMaxVerticalDelta = 44;
   showLaunch = false; // desktop center bar visibility (legacy)
   mobileSearchOpen = false; // responsive: shows center search bar
   // User & workspace switchers
@@ -185,13 +190,57 @@ export class LayoutMain implements OnInit {
     } catch {}
   }
 
-  openDrawer() { this.drawerVisible = true; }
-  closeDrawer() { this.drawerVisible = false; }
-  go(route?: string) {
+  openDrawer() {
+    this.drawerVisible = true;
+    this.resetDrawerTouchTracking();
+  }
+  closeDrawer() {
     this.drawerVisible = false;
+    this.resetDrawerTouchTracking();
+  }
+  go(route?: string) {
+    this.closeDrawer();
     if (route && typeof route === 'string') {
       this.router.navigateByUrl(route);
     }
+  }
+
+  onDrawerTouchStart(event: TouchEvent) {
+    if (this.showSider || !this.drawerVisible) return;
+    const touch = event.touches?.[0];
+    if (!touch) return;
+    this.drawerTouchStartX = touch.clientX;
+    this.drawerTouchStartY = touch.clientY;
+    this.drawerSwipeHandled = false;
+  }
+
+  onDrawerTouchMove(event: TouchEvent) {
+    if (this.showSider || !this.drawerVisible || this.drawerSwipeHandled) return;
+    if (this.drawerTouchStartX == null || this.drawerTouchStartY == null) return;
+    const touch = event.touches?.[0];
+    if (!touch) return;
+
+    const dx = touch.clientX - this.drawerTouchStartX;
+    const dy = touch.clientY - this.drawerTouchStartY;
+    const isLeftSwipe = dx <= -this.drawerSwipeCloseThreshold;
+    const isMostlyHorizontal = Math.abs(dx) > Math.abs(dy) && Math.abs(dy) <= this.drawerSwipeMaxVerticalDelta;
+
+    if (isLeftSwipe && isMostlyHorizontal) {
+      this.drawerSwipeHandled = true;
+      this.closeDrawer();
+      try { event.preventDefault(); } catch {}
+      try { this.cdr.detectChanges(); } catch {}
+    }
+  }
+
+  onDrawerTouchEnd() {
+    this.resetDrawerTouchTracking();
+  }
+
+  private resetDrawerTouchTracking() {
+    this.drawerTouchStartX = null;
+    this.drawerTouchStartY = null;
+    this.drawerSwipeHandled = false;
   }
 
   getActiveOptions(route?: string): { exact: boolean } {
