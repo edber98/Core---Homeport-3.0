@@ -28,13 +28,17 @@ import { DynamicForm } from '../../modules/dynamic-form/dynamic-form';
         </div>
         <div class="actions">
           <button nz-button (click)="cancel()">Annuler</button>
-          <button nz-button nzType="primary" [disabled]="form.invalid" (click)="save()">Enregistrer</button>
+          <button nz-button nzType="primary" class="primary-cta" [disabled]="form.invalid" (click)="save()">Enregistrer</button>
         </div>
       </div>
     </nz-modal>
   `,
   styles: [`
     .actions { display:flex; justify-content:flex-end; gap:8px; margin-top: 10px; }
+    .actions .primary-cta { background:#1677ff; border-color:#1677ff; color:#fff; box-shadow:none; }
+    .actions .primary-cta:hover:not([disabled]),
+    .actions .primary-cta:focus:not([disabled]) { background:#0f6ae6; border-color:#0f6ae6; color:#fff; }
+    .actions .primary-cta[disabled] { background:#f3f4f6; border-color:#e5e7eb; color:#9ca3af; }
   `]
 })
 export class CredentialEditDialogComponent implements OnChanges {

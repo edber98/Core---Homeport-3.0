@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, NgZone, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, NgZone, ChangeDetectorRef, HostListener } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzSelectModule } from 'ng-zorro-antd/select';
@@ -32,11 +32,19 @@ import { AuthTokenService } from '../../services/auth-token.service';
         <div class="row">
           <input [(ngModel)]="draftName" [placeholder]="useBackend ? 'Email utilisateur' : 'Nom utilisateur'" class="text"/>
           <input [(ngModel)]="draftPassword" placeholder="Mot de passe (optionnel)" class="text"/>
-          <nz-select [(ngModel)]="draftRole" class="select" nzPlaceHolder="Role">
-            <nz-option nzLabel="Admin" nzValue="admin"></nz-option>
-            <nz-option nzLabel="Member" nzValue="member"></nz-option>
-          </nz-select>
-          <nz-select [(ngModel)]="draftWorkspaces" class="select" nzMode="multiple" nzPlaceHolder="Workspaces" [nzDisabled]="draftRole==='admin'" [nzMaxTagCount]="2">
+          <ng-container *ngIf="useNativeRoleSelect; else draftRoleDesktop">
+            <select class="native-role-select" [(ngModel)]="draftRole">
+              <option value="admin">Admin</option>
+              <option value="member">Member</option>
+            </select>
+          </ng-container>
+          <ng-template #draftRoleDesktop>
+            <nz-select [(ngModel)]="draftRole" class="select" nzPlaceHolder="Role">
+              <nz-option nzLabel="Admin" nzValue="admin"></nz-option>
+              <nz-option nzLabel="Member" nzValue="member"></nz-option>
+            </nz-select>
+          </ng-template>
+          <nz-select [(ngModel)]="draftWorkspaces" class="select workspace-select" nzMode="multiple" nzPlaceHolder="Workspaces" [nzDisabled]="draftRole==='admin'" [nzMaxTagCount]="2">
             <nz-option *ngFor="let w of workspaces" [nzLabel]="w.name" [nzValue]="w.id"></nz-option>
           </nz-select>
           <button nz-button nzType="primary" class="primary" (click)="add()" [disabled]="!canAdd()">Ajouter</button>
@@ -59,11 +67,19 @@ import { AuthTokenService } from '../../services/auth-token.service';
             </div>
           </div>
           <div class="trailing">
-            <nz-select [(ngModel)]="u.role" (ngModelChange)="save(u)" class="select small" [nzDisabled]="!canEdit(u)">
-              <nz-option nzLabel="admin" nzValue="admin"></nz-option>
-              <nz-option nzLabel="member" nzValue="member"></nz-option>
-            </nz-select>
-            <nz-select [(ngModel)]="u.workspaces" (ngModelChange)="save(u)" class="select small" nzMode="multiple" [nzDisabled]="u.role==='admin' || !canEdit(u)" [nzMaxTagCount]="1">
+            <ng-container *ngIf="useNativeRoleSelect; else userRoleDesktop">
+              <select class="native-role-select small" [(ngModel)]="u.role" (ngModelChange)="save(u)" [disabled]="!canEdit(u)">
+                <option value="admin">admin</option>
+                <option value="member">member</option>
+              </select>
+            </ng-container>
+            <ng-template #userRoleDesktop>
+              <nz-select [(ngModel)]="u.role" (ngModelChange)="save(u)" class="select small" [nzDisabled]="!canEdit(u)">
+                <nz-option nzLabel="admin" nzValue="admin"></nz-option>
+                <nz-option nzLabel="member" nzValue="member"></nz-option>
+              </nz-select>
+            </ng-template>
+            <nz-select [(ngModel)]="u.workspaces" (ngModelChange)="save(u)" class="select small workspace-select" nzMode="multiple" nzPlaceHolder="Workspaces" [nzDisabled]="u.role==='admin' || !canEdit(u)" [nzMaxTagCount]="1">
               <nz-option *ngFor="let w of workspaces" [nzLabel]="w.name" [nzValue]="w.id"></nz-option>
             </nz-select>
             <button
@@ -86,8 +102,8 @@ import { AuthTokenService } from '../../services/auth-token.service';
   </div>
   `,
   styles: [`
-    .list-page { padding: 20px; }
-    .container { max-width: 1080px; margin: 0 auto; }
+    .list-page { padding: 20px; max-width: 100%; overflow-x: hidden; }
+    .container { max-width: 1080px; width: 100%; min-width: 0; margin: 0 auto; }
     .page-header { display:flex; align-items:flex-end; justify-content:space-between; margin-bottom: 16px; gap:10px; flex-wrap: wrap; }
     .page-header h1 { margin: 0; font-size: 22px; font-weight: 650; letter-spacing: -0.02em; }
     .page-header p { margin: 4px 0 0; color:#6b7280; }
@@ -95,18 +111,64 @@ import { AuthTokenService } from '../../services/auth-token.service';
     .row { display:flex; gap:10px; align-items:center; flex-wrap: wrap; }
     .row .text { width: 220px; max-width: 100%; border:1px solid #e5e7eb; border-radius:8px; padding:6px 10px; outline:none; }
     .row .select { min-width: 160px; }
+    .row .workspace-select { min-width: 220px; }
+    .native-role-select {
+      min-width: 160px;
+      max-width: 100%;
+      height: 32px;
+      border: 1px solid #d9d9d9;
+      border-radius: 6px;
+      background: #fff;
+      color: #111;
+      padding: 0 10px;
+      outline: none;
+    }
+    .native-role-select:focus { border-color: #1677ff; }
+    .native-role-select:disabled { background:#f3f4f6; color:#9ca3af; cursor:not-allowed; }
     .row .primary { background:#1677ff; border-color:#1677ff; color:#fff; }
-    .grid { display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap:14px; }
+    .grid { display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap:14px; width: 100%; min-width: 0; }
     @media (max-width: 768px) { .grid { grid-template-columns: 1fr; } }
-    .card { display:flex; align-items:center; gap:10px; padding:12px; border-radius:12px; background:linear-gradient(180deg,#fff,#fafafa); border:1px solid #ececec; }
+    .card { display:flex; align-items:center; gap:10px; width: 100%; min-width: 0; padding:12px; border-radius:12px; background:linear-gradient(180deg,#fff,#fafafa); border:1px solid #ececec; }
     .avatar { width:36px; height:36px; border-radius:12px; background: radial-gradient(100% 100% at 100% 0%, #f5f7ff 0%, #eaeefc 100%); border:1px solid #e5e7eb; display:flex; align-items:center; justify-content:center; font-weight:600; }
-    .content { flex:1; min-width:0; }
+    .leading { flex: 0 0 auto; }
+    .content { flex:1 1 auto; min-width:0; }
     .name { font-weight: 600; letter-spacing: -0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .desc { color:#6b7280; font-size:12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .trailing { display:flex; align-items:center; gap:8px; }
+    .trailing { display:flex; align-items:center; gap:8px; min-width:0; flex: 0 1 auto; }
+    .trailing > * { min-width: 0; }
     .small { min-width: 120px; }
+    .small.workspace-select { min-width: 180px; }
+    .native-role-select.small { min-width: 120px; }
     .icon-btn { border:1px solid #e5e7eb; background:#fff; color:#111; }
     .icon-btn:hover:not([disabled]) { border-color:#1677ff; color:#1677ff; }
+    @media (max-width: 1023px) {
+      .editor .row > * { min-width: 0; }
+      .row .text { flex: 1 1 100%; width: 100%; }
+      .row .select,
+      .row .native-role-select { flex: 1 1 180px; min-width: 0; width: 100%; }
+      .card { align-items:flex-start; flex-wrap: wrap; }
+      .content { flex: 1 1 calc(100% - 46px); }
+      .trailing {
+        width: 100%;
+        flex: 1 1 100%;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        gap: 8px;
+      }
+      .trailing .small,
+      .trailing .native-role-select.small {
+        flex: 1 1 150px;
+        min-width: 0;
+      }
+      .trailing .icon-btn { margin-left: auto; }
+    }
+    @media (max-width: 1023px) {
+      :host ::ng-deep .row nz-select.select,
+      :host ::ng-deep .trailing nz-select.select.small {
+        min-width: 0 !important;
+        width: 100% !important;
+      }
+    }
     .loading .skeleton-grid { display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap:14px; }
     @media (max-width: 768px) { .loading .skeleton-grid { grid-template-columns: 1fr; } }
     .skeleton-card { height: 72px; border-radius: 12px; background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%); border:1px solid #ececec; position: relative; overflow: hidden; }
@@ -127,8 +189,23 @@ export class UsersListComponent implements OnInit {
   draftRole: Role = 'member';
   draftWorkspaces: string[] = [];
   draftPassword = '';
+  useNativeRoleSelect = false;
 
-  constructor(private acl: AccessControlService, private auth: AuthService, private msg: NzMessageService, private usersApi: UsersBackendService, private wsApi: WorkspaceBackendService, private tokens: AuthTokenService, private zone: NgZone, private cdr: ChangeDetectorRef) {}
+  constructor(private acl: AccessControlService, private auth: AuthService, private msg: NzMessageService, private usersApi: UsersBackendService, private wsApi: WorkspaceBackendService, private tokens: AuthTokenService, private zone: NgZone, private cdr: ChangeDetectorRef) {
+    this.updateRoleSelectMode();
+  }
+
+  @HostListener('window:resize')
+  onWindowResize() { this.updateRoleSelectMode(); }
+
+  private updateRoleSelectMode() {
+    try {
+      this.useNativeRoleSelect = window.innerWidth <= 1023;
+    } catch {
+      this.useNativeRoleSelect = false;
+    }
+  }
+
   ngOnInit(): void {
     try { this.currentUserId = String(this.tokens.user?.id || ''); } catch { this.currentUserId = null; }
     this.loading = true; this.error = null;

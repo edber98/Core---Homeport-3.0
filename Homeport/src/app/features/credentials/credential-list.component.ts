@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, NgZone, ChangeDetectorRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, NgZone, ChangeDetectorRef, OnDestroy, HostListener } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzSelectModule } from 'ng-zorro-antd/select';
@@ -29,9 +29,17 @@ import { environment } from '../../../environments/environment';
           <p>Gérer les credentials par application, liés au workspace courant.</p>
         </div>
         <div class="actions">
-          <nz-select [(ngModel)]="providerFilter" (ngModelChange)="reload()" nzAllowClear nzPlaceHolder="Filtrer par application">
-            <nz-option *ngFor="let p of providers" [nzValue]="p.id" [nzLabel]="p.title || p.name"></nz-option>
-          </nz-select>
+          <ng-container *ngIf="useNativeFilterSelect; else providerFilterDesktop">
+            <select class="native-filter-select" [ngModel]="providerFilter || ''" (ngModelChange)="onProviderFilterChange($event)">
+              <option value="">Toutes les applications</option>
+              <option *ngFor="let p of providers" [value]="p.id">{{ p.title || p.name }}</option>
+            </select>
+          </ng-container>
+          <ng-template #providerFilterDesktop>
+            <nz-select [(ngModel)]="providerFilter" (ngModelChange)="reload()" nzAllowClear nzPlaceHolder="Filtrer par application">
+              <nz-option *ngFor="let p of providers" [nzValue]="p.id" [nzLabel]="p.title || p.name"></nz-option>
+            </nz-select>
+          </ng-template>
           <button nz-button nzType="primary" class="primary with-text" (click)="openCreate()" [disabled]="!isAdmin">
             <i class="fa-solid fa-plus"></i> Nouveau
           </button>
@@ -92,7 +100,7 @@ import { environment } from '../../../environments/environment';
             </div>
             <div class="actions end">
               <button nz-button (click)="closeCreate()">Annuler</button>
-              <button nz-button nzType="primary" [disabled]="!createForm.valid || !credValid" (click)="create()">Créer</button>
+              <button nz-button nzType="primary" class="primary-cta" [disabled]="!createForm.valid || !credValid" (click)="create()">Créer</button>
             </div>
           </div>
         </ng-container>
@@ -109,6 +117,18 @@ import { environment } from '../../../environments/environment';
     .page-header .actions { display:flex; align-items:center; gap:10px; flex-wrap: wrap; }
     .page-header .actions .primary { background:#1677ff; border-color:#1677ff; }
     .page-header .actions .with-text i { margin-right: 6px; }
+    .native-filter-select {
+      min-width: 220px;
+      max-width: 100%;
+      height: 32px;
+      border: 1px solid #d9d9d9;
+      border-radius: 6px;
+      background: #fff;
+      color: #111;
+      padding: 0 10px;
+      outline: none;
+    }
+    .native-filter-select:focus { border-color: #1677ff; }
     .grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap:16px; }
     .card { display:flex; align-items:center; gap:14px; padding:14px 14px; border-radius:14px; background: #fff; border: 1px solid #ececec; box-shadow: 0 8px 24px rgba(0,0,0,0.04); }
     .content { flex:1; min-width:0; }
@@ -122,6 +142,10 @@ import { environment } from '../../../environments/environment';
     .icon-btn.danger:hover:not([disabled]) { border-color:#fecaca; background:#fee2e2; color:#b91c1c; box-shadow: 0 4px 12px rgba(239,68,68,0.18); }
     .create-modal .grid { display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap:8px; }
     .actions.end { display:flex; justify-content:flex-end; gap:8px; margin-top: 10px; }
+    .actions.end .primary-cta { background:#1677ff; border-color:#1677ff; color:#fff; box-shadow:none; }
+    .actions.end .primary-cta:hover:not([disabled]),
+    .actions.end .primary-cta:focus:not([disabled]) { background:#0f6ae6; border-color:#0f6ae6; color:#fff; }
+    .actions.end .primary-cta[disabled] { background:#f3f4f6; border-color:#e5e7eb; color:#9ca3af; }
     .loading .skeleton-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:16px; }
     .skeleton-card { height: 96px; border-radius: 14px; background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%); border: 1px solid #ececec; position: relative; overflow: hidden; }
     .skeleton-card:after { content:''; position:absolute; inset:0; transform: translateX(-100%); background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(0,0,0,0.05) 50%, rgba(255,255,255,0) 100%); animation: shimmer 1.2s infinite; }
@@ -142,12 +166,32 @@ export class CredentialListComponent implements OnInit, OnDestroy {
   currentSchema: FormSchema | null = null;
   credValues: any = {};
   credValid = false;
+  useNativeFilterSelect = false;
 
-  constructor(private fb: FormBuilder, private catalog: CatalogService, private acl: AccessControlService, public dfs: DynamicFormService, private zone: NgZone, private cdr: ChangeDetectorRef, private router: Router, private ui: UiMessageService) {}
+  constructor(private fb: FormBuilder, private catalog: CatalogService, private acl: AccessControlService, public dfs: DynamicFormService, private zone: NgZone, private cdr: ChangeDetectorRef, private router: Router, private ui: UiMessageService) {
+    this.updateFilterSelectMode();
+  }
   private aclSub?: any;
 
   get isAdmin() { return (this.acl.currentUser()?.role || 'member') === 'admin'; }
   get workspaceId(): string { return this.acl.currentWorkspaceId(); }
+
+  @HostListener('window:resize')
+  onWindowResize() { this.updateFilterSelectMode(); }
+
+  private updateFilterSelectMode() {
+    try {
+      this.useNativeFilterSelect = window.innerWidth <= 1023;
+    } catch {
+      this.useNativeFilterSelect = false;
+    }
+  }
+
+  onProviderFilterChange(value: string | null) {
+    const v = (value ?? '').toString().trim();
+    this.providerFilter = v ? v : null;
+    this.reload();
+  }
 
   ngOnInit(): void {
     this.createForm = this.fb.group({

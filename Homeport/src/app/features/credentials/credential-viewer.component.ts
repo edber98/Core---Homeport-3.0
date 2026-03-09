@@ -2,75 +2,316 @@ import { CommonModule } from '@angular/common';
 import { Component, NgZone, ChangeDetectorRef, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NzButtonModule } from 'ng-zorro-antd/button';
-import { NzTagModule } from 'ng-zorro-antd/tag';
 import { AccessControlService } from '../../services/access-control.service';
 import { CatalogService, CredentialDoc, AppProvider } from '../../services/catalog.service';
 import { FormTableViewerComponent } from '../../modules/dynamic-form/components/table-viewer/table-viewer';
 import { CredentialEditDialogComponent } from './credential-edit-dialog.component';
-import { DynamicForm } from '../../modules/dynamic-form/dynamic-form';
 
 @Component({
   selector: 'credential-viewer',
   standalone: true,
-  imports: [CommonModule, NzButtonModule, NzTagModule, FormTableViewerComponent, CredentialEditDialogComponent, DynamicForm],
+  imports: [CommonModule, NzButtonModule, FormTableViewerComponent, CredentialEditDialogComponent],
   template: `
     <div class="viewer" *ngIf="doc as d">
-      <div class="header">
+      <div class="page-header">
         <div class="left">
           <button class="icon-btn back" (click)="back()" title="Retour"><i class="fa-solid fa-arrow-left"></i></button>
-          <div class="card-title left"><span class="t">Credential</span><span class="s">{{ d.name }}</span></div>
+          <div class="card-title left">
+            <span class="t">Credential</span>
+            <span class="s">{{ d.name || 'Détails' }}</span>
+          </div>
         </div>
         <div class="actions">
-          <button type="button" class="icon-ghost" (click)="openProvider()" title="App"><i class="fa-regular fa-eye"></i></button>
-          <button type="button" class="icon-ghost" (click)="edit()" [disabled]="!canEdit" title="Édition"><i class="fa-regular fa-pen-to-square"></i></button>
-          <button type="button" class="icon-ghost" (click)="duplicate()" [disabled]="!canEdit" title="Dupliquer"><i class="fa-regular fa-copy"></i></button>
+          <button nz-button class="apple-btn" (click)="openProvider()" [disabled]="!d.providerId" title="Ouvrir l'application">
+            <i class="fa-regular fa-eye"></i>
+            <span class="label">App</span>
+          </button>
+          <button nz-button class="apple-btn" (click)="edit()" [disabled]="!canEdit" title="Édition">
+            <i class="fa-regular fa-pen-to-square"></i>
+            <span class="label">Édition</span>
+          </button>
+          <button nz-button class="apple-btn" (click)="duplicate()" [disabled]="!canEdit" title="Dupliquer">
+            <i class="fa-regular fa-copy"></i>
+            <span class="label">Dupliquer</span>
+          </button>
         </div>
       </div>
-      <div class="content" *ngIf="provider as p">
-        <div class="left-pane">
-          <div class="icon" [style.background]="p.color || '#f3f4f6'">
-            <i *ngIf="p.iconClass" [class]="p.iconClass"></i>
-            <img *ngIf="!p.iconClass && p.iconUrl" [src]="p.iconUrl" alt="icon"/>
-            <img *ngIf="!p.iconClass && !p.iconUrl" [src]="simpleIconUrl(p.id)" alt="icon"/>
+
+      <div class="grid cols-2">
+        <div class="panel hero span-2" *ngIf="provider as p; else providerFallback">
+          <div class="hero-main">
+            <div class="icon" [style.background]="p.color || '#f3f4f6'">
+              <i *ngIf="p.iconClass" [class]="p.iconClass"></i>
+              <img *ngIf="!p.iconClass && p.iconUrl" [src]="p.iconUrl" alt="icon"/>
+              <img *ngIf="!p.iconClass && !p.iconUrl" [src]="simpleIconUrl(p.id)" alt="icon"/>
+            </div>
+            <div class="hero-meta">
+              <div class="hero-title">{{ d.name || 'Credential' }}</div>
+              <div class="hero-sub">{{ p.title || p.name }}</div>
+            </div>
           </div>
+          <div class="hero-chips">
+            <span class="chip">{{ p.id }}</span>
+            <span class="chip ws">{{ d.workspaceId }}</span>
+          </div>
+        </div>
+
+        <ng-template #providerFallback>
+          <div class="panel hero span-2">
+            <div class="hero-main">
+              <div class="icon fallback">
+                <span>{{ (d.providerId || d.name || 'C') | slice:0:1 | uppercase }}</span>
+              </div>
+              <div class="hero-meta">
+                <div class="hero-title">{{ d.name || 'Credential' }}</div>
+                <div class="hero-sub">{{ d.providerId || 'Provider inconnu' }}</div>
+              </div>
+            </div>
+            <div class="hero-chips">
+              <span class="chip">{{ d.providerId || '—' }}</span>
+              <span class="chip ws">{{ d.workspaceId }}</span>
+            </div>
+          </div>
+        </ng-template>
+
+        <div class="panel">
+          <div class="panel-title">Général</div>
           <div class="kv">
-            <div><span class="k">ID</span><span class="v">{{ d.id }}</span></div>
-            <div><span class="k">Nom</span><span class="v">{{ d.name }}</span></div>
-            <div><span class="k">Provider</span><span class="v">{{ p.title || p.name }} <span class="chip">{{ p.id }}</span></span></div>
-            <div><span class="k">Workspace</span><span class="v">{{ d.workspaceId }}</span></div>
+            <div><span class="k">ID</span><span class="v mono">{{ d.id || '—' }}</span></div>
+            <div><span class="k">Nom</span><span class="v">{{ d.name || '—' }}</span></div>
+            <div><span class="k">Workspace</span><span class="v mono">{{ d.workspaceId || '—' }}</span></div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title">Provider</div>
+          <div class="kv">
+            <div><span class="k">Nom</span><span class="v">{{ provider?.title || provider?.name || '—' }}</span></div>
+            <div><span class="k">ID</span><span class="v"><span class="chip">{{ provider?.id || d.providerId || '—' }}</span></span></div>
+            <div><span class="k">Application</span><span class="v">
+              <button nz-button class="link-btn" (click)="openProvider()" [disabled]="!d.providerId">Ouvrir l'app</button>
+            </span></div>
+          </div>
+        </div>
+
+        <div class="panel span-2" *ngIf="provider?.credentialsForm as schema">
+          <div class="panel-title">Valeurs configurées</div>
+          <div class="table-wrap">
+            <df-table-viewer [schema]="schema" [value]="d.values || {}"></df-table-viewer>
           </div>
         </div>
       </div>
-      <div class="schema" *ngIf="provider?.credentialsForm as schema">
-        <df-table-viewer [schema]="schema" [value]="d.values || {}"></df-table-viewer>
-      </div>
-      <credential-edit-dialog [visible]="editVisible" [provider]="provider" [doc]="editDoc" [workspaceId]="doc?.workspaceId || null" (closed)="editVisible=false" (saved)="onSaved($event)"></credential-edit-dialog>
+
+      <credential-edit-dialog [visible]="editVisible" [provider]="provider" [doc]="editDoc" [workspaceId]="d.workspaceId || null" (closed)="editVisible=false" (saved)="onSaved($event)"></credential-edit-dialog>
     </div>
   `,
   styles: [`
-    .viewer { padding: 12px; max-width: 980px; margin: 0 auto; }
-    .header { display:flex; align-items:center; justify-content:space-between; margin-bottom: 10px; }
-    .header .left { display:flex; align-items:left; gap:0px; }
-    .icon-btn.back { width:32px; height:32px; display:inline-flex; align-items:center; justify-content:center; border:0; background:transparent; border-radius:8px; cursor:pointer; }
-    .actions { display:flex; gap:8px; }
-    .icon-ghost { border:0; background:transparent; padding:6px; border-radius:8px; display:inline-flex; align-items:center; justify-content:center; color:#111; cursor:pointer; }
-    .icon-ghost[disabled] { opacity:.5; cursor:not-allowed; }
-    .icon-ghost:hover { background:#f5f5f5; }
-    .card-title { display:flex; flex-direction:column; }
-    .card-title .t { font-weight:600; font-size:14px; }
-    .card-title .s { font-size:12px; color:#64748b; }
-    .content { display:flex; gap:14px; align-items:flex-start; }
-    .left-pane { display:flex; gap:12px; align-items:flex-start; }
-    .icon { width:48px; height:48px; border-radius:10px; display:inline-flex; align-items:center; justify-content:center; overflow:hidden; align-self:flex-start; }
+    .viewer {
+      --card-bg: #ffffff;
+      --card-border: #e6ebf2;
+      --ink: #0f172a;
+      --muted: #64748b;
+      padding: 14px;
+      width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+      max-width: 1080px;
+      margin: 0 auto;
+    }
+
+    .page-header {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+      margin-bottom: 14px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 10px 12px;
+      box-shadow: none;
+    }
+    .page-header .left { display:flex; align-items:flex-start; gap:0; min-width: 0; }
+    .icon-btn.back {
+      width:32px;
+      height:32px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      border:0;
+      background:transparent;
+      border-radius:8px;
+      cursor:pointer;
+    }
+    .icon-btn.back:hover { background: #f1f5f9; }
+    .actions { display:flex; gap:8px; flex-wrap: wrap; justify-content: flex-end; align-items: center; }
+    .apple-btn {
+      border: 1px solid #e5e7eb;
+      background: #fff;
+      border-radius: 10px;
+      color: #111;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      height: 34px;
+      padding: 0 10px;
+      box-shadow: none;
+    }
+    .apple-btn:hover:not([disabled]) { border-color:#c7dbff; background: rgba(22,119,255,0.1); color:#1677ff; }
+    .apple-btn[disabled] { opacity: .55; cursor: not-allowed; }
+    @media (max-width: 640px) {
+      .page-header { flex-direction: row; align-items: flex-start; }
+      .page-header .left { flex: 1 1 auto; min-width: 0; }
+      .actions { margin-left: auto; justify-content: flex-end; flex-wrap: nowrap; gap: 6px; }
+      .actions .apple-btn {
+        width: 34px;
+        height: 34px;
+        min-width: 34px;
+        padding: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .apple-btn .label { display:none; }
+    }
+    .card-title { display:flex; flex-direction:column; align-items:center; line-height:1.2; min-width: 0; }
+    .card-title.left { align-items:flex-start; text-align:left; }
+    .card-title .t { font-weight:700; font-size:14px; color: var(--ink); }
+    .card-title .s { font-size:12px; color:var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+
+    .grid { display:grid; gap:14px; width: 100%; min-width: 0; }
+    .grid.cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid .span-2 { grid-column: span 2; }
+    @media (max-width: 960px) {
+      .grid.cols-2 { grid-template-columns: 1fr; }
+      .grid .span-2 { grid-column: span 1; }
+    }
+
+    .panel {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 14px;
+      min-width: 0;
+      box-shadow: none;
+    }
+    .panel-title {
+      font-weight: 700;
+      font-size: 12px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      color: #475569;
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+
+    .hero {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .hero-main {
+      min-width: 0;
+      display:flex;
+      align-items:center;
+      gap: 12px;
+      flex: 1 1 auto;
+    }
+    .hero-meta { min-width: 0; }
+    .hero-title {
+      color: var(--ink);
+      font-weight: 700;
+      font-size: 15px;
+      line-height: 1.25;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .hero-sub {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .hero-chips { display:inline-flex; align-items:center; gap: 8px; flex-wrap: wrap; }
+
+    .icon {
+      width:48px;
+      height:48px;
+      border-radius:10px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
+      align-self:flex-start;
+      flex: 0 0 auto;
+    }
+    .icon.fallback { background: #f1f5f9; color:#334155; font-weight: 700; }
     .icon img { width: 28px; height: 28px; object-fit: contain; display:block; }
     .icon i { font-size: 22px; line-height: 1; color: #111; display:block; }
+
+    .chip {
+      background:#f5f5f5;
+      border:1px solid #eaeaea;
+      color:#444;
+      border-radius:999px;
+      padding:2px 8px;
+      font-size:11px;
+      display: inline-flex;
+      align-items: center;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .chip.ws { color:#6b7280; }
+
     .kv { display:flex; flex-direction:column; gap:8px; }
-    .kv .k { color:#6b7280; width:140px; display:inline-block; }
-    .kv .v { color:#111; }
-    .kv .chip { background:#f5f5f5; border:1px solid #eaeaea; color:#444; border-radius:999px; padding:2px 8px; font-size:11px; margin-left:6px; }
-    .pane-title { font-weight:600; margin: 4px 0 6px; color:#374151; }
-    .right-pane { flex:1; min-width: 360px; }
-    .form-preview { pointer-events: none; user-select: none; }
+    .kv > div {
+      display:grid;
+      grid-template-columns: 120px minmax(0, 1fr);
+      gap: 10px;
+      align-items: start;
+      padding: 9px 10px;
+      border: 1px solid #edf1f6;
+      border-radius: 12px;
+      background: #f8fafc;
+    }
+    .kv .k {
+      color: var(--muted);
+      font-size: 11px;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      font-weight: 700;
+      display:inline-block;
+    }
+    .kv .v { color: var(--ink); min-width: 0; overflow-wrap: anywhere; }
+    .kv .v.mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size: 12px; }
+    @media (max-width: 640px) {
+      .kv > div { grid-template-columns: 90px minmax(0, 1fr); gap: 8px; }
+    }
+
+    .link-btn {
+      border: 1px solid #dbe3ee;
+      border-radius: 10px;
+      box-shadow: none;
+      font-size: 12px;
+      height: 30px;
+      padding: 0 10px;
+    }
+
+    .table-wrap {
+      width: 100%;
+      min-width: 0;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
   `]
 })
 export class CredentialViewerComponent implements OnInit {
