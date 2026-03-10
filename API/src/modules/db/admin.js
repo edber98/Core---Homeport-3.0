@@ -14,9 +14,8 @@ const NodeTemplate = require('../../db/models/node-template.model');
 module.exports = function(){
   const r = express.Router();
   r.use(authMiddleware());
-  r.use(requireAdmin());
 
-  r.post('/admin/reset', async (_req, res) => {
+  r.post('/admin/reset', requireAdmin(), async (_req, res) => {
     await Promise.all([
       Company.deleteMany({}), User.deleteMany({}), Workspace.deleteMany({}), Flow.deleteMany({}),
       Provider.deleteMany({}), NodeTemplate.deleteMany({}), WorkspaceMembership.deleteMany({}), App.deleteMany({}), Run.deleteMany({})
@@ -26,7 +25,7 @@ module.exports = function(){
   });
 
   // Trigger tools seed/update explicitly
-  r.post('/admin/seed-tools', async (_req, res) => {
+  r.post('/admin/seed-tools', requireAdmin(), async (_req, res) => {
     try {
       const { seedToolsIfMissing } = require('../../bootstrap/seed-tools');
       await seedToolsIfMissing();

@@ -7,9 +7,8 @@ module.exports = function(){
   const r = express.Router();
   r.use(authMiddleware());
   r.use(requireCompanyScope());
-  r.use(requireAdmin());
 
-  r.post('/plugins/import-manifest', async (req, res) => {
+  r.post('/plugins/import-manifest', requireAdmin(), async (req, res) => {
     const { dryRun = false } = req.query;
     const m = req.body || {};
     const summary = await importManifest(m, { dryRun: dryRun === 'true' });
