@@ -865,6 +865,11 @@ export class AiFullpageComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnInit() {
     // Set page context
     this.ai.setPageContext({ page: 'other' });
+    // Always land on a fresh empty conversation when entering Assistant IA.
+    this.ai.currentThread.set(null);
+    this.ai.messages.set([]);
+    this.ai.pendingQuestion.set(null);
+    this.ai.streaming.set(false);
     this.updateThreadSettingsSelectMode();
     this.updateSidebarAgentSelectMode();
     this.updateAiInputPlaceholder();

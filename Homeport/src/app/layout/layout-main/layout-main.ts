@@ -1,4 +1,4 @@
-import { Component, HostListener, ChangeDetectorRef, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, HostListener, ChangeDetectorRef, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule, RouterOutlet } from '@angular/router';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
@@ -26,6 +26,7 @@ import { NotificationsBackendService, BackendNotification } from '../../services
 import { UiMessageService } from '../../services/ui-message.service';
 import { ConfirmService, ConfirmRequest } from '../../services/confirm.service';
 import { NzModalService } from 'ng-zorro-antd/modal';
+import { Subject, takeUntil } from 'rxjs';
 type MenuItem = { label: string; icon: string; route?: string; children?: MenuItem[]; adminOnly?: boolean };
 
 @Component({
@@ -58,7 +59,8 @@ type MenuItem = { label: string; icon: string; route?: string; children?: MenuIt
   templateUrl: './layout-main.html',
   styleUrl: './layout-main.scss'
 })
-export class LayoutMain implements OnInit {
+export class LayoutMain implements OnInit, OnDestroy {
+  private readonly destroy$ = new Subject<void>();
   menu: MenuItem[] = [
     { label: 'Dashboard', icon: 'home', route: '/dashboard' },
     { label: 'Assistant IA', icon: 'robot', route: '/ai' },
@@ -112,7 +114,7 @@ export class LayoutMain implements OnInit {
       this.updateLayoutCssVars();
 
       // Global confirm bridge: show styled NzModal for guard-originated confirmations
-      this.confirm.requests$.subscribe((req: ConfirmRequest) => {
+      this.confirm.requests$.pipe(takeUntil(this.destroy$)).subscribe((req: ConfirmRequest) => {
         if (req.extraText) {
           let ref: any;
           const closeAndResolve = (v: boolean | 'extra') => {
@@ -148,7 +150,7 @@ export class LayoutMain implements OnInit {
         });
         void ref;
       });
-      this.acl.changes$.subscribe(() => {
+      this.acl.changes$.pipe(takeUntil(this.destroy$)).subscribe(() => {
         // keep header selections in sync if service adjusts them
         this.selectedUserId = this.acl.currentUser()?.id || this.selectedUserId;
         this.selectedWorkspaceId = this.acl.currentWorkspaceId();
@@ -158,7 +160,7 @@ export class LayoutMain implements OnInit {
       });
     } catch {}
     // Handle AI action requests (open_element, open_credentials)
-    this.aiService.actionRequests$.subscribe(action => {
+    this.aiService.actionRequests$.pipe(takeUntil(this.destroy$)).subscribe(action => {
       if (action.action === 'open_element') {
         this.openElement(action as any);
       }
@@ -166,6 +168,13 @@ export class LayoutMain implements OnInit {
 
     // Initial notifications load
     this.loadNotifications();
+  }
+
+  ngOnDestroy(): void {
+    try {
+      this.destroy$.next();
+      this.destroy$.complete();
+    } catch {}
   }
 
   get showSider(): boolean { return this.innerWidth >= 992; }
