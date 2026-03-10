@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzButtonModule } from 'ng-zorro-antd/button';
@@ -11,7 +11,7 @@ import { NzTagModule } from 'ng-zorro-antd/tag';
 import { CURRICULUM, LearnModule, LearnLesson, MODULE_TOUR_MAP } from './learn-curriculum';
 import { LearnProgressService } from './learn-progress.service';
 import { LearnTourService } from './learn-tour.service';
-import { TOURS, TourDefinition, getTourById } from './learn-tours';
+import { TourDefinition, getTourById } from './learn-tours';
 import { LearnSidebarComponent } from './learn-sidebar.component';
 import { LearnLessonComponent } from './learn-lesson.component';
 
@@ -26,9 +26,16 @@ import { LearnLessonComponent } from './learn-lesson.component';
   template: `
     <div class="lp-layout">
       <!-- Sidebar -->
-      <div class="lp-sidebar" [class.collapsed]="sidebarCollapsed">
+      <div
+        class="lp-sidebar"
+        [class.collapsed]="sidebarCollapsed"
+        (touchstart)="onSidebarTouchStart($event)"
+        (touchmove)="onSidebarTouchMove($event)"
+        (touchend)="onSidebarTouchEnd()"
+        (touchcancel)="onSidebarTouchEnd()"
+      >
         <div class="lp-sidebar-toggle">
-          <button nz-button nzType="text" nzSize="small" (click)="sidebarCollapsed = !sidebarCollapsed"
+          <button nz-button nzType="text" nzSize="small" class="lp-sidebar-toggle-btn" (click)="toggleSidebar()"
                   [nz-tooltip]="sidebarCollapsed ? 'Ouvrir la sidebar' : 'Réduire la sidebar'" nzTooltipPlacement="right">
             <span nz-icon [nzType]="sidebarCollapsed ? 'menu-unfold' : 'menu-fold'"></span>
           </button>
@@ -43,8 +50,23 @@ import { LearnLessonComponent } from './learn-lesson.component';
         </learn-sidebar>
       </div>
 
+      <div class="lp-sidebar-backdrop" *ngIf="showSidebarBackdrop" (click)="closeSidebar()"></div>
+
+      <button
+        *ngIf="showSidebarOpenButton && !activeLesson"
+        nz-button
+        nzType="default"
+        nzSize="small"
+        class="lp-mobile-open-btn lp-mobile-open-btn-floating"
+        (click)="openSidebar()"
+        nz-tooltip
+        nzTooltipTitle="Afficher la navigation"
+      >
+        <span nz-icon nzType="menu-unfold"></span>
+      </button>
+
       <!-- Main content -->
-      <div class="lp-main">
+      <div class="lp-main" [class.with-floating-open-btn]="showSidebarOpenButton && !activeLesson">
         <!-- Welcome / Module grid when no lesson selected -->
         <div *ngIf="!activeLesson" class="lp-welcome">
           <div class="lp-welcome-header">
@@ -96,7 +118,28 @@ import { LearnLessonComponent } from './learn-lesson.component';
         </div>
 
         <!-- Lesson viewer -->
-        <div *ngIf="activeLesson" class="lp-lesson-wrap">
+        <div *ngIf="activeLesson" class="lp-lesson-wrap" [class.lp-lesson-wrap-compact-title]="showSidebarOpenButton">
+          <div *ngIf="showSidebarOpenButton" class="lp-mobile-lesson-header">
+            <button
+              nz-button
+              nzType="default"
+              nzSize="small"
+              class="lp-mobile-open-btn lp-mobile-open-btn-inline"
+              (click)="openSidebar()"
+              nz-tooltip
+              nzTooltipTitle="Afficher la navigation"
+            >
+              <span nz-icon nzType="menu-unfold"></span>
+            </button>
+            <div class="lp-mobile-lesson-title">{{ activeLesson.title }}</div>
+            <div class="lp-mobile-lesson-meta">
+              <nz-tag nzColor="blue"><span nz-icon nzType="clock-circle"></span> {{ activeLesson.estimatedMinutes }} min</nz-tag>
+              <nz-tag *ngIf="progress.isLessonCompleted(activeLesson.id)" nzColor="green">
+                <span nz-icon nzType="check"></span> Terminée
+              </nz-tag>
+            </div>
+          </div>
+
           <learn-lesson [lesson]="activeLesson" [moduleId]="activeModuleId" [hasNext]="!!nextLesson"
                         (next)="goToNextLesson()" (lessonCompleted)="onLessonCompleted($event)">
           </learn-lesson>
@@ -113,6 +156,14 @@ export class LearnPageComponent implements OnInit {
   activeLesson: LearnLesson | null = null;
   nextLesson: LearnLesson | null = null;
   sidebarCollapsed = false;
+  isCompactViewport = false;
+
+  private desktopSidebarCollapsed = false;
+  private sidebarTouchStartX: number | null = null;
+  private sidebarTouchStartY: number | null = null;
+  private sidebarSwipeHandled = false;
+  private readonly sidebarSwipeCloseThreshold = 56;
+  private readonly sidebarSwipeMaxVerticalDelta = 44;
 
   constructor(
     public progress: LearnProgressService,
@@ -120,6 +171,8 @@ export class LearnPageComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.syncViewportMode();
+
     // Restore last position
     const p = this.progress.progress();
     if (p.currentModuleId && p.currentLessonId) {
@@ -127,8 +180,21 @@ export class LearnPageComponent implements OnInit {
     }
   }
 
+  @HostListener('window:resize')
+  onWindowResize() {
+    this.syncViewportMode();
+  }
+
   get totalLessons(): number {
     return this.modules.reduce((sum, m) => sum + m.lessons.length, 0);
+  }
+
+  get showSidebarBackdrop(): boolean {
+    return this.isCompactViewport && !this.sidebarCollapsed;
+  }
+
+  get showSidebarOpenButton(): boolean {
+    return this.isCompactViewport && this.sidebarCollapsed;
   }
 
   get globalPercent(): number {
@@ -152,11 +218,13 @@ export class LearnPageComponent implements OnInit {
     const mod = this.modules.find(m => m.id === moduleId);
     if (mod && mod.lessons.length) {
       this.navigateTo(moduleId, mod.lessons[0].id);
+      this.closeSidebarIfCompact();
     }
   }
 
   onSelectLesson(ev: { moduleId: string; lessonId: string }) {
     this.navigateTo(ev.moduleId, ev.lessonId);
+    this.closeSidebarIfCompact();
   }
 
   goToNextLesson() {
@@ -194,6 +262,50 @@ export class LearnPageComponent implements OnInit {
     this.tourService.startTour(tour);
   }
 
+  toggleSidebar() {
+    this.setSidebarCollapsed(!this.sidebarCollapsed);
+  }
+
+  openSidebar() {
+    this.setSidebarCollapsed(false);
+  }
+
+  closeSidebar() {
+    this.setSidebarCollapsed(true);
+  }
+
+  onSidebarTouchStart(event: TouchEvent) {
+    if (!this.showSidebarBackdrop) return;
+    const touch = event.touches?.[0];
+    if (!touch) return;
+    this.sidebarTouchStartX = touch.clientX;
+    this.sidebarTouchStartY = touch.clientY;
+    this.sidebarSwipeHandled = false;
+  }
+
+  onSidebarTouchMove(event: TouchEvent) {
+    if (!this.showSidebarBackdrop || this.sidebarSwipeHandled) return;
+    if (this.sidebarTouchStartX == null || this.sidebarTouchStartY == null) return;
+    const touch = event.touches?.[0];
+    if (!touch) return;
+
+    const dx = touch.clientX - this.sidebarTouchStartX;
+    const dy = touch.clientY - this.sidebarTouchStartY;
+    const isLeftSwipe = dx <= -this.sidebarSwipeCloseThreshold;
+    const isMostlyHorizontal = Math.abs(dx) > Math.abs(dy) && Math.abs(dy) <= this.sidebarSwipeMaxVerticalDelta;
+
+    if (isLeftSwipe && isMostlyHorizontal) {
+      this.closeSidebar();
+      this.sidebarSwipeHandled = true;
+      this.resetSidebarTouchTracking();
+      try { event.preventDefault(); } catch {}
+    }
+  }
+
+  onSidebarTouchEnd() {
+    this.resetSidebarTouchTracking();
+  }
+
   private navigateTo(moduleId: string, lessonId: string) {
     this.activeModuleId = moduleId;
     this.activeLessonId = lessonId;
@@ -210,5 +322,42 @@ export class LearnPageComponent implements OnInit {
     if (idx >= 0 && idx < allLessons.length - 1) {
       this.nextLesson = allLessons[idx + 1];
     }
+  }
+
+  private closeSidebarIfCompact() {
+    if (this.isCompactViewport) this.closeSidebar();
+  }
+
+  private setSidebarCollapsed(collapsed: boolean) {
+    this.sidebarCollapsed = collapsed;
+    if (!this.isCompactViewport) {
+      this.desktopSidebarCollapsed = collapsed;
+    }
+  }
+
+  private syncViewportMode() {
+    const compact = this.shouldUseCompactSidebar();
+    if (compact === this.isCompactViewport) return;
+
+    this.isCompactViewport = compact;
+    this.resetSidebarTouchTracking();
+
+    if (compact) {
+      this.desktopSidebarCollapsed = this.sidebarCollapsed;
+      this.sidebarCollapsed = true;
+      return;
+    }
+
+    this.sidebarCollapsed = this.desktopSidebarCollapsed;
+  }
+
+  private shouldUseCompactSidebar(): boolean {
+    try { return window.innerWidth <= 1023; } catch { return false; }
+  }
+
+  private resetSidebarTouchTracking() {
+    this.sidebarTouchStartX = null;
+    this.sidebarTouchStartY = null;
+    this.sidebarSwipeHandled = false;
   }
 }
