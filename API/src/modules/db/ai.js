@@ -132,10 +132,12 @@ ${toolLines.join('\n')}
       res.apiError(404, 'workspace_not_found', 'Workspace not found');
       return null;
     }
-    const member = await WorkspaceMembership.findOne({ userId: req.user.id, workspaceId: ws._id });
-    if (!member) {
-      res.apiError(403, 'not_a_member', 'Not a workspace member');
-      return null;
+    if (req.user.role !== 'admin') {
+      const member = await WorkspaceMembership.findOne({ userId: req.user.id, workspaceId: ws._id });
+      if (!member) {
+        res.apiError(403, 'not_a_member', 'Not a workspace member');
+        return null;
+      }
     }
     return ws;
   }

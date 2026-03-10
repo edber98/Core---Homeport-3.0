@@ -175,15 +175,14 @@ export class AccessControlService {
     if (!environment.useBackend) return;
     const userId = data?.user?.id || data?.user?._id;
     if (userId) this._currentUserId.set(String(userId));
-    if (Array.isArray(data.workspaces) && data.workspaces.length) {
-      const mapped = this.mapBackendWorkspaces(data.workspaces as any);
-      this._workspaces.set(mapped);
-    }
-    if (data.defaultWorkspaceId) {
-      this._currentWorkspaceId.set(data.defaultWorkspaceId);
-    } else {
-      this._currentWorkspaceId.set(this.pickDefaultWorkspaceId());
-    }
+    const mapped = Array.isArray(data.workspaces) ? this.mapBackendWorkspaces(data.workspaces as any) : [];
+    this._workspaces.set(mapped);
+    const requestedDefault = data.defaultWorkspaceId ? String(data.defaultWorkspaceId) : '';
+    const resolvedWorkspaceId = requestedDefault && mapped.some(w => w.id === requestedDefault)
+      ? requestedDefault
+      : this.pickDefaultWorkspaceId();
+    this._currentWorkspaceId.set(resolvedWorkspaceId || null);
+    if (resolvedWorkspaceId) this.save(this.LAST_WS_KEY, resolvedWorkspaceId);
     this._ready.set(true);
     this._changes.next(Date.now());
   }

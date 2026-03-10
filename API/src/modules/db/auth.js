@@ -23,18 +23,53 @@ module.exports = function(){
       if (user.role === 'admin') {
         // Admin sees all company workspaces
         workspaces = await Workspace.find({ companyId: user.companyId }).sort({ isDefault: -1, createdAt: 1 }).lean();
+        // Some routes still require explicit membership: keep admin synced on all workspaces.
+        for (const ws of workspaces) {
+          await WorkspaceMembership.updateOne(
+            { userId: user._id, workspaceId: ws._id },
+            { $setOnInsert: { role: 'editor' } },
+            { upsert: true }
+          );
+        }
       } else {
         // Regular user sees only workspaces they are members of
         const memberships = await WorkspaceMembership.find({ userId: user._id }).lean();
         const wsIds = memberships.map(m => m.workspaceId);
         workspaces = await Workspace.find({ _id: { $in: wsIds } }).sort({ isDefault: -1, createdAt: 1 }).lean();
+
+        // Auto-heal old users without memberships: attach to company default workspace.
+        if (!workspaces.length) {
+          const fallback = await Workspace.findOne({ companyId: user.companyId }).sort({ isDefault: -1, createdAt: 1 });
+          if (fallback) {
+            await WorkspaceMembership.updateOne(
+              { userId: user._id, workspaceId: fallback._id },
+              { $setOnInsert: { role: 'editor' } },
+              { upsert: true }
+            );
+            workspaces = [fallback.toObject()];
+          }
+        }
       }
-      // If no default preference, use isDefault workspace
-      if (!defaultWorkspaceId && workspaces.length) {
+
+      // Ensure default workspace is valid for this user.
+      const isDefaultAllowed = !!(defaultWorkspaceId && workspaces.some(w => String(w._id) === defaultWorkspaceId));
+      if (!isDefaultAllowed && workspaces.length) {
         const def = workspaces.find(w => w.isDefault);
         defaultWorkspaceId = String((def || workspaces[0])._id);
+      } else if (!workspaces.length) {
+        defaultWorkspaceId = null;
       }
-    } catch {}
+
+      // Persist corrected preference when needed.
+      const currentStored = user.defaultWorkspaceId ? String(user.defaultWorkspaceId) : null;
+      if (currentStored !== defaultWorkspaceId) {
+        await User.updateOne({ _id: user._id }, { $set: { defaultWorkspaceId: defaultWorkspaceId || null } });
+      }
+    } catch (e) {
+      console.error('[auth] login workspace resolution failed:', e?.message || e);
+      workspaces = [];
+      defaultWorkspaceId = null;
+    }
 
     res.apiOk({
       token,

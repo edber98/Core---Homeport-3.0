@@ -228,7 +228,12 @@ export class UsersListComponent implements OnInit {
     }
   }
 
-  canAdd() { return (this.draftName || '').trim().length >= 2; }
+  canAdd() {
+    const hasIdentity = (this.draftName || '').trim().length >= 2;
+    if (!hasIdentity) return false;
+    if (this.useBackend && this.draftRole !== 'admin' && (!this.draftWorkspaces || this.draftWorkspaces.length === 0)) return false;
+    return true;
+  }
   canCreateBackend(): boolean { try { return this.useBackend && (String(this.tokens.user?.role || '').toLowerCase() === 'admin'); } catch { return false; } }
   add() {
     if (this.useBackend) {

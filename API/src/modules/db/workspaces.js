@@ -39,12 +39,21 @@ module.exports = function(){
       templatesAllowed: Array.isArray(body.templatesAllowed) ? body.templatesAllowed : [],
     });
 
-    // Auto-add creator as owner
-    await WorkspaceMembership.create({
-      userId: req.user.id,
-      workspaceId: ws._id,
-      role: 'owner',
-    });
+    // Auto-add all company admins so admin access is global on workspace-scoped routes.
+    const admins = await User.find({ companyId: req.user.companyId, role: 'admin' }).select('_id').lean();
+    for (const admin of admins) {
+      await WorkspaceMembership.updateOne(
+        { userId: admin._id, workspaceId: ws._id },
+        { $setOnInsert: { role: 'editor' } },
+        { upsert: true }
+      );
+    }
+    // Creator keeps owner role on this workspace.
+    await WorkspaceMembership.updateOne(
+      { userId: req.user.id, workspaceId: ws._id },
+      { $set: { role: 'owner' } },
+      { upsert: true }
+    );
 
     res.apiOk(ws);
   });
