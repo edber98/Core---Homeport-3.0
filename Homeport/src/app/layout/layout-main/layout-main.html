@@ -31,10 +31,10 @@
 <nz-layout class="main-shell">
   <!-- Sider (desktop) -->
   <nz-sider *ngIf="showSider" [nzCollapsible]="true" [(nzCollapsed)]="siderCollapsed" (nzCollapsedChange)="onSiderCollapsedChange($event)" [nzCollapsedWidth]="80" [nzTheme]="'light'" class="border-right-primary main-sider" nzWidth="220px">
-    <div class="logo" [class.collapsed]="siderCollapsed">
+    <a class="logo logo-link" [class.collapsed]="siderCollapsed" [routerLink]="['/dashboard']" aria-label="Retour au dashboard">
       <img src="/imgs/logo.png" alt="Kinn" />
       <span class="brand-text">Kinn</span>
-    </div>
+    </a>
     <ul nz-menu nzTheme="light" style="border:0px !important" nzMode="inline" class="sider-menu">
       <ng-container *ngFor="let it of menu">
         <li nz-submenu *ngIf="it.children?.length && (!it.adminOnly || isAdmin)">
@@ -62,7 +62,7 @@
     <nz-header class="hp-header border-bottom-primary">
       <div class="hdr-left" *ngIf="showSider || !showLaunch">
         <button nz-button nzType="default" class="burger" *ngIf="!showSider" (click)="openDrawer()"><i class="fa-solid fa-bars"></i></button>
-        <div *ngIf="!showSider" class="brand">Kinn</div>
+        <a *ngIf="!showSider" class="brand brand-link" [routerLink]="['/dashboard']" aria-label="Retour au dashboard">Kinn</a>
       </div>
       <div class="hdr-center" *ngIf="showSider || showLaunch">
         <div class="cmd-bar">
@@ -124,10 +124,10 @@
            (touchmove)="onDrawerTouchMove($event)"
            (touchend)="onDrawerTouchEnd()"
            (touchcancel)="onDrawerTouchEnd()">
-               <div class="logo">
+               <a class="logo logo-link" [routerLink]="['/dashboard']" (click)="closeDrawer()" aria-label="Retour au dashboard">
       <img src="/imgs/logo.png" alt="Kinn" />
       <span class="brand-text">Kinn</span>
-    </div>
+    </a>
         <div class="drawer-title">Navigation</div>
         <ul nz-menu nzTheme="light" nzMode="inline" style="border:0">
           <ng-container *ngFor="let it of menu">

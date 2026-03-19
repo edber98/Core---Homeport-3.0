@@ -165,6 +165,8 @@ nz-footer {
 .hp-header .hdr-actions { display:flex; align-items:center; gap:8px; }
 .hp-header .hdr-actions .user-switcher { min-width: 160px; }
 .hp-header .brand { font-weight:600; letter-spacing:-0.01em; }
+.hp-header .brand-link { color: inherit; cursor: pointer; text-decoration: none; }
+.hp-header .brand-link:focus-visible { outline: 2px solid #1677ff; outline-offset: 2px; border-radius: 8px; }
 .hp-header .burger { border-radius: 10px; border:1px solid #e5e7eb; }
 .hp-header .hdr-btn { border-radius: 10px; border:1px solid #e5e7eb; }
 .hp-header .hdr-avatar { display:inline-flex; align-items:center; justify-content:center; width: 36px; height: 36px; border-radius: 999px; cursor: pointer; border: 0; background: transparent; }
@@ -254,6 +256,8 @@ nz-footer {
 .logo .brand-text { font-weight:700; letter-spacing:-0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .logo.collapsed { justify-content: center; }
 .logo.collapsed .brand-text { display: none; }
+.logo-link { color: inherit; cursor: pointer; text-decoration: none; }
+.logo-link:focus-visible { outline: 2px solid #1677ff; outline-offset: 2px; border-radius: 10px; }
 
 /* Drawer menu */
 .drawer-menu {

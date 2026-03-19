@@ -33,14 +33,14 @@ import { AiSettingsComponent } from './ai-settings.component';
         (touchend)="onSidebarTouchEnd()"
         (touchcancel)="onSidebarTouchEnd()">
         <div class="sidebar-header">
-          <span class="sidebar-title" *ngIf="!sidebarCollapsed">Conversations</span>
-          <button nz-button nzType="text" nzSize="small" class="sidebar-toggle-btn" (click)="sidebarCollapsed = !sidebarCollapsed"
+          <span class="sidebar-title" *ngIf="!sidebarCollapsed || isMobileSidebar()">Conversations</span>
+          <button nz-button nzType="text" nzSize="small" class="sidebar-toggle-btn" (click)="toggleSidebarPanel()"
             nz-tooltip [nzTooltipTitle]="sidebarCollapsed ? 'Afficher' : 'Masquer'">
             <span nz-icon [nzType]="sidebarCollapsed ? 'menu-unfold' : 'menu-fold'" nzTheme="outline"></span>
           </button>
         </div>
 
-        <ng-container *ngIf="!sidebarCollapsed">
+        <div class="sidebar-panel-body" *ngIf="!sidebarCollapsed || isMobileSidebar()">
           <!-- Agent selector -->
           <div class="sidebar-agent">
             <ng-container *ngIf="sidebarAgentUseNative; else sidebarAgentDesktop">
@@ -118,29 +118,29 @@ import { AiSettingsComponent } from './ai-settings.component';
             </div>
           </div>
 
-        </ng-container>
+        </div>
 
         <!-- Settings link -->
         <div class="sidebar-bottom">
-          <button nz-button nzType="text" nzSize="small" [nzBlock]="!sidebarCollapsed" (click)="toggleSettingsFromSidebar()"
+          <button nz-button nzType="text" nzSize="small" [nzBlock]="!sidebarCollapsed || isMobileSidebar()" (click)="toggleSettingsFromSidebar()"
             [class.active-btn]="showSettings" nz-tooltip [nzTooltipTitle]="sidebarCollapsed ? 'Paramètres' : null">
             <span nz-icon nzType="setting" nzTheme="outline"></span>
-            <span *ngIf="!sidebarCollapsed">Paramètres</span>
+            <span *ngIf="!sidebarCollapsed || isMobileSidebar()">Paramètres</span>
           </button>
         </div>
       </div>
 
-      <div class="mobile-sidebar-backdrop" *ngIf="!sidebarCollapsed" (click)="sidebarCollapsed = true"></div>
+      <div class="mobile-sidebar-backdrop" [class.visible]="!sidebarCollapsed" (click)="closeSidebarPanel()"></div>
 
       <!-- Main content -->
       <div class="fp-main" [class.sidebar-collapsed]="sidebarCollapsed">
         <button
-          *ngIf="sidebarCollapsed"
           nz-button
           nzType="text"
           nzSize="small"
           class="mobile-sidebar-open-btn"
-          (click)="sidebarCollapsed = false"
+          [class.visible]="sidebarCollapsed"
+          (click)="openSidebarPanel()"
           nz-tooltip
           nzTooltipTitle="Afficher les conversations"
         >
@@ -430,9 +430,10 @@ import { AiSettingsComponent } from './ai-settings.component';
     .fp-layout { display: flex; height: 100%; background: #fff; position: relative; }
 
     /* Sidebar */
-    .fp-sidebar { width: 300px; border-right: 1px solid #f0f0f0; display: flex; flex-direction: column; flex-shrink: 0; background: #fff; transition: width 0.2s ease; }
+    .fp-sidebar { width: 300px; border-right: 1px solid #f0f0f0; display: flex; flex-direction: column; flex-shrink: 0; background: #fff; transition: width 0.24s cubic-bezier(0.22, 1, 0.36, 1); }
     .fp-sidebar.collapsed { width: 48px; }
     .sidebar-header { display: flex; align-items: center; gap: 10px; padding: 10px 20px; border-bottom: 1px solid #f0f0f0; flex-shrink: 0; }
+    .sidebar-panel-body { display: flex; flex: 1 1 auto; min-height: 0; flex-direction: column; }
     .sidebar-title { font-weight: 600; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .sidebar-toggle-btn { margin-left: auto; }
     .fp-sidebar.collapsed .sidebar-header { justify-content: center; padding: 10px 0; }
@@ -785,15 +786,78 @@ import { AiSettingsComponent } from './ai-settings.component';
 
     /* Responsive */
     @media (max-width: 768px) {
-      .fp-sidebar { width: 0; overflow: hidden; border-right: none; }
-      .fp-sidebar.collapsed { width: 0; border-right: none; }
-      .fp-sidebar:not(.collapsed) { width: 260px; position: absolute; z-index: 10; height: 100%; box-shadow: 2px 0 8px rgba(0,0,0,0.1); border-right: 1px solid #f0f0f0; }
+      .fp-sidebar {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 10;
+        width: min(260px, 85vw);
+        height: 100%;
+        overflow: hidden;
+        border-right: 1px solid #f0f0f0;
+        box-shadow: 0 18px 44px rgba(15, 23, 42, 0.16);
+        transform: translate3d(0, 0, 0);
+        transition: transform 0.42s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.34s ease;
+        will-change: transform;
+      }
+      .fp-sidebar,
+      .fp-sidebar.collapsed {
+        width: min(260px, 85vw);
+      }
+      .fp-sidebar.collapsed {
+        transform: translate3d(calc(-100% - 14px), 0, 0);
+        box-shadow: none;
+        pointer-events: none;
+      }
+      .fp-sidebar.collapsed .sidebar-header {
+        justify-content: flex-start;
+        padding: 10px 20px;
+      }
+      .fp-sidebar.collapsed .sidebar-toggle-btn {
+        margin-left: auto;
+      }
+      .fp-sidebar.collapsed .sidebar-bottom {
+        padding: 8px 12px;
+        border-top: 1px solid #f0f0f0;
+        display: block;
+      }
+      .fp-sidebar:not(.collapsed) {
+        pointer-events: auto;
+      }
+      .fp-sidebar .sidebar-header,
+      .fp-sidebar .sidebar-panel-body,
+      .fp-sidebar .sidebar-bottom {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+        transition:
+          opacity 0.24s ease 0.1s,
+          transform 0.34s cubic-bezier(0.22, 1, 0.36, 1) 0.04s;
+      }
+      .fp-sidebar.collapsed .sidebar-header,
+      .fp-sidebar.collapsed .sidebar-panel-body,
+      .fp-sidebar.collapsed .sidebar-bottom {
+        opacity: 0;
+        transform: translate3d(-10px, 0, 0);
+        transition:
+          opacity 0.22s ease,
+          transform 0.28s ease;
+      }
       .mobile-sidebar-backdrop {
         display: block;
         position: absolute;
         inset: 0;
         z-index: 9;
-        background: transparent;
+        background: rgba(15, 23, 42, 0.18);
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transition: opacity 0.32s ease, visibility 0s linear 0.32s;
+      }
+      .mobile-sidebar-backdrop.visible {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+        transition-delay: 0s;
       }
       .fp-main.sidebar-collapsed .fp-chat-header { padding: 10px 20px 10px 52px; }
       .mobile-sidebar-open-btn {
@@ -802,6 +866,15 @@ import { AiSettingsComponent } from './ai-settings.component';
         top: 10px;
         left: 10px;
         z-index: 11;
+        opacity: 0;
+        transform: translate3d(-8px, 0, 0) scale(0.96);
+        pointer-events: none;
+        transition: opacity 0.24s ease, transform 0.34s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+      .mobile-sidebar-open-btn.visible {
+        opacity: 1;
+        transform: translate3d(0, 0, 0) scale(1);
+        pointer-events: auto;
       }
       .assistant-floating { min-height: clamp(300px, 66vh, 460px); }
       .ai-header-center { grid-template-columns: 36px auto 36px; column-gap: 8px; }
@@ -999,6 +1072,18 @@ export class AiFullpageComponent implements OnInit, OnDestroy, AfterViewInit {
 
   onAgentChange(agentId: string) {
     this.ai.selectedAgentId.set(agentId);
+  }
+
+  toggleSidebarPanel() {
+    this.sidebarCollapsed = !this.sidebarCollapsed;
+  }
+
+  openSidebarPanel() {
+    this.sidebarCollapsed = false;
+  }
+
+  closeSidebarPanel() {
+    this.sidebarCollapsed = true;
   }
 
   toggleSettingsFromSidebar() {
@@ -1236,6 +1321,10 @@ export class AiFullpageComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private shouldAutoCloseSidebarNav(): boolean {
     try { return window.innerWidth <= 1023; } catch { return false; }
+  }
+
+  isMobileSidebar(): boolean {
+    try { return window.innerWidth <= 768; } catch { return false; }
   }
 
   deleteThread(thread: AiThread) {
