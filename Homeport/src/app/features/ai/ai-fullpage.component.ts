@@ -25,7 +25,11 @@ import { AiSettingsComponent } from './ai-settings.component';
   standalone: true,
   imports: [CommonModule, FormsModule, NzButtonModule, NzIconModule, NzSelectModule, NzInputModule, NzTagModule, NzSpinModule, NzEmptyModule, NzToolTipModule, NzPopconfirmModule, NzPopoverModule, AiChatComponent, AiSettingsComponent],
   template: `
-    <div class="fp-layout">
+    <div
+      class="fp-layout"
+      [class.mobile-sidebar-open]="!sidebarCollapsed && isMobileSidebar()"
+      [class.mobile-sidebar-animating]="mobileSidebarAnimating"
+    >
       <!-- Sidebar -->
       <div class="fp-sidebar" [class.collapsed]="sidebarCollapsed"
         (touchstart)="onSidebarTouchStart($event)"
@@ -130,10 +134,25 @@ import { AiSettingsComponent } from './ai-settings.component';
         </div>
       </div>
 
-      <div class="mobile-sidebar-backdrop" [class.visible]="!sidebarCollapsed" (click)="closeSidebarPanel()"></div>
+      <div
+        class="mobile-sidebar-backdrop"
+        [class.visible]="!sidebarCollapsed"
+        (click)="closeSidebarPanel()"
+        (touchstart)="onMainTouchStart($event)"
+        (touchmove)="onMainTouchMove($event)"
+        (touchend)="onMainTouchEnd()"
+        (touchcancel)="onMainTouchEnd()"
+      ></div>
 
       <!-- Main content -->
-      <div class="fp-main" [class.sidebar-collapsed]="sidebarCollapsed">
+      <div
+        class="fp-main"
+        [class.sidebar-collapsed]="sidebarCollapsed"
+        (touchstart)="onMainTouchStart($event)"
+        (touchmove)="onMainTouchMove($event)"
+        (touchend)="onMainTouchEnd()"
+        (touchcancel)="onMainTouchEnd()"
+      >
         <button
           nz-button
           nzType="text"
@@ -785,27 +804,31 @@ import { AiSettingsComponent } from './ai-settings.component';
     .fp-settings { flex: 1; overflow-y: auto; }
 
     /* Responsive */
-    @media (max-width: 768px) {
+    @media (max-width: 1023px) {
+      .fp-layout {
+        overflow: hidden;
+        --mobile-sidebar-width: min(260px, 85vw);
+      }
       .fp-sidebar {
         position: absolute;
         top: 0;
         left: 0;
         z-index: 10;
-        width: min(260px, 85vw);
+        width: var(--mobile-sidebar-width);
         height: 100%;
         overflow: hidden;
         border-right: 1px solid #f0f0f0;
         box-shadow: 0 18px 44px rgba(15, 23, 42, 0.16);
         transform: translate3d(0, 0, 0);
-        transition: transform 0.42s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.34s ease;
+        transition: transform 0.34s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.24s ease;
         will-change: transform;
       }
       .fp-sidebar,
       .fp-sidebar.collapsed {
-        width: min(260px, 85vw);
+        width: var(--mobile-sidebar-width);
       }
       .fp-sidebar.collapsed {
-        transform: translate3d(calc(-100% - 14px), 0, 0);
+        transform: translate3d(calc(-100% - 8px), 0, 0);
         box-shadow: none;
         pointer-events: none;
       }
@@ -826,21 +849,38 @@ import { AiSettingsComponent } from './ai-settings.component';
       }
       .fp-sidebar .sidebar-header,
       .fp-sidebar .sidebar-panel-body,
-      .fp-sidebar .sidebar-bottom {
-        opacity: 1;
-        transform: translate3d(0, 0, 0);
-        transition:
-          opacity 0.24s ease 0.1s,
-          transform 0.34s cubic-bezier(0.22, 1, 0.36, 1) 0.04s;
-      }
+      .fp-sidebar .sidebar-bottom,
       .fp-sidebar.collapsed .sidebar-header,
       .fp-sidebar.collapsed .sidebar-panel-body,
       .fp-sidebar.collapsed .sidebar-bottom {
-        opacity: 0;
-        transform: translate3d(-10px, 0, 0);
-        transition:
-          opacity 0.22s ease,
-          transform 0.28s ease;
+        opacity: 1;
+        transform: none;
+        transition: none;
+      }
+      .fp-main {
+        flex: 0 0 100%;
+        width: 100%;
+        min-width: 100%;
+        max-width: 100%;
+        z-index: 1;
+        background: #fff;
+        transform: translate3d(0, 0, 0);
+        transition: transform 0.34s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.24s ease;
+        will-change: transform;
+        touch-action: pan-y;
+      }
+      .fp-layout.mobile-sidebar-open .fp-main {
+        transform: translate3d(var(--mobile-sidebar-width), 0, 0);
+        box-shadow: -18px 0 42px rgba(15, 23, 42, 0.18);
+      }
+      .fp-layout.mobile-sidebar-animating {
+        touch-action: none;
+      }
+      .fp-layout.mobile-sidebar-animating .fp-main,
+      .fp-layout.mobile-sidebar-animating .fp-sidebar,
+      .fp-layout.mobile-sidebar-animating .mobile-sidebar-backdrop,
+      .fp-layout.mobile-sidebar-animating .mobile-sidebar-open-btn {
+        pointer-events: none;
       }
       .mobile-sidebar-backdrop {
         display: block;
@@ -851,7 +891,7 @@ import { AiSettingsComponent } from './ai-settings.component';
         opacity: 0;
         visibility: hidden;
         pointer-events: none;
-        transition: opacity 0.32s ease, visibility 0s linear 0.32s;
+        transition: opacity 0.24s ease, visibility 0s linear 0.24s;
       }
       .mobile-sidebar-backdrop.visible {
         opacity: 1;
@@ -869,7 +909,7 @@ import { AiSettingsComponent } from './ai-settings.component';
         opacity: 0;
         transform: translate3d(-8px, 0, 0) scale(0.96);
         pointer-events: none;
-        transition: opacity 0.24s ease, transform 0.34s cubic-bezier(0.22, 1, 0.36, 1);
+        transition: opacity 0.18s ease, transform 0.24s cubic-bezier(0.22, 1, 0.36, 1);
       }
       .mobile-sidebar-open-btn.visible {
         opacity: 1;
@@ -902,6 +942,7 @@ export class AiFullpageComponent implements OnInit, OnDestroy, AfterViewInit {
   threadSettingsUseNative = false;
   sidebarAgentUseNative = false;
   sidebarCollapsed = false;
+  mobileSidebarAnimating = false;
   showSettings = false;
   regeneratingTitle = false;
   recentFlows: { id: string; name: string }[] = [];
@@ -912,6 +953,12 @@ export class AiFullpageComponent implements OnInit, OnDestroy, AfterViewInit {
   private sidebarTouchStartX: number | null = null;
   private sidebarTouchStartY: number | null = null;
   private sidebarSwipeHandled = false;
+  private mainTouchStartX: number | null = null;
+  private mainTouchStartY: number | null = null;
+  private mainSwipeHandled = false;
+  private mobileSidebarAnimationTimer: ReturnType<typeof setTimeout> | null = null;
+  private readonly mobileSidebarAnimationDurationMs = 340;
+  private readonly sidebarSwipeOpenThreshold = 64;
   private readonly sidebarSwipeCloseThreshold = 56;
   private readonly sidebarSwipeMaxVerticalDelta = 44;
 
@@ -987,10 +1034,54 @@ export class AiFullpageComponent implements OnInit, OnDestroy, AfterViewInit {
     this.updateSidebarAgentSelectMode();
     this.updateAiInputPlaceholder();
     this.scheduleAiInputLayoutRefresh();
+    if (!this.isMobileSidebar()) this.resetMobileSidebarAnimationState();
+  }
+
+  onMainTouchStart(event: TouchEvent) {
+    if (!this.shouldHandleMainSidebarSwipe()) return;
+    const touch = event.touches?.[0];
+    if (!touch) return;
+    this.mainTouchStartX = touch.clientX;
+    this.mainTouchStartY = touch.clientY;
+    this.mainSwipeHandled = false;
+  }
+
+  onMainTouchMove(event: TouchEvent) {
+    if (!this.shouldHandleMainSidebarSwipe() || this.mainSwipeHandled) return;
+    if (this.mainTouchStartX == null || this.mainTouchStartY == null) return;
+    const touch = event.touches?.[0];
+    if (!touch) return;
+
+    const dx = touch.clientX - this.mainTouchStartX;
+    const dy = touch.clientY - this.mainTouchStartY;
+    const isMostlyHorizontal = Math.abs(dx) > Math.abs(dy) && Math.abs(dy) <= this.sidebarSwipeMaxVerticalDelta;
+    const shouldOpenSidebar = this.shouldHandleMobileSidebarOpenSwipe() && dx >= this.sidebarSwipeOpenThreshold;
+    const shouldCloseSidebar = this.shouldHandleMobileSidebarCloseSwipe() && dx <= -this.sidebarSwipeCloseThreshold;
+
+    if (isMostlyHorizontal && shouldOpenSidebar) {
+      this.mainSwipeHandled = true;
+      this.openSidebarPanel();
+      this.resetMainTouchTracking();
+      try { event.preventDefault(); } catch {}
+      this.cdr.detectChanges();
+      return;
+    }
+
+    if (isMostlyHorizontal && shouldCloseSidebar) {
+      this.mainSwipeHandled = true;
+      this.closeSidebarPanel();
+      this.resetMainTouchTracking();
+      try { event.preventDefault(); } catch {}
+      this.cdr.detectChanges();
+    }
+  }
+
+  onMainTouchEnd() {
+    this.resetMainTouchTracking();
   }
 
   onSidebarTouchStart(event: TouchEvent) {
-    if (this.sidebarCollapsed || !this.shouldAutoCloseSidebarNav()) return;
+    if (this.sidebarCollapsed || !this.shouldAutoCloseSidebarNav() || this.mobileSidebarAnimating) return;
     const touch = event.touches?.[0];
     if (!touch) return;
     this.sidebarTouchStartX = touch.clientX;
@@ -999,7 +1090,7 @@ export class AiFullpageComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onSidebarTouchMove(event: TouchEvent) {
-    if (this.sidebarCollapsed || !this.shouldAutoCloseSidebarNav() || this.sidebarSwipeHandled) return;
+    if (this.sidebarCollapsed || !this.shouldAutoCloseSidebarNav() || this.sidebarSwipeHandled || this.mobileSidebarAnimating) return;
     if (this.sidebarTouchStartX == null || this.sidebarTouchStartY == null) return;
     const touch = event.touches?.[0];
     if (!touch) return;
@@ -1010,7 +1101,7 @@ export class AiFullpageComponent implements OnInit, OnDestroy, AfterViewInit {
     const isMostlyHorizontal = Math.abs(dx) > Math.abs(dy) && Math.abs(dy) <= this.sidebarSwipeMaxVerticalDelta;
 
     if (isLeftSwipe && isMostlyHorizontal) {
-      this.sidebarCollapsed = true;
+      this.closeSidebarPanel();
       this.sidebarSwipeHandled = true;
       this.resetSidebarTouchTracking();
       try { event.preventDefault(); } catch {}
@@ -1041,6 +1132,7 @@ export class AiFullpageComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnDestroy() {
     if (this.refreshInterval) clearInterval(this.refreshInterval);
     if (this.titleDebounce) clearTimeout(this.titleDebounce);
+    if (this.mobileSidebarAnimationTimer) clearTimeout(this.mobileSidebarAnimationTimer);
     if (this.aiInputLayoutRaf != null) {
       cancelAnimationFrame(this.aiInputLayoutRaf);
       this.aiInputLayoutRaf = null;
@@ -1075,20 +1167,28 @@ export class AiFullpageComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   toggleSidebarPanel() {
-    this.sidebarCollapsed = !this.sidebarCollapsed;
+    if (this.sidebarCollapsed) {
+      this.openSidebarPanel();
+      return;
+    }
+    this.closeSidebarPanel();
   }
 
   openSidebarPanel() {
+    if (!this.sidebarCollapsed) return;
     this.sidebarCollapsed = false;
+    this.startMobileSidebarAnimation();
   }
 
   closeSidebarPanel() {
+    if (this.sidebarCollapsed) return;
     this.sidebarCollapsed = true;
+    this.startMobileSidebarAnimation();
   }
 
   toggleSettingsFromSidebar() {
     this.showSettings = !this.showSettings;
-    if (this.shouldAutoCloseSidebarNav()) this.sidebarCollapsed = true;
+    if (this.shouldAutoCloseSidebarNav()) this.closeSidebarPanel();
   }
 
   async newThread() {
@@ -1309,10 +1409,48 @@ export class AiFullpageComponent implements OnInit, OnDestroy, AfterViewInit {
     this.sidebarSwipeHandled = false;
   }
 
+  private resetMainTouchTracking() {
+    this.mainTouchStartX = null;
+    this.mainTouchStartY = null;
+    this.mainSwipeHandled = false;
+  }
+
+  private shouldHandleMainSidebarSwipe(): boolean {
+    return this.shouldHandleMobileSidebarOpenSwipe() || this.shouldHandleMobileSidebarCloseSwipe();
+  }
+
+  private shouldHandleMobileSidebarOpenSwipe(): boolean {
+    return this.isMobileSidebar() && this.sidebarCollapsed && !this.showSettings && !this.mobileSidebarAnimating;
+  }
+
+  private shouldHandleMobileSidebarCloseSwipe(): boolean {
+    return this.isMobileSidebar() && !this.sidebarCollapsed && !this.mobileSidebarAnimating;
+  }
+
+  private startMobileSidebarAnimation() {
+    if (!this.isMobileSidebar()) return;
+    this.mobileSidebarAnimating = true;
+    if (this.mobileSidebarAnimationTimer) clearTimeout(this.mobileSidebarAnimationTimer);
+    this.mobileSidebarAnimationTimer = setTimeout(() => {
+      this.mobileSidebarAnimating = false;
+      this.cdr.detectChanges();
+    }, this.mobileSidebarAnimationDurationMs);
+  }
+
+  private resetMobileSidebarAnimationState() {
+    this.mobileSidebarAnimating = false;
+    this.resetMainTouchTracking();
+    this.resetSidebarTouchTracking();
+    if (this.mobileSidebarAnimationTimer) {
+      clearTimeout(this.mobileSidebarAnimationTimer);
+      this.mobileSidebarAnimationTimer = null;
+    }
+  }
+
   async selectThread(thread: AiThread) {
     this.showSettings = false;
     this.clearCenterAttachments();
-    if (this.shouldAutoCloseSidebarNav()) this.sidebarCollapsed = true;
+    if (this.shouldAutoCloseSidebarNav()) this.closeSidebarPanel();
     await this.ai.loadThread(thread.id || thread._id);
     const chat = await this.waitForThreadChat();
     if (chat) chat.scrollToLatest();
@@ -1324,7 +1462,7 @@ export class AiFullpageComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   isMobileSidebar(): boolean {
-    try { return window.innerWidth <= 768; } catch { return false; }
+    try { return window.innerWidth <= 1023; } catch { return false; }
   }
 
   deleteThread(thread: AiThread) {
