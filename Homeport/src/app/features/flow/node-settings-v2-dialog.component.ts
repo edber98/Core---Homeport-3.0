@@ -18,7 +18,9 @@ import { FormsModule } from '@angular/forms';
     <div class="overlay" *ngIf="!isMobile" (click)="close.emit()"></div>
     <!-- Desktop/tablet layout -->
     <div class="dialog" *ngIf="!isMobile" (click)="$event.stopPropagation()" (dragover)="swallowDrag($event)" (drop)="swallowDrop($event)">
-      <div class="header"></div>
+      <div class="header">
+        <button class="close" type="button" aria-label="Fermer" (click)="close.emit(); $event.stopPropagation()">✕</button>
+      </div>
       <div class="body">
         <!-- Left column: Scenario + View mode (top), then viewer -->
         <div class="col left" *ngIf="hasInput(model)">
@@ -218,9 +220,10 @@ import { FormsModule } from '@angular/forms';
     :host { position: fixed; inset: 0; z-index: 100000; display:block; }
     .overlay { position:absolute; inset:0; background: rgba(17,17,17,0.32); }
     .dialog { position:absolute; inset: 2.5vh 2.5vw; background:#fff; border-radius: 16px; box-shadow: 0 16px 40px rgba(0,0,0,0.12); display:flex; flex-direction: column; overflow:hidden; }
-    .header { display:none; }
+    .header { display:flex; align-items:center; justify-content:flex-end; padding: 10px 10px 0 10px; flex: 0 0 auto; }
     .title { font-weight: 600; }
-    .close { margin-left:auto; border:1px solid #e5e7eb; background:#fff; border-radius: 10px; width: 32px; height: 28px; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; }
+    .close { border:1px solid #e5e7eb; background:#fff; border-radius: 10px; width: 32px; height: 28px; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; color:#6b7280; font-size:14px; line-height:1; }
+    .close:hover { border-color:#c7dbff; background:#e8f1ff; color:#0b5ed7; }
     .body { flex:1 1 auto; min-height:0; display:grid; grid-template-columns: 1fr minmax(480px, 1.2fr) 1fr; gap: 12px; padding: 0; overflow:hidden; }
     .col { min-height:0; overflow-y:auto; border-radius: 10px; padding: 0; display:flex; flex-direction:column; gap:8px; }
     .col.center { overflow: hidden; display:flex; flex-direction:column; min-height:0; }

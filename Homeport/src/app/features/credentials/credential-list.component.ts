@@ -40,18 +40,39 @@ import { environment } from '../../../environments/environment';
               <nz-option *ngFor="let p of providers" [nzValue]="p.id" [nzLabel]="p.title || p.name"></nz-option>
             </nz-select>
           </ng-template>
-          <button nz-button nzType="primary" class="primary with-text" (click)="openCreate()" [disabled]="!isAdmin">
-            <i class="fa-solid fa-plus"></i> Nouveau
+          <button
+            nz-button
+            nzType="primary"
+            class="primary create-btn"
+            (click)="openCreate()"
+            [disabled]="!isAdmin"
+            [attr.aria-label]="isMobile ? 'Nouveau credential' : null"
+          >
+            <ng-container *ngIf="!isMobile">
+              <i class="fa-solid fa-plus"></i>
+            </ng-container>
+            <span>{{ isMobile ? '+' : 'Nouveau' }}</span>
           </button>
         </div>
       </div>
 
       <div class="grid">
         <div class="card" *ngFor="let c of creds" (click)="view(c)">
+          <div class="leading" aria-hidden="true">
+            <div class="provider-icon" [style.background]="providerFor(c.providerId)?.color || '#f3f4f6'">
+              <ng-container *ngIf="providerFor(c.providerId) as p; else providerFallback">
+                <img *ngIf="p.iconUrl" [src]="p.iconUrl" alt="" />
+                <i *ngIf="!p.iconUrl && p.iconClass" [class]="p.iconClass" [style.color]="fgColor(p.color)"></i>
+                <img *ngIf="!p.iconUrl && !p.iconClass" [src]="simpleIconUrlWithColor(p.id, fgColor(p.color))" alt="" />
+              </ng-container>
+              <ng-template #providerFallback>
+                <span>{{ (c.providerId || c.name || 'C') | slice:0:1 | uppercase }}</span>
+              </ng-template>
+            </div>
+          </div>
           <div class="content">
             <div class="title-row">
               <div class="name">{{ c.name }}</div>
-              <span class="chip">{{ c.providerId }}</span>
               <span class="chip ws">{{ c.workspaceId }}</span>
             </div>
           </div>
@@ -116,7 +137,8 @@ import { environment } from '../../../environments/environment';
     .page-header p { margin: 4px 0 0; color:#6b7280; }
     .page-header .actions { display:flex; align-items:center; gap:10px; flex-wrap: wrap; }
     .page-header .actions .primary { background:#1677ff; border-color:#1677ff; }
-    .page-header .actions .with-text i { margin-right: 6px; }
+    .page-header .actions .create-btn { display:inline-flex; align-items:center; justify-content:center; }
+    .page-header .actions .create-btn i { margin-right: 6px; }
     .native-filter-select {
       min-width: 220px;
       max-width: 100%;
@@ -129,11 +151,26 @@ import { environment } from '../../../environments/environment';
       outline: none;
     }
     .native-filter-select:focus { border-color: #1677ff; }
-    .grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap:16px; }
+    .grid { display:grid; grid-template-columns: 1fr; gap:16px; }
     .card { display:flex; align-items:center; gap:14px; padding:14px 14px; border-radius:14px; background: #fff; border: 1px solid #ececec; box-shadow: 0 8px 24px rgba(0,0,0,0.04); }
+    .leading { flex:0 0 auto; display:flex; align-items:center; }
+    .provider-icon {
+      width:36px;
+      height:36px;
+      border-radius:10px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
+      border:1px solid #e5e7eb;
+      flex:0 0 auto;
+    }
+    .provider-icon img { width:20px; height:20px; object-fit:contain; display:block; }
+    .provider-icon i { font-size:18px; line-height:1; display:block; }
+    .provider-icon span { font-weight:700; font-size:13px; color:#334155; }
     .content { flex:1; min-width:0; }
-    .title-row { display:flex; align-items:center; gap:8px; }
-    .name { font-weight: 600; letter-spacing: -0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .title-row { display:flex; align-items:center; gap:8px; min-width:0; }
+    .name { flex:1 1 auto; min-width:0; font-weight: 600; letter-spacing: -0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .chip { background:#f5f5f5; border:1px solid #eaeaea; color:#444; border-radius:999px; padding:2px 8px; font-size:11px; }
     .chip.ws { color:#6b7280; }
     .trailing { display:flex; align-items:center; gap:8px; }
@@ -152,10 +189,22 @@ import { environment } from '../../../environments/environment';
     @keyframes shimmer { 100% { transform: translateX(100%); } }
     .error { color:#b42318; background:#fee4e2; border:1px solid #fecaca; padding:10px 12px; border-radius:10px; display:inline-block; }
     .empty { color:#6b7280; margin-top: 8px; }
+    @media (min-width: 769px) {
+      .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 768px) {
+      .page-header .actions { width:100%; flex-wrap: nowrap; }
+      .page-header .actions .native-filter-select,
+      .page-header .actions nz-select { flex:1 1 auto; min-width:0; }
+      .page-header .actions .create-btn { flex:0 0 auto; min-width:40px; padding:0 12px; }
+      .page-header .actions .create-btn i { margin-right: 0; }
+      .chip.ws { display:none; }
+    }
   `]
 })
 export class CredentialListComponent implements OnInit, OnDestroy {
   providers: AppProvider[] = [];
+  providerIndex = new Map<string, AppProvider>();
   creds: CredentialSummary[] = [];
   providerFilter: string | null = null;
   loading = false;
@@ -167,6 +216,7 @@ export class CredentialListComponent implements OnInit, OnDestroy {
   credValues: any = {};
   credValid = false;
   useNativeFilterSelect = false;
+  isMobile = false;
 
   constructor(private fb: FormBuilder, private catalog: CatalogService, private acl: AccessControlService, public dfs: DynamicFormService, private zone: NgZone, private cdr: ChangeDetectorRef, private router: Router, private ui: UiMessageService) {
     this.updateFilterSelectMode();
@@ -181,9 +231,12 @@ export class CredentialListComponent implements OnInit, OnDestroy {
 
   private updateFilterSelectMode() {
     try {
-      this.useNativeFilterSelect = window.innerWidth <= 1023;
+      const width = window.innerWidth;
+      this.useNativeFilterSelect = width <= 1023;
+      this.isMobile = width <= 768;
     } catch {
       this.useNativeFilterSelect = false;
+      this.isMobile = false;
     }
   }
 
@@ -202,6 +255,7 @@ export class CredentialListComponent implements OnInit, OnDestroy {
     this.catalog.listApps().subscribe(list => {
       this.zone.run(() => {
         this.providers = (list || []).filter(p => !!p.hasCredentials);
+        this.providerIndex = new Map(this.providers.map(p => [p.id, p] as const));
         this.reload();
         try { this.cdr.detectChanges(); } catch {}
       });
@@ -273,10 +327,33 @@ export class CredentialListComponent implements OnInit, OnDestroy {
     this.catalog.deleteCredential(c.id).subscribe({ next: () => { this.ui.success('Credentials supprimés'); this.reload(); }, error: () => this.ui.error('Échec de la suppression') });
   }
 
+  providerFor(providerId: string): AppProvider | undefined { return this.providerIndex.get(providerId); }
+  simpleIconUrlWithColor(id: string, color?: string) {
+    const hex = (color || '#111').replace('#', '');
+    return `https://cdn.simpleicons.org/${encodeURIComponent(id)}/${hex}`;
+  }
+  fgColor(bg?: string | null): string {
+    const base = String(bg || '#f3f4f6');
+    try {
+      const { r, g, b } = this.hexToRgb(base);
+      const yiq = (r * 299 + g * 587 + b * 114) / 1000;
+      return yiq >= 140 ? '#111' : '#fff';
+    } catch {
+      return '#111';
+    }
+  }
+
   private slug(s: string): string {
     return (s || '').trim().toLowerCase().normalize('NFD')
       .replace(/[^\p{Letter}\p{Number}\s-]/gu, '')
       .replace(/\s+/g, '-')
       .replace(/-+/g, '-') || 'id-' + Date.now().toString(36);
+  }
+  private hexToRgb(hex: string): { r: number; g: number; b: number } {
+    let s = hex.trim();
+    if (s.startsWith('#')) s = s.slice(1);
+    if (s.length === 3) s = s.split('').map(c => c + c).join('');
+    const num = parseInt(s, 16);
+    return { r: (num >> 16) & 255, g: (num >> 8) & 255, b: num & 255 };
   }
 }
