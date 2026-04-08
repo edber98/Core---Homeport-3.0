@@ -18,8 +18,6 @@ import { apiBase } from '../../shared/api-base';
   template: `
     <div class="pf-shell">
       <div class="pf-card" *ngIf="loaded; else loading">
-        <h2 class="pf-title">{{ flowName || 'Formulaire' }}</h2>
-        <p class="pf-sub" *ngIf="nodeTitle">{{ nodeTitle }}</p>
         <div *ngIf="!schema"><em>Formulaire non configuré.</em></div>
         <ng-container *ngIf="schema">
           <app-dynamic-form [schema]="schema" [value]="model" (valueChange)="onValue($event)" (submitted)="onSubmit($event)" *ngIf="!running && !done"></app-dynamic-form>

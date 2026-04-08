@@ -230,29 +230,57 @@ Réponds avec un JSON valide contenant :
 
 // ─── Resolve image input ──────────────────────────────────────────────────────
 
+function normalizeMimeType(mimeType, fallback = 'image/png') {
+  const value = String(mimeType || '').split(';')[0].trim().toLowerCase();
+  return value || fallback;
+}
+
+function parseSerializedFileRef(value) {
+  if (typeof value !== 'string') return null;
+  const raw = value.trim();
+  if (!raw.startsWith('{') || !raw.endsWith('}')) return null;
+  try {
+    const parsed = JSON.parse(raw);
+    if (parsed && typeof parsed === 'object' && (parsed._type === 'fileRef' || parsed.fileId)) {
+      return parsed;
+    }
+  } catch {}
+  return null;
+}
+
+function looksLikeBase64(value) {
+  if (typeof value !== 'string') return false;
+  const raw = value.trim();
+  if (!raw || raw.startsWith('{') || raw.startsWith('[')) return false;
+  const compact = raw.replace(/\s+/g, '');
+  if (compact.length < 32 || compact.length % 4 !== 0) return false;
+  return /^[A-Za-z0-9+/]+=*$/.test(compact);
+}
+
 async function resolveImageInput(inputs, opts) {
-  const imageVal = inputs.image || inputs.imageUrl || '';
+  const imageRaw = inputs.image || inputs.imageUrl || '';
+  const imageVal = parseSerializedFileRef(imageRaw) || imageRaw;
   // Cas 1: fileRef d'un node précédent
-  if (imageVal && typeof imageVal === 'object' && imageVal._type === 'fileRef') {
+  if (imageVal && typeof imageVal === 'object' && (imageVal._type === 'fileRef' || imageVal.fileId)) {
     const buf = await opts.files.resolveAsBuffer(imageVal);
-    return { base64: buf.toString('base64'), mimeType: imageVal.mimeType || 'image/png' };
+    return { base64: buf.toString('base64'), mimeType: normalizeMimeType(imageVal.mimeType) };
   }
   // Cas 2: data URI
   if (typeof imageVal === 'string' && imageVal.startsWith('data:')) {
     const [header, data] = imageVal.split(',');
-    const mime = header.match(/data:([^;]+)/)?.[1] || 'image/png';
+    const mime = normalizeMimeType(header.match(/data:([^;]+)/)?.[1], 'image/png');
     return { base64: data, mimeType: mime };
   }
   // Cas 3: URL HTTP - télécharger
   if (typeof imageVal === 'string' && /^https?:\/\//i.test(imageVal)) {
     const res = await fetch(imageVal);
     const buf = Buffer.from(await res.arrayBuffer());
-    const mime = res.headers.get('content-type') || 'image/png';
+    const mime = normalizeMimeType(res.headers.get('content-type'), 'image/png');
     return { base64: buf.toString('base64'), mimeType: mime };
   }
   // Cas 4: base64 brut
-  if (typeof imageVal === 'string' && imageVal.length > 100) {
-    return { base64: imageVal, mimeType: inputs.mediaType || 'image/png' };
+  if (typeof imageVal === 'string' && looksLikeBase64(imageVal)) {
+    return { base64: imageVal.replace(/\s+/g, ''), mimeType: normalizeMimeType(inputs.mediaType, 'image/png') };
   }
   return null;
 }
