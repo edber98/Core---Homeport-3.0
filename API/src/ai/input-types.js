@@ -83,6 +83,15 @@ const INPUT_TYPES = [
     validators: ['required']
   },
   {
+    type: 'rate',
+    category: 'input',
+    options: [
+      'key','label','description','default','validators','visibleIf','requiredIf','disabledIf','col','itemStyle','expression','rate'
+    ],
+    notes: 'Utilise nz-rate avec 5 étoiles. Options : rate: { allowHalf: false }.',
+    validators: ['required','min','max']
+  },
+  {
     type: 'tags',
     category: 'input',
     options: [
@@ -151,4 +160,3 @@ function getCatalog(){
 }
 
 module.exports = { getCatalog };
-

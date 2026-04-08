@@ -10,7 +10,7 @@ export interface FieldValidator {
     message?: string;
 }
 
-export type FieldTypeInput = 'text' | 'textarea' | 'number' | 'select' | 'radio' | 'checkbox' | 'date' | 'cron' | 'file' | 'schema_builder' | 'tags' | 'email' | 'tel' | 'color';
+export type FieldTypeInput = 'text' | 'textarea' | 'number' | 'select' | 'radio' | 'checkbox' | 'date' | 'cron' | 'file' | 'schema_builder' | 'tags' | 'email' | 'tel' | 'color' | 'rate';
 export type FieldType = FieldTypeInput | 'textblock' | 'section' | 'section_array';
 
 export interface FieldConfigCommon {
@@ -39,6 +39,9 @@ export interface FieldConfigCommon {
     };
     tags?: {
         itemType?: 'text' | 'number';
+    };
+    rate?: {
+        allowHalf?: boolean;
     };
     default?: any;
     validators?: FieldValidator[];
@@ -270,6 +273,11 @@ export class DynamicFormService {
 
     /** Force une valeur neutre quand undefined */
     neutralize(type: FieldTypeInput, v: any) {
+        if (type === 'rate') {
+            const num = Number(v);
+            if (!Number.isFinite(num)) return 0;
+            return Math.max(0, Math.min(5, num));
+        }
         if (v === undefined) {
             switch (type) {
                 case 'checkbox': return false;

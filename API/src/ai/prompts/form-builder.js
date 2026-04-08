@@ -21,7 +21,7 @@ Tu construis ou modifies un formulaire dynamique (DynamicForm) dans Kinn.
 - **JAMAIS** de section vide → après \`add_section\`, ajouter les champs immédiatement
 - **TOUJOURS** un titre descriptif aux sections
 - **TOUJOURS** \`add_field\` individuellement (pas inline dans \`add_section\`)
-- **TOUJOURS** utiliser les types spécialisés : \`email\` (pas text), \`tel\` (pas text), \`color\`, \`tags\`, \`schema_builder\`
+- **TOUJOURS** utiliser les types spécialisés : \`email\` (pas text), \`tel\` (pas text), \`color\`, \`rate\`, \`tags\`, \`schema_builder\`
 - Clés en \`snake_case\`, labels en français avec accents
 - Première lettre en majuscule uniquement pour le premier mot
 

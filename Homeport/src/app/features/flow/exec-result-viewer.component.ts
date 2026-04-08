@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzCollapseModule } from 'ng-zorro-antd/collapse';
 import { NzSwitchModule } from 'ng-zorro-antd/switch';
+import { NzRateModule } from 'ng-zorro-antd/rate';
 import { FormsModule } from '@angular/forms';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { FilesBackendService } from '../../services/files-backend.service';
@@ -53,7 +54,7 @@ interface SectionGroup {
 @Component({
   selector: 'exec-result-viewer',
   standalone: true,
-  imports: [CommonModule, FormsModule, NzTagModule, NzCollapseModule, NzSwitchModule],
+  imports: [CommonModule, FormsModule, NzTagModule, NzCollapseModule, NzSwitchModule, NzRateModule],
   template: `
     <div class="rv-root" *ngIf="hasData; else emptyTpl">
       <!-- Schema-based rendering -->
@@ -243,6 +244,20 @@ interface SectionGroup {
           <span *ngIf="!value">—</span>
         </ng-container>
 
+        <ng-container *ngIf="field.type === 'rate'">
+          <span *ngIf="value != null && value !== ''" class="rv-rate">
+            <nz-rate
+              [ngModel]="normalizeRateValue(value, field)"
+              [ngModelOptions]="{ standalone: true }"
+              [nzCount]="5"
+              [nzAllowHalf]="field.rate?.allowHalf === true"
+              [nzDisabled]="true">
+            </nz-rate>
+            <span class="rv-rate-value">{{ normalizeRateValue(value, field) }}/5</span>
+          </span>
+          <span *ngIf="value == null || value === ''">—</span>
+        </ng-container>
+
         <!-- code / expression / cron → monospace -->
         <ng-container *ngIf="field.type === 'code' || field.type === 'expression' || field.type === 'cron'">
           <code *ngIf="value != null" class="rv-code">{{ value }}</code>
@@ -377,6 +392,8 @@ interface SectionGroup {
 
     .rv-color { display: inline-flex; align-items: center; gap: 6px; font-family: monospace; }
     .rv-color-swatch { display: inline-block; width: 18px; height: 18px; border-radius: 4px; border: 1px solid #d1d5db; flex-shrink: 0; }
+    .rv-rate { display: inline-flex; align-items: center; gap: 8px; }
+    .rv-rate-value { color: #6b7280; font-variant-numeric: tabular-nums; }
 
     .rv-code { font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace; font-size: 12px; background: #f3f4f6; padding: 2px 6px; border-radius: 4px; word-break: break-all; }
     .rv-json { font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace; font-size: 12px; background: #f3f4f6; padding: 8px 10px; border-radius: 6px; margin: 0; overflow-x: auto; max-height: 200px; overflow-y: auto; white-space: pre-wrap; word-break: break-word; }
@@ -426,7 +443,7 @@ export class ExecResultViewerComponent implements OnChanges, OnDestroy {
   // All known types (anything not in here goes to auto-fallback)
   private knownTypes = new Set([
     'text', 'textarea', 'number', 'tel', 'password', 'hidden',
-    'url', 'email', 'color',
+    'url', 'email', 'color', 'rate',
     'code', 'expression', 'cron', 'json', 'schema_builder', 'html',
     'checkbox', 'boolean', 'date', 'select', 'radio',
     'tags', 'text_array', 'file'
@@ -758,6 +775,13 @@ export class ExecResultViewerComponent implements OnChanges, OnDestroy {
   optionLabel(field: any, value: any): string {
     const opt = (field.options || []).find((o: any) => o.value === value);
     return opt?.label || String(value ?? '—');
+  }
+
+  normalizeRateValue(value: any, field?: any): number {
+    const parsed = Number(value);
+    if (!Number.isFinite(parsed)) return 0;
+    const clamped = Math.max(0, Math.min(5, parsed));
+    return field?.rate?.allowHalf ? Math.round(clamped * 2) / 2 : Math.round(clamped);
   }
 
   formatSize(bytes: number): string {

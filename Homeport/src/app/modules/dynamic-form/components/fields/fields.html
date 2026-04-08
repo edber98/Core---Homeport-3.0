@@ -125,6 +125,11 @@
                                    [nzShowText]="$any(field).color?.showText !== false"
                                    [nzAllowClear]="$any(field).color?.allowClear === true"></nz-color-picker>
 
+                  <nz-rate *ngIf="field.type==='rate'"
+                           [formControlName]="key"
+                           [nzCount]="5"
+                           [nzAllowHalf]="$any(field).rate?.allowHalf === true"></nz-rate>
+
                   <input *ngIf="field.type==='number'"
                         nz-input type="number" [id]="key" [placeholder]="field.placeholder || ''" [formControlName]="key" />
 

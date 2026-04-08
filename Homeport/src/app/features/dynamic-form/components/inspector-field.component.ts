@@ -49,6 +49,7 @@ import { Subscription } from 'rxjs';
                       <nz-option nzValue="email" nzLabel="email"></nz-option>
                       <nz-option nzValue="tel" nzLabel="tel"></nz-option>
                       <nz-option nzValue="color" nzLabel="color"></nz-option>
+                      <nz-option nzValue="rate" nzLabel="rate"></nz-option>
                       <nz-option nzValue="tags" nzLabel="tags"></nz-option>
                       <nz-option nzValue="schema_builder" nzLabel="schema_builder"></nz-option>
                       <nz-option nzValue="textblock" nzLabel="textblock"></nz-option>
@@ -68,6 +69,7 @@ import { Subscription } from 'rxjs';
                       <option value="email">email</option>
                       <option value="tel">tel</option>
                       <option value="color">color</option>
+                      <option value="rate">rate</option>
                       <option value="tags">tags</option>
                       <option value="schema_builder">schema_builder</option>
                       <option value="textblock">textblock</option>
@@ -253,6 +255,15 @@ import { Subscription } from 'rxjs';
                     <nz-form-control><nz-switch formControlName="color_allowClear"></nz-switch></nz-form-control>
                   </nz-form-item>
                 </div>
+              </ng-container>
+              <ng-container *ngIf="group.get('type')?.value==='rate'">
+                <div class="ins-section-header" style="margin-top:8px;">
+                  <div class="card-title"><span class="t">Note — Configuration</span><span class="s">0 à 5 étoiles</span></div>
+                </div>
+                <nz-form-item class="switch-left">
+                  <nz-form-label nzTooltipTitle="Autoriser la saisie par demi-étoiles"><span>Demi-étoiles</span></nz-form-label>
+                  <nz-form-control><nz-switch formControlName="rate_allowHalf"></nz-switch></nz-form-control>
+                </nz-form-item>
               </ng-container>
               <nz-form-item *ngIf="group.get('type')?.value==='select' || group.get('type')?.value==='radio'">
                 <nz-form-label>
@@ -491,7 +502,21 @@ import { Subscription } from 'rxjs';
                 <ng-container *ngIf="group.get('type')?.value !== 'textblock'; else noFieldParams">
                   <nz-form-item>
                     <nz-form-label nzFor="fld_default" nzTooltipTitle="Valeur par défaut"><span>Valeur par défaut</span></nz-form-label>
-                    <nz-form-control><input nz-input id="fld_default" formControlName="default"/></nz-form-control>
+                    <nz-form-control>
+                      <ng-container *ngIf="group.get('type')?.value==='rate'; else genericDefaultInput">
+                        <nz-input-number
+                          style="width: 100%"
+                          id="fld_default"
+                          formControlName="default"
+                          [nzMin]="0"
+                          [nzMax]="5"
+                          [nzStep]="group.get('rate_allowHalf')?.value === true ? 0.5 : 1">
+                        </nz-input-number>
+                      </ng-container>
+                      <ng-template #genericDefaultInput>
+                        <input nz-input id="fld_default" formControlName="default"/>
+                      </ng-template>
+                    </nz-form-control>
                   </nz-form-item>
                   <nz-form-item class="toggle-row" *ngIf="group.get('type')?.value==='text' || group.get('type')?.value==='textarea' || group.get('type')?.value==='email' || group.get('type')?.value==='tel'">
                     <nz-form-label nzTooltipTitle="Masquer la saisie et l'affichage (secret)"><span>Secret</span></nz-form-label>
@@ -522,7 +547,7 @@ import { Subscription } from 'rxjs';
                       </nz-form-item>
                     </ng-container>
 
-                    <ng-container *ngIf="group.get('type')?.value==='number'">
+                    <ng-container *ngIf="group.get('type')?.value==='number' || group.get('type')?.value==='rate'">
                       <nz-form-item>
                         <nz-form-label nzTooltipTitle="Valeur minimale"><span>Min</span></nz-form-label>
                         <nz-form-control>
@@ -535,7 +560,7 @@ import { Subscription } from 'rxjs';
                           <nz-input-number style="width: 100%" [(ngModel)]="v_max" [ngModelOptions]="{standalone:true}" (ngModelChange)="onValidatorsChanged()" [nzMin]="-999999"></nz-input-number>
                         </nz-form-control>
                       </nz-form-item>
-                      <nz-form-item class="span-2 toggle-row">
+                      <nz-form-item class="span-2 toggle-row" *ngIf="group.get('type')?.value==='number'">
                         <nz-form-label nzTooltipTitle="Limiter aux nombres entiers"><span>Entier</span></nz-form-label>
                         <nz-form-control>
                           <nz-switch [(ngModel)]="v_integer" [ngModelOptions]="{standalone:true}" (ngModelChange)="onValidatorsChanged()"></nz-switch>
@@ -707,10 +732,10 @@ export class InspectorFieldComponent implements OnChanges, OnDestroy, DoCheck {
       if (typeof this.v_minLength === 'number') out.push({ type: 'minLength', value: this.v_minLength });
       if (typeof this.v_maxLength === 'number') out.push({ type: 'maxLength', value: this.v_maxLength });
       if (this.v_pattern && this.v_pattern.trim()) out.push({ type: 'pattern', value: this.v_pattern });
-    } else if (type === 'number') {
+    } else if (type === 'number' || type === 'rate') {
       if (typeof this.v_min === 'number') out.push({ type: 'min', value: this.v_min });
       if (typeof this.v_max === 'number') out.push({ type: 'max', value: this.v_max });
-      if (this.v_integer) out.push({ type: 'integer' });
+      if (type === 'number' && this.v_integer) out.push({ type: 'integer' });
     } else if (type === 'date') {
       if (this.v_dateMin && this.v_dateMin.trim()) out.push({ type: 'dateMin', value: this.v_dateMin });
       if (this.v_dateMax && this.v_dateMax.trim()) out.push({ type: 'dateMax', value: this.v_dateMax });

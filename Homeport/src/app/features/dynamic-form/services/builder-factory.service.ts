@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import type { FieldConfig, SectionConfig, StepConfig } from '../../../modules/dynamic-form/dynamic-form.service';
 
-export type FieldType = 'text'|'textarea'|'number'|'date'|'select'|'radio'|'checkbox'|'cron'|'file'|'textblock'|'schema_builder'|'tags'|'email'|'tel'|'color';
+export type FieldType = 'text'|'textarea'|'number'|'date'|'select'|'radio'|'checkbox'|'cron'|'file'|'textblock'|'schema_builder'|'tags'|'email'|'tel'|'color'|'rate';
 
 @Injectable({ providedIn: 'root' })
 export class BuilderFactoryService {
@@ -41,7 +41,7 @@ export class BuilderFactoryService {
       if (type === 'select' || type === 'radio') {
         base.options = [ { label: 'Option 1', value: 'option1' }, { label: 'Option 2', value: 'option2' } ];
         base.default = 'option1';
-      } else if (type === 'number') base.default = 0;
+      } else if (type === 'number' || type === 'rate') base.default = 0;
       else if (type === 'cron') base.default = '';
       else if (type === 'checkbox') base.default = false;
       else base.default = '';
@@ -74,6 +74,11 @@ export class BuilderFactoryService {
       }
       if (type === 'color') {
         base.default = '#1677ff';
+        base.col = { xs: 24, sm: 24, md: 12, lg: 12, xl: 12 };
+      }
+      if (type === 'rate') {
+        base.default = 0;
+        base.rate = { allowHalf: false };
         base.col = { xs: 24, sm: 24, md: 12, lg: 12, xl: 12 };
       }
     }

@@ -63,7 +63,7 @@ import type {
 type FieldType =
   | 'text' | 'textarea' | 'number' | 'date'
   | 'select' | 'radio' | 'checkbox' | 'cron' | 'file' | 'textblock'
-  | 'schema_builder' | 'tags' | 'email' | 'tel' | 'color';
+  | 'schema_builder' | 'tags' | 'email' | 'tel' | 'color' | 'rate';
 
 type Issue = { level: 'blocker'|'error'|'warning'; message: string; actions?: Array<{ label: string; run: () => void }>; };
 
@@ -676,6 +676,7 @@ export class DynamicFormBuilderComponent implements OnChanges, OnInit, AfterView
       file_hint: [''],
       color_showText: [true],
       color_allowClear: [false],
+      rate_allowHalf: [false],
       default: [''],
       options: [''],
       textHtml: [''],
@@ -869,7 +870,8 @@ export class DynamicFormBuilderComponent implements OnChanges, OnInit, AfterView
           const typePatch: any = {
             placeholder: d.placeholder ?? '',
             default: d.defaultValue ?? '',
-            options: d.optionsJson ?? ''
+            options: d.optionsJson ?? '',
+            rate_allowHalf: false,
           };
           if (f.type === 'cron') {
             typePatch.col_xs = 24;
@@ -887,10 +889,14 @@ export class DynamicFormBuilderComponent implements OnChanges, OnInit, AfterView
           if (f.type === 'cron' && !(f as any).cron) {
             (f as any).cron = { type: 'linux', size: 'default', borderless: false, collapseDisable: false };
           }
+          if (f.type === 'rate' && !(f as any).rate) {
+            (f as any).rate = { allowHalf: false };
+          }
           if (f.type === 'cron') {
             (f as any).col = { xs: 24, sm: 24, md: 24, lg: 24, xl: 24 };
           }
           if (f.type !== 'cron') delete (f as any).cron;
+          if (f.type !== 'rate') delete (f as any).rate;
           // Petite impulsion supplémentaire pour forcer le rebuild de l'aperçu (type change)
           setTimeout(() => this.refresh());
         }
@@ -992,7 +998,15 @@ export class DynamicFormBuilderComponent implements OnChanges, OnInit, AfterView
         } else {
           delete (f as any).color;
         }
+        if (f.type === 'rate') {
+          (f as any).rate = {
+            allowHalf: !!v.rate_allowHalf,
+          };
+          (f as any).default = this.normalizeRateDefault(v.default, !!v.rate_allowHalf);
+        } else {
+          delete (f as any).rate;
           (f as any).default = v.default ?? undefined;
+        }
           (f as any).options = this.parseJson(v.options);
           (f as any).validators = this.parseJson(v.validators);
           (f as any).visibleIf = this.parseJson(v.visibleIf);
@@ -1229,6 +1243,7 @@ export class DynamicFormBuilderComponent implements OnChanges, OnInit, AfterView
       case 'email': return { placeholder: 'exemple@email.com', defaultValue: '' };
       case 'tel': return { placeholder: '+33 6 12 34 56 78', defaultValue: '' };
       case 'color': return { defaultValue: '#1677ff' } as any;
+      case 'rate': return { defaultValue: 0 } as any;
       case 'tags': return { defaultValue: [] } as any;
       case 'schema_builder': return { defaultValue: null } as any;
       case 'select':
@@ -1238,6 +1253,13 @@ export class DynamicFormBuilderComponent implements OnChanges, OnInit, AfterView
       }
       default: return { defaultValue: '' } as any;
     }
+  }
+
+  private normalizeRateDefault(value: any, allowHalf: boolean): number {
+    const parsed = Number(value);
+    if (!Number.isFinite(parsed)) return 0;
+    const clamped = Math.max(0, Math.min(5, parsed));
+    return allowHalf ? Math.round(clamped * 2) / 2 : Math.round(clamped);
   }
 
   // ---------- Options Builder ----------
@@ -1497,6 +1519,7 @@ export class DynamicFormBuilderComponent implements OnChanges, OnInit, AfterView
         file_hint: (obj as any).file?.hint ?? '',
         color_showText: (obj as any).color?.showText !== false,
         color_allowClear: !!(obj as any).color?.allowClear,
+        rate_allowHalf: !!(obj as any).rate?.allowHalf,
         default: (obj as any).default ?? '',
         options: this.stringifyJson((obj as any).options),
         textHtml: (obj as any).textHtml ?? '',

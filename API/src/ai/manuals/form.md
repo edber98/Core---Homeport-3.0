@@ -22,6 +22,7 @@ la visibilité conditionnelle, les styles et les bonnes pratiques.
 | boolean | Interrupteur vrai/faux |
 | date | Sélecteur de date |
 | color | Sélecteur de couleur |
+| rate | Notation par étoiles (0 à 5) |
 | file | Upload de fichier |
 | tags | Liste de tags (étiquettes libres) |
 | text_array | Liste de textes (ajout/suppression) |
@@ -40,6 +41,7 @@ la visibilité conditionnelle, les styles et les bonnes pratiques.
 - **email** : Active le clavier email sur mobile et la validation navigateur. Utiliser pour les adresses email (pas text).
 - **tel** : Active le clavier numérique sur mobile. Utiliser pour les numéros de téléphone (pas text).
 - **color** : Utilise nz-color-picker. Options : `color: { showText: true, allowClear: false }`.
+- **rate** : Utilise nz-rate avec 5 étoiles. Options : `rate: { allowHalf: false }`.
 - **schema_builder** : Formulaire dans le formulaire pour construire un schéma dynamique. Col pleine largeur (`xs: 24`), `defaultValue: null`.
 - **tags** : Liste d'étiquettes libres. Options : `tags: { itemType: "text" }`. `defaultValue: []`.
 

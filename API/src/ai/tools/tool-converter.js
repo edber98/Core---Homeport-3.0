@@ -26,6 +26,7 @@ function fieldToJsonSchema(field) {
 
   switch (field.type) {
     case 'number':
+    case 'rate':
     case 'tel':
       schema.type = 'number';
       break;

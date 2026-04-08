@@ -79,7 +79,7 @@ async function simulateViaEngine(flow, targetNodeId, opts = {}){
         for (const field of tpl.outputSchema) {
           const k = String(field.key || field.name || ''); if (!k) continue;
           const ft = String(field.type || 'text').toLowerCase();
-          if (ft === 'number') resultObj[k] = 0;
+          if (ft === 'number' || ft === 'rate') resultObj[k] = 0;
           else if (ft === 'boolean') resultObj[k] = true;
           else if (ft === 'array' || ft === 'text_array' || ft === 'number_array') resultObj[k] = [];
           else if (ft === 'object') resultObj[k] = {};
@@ -96,7 +96,7 @@ async function simulateViaEngine(flow, targetNodeId, opts = {}){
             ? dynSchema.fields.filter(f => f.key && f.type !== 'textblock' && f.type !== 'section' && f.type !== 'section_array')
             : [];
         if (fields.length) {
-          const typeMap = { text: 'text', textarea: 'text', number: 'number', checkbox: 'boolean', date: 'date', tags: 'text_array', select: 'text', radio: 'text' };
+          const typeMap = { text: 'text', textarea: 'text', number: 'number', rate: 'number', checkbox: 'boolean', date: 'date', tags: 'text_array', select: 'text', radio: 'text' };
           const resultObj = { ok: true };
           for (const f of fields) {
             const k = String(f.key || ''); if (!k) continue;
@@ -392,7 +392,7 @@ function buildOneLevelPreview(result, templateObj){
     if (!schema && templateObj?.output_schema_field && templateObj?.context) {
       const dynSchema = templateObj.context[templateObj.output_schema_field];
       if (dynSchema && typeof dynSchema === 'object' && Array.isArray(dynSchema.fields)) {
-        const typeMap = { text: 'text', textarea: 'text', number: 'number', checkbox: 'boolean', date: 'date', tags: 'text_array', select: 'text', radio: 'text' };
+        const typeMap = { text: 'text', textarea: 'text', number: 'number', rate: 'number', checkbox: 'boolean', date: 'date', tags: 'text_array', select: 'text', radio: 'text' };
         schema = dynSchema.fields
           .filter(f => f.key && f.type !== 'textblock' && f.type !== 'section' && f.type !== 'section_array')
           .map(f => ({ key: f.key, type: typeMap[f.type] || f.type || 'text', label: f.label || f.key }));

@@ -98,6 +98,7 @@ export class ContextPanelComponent {
       case 'email': return 'fa-solid fa-envelope';
       case 'tel': return 'fa-solid fa-phone';
       case 'color': return 'fa-solid fa-palette';
+      case 'rate': return 'fa-solid fa-star-half-stroke';
       case 'file': return 'fa-solid fa-file-arrow-up';
       case 'tags': return 'fa-solid fa-tags';
       case 'schema_builder': return 'fa-solid fa-table-columns';

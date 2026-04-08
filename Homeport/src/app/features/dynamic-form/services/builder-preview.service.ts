@@ -151,6 +151,7 @@ export class BuilderPreviewService {
       case 'number': return 1;
       case 'date': return new Date();
       case 'cron': return '0 * * * *';
+      case 'rate': return f?.rate?.allowHalf ? 4.5 : 4;
       case 'select':
       case 'radio': return f?.options?.[0]?.value ?? 'x';
       default: return 'x';
@@ -160,6 +161,7 @@ export class BuilderPreviewService {
     switch (f?.type) {
       case 'checkbox': return false;
       case 'number': return 0;
+      case 'rate': return 0;
       case 'date': return null;
       default: return '';
     }

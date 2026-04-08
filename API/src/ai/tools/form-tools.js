@@ -50,7 +50,7 @@ const FORM_TOOL_DEFINITIONS = [
       type: 'object',
       properties: {
         key: { type: 'string', description: 'Identifiant unique (snake_case)' },
-        type: { type: 'string', description: 'Type de champ (text, textarea, number, email, url, tel, select, radio, checkbox, boolean, date, color, file, tags, text_array, code, expression, json, html, section, section_array)' },
+        type: { type: 'string', description: 'Type de champ (text, textarea, number, email, url, tel, select, radio, checkbox, boolean, date, color, rate, file, tags, text_array, code, expression, json, html, section, section_array)' },
         label: { type: 'string', description: 'Libellé affiché' },
         description: { type: 'string', description: 'Description / texte d\'aide' },
         required: { type: 'boolean', description: 'Champ obligatoire ?' },
@@ -255,6 +255,7 @@ function createFormExecutor(metadata, emit) {
     { type: 'boolean', description: 'Interrupteur vrai/faux' },
     { type: 'date', description: 'Sélecteur de date' },
     { type: 'color', description: 'Sélecteur de couleur' },
+    { type: 'rate', description: 'Notation par étoiles (0 à 5)' },
     { type: 'file', description: 'Upload de fichier' },
     { type: 'tags', description: 'Liste de tags (étiquettes)' },
     { type: 'text_array', description: 'Liste de textes' },

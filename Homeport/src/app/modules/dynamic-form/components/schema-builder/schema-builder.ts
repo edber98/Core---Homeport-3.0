@@ -208,6 +208,7 @@ export class SchemaBuilderComponent implements ControlValueAccessor, OnInit, Aft
     switch (type) {
       case 'text': return 'text';
       case 'number': return 'number';
+      case 'rate': return 'rate';
       case 'boolean': return 'checkbox';
       case 'date': return 'date';
       case 'array':

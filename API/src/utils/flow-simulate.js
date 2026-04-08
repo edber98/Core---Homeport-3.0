@@ -62,6 +62,7 @@ function buildSampleFromSchema(schema, opts = {}) {
     if (f.default !== undefined) return f.default;
     if (t === 'text' || t === 'textarea' || t === 'json' || t === 'code') return 'sample';
     if (t === 'select' || t === 'combobox' || t === 'radio') return optionFirstValue(f) ?? '';
+    if (t === 'rate') return f.rate?.allowHalf ? 4.5 : 4;
     if (t === 'number' || t === 'slider') return 1;
     if (t === 'checkbox' || t === 'switch') return true;
     if (t === 'date' || t === 'datetime' || t === 'time') return new Date().toISOString();
@@ -294,7 +295,7 @@ function simulateMsgForScenario(targetId, choice, graph) {
           for (const field of outputSchema) {
             const k = String(field.key || field.name || ''); if (!k) continue;
             const ft = String(field.type || 'string').toLowerCase();
-            if (ft === 'number') resultObj[k] = 0;
+            if (ft === 'number' || ft === 'rate') resultObj[k] = 0;
             else if (ft === 'boolean') resultObj[k] = true;
             else if (ft === 'array') resultObj[k] = [];
             else if (ft === 'object') resultObj[k] = {};
@@ -315,7 +316,7 @@ function simulateMsgForScenario(targetId, choice, graph) {
               : (dynSchema && typeof dynSchema === 'object' && Array.isArray(dynSchema.fields))
                 ? dynSchema.fields.filter(f => f.key && f.type !== 'textblock' && f.type !== 'section' && f.type !== 'section_array')
                 : [];
-            const typeMap = { text: 'text', textarea: 'text', number: 'number', checkbox: 'boolean', date: 'date', tags: 'text_array', select: 'text', radio: 'text' };
+            const typeMap = { text: 'text', textarea: 'text', number: 'number', rate: 'number', checkbox: 'boolean', date: 'date', tags: 'text_array', select: 'text', radio: 'text' };
             for (const f of fields) {
               const k = String(f.key || ''); if (!k) continue;
               const ft = String(typeMap[f.type] || f.type || 'text').toLowerCase();
