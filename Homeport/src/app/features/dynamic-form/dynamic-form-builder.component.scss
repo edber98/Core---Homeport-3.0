@@ -972,13 +972,6 @@ nz-drawer { display: contents; }
 /* Inspector form micro-ergonomics (Apple-like subtlety) */
 :host ::ng-deep .right .ant-card .inspector-form .ant-form-item { padding: 4px 6px; border-radius: 6px; transition: background-color .12s ease; }
 :host ::ng-deep .right .ant-card .inspector-form .ant-form-item-label > label { color: #6b7280; font-weight: 500; }
-:host ::ng-deep .right .ant-card .inspector-form .ant-input,
-:host ::ng-deep .right .ant-card .inspector-form .ant-select-selector,
-:host ::ng-deep .right .ant-card .inspector-form .ant-input-number,
-:host ::ng-deep .right .ant-card .inspector-form .ant-switch {
-  background: #f3f7ff;
-  transition: box-shadow .12s ease, border-color .12s ease;
-}
 
 :host ::ng-deep .ant-input:focus,
 :host ::ng-deep .ant-select-focused .ant-select-selector,

@@ -51,6 +51,8 @@ export class ExpressionEditorComponent implements OnInit, OnDestroy, OnChanges, 
   @Input() suggestionPlacement: 'auto'|'top'|'bottom' = 'auto';
   dialogVisible = false;
   dialogText = '';
+  autoHeightCollapsed = false;
+  autoHeightCanCollapse = false;
   @Input() formulaTitle = 'Ouvrir l\'éditeur d\'expression';
   @Output() formulaClick = new EventEmitter<void>();
 
@@ -67,7 +69,10 @@ export class ExpressionEditorComponent implements OnInit, OnDestroy, OnChanges, 
   view!: EditorView;
   dialogView?: EditorView;
   private editableCompartment = new Compartment();
+  private wrappingCompartment = new Compartment();
   private dialogEditableCompartment = new Compartment();
+  private resizeObserver?: ResizeObserver;
+  private autoHeightMeasureFrame: number | null = null;
   private suppressChange = false;
   private _disabled = false;
   // drag preview caret
@@ -109,9 +114,20 @@ export class ExpressionEditorComponent implements OnInit, OnDestroy, OnChanges, 
     this.hasCoarsePointer = this.detectCoarsePointer();
   }
   ngOnChanges(changes: SimpleChanges): void {
+    if (changes['autoHeight']) {
+      if (this.autoHeight) this.autoHeightCollapsed = false;
+      else {
+        this.autoHeightCollapsed = false;
+        this.autoHeightCanCollapse = false;
+      }
+      this.scheduleAutoHeightMeasure();
+    }
     if (changes['value'] || changes['context']) this.updatePreview();
     if (changes['context'] && this.showMenu) {
       try { const v = this.currentView(); this.updateSuggestions(v); this.openAtCaret(v); } catch {}
+    }
+    if (changes['autoHeight'] || changes['large']) {
+      try { this.reconfigureWrapping(); } catch {}
     }
     // Force re-highlight when context changes so islands reflect new validity
     if (changes['context']) {
@@ -124,6 +140,11 @@ export class ExpressionEditorComponent implements OnInit, OnDestroy, OnChanges, 
   }
   ngOnDestroy(): void {
     try { this.cmRef?.nativeElement?.removeEventListener('keydown', this.keyCapture, true); } catch {}
+    try { this.resizeObserver?.disconnect(); } catch {}
+    if (this.autoHeightMeasureFrame != null && typeof window !== 'undefined') {
+      window.cancelAnimationFrame(this.autoHeightMeasureFrame);
+      this.autoHeightMeasureFrame = null;
+    }
     this.view?.destroy();
     try { this.dialogView?.destroy(); } catch {}
   }
@@ -144,6 +165,7 @@ export class ExpressionEditorComponent implements OnInit, OnDestroy, OnChanges, 
     }
     // Ensure preview is computed when value is set by the parent form
     this.updatePreview();
+    this.scheduleAutoHeightMeasure();
   }
   commitValue(next: string) {
     this.writeValue(next);
@@ -451,6 +473,7 @@ export class ExpressionEditorComponent implements OnInit, OnDestroy, OnChanges, 
         doc: this.value,
         extensions: [
           this.editableCompartment.of(EditorView.editable.of(!this._disabled)),
+          this.wrappingCompartment.of(this.currentWrappingExtension()),
           // Put our key bindings before defaults to ensure they fire
           keymap.of([
             { key: 'Tab', preventDefault: true, run: (v) => this.acceptSelected(v) },
@@ -528,6 +551,8 @@ export class ExpressionEditorComponent implements OnInit, OnDestroy, OnChanges, 
         ]
       })
     });
+    this.observeAutoHeightResize();
+    this.scheduleAutoHeightMeasure();
   }
 
   private onUpdate(u: ViewUpdate) {
@@ -547,6 +572,7 @@ export class ExpressionEditorComponent implements OnInit, OnDestroy, OnChanges, 
     }
     // Si le menu est ouvert, recalculer l'état et fermer si l'îlot n'existe plus (ex: "{{" devient "{")
     if (this.showMenu) this.updateSuggestions(u.view);
+    this.scheduleAutoHeightMeasure();
   }
 
   private updateSuggestions(view: EditorView) {
@@ -664,8 +690,16 @@ export class ExpressionEditorComponent implements OnInit, OnDestroy, OnChanges, 
   private currentView(): EditorView { return (this.dialogVisible && this.dialogView) ? this.dialogView : this.view; }
   clickItemDialog(it: SuggestItem) { const v = this.currentView(); this.acceptItem(v, it); }
 
-  // Effective before-group visibility: honor groupBefore only when not large
-  get hasBefore(): boolean { return !!(this.groupBefore && !this.large); }
+  // Effective before-group visibility
+  get hasBefore(): boolean { return !!this.groupBefore; }
+  get autoHeightExpanded(): boolean { return !!(this.autoHeight && !this.autoHeightCollapsed); }
+  get fxTitle(): string { return this.autoHeight ? (this.autoHeightCollapsed ? 'Déplier le champ' : 'Replier le champ') : this.formulaTitle; }
+  get showDialogButton(): boolean { return !!(this.showDialogAction && (!this.hasBefore || this.autoHeight)); }
+  get showAutoHeightToggleButton(): boolean { return !!(this.autoHeight && !this.hasBefore && (this.autoHeightCollapsed || this.autoHeightCanCollapse)); }
+  get autoHeightToggleTitle(): string { return this.autoHeightCollapsed ? 'Déplier le champ' : 'Replier sur une ligne'; }
+  get autoHeightToggleLabel(): string { return this.autoHeightCollapsed ? 'v' : '^'; }
+  get showInlineActions(): boolean { return !!(this.showDialogButton || this.showAutoHeightToggleButton); }
+  get hasMultipleInlineActions(): boolean { return !!(this.showDialogButton && this.showAutoHeightToggleButton); }
 
   private acceptSelected(view: EditorView): boolean {
     if (!this.showMenu) return false;
@@ -892,6 +926,65 @@ export class ExpressionEditorComponent implements OnInit, OnDestroy, OnChanges, 
     this.cdr.detectChanges();
   }
 
+  private currentWrappingExtension() {
+    return this.autoHeight ? [EditorView.lineWrapping] : [];
+  }
+
+  private reconfigureWrapping() {
+    if (!this.view) return;
+    this.view.dispatch({ effects: this.wrappingCompartment.reconfigure(this.currentWrappingExtension()) });
+    this.scheduleAutoHeightMeasure();
+  }
+
+  toggleAutoHeight() {
+    if (!this.autoHeight) return;
+    this.autoHeightCollapsed = !this.autoHeightCollapsed;
+    this.closeMenu();
+    this.reconfigureWrapping();
+    this.cdr.detectChanges();
+    this.scheduleAutoHeightMeasure();
+    setTimeout(() => {
+      try { this.view?.focus(); } catch {}
+    }, 0);
+  }
+
+  private observeAutoHeightResize() {
+    try { this.resizeObserver?.disconnect(); } catch {}
+    if (typeof window === 'undefined' || typeof ResizeObserver === 'undefined' || !this.cmRef?.nativeElement) return;
+    this.resizeObserver = new ResizeObserver(() => this.scheduleAutoHeightMeasure());
+    this.resizeObserver.observe(this.cmRef.nativeElement);
+  }
+
+  private scheduleAutoHeightMeasure() {
+    if (typeof window === 'undefined') return;
+    if (this.autoHeightMeasureFrame != null) window.cancelAnimationFrame(this.autoHeightMeasureFrame);
+    this.autoHeightMeasureFrame = window.requestAnimationFrame(() => {
+      this.autoHeightMeasureFrame = null;
+      this.updateAutoHeightCollapseState();
+    });
+  }
+
+  private updateAutoHeightCollapseState() {
+    const next = this.computeAutoHeightCanCollapse();
+    if (next === this.autoHeightCanCollapse) return;
+    this.autoHeightCanCollapse = next;
+    this.cdr.detectChanges();
+  }
+
+  private computeAutoHeightCanCollapse(): boolean {
+    if (!this.autoHeight || !this.view || !this.cmRef?.nativeElement) return false;
+    const scroller = this.cmRef.nativeElement.querySelector('.cm-scroller') as HTMLElement | null;
+    const content = this.cmRef.nativeElement.querySelector('.cm-content') as HTMLElement | null;
+    const line = this.cmRef.nativeElement.querySelector('.cm-line') as HTMLElement | null;
+    if (!scroller || !content) return false;
+    const styles = getComputedStyle(line ?? content);
+    const parsedLineHeight = parseFloat(styles.lineHeight || '');
+    const lineHeight = Number.isFinite(parsedLineHeight) && parsedLineHeight > 0 ? parsedLineHeight : 18;
+    const verticalInset = 12;
+    const multiLineThreshold = lineHeight + verticalInset + 2;
+    return scroller.scrollHeight > multiLineThreshold;
+  }
+
   /** Insert a dragged tag (e.g., { path: 'json.user.name', name: 'name' }) at a given document position */
   private insertTagAt(tag: { path: string; name?: string }, pos: number) {
     const doc = this.view.state.doc.toString();
@@ -922,6 +1015,10 @@ export class ExpressionEditorComponent implements OnInit, OnDestroy, OnChanges, 
   onFormulaClick(e: MouseEvent) {
     try { e.preventDefault(); e.stopPropagation(); } catch {}
     this.formulaClick.emit();
+    if (this.autoHeight) {
+      this.toggleAutoHeight();
+      return;
+    }
     // If not in large mode, use the before-group button as a dialog trigger
     if (!this.large) this.openDialog();
   }

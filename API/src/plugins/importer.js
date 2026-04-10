@@ -100,7 +100,7 @@ async function importManifest(manifest, { dryRun = false, repo = null, manifestP
           } else if (t && t !== 'textblock') {
             const cur = f.expression && typeof f.expression === 'object' ? f.expression : {};
             const mode = (t === 'schema_builder' || t === 'tags') ? 'val' : 'expr';
-            f.expression = { ...cur, allow: true, defaultMode: mode };
+            f.expression = { allow: true, defaultMode: mode, autoHeight: true, ...cur };
           }
         }
       };
