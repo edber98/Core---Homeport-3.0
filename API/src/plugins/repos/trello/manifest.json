@@ -837,7 +837,15 @@
               "sm": 24,
               "md": 24
             },
-            "description": "Date d'échéance (ISO 8601)."
+            "description": "Date d'échéance (ISO 8601).",
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "checkbox",
@@ -1126,7 +1134,15 @@
               "sm": 24,
               "md": 24
             },
-            "description": "Nouvelle date d'échéance (ISO 8601)."
+            "description": "Nouvelle date d'échéance (ISO 8601).",
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "checkbox",

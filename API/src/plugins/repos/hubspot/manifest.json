@@ -2879,6 +2879,14 @@
             "description": "Horodatage ISO (optionnel, defaut: maintenant).",
             "col": {
               "xs": 24
+            },
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
             }
           },
           {
@@ -2986,6 +2994,14 @@
             "description": "Horodatage ISO (optionnel).",
             "col": {
               "xs": 24
+            },
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
             }
           }
         ],

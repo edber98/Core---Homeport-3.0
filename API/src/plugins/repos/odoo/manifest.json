@@ -1369,6 +1369,14 @@
             "description": "Date de la commande (YYYY-MM-DD).",
             "col": {
               "xs": 24
+            },
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
             }
           },
           {
@@ -1746,6 +1754,14 @@
             "description": "Date du bon de commande (YYYY-MM-DD).",
             "col": {
               "xs": 24
+            },
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
             }
           }
         ],
@@ -2074,6 +2090,14 @@
             "description": "Date de la facture (YYYY-MM-DD).",
             "col": {
               "xs": 24
+            },
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
             }
           }
         ],
@@ -3055,6 +3079,14 @@
             "description": "Date limite (YYYY-MM-DD).",
             "col": {
               "xs": 24
+            },
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
             }
           },
           {
@@ -3172,6 +3204,14 @@
             "description": "Nouvelle date limite (YYYY-MM-DD).",
             "col": {
               "xs": 24
+            },
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
             }
           }
         ],
@@ -5533,6 +5573,14 @@
             "description": "Date de validité (YYYY-MM-DD).",
             "col": {
               "xs": 24
+            },
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
             }
           },
           {
@@ -6538,6 +6586,14 @@
             "description": "Date prévue de réception (YYYY-MM-DD).",
             "col": {
               "xs": 24
+            },
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
             }
           }
         ],

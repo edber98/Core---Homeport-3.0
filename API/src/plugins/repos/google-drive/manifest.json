@@ -3318,7 +3318,15 @@
             "col": {
               "xs": 24
             },
-            "description": "Format ISO 8601 (ex: 2024-01-01T00:00:00Z)."
+            "description": "Format ISO 8601 (ex: 2024-01-01T00:00:00Z).",
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "date",
@@ -3327,7 +3335,15 @@
             "col": {
               "xs": 24
             },
-            "description": "Format ISO 8601."
+            "description": "Format ISO 8601.",
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "number",
@@ -3557,7 +3573,15 @@
                 "type": "required"
               }
             ],
-            "description": "Format ISO 8601."
+            "description": "Format ISO 8601.",
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "text",
@@ -3580,7 +3604,15 @@
                 "type": "required"
               }
             ],
-            "description": "Format ISO 8601."
+            "description": "Format ISO 8601.",
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "text",
@@ -3721,6 +3753,14 @@
             "label": "Début (date/heure)",
             "col": {
               "xs": 24
+            },
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
             }
           },
           {
@@ -3729,6 +3769,14 @@
             "label": "Fin (date/heure)",
             "col": {
               "xs": 24
+            },
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
             }
           },
           {
@@ -4054,7 +4102,15 @@
             "col": {
               "xs": 24
             },
-            "description": "Format ISO 8601."
+            "description": "Format ISO 8601.",
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "date",
@@ -4063,7 +4119,15 @@
             "col": {
               "xs": 24
             },
-            "description": "Format ISO 8601."
+            "description": "Format ISO 8601.",
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           }
         ],
         "displayTitle": false,

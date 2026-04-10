@@ -2135,7 +2135,15 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "text",
@@ -2313,6 +2321,14 @@
             "description": "Nouvelle date de fermeture.",
             "col": {
               "xs": 24
+            },
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
             }
           }
         ],
@@ -3334,6 +3350,14 @@
             "description": "Date de l'activité (YYYY-MM-DD).",
             "col": {
               "xs": 24
+            },
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
             }
           }
         ],

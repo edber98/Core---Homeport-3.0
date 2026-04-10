@@ -897,6 +897,14 @@
             "description": "Date de début (ISO 8601).",
             "col": {
               "xs": 24
+            },
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
             }
           },
           {
@@ -906,6 +914,14 @@
             "description": "Date de fin (ISO 8601).",
             "col": {
               "xs": 24
+            },
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
             }
           },
           {

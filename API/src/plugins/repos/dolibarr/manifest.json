@@ -5925,7 +5925,15 @@
             "col": {
               "xs": 24
             },
-            "description": "Date du devis (YYYY-MM-DD ou timestamp)."
+            "description": "Date du devis (YYYY-MM-DD ou timestamp).",
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "date",
@@ -5934,7 +5942,15 @@
             "col": {
               "xs": 24
             },
-            "description": "Date de fin de validité."
+            "description": "Date de fin de validité.",
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "text",
@@ -6215,7 +6231,15 @@
             "col": {
               "xs": 24
             },
-            "description": "Date de la commande (YYYY-MM-DD ou timestamp)."
+            "description": "Date de la commande (YYYY-MM-DD ou timestamp).",
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "date",
@@ -6224,7 +6248,15 @@
             "col": {
               "xs": 24
             },
-            "description": "Date de livraison prévue."
+            "description": "Date de livraison prévue.",
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "text",
@@ -6541,7 +6573,15 @@
             "col": {
               "xs": 24
             },
-            "description": "Date de la facture (YYYY-MM-DD ou timestamp)."
+            "description": "Date de la facture (YYYY-MM-DD ou timestamp).",
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "date",
@@ -6550,7 +6590,15 @@
             "col": {
               "xs": 24
             },
-            "description": "Date d'échéance de paiement."
+            "description": "Date d'échéance de paiement.",
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "text",
@@ -7081,7 +7129,15 @@
             "col": {
               "xs": 24
             },
-            "description": "Date de début (YYYY-MM-DD)."
+            "description": "Date de début (YYYY-MM-DD).",
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "date",
@@ -7090,7 +7146,15 @@
             "col": {
               "xs": 24
             },
-            "description": "Date de fin (YYYY-MM-DD)."
+            "description": "Date de fin (YYYY-MM-DD).",
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "number",
@@ -7409,7 +7473,15 @@
             "col": {
               "xs": 24
             },
-            "description": "Date de début (YYYY-MM-DD)."
+            "description": "Date de début (YYYY-MM-DD).",
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "date",
@@ -7418,7 +7490,15 @@
             "col": {
               "xs": 24
             },
-            "description": "Date de fin (YYYY-MM-DD)."
+            "description": "Date de fin (YYYY-MM-DD).",
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "number",
@@ -9010,7 +9090,15 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "number",

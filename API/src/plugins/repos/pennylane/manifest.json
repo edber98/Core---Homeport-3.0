@@ -1705,6 +1705,14 @@
             "description": "Date de la facture (YYYY-MM-DD).",
             "col": {
               "xs": 24
+            },
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
             }
           },
           {
@@ -1714,6 +1722,14 @@
             "description": "Date d'échéance (YYYY-MM-DD).",
             "col": {
               "xs": 24
+            },
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
             }
           },
           {
@@ -2007,6 +2023,14 @@
             "description": "Date (YYYY-MM-DD).",
             "col": {
               "xs": 24
+            },
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
             }
           },
           {
@@ -2016,6 +2040,14 @@
             "description": "Échéance (YYYY-MM-DD).",
             "col": {
               "xs": 24
+            },
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
             }
           },
           {
@@ -2185,6 +2217,14 @@
             "description": "Date (YYYY-MM-DD).",
             "col": {
               "xs": 24
+            },
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
             }
           },
           {
@@ -2194,6 +2234,14 @@
             "description": "Échéance (YYYY-MM-DD).",
             "col": {
               "xs": 24
+            },
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
             }
           },
           {
@@ -2363,6 +2411,14 @@
             "description": "Date du devis (YYYY-MM-DD).",
             "col": {
               "xs": 24
+            },
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
             }
           },
           {

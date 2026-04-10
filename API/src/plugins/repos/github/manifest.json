@@ -4339,27 +4339,37 @@
             }
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "since",
             "label": "Depuis",
             "description": "Date ISO de début (ex: 2024-01-01T00:00:00Z).",
             "col": {
               "xs": 24
             },
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
             "expression": {
-              "allow": true
+              "allow": true,
+              "defaultMode": "val"
             }
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "until",
             "label": "Jusqu'à",
             "description": "Date ISO de fin.",
             "col": {
               "xs": 24
             },
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
             "expression": {
-              "allow": true
+              "allow": true,
+              "defaultMode": "val"
             }
           },
           {

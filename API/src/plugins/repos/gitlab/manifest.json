@@ -2661,7 +2661,7 @@
             }
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "since",
             "label": "Depuis",
             "col": {
@@ -2670,12 +2670,17 @@
               "md": 24
             },
             "description": "Date ISO 8601 de début (ex: 2024-01-01T00:00:00Z).",
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
             "expression": {
-              "allow": true
+              "allow": true,
+              "defaultMode": "val"
             }
           },
           {
-            "type": "text",
+            "type": "date",
             "key": "until",
             "label": "Jusqu'à",
             "col": {
@@ -2684,8 +2689,13 @@
               "md": 24
             },
             "description": "Date ISO 8601 de fin.",
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
             "expression": {
-              "allow": true
+              "allow": true,
+              "defaultMode": "val"
             }
           },
           {

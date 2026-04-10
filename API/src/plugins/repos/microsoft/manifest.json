@@ -2521,7 +2521,15 @@
                 "type": "required"
               }
             ],
-            "description": "Format ISO 8601 (ex: 2024-01-15T10:00:00Z)."
+            "description": "Format ISO 8601 (ex: 2024-01-15T10:00:00Z).",
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "date",
@@ -2535,7 +2543,15 @@
                 "type": "required"
               }
             ],
-            "description": "Format ISO 8601 (ex: 2024-01-15T11:00:00Z)."
+            "description": "Format ISO 8601 (ex: 2024-01-15T11:00:00Z).",
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "textarea",

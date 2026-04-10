@@ -1258,7 +1258,15 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "textarea",
@@ -1348,7 +1356,15 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           }
         ],
         "displayTitle": false,
@@ -1514,7 +1530,15 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           }
         ],
         "displayTitle": false,
@@ -2376,7 +2400,15 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "text",
@@ -2466,7 +2498,15 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "text",
@@ -2556,7 +2596,15 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           }
         ],
         "displayTitle": false,
@@ -2946,7 +2994,15 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           }
         ],
         "displayTitle": false,

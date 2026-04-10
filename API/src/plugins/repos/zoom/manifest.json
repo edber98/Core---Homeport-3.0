@@ -185,7 +185,15 @@
               "sm": 24,
               "md": 24
             },
-            "description": "Date/heure ISO 8601 (ex: 2024-01-15T10:00:00Z)."
+            "description": "Date/heure ISO 8601 (ex: 2024-01-15T10:00:00Z).",
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "number",
@@ -382,7 +390,15 @@
               "sm": 24,
               "md": 24
             },
-            "description": "Nouvelle date/heure ISO 8601."
+            "description": "Nouvelle date/heure ISO 8601.",
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "number",
@@ -816,7 +832,15 @@
               "sm": 24,
               "md": 24
             },
-            "description": "Date/heure ISO 8601."
+            "description": "Date/heure ISO 8601.",
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "number",
@@ -991,7 +1015,15 @@
               "sm": 24,
               "md": 24
             },
-            "description": "Nouvelle date/heure."
+            "description": "Nouvelle date/heure.",
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "number",
@@ -1534,7 +1566,15 @@
               "sm": 24,
               "md": 24
             },
-            "description": "Date de début (YYYY-MM-DD)."
+            "description": "Date de début (YYYY-MM-DD).",
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "date",
@@ -1545,7 +1585,15 @@
               "sm": 24,
               "md": 24
             },
-            "description": "Date de fin (YYYY-MM-DD)."
+            "description": "Date de fin (YYYY-MM-DD).",
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "number",
@@ -1819,7 +1867,15 @@
                 "type": "required"
               }
             ],
-            "description": "Date de début (YYYY-MM-DD)."
+            "description": "Date de début (YYYY-MM-DD).",
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "date",
@@ -1835,7 +1891,15 @@
                 "type": "required"
               }
             ],
-            "description": "Date de fin (YYYY-MM-DD)."
+            "description": "Date de fin (YYYY-MM-DD).",
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "select",
@@ -1938,7 +2002,15 @@
                 "type": "required"
               }
             ],
-            "description": "Date de début (YYYY-MM-DD)."
+            "description": "Date de début (YYYY-MM-DD).",
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           },
           {
             "type": "date",
@@ -1954,7 +2026,15 @@
                 "type": "required"
               }
             ],
-            "description": "Date de fin (YYYY-MM-DD)."
+            "description": "Date de fin (YYYY-MM-DD).",
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
           }
         ],
         "displayTitle": false,
