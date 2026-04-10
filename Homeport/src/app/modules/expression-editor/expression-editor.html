@@ -35,7 +35,9 @@
     </div>
   </nz-input-group>
   <ng-template #beforeTpl>
-    <button *ngIf="hasBefore" type="button" class="expr-addon-btn" [title]="fxTitle" (click)="onFormulaClick($event)">
+    <button *ngIf="hasBefore" type="button" class="expr-addon-btn" [title]="fxTitle"
+            (mousedown)="onFormulaPointerDown($event)"
+            (click)="onFormulaClick($event)">
       <ng-container *ngIf="autoHeight; else fxIconTpl">
         <svg class="expr-addon-chevron" [class.is-expanded]="!autoHeightCollapsed" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
           <path d="M4.5 6.5L8 10L11.5 6.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>

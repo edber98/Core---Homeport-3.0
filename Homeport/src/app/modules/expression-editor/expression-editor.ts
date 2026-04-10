@@ -943,9 +943,15 @@ export class ExpressionEditorComponent implements OnInit, OnDestroy, OnChanges, 
     this.reconfigureWrapping();
     this.cdr.detectChanges();
     this.scheduleAutoHeightMeasure();
-    setTimeout(() => {
-      try { this.view?.focus(); } catch {}
-    }, 0);
+    if (!this.hasCoarsePointer) {
+      setTimeout(() => {
+        try { this.view?.focus(); } catch {}
+      }, 0);
+    }
+  }
+
+  onFormulaPointerDown(e: MouseEvent) {
+    try { e.preventDefault(); e.stopPropagation(); } catch {}
   }
 
   private observeAutoHeightResize() {
@@ -1014,6 +1020,7 @@ export class ExpressionEditorComponent implements OnInit, OnDestroy, OnChanges, 
 
   onFormulaClick(e: MouseEvent) {
     try { e.preventDefault(); e.stopPropagation(); } catch {}
+    if (this.hasCoarsePointer) this.blurActiveEditable();
     this.formulaClick.emit();
     if (this.autoHeight) {
       this.toggleAutoHeight();
