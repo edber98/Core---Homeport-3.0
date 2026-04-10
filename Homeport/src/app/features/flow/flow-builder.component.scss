@@ -369,14 +369,9 @@ nz-drawer { display: contents; }
   }
   .bottom-bar .divider { height: 24px; margin: 0 2px; }
   .bottom-bar .divider.before-run { margin: 0 4px 0 2px; }
-}
-
-/* Phone: keep panel toggles aligned at the top like desktop */
-@media (max-width: 768px) {
   .panel-toggle-fab { top: 12px; }
   .panel-toggle-fab.ai-chat-fab { top: 60px; }
-  .panel-toggle-fab.help-fab { top: 108px; display: inline-flex !important; }
-  .panel-toggle-fab.clear-run-fab { top: 156px; }
+  .panel-toggle-fab.clear-run-fab { top: 108px; }
 }
 
 /* Bottom bar buttons: consistent square size and centered icons */

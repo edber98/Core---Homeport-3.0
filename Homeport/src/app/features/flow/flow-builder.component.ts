@@ -1798,6 +1798,7 @@ export class FlowBuilderComponent {
       const isDesktop = (width >= 1536) && !coarse;
       const flag = !isDesktop;
       this.isTabletOrBelow = flag;
+      if (flag) this.shortcutsOpen = false;
       // On medium desktops (where run/deploy labels are visible), keep only the zoom slider.
       // Restore full zoom meta on very wide desktops.
       this.showZoomMeta = flag || width >= this.zoomMetaWideDesktopMinWidth;

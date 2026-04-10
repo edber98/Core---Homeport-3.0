@@ -65,12 +65,12 @@ export interface HeatmapPoint { date: string; total: number; success: number; er
     .heatmap-legend { display: flex; align-items: center; gap: 3px; margin-top: 6px; justify-content: flex-end; flex: 0 0 auto; }
     .legend-label { font-size: 10px; color: #94a3b8; }
     .legend-box { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
-    .tip { position: fixed; transform: translate(-50%, -110%); background: #0f172a; color: #fff; border-radius: 6px; padding: 4px 8px; font-size: 11px; pointer-events: none; box-shadow: 0 6px 12px rgba(0,0,0,.18); max-width: min(320px, calc(100vw - 24px)); white-space: normal; word-break: break-word; z-index: 2147483647; }
+    .tip { position: fixed; transform: translate(-50%, -110%); background: #0f172a; color: #fff; border-radius: 6px; padding: 4px 8px; font-size: 11px; pointer-events: none; box-shadow: 0 6px 12px rgba(0,0,0,.18); width: max-content; max-width: min(320px, calc(100vw - 24px)); white-space: normal; word-break: normal; overflow-wrap: normal; z-index: 2147483647; }
     .tip.tip-left { transform: translate(0, -110%); }
     .tip.tip-right { transform: translate(-100%, -110%); }
-    .tip-date { font-weight: 600; margin-bottom: 1px; }
-    .tip-val { color: #e2e8f0; }
-    .tip-detail { color: #94a3b8; font-size: 10px; }
+    .tip-date { font-weight: 600; margin-bottom: 1px; white-space: nowrap; }
+    .tip-val { color: #e2e8f0; white-space: nowrap; }
+    .tip-detail { color: #94a3b8; font-size: 10px; white-space: nowrap; }
   `]
 })
 export class HeatmapChartComponent implements OnChanges, AfterViewInit, OnDestroy {
