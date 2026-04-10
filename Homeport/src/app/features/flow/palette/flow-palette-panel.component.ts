@@ -26,14 +26,18 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
           placeholder="Rechercher un nœud (nom, catégorie)"
         />
       </div>
-      <div class="palette-scroll" #providersScroll [class.overlay-open]="!!activeGroup">
+      <div class="palette-scroll" #providersScroll [class.overlay-open]="!!activeGroup" (scroll)="onProvidersScroll()">
         <div class="palette-loading" *ngIf="loading" role="status" aria-live="polite">
           <span class="palette-loading-spinner" aria-hidden="true"></span>
           <span class="palette-loading-text">Chargement des connecteurs…</span>
         </div>
         <ng-container *ngIf="!loading">
           <div class="search-results" *ngIf="hasQuery() && !activeGroup; else browseMode">
-            <ng-container *ngFor="let g of filteredGroups(); let gi = index; trackBy: trackGroupFn">
+            <div class="palette-loading search-loading" *ngIf="searchLoading && displayedSearchGroups().length === 0" role="status" aria-live="polite">
+              <span class="palette-loading-spinner" aria-hidden="true"></span>
+              <span class="palette-loading-text">Recherche des nœuds…</span>
+            </div>
+            <ng-container *ngFor="let g of displayedSearchGroups(); let gi = index; trackBy: trackGroupFn">
               <button type="button" class="group-title search-group-title" [class.searching]="hasQuery()" (click)="openGroupFromSearch(g.group, g.index)" [attr.aria-label]="'Ouvrir ' + (g.group?.title || 'provider')">
                 <span class="group-mini" *ngIf="g.group?.appId" [style.background]="g.group?.appColor || '#f3f4f6'">
                   <img *ngIf="isOpenAiGroup(g.group)" [src]="openAiIconUrl" alt="icon" />
@@ -101,7 +105,12 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
                 </ng-container>
               </ng-container>
             </ng-container>
-            <div class="empty" *ngIf="filteredGroups().length === 0">Aucun nœud trouvé.</div>
+            <div class="empty" *ngIf="!searchLoading && displayedSearchGroups().length === 0">Aucun nœud trouvé.</div>
+            <div class="palette-loading more-loading" *ngIf="searchLoadingMore" role="status" aria-live="polite">
+              <span class="palette-loading-spinner" aria-hidden="true"></span>
+              <span class="palette-loading-text">Chargement des résultats suivants…</span>
+            </div>
+            <div class="empty load-more-hint" *ngIf="!searchLoading && !searchLoadingMore && searchHasMore">Continuez à défiler pour charger plus de résultats.</div>
           </div>
           <ng-template #browseMode>
             <div class="groups">
@@ -113,7 +122,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
                 <img *ngIf="!isOpenAiGroup(g) && !g.appIconUrl && !g.appIconClass" [src]="simpleIconUrlFn?.(g.appId) || ''" alt="icon" />
               </span>
                 <span class="group-name">{{ g.title }}</span>
-                <span class="group-count">{{ g.items?.length || 0 }}</span>
+                <span class="group-count" *ngIf="groupCount(g) as count">{{ count }}</span>
                 <i class="fa-solid fa-chevron-right"></i>
               </button>
             </div>
@@ -147,7 +156,11 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
           <div class="palette-search" [class.searching]="hasQuery()">
             <input nz-input [ngModel]="internalQuery" (ngModelChange)="onQueryInput($event)" placeholder="Rechercher un nœud (nom, catégorie)" />
           </div>
-          <div class="group-overlay-scroll">
+          <div class="group-overlay-scroll" (scroll)="onGroupOverlayScroll()">
+          <div class="palette-loading group-loading" *ngIf="activeGroupLoading && activeGroupItems().length === 0" role="status" aria-live="polite">
+            <span class="palette-loading-spinner" aria-hidden="true"></span>
+            <span class="palette-loading-text">Chargement des nœuds…</span>
+          </div>
           <ng-container *ngIf="activeGroupItemGroups() as groupedItems">
             <ng-container *ngIf="groupedItems.length > 0; else emptyGroupTpl">
               <ng-container *ngFor="let section of groupedItems; let sgi = index; trackBy: trackSubGroupFn">
@@ -207,8 +220,15 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
               </ng-container>
             </ng-container>
           </ng-container>
+          <div class="palette-loading more-loading" *ngIf="activeGroupLoadingMore" role="status" aria-live="polite">
+            <span class="palette-loading-spinner" aria-hidden="true"></span>
+            <span class="palette-loading-text">Chargement des nœuds suivants…</span>
+          </div>
+          <div class="empty load-more-hint" *ngIf="!activeGroupLoading && !activeGroupLoadingMore && activeGroupHasMore && activeGroupItems().length > 0">
+            Continuez à défiler pour charger plus de nœuds.
+          </div>
           <ng-template #emptyGroupTpl>
-            <div class="empty">
+            <div class="empty" *ngIf="!activeGroupLoading">
               <div>Aucun nœud trouvé dans ce groupe.</div>
               <button *ngIf="hasQuery()" type="button" class="apple-btn" (click)="searchGlobal()" aria-label="Rechercher dans tous les groupes">
                 Rechercher dans tous les groupes
@@ -244,6 +264,9 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
     .palette .palette-scroll { scrollbar-width: none; -ms-overflow-style: none; }
     .palette .palette-scroll::-webkit-scrollbar { width: 0; height: 0; }
     .palette .palette-loading { min-height: 200px; height: 100%; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; color:#64748b; }
+    .palette .palette-loading.search-loading,
+    .palette .palette-loading.more-loading,
+    .palette .palette-loading.group-loading { min-height: 0; height: auto; padding: 14px 12px; }
     .palette .palette-loading-spinner { width: 24px; height: 24px; border-radius: 50%; border: 3px solid #dbe4ef; border-top-color: #1677ff; animation: palette-spin .75s linear infinite; }
     .palette .palette-loading-text { font-size: 12px; font-weight: 500; color:#475569; }
     @keyframes palette-spin { to { transform: rotate(360deg); } }
@@ -344,6 +367,13 @@ export class FlowPalettePanelComponent implements OnInit, OnDestroy, OnChanges {
   @Input() groups: any[] = [];
   @Input() loading = false;
   @Input() query = '';
+  @Input() searchGroups: Array<{ group: any; items: any[]; index: number }> = [];
+  @Input() searchLoading = false;
+  @Input() searchLoadingMore = false;
+  @Input() searchHasMore = false;
+  @Input() activeGroupLoading = false;
+  @Input() activeGroupLoadingMore = false;
+  @Input() activeGroupHasMore = false;
   @Input() isMobile = false;
   @Input() dndDisabled = false;
   activeGroup: any | null = null;
@@ -366,6 +396,7 @@ export class FlowPalettePanelComponent implements OnInit, OnDestroy, OnChanges {
   private overlayCloseTimer: ReturnType<typeof setTimeout> | null = null;
   private queryInput$ = new Subject<string>();
   private querySub?: Subscription;
+  private readonly queryDebounceMs = 400;
 
   @ViewChild('providersScroll')
   set providersScrollRef(ref: ElementRef<HTMLDivElement> | undefined) {
@@ -391,10 +422,14 @@ export class FlowPalettePanelComponent implements OnInit, OnDestroy, OnChanges {
   @Output() itemClick = new EventEmitter<any>();
   @Output() dragStart = new EventEmitter<any>();
   @Output() dragEnd = new EventEmitter<any>();
+  @Output() groupOpenRequest = new EventEmitter<any>();
+  @Output() groupCloseRequest = new EventEmitter<void>();
+  @Output() searchLoadMore = new EventEmitter<void>();
+  @Output() groupLoadMore = new EventEmitter<any>();
   ngOnInit(): void {
     this.internalQuery = this.query || '';
     this.querySub = this.queryInput$
-      .pipe(debounceTime(200), distinctUntilChanged())
+      .pipe(debounceTime(this.queryDebounceMs), distinctUntilChanged())
       .subscribe((val) => this.queryChange.emit(val));
   }
   ngOnDestroy(): void {
@@ -409,6 +444,13 @@ export class FlowPalettePanelComponent implements OnInit, OnDestroy, OnChanges {
       const next = this.query || '';
       if (next !== this.internalQuery) {
         this.internalQuery = next;
+      }
+    }
+    if (changes['groups'] && this.activeGroup) {
+      const refreshed = this.findGroupMatch(this.activeGroup);
+      if (refreshed) {
+        this.activeGroup = refreshed.group;
+        this.activeGroupIndex = refreshed.index;
       }
     }
   }
@@ -442,6 +484,10 @@ export class FlowPalettePanelComponent implements OnInit, OnDestroy, OnChanges {
     });
     return out;
   }
+  displayedSearchGroups(): Array<{ group: any; items: any[]; index: number }> {
+    if (Array.isArray(this.searchGroups)) return this.searchGroups;
+    return this.filteredGroups();
+  }
   activeGroupItems(): any[] {
     if (!this.activeGroup) return [];
     const items = this.activeGroup?.items || [];
@@ -468,13 +514,15 @@ export class FlowPalettePanelComponent implements OnInit, OnDestroy, OnChanges {
     this.providersScrollTop = this.providersScrollEl?.nativeElement?.scrollTop || 0;
     this.activeGroup = g;
     this.activeGroupIndex = index;
+    this.groupOpenRequest.emit(g);
   }
   openGroupFromSearch(g: any, index: number): void {
+    const target = this.findGroupMatch(g);
     this.query = '';
     this.internalQuery = '';
     this.queryInput$.next('');
     this.queryChange.emit('');
-    this.openGroup(g, index);
+    this.openGroup(target?.group || g, target?.index ?? index);
   }
   closeGroup(): void {
     if (this.overlayCloseTimer) {
@@ -486,9 +534,24 @@ export class FlowPalettePanelComponent implements OnInit, OnDestroy, OnChanges {
     this.restoreProvidersScrollPending = true;
     this.restoreProvidersScrollIfNeeded();
     this.onGroupOverlayTouchCancel(false);
+    this.groupCloseRequest.emit();
   }
   searchGlobal(): void {
     this.closeGroup();
+  }
+  onProvidersScroll(): void {
+    if (!this.hasQuery() || !!this.activeGroup || this.searchLoading || this.searchLoadingMore || !this.searchHasMore) return;
+    const el = this.providersScrollEl?.nativeElement;
+    if (!el) return;
+    const remaining = el.scrollHeight - el.scrollTop - el.clientHeight;
+    if (remaining <= 120) this.searchLoadMore.emit();
+  }
+  onGroupOverlayScroll(): void {
+    if (!this.activeGroup || this.activeGroupLoading || this.activeGroupLoadingMore || !this.activeGroupHasMore) return;
+    const el = this.groupOverlayEl?.nativeElement?.querySelector('.group-overlay-scroll') as HTMLDivElement | null;
+    if (!el) return;
+    const remaining = el.scrollHeight - el.scrollTop - el.clientHeight;
+    if (remaining <= 120) this.groupLoadMore.emit(this.activeGroup);
   }
 
   onGroupOverlayTouchStart(event: TouchEvent): void {
@@ -604,6 +667,23 @@ export class FlowPalettePanelComponent implements OnInit, OnDestroy, OnChanges {
     if (!el || !this.restoreProvidersScrollPending) return;
     el.scrollTop = this.providersScrollTop;
     this.restoreProvidersScrollPending = false;
+  }
+  private findGroupMatch(group: any): { group: any; index: number } | null {
+    const appId = String(group?.appId || '').trim();
+    const title = String(group?.title || '').trim();
+    const index = (this.groups || []).findIndex((candidate) => {
+      const candidateAppId = String(candidate?.appId || '').trim();
+      const candidateTitle = String(candidate?.title || '').trim();
+      if (appId && candidateAppId) return candidateAppId === appId;
+      return !!title && candidateTitle === title;
+    });
+    if (index < 0) return null;
+    return { group: this.groups[index], index };
+  }
+  groupCount(g: any): number | null {
+    if (typeof g?.itemCount === 'number') return g.itemCount;
+    if (Array.isArray(g?.items) && g.items.length) return g.items.length;
+    return null;
   }
   openAiIconUrl = 'https://assets.streamlinehq.com/image/private/w_240,h_240,ar_1/f_auto/v1/icons/technology/openai_1-moa3pqsiii7l4dkheifi8.png/openai_1-gv7rd0u7lcncyfalyjodt.png?_a=DATAg1AAZAA0';
   isOpenAiGroup(g: any): boolean {

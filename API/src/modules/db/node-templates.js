@@ -18,15 +18,36 @@ module.exports = function(){
   r.use(requireCompanyScope());
 
   r.get('/node-templates', async (req, res) => {
-    const { category } = req.query;
+    const { category, providerKey, keys } = req.query;
     let { limit = 100, page = 1 } = req.query;
     limit = Math.max(1, Math.min(2000, Number(limit) || 100));
     page = Math.max(1, Number(page) || 1);
     const { q, sort } = req.query;
-    const query = category ? { category } : {};
+    const baseQuery = { enabled: { $ne: false } };
+    if (category) baseQuery.category = category;
+    if (providerKey) baseQuery.providerKey = String(providerKey).trim();
+    const keyList = String(keys || '')
+      .split(',')
+      .map(v => String(v || '').trim())
+      .filter(Boolean);
+    if (keyList.length) baseQuery.key = { $in: keyList };
+    const filters = [baseQuery];
     if (q) {
       const rx = { $regex: String(q), $options: 'i' };
-      Object.assign(query, { $or: [ { key: rx }, { name: rx }, { title: rx }, { category: rx }, { tags: rx } ] });
+      filters.push({
+        $or: [
+          { key: rx },
+          { name: rx },
+          { title: rx },
+          { subtitle: rx },
+          { description: rx },
+          { category: rx },
+          { group: rx },
+          { providerKey: rx },
+          { appName: rx },
+          { tags: rx },
+        ]
+      });
     }
     let sortObj = { name: 1 };
     if (typeof sort === 'string') { const [f,d] = String(sort).split(':'); if (f) sortObj = { [f]: (d === 'desc' ? -1 : 1) }; }
@@ -34,15 +55,15 @@ module.exports = function(){
     const PluginRepo = require('../../db/models/plugin-repo.model');
     const enabledRepos = await PluginRepo.find({ enabled: true }).select('_id').lean();
     const enabledIds = new Set(enabledRepos.map(r => String(r._id)));
-    const list = await NodeTemplate.find({
-        ...query,
-        enabled: { $ne: false },
+    filters.push({
         $or: [
           { repos: { $exists: false } },
           { repos: { $size: 0 } },
           { repos: { $in: [...enabledIds] } },
-        ]
-      })
+        ],
+      });
+    const query = filters.length === 1 ? filters[0] : { $and: filters };
+    const list = await NodeTemplate.find(query)
       .sort(sortObj)
       .skip((page - 1) * limit)
       .limit(limit)

@@ -230,8 +230,20 @@ export class CatalogService {
 
   // ===== Public API (Node Templates)
   listNodeTemplates(): Observable<NodeTemplate[]> {
+    return this.listNodeTemplatesPage({ page: 1, limit: 2000 });
+  }
+  listNodeTemplatesPage(params?: { page?: number; limit?: number; q?: string; category?: string; sort?: string; providerKey?: string; keys?: string[] }): Observable<NodeTemplate[]> {
     if (environment.useBackend) {
-      return this.templatesApi.list({ page: 1, limit: 2000 }).pipe(map(list => (list || []).map(t => {
+      const apiParams: any = {
+        page: params?.page ?? 1,
+        limit: params?.limit ?? 2000,
+        q: params?.q,
+        category: params?.category,
+        sort: params?.sort,
+        providerKey: params?.providerKey,
+        keys: Array.isArray(params?.keys) ? params?.keys.join(',') : undefined,
+      };
+      return this.templatesApi.list(apiParams).pipe(map(list => (list || []).map(t => {
         const sanitize = (s: string) => (String(s || '').trim().replace(/\s+/g, '_'));
         const nameNoSpace = sanitize(t.name || t.key);
         const tpl: NodeTemplate = {
@@ -264,7 +276,34 @@ export class CatalogService {
         return tpl;
       })));
     }
-    return of(this.load<NodeTemplate[]>(this.TPL_LIST_KEY, [])).pipe(delay(CatalogService.LATENCY));
+    const all = this.load<NodeTemplate[]>(this.TPL_LIST_KEY, []);
+    const q = String(params?.q || '').trim().toLowerCase();
+    const category = String(params?.category || '').trim();
+    const providerKey = String(params?.providerKey || '').trim();
+    const keySet = new Set((params?.keys || []).map(k => String(k || '').trim()).filter(Boolean));
+    const page = Math.max(1, Number(params?.page) || 1);
+    const limit = Math.max(1, Number(params?.limit) || 2000);
+    const filtered = (all || []).filter((t) => {
+      if (category && String((t as any)?.category || '') !== category) return false;
+      if (providerKey && String((t as any)?.appId || '') !== providerKey) return false;
+      if (keySet.size && !keySet.has(String((t as any)?.id || ''))) return false;
+      if (!q) return true;
+      const hay = [
+        (t as any)?.id,
+        (t as any)?.name,
+        (t as any)?.title,
+        (t as any)?.subtitle,
+        (t as any)?.description,
+        (t as any)?.category,
+        (t as any)?.group,
+        (t as any)?.appId,
+        ...((t as any)?.tags || []),
+      ].join(' ').toLowerCase();
+      return hay.includes(q);
+    });
+    const sorted = [...filtered].sort((a, b) => String((a as any)?.name || '').localeCompare(String((b as any)?.name || '')));
+    const start = (page - 1) * limit;
+    return of(sorted.slice(start, start + limit)).pipe(delay(CatalogService.LATENCY));
   }
   getNodeTemplate(id: string): Observable<NodeTemplate | undefined> {
     if (environment.useBackend) {

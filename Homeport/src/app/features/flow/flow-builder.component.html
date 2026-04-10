@@ -4,10 +4,13 @@
   <!-- Reusable left panel content (desktop + drawer) -->
   <ng-template #leftPanelContent let-mode="mode">
     <flow-palette-panel [mode]="'outside'" [groups]="paletteGroups" [loading]="paletteConnectorsLoading" [query]="paletteQuery" [isMobile]="isMobile"
+      [searchGroups]="paletteSearchGroups" [searchLoading]="paletteSearchLoading" [searchLoadingMore]="paletteSearchLoadingMore" [searchHasMore]="paletteSearchHasMore"
+      [activeGroupLoading]="paletteActiveGroupLoading" [activeGroupLoadingMore]="paletteActiveGroupLoadingMore" [activeGroupHasMore]="paletteActiveGroupHasMore"
       [dndDisabled]="dndDisabled" [trackGroupFn]="trackGroup" [trackItemFn]="trackItem"
       [miniIconClassFn]="miniIconClass.bind(this)" [simpleIconUrlFn]="simpleIconUrl.bind(this)" [typeIconClassFn]="typeIconClass.bind(this)"
       [isItemDisabledFn]="isPaletteItemDisabled.bind(this)" [isDraggingFn]="isDragging.bind(this)"
       (queryChange)="onPaletteQueryChange($event)" (itemClick)="onPaletteClick($event)"
+      (groupOpenRequest)="onPaletteGroupOpen($event)" (groupCloseRequest)="onPaletteGroupClose()" (searchLoadMore)="onPaletteSearchLoadMore()" (groupLoadMore)="onPaletteGroupLoadMore($event)"
       (dragStart)="onDragStart($event.item, $event.$event)"
       (dragEnd)="onDragEnd($event.item, $event.$event)"></flow-palette-panel>
   </ng-template>
@@ -330,7 +333,7 @@
           <ng-container *ngIf="addNodeContentVisible">
               <spotlight-add-node
                 [groups]="addNodeGroups"
-                [loading]="paletteConnectorsLoading"
+                [loading]="addNodeCatalogLoading"
                 [query]="addNodeQuery"
                 [totalCount]="addNodeCandidates.length"
                 [getAppByIdFn]="getAppById.bind(this)"

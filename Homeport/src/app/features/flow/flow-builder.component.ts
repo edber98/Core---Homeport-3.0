@@ -744,6 +744,7 @@ export class FlowBuilderComponent {
     try { this.cdr.detectChanges(); } catch { }
   }
   get dndDisabled(): boolean { return !!(this.isMobile || this.leftDrawer || this.rightDrawer); }
+  get addNodeCatalogLoading(): boolean { return !!(this.paletteConnectorsLoading || this.modalTemplatesLoading); }
   // Mobile drawer DnD helpers
 
 
@@ -761,10 +762,27 @@ export class FlowBuilderComponent {
   // Palette search and groups (materialized to avoid re-creating arrays each CD cycle)
   paletteQuery = '';
   paletteConnectorsLoading = true;
-  private paletteTemplatesLoading = true;
+  private paletteProvidersLoading = true;
   private paletteWorkspaceLoadCycle = 0;
   private paletteWorkspacePending: { filters: boolean; flows: boolean } = { filters: false, flows: false };
   paletteGroups: { title: string; items: any[]; appId?: string; appColor?: string; appIconClass?: string; appIconUrl?: string }[] = [];
+  paletteSearchGroups: Array<{ group: any; items: any[]; index: number }> = [];
+  paletteSearchLoading = false;
+  paletteSearchLoadingMore = false;
+  paletteSearchHasMore = false;
+  paletteActiveGroupLoading = false;
+  paletteActiveGroupLoadingMore = false;
+  paletteActiveGroupHasMore = false;
+  private paletteSearchItems: any[] = [];
+  private paletteSearchPage = 0;
+  private paletteSearchRequestSeq = 0;
+  private activePaletteGroupId: string | null = null;
+  private paletteGroupStates = new Map<string, { items: any[]; page: number; query: string; hasMore: boolean; loaded: boolean; loading: boolean; loadingMore: boolean }>();
+  private readonly palettePageSize = 50;
+  private readonly workflowsPaletteGroupId = '__workflows__';
+  private workspaceAllowsAllTemplates = false;
+  private modalTemplatesLoaded = false;
+  private modalTemplatesLoading = false;
   // Header labels
   headerTitle = 'Flow Builder';
   headerSubtitle = 'Conception du flow';
@@ -848,6 +866,7 @@ export class FlowBuilderComponent {
               this.currentFlowName = doc?.name || this.currentFlowName;
               this.currentFlowDesc = doc?.description || this.currentFlowDesc;
               this.nodes = (doc?.nodes || []);
+              this.ensureTemplatesLoadedForNodes(this.nodes);
               try { this.primeAssistDelayAllNodes(480); this.cdr.detectChanges(); } catch {}
               
               this.edges = (doc?.edges || []);
@@ -873,44 +892,28 @@ export class FlowBuilderComponent {
     } catch {}
     try {
       const paletteCycle = this.startPaletteWorkspaceLoadCycle();
-      this.catalog.listApps().subscribe(list => this.zone.run(() => {
-        (list || []).forEach(a => this.appsMap.set(a.id, a));
-        try { this.cdr.detectChanges(); } catch { }
-      }));
-      // Load palette from Node Templates list (dynamic source)
-      this.paletteTemplatesLoading = true;
+      this.paletteProvidersLoading = true;
       this.refreshPaletteLoadingState();
-      this.catalog.listNodeTemplates().subscribe({
-        next: (tpls) => this.zone.run(() => {
-          try {
-            this.allTemplates = tpls || [];
-            this.applyWorkspaceTemplateFilter(this.paletteWorkspaceLoadCycle || paletteCycle);
-          } finally {
-            const wasLoading = this.paletteConnectorsLoading;
-            this.paletteTemplatesLoading = false;
-            this.refreshPaletteLoadingState();
-            if (wasLoading && !this.paletteConnectorsLoading && this.addNodeVisible && !this.addNodeAiMode) {
-              this.rebuildAddNodeCandidates();
-              this.addNodeActiveIdx = this.addNodeCandidates.length ? 0 : -1;
-            }
-            try { this.cdr.detectChanges(); } catch { }
-          }
+      this.catalog.listApps().subscribe({
+        next: (list) => this.zone.run(() => {
+          this.appsMap.clear();
+          (list || []).forEach(a => this.appsMap.set(a.id, a));
+          this.rebuildPaletteGroups();
+          this.rebuildPaletteSearchGroups();
+          this.paletteProvidersLoading = false;
+          this.refreshPaletteLoadingState();
+          try { this.cdr.detectChanges(); } catch { }
         }),
         error: () => this.zone.run(() => {
-          this.allTemplates = [];
-          this.items = [];
+          this.appsMap.clear();
           this.rebuildPaletteGroups();
-          const wasLoading = this.paletteConnectorsLoading;
-          this.paletteTemplatesLoading = false;
+          this.rebuildPaletteSearchGroups();
+          this.paletteProvidersLoading = false;
           this.refreshPaletteLoadingState();
-          this.finishPaletteWorkspaceLoadStep('filters', this.paletteWorkspaceLoadCycle || paletteCycle);
-          if (wasLoading && !this.paletteConnectorsLoading && this.addNodeVisible && !this.addNodeAiMode) {
-            this.rebuildAddNodeCandidates();
-            this.addNodeActiveIdx = this.addNodeCandidates.length ? 0 : -1;
-          }
           try { this.cdr.detectChanges(); } catch { }
         }),
       });
+      this.applyWorkspaceTemplateFilter(this.paletteWorkspaceLoadCycle || paletteCycle);
       // Load flows to expose in "Workflows" palette group (scoped to current workspace)
       this.loadFlowsForWorkspace(paletteCycle);
       // Recompute palette when workspace changes
@@ -973,8 +976,12 @@ export class FlowBuilderComponent {
                 return n;
               });
               this.nodes = merged as any[];
+              this.ensureTemplatesLoadedForNodes(this.nodes);
               try { console.log('[flow-builder] flow refresh merged nodes'); } catch {}
-            } catch { this.nodes = (doc.nodes || []) as any[]; }
+            } catch {
+              this.nodes = (doc.nodes || []) as any[];
+              this.ensureTemplatesLoadedForNodes(this.nodes);
+            }
             try { this.primeAssistDelayAllNodes(480); this.cdr.detectChanges(); } catch {}
               
               this.edges = (doc.edges || []) as any;
@@ -1102,8 +1109,12 @@ export class FlowBuilderComponent {
                   return n;
                 });
                 this.nodes = merged as any[];
+                this.ensureTemplatesLoadedForNodes(this.nodes);
                 try { console.log('[flow-builder] flow refresh merged nodes (route change)'); } catch {}
-              } catch { this.nodes = (doc.nodes || []) as any[]; }
+              } catch {
+                this.nodes = (doc.nodes || []) as any[];
+                this.ensureTemplatesLoadedForNodes(this.nodes);
+              }
               try { this.primeAssistDelayAllNodes(480); this.cdr.detectChanges(); } catch {}
               this.edges = (doc.edges || []) as any;
               this.applyFlowMeta((doc as any).meta || {});
@@ -1399,9 +1410,8 @@ export class FlowBuilderComponent {
 
   private refreshPaletteLoadingState() {
     this.paletteConnectorsLoading =
-      this.paletteTemplatesLoading ||
-      this.paletteWorkspacePending.filters ||
-      this.paletteWorkspacePending.flows;
+      this.paletteProvidersLoading ||
+      this.paletteWorkspacePending.filters;
   }
 
   private startPaletteWorkspaceLoadCycle(): number {
@@ -1416,7 +1426,7 @@ export class FlowBuilderComponent {
     const wasLoading = this.paletteConnectorsLoading;
     this.paletteWorkspacePending = { ...this.paletteWorkspacePending, [step]: false };
     this.refreshPaletteLoadingState();
-    if (wasLoading && !this.paletteConnectorsLoading && this.addNodeVisible && !this.addNodeAiMode) {
+    if (wasLoading && !this.paletteConnectorsLoading && this.addNodeVisible && !this.addNodeAiMode && this.modalTemplatesLoaded) {
       this.rebuildAddNodeCandidates();
       this.addNodeActiveIdx = this.addNodeCandidates.length ? 0 : -1;
     }
@@ -1436,20 +1446,349 @@ export class FlowBuilderComponent {
         next: (list) => this.zone.run(() => {
           this.allFlows = list || [];
           this.rebuildPaletteGroups();
+          this.rebuildPaletteSearchGroups();
           try { this.cdr.detectChanges(); } catch {}
           this.finishPaletteWorkspaceLoadStep('flows', cycle);
         }),
         error: () => this.zone.run(() => {
           this.allFlows = [];
           this.rebuildPaletteGroups();
+          this.rebuildPaletteSearchGroups();
           this.finishPaletteWorkspaceLoadStep('flows', cycle);
         }),
       });
     } catch {
       this.allFlows = [];
       this.rebuildPaletteGroups();
+      this.rebuildPaletteSearchGroups();
       this.finishPaletteWorkspaceLoadStep('flows', cycle);
     }
+  }
+
+  private upsertLoadedTemplates(list: any[]) {
+    let changed = false;
+    const byId = new Map((this.allTemplates || []).map((tpl: any) => [String(tpl?.id || ''), tpl]));
+    for (const tpl of (list || [])) {
+      const id = String(tpl?.id || '').trim();
+      if (!id) continue;
+      byId.set(id, tpl);
+      changed = true;
+    }
+    if (!changed) return;
+    this.allTemplates = Array.from(byId.values());
+  }
+
+  private ensureTemplatesLoaded(templateIds: string[]) {
+    const wanted = Array.from(new Set((templateIds || []).map(id => String(id || '').trim()).filter(Boolean)));
+    const missing = wanted.filter(id => !(this.allTemplates || []).some((tpl: any) => String(tpl?.id || '') === id));
+    if (!missing.length) return;
+    this.catalog.listNodeTemplatesPage({ page: 1, limit: Math.max(missing.length, 50), keys: missing }).subscribe({
+      next: (tpls) => this.zone.run(() => {
+        this.upsertLoadedTemplates(tpls || []);
+        this.recomputeValidation();
+        try { this.cdr.detectChanges(); } catch {}
+      }),
+      error: () => {},
+    });
+  }
+
+  private ensureTemplatesLoadedForNodes(nodes: any[]) {
+    const ids = Array.from(new Set((nodes || []).map((node: any) => this.getNodeTemplateId(node)).filter(Boolean)));
+    this.ensureTemplatesLoaded(ids);
+  }
+
+  private isTemplateAllowedInWorkspace(tplId: string): boolean {
+    if (!tplId) return false;
+    return this.workspaceAllowsAllTemplates || this.allowedTplIds.has(String(tplId));
+  }
+
+  private paletteGroupKey(group: any): string {
+    const appId = String(group?.appId || '').trim();
+    if (appId) return `provider:${appId}`;
+    const title = String(group?.title || '').trim().toLowerCase();
+    if (title === 'workflows') return this.workflowsPaletteGroupId;
+    return `group:${title}`;
+  }
+
+  private findPaletteGroupIndex(group: any): number {
+    const key = this.paletteGroupKey(group);
+    return (this.paletteGroups || []).findIndex(g => this.paletteGroupKey(g) === key);
+  }
+
+  private workflowPaletteItems(query: string = ''): any[] {
+    const ws = this.acl.currentWorkspaceId();
+    const q = String(query || '').trim().toLowerCase();
+    const flowsInWs = environment.useBackend
+      ? (this.allFlows || [])
+      : (this.allFlows || []).filter(f => (this.acl.getResourceWorkspace('flow', f.id) || 'default') === ws);
+    const sorted = [...flowsInWs].sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+    const filtered = q ? sorted.filter(f => `${f.name} ${f.id} ${f.description || ''}`.toLowerCase().includes(q)) : sorted;
+    const canonical = (this.allTemplates || []).find((t: any) => String(t?.id) === 'tmpl_call_flow');
+    const makeTplForFlow = (f: any) => {
+      const t = canonical ? JSON.parse(JSON.stringify(canonical)) : {
+        id: 'tmpl_call_flow', type: 'flow', name: 'Call Flow', title: 'Call Flow', subtitle: 'Workflow', icon: 'fa-solid fa-diagram-project', category: 'Workflow', authorize_catch_error: true, authorize_skip_error: true, output: ['Success'], args: { title: 'Call Flow', ui: { layout: 'vertical', labelsOnTop: true }, fields: [{ type: 'text', key: 'flowId', label: 'Flow ID', col: { xs: 24 }, disabledIf: true }] }
+      };
+      (t as any).__preContext = { flowId: f.id };
+      t.title = f.name || t.title;
+      return t;
+    };
+    return filtered.map(f => ({ label: f.name || f.id, template: makeTplForFlow(f) }));
+  }
+
+  private buildBrowsePaletteGroups() {
+    const apps = Array.from(this.appsMap.values());
+    apps.sort((a, b) => {
+      const oa = typeof (a as any)?.order === 'number' ? Number((a as any).order) : null;
+      const ob = typeof (b as any)?.order === 'number' ? Number((b as any).order) : null;
+      if (oa != null && ob != null) return oa - ob;
+      if (oa != null) return -1;
+      if (ob != null) return 1;
+      return String(a?.title || a?.name || a?.id || '').localeCompare(String(b?.title || b?.name || b?.id || ''));
+    });
+    const groups: Array<{ title: string; items: any[]; appId?: string; appColor?: string; appIconClass?: string; appIconUrl?: string }> = apps.map((app) => {
+      const key = this.paletteGroupKey({ appId: app.id, title: app.title || app.name || app.id });
+      const state = this.paletteGroupStates.get(key);
+      return {
+        title: app.title || app.name || app.id,
+        items: state?.items || [],
+        appId: app.id,
+        appColor: app.color,
+        appIconClass: app.iconClass,
+        appIconUrl: app.iconUrl,
+      };
+    });
+    const workflowItems = this.workflowPaletteItems();
+    if (workflowItems.length) groups.push({ title: 'Workflows', items: workflowItems });
+    return groups;
+  }
+
+  private buildSearchPaletteGroups(items: any[]) {
+    const groups: Array<{ title: string; items: any[]; appId?: string; appColor?: string; appIconClass?: string; appIconUrl?: string }> = [];
+    const byKey = new Map<string, { title: string; items: any[]; appId?: string; appColor?: string; appIconClass?: string; appIconUrl?: string }>();
+    for (const item of (items || [])) {
+      const tpl = item?.template || {};
+      const appId = String((tpl?.appId || tpl?.app?._id || '')).trim();
+      const key = appId || '__no_app__';
+      let group = byKey.get(key);
+      if (!group) {
+        const app = appId ? this.appsMap.get(appId) : undefined;
+        group = {
+          title: app ? (app.title || app.name || app.id) : 'Sans App',
+          items: [],
+          appId: appId || undefined,
+          appColor: app?.color,
+          appIconClass: app?.iconClass,
+          appIconUrl: app?.iconUrl,
+        };
+        byKey.set(key, group);
+        groups.push(group);
+      }
+      group.items.push(item);
+    }
+    return groups;
+  }
+
+  private clearPaletteSearchState() {
+    this.paletteSearchRequestSeq++;
+    this.paletteSearchItems = [];
+    this.paletteSearchPage = 0;
+    this.paletteSearchGroups = [];
+    this.paletteSearchLoading = false;
+    this.paletteSearchLoadingMore = false;
+    this.paletteSearchHasMore = false;
+  }
+
+  private resetPaletteDynamicState() {
+    this.paletteGroupStates.clear();
+    this.clearPaletteSearchState();
+    this.activePaletteGroupId = null;
+    this.paletteActiveGroupLoading = false;
+    this.paletteActiveGroupLoadingMore = false;
+    this.paletteActiveGroupHasMore = false;
+    this.items = [];
+    this.modalTemplatesLoaded = false;
+    this.modalTemplatesLoading = false;
+  }
+
+  private rebuildPaletteSearchGroups() {
+    const q = (this.paletteQuery || '').trim();
+    if (!q) {
+      this.paletteSearchGroups = [];
+      return;
+    }
+    const groups = this.buildSearchPaletteGroups(this.paletteSearchItems);
+    const workflowItems = this.workflowPaletteItems(q);
+    if (workflowItems.length) groups.push({ title: 'Workflows', items: workflowItems });
+    this.paletteSearchGroups = groups.map(group => ({
+      group,
+      items: group.items || [],
+      index: this.findPaletteGroupIndex(group),
+    }));
+  }
+
+  private syncActivePaletteGroupState(group?: any | null) {
+    const key = group ? this.paletteGroupKey(group) : this.activePaletteGroupId;
+    this.activePaletteGroupId = key || null;
+    if (!key || key === this.workflowsPaletteGroupId) {
+      this.paletteActiveGroupLoading = false;
+      this.paletteActiveGroupLoadingMore = false;
+      this.paletteActiveGroupHasMore = false;
+      return;
+    }
+    const state = this.paletteGroupStates.get(key);
+    this.paletteActiveGroupLoading = !!state?.loading;
+    this.paletteActiveGroupLoadingMore = !!state?.loadingMore;
+    this.paletteActiveGroupHasMore = !!state?.hasMore;
+  }
+
+  private updatePaletteGroupItems(groupKey: string, items: any[]) {
+    this.paletteGroups = (this.paletteGroups || []).map(group => this.paletteGroupKey(group) === groupKey ? { ...group, items } : group);
+  }
+
+  private loadPaletteProviderGroup(group: any, opts?: { append?: boolean; query?: string; reset?: boolean }) {
+    const providerKey = String(group?.appId || '').trim();
+    if (!providerKey) {
+      this.syncActivePaletteGroupState(group);
+      return;
+    }
+    if (!this.workspaceAllowsAllTemplates && this.allowedTplIds.size === 0) {
+      const emptyState = { items: [], page: 0, query: String(opts?.query || '').trim(), hasMore: false, loaded: true, loading: false, loadingMore: false };
+      this.paletteGroupStates.set(this.paletteGroupKey(group), emptyState);
+      this.updatePaletteGroupItems(this.paletteGroupKey(group), []);
+      this.syncActivePaletteGroupState(group);
+      return;
+    }
+    const query = String(opts?.query ?? '').trim();
+    const groupKey = this.paletteGroupKey(group);
+    const previous = this.paletteGroupStates.get(groupKey) || { items: [], page: 0, query: '', hasMore: true, loaded: false, loading: false, loadingMore: false };
+    const reset = !!opts?.reset || previous.query !== query || !previous.loaded;
+    if (!reset && !previous.hasMore) {
+      this.syncActivePaletteGroupState(group);
+      return;
+    }
+    if (previous.loading || previous.loadingMore) return;
+    const page = reset ? 1 : previous.page + 1;
+    const loadingState = {
+      ...previous,
+      query,
+      loading: reset,
+      loadingMore: !reset,
+    };
+    this.paletteGroupStates.set(groupKey, loadingState);
+    this.syncActivePaletteGroupState(group);
+    const params: any = { page, limit: this.palettePageSize, providerKey };
+    if (query) params.q = query;
+    if (!this.workspaceAllowsAllTemplates) params.keys = Array.from(this.allowedTplIds);
+    this.catalog.listNodeTemplatesPage(params).subscribe({
+      next: (tpls) => this.zone.run(() => {
+        const pageItems = this.paletteSvc.toPaletteItems(tpls || []);
+        this.upsertLoadedTemplates(tpls || []);
+        this.recomputeValidation();
+        const items = reset ? pageItems : [...previous.items, ...pageItems];
+        const nextState = {
+          items,
+          page,
+          query,
+          hasMore: pageItems.length === this.palettePageSize,
+          loaded: true,
+          loading: false,
+          loadingMore: false,
+        };
+        this.paletteGroupStates.set(groupKey, nextState);
+        this.updatePaletteGroupItems(groupKey, items);
+        this.syncActivePaletteGroupState(group);
+        try { this.cdr.detectChanges(); } catch {}
+      }),
+      error: () => this.zone.run(() => {
+        this.paletteGroupStates.set(groupKey, { ...previous, query, loading: false, loadingMore: false, hasMore: false, loaded: true });
+        this.syncActivePaletteGroupState(group);
+        try { this.cdr.detectChanges(); } catch {}
+      }),
+    });
+  }
+
+  private loadPaletteSearch(query: string, append = false) {
+    const q = String(query || '').trim();
+    if (!q) {
+      this.clearPaletteSearchState();
+      return;
+    }
+    if (!this.workspaceAllowsAllTemplates && this.allowedTplIds.size === 0) {
+      this.clearPaletteSearchState();
+      this.rebuildPaletteSearchGroups();
+      return;
+    }
+    if (append) {
+      if (this.paletteSearchLoading || this.paletteSearchLoadingMore || !this.paletteSearchHasMore) return;
+      this.paletteSearchLoadingMore = true;
+    } else {
+      this.paletteSearchLoading = true;
+      this.paletteSearchLoadingMore = false;
+      this.paletteSearchItems = [];
+      this.paletteSearchGroups = [];
+      this.paletteSearchPage = 0;
+      this.paletteSearchHasMore = false;
+    }
+    const requestSeq = ++this.paletteSearchRequestSeq;
+    const page = append ? this.paletteSearchPage + 1 : 1;
+    const params: any = { page, limit: this.palettePageSize, q };
+    if (!this.workspaceAllowsAllTemplates) params.keys = Array.from(this.allowedTplIds);
+    this.catalog.listNodeTemplatesPage(params).subscribe({
+      next: (tpls) => this.zone.run(() => {
+        if (requestSeq !== this.paletteSearchRequestSeq) return;
+        const pageItems = this.paletteSvc.toPaletteItems(tpls || []);
+        this.upsertLoadedTemplates(tpls || []);
+        this.recomputeValidation();
+        this.paletteSearchItems = append ? [...this.paletteSearchItems, ...pageItems] : pageItems;
+        this.paletteSearchPage = page;
+        this.paletteSearchHasMore = pageItems.length === this.palettePageSize;
+        this.paletteSearchLoading = false;
+        this.paletteSearchLoadingMore = false;
+        this.rebuildPaletteSearchGroups();
+        try { this.cdr.detectChanges(); } catch {}
+      }),
+      error: () => this.zone.run(() => {
+        if (requestSeq !== this.paletteSearchRequestSeq) return;
+        this.paletteSearchLoading = false;
+        this.paletteSearchLoadingMore = false;
+        this.paletteSearchHasMore = false;
+        this.rebuildPaletteSearchGroups();
+        try { this.cdr.detectChanges(); } catch {}
+      }),
+    });
+  }
+
+  private ensureModalTemplatesLoaded() {
+    if (this.modalTemplatesLoaded || this.modalTemplatesLoading) return;
+    this.modalTemplatesLoading = true;
+    if (!this.workspaceAllowsAllTemplates && this.allowedTplIds.size === 0) {
+      this.items = [];
+      this.modalTemplatesLoaded = true;
+      this.modalTemplatesLoading = false;
+      return;
+    }
+    const params: any = { page: 1, limit: 2000 };
+    if (!this.workspaceAllowsAllTemplates) params.keys = Array.from(this.allowedTplIds);
+    this.catalog.listNodeTemplatesPage(params).subscribe({
+      next: (tpls) => this.zone.run(() => {
+        this.upsertLoadedTemplates(tpls || []);
+        this.items = this.paletteSvc.toPaletteItems(tpls || []);
+        this.modalTemplatesLoaded = true;
+        this.modalTemplatesLoading = false;
+        if (this.addNodeVisible && !this.addNodeAiMode) {
+          this.rebuildAddNodeCandidates();
+          this.addNodeActiveIdx = this.addNodeCandidates.length ? 0 : -1;
+        }
+        this.recomputeValidation();
+        try { this.cdr.detectChanges(); } catch {}
+      }),
+      error: () => this.zone.run(() => {
+        this.items = [];
+        this.modalTemplatesLoaded = false;
+        this.modalTemplatesLoading = false;
+        try { this.cdr.detectChanges(); } catch {}
+      }),
+    });
   }
 
   private beforeUnloadHandler = (e: BeforeUnloadEvent) => {
@@ -1569,28 +1908,52 @@ export class FlowBuilderComponent {
     try {
       const ws = this.acl.currentWorkspaceId();
       if (!ws) {
+        this.workspaceAllowsAllTemplates = false;
         this.allowedTplIds = new Set<string>();
-        this.items = [];
+        this.resetPaletteDynamicState();
         this.rebuildPaletteGroups();
+        this.rebuildPaletteSearchGroups();
+        this.finishPaletteWorkspaceLoadStep('filters', cycle);
+        return;
+      }
+      const currentWorkspace = this.acl.currentWorkspace();
+      if (currentWorkspace?.id === ws && currentWorkspace?.isDefault) {
+        this.workspaceAllowsAllTemplates = true;
+        this.allowedTplIds = new Set<string>();
+        this.resetPaletteDynamicState();
+        this.rebuildPaletteGroups();
+        this.rebuildPaletteSearchGroups();
+        this.recomputeValidation();
         this.finishPaletteWorkspaceLoadStep('filters', cycle);
         return;
       }
       this.acl.listAllowedTemplates(ws).subscribe({
         next: (ids) => {
+          this.workspaceAllowsAllTemplates = false;
           const allow = Array.isArray(ids) ? ids : [];
           this.allowedTplIds = new Set(allow);
-          const filtered = allow.length === 0 ? [] : (this.allTemplates || []).filter(t => allow.includes((t as any).id));
-          this.items = this.paletteSvc.toPaletteItems(filtered);
+          this.resetPaletteDynamicState();
           this.rebuildPaletteGroups();
+          this.rebuildPaletteSearchGroups();
           try { this.cdr.detectChanges(); } catch { }
           this.recomputeValidation();
           this.finishPaletteWorkspaceLoadStep('filters', cycle);
         },
         error: () => {
+          this.workspaceAllowsAllTemplates = false;
+          this.allowedTplIds = new Set<string>();
+          this.resetPaletteDynamicState();
+          this.rebuildPaletteGroups();
+          this.rebuildPaletteSearchGroups();
           this.finishPaletteWorkspaceLoadStep('filters', cycle);
         }
       });
     } catch {
+      this.workspaceAllowsAllTemplates = false;
+      this.allowedTplIds = new Set<string>();
+      this.resetPaletteDynamicState();
+      this.rebuildPaletteGroups();
+      this.rebuildPaletteSearchGroups();
       this.finishPaletteWorkspaceLoadStep('filters', cycle);
     }
   }
@@ -1906,6 +2269,7 @@ export class FlowBuilderComponent {
       this.catalog.getFlow(fid).subscribe({
         next: (doc) => {
           this.nodes = (doc?.nodes || []);
+          this.ensureTemplatesLoadedForNodes(this.nodes);
           try { this.primeAssistDelayAllNodes(480); this.cdr.detectChanges(); } catch {}
           this.edges = (doc?.edges || []);
           this.applyFlowMeta((doc as any).meta || {});
@@ -1990,34 +2354,53 @@ export class FlowBuilderComponent {
     } catch { }
   }
 
-  // No grouped palette; simple flat list used by template
-  onPaletteQueryChange(v: string) { this.paletteQuery = (v || ''); this.rebuildPaletteGroups(); }
+  onPaletteQueryChange(v: string) {
+    this.paletteQuery = (v || '');
+    const q = this.paletteQuery.trim();
+    if (!q) {
+      this.clearPaletteSearchState();
+      const activeGroup = (this.paletteGroups || []).find(g => this.paletteGroupKey(g) === this.activePaletteGroupId);
+      if (activeGroup?.appId) this.loadPaletteProviderGroup(activeGroup, { query: '', reset: true });
+      try { this.cdr.detectChanges(); } catch {}
+      return;
+    }
+    const activeGroup = (this.paletteGroups || []).find(g => this.paletteGroupKey(g) === this.activePaletteGroupId);
+    if (activeGroup?.appId) {
+      this.loadPaletteProviderGroup(activeGroup, { query: q, reset: true });
+      return;
+    }
+    this.loadPaletteSearch(q, false);
+  }
   rebuildPaletteGroups() {
-    const base = this.paletteSvc.buildGroups(this.items, this.paletteQuery, this.appsMap) || [];
-    // Build bottom group: Workflows (flows available in current workspace)
-    const ws = this.acl.currentWorkspaceId();
-    const q = (this.paletteQuery || '').trim().toLowerCase();
-    // In backend mode, allFlows is already scoped to the current workspace. In local mode, filter by ACL mapping.
-    const flowsInWs = environment.useBackend
-      ? (this.allFlows || [])
-      : (this.allFlows || []).filter(f => (this.acl.getResourceWorkspace('flow', f.id) || 'default') === ws);
-    const sorted = flowsInWs.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
-    const filtered = q ? sorted.filter(f => `${f.name} ${f.id} ${f.description || ''}`.toLowerCase().includes(q)) : sorted;
-    // Use canonical template from catalog to keep checksum stable; pass selected flowId via __preContext
-    const canonical = (this.allTemplates || []).find(t => String((t as any)?.id) === 'tmpl_call_flow');
-    const makeTplForFlow = (f: any) => {
-      const t = canonical ? JSON.parse(JSON.stringify(canonical)) : {
-        id: 'tmpl_call_flow', type: 'flow', name: 'Call Flow', title: 'Call Flow', subtitle: 'Workflow', icon: 'fa-solid fa-diagram-project', category: 'Workflow', authorize_catch_error: true, authorize_skip_error: true, output: ['Success'], args: { title: 'Call Flow', ui: { layout: 'vertical', labelsOnTop: true }, fields: [{ type: 'text', key: 'flowId', label: 'Flow ID', col: { xs: 24 }, disabledIf: true }] }
-      };
-      (t as any).__preContext = { flowId: f.id };
-      t.title = f.name || t.title;
-      return t;
-    };
-    const wfItems = filtered.map(f => ({ label: f.name || f.id, template: makeTplForFlow(f) }));
-    const groups = [...base];
-    groups.push({ title: 'Workflows', items: wfItems });
-    this.paletteGroups = groups;
+    this.paletteGroups = this.buildBrowsePaletteGroups();
+    this.syncActivePaletteGroupState((this.paletteGroups || []).find(g => this.paletteGroupKey(g) === this.activePaletteGroupId) || null);
     try { this.cdr.detectChanges(); } catch {}
+  }
+
+  onPaletteGroupOpen(group: any) {
+    const currentGroup = (this.paletteGroups || []).find(g => this.paletteGroupKey(g) === this.paletteGroupKey(group)) || group;
+    this.syncActivePaletteGroupState(currentGroup);
+    if (currentGroup?.appId) {
+      const state = this.paletteGroupStates.get(this.paletteGroupKey(currentGroup));
+      const query = this.paletteQuery.trim();
+      this.loadPaletteProviderGroup(currentGroup, { query, reset: !state || !state.loaded || state.query !== query });
+    }
+  }
+
+  onPaletteGroupClose() {
+    this.syncActivePaletteGroupState(null);
+    if ((this.paletteQuery || '').trim()) this.loadPaletteSearch(this.paletteQuery.trim(), false);
+  }
+
+  onPaletteSearchLoadMore() {
+    const q = this.paletteQuery.trim();
+    if (!q) return;
+    this.loadPaletteSearch(q, true);
+  }
+
+  onPaletteGroupLoadMore(group: any) {
+    if (!group?.appId) return;
+    this.loadPaletteProviderGroup(group, { query: this.paletteQuery.trim(), append: true });
   }
 
   trackGroup = (_: number, g: any) => (g && (g.appId || g.title)) || _;
@@ -2105,7 +2488,8 @@ export class FlowBuilderComponent {
     this.addNodeSourceId = String(nodeId);
     this.addNodeSourceHandle = String(handleId);
     this.addNodeQuery = '';
-    if (this.paletteConnectorsLoading) {
+    this.ensureModalTemplatesLoaded();
+    if (this.addNodeCatalogLoading) {
       this.addNodeCandidates = [];
       this.addNodeGroups = [];
       this.addNodeActiveIdx = -1;
@@ -2356,7 +2740,8 @@ export class FlowBuilderComponent {
       this.addNodeSourceId = null;
       this.addNodeSourceHandle = null;
       this.addNodeQuery = '';
-      if (this.paletteConnectorsLoading) {
+      this.ensureModalTemplatesLoaded();
+      if (this.addNodeCatalogLoading) {
         this.addNodeCandidates = [];
         this.addNodeGroups = [];
         this.addNodeActiveIdx = -1;
@@ -4146,7 +4531,7 @@ export class FlowBuilderComponent {
       const n = this.nodes.find(nn => nn.id === id);
       const tplId = this.getNodeTemplateId(n);
       if (!tplId) return false;
-      if (!this.allowedTplIds.has(tplId)) return true;
+      if (!this.isTemplateAllowedInWorkspace(tplId)) return true;
       // Checksum mismatch: template args changed since node was created
       try {
         const model: any = n?.data?.model || {};
@@ -4207,7 +4592,7 @@ export class FlowBuilderComponent {
       for (const n of this.nodes) {
         const id = String(n.id);
         const tpl = this.getNodeTemplateId(n);
-        if (tpl && !this.allowedTplIds.has(tpl)) {
+        if (tpl && !this.isTemplateAllowedInWorkspace(tpl)) {
           issues.push({ kind: 'node', nodeId: id, message: `Template ${tpl} non autorisé dans ce workspace` });
         }
         // Template changes: args checksum or feature flags
@@ -7412,7 +7797,9 @@ export class FlowBuilderComponent {
         const parsed = JSON.parse(String(reader.result || '{}'));
         if (Array.isArray(parsed?.nodes) && Array.isArray(parsed?.edges)) {
           const mapTemplate = (tplId: any) => (
-            this.templates.find(t => t.id === tplId) || this.items.map(x => x.template).find((t: any) => t?.id === tplId)
+            this.templates.find(t => t.id === tplId)
+            || (this.allTemplates || []).find((t: any) => t?.id === tplId)
+            || this.items.map(x => x.template).find((t: any) => t?.id === tplId)
           );
           this.beginApplyingHistory(700);
           this.nodes = parsed.nodes.map((n: any) => {
@@ -7425,6 +7812,7 @@ export class FlowBuilderComponent {
             } catch { }
             return n;
           });
+          this.ensureTemplatesLoadedForNodes(this.nodes);
           this.edges = parsed.edges;
           // After import, reconcile edges for all nodes (in case formats changed)
           try {

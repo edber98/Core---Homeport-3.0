@@ -38,7 +38,7 @@ export interface BackendNodeTemplate {
 export class NodeTemplatesBackendService {
   constructor(private api: ApiClientService) {}
 
-  list(params?: { page?: number; limit?: number; q?: string; category?: string; sort?: string }): Observable<BackendNodeTemplate[]> {
+  list(params?: { page?: number; limit?: number; q?: string; category?: string; sort?: string; providerKey?: string; keys?: string[] | string }): Observable<BackendNodeTemplate[]> {
     return this.api.get<BackendNodeTemplate[]>(`/api/node-templates`, params);
   }
   create(tpl: BackendNodeTemplate): Observable<any> { return this.api.post<any>(`/api/node-templates`, tpl); }

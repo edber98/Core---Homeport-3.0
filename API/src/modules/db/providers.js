@@ -15,24 +15,25 @@ module.exports = function(){
     const PluginRepo = require('../../db/models/plugin-repo.model');
     const enabledRepos = await PluginRepo.find({ enabled: true }).select('_id').lean();
     const enabledIds = new Set(enabledRepos.map(r => String(r._id)));
-    const query = { enabled: true };
+    const filters = [{ enabled: true }];
     if (q) {
       const rx = { $regex: String(q), $options: 'i' };
-      Object.assign(query, { $or: [ { name: rx }, { title: rx }, { tags: rx } ] });
+      filters.push({ $or: [ { key: rx }, { name: rx }, { title: rx }, { tags: rx }, { categories: rx } ] });
     }
     let sortObj = { name: 1 };
     if (typeof sort === 'string') {
       const [field, dir] = String(sort).split(':');
       if (field) sortObj = { [field]: (dir === 'desc' ? -1 : 1) };
     }
-    const list = await Provider.find({
-        ...query,
+    filters.push({
         $or: [
           { repos: { $exists: false } },
           { repos: { $size: 0 } },
           { repos: { $in: [...enabledIds] } },
-        ]
-      })
+        ],
+      });
+    const query = filters.length === 1 ? filters[0] : { $and: filters };
+    const list = await Provider.find(query)
       .sort(sortObj)
       .skip((page - 1) * limit)
       .limit(limit)
