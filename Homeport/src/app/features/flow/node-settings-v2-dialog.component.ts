@@ -23,7 +23,35 @@ import { FormsModule } from '@angular/forms';
       </div>
       <div class="body">
         <!-- Left column: Scenario + View mode (top), then viewer -->
-        <div class="col left placeholder" *ngIf="!hasInput(model)"></div>
+        <!-- Trigger placeholder (start/start_form/event/endpoint) -->
+        <div class="col left trigger-pane" *ngIf="!hasInput(model)">
+          <div class="trigger-hero">
+            <div class="trigger-icon" [ngClass]="triggerKind(model)">
+              <i *ngIf="isStartForm(model)" class="fa-regular fa-rectangle-list"></i>
+              <i *ngIf="isEventTrigger(model)" class="fa-solid fa-bolt"></i>
+              <i *ngIf="isEndpointTrigger(model)" class="fa-solid fa-plug"></i>
+              <i *ngIf="!isStartForm(model) && !isEventTrigger(model) && !isEndpointTrigger(model)" class="fa-solid fa-rocket"></i>
+            </div>
+            <div class="trigger-title">{{ triggerTitle(model) }}</div>
+            <div class="trigger-desc">{{ triggerDesc(model) }}</div>
+          </div>
+          <div class="trigger-runs" *ngIf="execScenarios().length > 0">
+            <div class="runs-title">Exécutions récentes</div>
+            <div class="runs-list">
+              <button class="run-item" *ngFor="let sc of execScenarios(); let i = index"
+                [class.active]="simSelectedIndex === scenarioIndex(sc)"
+                (click)="onSelectScenario(scenarioIndex(sc))">
+                <span class="run-dot" [ngClass]="sc?.match?.status || 'ok'"></span>
+                <span class="run-label">{{ sc?.label || 'Exécution ' + (i+1) }}</span>
+                <span class="run-time" *ngIf="sc?.match?.startedAt">{{ formatTime(sc?.match?.startedAt) }}</span>
+              </button>
+            </div>
+          </div>
+          <div class="trigger-empty" *ngIf="execScenarios().length === 0">
+            <i class="fa-regular fa-clock"></i>
+            <span>Aucune exécution récente</span>
+          </div>
+        </div>
         <div class="col left" *ngIf="hasInput(model)">
           <div class="top-bar">
             <nz-select class="scenario-select" [ngModel]="simSelectedIndex" (ngModelChange)="onSelectScenario($event)" nzPlaceHolder="Scénario">
@@ -230,6 +258,75 @@ import { FormsModule } from '@angular/forms';
     .col.center { overflow: hidden; display:flex; flex-direction:column; min-height:0; }
     .col.center > flow-advanced-center-panel { flex: 1 1 auto; min-height: 0; display:block; }
     .col.left, .col.right { overflow-x: auto; }
+
+    /* Trigger placeholder pane */
+    .col.left.trigger-pane {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      padding: 24px 16px;
+      overflow-y: auto;
+    }
+    .trigger-hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 24px 16px;
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+    .trigger-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%);
+      color: #e61982;
+      font-size: 24px;
+      margin-bottom: 14px;
+    }
+    .trigger-icon.form { background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); color: #059669; }
+    .trigger-icon.event { background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); color: #d97706; }
+    .trigger-icon.endpoint { background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); color: #2563eb; }
+    .trigger-title { font-size: 15px; font-weight: 700; color: #1a1a1a; margin-bottom: 6px; }
+    .trigger-desc { font-size: 12px; color: #8b8b8b; line-height: 1.5; max-width: 260px; }
+
+    .trigger-runs { display: flex; flex-direction: column; gap: 6px; }
+    .runs-title { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #b0b0b0; padding: 0 6px; }
+    .runs-list { display: flex; flex-direction: column; gap: 4px; }
+    .run-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 12px;
+      background: #fff;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      text-align: left;
+      transition: background 0.12s, box-shadow 0.12s;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+    }
+    .run-item:hover { background: #fdf2f8; }
+    .run-item.active { background: #fdf2f8; box-shadow: 0 0 0 2px #e61982, 0 1px 3px rgba(230,25,130,0.15); }
+    .run-dot { width: 8px; height: 8px; border-radius: 50%; background: #16a34a; flex-shrink: 0; }
+    .run-dot.error { background: #ef4444; }
+    .run-dot.running { background: #e61982; }
+    .run-dot.ok { background: #16a34a; }
+    .run-label { flex: 1; font-size: 13px; color: #1a1a1a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .run-time { font-size: 11px; color: #b0b0b0; }
+
+    .trigger-empty {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 20px 12px;
+      color: #b0b0b0;
+      font-size: 12px;
+      background: #fff;
+      border-radius: 12px;
+    }
+    .trigger-empty i { font-size: 14px; }
    
     /* center: pas d'overflow horizontal (visible par défaut) */
     .section-title { display:none; }
@@ -740,6 +837,32 @@ export class FlowNodeSettingsV2DialogComponent implements OnChanges, OnInit, Aft
   hasOutput(model: any): boolean { try { return !!model && model.templateObj?.type !== 'end'; } catch { return false; } }
   isStart(m: any): boolean { try { const t = String(m?.templateObj?.type || '').toLowerCase(); return t === 'start'; } catch { return false; } }
   isStartForm(m: any): boolean { try { const t = String(m?.templateObj?.type || '').toLowerCase(); return t === 'start_form'; } catch { return false; } }
+  isEventTrigger(m: any): boolean { try { const t = String(m?.templateObj?.type || '').toLowerCase(); return t === 'event'; } catch { return false; } }
+  isEndpointTrigger(m: any): boolean { try { const t = String(m?.templateObj?.type || '').toLowerCase(); return t === 'endpoint'; } catch { return false; } }
+  triggerKind(m: any): string {
+    if (this.isStartForm(m)) return 'form';
+    if (this.isEventTrigger(m)) return 'event';
+    if (this.isEndpointTrigger(m)) return 'endpoint';
+    return 'start';
+  }
+  triggerTitle(m: any): string {
+    if (this.isStartForm(m)) return 'Déclencheur formulaire';
+    if (this.isEventTrigger(m)) return 'Déclencheur événement';
+    if (this.isEndpointTrigger(m)) return 'Déclencheur endpoint';
+    return 'Point de départ';
+  }
+  triggerDesc(m: any): string {
+    if (this.isStartForm(m)) return 'Ce nœud déclenche le flow via un formulaire soumis par un utilisateur.';
+    if (this.isEventTrigger(m)) return 'Ce nœud écoute un événement externe pour lancer le flow.';
+    if (this.isEndpointTrigger(m)) return 'Ce nœud expose un endpoint HTTP qui lance le flow.';
+    return 'Ce nœud est le point d\'entrée du flow. Il n\'a pas d\'entrée.';
+  }
+  execScenarios(): any[] {
+    try { return (this.simScenarios || []).filter((sc: any) => !!sc?.match?.exec); } catch { return []; }
+  }
+  scenarioIndex(sc: any): number {
+    try { return (this.simScenarios || []).indexOf(sc); } catch { return -1; }
+  }
   debugRightSchema(): any {
     try { return (this.model?.startFormSchema || this.model?.templateObj?.args) || { title: 'Formulaire', fields: [] }; }
     catch { return { title: 'Formulaire', fields: [] }; }
