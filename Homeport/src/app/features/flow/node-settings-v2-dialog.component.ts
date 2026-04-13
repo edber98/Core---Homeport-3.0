@@ -23,6 +23,7 @@ import { FormsModule } from '@angular/forms';
       </div>
       <div class="body">
         <!-- Left column: Scenario + View mode (top), then viewer -->
+        <div class="col left placeholder" *ngIf="!hasInput(model)"></div>
         <div class="col left" *ngIf="hasInput(model)">
           <div class="top-bar">
             <nz-select class="scenario-select" [ngModel]="simSelectedIndex" (ngModelChange)="onSelectScenario($event)" nzPlaceHolder="Scénario">
