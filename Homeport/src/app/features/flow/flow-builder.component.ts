@@ -1627,6 +1627,13 @@ export class FlowBuilderComponent {
   }
 
   private syncActivePaletteGroupState(group?: any | null) {
+    if (group === null) {
+      this.activePaletteGroupId = null;
+      this.paletteActiveGroupLoading = false;
+      this.paletteActiveGroupLoadingMore = false;
+      this.paletteActiveGroupHasMore = false;
+      return;
+    }
     const key = group ? this.paletteGroupKey(group) : this.activePaletteGroupId;
     this.activePaletteGroupId = key || null;
     if (!key || key === this.workflowsPaletteGroupId) {
