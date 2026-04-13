@@ -55,23 +55,122 @@ body.cdk-global-scrollblock { overflow: auto !important; -webkit-overflow-scroll
     --hp-menu-hover-bg: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%);
 }
 
-/* AI inputs: force blue hover/focus border instead of default dark border */
-ai-fullpage .ant-input-affix-wrapper:not(.ant-input-affix-wrapper-disabled):hover,
-ai-fullpage .ant-input-affix-wrapper-focused,
-ai-fullpage .ant-input-affix-wrapper:focus-within,
-app-dashboard-home .ant-input-affix-wrapper:not(.ant-input-affix-wrapper-disabled):hover,
-app-dashboard-home .ant-input-affix-wrapper-focused,
-app-dashboard-home .ant-input-affix-wrapper:focus-within {
+/* ═══ Global Input/Select v2 styles ═══ */
+
+/* Inputs: radius 10px globally, pink focus ring */
+.ant-input {
+  border-radius: 10px !important;
+  transition: border-color 0.15s, box-shadow 0.15s !important;
+}
+.ant-input:hover { border-color: #e61982 !important; }
+.ant-input:focus,
+.ant-input-focused {
   border-color: #e61982 !important;
-  border-right-width: 1px !important;
-  z-index: 1;
+  box-shadow: 0 0 0 2px rgba(230, 25, 130, 0.1) !important;
 }
 
-ai-fullpage .ant-input-affix-wrapper-focused,
-ai-fullpage .ant-input-affix-wrapper:focus-within,
-app-dashboard-home .ant-input-affix-wrapper-focused,
-app-dashboard-home .ant-input-affix-wrapper:focus-within {
-  box-shadow: 0 0 0 2px rgba(230, 25, 130, 0.15) !important;
+/* Input wrappers (prefix/suffix) */
+.ant-input-affix-wrapper {
+  border-radius: 10px !important;
+  transition: border-color 0.15s, box-shadow 0.15s !important;
+}
+.ant-input-affix-wrapper:not(.ant-input-affix-wrapper-disabled):hover {
+  border-color: #e61982 !important;
+}
+.ant-input-affix-wrapper-focused,
+.ant-input-affix-wrapper:focus-within {
+  border-color: #e61982 !important;
+  box-shadow: 0 0 0 2px rgba(230, 25, 130, 0.1) !important;
+}
+
+/* Textarea */
+textarea.ant-input {
+  border-radius: 10px !important;
+}
+
+/* Select */
+.ant-select:not(.ant-select-customize-input) .ant-select-selector {
+  border-radius: 10px !important;
+  min-height: 34px !important;
+  padding: 0 11px !important;
+  display: flex !important;
+  align-items: center !important;
+  transition: border-color 0.15s, box-shadow 0.15s !important;
+}
+.ant-select-selection-item,
+.ant-select-selection-placeholder {
+  display: flex !important;
+  align-items: center !important;
+  line-height: 1.4 !important;
+}
+/* Small size selects */
+.ant-select-sm:not(.ant-select-customize-input) .ant-select-selector {
+  border-radius: 10px !important;
+  min-height: 30px !important;
+  padding: 0 10px !important;
+}
+.ant-select-sm .ant-select-selection-item,
+.ant-select-sm .ant-select-selection-placeholder {
+  line-height: 1.4 !important;
+  font-size: 12px !important;
+}
+.ant-select:not(.ant-select-disabled):hover .ant-select-selector {
+  border-color: #e61982 !important;
+}
+.ant-select-focused:not(.ant-select-disabled):not(.ant-select-customize-input) .ant-select-selector,
+.ant-select-open .ant-select-selector {
+  border-color: #e61982 !important;
+  box-shadow: 0 0 0 2px rgba(230, 25, 130, 0.1) !important;
+}
+
+/* Select dropdown */
+.ant-select-dropdown {
+  border-radius: 14px !important;
+  padding: 6px !important;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.1) !important;
+}
+.ant-select-item-option {
+  border-radius: 8px !important;
+}
+.ant-select-item-option-active:not(.ant-select-item-option-disabled) {
+  background: #fdf2f8 !important;
+}
+.ant-select-item-option-selected:not(.ant-select-item-option-disabled) {
+  background: #fdf2f8 !important;
+  color: #e61982 !important;
+  font-weight: 600;
+}
+
+/* Input number */
+.ant-input-number {
+  border-radius: 10px !important;
+}
+.ant-input-number:hover { border-color: #e61982 !important; }
+.ant-input-number-focused {
+  border-color: #e61982 !important;
+  box-shadow: 0 0 0 2px rgba(230, 25, 130, 0.1) !important;
+}
+
+/* Switch */
+.ant-switch.ant-switch-checked {
+  background-color: #e61982 !important;
+}
+
+/* Popover/Popconfirm */
+.ant-popover-inner { border-radius: 18px !important; }
+.ant-popconfirm .ant-btn-primary { background: #e61982 !important; border-color: #e61982 !important; }
+
+/* Dropdown menu */
+.ant-dropdown-menu {
+  border-radius: 14px !important;
+  padding: 6px !important;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.1) !important;
+}
+.ant-dropdown-menu-item {
+  border-radius: 8px !important;
+}
+.ant-dropdown-menu-item:hover {
+  background: #fdf2f8 !important;
 }
 
 /* Dashboard list panels: hard-hide scrollbar arrow buttons (browser stepper buttons) */

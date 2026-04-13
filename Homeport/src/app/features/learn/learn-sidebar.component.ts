@@ -77,7 +77,8 @@ import { LearnProgressService } from './learn-progress.service';
     :host { display: flex; flex-direction: column; height: 100%; }
 
     /* ── Collapsed ── */
-    .ls-collapsed-toggle { display: flex; justify-content: center; padding: 10px 0 4px; }
+    .ls-collapsed-toggle { display: flex; align-items: center; justify-content: center; padding: 12px 0 6px; width: 100%; }
+    .ls-collapsed-toggle .ls-toggle-btn { margin-left: 0; }
     .ls-collapsed-icons { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 4px 0; }
     .ls-icon-btn {
       position: relative; display: flex; align-items: center; justify-content: center;

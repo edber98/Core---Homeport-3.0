@@ -174,15 +174,16 @@ $sidebar-w-c: 68px;
   align-items: center;
   height: 52px;
   padding: 0 16px;
-  gap: 10px;
   flex-shrink: 0;
   background: transparent;
+  position: relative;
 }
 
 .header-left {
   display: flex;
   align-items: center;
   gap: 8px;
+  z-index: 1;
 }
 
 .header-brand {
@@ -192,18 +193,25 @@ $sidebar-w-c: 68px;
   img { width: 24px; height: 24px; }
 }
 
+// Centered absolutely so it ignores left/right button widths
 .header-center {
-  flex: 1;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: clamp(280px, 45vw, 560px);
   display: flex;
   justify-content: center;
-  max-width: 420px;
-  margin: 0 auto;
+  pointer-events: none;
+  > * { pointer-events: auto; width: 100%; }
 }
 
 .header-right {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 8px;
+  margin-left: auto;
+  z-index: 1;
 }
 
 // Search bar
@@ -615,9 +623,23 @@ $sidebar-w-c: 68px;
 //  RESPONSIVE
 // ══════════════════════════════════
 @media (max-width: 768px) {
-  .header { height: 48px; padding: 0 10px; gap: 6px; }
-  .header-center { max-width: none; }
-  .search-bar { height: 34px; border-radius: $r-sm; }
+  .header { height: 48px; padding: 0 10px; }
+
+  // Hide search bar on mobile
+  .header-center { display: none; }
+
+  // Burger: text-only style (no background, no border)
+  .hdr-icon-btn.burger-btn {
+    background: transparent !important;
+    box-shadow: none !important;
+    color: $text;
+    font-size: 18px;
+    width: auto;
+    height: auto;
+    padding: 4px;
+  }
+
+  .header-right { gap: 6px; }
   .hdr-icon-btn { width: 32px; height: 32px; font-size: 13px; border-radius: 8px; }
   .hdr-avatar { width: 32px; height: 32px; }
   :host ::ng-deep .hdr-avatar .ant-avatar { width: 26px; height: 26px; line-height: 26px; font-size: 10px; }
@@ -626,7 +648,6 @@ $sidebar-w-c: 68px;
 
 @media (max-width: 480px) {
   .header-right { gap: 2px; }
-  .search-bar-shortcuts { display: none; }
   .cmd-grid { grid-template-columns: 1fr; }
   .cmd-two-cols { grid-template-columns: 1fr; }
 }

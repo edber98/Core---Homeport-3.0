@@ -33,7 +33,7 @@
     <!-- ──── HEADER ──── -->
     <header class="header">
       <div class="header-left">
-        <button class="hdr-icon-btn" *ngIf="!showSider" (click)="openDrawer()">
+        <button class="hdr-icon-btn burger-btn" *ngIf="!showSider" (click)="openDrawer()">
           <i class="fa-solid fa-bars"></i>
         </button>
         <a *ngIf="!showSider" class="header-brand" [routerLink]="['/dashboard']">
