@@ -105,7 +105,7 @@ export class HeatmapChartComponent implements OnChanges, AfterViewInit, OnDestro
   tipSuccess = 0;
   tipError = 0;
 
-  palette = ['#ebedf0', '#9be9a8', '#40c463', '#30a14e', '#216e39'];
+  palette = ['#f0f0f0', '#fce7f3', '#f9a8d4', '#e61982', '#b01266'];
 
   private static MONTHS_FR = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jun', 'Jul', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc'];
   private static DAYS_FR = ['Lu', 'Ma', 'Me', 'Je', 'Ve', 'Sa', 'Di'];

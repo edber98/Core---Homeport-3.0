@@ -15,6 +15,7 @@ import { NzPopoverModule } from 'ng-zorro-antd/popover';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { AiPanelComponent } from '../../features/ai/ai-panel.component';
 import { AiOnboardingDialogComponent } from '../../features/ai/ai-onboarding-dialog.component';
 import { AiService } from '../../features/ai/ai.service';
@@ -39,8 +40,6 @@ type MenuItem = { label: string; icon: string; route?: string; children?: MenuIt
     NzFlexModule,
     NzIconModule,
     RouterModule,
-
-    //Layout
     NzBreadCrumbModule,
     NzMenuModule,
     NzLayoutModule,
@@ -53,6 +52,7 @@ type MenuItem = { label: string; icon: string; route?: string; children?: MenuIt
     NzInputModule,
     NzModalModule,
     NzSelectModule,
+    NzToolTipModule,
     AiPanelComponent,
     AiOnboardingDialogComponent,
   ],

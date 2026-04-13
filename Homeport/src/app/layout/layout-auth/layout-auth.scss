@@ -1,12 +1,111 @@
-.auth-layout { height: 100%; background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%); display:flex; align-items:center; justify-content:center; padding: 24px; }
-/* Prefer dynamic viewport height on mobile to account for top bar properly */
-@supports (height: 100svh) {
-  .auth-layout { height: 100svh; min-height: 100svh; }
+$brand: #e61982;
+$brand-light: #fdf2f8;
+$brand-soft: #fce7f3;
+$radius: 14px;
+
+.auth-layout {
+  display: flex;
+  height: 100vh;
+  min-height: 100vh;
+  background: #fff;
 }
+
 @supports (height: 100dvh) {
   .auth-layout { height: 100dvh; min-height: 100dvh; }
 }
-.frame { width: 560px; max-width: 100%; }
-.brand { display:flex; align-items:center; gap:10px; margin-bottom: 16px; }
-.brand img { height: 36px; border-radius: 8px; border:1px solid #eee; background:#fff; }
-.brand .title { font-weight: 700; font-size: 18px; letter-spacing: -0.01em; }
+
+// — Left panel (brand) —
+.auth-left {
+  flex: 0 0 44%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(160deg, $brand 0%, #b01266 100%);
+  position: relative;
+  overflow: hidden;
+
+  // Decorative circles
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.08;
+    background: #fff;
+  }
+  &::before {
+    width: 420px;
+    height: 420px;
+    top: -120px;
+    left: -80px;
+  }
+  &::after {
+    width: 300px;
+    height: 300px;
+    bottom: -60px;
+    right: -40px;
+  }
+}
+
+.auth-left-content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 40px;
+}
+
+.auth-logo {
+  width: 220px;
+  max-width: 80%;
+  filter: brightness(0) invert(1); // render white on pink bg
+}
+
+.auth-tagline {
+  margin-top: 24px;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  line-height: 1.5;
+}
+
+// — Right panel (form) —
+.auth-right {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  background: #fafafa;
+}
+
+.auth-right-inner {
+  width: 400px;
+  max-width: 100%;
+}
+
+// — Responsive —
+@media (max-width: 860px) {
+  .auth-layout {
+    flex-direction: column;
+  }
+
+  .auth-left {
+    flex: 0 0 auto;
+    padding: 40px 24px 32px;
+  }
+
+  .auth-logo {
+    width: 160px;
+  }
+
+  .auth-tagline {
+    font-size: 13px;
+    margin-top: 16px;
+  }
+
+  .auth-right {
+    flex: 1;
+    padding: 24px 16px;
+  }
+}

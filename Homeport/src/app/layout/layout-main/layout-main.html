@@ -1,276 +1,213 @@
-<!-- <div nz-flex [nzVertical]="false" class="full-height">
+<div class="shell" [class.collapsed]="siderCollapsed" [class.no-sider]="!showSider">
 
-      <div class="padding-13">
-
-            <div class="navbar">
-
-                  <div class="item-navbar"  routerLink="/dashboard"   [routerLinkActiveOptions]="{ exact: true }" routerLinkActive="active-link" nz-flex [nzJustify]="'center'" [nzAlign]="'center'">
-                        <nz-icon nzType="home" nzTheme="outline" />
-                  </div>
-
-                      <div class="item-navbar "  routerLink="/dashboard/stats"   [routerLinkActiveOptions]="{ exact: true }" routerLinkActive="active-link"  nz-flex [nzJustify]="'center'" [nzAlign]="'center'">
-                        <nz-icon nzType="branches" nzTheme="outline" />
-                  </div>
-
-                  <div class="item-navbar" nz-flex [nzJustify]="'center'" [nzAlign]="'center'">
-                        <nz-icon nzType="api" nzTheme="outline" />
-                  </div>
-
-                  <div class="item-navbar" nz-flex [nzJustify]="'center'" [nzAlign]="'center'">
-                        <nz-icon nzType="appstore" nzTheme="outline" />
-                  </div>
-
-            </div>
-      </div>
-      <div class="full-width">
-
-            <router-outlet></router-outlet>
-      </div>
-</div> -->
-
-<nz-layout class="main-shell">
-  <!-- Sider (desktop) -->
-  <nz-sider *ngIf="showSider" [nzCollapsible]="true" [(nzCollapsed)]="siderCollapsed" (nzCollapsedChange)="onSiderCollapsedChange($event)" [nzCollapsedWidth]="80" [nzTheme]="'light'" class="border-right-primary main-sider" nzWidth="220px">
-    <a class="logo logo-link" [class.collapsed]="siderCollapsed" [routerLink]="['/dashboard']" aria-label="Retour au dashboard">
-      <img src="/imgs/logo.png" alt="Kinn" />
-      <span class="brand-text">Kinn</span>
+  <!-- ════ SIDEBAR (desktop) ════ -->
+  <aside class="sidebar" *ngIf="showSider">
+    <a class="sidebar-logo" [routerLink]="['/dashboard']" aria-label="Retour au dashboard">
+      <img *ngIf="!siderCollapsed" src="/imgs/logo-large.svg" alt="Kinn" class="logo-full" />
+      <img *ngIf="siderCollapsed" src="/imgs/logo-petit.svg" alt="Kinn" class="logo-icon" />
     </a>
-    <ul nz-menu nzTheme="light" style="border:0px !important" nzMode="inline" class="sider-menu">
-      <ng-container *ngFor="let it of menu">
-        <li nz-submenu *ngIf="it.children?.length && (!it.adminOnly || isAdmin)">
-          <span title>
-            <nz-icon [nzType]="it.icon"></nz-icon>
-            <span>{{ it.label }}</span>
-          </span>
-          <ul>
-            <li nz-menu-item *ngFor="let c of it.children" [routerLink]="c.route" routerLinkActive="ant-menu-item-selected" [routerLinkActiveOptions]="{ exact: true }">
-              <nz-icon [nzType]="c.icon"></nz-icon>
-              <span>{{ c.label }}</span>
-            </li>
-          </ul>
-        </li>
-        <li nz-menu-item *ngIf="!it.children?.length && (!it.adminOnly || isAdmin)" [routerLink]="it.route" routerLinkActive="ant-menu-item-selected" [routerLinkActiveOptions]="getActiveOptions(it.route)">
-          <nz-icon [nzType]="it.icon"></nz-icon>
-          <span>{{ it.label }}</span>
-        </li>
-      </ng-container>
-    </ul>
-  </nz-sider>
 
-  <nz-layout>
-    <!-- Header (also used on mobile) -->
-    <nz-header class="hp-header border-bottom-primary">
-      <div class="hdr-left" *ngIf="showSider || !showLaunch">
-        <button nz-button nzType="default" class="burger" *ngIf="!showSider" (click)="openDrawer()"><i class="fa-solid fa-bars"></i></button>
-        <a *ngIf="!showSider" class="brand brand-link" [routerLink]="['/dashboard']" aria-label="Retour au dashboard">Kinn</a>
+    <nav class="sidebar-nav">
+      <ng-container *ngFor="let it of menu">
+        <a *ngIf="!it.children?.length && (!it.adminOnly || isAdmin)"
+           class="nav-item"
+           [routerLink]="it.route"
+           routerLinkActive="active"
+           [routerLinkActiveOptions]="getActiveOptions(it.route)"
+           [nz-tooltip]="siderCollapsed ? it.label : ''"
+           nzTooltipPlacement="right">
+          <span class="nav-icon" nz-icon [nzType]="it.icon" nzTheme="outline"></span>
+          <span class="nav-label">{{ it.label }}</span>
+        </a>
+      </ng-container>
+    </nav>
+
+    <button class="sidebar-toggle" (click)="onSiderCollapsedChange(!siderCollapsed)">
+      <span nz-icon [nzType]="siderCollapsed ? 'menu-unfold' : 'menu-fold'" nzTheme="outline"></span>
+    </button>
+  </aside>
+
+  <!-- ════ MAIN ════ -->
+  <div class="main">
+
+    <!-- ──── HEADER ──── -->
+    <header class="header">
+      <div class="header-left">
+        <button class="hdr-icon-btn" *ngIf="!showSider" (click)="openDrawer()">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+        <a *ngIf="!showSider" class="header-brand" [routerLink]="['/dashboard']">
+          <img src="/imgs/logo-petit.svg" alt="Kinn" />
+        </a>
       </div>
-      <div class="hdr-center" *ngIf="showSider || showLaunch">
-        <div class="cmd-bar">
-          <button class="cmd-btn pulse" nz-tooltip nzTooltipTitle="Lancer rapidement" (click)="runQuick()">
-            <i class="fa-solid fa-rocket"></i>
-          </button>
-          <input nz-input class="cmd-search" placeholder="Rechercher… (flows, forms)" (keyup.enter)="onSearch($any($event.target).value)" />
-          <button class="cmd-btn" nz-tooltip nzTooltipTitle="Commandes" (click)="openCmd()">
-            <i class="fa-solid fa-sliders"></i>
-          </button>
-          <button class="cmd-btn" *ngIf="!showSider" (click)="closeLaunch()" nz-tooltip nzTooltipTitle="Fermer">
-            <i class="fa-solid fa-xmark"></i>
-          </button>
+
+      <div class="header-center">
+        <div class="search-bar">
+          <i class="fa-solid fa-magnifying-glass search-bar-icon"></i>
+          <input class="search-bar-input" placeholder="Rechercher un flow, formulaire…" (keyup.enter)="onSearch($any($event.target).value)" />
+          <div class="search-bar-shortcuts" *ngIf="showSider">
+            <kbd>⌘</kbd><kbd>K</kbd>
+          </div>
         </div>
       </div>
-      <div class="hdr-actions" *ngIf="showSider || !showLaunch">
-           <button nz-button class="hdr-btn" *ngIf="!showSider && !showLaunch" (click)="openLaunch()" title="Ouvrir la launch bar">
+
+      <div class="header-right">
+        <button class="hdr-icon-btn" nz-tooltip nzTooltipTitle="Lancer rapidement" (click)="runQuick()">
           <i class="fa-solid fa-rocket"></i>
         </button>
-        <!-- User switcher -->
-     <!--    <nz-select
-          class="user-switcher"
-          [ngModel]="selectedUserId"
-          (ngModelChange)="onUserChange($event)"
-          nzSize="small"
-          nzShowSearch
-          nzBorderless
-          [nzDropdownMatchSelectWidth]="false"
-          nzPlaceHolder="Utilisateur">
-          <nz-option *ngFor="let u of acl.users()" [nzValue]="u.id" [nzLabel]="u.name"></nz-option>
-        </nz-select> -->
-        <button nz-button class="hdr-btn ai-btn" (click)="toggleAi()" title="Assistant IA">
+        <button class="hdr-icon-btn" nz-tooltip nzTooltipTitle="Commandes" (click)="openCmd()">
+          <i class="fa-solid fa-sliders"></i>
+        </button>
+        <button class="hdr-icon-btn ai-accent" (click)="toggleAi()" nz-tooltip nzTooltipTitle="Assistant IA">
           <span nz-icon nzType="robot" nzTheme="outline"></span>
         </button>
-        <button nz-button class="hdr-btn" nz-popover [nzPopoverTrigger]="'click'" (click)="openNotificationsPopover()" [nzPopoverPlacement]="'bottomRight'" [nzPopoverOverlayClassName]="'hdr-popover'" [nzPopoverContent]="notifTpl" title="Notifications">
-          <nz-badge [nzCount]="notifUnreadCount" [nzOverflowCount]="99" [nzShowZero]="false">
+        <button class="hdr-icon-btn" nz-popover [nzPopoverTrigger]="'click'" (click)="openNotificationsPopover()" [nzPopoverPlacement]="'bottomRight'" [nzPopoverOverlayClassName]="'hdr-popover'" [nzPopoverContent]="notifTpl" nz-tooltip nzTooltipTitle="Notifications">
+          <nz-badge [nzCount]="notifUnreadCount" [nzOverflowCount]="99" [nzShowZero]="false" nzSize="small">
             <i class="fa-regular fa-bell"></i>
           </nz-badge>
         </button>
-        <div class="hdr-avatar" nz-dropdown [nzDropdownMenu]="profileMenu" nzTrigger="click" title="Profil">
+        <div class="hdr-avatar" nz-dropdown [nzDropdownMenu]="profileMenu" nzTrigger="click">
           <nz-avatar nzShape="circle" [nzText]="userInitials"></nz-avatar>
         </div>
       </div>
-    </nz-header>
+    </header>
 
-    <nz-content>
-      <div class="inner-content">
-        <router-outlet></router-outlet>
-      </div>
-    </nz-content>
-  </nz-layout>
+    <!-- ──── CONTENT ──── -->
+    <main class="content">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
 
-  <!-- Mobile drawer menu using the same menu[] source -->
-  <nz-drawer [nzVisible]="drawerVisible" [nzBodyStyle]="{padding: '2px 2px 0 2px'}" (nzOnClose)="closeDrawer()" nzPlacement="left" [nzWidth]="260" [nzClosable]="false">
-
+  <!-- ════ MOBILE DRAWER ════ -->
+  <nz-drawer [nzVisible]="drawerVisible" [nzBodyStyle]="{padding: 0}" (nzOnClose)="closeDrawer()" nzPlacement="left" [nzWidth]="280" [nzClosable]="false">
     <ng-container *nzDrawerContent>
-      <div class="drawer-menu"
+      <div class="drawer"
            (touchstart)="onDrawerTouchStart($event)"
            (touchmove)="onDrawerTouchMove($event)"
            (touchend)="onDrawerTouchEnd()"
            (touchcancel)="onDrawerTouchEnd()">
-               <a class="logo logo-link" [routerLink]="['/dashboard']" (click)="closeDrawer()" aria-label="Retour au dashboard">
-      <img src="/imgs/logo.png" alt="Kinn" />
-      <span class="brand-text">Kinn</span>
-    </a>
-        <div class="drawer-title">Navigation</div>
-        <ul nz-menu nzTheme="light" nzMode="inline" style="border:0">
+        <a class="drawer-logo" [routerLink]="['/dashboard']" (click)="closeDrawer()">
+          <img src="/imgs/logo-large.svg" alt="Kinn" />
+        </a>
+        <nav class="drawer-nav">
           <ng-container *ngFor="let it of menu">
-            <li nz-submenu *ngIf="it.children?.length && (!it.adminOnly || isAdmin)">
-              <span title>
-                <nz-icon [nzType]="it.icon"></nz-icon>
-                <span>{{ it.label }}</span>
-              </span>
-              <ul>
-                <li nz-menu-item *ngFor="let c of it.children" (click)="go(c.route)">
-                  <nz-icon [nzType]="c.icon"></nz-icon>
-                  <span>{{ c.label }}</span>
-                </li>
-              </ul>
-            </li>
-            <li nz-menu-item *ngIf="!it.children?.length && (!it.adminOnly || isAdmin)" (click)="go(it.route)">
-              <nz-icon [nzType]="it.icon"></nz-icon>
+            <a *ngIf="!it.children?.length && (!it.adminOnly || isAdmin)"
+               class="drawer-item"
+               (click)="go(it.route)">
+              <span class="drawer-item-icon" nz-icon [nzType]="it.icon" nzTheme="outline"></span>
               <span>{{ it.label }}</span>
-            </li>
+            </a>
           </ng-container>
-        </ul>
+        </nav>
       </div>
     </ng-container>
   </nz-drawer>
-</nz-layout>
+</div>
 
-<!-- Command Center (modal) -->
-<nz-modal  [(nzVisible)]="cmdVisible" [nzFooter]="null" nzTitle="Command Center" (nzOnCancel)="closeCmd()" [nzStyle]="isXs ? { top: '2px' } : undefined">
+<!-- ════ COMMAND CENTER ════ -->
+<nz-modal [(nzVisible)]="cmdVisible" [nzFooter]="null" nzTitle="Command Center" (nzOnCancel)="closeCmd()" [nzStyle]="isXs ? { top: '2px' } : undefined">
   <ng-container *nzModalContent>
-  <div class="cmd-modal">
-    <div class="section">
-      <div class="section-title">Activité récente</div>
-      <div class="activity" *ngFor="let a of activities">
-        <span class="dot" [class.success]="a.state==='success'" [class.running]="a.state==='running'"></span>
-        <div class="label">{{ a.label }}</div>
-        <div class="time">{{ a.time }}</div>
+    <div class="cmd-modal">
+      <div class="cmd-section">
+        <div class="cmd-label">Activité récente</div>
+        <div class="cmd-activity" *ngFor="let a of activities">
+          <span class="cmd-dot" [class.success]="a.state==='success'" [class.running]="a.state==='running'"></span>
+          <span class="cmd-activity-label">{{ a.label }}</span>
+          <span class="cmd-activity-time">{{ a.time }}</span>
+        </div>
+      </div>
+      <div class="cmd-grid">
+        <div class="cmd-card" (click)="runQuick()">
+          <i class="fa-solid fa-rocket"></i>
+          <div class="cmd-card-title">Lancer</div>
+          <div class="cmd-card-desc">Exécution rapide</div>
+        </div>
+        <div class="cmd-card" [routerLink]="'/flows'">
+          <i class="fa-solid fa-diagram-project"></i>
+          <div class="cmd-card-title">Flows</div>
+          <div class="cmd-card-desc">Gérer vos scénarios</div>
+        </div>
+        <div class="cmd-card" [routerLink]="'/forms'">
+          <i class="fa-regular fa-rectangle-list"></i>
+          <div class="cmd-card-title">Formulaires</div>
+          <div class="cmd-card-desc">Construire / Voir</div>
+        </div>
+      </div>
+      <div class="cmd-two-cols">
+        <div>
+          <div class="cmd-label">Flows récents</div>
+          <div class="cmd-chip" *ngFor="let f of recentFlows" [routerLink]="'/flows'">{{f.name}} <span class="cmd-muted">· {{f.updated}}</span></div>
+        </div>
+        <div>
+          <div class="cmd-label">Formulaires récents</div>
+          <div class="cmd-chip" *ngFor="let f of recentForms" [routerLink]="'/forms'">{{f.name}} <span class="cmd-muted">· {{f.updated}}</span></div>
+        </div>
       </div>
     </div>
-    <div class="section grid">
-      <div class="quick-card" (click)="runQuick()">
-        <i class="fa-solid fa-rocket"></i>
-        <div class="qc-title">Lancer</div>
-        <div class="qc-desc">Exécution rapide</div>
-      </div>
-      <div class="quick-card" [routerLink]="'/flows'">
-        <i class="fa-solid fa-diagram-project"></i>
-        <div class="qc-title">Flows</div>
-        <div class="qc-desc">Gérer vos scénarios</div>
-      </div>
-      <div class="quick-card" [routerLink]="'/forms'">
-        <i class="fa-regular fa-rectangle-list"></i>
-        <div class="qc-title">Formulaires</div>
-        <div class="qc-desc">Construire / Voir</div>
-      </div>
-    </div>
-    <div class="section two-cols">
-      <div>
-        <div class="section-title">Flows récents</div>
-        <div class="chip" *ngFor="let f of recentFlows" [routerLink]="'/flows'">{{f.name}} <span class="muted">· {{f.updated}}</span></div>
-      </div>
-      <div>
-        <div class="section-title">Formulaires récents</div>
-        <div class="chip" *ngFor="let f of recentForms" [routerLink]="'/forms'">{{f.name}} <span class="muted">· {{f.updated}}</span></div>
-      </div>
-    </div>
-  </div>
   </ng-container>
 </nz-modal>
 
-<!-- Notifications popover template -->
+<!-- ════ NOTIFICATIONS ════ -->
 <ng-template #notifTpl>
   <div class="notif-panel">
-    <div class="notif-header">
+    <div class="notif-hdr">
       <span>Notifications</span>
       <button nz-button nzSize="small" nzType="link" (click)="ackAllNotifications()" *ngIf="notifUnreadCount > 0">Tout marquer comme lu</button>
     </div>
     <div class="notif-list" *ngIf="!notifLoading; else notifLoadingTpl">
-      <div class="notif-item" *ngFor="let n of notifications.slice(0, 5)" [class.unread]="!n.acknowledged" (click)="openNotification(n)">
-        <div class="notif-sev-icon" [ngClass]="n.severity || 'info'">
+      <div class="notif-row" *ngFor="let n of notifications.slice(0, 5)" [class.unread]="!n.acknowledged" (click)="openNotification(n)">
+        <div class="notif-sev" [ngClass]="n.severity || 'info'">
           <i *ngIf="(n.severity || 'info') === 'info'" class="fa-solid fa-circle-info"></i>
           <i *ngIf="n.severity === 'warning'" class="fa-solid fa-triangle-exclamation"></i>
           <i *ngIf="n.severity === 'error' || n.severity === 'critical'" class="fa-solid fa-circle-exclamation"></i>
         </div>
-        <div class="meta">
-          <div class="title">{{ n.title }}</div>
-          <div class="desc">{{ n.desc }}</div>
+        <div class="notif-body">
+          <div class="notif-title">{{ n.title }}</div>
+          <div class="notif-desc">{{ n.desc }}</div>
         </div>
-        <div class="actions">
-          <button nz-button nzSize="small" nzType="text" (click)="ackNotification(n); $event.stopPropagation()" [disabled]="n.acknowledged" title="Marquer comme lu"><i class="fa-regular fa-envelope-open"></i></button>
-          <button nz-button nzSize="small" nzType="text" (click)="deleteNotification(n); $event.stopPropagation()" title="Supprimer"><i class="fa-regular fa-trash-can"></i></button>
+        <div class="notif-acts">
+          <button nz-button nzSize="small" nzType="text" (click)="ackNotification(n); $event.stopPropagation()" [disabled]="n.acknowledged"><i class="fa-regular fa-envelope-open"></i></button>
+          <button nz-button nzSize="small" nzType="text" (click)="deleteNotification(n); $event.stopPropagation()"><i class="fa-regular fa-trash-can"></i></button>
         </div>
       </div>
-      <div class="empty" *ngIf="notifications.length===0">Aucune notification</div>
+      <div class="notif-empty" *ngIf="notifications.length===0">Aucune notification</div>
     </div>
-    <ng-template #notifLoadingTpl>
-      <div class="notif-loading">Chargement…</div>
-    </ng-template>
-    <div class="notif-footer"><a [routerLink]="'/notifications'">Voir toutes les notifications</a></div>
+    <ng-template #notifLoadingTpl><div class="notif-empty">Chargement…</div></ng-template>
+    <div class="notif-foot"><a [routerLink]="'/notifications'">Voir tout</a></div>
   </div>
 </ng-template>
 
-<!-- Profile dropdown menu -->
+<!-- ════ PROFILE DROPDOWN ════ -->
 <nz-dropdown-menu #profileMenu="nzDropdownMenu">
-  <ul nz-menu class="profile-dropdown">
-    <li nz-menu-item [routerLink]="'/dashboard'">
-      <span nz-icon nzType="user" nzTheme="outline"></span> Profil
-    </li>
-    <li nz-menu-item [routerLink]="'/forms'">
-      <span nz-icon nzType="form" nzTheme="outline"></span> Mes formulaires
-    </li>
-    <li nz-menu-item [routerLink]="'/flows'">
-      <span nz-icon nzType="branches" nzTheme="outline"></span> Mes flows
-    </li>
-    <!-- Workspace section -->
+  <div class="profile-panel">
+    <div class="profile-user">
+      <nz-avatar nzShape="circle" [nzText]="userInitials" class="profile-avatar"></nz-avatar>
+      <div class="profile-user-info">
+        <div class="profile-user-name">{{ currentUser?.name || 'Utilisateur' }}</div>
+        <div class="profile-user-role">{{ currentUser?.role || '' }}</div>
+      </div>
+    </div>
+    <div class="profile-sep"></div>
+    <a class="profile-link" [routerLink]="'/dashboard'"><span nz-icon nzType="user" nzTheme="outline"></span> Profil</a>
+    <a class="profile-link" [routerLink]="'/forms'"><span nz-icon nzType="form" nzTheme="outline"></span> Mes formulaires</a>
+    <a class="profile-link" [routerLink]="'/flows'"><span nz-icon nzType="branches" nzTheme="outline"></span> Mes flows</a>
     <ng-container *ngIf="accessibleWorkspaces.length > 1">
-      <li nz-menu-divider></li>
-      <li class="ws-section-title">
-        <span nz-icon nzType="cluster" nzTheme="outline"></span> Workspace
-      </li>
-      <li nz-menu-item *ngFor="let w of accessibleWorkspaces"
-          class="ws-item"
-          [class.ws-active]="w.id === selectedWorkspaceId"
-          (click)="onWorkspaceChange(w.id)">
-        <span nz-icon [nzType]="w.id === selectedWorkspaceId ? 'check' : ''" nzTheme="outline" class="ws-check"></span>
+      <div class="profile-sep"></div>
+      <div class="profile-ws-title"><span nz-icon nzType="cluster" nzTheme="outline"></span> Workspace</div>
+      <a class="profile-link profile-ws" *ngFor="let w of accessibleWorkspaces"
+         [class.ws-active]="w.id === selectedWorkspaceId"
+         (click)="onWorkspaceChange(w.id)">
+        <span class="ws-check" nz-icon [nzType]="w.id === selectedWorkspaceId ? 'check' : ''" nzTheme="outline"></span>
         {{ w.name }}
-      </li>
+      </a>
     </ng-container>
-    <li nz-menu-divider></li>
-    <li nz-menu-item [routerLink]="'/change-password'">
-      <span nz-icon nzType="lock" nzTheme="outline"></span> Changer le mot de passe
-    </li>
-    <li nz-menu-item (click)="openOnboarding()">
-      <span nz-icon nzType="setting" nzTheme="outline"></span> Assistant de configuration
-    </li>
-    <li nz-menu-divider></li>
-    <li nz-menu-item (click)="logout()" class="logout-item">
-      <span nz-icon nzType="logout" nzTheme="outline"></span> Déconnexion
-    </li>
-  </ul>
+    <div class="profile-sep"></div>
+    <a class="profile-link" [routerLink]="'/change-password'"><span nz-icon nzType="lock" nzTheme="outline"></span> Changer le mot de passe</a>
+    <a class="profile-link" (click)="openOnboarding()"><span nz-icon nzType="setting" nzTheme="outline"></span> Assistant de configuration</a>
+    <div class="profile-sep"></div>
+    <a class="profile-link logout" (click)="logout()"><span nz-icon nzType="logout" nzTheme="outline"></span> Déconnexion</a>
+  </div>
 </nz-dropdown-menu>
 
-<!-- AI Panel (global drawer) -->
 <ai-panel></ai-panel>
-
-<!-- AI Onboarding dialog (opened from profile menu) -->
 <ai-onboarding-dialog></ai-onboarding-dialog>

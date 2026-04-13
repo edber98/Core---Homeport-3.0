@@ -1,10 +1,13 @@
 <div class="auth-layout">
-  <div class="frame">
-    <div class="brand">
-      <img src="/imgs/logo.png" alt="Kinn" />
-      <div class="title">Kinn</div>
+  <div class="auth-left">
+    <div class="auth-left-content">
+      <img src="/imgs/logo-large.svg" alt="Kinn" class="auth-logo" />
+      <p class="auth-tagline">Automatisez vos processus métier avec intelligence</p>
     </div>
-    <router-outlet></router-outlet>
+  </div>
+  <div class="auth-right">
+    <div class="auth-right-inner">
+      <router-outlet></router-outlet>
+    </div>
   </div>
 </div>
-

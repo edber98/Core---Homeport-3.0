@@ -14,56 +14,206 @@ import { environment } from '../../../environments/environment';
   standalone: true,
   imports: [CommonModule, FormsModule, NzFormModule, NzInputModule, NzButtonModule, RouterModule],
   template: `
-  <div class="auth-page">
-    <div class="card">
-      <h1>Connexion</h1>
-      <form nz-form nzLayout="vertical" (ngSubmit)="login()">
-        <nz-form-item>
-          <nz-form-label>Utilisateur</nz-form-label>
-          <nz-form-control>
-            <input nz-input [(ngModel)]="userId" name="userId" placeholder="admin@acme.test" />
-          </nz-form-control>
-        </nz-form-item>
-        <nz-form-item>
-          <nz-form-label>Mot de passe</nz-form-label>
-          <nz-form-control>
-            <input nz-input type="password" [(ngModel)]="password" name="password" placeholder="••••••" />
-          </nz-form-control>
-        </nz-form-item>
-        <div class="actions">
-          <button nz-button nzType="primary" (click)="login()">Se connecter</button>
-          <button nz-button (click)="loginDemo()" type="button">Demo</button>
-          <a [routerLink]="'/forgot'">Mot de passe oublié ?</a>
+  <div class="login-container">
+    <h1 class="login-title">Connexion</h1>
+    <p class="login-subtitle">Accédez à votre espace de travail</p>
+
+    <form nz-form nzLayout="vertical" (ngSubmit)="login()">
+      <nz-form-item>
+        <nz-form-label>Adresse e-mail</nz-form-label>
+        <nz-form-control>
+          <input nz-input [(ngModel)]="userId" name="userId"
+                 placeholder="admin&#64;acme.test" class="login-input" />
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label>Mot de passe</nz-form-label>
+        <nz-form-control>
+          <input nz-input type="password" [(ngModel)]="password" name="password"
+                 placeholder="••••••••" class="login-input" />
+        </nz-form-control>
+      </nz-form-item>
+
+      <a class="forgot-link" [routerLink]="'/forgot'">Mot de passe oublié ?</a>
+
+      <button nz-button nzType="primary" nzBlock nzSize="large"
+              class="login-btn" (click)="login()">
+        Se connecter
+      </button>
+
+      <button nz-button nzBlock nzSize="large"
+              class="demo-btn" (click)="loginDemo()" type="button">
+        Accès démo
+      </button>
+
+      <div class="err" *ngIf="error">{{ error }}</div>
+
+      <div class="demo-accounts">
+        <div class="demo-label">Comptes de test</div>
+        <div class="demo-chips">
+          <span class="demo-chip" (click)="fillLogin('admin@acme.test','admin')">
+            admin&#64;acme.test <span class="demo-chip-tag">ACME</span>
+          </span>
+          <span class="demo-chip" (click)="fillLogin('alice@acme.test','password')">
+            alice&#64;acme.test <span class="demo-chip-tag">ACME</span>
+          </span>
+          <span class="demo-chip" (click)="fillLogin('demo@beta.test','demo')">
+            demo&#64;beta.test <span class="demo-chip-tag">BETA</span>
+          </span>
         </div>
-        <div class="err" *ngIf="error">{{ error }}</div>
-        <div class="demo">
-          <div class="hint">Comptes de test :</div>
-          <div class="chips">
-            <span class="chip" (click)="fillLogin('admin@acme.test','admin')">admin@acme.test / admin (ACME)</span>
-            <span class="chip" (click)="fillLogin('alice@acme.test','password')">alice@acme.test / password (ACME)</span>
-            <span class="chip" (click)="fillLogin('demo@beta.test','demo')">demo@beta.test / demo (BETA)</span>
-          </div>
-        </div>
-      </form>
-    </div>
+      </div>
+    </form>
   </div>
   `,
   styles: [`
-    .auth-page { display:flex; align-items:center; justify-content:center; padding: 32px; min-height: 60vh; }
-    .card { width: 420px; max-width: 100%; background:#fff; border:1px solid #eee; border-radius: 14px; padding: 18px; box-shadow: 0 12px 36px rgba(0,0,0,.06); }
-    h1 { margin: 0 0 12px; font-size: 20px; }
-    .actions { display:flex; align-items:center; gap:10px; justify-content: space-between; }
-    .err { margin-top:10px; color:#b42318; }
-    .demo { margin-top: 12px; }
-    .hint { color:#6b7280; font-size:12px; margin-bottom: 6px; }
-    .chips { display:flex; flex-wrap: wrap; gap:6px; }
-    .chip { background:#f5f5f5; border:1px solid #eaeaea; color:#444; border-radius:999px; padding:2px 8px; font-size:11px; cursor:pointer; transition: background 0.15s; }
-    .chip:hover { background:#e8e8e8; }
+    :host { display: block; }
+
+    .login-container { }
+
+    .login-title {
+      margin: 0 0 4px;
+      font-size: 26px;
+      font-weight: 700;
+      color: #111;
+      letter-spacing: -0.02em;
+    }
+
+    .login-subtitle {
+      margin: 0 0 28px;
+      color: #6b7280;
+      font-size: 14px;
+    }
+
+    /* Inputs with matching border-radius from logo aesthetic */
+    .login-input {
+      height: 46px;
+      border-radius: 14px !important;
+      font-size: 14px;
+      padding: 0 16px;
+      border-color: #e0e0e0;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .login-input:focus,
+    .login-input:hover {
+      border-color: #e61982 !important;
+      box-shadow: 0 0 0 3px rgba(230, 25, 130, 0.08) !important;
+    }
+
+    .forgot-link {
+      display: inline-block;
+      margin-bottom: 20px;
+      font-size: 13px;
+      color: #e61982;
+    }
+    .forgot-link:hover { color: #c01470; }
+
+    /* Primary login button */
+    .login-btn {
+      height: 46px !important;
+      border-radius: 14px !important;
+      font-size: 15px !important;
+      font-weight: 600 !important;
+      background: #e61982 !important;
+      border-color: #e61982 !important;
+      color: #fff !important;
+      box-shadow: 0 4px 14px rgba(230, 25, 130, 0.25);
+      transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
+    }
+    .login-btn:hover {
+      background: #d0167a !important;
+      border-color: #d0167a !important;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(230, 25, 130, 0.3);
+    }
+    .login-btn:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 8px rgba(230, 25, 130, 0.2);
+    }
+
+    /* Demo button */
+    .demo-btn {
+      margin-top: 10px;
+      height: 46px !important;
+      border-radius: 14px !important;
+      font-size: 14px !important;
+      font-weight: 500 !important;
+      background: #fff !important;
+      border: 1.5px solid #e8e8e8 !important;
+      color: #444 !important;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .demo-btn:hover {
+      border-color: #e61982 !important;
+      color: #e61982 !important;
+      background: #fdf2f8 !important;
+    }
+
+    .err {
+      margin-top: 14px;
+      padding: 10px 14px;
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 10px;
+      color: #b42318;
+      font-size: 13px;
+    }
+
+    .demo-accounts {
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid #f0f0f0;
+    }
+
+    .demo-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #9ca3af;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .demo-chips { display: flex; flex-direction: column; gap: 6px; }
+
+    .demo-chip {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      background: #fff;
+      border: 1px solid #f0f0f0;
+      border-radius: 10px;
+      font-size: 12px;
+      color: #555;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .demo-chip:hover {
+      background: #fdf2f8;
+      border-color: #f9a8d4;
+      color: #e61982;
+    }
+
+    .demo-chip-tag {
+      margin-left: auto;
+      background: #f3f4f6;
+      color: #6b7280;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 999px;
+      letter-spacing: 0.03em;
+    }
+    .demo-chip:hover .demo-chip-tag {
+      background: #fce7f3;
+      color: #e61982;
+    }
+
     @media (max-width: 480px) {
-      .auth-page { padding: 16px; }
-      .card { width: 100%; padding: 14px; border-radius: 12px; }
-      .actions { flex-direction: column; align-items: stretch; gap:8px; }
-      .actions a { align-self: flex-start; }
+      .login-title { font-size: 22px; }
+      .login-input { height: 42px; border-radius: 12px !important; }
+      .login-btn, .demo-btn { height: 42px !important; border-radius: 12px !important; }
     }
   `]
 })

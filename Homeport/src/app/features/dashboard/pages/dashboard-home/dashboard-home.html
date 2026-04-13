@@ -237,7 +237,7 @@
                 <div class="list-row clickable" *ngFor="let r of data.recentRuns" (click)="goRun(r)">
                   <div
                     class="row-status-dot"
-                    [style.background]="r.status === 'success' ? '#52c41a' : r.status === 'error' ? '#f5222d' : r.status === 'running' ? '#1677ff' : '#d9d9d9'"
+                    [style.background]="r.status === 'success' ? '#16a34a' : r.status === 'error' ? '#ef4444' : r.status === 'running' ? '#e61982' : '#d4d4d4'"
                   ></div>
                   <div class="row-main">
                     <div class="row-name">{{ r.flowName }}</div>
@@ -275,7 +275,7 @@
                 <div class="list-row" *ngFor="let n of data.recentNotifications" (click)="goNotif(n)" [class.clickable]="!!n.link">
                   <div
                     class="row-status-dot"
-                    [style.background]="n.severity === 'error' || n.severity === 'critical' ? '#f5222d' : n.severity === 'warning' ? '#faad14' : '#1677ff'"
+                    [style.background]="n.severity === 'error' || n.severity === 'critical' ? '#ef4444' : n.severity === 'warning' ? '#f59e0b' : '#e61982'"
                   ></div>
                   <div class="row-main">
                     <div class="row-name">{{ n.code }}</div>

@@ -43,10 +43,16 @@ app-root { display:block; height:100%; background: #fff; }
 /* CDK overlay scroll-block can break iOS input focus; relax when overlays are open */
 body.cdk-global-scrollblock { overflow: auto !important; -webkit-overflow-scrolling: touch; }
 
-/* Global UI vars */
+/* Global UI vars — Styles v2 */
 :root {
     color-scheme: light;
-    --hp-menu-hover-bg: radial-gradient(100% 100% at 100% 0%, #f5f7ff 0%, #eaeefc 100%);
+    --hp-brand: #e61982;
+    --hp-brand-light: #fdf2f8;
+    --hp-brand-soft: #fce7f3;
+    --hp-brand-hover: #d0167a;
+    --hp-radius: 14px;
+    --hp-radius-sm: 10px;
+    --hp-menu-hover-bg: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%);
 }
 
 /* AI inputs: force blue hover/focus border instead of default dark border */
@@ -56,7 +62,7 @@ ai-fullpage .ant-input-affix-wrapper:focus-within,
 app-dashboard-home .ant-input-affix-wrapper:not(.ant-input-affix-wrapper-disabled):hover,
 app-dashboard-home .ant-input-affix-wrapper-focused,
 app-dashboard-home .ant-input-affix-wrapper:focus-within {
-  border-color: #1677ff !important;
+  border-color: #e61982 !important;
   border-right-width: 1px !important;
   z-index: 1;
 }
@@ -65,7 +71,7 @@ ai-fullpage .ant-input-affix-wrapper-focused,
 ai-fullpage .ant-input-affix-wrapper:focus-within,
 app-dashboard-home .ant-input-affix-wrapper-focused,
 app-dashboard-home .ant-input-affix-wrapper:focus-within {
-  box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.15) !important;
+  box-shadow: 0 0 0 2px rgba(230, 25, 130, 0.15) !important;
 }
 
 /* Dashboard list panels: hard-hide scrollbar arrow buttons (browser stepper buttons) */
@@ -195,7 +201,7 @@ app-dashboard-home .panel-runs .panel-scroll::-webkit-scrollbar-button:vertical:
 .ant-select-tree .ant-select-tree-node-content-wrapper.ant-select-tree-node-selected,
 .ant-select-tree .ant-select-tree-treenode-selected > .ant-select-tree-node-content-wrapper {
     color: #fff;
-    background-color: #111; /* match neutral primary */
+    background-color: #e61982;
 }
 .ant-select-tree .ant-select-tree-node-selected .ant-select-tree-title {
     color: #fff;
@@ -318,7 +324,7 @@ app-dashboard-home .panel-runs .panel-scroll::-webkit-scrollbar-button:vertical:
 }
 .inspector-panel.open .inspector-panel__icon {
   transform: rotate(180deg);
-  color: #1677ff;
+  color: var(--hp-brand, #e61982);
 }
 .inspector-panel__content {
   display: grid;
@@ -353,8 +359,8 @@ app-dashboard-home .panel-runs .panel-scroll::-webkit-scrollbar-button:vertical:
 .inspector-form .ant-input-number,
 .inspector-form .ant-picker,
 .inspector-form .ant-switch {
-  background: #f3f7ff;
-  border-color: #d9e4ff;
+  background: #fdf2f8;
+  border-color: #fce7f3;
   transition: box-shadow .12s ease, border-color .12s ease;
 }
 .inspector-form .ant-input:hover,
@@ -367,23 +373,23 @@ app-dashboard-home .panel-runs .panel-scroll::-webkit-scrollbar-button:vertical:
 .inspector-form .ant-select-focused .ant-select-selector,
 .inspector-form .ant-input-number-focused,
 .inspector-form .ant-switch-checked {
-  box-shadow: 0 0 0 2px rgba(17,17,17,0.08);
+  box-shadow: 0 0 0 2px rgba(230,25,130,0.1);
 }
 .inspector-form .ant-switch.ant-switch-checked {
-  background-color: #1677ff;
-  border-color: #1677ff;
+  background-color: #e61982;
+  border-color: #e61982;
 }
 .inspector-form .ant-switch:not(.ant-switch-checked) {
-  background-color: #dbe8ff;
-  border-color: #9dbdff;
+  background-color: #fce7f3;
+  border-color: #f9a8d4;
 }
 .inspector-form .ant-checkbox-checked .ant-checkbox-inner {
-  background-color: #1677ff;
-  border-color: #1677ff;
+  background-color: #e61982;
+  border-color: #e61982;
 }
 .inspector-form .ant-checkbox:not(.ant-checkbox-checked) .ant-checkbox-inner {
-  border: 1px solid #9dbdff !important;
-  background-color: #e7f0ff;
+  border: 1px solid #f9a8d4 !important;
+  background-color: #fdf2f8;
 }
 .inspector-form .ins-section-header { display: flex; justify-content: flex-start; padding: 6px 0 8px 6px; margin: 8px 0; border-bottom: 0; }
 .inspector-form .ins-section-header .card-title { align-items: flex-start; text-align: left; }
@@ -454,13 +460,13 @@ app-dashboard-home .panel-runs .panel-scroll::-webkit-scrollbar-button:vertical:
 /* Blue builder buttons in Advanced/Conditions */
 .inspector-form .cond-builder-btn {
   background: transparent !important;
-  border-color: #1677ff !important;
-  color: #1677ff !important;
+  border-color: #e61982 !important;
+  color: #e61982 !important;
 }
 .inspector-form .cond-builder-btn:hover {
-  background: rgba(22,119,255,0.08) !important;
-  border-color: #1677ff !important;
-  color: #1677ff !important;
+  background: rgba(230,25,130,0.08) !important;
+  border-color: #e61982 !important;
+  color: #e61982 !important;
 }
 
 /* Inline label + builder button for Options */
@@ -490,8 +496,8 @@ app-dashboard-home .panel-runs .panel-scroll::-webkit-scrollbar-button:vertical:
   border-color: #ef4444;
 }
 .ant-modal-footer .ant-btn-primary {
-  background: #1677ff !important;
-  border-color: #1677ff !important;
+  background: #e61982 !important;
+  border-color: #e61982 !important;
 }
 .ant-modal-footer .ant-btn-primary:hover,
 .ant-modal-footer .ant-btn-primary:focus-visible {
@@ -499,8 +505,8 @@ app-dashboard-home .panel-runs .panel-scroll::-webkit-scrollbar-button:vertical:
   border-color: #0f66e8 !important;
 }
 .ant-modal-footer .ant-btn:hover {
-  border-color: #1677ff !important;
-  color: #1677ff !important;
+  border-color: #e61982 !important;
+  color: #e61982 !important;
 }
 
 /* Create flow/form modals: blue focus + blue hover */
@@ -512,21 +518,21 @@ app-dashboard-home .panel-runs .panel-scroll::-webkit-scrollbar-button:vertical:
 .ant-modal.create-flow-modal .ant-input-focused,
 .ant-modal.create-form-modal .ant-input:focus,
 .ant-modal.create-form-modal .ant-input-focused {
-  border-color:#1677ff !important;
+  border-color:#e61982 !important;
   box-shadow:none;
 }
 .ant-modal-wrap.create-flow-modal .ant-select-focused .ant-select-selector,
 .ant-modal-wrap.create-form-modal .ant-select-focused .ant-select-selector,
 .ant-modal.create-flow-modal .ant-select-focused .ant-select-selector,
 .ant-modal.create-form-modal .ant-select-focused .ant-select-selector {
-  border-color:#1677ff !important;
+  border-color:#e61982 !important;
   box-shadow:none !important;
 }
 .ant-modal-wrap.create-flow-modal .ant-select:not(.ant-select-disabled):hover .ant-select-selector,
 .ant-modal-wrap.create-form-modal .ant-select:not(.ant-select-disabled):hover .ant-select-selector,
 .ant-modal.create-flow-modal .ant-select:not(.ant-select-disabled):hover .ant-select-selector,
 .ant-modal.create-form-modal .ant-select:not(.ant-select-disabled):hover .ant-select-selector {
-  border-color:#1677ff !important;
+  border-color:#e61982 !important;
 }
 .ant-modal-wrap.create-flow-modal .ant-input:hover,
 .ant-modal-wrap.create-form-modal .ant-input:hover,
@@ -536,41 +542,41 @@ app-dashboard-home .panel-runs .panel-scroll::-webkit-scrollbar-button:vertical:
 .ant-modal-wrap.create-form-modal .ant-input-affix-wrapper:hover,
 .ant-modal.create-flow-modal .ant-input-affix-wrapper:hover,
 .ant-modal.create-form-modal .ant-input-affix-wrapper:hover {
-  border-color:#1677ff !important;
+  border-color:#e61982 !important;
 }
 .ant-modal-wrap.create-flow-modal .ant-btn:hover:not([disabled]),
 .ant-modal-wrap.create-form-modal .ant-btn:hover:not([disabled]),
 .ant-modal.create-flow-modal .ant-btn:hover:not([disabled]),
 .ant-modal.create-form-modal .ant-btn:hover:not([disabled]) {
-  border-color:#1677ff !important;
-  color:#1677ff !important;
+  border-color:#e61982 !important;
+  color:#e61982 !important;
 }
 .ant-modal-wrap.create-flow-modal .ant-btn-primary,
 .ant-modal-wrap.create-form-modal .ant-btn-primary,
 .ant-modal.create-flow-modal .ant-btn-primary,
 .ant-modal.create-form-modal .ant-btn-primary {
-  background:#1677ff !important;
-  border-color:#1677ff !important;
+  background:#e61982 !important;
+  border-color:#e61982 !important;
   color:#fff !important;
 }
 .ant-modal-wrap.create-flow-modal .ant-switch-checked,
 .ant-modal-wrap.create-form-modal .ant-switch-checked,
 .ant-modal.create-flow-modal .ant-switch-checked,
 .ant-modal.create-form-modal .ant-switch-checked {
-  background-color:#1677ff !important;
+  background-color:#e61982 !important;
 }
 
 /* Unsaved leave modal: outline buttons with colored hover fill */
 .unsaved-leave-modal .ant-modal-footer .ant-btn-primary {
   background: transparent !important;
-  color: #1677ff !important;
-  border-color: #1677ff !important;
+  color: #e61982 !important;
+  border-color: #e61982 !important;
 }
 .unsaved-leave-modal .ant-modal-footer .ant-btn-primary:hover,
 .unsaved-leave-modal .ant-modal-footer .ant-btn-primary:focus-visible {
-  background: #1677ff !important;
+  background: #e61982 !important;
   color: #fff !important;
-  border-color: #1677ff !important;
+  border-color: #e61982 !important;
 }
 .unsaved-leave-modal .ant-modal-footer .ant-btn-primary.ant-btn-dangerous {
   background: transparent !important;
@@ -621,10 +627,10 @@ app-dashboard-home .panel-runs .panel-scroll::-webkit-scrollbar-button:vertical:
 /* Flow Builder: small + button near free output handles */
 .handle-add-btn {
   width: 18px; height: 18px; line-height: 16px; text-align: center;
-  border-radius: 4px; border: 1px solid #d1d5db; background: #fff; color: #1677ff;
+  border-radius: 6px; border: 1px solid #d1d5db; background: #fff; color: #e61982;
   font-weight: 600; font-size: 12px; cursor: pointer; padding: 0;
 }
-.handle-add-btn:hover { border-color: #1677ff; background: #f0f7ff; }
+.handle-add-btn:hover { border-color: #e61982; background: #fdf2f8; }
 
 /* Add-node modal picker items */
 .picker-item { display: flex; align-items: center; width: 100%; border: 0; background: transparent; padding: 6px 4px; cursor: pointer; }
@@ -826,13 +832,14 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  border-radius: 8px;
+  border-radius: 14px;
   box-shadow: 0 0 transparent;
 }
 .apple-btn:hover {
-  background: radial-gradient(100% 100% at 100% 0%, #f5f7ff 0%, #eaeefc 100%) !important;
+  background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%) !important;
+  border-color: #f9a8d4 !important;
 }
-.ant-btn.apple-btn:hover { background: radial-gradient(100% 100% at 100% 0%, #f5f7ff 0%, #eaeefc 100%) !important; }
+.ant-btn.apple-btn:hover { background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%) !important; border-color: #f9a8d4 !important; }
 .apple-btn i.anticon { font-size: 14px; line-height: 1; }
 .apple-btn[disabled] { opacity: .5; cursor: not-allowed; }
 /* Truncation for long labels inside compact buttons */
@@ -888,22 +895,22 @@ body.hp-drawer-open {
   color: #9ca3af;
 }
 .driver-popover.kinn-tour-popover .driver-popover-next-btn {
-  background: #111111;
+  background: #e61982;
   color: #fff;
-  border: 1px solid #111111;
-  border-radius: 6px;
+  border: 1px solid #e61982;
+  border-radius: 14px;
   font-size: 13px;
   padding: 4px 14px;
   text-shadow: none;
 }
 .driver-popover.kinn-tour-popover .driver-popover-next-btn:hover {
-  background: #333;
+  background: #d0167a;
 }
 .driver-popover.kinn-tour-popover .driver-popover-prev-btn {
   background: #fff;
   color: #374151;
   border: 1px solid #d1d5db;
-  border-radius: 6px;
+  border-radius: 14px;
   font-size: 13px;
   padding: 4px 14px;
   text-shadow: none;

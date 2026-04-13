@@ -10,7 +10,7 @@ import { LoadingService } from '../services/loading.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
   <div *ngIf="loading()" style="position: fixed; inset: 0; pointer-events: none; z-index: 1000;">
-    <div style="position:absolute; right: 16px; bottom: 16px; background: rgba(255,255,255,0.9); border-radius: 8px; padding: 10px 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.15)">
+    <div style="position:absolute; right: 16px; bottom: 16px; background: rgba(255,255,255,0.95); border-radius: 14px; padding: 10px 14px; box-shadow: 0 4px 16px rgba(230,25,130,0.1); border: 1px solid #fce7f3">
       <nz-spin nzSize="small"></nz-spin>
       <span style="margin-left:8px; font-size: 12px; color: #444;">Chargement…</span>
     </div>
