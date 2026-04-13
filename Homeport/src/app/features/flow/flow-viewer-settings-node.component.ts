@@ -21,7 +21,7 @@ import { Edge, ConnectionSettings } from 'ngx-vflow';
 export class FlowViewerSettingsNodeComponent {
   @Input() nodes: any[] = [];
   @Input() edges: Edge[] = [] as any;
-  @Input() background: string = '#EEF0F4';
+  @Input() background: any = { type: 'dots', gap: 25, color: '#e8e8e8', size: 1.6, backgroundColor: '#f8f8f8' };
   @Input() connectionSettings: ConnectionSettings = { type: 'template' } as any;
   @Input() useStorage = false;
   @Input() showBottomBar = true;

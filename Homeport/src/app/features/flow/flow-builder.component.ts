@@ -228,7 +228,7 @@ export class FlowBuilderComponent {
   snapGrid: [number, number] | null = null;
   get snapGridInput(): [number, number] { return (this.snapGrid || [0, 0]) as any; }
   // Dots background, light grey
-  flowBackground: any = { type: 'dots', gap: 25, color: '#D4D8E0', size: 1.6, backgroundColor: '#F5F7FA' };
+  flowBackground: any = { type: 'dots', gap: 25, color: '#e8e8e8', size: 1.6, backgroundColor: '#f8f8f8' };
 
   togglePortOrientation() {
     this.portOrientation = this.portOrientation === 'vertical' ? 'horizontal' : 'vertical';

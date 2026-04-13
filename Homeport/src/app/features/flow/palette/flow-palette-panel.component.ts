@@ -242,13 +242,14 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
   styles: [`
     :host { display:block; height: 100%; min-height: 0; }
     /* Always size to container and scroll inside when content exceeds */
-    .palette { border: none; border-radius: 0; padding: 0 0 12px; background: #ffffff; padding-top: 0 !important; height: 100%; overflow: auto; position: relative; }
+    .palette { border: none; border-radius: 0; padding: 0 0 12px; background: transparent; padding-top: 0 !important; height: 100%; overflow: auto; position: relative; }
+    .palette.drawer-mode { background: #fff; }
     .palette { display:flex; flex-direction:column; }
     .palette.drawer-mode { height: 100%; overflow: auto; }
     @media (max-width: 768px) {
       .palette { padding: 0; padding-right: 0; }
     }
-    .palette .palette-topbar { width: 100%; margin: 0; background:#fff; padding:10px 12px; font-weight:700; font-size:18px; color:#111; display:flex; align-items:center; gap:0; border-bottom: 0; flex-direction:column; }
+    .palette .palette-topbar { width: 100%; margin: 0; background: transparent; padding:10px 12px; font-weight:700; font-size:18px; color:#111; display:flex; align-items:center; gap:0; border-bottom: 0; flex-direction:column; }
     .palette .palette-topbar.centered { justify-content:center; }
     .palette .palette-topbar .t { font-weight:700; font-size:14px; color:#111; line-height:1.1; }
     .palette .palette-topbar .s { font-size:13px; color:#64748b; line-height:1.2; }
@@ -290,18 +291,16 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
       align-items:center;
       gap:10px;
       padding: 16px 12px;
-      background: #fff;
-      border: 1px solid #e5e7eb;
-      border-left: 0;
-      border-right: 0;
-      border-top: 0;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid rgba(0,0,0,0.04);
       border-radius: 0;
       cursor: pointer;
       box-shadow: 0 1px 2px rgba(0,0,0,0.04);
       text-align: left;
       margin: 0;
     }
-    .palette .group-row:hover { border-color:#f9a8d4; background:#e8f1ff; color:#0b5ed7; }
+    .palette .group-row:hover { background:#fdf2f8; color:#e61982; }
     .palette .group-row .group-mini { width: 26px; height: 26px; display:inline-flex; align-items:center; justify-content:center; border-radius:6px; }
     .palette .group-row .group-mini i { font-size: 16px; line-height: 1; color: #fff; }
     .palette .group-row .group-mini img { width: 16px; height: 16px; object-fit: contain; display:block; }
@@ -310,7 +309,8 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
     .palette .group-row i.fa-chevron-right { color:#94a3b8; font-size: 12px; }
     .palette .back-btn { width: 28px; height: 28px; padding: 0; border:0; background: transparent; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; }
     .palette .back-btn i { color:#6b7280; font-size:16px; }
-    .palette .group-overlay { position:absolute; inset:0; background:#fff; padding:0; overflow:hidden; z-index: 2; display:flex; flex-direction:column; touch-action: pan-y; will-change: transform; }
+    .palette .group-overlay { position:absolute; inset:0; background: linear-gradient(180deg, #f8f8f8 0%, #ececec 100%); padding:0; overflow:hidden; z-index: 2; display:flex; flex-direction:column; touch-action: pan-y; will-change: transform; }
+    .palette.drawer-mode .group-overlay { background: #fff; }
     .palette .group-overlay.swipe-animating { transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 180ms ease; }
     .palette .group-overlay.swiping { box-shadow: -12px 0 24px rgba(15, 23, 42, 0.12); }
     .palette .group-overlay .palette-search { margin: 6px 12px 16px; }

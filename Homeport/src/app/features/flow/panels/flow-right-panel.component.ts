@@ -292,7 +292,7 @@ import { NodeInspectorItemComponent } from './node-inspector-item.component';
   `,
   styles: [`
     :host { display:block; min-height:0; }
-    .right-panel { min-height: 0; height: 100%; display:flex; flex-direction:column; background:#fff; }
+    .right-panel { min-height: 0; height: 100%; display:flex; flex-direction:column; background: transparent; }
     .panel-scroll { height: 100%; overflow: auto; padding: 8px; }
     .inspector-meta .meta-form { font-size: 12px; padding: 0; margin-top: 8px; }
     .inspector-meta .meta-form .ant-form-item { margin-bottom: 10px; }
@@ -304,8 +304,8 @@ import { NodeInspectorItemComponent } from './node-inspector-item.component';
     :host ::ng-deep .meta-form .ant-input-number,
     :host ::ng-deep .meta-form .ant-picker,
     :host ::ng-deep .meta-form .ant-switch {
-      background: #f3f7ff;
-      border-color: #d9e4ff;
+      background: #fdf2f8;
+      border-color: #fce7f3;
       transition: box-shadow .12s ease, border-color .12s ease;
     }
     :host ::ng-deep .meta-form .ant-input:hover,
@@ -330,7 +330,7 @@ import { NodeInspectorItemComponent } from './node-inspector-item.component';
       border-color: #e61982;
     }
     :host ::ng-deep .meta-form .ant-switch:not(.ant-switch-checked) {
-      background-color: #dbe8ff;
+      background-color: #fce7f3;
       border-color: #9dbdff;
     }
     :host ::ng-deep .meta-form .ant-checkbox-checked .ant-checkbox-inner {
@@ -345,9 +345,9 @@ import { NodeInspectorItemComponent } from './node-inspector-item.component';
     .wf-native-select {
       width: 100%;
       min-height: 32px;
-      border: 1px solid #d9e4ff;
+      border: 1px solid #fce7f3;
       border-radius: 8px;
-      background: #f3f7ff;
+      background: #fdf2f8;
       color: #111827;
       font-size: 12px;
       padding: 6px 30px 6px 10px;
@@ -372,9 +372,9 @@ import { NodeInspectorItemComponent } from './node-inspector-item.component';
     .actions-wrap { display:flex; flex-wrap: wrap; gap:8px; justify-content:flex-end; margin-top:6px; }
     .actions-wrap button { display:inline-flex; align-items:center; gap:6px; }
     .actions-wrap .run-btn { background:#e61982 !important; color:#fff !important; border-color:#e61982 !important; }
-    .actions-wrap .run-btn:hover { background:#0f66e8 !important; border-color:#0f66e8 !important; }
+    .actions-wrap .run-btn:hover { background:#d0167a !important; border-color:#d0167a !important; }
     :host ::ng-deep .inspector-meta .apple-btn:hover:not([disabled]) {
-      background: #e8f1ff !important;
+      background: #fdf2f8 !important;
       border-color: #f9a8d4 !important;
       color: #0b5ed7 !important;
       box-shadow: 0 6px 14px rgba(230,25,130,0.18);
@@ -391,13 +391,13 @@ import { NodeInspectorItemComponent } from './node-inspector-item.component';
     .exec-select-row { display:flex; align-items:center; gap:6px; margin-bottom:6px; }
     .exec-select-row .flex-1 { flex:1 1 auto; min-width: 0; }
     .exec-select-row .load-btn { display:inline-flex; align-items:center; justify-content:center; }
-    .sel-status { margin-top: 18px; padding: 8px 10px; border-radius:10px; background: #f3f7ff; border: 1px solid #eef2f7; }
+    .sel-status { margin-top: 18px; padding: 8px 10px; border-radius:10px; background: #fdf2f8; border: 1px solid #fdf2f8; }
     .sel-status .k { color:#6b7280; font-weight:600; font-size:11px; text-transform:uppercase; letter-spacing:.04em; }
     .sel-status .v { color:#111; font-size:12px; }
     .sel-status-head { display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:6px; }
     .sel-status-grid { display:grid; grid-template-columns: 1fr 1fr; gap:8px 12px; }
     .sel-status-grid .cell { display:flex; flex-direction:column; gap:2px; padding:6px 8px; border-radius:8px; background:#fff; border:1px solid #f1f5f9; }
-    .status-pill { display:inline-flex; align-items:center; gap:6px; padding:4px 10px; border-radius:999px; font-size:11px; font-weight:700; letter-spacing:.02em; text-transform:uppercase; background:#eef2f7; color:#64748b; border:1px solid #e2e8f0; }
+    .status-pill { display:inline-flex; align-items:center; gap:6px; padding:4px 10px; border-radius:999px; font-size:11px; font-weight:700; letter-spacing:.02em; text-transform:uppercase; background:#fdf2f8; color:#64748b; border:1px solid #e2e8f0; }
     .status-pill .dot { width:6px; height:6px; border-radius:50%; background: currentColor; box-shadow: 0 0 0 2px rgba(0,0,0,0.04); }
     .status-pill.ok { color:#15803d; background:#ecfdf5; border-color:#bbf7d0; }
     .status-pill.err { color:#b42318; background:#fff1f2; border-color:#fecdd3; }
@@ -486,8 +486,8 @@ import { NodeInspectorItemComponent } from './node-inspector-item.component';
       border-color:#e61982 !important;
     }
     :host ::ng-deep .ant-modal-footer .ant-btn-primary:hover {
-      background:#0f66e8 !important;
-      border-color:#0f66e8 !important;
+      background:#d0167a !important;
+      border-color:#d0167a !important;
     }
     :host ::ng-deep .ant-modal-footer .ant-btn:hover {
       border-color:#e61982 !important;

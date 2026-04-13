@@ -600,8 +600,8 @@ app-dashboard-home .panel-runs .panel-scroll::-webkit-scrollbar-button:vertical:
 }
 .ant-modal-footer .ant-btn-primary:hover,
 .ant-modal-footer .ant-btn-primary:focus-visible {
-  background: #0f66e8 !important;
-  border-color: #0f66e8 !important;
+  background: #d0167a !important;
+  border-color: #d0167a !important;
 }
 .ant-modal-footer .ant-btn:hover {
   border-color: #e61982 !important;
@@ -1122,4 +1122,15 @@ body.hp-drawer-open {
 @keyframes floatHintIn {
   from { opacity: 0; transform: translateX(-50%) translateY(20px); }
   to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+/* ═══ Flow builder panels: transparent backgrounds for gradient ═══ */
+.flow-builder > .left-panel:not(.drawer-mode) .palette,
+.flow-builder > .left-panel:not(.drawer-mode) .palette .palette-topbar,
+.flow-builder > .right-panel:not(.drawer-mode) .inspector,
+.flow-builder > .right-panel:not(.drawer-mode) .inspector-meta,
+.flow-builder > .right-panel:not(.drawer-mode) .flow-meta,
+.flow-builder > .right-panel:not(.drawer-mode) .flow-meta .exec-controls .mode-select,
+.flow-builder > .right-panel:not(.drawer-mode) .flow-meta .exec-controls .icon-btn {
+  background: transparent !important;
 }

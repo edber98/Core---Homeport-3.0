@@ -377,12 +377,16 @@ import { NodeExecResultDialogComponent } from './node-exec-result-dialog.compone
         .flow-exec { height: 100dvh; min-height: 100dvh; }
       }
     }
-    .side.executions { border: none; border-radius: 0; padding: 12px; padding-right: 9px; padding-top: 0 !important; background: #ffffff; overflow: auto; min-height: 0; }
+    .side.executions { border: none; border-radius: 0; padding: 12px; padding-right: 9px; padding-top: 0 !important; background: linear-gradient(180deg, #f8f8f8 0%, #ececec 100%); overflow-y: auto; overflow-x: hidden; min-height: 0; scrollbar-width: none; }
+    .side.executions::-webkit-scrollbar { display: none; }
+    /* Drawer mode: white background, no gradient */
+    .drawer-swipe-zone .side.executions { background: #fff !important; }
+    .drawer-swipe-zone .details-panel { background: #fff !important; }
     /* Align left panel to builder palette topbar styles */
     .side.executions .panel-heading {
       width: calc(100% + 21px);
       margin: 0 -9px 0 -12px;
-      background:#fff;
+      background: transparent;
       padding:10px 12px;
       font-weight:700;
       font-size:18px;
@@ -444,7 +448,7 @@ import { NodeExecResultDialogComponent } from './node-exec-result-dialog.compone
     .mode-row .ant-btn { border:1px solid #e5e7eb; background:#fff; border-radius:10px; padding:6px 8px; font-size:12px; height:auto; line-height: 1; transition: background 150ms ease, color 150ms ease, box-shadow 150ms ease, transform 150ms ease, border-color 150ms ease; }
     .mode-row .ant-btn:hover { border-color:#f9a8d4; background:#e8f1ff; color:#0b5ed7; box-shadow:0 4px 12px rgba(230,25,130,0.18); transform: translateY(-1px); }
     .mode-row .ant-btn-primary { background:#e61982; border-color:#e61982; color:#fff; }
-    .mode-row .ant-btn-primary:hover { background:#0b5ed7; border-color:#0b5ed7; color:#fff; box-shadow:0 4px 12px rgba(230,25,130,0.22); }
+    .mode-row .ant-btn-primary:hover { background:#d0167a; border-color:#d0167a; color:#fff; box-shadow:0 4px 12px rgba(230,25,130,0.22); }
     .exec-item .row.top .right .ant-btn { transition: background 150ms ease, color 150ms ease, box-shadow 150ms ease, transform 150ms ease, border-color 150ms ease; }
     .exec-item .row.top .right .ant-btn:hover {
       border-color:#f9a8d4;
@@ -606,7 +610,8 @@ import { NodeExecResultDialogComponent } from './node-exec-result-dialog.compone
       text-align: center;
       max-width: min(92vw, 420px);
     }
-    .details-panel { border-left:1px solid #e5e7eb; background:#fff; height:100%; overflow:auto; padding:12px; min-width: 0; }
+    .details-panel { border-left: none; background: linear-gradient(180deg, #f8f8f8 0%, #ececec 100%); height:100%; overflow:auto; padding:12px; min-width: 0; scrollbar-width: none; }
+    .details-panel::-webkit-scrollbar { display: none; }
     .details-panel .panel-heading.details-heading {
       display:flex;
       align-items:center;
@@ -996,7 +1001,7 @@ export class FlowExecutionComponent {
   }
   private templatesMap = new Map<string, any>();
   // Match builder visuals
-  flowBackground: any = { type: 'dots', gap: 25, color: '#D4D8E0', size: 1.6, backgroundColor: '#F5F7FA' };
+  flowBackground: any = { type: 'dots', gap: 25, color: '#e8e8e8', size: 1.6, backgroundColor: '#f8f8f8' };
   get portOrientation(): 'vertical'|'horizontal' {
     try {
       const ori = String(this.currentGraph?.meta?.ui?.portOrientation || '').toLowerCase();

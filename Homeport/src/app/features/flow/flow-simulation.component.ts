@@ -64,13 +64,13 @@ import { backAwareCurve } from './edge-curves';
     .viewer { position:relative; flex:1 1 auto; min-height:0; display:grid; grid-template-columns: 300px 1fr; }
     /* Override global mobile padding in Simulation only */
     .viewer { padding-bottom: 0 !important; }
-    .left-panel { border-right:1px solid #e5e7eb; padding:8px; background:#fff; box-sizing: border-box; }
+    .left-panel { border: none; padding:8px; background: linear-gradient(180deg, #f8f8f8 0%, #ececec 100%); box-sizing: border-box; }
     .panel-title { font-size:12px; color:#6b7280; margin-bottom:6px; display:flex; align-items:center; gap:6px; }
     .panel-title .count { color:#374151; font-weight:600; }
     .sc-list { display:grid; gap:6px; }
     .sc-item { width:100%; box-sizing: border-box; display:block; text-align:left; padding:8px 10px; border:1px solid #E5E7EB; background:#fff; border-radius:10px; cursor:pointer; }
     .sc-item .label { display:block; font-size:12px; line-height:1.3; word-break: break-word; overflow-wrap: anywhere; }
-    .sc-item.active, .sc-item:hover { background:#F8FBFF; border-color:#DBEAFE; }
+    .sc-item.active, .sc-item:hover { background:#fdf2f8; border-color:#f9a8d4; }
     .loading { position:absolute; inset:0; display:flex; flex-direction:column; gap:8px; align-items:center; justify-content:center; background: rgba(255,255,255,0.6); z-index: 2; }
     .spinner { width:26px; height:26px; border-radius:50%; border:3px solid #eee; border-top-color:#e61982; animation:spin 1s linear infinite; }
     @keyframes spin { from { transform: rotate(0); } to { transform: rotate(360deg); } }
@@ -93,7 +93,7 @@ export class FlowSimulationComponent implements OnInit, OnDestroy {
   nodes: any[] = [];
   edges: any[] = [];
   meta: any = { ui: { portOrientation: 'vertical' } };
-  background = '#EEF0F4';
+  background: any = { type: 'dots', gap: 25, color: '#e8e8e8', size: 1.6, backgroundColor: '#f8f8f8' };
   connectionSettings: ConnectionSettings = { type: 'template', curve: backAwareCurve } as any;
   isMobile = false;
   drawer = false;

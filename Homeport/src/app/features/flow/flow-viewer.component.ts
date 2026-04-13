@@ -290,8 +290,7 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
     */
     :host { display:block; height:100%; }
     .flow-viewer { position: relative; height:100%; }
-    .canvas.ro { border: 1px solid #e5e7eb; border-top: 0; border-radius: 0; overflow: hidden; height:100%; }
-    :host(.panel-open) .canvas.ro { border-right: 0; }
+    .canvas.ro { border: none; border-radius: 0; overflow: hidden; height:100%; }
     .canvas-host { height: 100%; width: 100%; -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; touch-action: none; }
     .canvas-host vflow { touch-action: none; }
     /* Node layout (execution): align with builder grid */
@@ -398,7 +397,7 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
 })
 export class FlowViewerComponent implements AfterViewInit, OnDestroy, OnChanges {
   @Input() selectedNodeId: string | null = null;
-  @Input() background: any = '#EEF0F4';
+  @Input() background: any = { type: 'dots', gap: 25, color: '#e8e8e8', size: 1.6, backgroundColor: '#f8f8f8' };
   @Input() portOrientation: 'vertical'|'horizontal' = 'horizontal';
   @Input() nodes: any[] = [];
   @Input() edges: Edge[] = [];
