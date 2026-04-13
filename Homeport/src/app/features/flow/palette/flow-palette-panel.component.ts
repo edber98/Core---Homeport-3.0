@@ -12,21 +12,22 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
   standalone: true,
   imports: [CommonModule, FormsModule, DragDropModule, NzInputModule, NzToolTipModule],
   template: `
-    <aside class="palette" [class.drawer-mode]="mode==='drawer'">
-      <div class="palette-topbar centered">
-        <span class="t">Nouveau noeud</span>
-        <span class="s">Groupes & Templates</span>
-      </div>
-      <div class="palette-search" [class.searching]="hasQuery()">
-        <input
-          nz-input
-          [ngModel]="internalQuery"
-          (ngModelChange)="onQueryInput($event)"
-          [disabled]="loading"
-          placeholder="Rechercher un nœud (nom, catégorie)"
-        />
-      </div>
-      <div class="palette-scroll" #providersScroll [class.overlay-open]="!!activeGroup" (scroll)="onProvidersScroll()">
+    <aside class="palette" [class.drawer-mode]="mode==='drawer'" [class.group-active]="!!activeGroup">
+      <div class="palette-page" [class.page-hidden]="!!activeGroup && !loading">
+        <div class="palette-topbar centered">
+          <span class="t">Nouveau noeud</span>
+          <span class="s">Groupes & Templates</span>
+        </div>
+        <div class="palette-search" [class.searching]="hasQuery()">
+          <input
+            nz-input
+            [ngModel]="internalQuery"
+            (ngModelChange)="onQueryInput($event)"
+            [disabled]="loading"
+            placeholder="Rechercher un nœud (nom, catégorie)"
+          />
+        </div>
+        <div class="palette-scroll" #providersScroll [class.overlay-open]="!!activeGroup" (scroll)="onProvidersScroll()">
         <div class="palette-loading" *ngIf="loading" role="status" aria-live="polite">
           <span class="palette-loading-spinner" aria-hidden="true"></span>
           <span class="palette-loading-text">Chargement des connecteurs…</span>
@@ -129,6 +130,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
           </ng-template>
         </ng-container>
       </div>
+      </div><!-- /palette-page -->
 
         <div class="group-overlay" *ngIf="activeGroup && !loading"
           #groupOverlay
@@ -242,8 +244,13 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
   styles: [`
     :host { display:block; height: 100%; min-height: 0; }
     /* Always size to container and scroll inside when content exceeds */
-    .palette { border: none; border-radius: 0; padding: 0 0 12px; background: transparent; padding-top: 0 !important; height: 100%; overflow: auto; position: relative; }
+    .palette { border: none; border-radius: 0; padding: 0; background: transparent; padding-top: 0 !important; height: 100%; overflow: hidden; position: relative; }
     .palette.drawer-mode { background: #fff; }
+    .palette-page {
+      display: flex; flex-direction: column; height: 100%;
+      transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1), opacity 180ms ease;
+    }
+    .palette-page.page-hidden { transform: translateX(-30%); opacity: 0; pointer-events: none; }
     .palette { display:flex; flex-direction:column; }
     .palette.drawer-mode { height: 100%; overflow: auto; }
     @media (max-width: 768px) {
@@ -309,10 +316,11 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
     .palette .group-row i.fa-chevron-right { color:#94a3b8; font-size: 12px; }
     .palette .back-btn { width: 28px; height: 28px; padding: 0; border:0; background: transparent; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; }
     .palette .back-btn i { color:#6b7280; font-size:16px; }
-    .palette .group-overlay { position:absolute; inset:0; background: linear-gradient(180deg, #f8f8f8 0%, #ececec 100%); padding:0; overflow:hidden; z-index: 2; display:flex; flex-direction:column; touch-action: pan-y; will-change: transform; }
+    .palette .group-overlay { position:absolute; inset:0; background: linear-gradient(180deg, #f8f8f8 0%, #ececec 100%); padding:0; overflow:hidden; z-index: 2; display:flex; flex-direction:column; touch-action: pan-y; will-change: transform; animation: palette-page-in 220ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+    @keyframes palette-page-in { from { transform: translateX(40%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
     .palette.drawer-mode .group-overlay { background: #fff; }
-    .palette .group-overlay.swipe-animating { transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 180ms ease; }
-    .palette .group-overlay.swiping { box-shadow: -12px 0 24px rgba(15, 23, 42, 0.12); }
+    .palette .group-overlay.swipe-animating { transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 180ms ease; animation: none; }
+    .palette .group-overlay.swiping { box-shadow: -12px 0 24px rgba(15, 23, 42, 0.12); animation: none; }
     .palette .group-overlay .palette-search { margin: 6px 12px 16px; }
     .palette .group-overlay-scroll { flex: 1 1 auto; min-height: 0; overflow: auto; padding: 0 0 12px; }
     .palette .group-overlay-scroll { scrollbar-width: none; -ms-overflow-style: none; }
