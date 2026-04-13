@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, HostListener, Input, Output, ChangeDetectorRef, NgZone, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, Output, ChangeDetectorRef, NgZone, SimpleChanges, OnDestroy } from '@angular/core';
 import { DynamicForm } from '../../../modules/dynamic-form/dynamic-form';
 import { NzTabsModule } from 'ng-zorro-antd/tabs';
 import { NzSwitchModule } from 'ng-zorro-antd/switch';
@@ -14,6 +14,8 @@ import { Router } from '@angular/router';
 import { AccessControlService } from '../../../services/access-control.service';
 import { CredentialEditDialogComponent } from '../../credentials/credential-edit-dialog.component';
 import { FormsModule } from '@angular/forms';
+import { Subject, Subscription } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { environment } from '../../../../environments/environment';
 
 @Component({
@@ -62,19 +64,23 @@ import { environment } from '../../../../environments/environment';
                     </button>
                   </div>
                   <div class="row">
-                    <ng-container *ngIf="useNativeSelect; else formSelectDesktop">
-                      <select class="wf-native-select form-select"
-                        [ngModel]="selectedFormId"
-                        (ngModelChange)="selectedFormId = $event || null">
-                        <option [ngValue]="null">Sélectionner un formulaire</option>
-                        <option *ngFor="let f of forms; trackBy: trackForm" [ngValue]="f.id">{{ f.name }}</option>
-                      </select>
-                    </ng-container>
-                    <ng-template #formSelectDesktop>
-                      <nz-select class="form-select" [(ngModel)]="selectedFormId" nzShowSearch nzAllowClear nzPlaceHolder="Sélectionner un formulaire">
-                        <nz-option *ngFor="let f of forms; trackBy: trackForm" [nzValue]="f.id" [nzLabel]="f.name"></nz-option>
-                      </nz-select>
-                    </ng-template>
+                    <nz-select
+                      class="form-select start-form-select-trigger"
+                      [(ngModel)]="selectedFormId"
+                      [nzShowSearch]="!useNativeSelect"
+                      nzAllowClear
+                      nzPlaceHolder="Sélectionner un formulaire"
+                      [nzServerSearch]="!useNativeSelect"
+                      [nzPlacement]="formSelectPlacement"
+                      [nzDropdownClassName]="'in-advanced-editor start-form-select-dropdown'"
+                      [nzDropdownStyle]="{ zIndex: '200010' }"
+                      [nzOpen]="formSelectOpen"
+                      [nzLoading]="formsLoading || formsLoadingMore"
+                      (nzOpenChange)="onFormSelectOpenChange($event)"
+                      (nzOnSearch)="onFormSearch($event)"
+                      (nzScrollToBottom)="onFormsSelectScrollToBottom()">
+                      <nz-option *ngFor="let f of forms; trackBy: trackForm" [nzValue]="f.id" [nzLabel]="f.name"></nz-option>
+                    </nz-select>
                     <button nz-button nzSize="small" class="apple-btn" (click)="applySelectedForm()" [disabled]="!selectedFormId || formsLoading">
                       Importer
                     </button>
@@ -354,7 +360,7 @@ import { environment } from '../../../../environments/environment';
     }
 `]
 })
-export class FlowAdvancedCenterPanelComponent {
+export class FlowAdvancedCenterPanelComponent implements OnDestroy {
   @Input() model: any = {};
   @Input() ctx: any = {};
   @Input() flowId: string | null = null;
@@ -395,14 +401,35 @@ export class FlowAdvancedCenterPanelComponent {
   private pendingContext: any = null;
   forms: FormSummary[] = [];
   formsLoading = false;
+  formsLoadingMore = false;
+  formsHasMore = false;
   selectedFormId: string | null = null;
   useNativeSelect = false;
+  formSelectPlacement: 'topLeft' | 'bottomLeft' | null = null;
+  formSelectOpen = false;
+  private readonly formsPageSize = 15;
+  private readonly formsSearchDebounceMs = 350;
+  private formsPage = 0;
+  private formsQuery = '';
+  private formsLoadTicket = 0;
+  private formsSearchInput$ = new Subject<string>();
+  private formsSearchSub?: Subscription;
 
   private lastModelId: string | null = null;
   private lastTemplateSig: string | null = null;
   dfVisible = true;
   constructor(private cdr: ChangeDetectorRef, private zone: NgZone, private catalog: CatalogService, private acl: AccessControlService, private router: Router, private msg: NzMessageService) {
     this.updateSelectMode();
+    this.formsSearchSub = this.formsSearchInput$
+      .pipe(debounceTime(this.formsSearchDebounceMs), distinctUntilChanged())
+      .subscribe((value) => {
+        this.formsQuery = String(value || '').trim();
+        this.loadForms(false);
+      });
+  }
+
+  ngOnDestroy(): void {
+    try { this.formsSearchSub?.unsubscribe(); } catch {}
   }
 
   @HostListener('window:resize')
@@ -410,9 +437,14 @@ export class FlowAdvancedCenterPanelComponent {
 
   private updateSelectMode() {
     try {
-      this.useNativeSelect = window.innerWidth <= 1023;
+      const width = window.innerWidth || 0;
+      this.useNativeSelect = width <= 1023;
+      if (width <= 768) this.formSelectPlacement = 'topLeft';
+      else if (width <= 1023) this.formSelectPlacement = 'bottomLeft';
+      else this.formSelectPlacement = null;
     } catch {
       this.useNativeSelect = false;
+      this.formSelectPlacement = null;
     }
   }
 
@@ -461,7 +493,8 @@ export class FlowAdvancedCenterPanelComponent {
       this.refreshCredentialsState();
     }
     if (needReset && this.isStartForm(this.model)) {
-      this.loadForms();
+      this.formsQuery = '';
+      this.loadForms(false);
     }
     // Always refresh logs view when attemptEvents changes (even without node/template reset)
     try {
@@ -624,35 +657,119 @@ export class FlowAdvancedCenterPanelComponent {
       this.router.navigate(['/dynamic-form'], { queryParams: query });
     } catch {}
   }
-  loadForms() {
-    if (this.formsLoading) return;
-    this.formsLoading = true;
+  onFormSearch(value: string) {
+    this.formsSearchInput$.next(value || '');
+  }
+
+  onFormSelectOpenChange(open: boolean) {
+    this.formSelectOpen = !!open;
+  }
+
+  onFormsSelectScrollToBottom() {
+    this.loadForms(true);
+  }
+
+  loadForms(append = false) {
+    if (append && (this.formsLoading || this.formsLoadingMore || !this.formsHasMore)) return;
+
     const wsId = this.acl.currentWorkspaceId();
-    if (!wsId) { this.formsLoading = false; this.forms = []; return; }
+    if (!wsId) {
+      if (!append) {
+        this.forms = [];
+        this.formsPage = 0;
+        this.formsHasMore = false;
+      }
+      this.formsLoading = false;
+      this.formsLoadingMore = false;
+      return;
+    }
+
+    const ticket = ++this.formsLoadTicket;
+    const page = append ? (this.formsPage + 1) : 1;
+
+    if (append) {
+      this.formsLoadingMore = true;
+    } else {
+      this.formsLoading = true;
+      this.formsLoadingMore = false;
+      this.formsPage = 0;
+      this.formsHasMore = false;
+      this.forms = [];
+    }
+
+    if (environment.useBackend) {
+      this.catalog.listFormsPage(wsId, {
+        page,
+        limit: this.formsPageSize,
+        q: this.formsQuery || undefined,
+      }).subscribe({
+        next: (list) => {
+          if (ticket !== this.formsLoadTicket) return;
+          const items = Array.isArray(list) ? list : [];
+          this.forms = append ? this.mergeFormPage(this.forms, items) : items;
+          this.formsPage = page;
+          this.formsHasMore = items.length === this.formsPageSize;
+        },
+        error: () => {
+          if (ticket !== this.formsLoadTicket) return;
+          if (!append) this.forms = [];
+          this.formsHasMore = false;
+        },
+        complete: () => {
+          if (ticket !== this.formsLoadTicket) return;
+          this.formsLoading = false;
+          this.formsLoadingMore = false;
+          try { this.cdr.detectChanges(); } catch {}
+        }
+      });
+      return;
+    }
+
     this.catalog.listForms(wsId).subscribe({
       next: (list) => {
-        // Align with /forms page: only show forms accessible in current workspace
+        if (ticket !== this.formsLoadTicket) return;
         const all = Array.isArray(list) ? list : [];
-        if (!environment.useBackend) {
-          try {
-            const filtered = all.filter(f => {
-              const ws = this.acl.ensureResourceWorkspace('form', f.id);
-              return ws === this.acl.currentWorkspaceId() && this.acl.canAccessWorkspace(ws);
-            });
-            this.forms = filtered;
-          } catch {
-            this.forms = all;
-          }
-        } else {
-          this.forms = all;
-        }
-        if (this.selectedFormId && !this.forms.some(f => f.id === this.selectedFormId)) {
-          this.selectedFormId = null;
-        }
+        let accessible = all;
+        try {
+          accessible = all.filter(f => {
+            const w = this.acl.ensureResourceWorkspace('form', f.id);
+            return w === wsId && this.acl.canAccessWorkspace(w);
+          });
+        } catch {}
+        const q = this.formsQuery.toLowerCase();
+        const filtered = q
+          ? accessible.filter(f => `${String(f?.name || '')} ${String(f?.description || '')}`.toLowerCase().includes(q))
+          : accessible;
+        const start = (page - 1) * this.formsPageSize;
+        const slice = filtered.slice(start, start + this.formsPageSize);
+        this.forms = append ? this.mergeFormPage(this.forms, slice) : slice;
+        this.formsPage = page;
+        this.formsHasMore = (start + slice.length) < filtered.length;
       },
-      error: () => { this.forms = []; },
-      complete: () => { this.formsLoading = false; try { this.cdr.detectChanges(); } catch {} }
+      error: () => {
+        if (ticket !== this.formsLoadTicket) return;
+        if (!append) this.forms = [];
+        this.formsHasMore = false;
+      },
+      complete: () => {
+        if (ticket !== this.formsLoadTicket) return;
+        this.formsLoading = false;
+        this.formsLoadingMore = false;
+        try { this.cdr.detectChanges(); } catch {}
+      }
     });
+  }
+
+  private mergeFormPage(current: FormSummary[], incoming: FormSummary[]): FormSummary[] {
+    const seen = new Set((current || []).map(f => String(f?.id || '')));
+    const merged = [...(current || [])];
+    for (const item of (incoming || [])) {
+      const id = String(item?.id || '');
+      if (!id || seen.has(id)) continue;
+      seen.add(id);
+      merged.push(item);
+    }
+    return merged;
   }
   applySelectedForm() {
     const id = this.selectedFormId;
@@ -854,8 +971,28 @@ export class FlowAdvancedCenterPanelComponent {
 
   // Optional: flush on pointer release to approximate "when user releases input"
   // Fallback flush: still flush on pointer up if a debounce is pending
-  @HostListener('document:pointerup')
-  onPointerUp() { if (this.commitTimer) this.commitNow(); }
+  @HostListener('document:pointerup', ['$event'])
+  onPointerUp(event?: Event) {
+    if (this.commitTimer) this.commitNow();
+    this.closeFormSelectIfOutside(event);
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event?: Event) {
+    this.closeFormSelectIfOutside(event);
+  }
+
+  private closeFormSelectIfOutside(event?: Event) {
+    try {
+      if (!this.formSelectOpen) return;
+      const target = event?.target as HTMLElement | null;
+      if (!target) return;
+      if (target.closest('.start-form-select-trigger')) return;
+      if (target.closest('.start-form-select-dropdown')) return;
+      this.formSelectOpen = false;
+      try { this.cdr.detectChanges(); } catch {}
+    } catch {}
+  }
 
   // Paramétrage actions
   onToggleCatchError(val: boolean) {

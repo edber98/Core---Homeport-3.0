@@ -1,6 +1,7 @@
 const express = require('express');
 const { authMiddleware, requireCompanyScope } = require('../../auth/jwt');
 const Notification = require('../../db/models/notification.model');
+const Workspace = require('../../db/models/workspace.model');
 const { Types } = require('mongoose');
 
 module.exports = function(){
@@ -8,17 +9,35 @@ module.exports = function(){
   r.use(authMiddleware());
   r.use(requireCompanyScope());
 
+  async function resolveWorkspaceObjectId(workspaceId, companyId) {
+    const raw = String(workspaceId || '').trim();
+    if (!raw) return null;
+    let ws = null;
+    if (Types.ObjectId.isValid(raw)) {
+      ws = await Workspace.findById(raw).select('_id companyId').lean();
+    }
+    if (!ws) {
+      ws = await Workspace.findOne({ id: raw }).select('_id companyId').lean();
+    }
+    if (!ws) return null;
+    if (String(ws.companyId) !== String(companyId)) return null;
+    return ws._id;
+  }
+
   r.get('/notifications', async (req, res) => {
     const { workspaceId, entityType, entityId, acknowledged, severity, q: search, sort, pagination } = req.query;
-    if (workspaceId && !Types.ObjectId.isValid(String(workspaceId))) {
-      const withMeta = String(pagination || '').toLowerCase() === 'true';
-      if (withMeta) {
-        return res.apiOk({ items: [], total: 0, page: 1, limit: Math.max(1, Math.min(200, Number(req.query?.limit) || 100)), pages: 1 });
-      }
-      return res.apiOk([]);
-    }
     const base = { companyId: req.user.companyId };
-    if (workspaceId) base.workspaceId = workspaceId;
+    if (workspaceId) {
+      const wsObjectId = await resolveWorkspaceObjectId(workspaceId, req.user.companyId);
+      const withMeta = String(pagination || '').toLowerCase() === 'true';
+      if (!wsObjectId) {
+        if (withMeta) {
+          return res.apiOk({ items: [], total: 0, page: 1, limit: Math.max(1, Math.min(200, Number(req.query?.limit) || 100)), pages: 1 });
+        }
+        return res.apiOk([]);
+      }
+      base.workspaceId = wsObjectId;
+    }
     if (entityType) base.entityType = entityType;
     if (entityId) base.entityId = entityId;
     if (severity) base.severity = severity;
@@ -50,9 +69,12 @@ module.exports = function(){
   // Count notifications matching filters (useful for unread badge)
   r.get('/notifications/count', async (req, res) => {
     const { workspaceId, entityType, entityId, acknowledged, severity, q: search } = req.query;
-    if (workspaceId && !Types.ObjectId.isValid(String(workspaceId))) return res.apiOk({ total: 0 });
     const base = { companyId: req.user.companyId };
-    if (workspaceId) base.workspaceId = workspaceId;
+    if (workspaceId) {
+      const wsObjectId = await resolveWorkspaceObjectId(workspaceId, req.user.companyId);
+      if (!wsObjectId) return res.apiOk({ total: 0 });
+      base.workspaceId = wsObjectId;
+    }
     if (entityType) base.entityType = entityType;
     if (entityId) base.entityId = entityId;
     if (severity) base.severity = severity;
@@ -87,7 +109,11 @@ module.exports = function(){
   r.post('/notifications/ack-all', async (req, res) => {
     const filter = { companyId: req.user.companyId, acknowledged: false };
     const { workspaceId } = req.body || {};
-    if (workspaceId && Types.ObjectId.isValid(String(workspaceId))) filter.workspaceId = workspaceId;
+    if (workspaceId) {
+      const wsObjectId = await resolveWorkspaceObjectId(workspaceId, req.user.companyId);
+      if (!wsObjectId) return res.apiError(404, 'workspace_not_found', 'Workspace not found');
+      filter.workspaceId = wsObjectId;
+    }
     const result = await Notification.updateMany(filter, { $set: { acknowledged: true } });
     res.apiOk({ modifiedCount: result.modifiedCount || 0 });
   });
