@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, NgZone, ChangeDetectorRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, NgZone, ChangeDetectorRef, OnDestroy, AfterViewInit, HostListener, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CatalogService, FormSummary } from '../../services/catalog.service';
 import { AccessControlService } from '../../services/access-control.service';
@@ -9,8 +9,9 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
-import { Subscription } from 'rxjs';
-import { auditTime } from 'rxjs/operators';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { Subject, Subscription, fromEvent } from 'rxjs';
+import { auditTime, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { UiMessageService } from '../../services/ui-message.service';
 
@@ -19,7 +20,7 @@ type FormItem = { id: string; name: string; description?: string };
 @Component({
   selector: 'form-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, NzModalModule, NzButtonModule, NzInputModule, NzFormModule, NzPopconfirmModule],
+  imports: [CommonModule, FormsModule, NzModalModule, NzButtonModule, NzInputModule, NzFormModule, NzSpinModule, NzPopconfirmModule],
   template: `
   <div class="list-page">
     <div class="container">
@@ -29,7 +30,7 @@ type FormItem = { id: string; name: string; description?: string };
           <p>Ouvrez un formulaire en Builder ou Viewer, ou créez-en un nouveau.</p>
         </div>
         <div class="actions">
-          <input [(ngModel)]="q" placeholder="Rechercher un formulaire (nom, desc)" class="search"/>
+          <input [(ngModel)]="q" (ngModelChange)="onQueryInput($event)" placeholder="Rechercher un formulaire (nom, desc)" class="search"/>
           <button nz-button nzType="primary" class="primary with-text" (click)="openCreate()">
             <i class="fa-solid fa-plus"></i> Nouveau formulaire
           </button>
@@ -38,14 +39,15 @@ type FormItem = { id: string; name: string; description?: string };
           </button>
         </div>
       </div>
-      <div class="loading" *ngIf="loading">
+      <div class="loading" *ngIf="loading && forms.length===0">
         <div class="skeleton-grid">
           <div class="skeleton-card" *ngFor="let _ of [1,2,3,4,5,6]"></div>
         </div>
       </div>
       <div class="error" *ngIf="!loading && error">{{ error }}</div>
-      <div class="grid" *ngIf="!loading && !error">
-        <div class="card" *ngFor="let it of filtered" (click)="openBuilder(it)">
+      <div class="empty" *ngIf="!loading && !error && forms.length===0">Aucun élément trouvé.</div>
+      <div class="grid" *ngIf="!loading && !error && forms.length>0">
+        <div class="card" *ngFor="let it of forms" (click)="openBuilder(it)">
           <div class="leading"><div class="icon-badge"><i class="fa-regular fa-rectangle-list"></i></div></div>
           <div class="content">
             <div class="title-row"><div class="name">{{ it.name }}</div></div>
@@ -72,6 +74,11 @@ type FormItem = { id: string; name: string; description?: string };
           </div>
         </div>
       </div>
+      <div class="list-loading-more" *ngIf="!loading && !error && loadingMore" role="status" aria-live="polite">
+        <nz-spin nzSimple nzSize="small"></nz-spin>
+        <span>Chargement des formulaires suivants…</span>
+      </div>
+      <div class="list-bottom-space" *ngIf="!loading && !error && forms.length>0" aria-hidden="true"></div>
     </div>
     <!-- Create modal -->
     <nz-modal [(nzVisible)]="createVisible" nzTitle="Nouveau formulaire" nzWrapClassName="create-form-modal" (nzOnCancel)="closeCreate()" [nzFooter]="null">
@@ -123,6 +130,8 @@ type FormItem = { id: string; name: string; description?: string };
     .skeleton-card { height: 96px; border-radius: 14px; background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%); border: 1px solid #ececec; position: relative; overflow: hidden; }
     .skeleton-card:after { content:''; position:absolute; inset:0; transform: translateX(-100%); background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(0,0,0,0.05) 50%, rgba(255,255,255,0) 100%); animation: shimmer 1.2s infinite; }
     @keyframes shimmer { 100% { transform: translateX(100%); } }
+    .list-loading-more { display:flex; align-items:center; justify-content:center; gap:8px; color:#64748b; font-size:12px; font-weight:500; padding: 14px 12px; }
+    .list-bottom-space { height: 84px; }
     .error { color:#b42318; background:#fee4e2; border:1px solid #fecaca; padding:10px 12px; border-radius:10px; display:inline-block; }
     .grid { display:grid; grid-template-columns: minmax(0, 1fr); gap:16px; }
     .card { display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:14px; cursor:pointer; background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%); border: 1px solid #ececec; box-shadow: 0 8px 24px rgba(0,0,0,0.04); transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease; }
@@ -153,18 +162,21 @@ type FormItem = { id: string; name: string; description?: string };
     }
   `]
 })
-export class FormListComponent implements OnInit, OnDestroy {
+export class FormListComponent implements OnInit, OnDestroy, AfterViewInit {
   title = 'Formulaires';
 
   forms: FormSummary[] = [];
   loading = true;
+  loadingMore = false;
+  hasMore = false;
   error: string | null = null;
   q = '';
-  get filtered() {
-    const s = (this.q || '').trim().toLowerCase();
-    if (!s) return this.forms;
-    return this.forms.filter(f => (f.name || '').toLowerCase().includes(s) || (f.description || '').toLowerCase().includes(s));
-  }
+  private readonly pageSize = 15;
+  private readonly queryDebounceMs = 350;
+  private currentPage = 0;
+  private currentQuery = '';
+  private loadTicket = 0;
+  private queryInput$ = new Subject<string>();
   // create modal state
   createVisible = false;
   creating = false;
@@ -172,12 +184,21 @@ export class FormListComponent implements OnInit, OnDestroy {
   draft: { name: string; description?: string } = { name: '', description: '' };
 
   private changesSub?: Subscription;
-  constructor(private route: ActivatedRoute, private router: Router, private catalog: CatalogService, private zone: NgZone, private cdr: ChangeDetectorRef, private acl: AccessControlService, private ui: UiMessageService) {}
+  private querySub?: Subscription;
+  private scrollSub?: Subscription;
+  private scrollContainer?: HTMLElement | null;
+  constructor(private route: ActivatedRoute, private router: Router, private catalog: CatalogService, private zone: NgZone, private cdr: ChangeDetectorRef, private acl: AccessControlService, private ui: UiMessageService, private elRef: ElementRef<HTMLElement>) {}
 
   private autoOpened = false;
   ngOnInit() {
-    this.load();
-    this.changesSub = this.acl.changes$.pipe(auditTime(50)).subscribe(() => this.load());
+    this.querySub = this.queryInput$
+      .pipe(debounceTime(this.queryDebounceMs), distinctUntilChanged())
+      .subscribe((value) => {
+        this.currentQuery = String(value || '').trim();
+        this.load(false);
+      });
+    this.load(false);
+    this.changesSub = this.acl.changes$.pipe(auditTime(50)).subscribe(() => this.load(false));
     // Auto-open create dialog when on forms/builder, optionally prefill via query
     try {
       const path = this.route.routeConfig?.path || '';
@@ -193,43 +214,183 @@ export class FormListComponent implements OnInit, OnDestroy {
       }
     } catch {}
   }
-  ngOnDestroy(): void { try { this.changesSub?.unsubscribe(); } catch {} }
+  ngAfterViewInit() {
+    setTimeout(() => this.attachScrollContainer(), 0);
+  }
 
-  load() {
-    this.loading = true; this.error = null;
+  ngOnDestroy(): void {
+    try { this.changesSub?.unsubscribe(); } catch {}
+    try { this.querySub?.unsubscribe(); } catch {}
+    try { this.scrollSub?.unsubscribe(); } catch {}
+  }
+
+  @HostListener('window:scroll')
+  onWindowScroll() {
+    this.checkLoadMore();
+  }
+
+  onQueryInput(value: string) {
+    this.q = value || '';
+    this.queryInput$.next(this.q);
+  }
+
+  load(append = false) {
+    if (append && (this.loading || this.loadingMore || !this.hasMore || !!this.error)) return;
+    const ticket = ++this.loadTicket;
     const wsId = this.acl.currentWorkspaceId();
-    if (!wsId) { this.loading = false; return; }
+    if (!wsId) {
+      if (!append) {
+        this.loading = false;
+        this.loadingMore = false;
+        this.hasMore = false;
+        this.currentPage = 0;
+        this.forms = [];
+      }
+      return;
+    }
+
+    const page = append ? (this.currentPage + 1) : 1;
+    if (append) {
+      this.loadingMore = true;
+      this.error = null;
+      try { this.cdr.detectChanges(); } catch {}
+    } else {
+      this.loading = true;
+      this.loadingMore = false;
+      this.error = null;
+      this.hasMore = false;
+      this.currentPage = 0;
+      this.forms = [];
+    }
+
+    if (environment.useBackend) {
+      this.catalog.listFormsPage(wsId, {
+        page,
+        limit: this.pageSize,
+        q: this.currentQuery || undefined,
+      }).subscribe({
+        next: (items) => {
+          if (ticket !== this.loadTicket) return;
+          this.zone.run(() => {
+            const list = items || [];
+            this.forms = append ? this.mergeForms(this.forms, list) : list;
+            this.currentPage = page;
+            this.hasMore = list.length === this.pageSize;
+            try { this.cdr.detectChanges(); } catch {}
+            setTimeout(() => this.checkLoadMore(), 0);
+          });
+        },
+        error: () => {
+          if (ticket !== this.loadTicket) return;
+          this.zone.run(() => {
+            if (!append) this.forms = [];
+            this.hasMore = false;
+            this.error = 'Impossible de charger les formulaires.';
+            try { this.cdr.detectChanges(); } catch {}
+          });
+        },
+        complete: () => {
+          if (ticket !== this.loadTicket) return;
+          this.zone.run(() => {
+            this.loading = false;
+            this.loadingMore = false;
+            setTimeout(() => { try { this.cdr.detectChanges(); } catch {} }, 0);
+          });
+        }
+      });
+      return;
+    }
+
     this.catalog.listForms(wsId).subscribe({
       next: items => {
+        if (ticket !== this.loadTicket) return;
         this.zone.run(() => {
-          const list = items || [];
-          if (!environment.useBackend) {
-            try {
-              const counts: any = {};
-              (list || []).forEach(f => { const w = this.acl.ensureResourceWorkspace('form', f.id); counts[w] = (counts[w]||0)+1; });
-              console.debug('[FormList] list', { total: list.length, byWorkspace: counts, currentWorkspace: this.acl.currentWorkspaceId() });
-            } catch {}
-            const filtered = list.filter(f => {
-              const ws = this.acl.ensureResourceWorkspace('form', f.id);
-              return ws === this.acl.currentWorkspaceId() && this.acl.canAccessWorkspace(ws);
-            });
-            try { console.debug('[FormList] filtered', { count: filtered.length, currentWorkspace: this.acl.currentWorkspaceId() }); } catch {}
-            this.forms = filtered;
-          } else {
-            this.forms = list;
-          }
+          const list = (items || []).filter(f => {
+            const ws = this.acl.ensureResourceWorkspace('form', f.id);
+            return ws === wsId && this.acl.canAccessWorkspace(ws);
+          });
+          const q = this.currentQuery.toLowerCase();
+          const filtered = q
+            ? list.filter(f => `${String(f?.name || '')} ${String(f?.description || '')}`.toLowerCase().includes(q))
+            : list;
+          const start = (page - 1) * this.pageSize;
+          const slice = filtered.slice(start, start + this.pageSize);
+          this.forms = append ? this.mergeForms(this.forms, slice) : slice;
+          this.currentPage = page;
+          this.hasMore = (start + slice.length) < filtered.length;
+          try { this.cdr.detectChanges(); } catch {}
+          setTimeout(() => this.checkLoadMore(), 0);
         });
       },
-      error: () => { this.zone.run(() => { this.error = 'Impossible de charger les formulaires.'; try { console.debug('[FormList] error loading'); } catch {} }); },
-      complete: () => { this.zone.run(() => { this.loading = false; try { console.debug('[FormList] complete'); } catch {} setTimeout(() => { try { this.cdr.detectChanges(); } catch {} }, 0); }); }
+      error: () => {
+        if (ticket !== this.loadTicket) return;
+        this.zone.run(() => {
+          if (!append) this.forms = [];
+          this.hasMore = false;
+          this.error = 'Impossible de charger les formulaires.';
+          try { this.cdr.detectChanges(); } catch {}
+        });
+      },
+      complete: () => {
+        if (ticket !== this.loadTicket) return;
+        this.zone.run(() => {
+          this.loading = false;
+          this.loadingMore = false;
+          setTimeout(() => { try { this.cdr.detectChanges(); } catch {} }, 0);
+        });
+      }
     });
+  }
+
+  private mergeForms(current: FormSummary[], incoming: FormSummary[]): FormSummary[] {
+    const seen = new Set((current || []).map(f => String(f?.id || '')));
+    const merged = [...(current || [])];
+    for (const item of (incoming || [])) {
+      const id = String(item?.id || '');
+      if (!id || seen.has(id)) continue;
+      seen.add(id);
+      merged.push(item);
+    }
+    return merged;
+  }
+
+  private attachScrollContainer(): void {
+    const host = this.elRef?.nativeElement || null;
+    this.scrollContainer = host?.closest('.inner-content') as HTMLElement | null;
+    try { this.scrollSub?.unsubscribe(); } catch {}
+    if (!this.scrollContainer) return;
+    this.scrollSub = fromEvent(this.scrollContainer, 'scroll')
+      .pipe(auditTime(50))
+      .subscribe(() => this.checkLoadMore(this.scrollContainer));
+    this.checkLoadMore(this.scrollContainer);
+  }
+
+  private checkLoadMore(container?: HTMLElement | null): void {
+    if (this.loading || this.loadingMore || !this.hasMore || !!this.error) return;
+    const target = container || this.scrollContainer;
+    if (target) {
+      const remaining = target.scrollHeight - (target.scrollTop + target.clientHeight);
+      if (remaining <= 220) {
+        this.load(true);
+      }
+      return;
+    }
+    const scrollTop = window.scrollY || document.documentElement.scrollTop || 0;
+    const viewportHeight = window.innerHeight || document.documentElement.clientHeight || 0;
+    const documentHeight = Math.max(
+      document.body?.scrollHeight || 0,
+      document.documentElement?.scrollHeight || 0
+    );
+    if ((documentHeight - (scrollTop + viewportHeight)) <= 220) {
+      this.load(true);
+    }
   }
 
   openBuilder(item: FormSummary) { this.router.navigate(['/dynamic-form'], { queryParams: { id: item.id } }); }
   openViewer(item: FormSummary) { this.router.navigate(['/dynamic-form'], { queryParams: { id: item.id, preview: '1' } }); }
   removeForm(item: FormSummary) {
     this.catalog.deleteForm(item.id).subscribe({
-      next: () => { this.ui.success('Formulaire supprimé'); this.load(); },
+      next: () => { this.ui.success('Formulaire supprimé'); this.load(false); },
       error: () => { this.ui.error('Échec de la suppression'); }
     });
   }
@@ -260,7 +421,7 @@ export class FormListComponent implements OnInit, OnDestroy {
           const ws = this.acl.currentWorkspaceId();
           const createdDoc = environment.useBackend ? (created as FormSummary) : (localDoc as FormSummary);
           if (!environment.useBackend) this.acl.setResourceWorkspace('form', createdDoc.id, ws);
-          this.creating = false; this.createVisible = false; this.load();
+          this.creating = false; this.createVisible = false; this.load(false);
           this.openBuilder({ id: createdDoc.id, name: createdDoc.name, description: createdDoc.description });
           setTimeout(() => { try { this.cdr.detectChanges(); } catch {} }, 0);
         });
@@ -268,6 +429,4 @@ export class FormListComponent implements OnInit, OnDestroy {
       error: () => { this.zone.run(() => { this.creating = false; this.createError = 'Échec de la création.'; }); }
     });
   }
-  // Refresh when user/workspace changes
-  ngAfterViewInit() { try { this.acl.changes$.subscribe(() => this.load()); } catch {} }
 }

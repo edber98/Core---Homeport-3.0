@@ -94,10 +94,18 @@ export class CatalogService {
 
   // ===== Public API (Flows)
   listFlows(wsId?: string): Observable<FlowSummary[]> {
+    return this.listFlowsPage(wsId, { page: 1, limit: 200 });
+  }
+  listFlowsPage(wsId?: string, params?: { page?: number; limit?: number; q?: string; sort?: string }): Observable<FlowSummary[]> {
     if (environment.useBackend) {
       const workspaceId = wsId || '';
       if (!workspaceId) return of([]);
-      return this.flowsApi.list(workspaceId, { page: 1, limit: 200 }).pipe(map(list => (list || []).map(f => ({
+      return this.flowsApi.list(workspaceId, {
+        page: params?.page ?? 1,
+        limit: params?.limit ?? 200,
+        q: params?.q,
+        sort: params?.sort,
+      }).pipe(map(list => (list || []).map(f => ({
         id: f.id,
         name: f.name,
         description: (f as any).description || '',
@@ -107,7 +115,17 @@ export class CatalogService {
         validationErrors: (f as any).validationErrors || [],
       } as FlowSummary))));
     }
-    return of(this.load<FlowSummary[]>(this.FLOW_LIST_KEY, [])).pipe(delay(CatalogService.LATENCY));
+    const all = this.load<FlowSummary[]>(this.FLOW_LIST_KEY, []);
+    const q = String(params?.q || '').trim().toLowerCase();
+    const page = Math.max(1, Number(params?.page) || 1);
+    const limit = Math.max(1, Number(params?.limit) || 200);
+    const filtered = (all || []).filter((f) => {
+      if (!q) return true;
+      const hay = `${String(f?.name || '')} ${String(f?.description || '')}`.toLowerCase();
+      return hay.includes(q);
+    });
+    const start = (page - 1) * limit;
+    return of(filtered.slice(start, start + limit)).pipe(delay(CatalogService.LATENCY));
   }
   getFlow(id: string): Observable<FlowDoc> {
     if (environment.useBackend) {
@@ -169,16 +187,34 @@ export class CatalogService {
 
   // ===== Public API (Forms)
   listForms(wsId?: string): Observable<FormSummary[]> {
+    return this.listFormsPage(wsId, { page: 1, limit: 200 });
+  }
+  listFormsPage(wsId?: string, params?: { page?: number; limit?: number; q?: string; sort?: string }): Observable<FormSummary[]> {
     if (environment.useBackend) {
       const workspaceId = wsId || '';
       if (!workspaceId) return of([]);
-      return this.formsApi.list(workspaceId, { page: 1, limit: 200 }).pipe(map(list => (list || []).map(f => ({
+      return this.formsApi.list(workspaceId, {
+        page: params?.page ?? 1,
+        limit: params?.limit ?? 200,
+        q: params?.q,
+        sort: params?.sort,
+      }).pipe(map(list => (list || []).map(f => ({
         id: f.id,
         name: f.name,
         description: (f as any).description || '',
       } as FormSummary))));
     }
-    return of(this.load<FormSummary[]>(this.FORM_LIST_KEY, [])).pipe(delay(CatalogService.LATENCY));
+    const all = this.load<FormSummary[]>(this.FORM_LIST_KEY, []);
+    const q = String(params?.q || '').trim().toLowerCase();
+    const page = Math.max(1, Number(params?.page) || 1);
+    const limit = Math.max(1, Number(params?.limit) || 200);
+    const filtered = (all || []).filter((f) => {
+      if (!q) return true;
+      const hay = `${String(f?.name || '')} ${String(f?.description || '')}`.toLowerCase();
+      return hay.includes(q);
+    });
+    const start = (page - 1) * limit;
+    return of(filtered.slice(start, start + limit)).pipe(delay(CatalogService.LATENCY));
   }
   getForm(id: string): Observable<FormDoc> {
     if (environment.useBackend) {

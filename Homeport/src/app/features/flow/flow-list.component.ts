@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, NgZone, ChangeDetectorRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, NgZone, ChangeDetectorRef, OnDestroy, AfterViewInit, HostListener, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CatalogService, FlowSummary } from '../../services/catalog.service';
 import { AccessControlService } from '../../services/access-control.service';
@@ -14,8 +14,9 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { NzSwitchModule } from 'ng-zorro-antd/switch';
-import { Subscription } from 'rxjs';
-import { auditTime } from 'rxjs/operators';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { Subscription, Subject, fromEvent } from 'rxjs';
+import { auditTime, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { UiMessageService } from '../../services/ui-message.service';
 import { TriggersBackendService, TriggerStatus } from '../../services/triggers-backend.service';
 import { environment } from '../../../environments/environment';
@@ -25,7 +26,7 @@ type FlowItem = { id: string; name: string; description?: string };
 @Component({
   selector: 'flow-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, NzModalModule, NzButtonModule, NzInputModule, NzFormModule, NzSelectModule, NzSwitchModule, NzToolTipModule, NzPopconfirmModule, NzDropDownModule, NzMenuModule],
+  imports: [CommonModule, FormsModule, NzModalModule, NzButtonModule, NzInputModule, NzFormModule, NzSelectModule, NzSwitchModule, NzSpinModule, NzToolTipModule, NzPopconfirmModule, NzDropDownModule, NzMenuModule],
   template: `
   <div class="list-page">
     <div class="container">
@@ -35,7 +36,7 @@ type FlowItem = { id: string; name: string; description?: string };
           <p>Ouvrez un flow en Éditeur ou Exécutions, ou créez-en un nouveau.</p>
         </div>
         <div class="actions">
-          <input [(ngModel)]="q" placeholder="Rechercher un flow (nom, desc)" class="search"/>
+          <input [(ngModel)]="q" (ngModelChange)="onQueryInput($event)" placeholder="Rechercher un flow (nom, desc)" class="search"/>
           <button nz-button nzType="primary" class="primary with-text" (click)="openCreate()">
             <i class="fa-solid fa-plus"></i> Nouveau flow
           </button>
@@ -45,16 +46,16 @@ type FlowItem = { id: string; name: string; description?: string };
         </div>
       </div>
 
-      <div class="loading" *ngIf="loading">
+      <div class="loading" *ngIf="loading && flows.length===0">
         <div class="skeleton-grid">
           <div class="skeleton-card" *ngFor="let _ of [1,2,3,4,5,6]"></div>
         </div>
       </div>
       <div class="error" *ngIf="!loading && error">{{ error }}</div>
 
-      <div class="empty" *ngIf="!loading && !error && filtered.length===0">Aucun élément trouvé.</div>
-      <div class="grid" *ngIf="!loading && !error && filtered.length>0">
-        <div class="card" *ngFor="let it of filtered" [ngClass]="{ invalid: it.invalid }" (click)="openEditor(it)">
+      <div class="empty" *ngIf="!loading && !error && flows.length===0">Aucun élément trouvé.</div>
+      <div class="grid" *ngIf="!loading && !error && flows.length>0">
+        <div class="card" *ngFor="let it of flows" [ngClass]="{ invalid: it.invalid }" (click)="openEditor(it)">
           <div class="leading">
             <div class="icon-badge" aria-hidden="true"><i [class]="getIcon(it)"></i></div>
           </div>
@@ -128,6 +129,11 @@ type FlowItem = { id: string; name: string; description?: string };
           </div>
         </div>
       </div>
+      <div class="list-loading-more" *ngIf="!loading && !error && loadingMore" role="status" aria-live="polite">
+        <nz-spin nzSimple nzSize="small"></nz-spin>
+        <span>Chargement des workflows suivants…</span>
+      </div>
+      <div class="list-bottom-space" *ngIf="!loading && !error && flows.length>0" aria-hidden="true"></div>
     </div>
 
     <!-- Create modal -->
@@ -199,6 +205,8 @@ type FlowItem = { id: string; name: string; description?: string };
     .skeleton-card { height: 96px; border-radius: 14px; background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%); border: 1px solid #ececec; position: relative; overflow: hidden; }
     .skeleton-card:after { content:''; position:absolute; inset:0; transform: translateX(-100%); background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(0,0,0,0.05) 50%, rgba(255,255,255,0) 100%); animation: shimmer 1.2s infinite; }
     @keyframes shimmer { 100% { transform: translateX(100%); } }
+    .list-loading-more { display:flex; align-items:center; justify-content:center; gap:8px; color:#64748b; font-size:12px; font-weight:500; padding: 14px 12px; }
+    .list-bottom-space { height: 84px; }
 
     .error { color:#b42318; background:#fee4e2; border:1px solid #fecaca; padding:10px 12px; border-radius:10px; display:inline-block; }
 
@@ -265,18 +273,21 @@ type FlowItem = { id: string; name: string; description?: string };
     }
   `]
 })
-export class FlowListComponent implements OnInit, OnDestroy {
+export class FlowListComponent implements OnInit, OnDestroy, AfterViewInit {
   title = 'Flows';
 
   flows: FlowSummary[] = [];
   loading = true;
+  loadingMore = false;
+  hasMore = false;
   error: string | null = null;
   q = '';
-  get filtered() {
-    const s = (this.q || '').trim().toLowerCase();
-    if (!s) return this.flows;
-    return this.flows.filter(f => (f.name || '').toLowerCase().includes(s) || (f.description || '').toLowerCase().includes(s));
-  }
+  private readonly pageSize = 15;
+  private readonly queryDebounceMs = 350;
+  private currentPage = 0;
+  private currentQuery = '';
+  private loadTicket = 0;
+  private queryInput$ = new Subject<string>();
   // Helpers d'affichage statut
   statusLabel(s: any): string {
     const v = String(s || '').toLowerCase();
@@ -300,14 +311,23 @@ export class FlowListComponent implements OnInit, OnDestroy {
   updatingIds = new Set<string>();
 
   private changesSub?: Subscription;
+  private querySub?: Subscription;
+  private scrollSub?: Subscription;
+  private scrollContainer?: HTMLElement | null;
   activeTriggers = new Map<string, TriggerStatus>();
-  constructor(private route: ActivatedRoute, private router: Router, private catalog: CatalogService, private zone: NgZone, private cdr: ChangeDetectorRef, private acl: AccessControlService, private ui: UiMessageService, private triggersApi: TriggersBackendService) { }
+  constructor(private route: ActivatedRoute, private router: Router, private catalog: CatalogService, private zone: NgZone, private cdr: ChangeDetectorRef, private acl: AccessControlService, private ui: UiMessageService, private triggersApi: TriggersBackendService, private elRef: ElementRef<HTMLElement>) { }
 
   private autoOpened = false;
   ngOnInit() {
-    this.load();
+    this.querySub = this.queryInput$
+      .pipe(debounceTime(this.queryDebounceMs), distinctUntilChanged())
+      .subscribe((value) => {
+        this.currentQuery = String(value || '').trim();
+        this.load(false);
+      });
+    this.load(false);
     // React to workspace changes
-    this.changesSub = this.acl.changes$.pipe(auditTime(50)).subscribe(() => this.load());
+    this.changesSub = this.acl.changes$.pipe(auditTime(50)).subscribe(() => this.load(false));
     // Auto-open create dialog when on flows/editor, optionally prefill via query
     try {
       const path = this.route.routeConfig?.path || '';
@@ -323,45 +343,151 @@ export class FlowListComponent implements OnInit, OnDestroy {
       }
     } catch {}
   }
-  ngOnDestroy(): void { try { this.changesSub?.unsubscribe(); } catch {} }
+  ngAfterViewInit(): void {
+    setTimeout(() => this.attachScrollContainer(), 0);
+  }
 
-  load() {
-    this.loading = true; this.error = null;
+  ngOnDestroy(): void {
+    try { this.changesSub?.unsubscribe(); } catch {}
+    try { this.querySub?.unsubscribe(); } catch {}
+    try { this.scrollSub?.unsubscribe(); } catch {}
+  }
+
+  @HostListener('window:scroll')
+  onWindowScroll() {
+    this.checkLoadMore();
+  }
+
+  onQueryInput(value: string) {
+    this.q = value || '';
+    this.queryInput$.next(this.q);
+  }
+
+  load(append = false) {
+    if (append && (this.loading || this.loadingMore || !this.hasMore || !!this.error)) return;
+    const ticket = ++this.loadTicket;
     const wsId = this.acl.currentWorkspaceId();
-    if (!wsId) { this.loading = false; try { console.debug('[FlowList] load skipped: no wsId yet', { workspaces: this.acl.workspaces(), current: this.acl.currentWorkspace() }); } catch {}; return; }
-    try { console.debug('[FlowList] load', { wsId, workspaces: this.acl.workspaces(), current: this.acl.currentWorkspace() }); } catch {}
-    this.catalog.listFlows(wsId).subscribe({
+    if (!wsId) {
+      if (!append) {
+        this.loading = false;
+        this.loadingMore = false;
+        this.hasMore = false;
+        this.currentPage = 0;
+        this.flows = [];
+      }
+      return;
+    }
+
+    const page = append ? (this.currentPage + 1) : 1;
+    if (append) {
+      this.loadingMore = true;
+      this.error = null;
+      try { this.cdr.detectChanges(); } catch {}
+    } else {
+      this.loading = true;
+      this.loadingMore = false;
+      this.error = null;
+      this.hasMore = false;
+      this.currentPage = 0;
+      this.flows = [];
+      this.loadActiveTriggers(wsId);
+    }
+
+    this.catalog.listFlowsPage(wsId, {
+      page,
+      limit: this.pageSize,
+      q: this.currentQuery || undefined,
+    }).subscribe({
       next: items => {
+        if (ticket !== this.loadTicket) return;
         this.zone.run(() => {
           const list = items || [];
-          try {
-            const counts: any = {};
-            (list || []).forEach(f => { const w = this.acl.ensureResourceWorkspace('flow', f.id); counts[w] = (counts[w]||0)+1; });
-            console.debug('[FlowList] list', { total: list.length, byWorkspace: counts, currentWorkspace: this.acl.currentWorkspaceId() });
-          } catch {}
-          this.flows = list;
-          // Load active triggers for this workspace
-          try {
-            this.triggersApi.listActive(wsId!).subscribe({
-              next: (triggers) => {
-                this.zone.run(() => {
-                  this.activeTriggers.clear();
-                  for (const t of (triggers || [])) { if (t && (t as any).flowId) this.activeTriggers.set((t as any).flowId, t); }
-                  try { this.cdr.detectChanges(); } catch {}
-                });
-              },
-              error: () => {}
-            });
-          } catch {}
+          this.flows = append ? this.mergeFlows(this.flows, list) : list;
+          this.currentPage = page;
+          this.hasMore = list.length === this.pageSize;
+          try { this.cdr.detectChanges(); } catch {}
+          setTimeout(() => this.checkLoadMore(), 0);
         });
       },
       error: () => {
-        this.zone.run(() => { this.error = 'Impossible de charger les flows.'; try { console.debug('[FlowList] error loading'); } catch {} });
+        if (ticket !== this.loadTicket) return;
+        this.zone.run(() => {
+          if (!append) this.flows = [];
+          this.hasMore = false;
+          this.error = 'Impossible de charger les flows.';
+          try { this.cdr.detectChanges(); } catch {}
+        });
       },
       complete: () => {
-        this.zone.run(() => { this.loading = false; try { console.debug('[FlowList] complete'); } catch {} setTimeout(() => { try { this.cdr.detectChanges(); } catch {} }, 0); });
+        if (ticket !== this.loadTicket) return;
+        this.zone.run(() => {
+          this.loading = false;
+          this.loadingMore = false;
+          setTimeout(() => { try { this.cdr.detectChanges(); } catch {} }, 0);
+        });
       }
     });
+  }
+
+  private mergeFlows(current: FlowSummary[], incoming: FlowSummary[]): FlowSummary[] {
+    const seen = new Set((current || []).map(f => String(f?.id || '')));
+    const merged = [...(current || [])];
+    for (const item of (incoming || [])) {
+      const id = String(item?.id || '');
+      if (!id || seen.has(id)) continue;
+      seen.add(id);
+      merged.push(item);
+    }
+    return merged;
+  }
+
+  private loadActiveTriggers(wsId: string) {
+    try {
+      this.triggersApi.listActive(wsId).subscribe({
+        next: (triggers) => {
+          this.zone.run(() => {
+            this.activeTriggers.clear();
+            for (const t of (triggers || [])) {
+              if (t && (t as any).flowId) this.activeTriggers.set((t as any).flowId, t);
+            }
+            try { this.cdr.detectChanges(); } catch {}
+          });
+        },
+        error: () => {}
+      });
+    } catch {}
+  }
+
+  private attachScrollContainer(): void {
+    const host = this.elRef?.nativeElement || null;
+    this.scrollContainer = host?.closest('.inner-content') as HTMLElement | null;
+    try { this.scrollSub?.unsubscribe(); } catch {}
+    if (!this.scrollContainer) return;
+    this.scrollSub = fromEvent(this.scrollContainer, 'scroll')
+      .pipe(auditTime(50))
+      .subscribe(() => this.checkLoadMore(this.scrollContainer));
+    this.checkLoadMore(this.scrollContainer);
+  }
+
+  private checkLoadMore(container?: HTMLElement | null): void {
+    if (this.loading || this.loadingMore || !this.hasMore || !!this.error) return;
+    const target = container || this.scrollContainer;
+    if (target) {
+      const remaining = target.scrollHeight - (target.scrollTop + target.clientHeight);
+      if (remaining <= 220) {
+        this.load(true);
+      }
+      return;
+    }
+    const scrollTop = window.scrollY || document.documentElement.scrollTop || 0;
+    const viewportHeight = window.innerHeight || document.documentElement.clientHeight || 0;
+    const documentHeight = Math.max(
+      document.body?.scrollHeight || 0,
+      document.documentElement?.scrollHeight || 0,
+    );
+    if ((documentHeight - (scrollTop + viewportHeight)) <= 220) {
+      this.load(true);
+    }
   }
 
   getIcon(_item: FlowSummary): string {
