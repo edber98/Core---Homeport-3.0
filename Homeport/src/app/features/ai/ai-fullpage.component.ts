@@ -99,8 +99,12 @@ import { AiSettingsComponent } from './ai-settings.component';
           </div>
 
           <!-- Threads list -->
-          <div class="sidebar-threads">
-            <div *ngIf="threads.length === 0" class="empty-threads">
+          <div class="sidebar-threads" #threadsScroll (scroll)="onThreadsScroll($event)">
+            <div *ngIf="threadsLoading && threads.length === 0" class="threads-loading">
+              <nz-spin nzSimple nzSize="small"></nz-spin>
+              <span>Chargement des conversations…</span>
+            </div>
+            <div *ngIf="!threadsLoading && threads.length === 0" class="empty-threads">
               <nz-empty nzNotFoundContent="Aucune conversation" [nzNotFoundImage]="'simple'"></nz-empty>
             </div>
             <div class="thread-item"
@@ -119,6 +123,10 @@ import { AiSettingsComponent } from './ai-settings.component';
                 (click)="$event.stopPropagation()">
                 <span nz-icon nzType="delete" nzTheme="outline"></span>
               </button>
+            </div>
+            <div *ngIf="threadsLoadingMore" class="threads-loading-more">
+              <nz-spin nzSimple nzSize="small"></nz-spin>
+              <span>Chargement des conversations suivantes…</span>
             </div>
           </div>
 
@@ -485,6 +493,18 @@ import { AiSettingsComponent } from './ai-settings.component';
     }
     .sidebar-new { padding: 8px 12px; }
     .sidebar-threads { flex: 1; overflow-y: auto; padding: 4px 8px; }
+    .threads-loading,
+    .threads-loading-more {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      color: #64748b;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    .threads-loading { min-height: 120px; padding: 20px 0; }
+    .threads-loading-more { padding: 12px 0 16px; }
     .sidebar-bottom { padding: 8px 12px; border-top: 1px solid #f0f0f0; margin-top: auto; }
     .fp-sidebar.collapsed .sidebar-bottom { padding: 8px 0 22px; border-top: none; display: flex; justify-content: center; }
 
@@ -928,8 +948,11 @@ import { AiSettingsComponent } from './ai-settings.component';
 export class AiFullpageComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('aiInputEl') private aiInputElRef?: ElementRef<HTMLTextAreaElement>;
   @ViewChild('threadChat') private threadChatRef?: AiChatComponent;
+  @ViewChild('threadsScroll') private threadsScrollRef?: ElementRef<HTMLElement>;
 
   threads: AiThread[] = [];
+  threadsLoading = false;
+  threadsLoadingMore = false;
   systemAgents: AiAvailableAgent[] = [];
   customAgents: AiAvailableAgent[] = [];
   allAgents: AiAvailableAgent[] = [];
@@ -949,6 +972,10 @@ export class AiFullpageComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private refreshInterval?: any;
   private titleDebounce?: any;
+  private readonly threadsPageSize = 20;
+  private threadsPage = 0;
+  private threadsHasMore = false;
+  private threadsLoadTicket = 0;
   private aiInputLayoutRaf: number | null = null;
   private sidebarTouchStartX: number | null = null;
   private sidebarTouchStartY: number | null = null;
@@ -1026,6 +1053,7 @@ export class AiFullpageComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngAfterViewInit() {
     this.scheduleAiInputLayoutRefresh();
+    setTimeout(() => this.tryLoadMoreThreads(), 0);
   }
 
   @HostListener('window:resize')
@@ -1139,14 +1167,72 @@ export class AiFullpageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  loadThreads() {
-    this.ai.listThreads().subscribe({
+  onThreadsScroll(event: Event) {
+    this.tryLoadMoreThreads(event.target as HTMLElement | null);
+  }
+
+  loadThreads(append = false) {
+    if (append && (this.threadsLoading || this.threadsLoadingMore || !this.threadsHasMore)) return;
+
+    const ticket = ++this.threadsLoadTicket;
+    const page = append ? (this.threadsPage + 1) : 1;
+
+    if (append) {
+      this.threadsLoadingMore = true;
+    } else {
+      this.threadsLoading = true;
+      this.threadsLoadingMore = false;
+      this.threadsPage = 0;
+      this.threadsHasMore = false;
+    }
+
+    this.ai.listThreads({ page, limit: this.threadsPageSize }).subscribe({
       next: (res: any) => {
-        this.threads = res?.data || res || [];
+        if (ticket !== this.threadsLoadTicket) return;
+        const items = (res?.data || res || []) as AiThread[];
+
+        if (append) {
+          const seen = new Set(this.threads.map(t => this.threadKey(t)));
+          const merged = [...this.threads];
+          for (const it of items) {
+            const key = this.threadKey(it);
+            if (!key || seen.has(key)) continue;
+            seen.add(key);
+            merged.push(it);
+          }
+          this.threads = merged;
+        } else {
+          this.threads = items;
+        }
+
+        this.threadsPage = page;
+        this.threadsHasMore = items.length === this.threadsPageSize;
+        this.threadsLoading = false;
+        this.threadsLoadingMore = false;
+        this.cdr.detectChanges();
+        setTimeout(() => this.tryLoadMoreThreads(), 0);
+      },
+      error: () => {
+        if (ticket !== this.threadsLoadTicket) return;
+        if (!append) this.threads = [];
+        this.threadsHasMore = false;
+        this.threadsLoading = false;
+        this.threadsLoadingMore = false;
         this.cdr.detectChanges();
       },
-      error: () => { this.threads = []; },
     });
+  }
+
+  private tryLoadMoreThreads(container?: HTMLElement | null) {
+    if (this.threadsLoading || this.threadsLoadingMore || !this.threadsHasMore) return;
+    const el = container || this.threadsScrollRef?.nativeElement || null;
+    if (!el) return;
+    const remaining = el.scrollHeight - (el.scrollTop + el.clientHeight);
+    if (remaining <= 140) this.loadThreads(true);
+  }
+
+  private threadKey(thread: Partial<AiThread> | null | undefined): string {
+    return String(thread?._id || thread?.id || '');
   }
 
   loadAgents() {

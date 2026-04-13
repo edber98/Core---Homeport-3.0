@@ -150,6 +150,11 @@ ${toolLines.join('\n')}
   r.get('/ai/threads', async (req, res) => {
     const ws = await ensureWorkspaceAccess(req, res);
     if (!ws) return;
+    const pageRaw = Number(req.query.page);
+    const limitRaw = Number(req.query.limit);
+    const page = Number.isFinite(pageRaw) ? Math.max(1, Math.floor(pageRaw)) : 1;
+    const limit = Number.isFinite(limitRaw) ? Math.min(100, Math.max(1, Math.floor(limitRaw))) : 50;
+
     const filter = { workspaceId: ws._id };
     if (req.query.mode) filter.mode = req.query.mode;
     if (req.query.flowId) {
@@ -164,7 +169,11 @@ ${toolLines.join('\n')}
       }
     }
     if (req.query.formId) filter['metadata.formId'] = req.query.formId;
-    const list = await AiThread.find(filter).sort({ updatedAt: -1 }).limit(50).lean();
+    const list = await AiThread.find(filter)
+      .sort({ updatedAt: -1 })
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .lean();
     res.apiOk(list);
   });
 

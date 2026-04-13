@@ -190,11 +190,13 @@ export class AiService {
   setPageContext(ctx: AiPageContext) { this.pageContext.set(ctx); }
 
   // ── Threads ──
-  listThreads(filters?: { mode?: string; flowId?: string; formId?: string }): Observable<AiThread[]> {
+  listThreads(filters?: { mode?: string; flowId?: string; formId?: string; page?: number; limit?: number }): Observable<AiThread[]> {
     const params: any = { workspaceId: this.wsId() };
     if (filters?.mode) params.mode = filters.mode;
     if (filters?.flowId) params.flowId = filters.flowId;
     if (filters?.formId) params.formId = filters.formId;
+    if (filters?.page) params.page = filters.page;
+    if (filters?.limit) params.limit = filters.limit;
     return this.api.get<AiThread[]>('/api/ai/threads', params);
   }
 
