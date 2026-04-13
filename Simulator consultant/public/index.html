@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Simulation SaaS multi-agents</title>
+  <link rel="stylesheet" href="./style.css" />
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div id="app">
+    <nav class="topnav" style="padding:6px 16px; display:flex; gap:8px; align-items:center; background:#fff; border-bottom:1px solid var(--line)">
+      <button class="ghost" data-page="dashboard">Dashboard</button>
+      <button class="ghost" data-page="analytics">Analytics</button>
+      <button class="ghost" data-page="data">Données</button>
+      <button class="ghost" data-page="settings">Paramètres</button>
+    </nav>
+    <header class="topbar">
+      <div class="brand">SaaS Multi-Agents Simulator</div>
+      <div class="controls">
+        <label>Seed <input id="seed" type="text" value="123456" /></label>
+        <label>Start date <input id="startDate" type="month" value="2025-01" /></label>
+        <label>Months <input id="monthsTotal" type="number" min="12" max="240" value="60" /></label>
+        <button id="runSim">Simuler</button>
+        <button id="openParams" class="ghost">Paramètres</button>
+      </div>
+    </header>
+    <main id="page-dashboard" class="layout page active">
+      <section class="vizPane">
+        <div class="vizToolbar">
+          <input id="monthSlider" type="range" min="0" max="0" value="0" />
+          <span id="monthLabel">M0</span>
+          <div class="legend">
+            <span class="dot live"></span> Consultant actif
+            <span class="dot exited"></span> Consultant sorti
+            <span class="dot pool"></span> Pool clients
+          </div>
+          <button id="expandViz" class="ghost">⤢ Agrandir</button>
+        </div>
+        <canvas id="viz"></canvas>
+      </section>
+      <div id="gridResizer" class="divider" title="Glisser pour redimensionner"></div>
+      <aside class="sidePane">
+        <div class="sideToolbar">
+          <div class="muted">Détails & exports</div>
+          <button id="expandSide" class="ghost" style="margin-left:auto">⤢ Agrandir</button>
+        </div>
+        <div class="tabs">
+          <button class="tabBtn active" data-tab="summary">Synthèse</button>
+          <button class="tabBtn" data-tab="details">Détails & exports</button>
+          <button class="tabBtn" data-tab="charts">Graphiques</button>
+        </div>
+        <div class="tabContentWrap">
+          <div id="tab-summary" class="tabContent active">
+            <div class="summaryBlock">
+              <div class="kpi"><div id="kpiConsultants">0</div><div class="label">Consultants actifs</div></div>
+              <div class="kpi"><div id="kpiClients">0</div><div class="label">Clients actifs</div></div>
+              <div class="kpi"><div id="kpiPool">0</div><div class="label">Pool actifs</div></div>
+              <div class="kpi"><div id="kpiRevenue">0 €</div><div class="label">Revenu marketplace</div></div>
+            </div>
+            <div class="tableSection">
+              <h3>Synthèse annuelle</h3>
+              <div class="tableWrap">
+                <table id="tblAnnual">
+                  <thead>
+                    <tr>
+                      <th>Année</th><th>Nouveaux</th><th>Base recruits</th><th>ROCO recruits</th><th>Moy. clients/consultant (fin)</th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div id="tab-details" class="tabContent">
+            <div class="exports">
+              <button id="exportMonthlyCsv">Export mensuel CSV</button>
+              <button id="exportAnnualCsv">Export annuel CSV</button>
+              <button id="exportConsultantsCsv">Export consultants (mois)</button>
+              <button id="exportPoolCsv">Export pool (mois)</button>
+            </div>
+          <div class="tableSection">
+            <div class="panel" style="background:#fff;border:1px solid var(--line);border-radius:10px;margin-bottom:12px">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 10px;border-bottom:1px solid var(--line)">
+                <div><b>Consultant sélectionné</b> <span class="muted" id="selConsultantTitle">—</span></div>
+                <button id="btnWhy" class="ghost">Pourquoi</button>
+              </div>
+              <div style="padding:10px">
+                <div class="tabbar" style="padding:0;margin-bottom:8px">
+                  <button class="ghost" id="cTabOverview" data-ctab="overview">Aperçu</button>
+                  <button class="ghost" id="cTabActive" data-ctab="active">Clients actifs</button>
+                  <button class="ghost" id="cTabPool" data-ctab="pool">Clients en pool</button>
+                  <button class="ghost" id="cTabChurn" data-ctab="churn">Clients churnés</button>
+                </div>
+                <div id="cPane-overview"></div>
+                <div id="cPane-active" style="display:none">
+                  <div class="tableWrap"><table id="tblCActive"><thead><tr><th>ID</th><th>Début M</th></tr></thead><tbody></tbody></table></div>
+                </div>
+                <div id="cPane-pool" style="display:none">
+                  <div class="tableWrap"><table id="tblCPool"><thead><tr><th>ID</th><th>PoolStart</th></tr></thead><tbody></tbody></table></div>
+                </div>
+                <div id="cPane-churn" style="display:none">
+                  <div class="tableWrap"><table id="tblCChurn"><thead><tr><th>ID</th><th>Fin M</th><th>Raison</th></tr></thead><tbody></tbody></table></div>
+                </div>
+              </div>
+            </div>
+            <h3>Mensuel (série complète)</h3>
+              <div class="tableWrap">
+                <table id="tblMonthly">
+                  <thead>
+                    <tr>
+                      <th>Mois</th><th>Consultants actifs</th><th>Clients attachés</th><th>Pool</th><th>Revenu</th><th>Base recruits</th><th>ROCO recruits</th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+            </div>
+            <div class="tableSection">
+              <h3>Consultants (mois courant)</h3>
+              <div class="tableWrap">
+                <table id="tblConsultants">
+                  <thead>
+                    <tr>
+                      <th>ID</th><th>Origin</th><th>Referrer</th><th>Créé M</th><th>Actif</th><th>Clients actifs</th><th>Projets gagnés</th><th>ROCO créés</th><th>Churn attachés</th><th>Perdus sortie</th><th>Vers pool</th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+            </div>
+            <div class="tableSection">
+              <h3>Pool (mois courant)</h3>
+              <div class="tableWrap">
+                <table id="tblPool">
+                  <thead>
+                    <tr>
+                      <th>ClientID</th><th>Orig.Consultant</th><th>PoolStart</th><th>ExitConsultantM</th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div id="tab-charts" class="tabContent">
+            <div class="chartRow">
+              <div class="chartBox"><canvas id="chartConsultants"></canvas><button data-dl="chartConsultants">PNG</button></div>
+              <div class="chartBox"><canvas id="chartClients"></canvas><button data-dl="chartClients">PNG</button></div>
+            </div>
+            <div class="chartRow">
+              <div class="chartBox"><canvas id="chartPool"></canvas><button data-dl="chartPool">PNG</button></div>
+              <div class="chartBox"><canvas id="chartRevenue"></canvas><button data-dl="chartRevenue">PNG</button></div>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <main id="page-analytics" class="page" style="display:none; height:calc(100% - 104px); padding:12px;">
+      <div class="chartRow">
+        <div class="chartBox"><canvas id="chartRecruits"></canvas><button data-dl="chartRecruits">PNG</button></div>
+        <div class="chartBox"><canvas id="chartAvgClients"></canvas><button data-dl="chartAvgClients">PNG</button></div>
+      </div>
+      <div class="chartRow">
+        <div class="chartBox"><canvas id="chartGainLoss"></canvas><button data-dl="chartGainLoss">PNG</button></div>
+        <div class="chartBox"><canvas id="chartConsultantExits"></canvas><button data-dl="chartConsultantExits">PNG</button></div>
+      </div>
+    </main>
+
+    <main id="page-data" class="page" style="display:none; height:calc(100% - 104px); padding:12px; overflow:auto">
+      <div class="tableSection">
+        <h3>Mensuel (vue étendue)</h3>
+        <div class="tableWrap">
+          <table id="tblMonthlyBig">
+            <thead>
+              <tr>
+                <th>Mois</th><th>Cons. actifs</th><th>Clients attachés</th><th>Pool</th><th>Revenu</th>
+                <th>Base recruits</th><th>ROCO recruits</th><th>Exits</th>
+                <th>Acquis</th><th>Churn attachés</th><th>Perdus sortie</th><th>Vers pool (sortie)</th><th>Churn pool</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="tableSection">
+        <h3>Annuel (vue étendue)</h3>
+        <div class="tableWrap">
+          <table id="tblAnnualBig">
+            <thead>
+              <tr>
+                <th>Année</th><th>Nouveaux</th><th>Base recruits</th><th>ROCO recruits</th><th>Moy. clients/consultant (fin)</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+
+    <main id="page-settings" class="page" style="display:none; height:calc(100% - 104px); padding:12px;">
+      <button id="openParams2">Ouvrir les paramètres</button>
+      <p class="muted">Astuce: utilisez la seed pour des scénarios reproductibles; ajustez ROCO/Churn pour simuler différentes dynamiques.</p>
+    </main>
+
+    <div id="modal" class="modal hidden">
+      <div class="modalContent">
+        <button class="modalClose">×</button>
+        <div id="modalBody"></div>
+      </div>
+    </div>
+    <template id="paramsTemplate">
+      <div style="padding:14px">
+        <h2>Paramètres de départ</h2>
+        <p class="muted">Inspiré de la référence full10. Les pourcentages sont en % (0–100).</p>
+        <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px">
+          <div><label>Consultants initiaux</label><input id="p_startConsultants" type="number" min="0" max="500" value="10"/></div>
+          <div><label>Recrutement / an (base)</label><input id="p_recruitsPerYear" type="number" min="0" max="500" value="36"/></div>
+          <div><label>Croissance annuelle recrutement (%)</label><input id="p_recruitGrowthPct" type="number" min="-90" max="300" step="1" value="25"/></div>
+          <div><label>Ramp-up (mois)</label><input id="p_rampMonths" type="number" min="0" max="24" value="2"/></div>
+          <div><label>Taux d’activité (moyenne 0–1)</label><input id="p_activityMean" type="number" step="0.05" min="0" max="1" value="0.6"/></div>
+          <div><label>Min clients / mois</label><input id="p_minClientsPerMonth" type="number" min="0" max="50" value="1"/></div>
+          <div><label>Max clients / mois</label><input id="p_maxClientsPerMonth" type="number" min="0" max="50" value="6"/></div>
+          <div><label>Cap clients / consultant</label><input id="p_maxPortfolio" type="number" min="1" max="1000" value="40"/></div>
+          <div><label>Churn CLIENT mensuel (%)</label><input id="p_clientChurnPct" type="number" min="0" max="50" step="0.1" value="6"/></div>
+          <div><label>Pool churn multiplier (0–1)</label><input id="p_poolChurnMultiplier" type="number" min="0" max="1" step="0.05" value="0.5"/></div>
+          <div><label>Churn CONSULTANT mensuel (%)</label><input id="p_consultantChurnPct" type="number" min="0" max="30" step="0.1" value="1"/></div>
+          <div><label>Sortie: part avec clients (%)</label><input id="p_leaveWithClientsPct" type="number" min="0" max="100" step="1" value="10"/></div>
+          <div><label>Sortie: partiel (%)</label><input id="p_partialRetentionPct" type="number" min="0" max="100" step="1" value="20"/></div>
+          <div><label>Part retenue (partiel, 0–1)</label><input id="p_partialRetentionShare" type="number" min="0" max="1" step="0.05" value="0.5"/></div>
+          <div><label>ROCO: tous les X clients</label><input id="p_projectsPerReferral" type="number" min="1" max="50" value="8"/></div>
+          <div><label>Taux conversion ROCO (0–1)</label><input id="p_referralConv" type="number" min="0" max="1" step="0.05" value="0.35"/></div>
+          <div><label>Marketplace: % participants</label><input id="p_marketplacePct" type="number" min="0" max="100" step="1" value="70"/></div>
+          <div><label>Marketplace: € / client / mois</label><input id="p_marketplaceEurPerClient" type="number" min="0" max="200" step="1" value="120"/></div>
+        </div>
+        <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
+          <button id="paramsCancel" class="ghost">Annuler</button>
+          <button id="paramsApply">Appliquer</button>
+        </div>
+      </div>
+    </template>
+  </div>
+
+  <script type="module" src="./utils.js"></script>
+  <script type="module" src="./sim.js"></script>
+  <script type="module" src="./zoompan.js"></script>
+  <script type="module" src="./export.js"></script>
+  <script type="module" src="./chart-setup.js"></script>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

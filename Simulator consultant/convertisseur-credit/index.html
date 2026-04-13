@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculateur Kinn</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="page">
+    <header class="intro">
+      <h1>Calculateur Kinn</h1>
+      <p>La page propose deux versions de calcul: la version historique basee sur la marge a partir des tokens, et une version 2 basee directement sur les credits Kinn utilises et achetes.</p>
+      <p class="formula">
+        Version 1: prix depense = (tokens / 1 000 000) x prix du modele, puis credits Kinn = (prix depense x marge / prix Kinn credits) x 1000.
+        Version 2: cout models = credits utilises / 50, avec une regle fixe de 50 credits Kinn = 1 $ depense, puis benefice = prix paye - cout models et marge = prix paye / cout models.
+      </p>
+    </header>
+
+    <section class="calculator-section" aria-labelledby="calc-v1-title">
+      <header class="section-header">
+        <h2 id="calc-v1-title">Version 1 - Calcul via la marge</h2>
+        <p>Tu gardes le systeme actuel: modele, type, tokens, prix Kinn credits et marge globale.</p>
+      </header>
+
+      <div class="calculator-layout">
+        <div class="calculator-main">
+          <section class="controls" aria-label="Parametres du calculateur">
+            <label class="field">
+              <span>Prix Kinn credits / 1000</span>
+              <input
+                type="text"
+                inputmode="decimal"
+                data-v1-global="kinn-rate"
+                value="50"
+                placeholder="50"
+              >
+            </label>
+
+            <label class="field">
+              <span>Marge (1 = reel, 1.2 = +20%)</span>
+              <input
+                type="text"
+                inputmode="decimal"
+                data-v1-global="margin"
+                value="2.5"
+                placeholder="2.5"
+              >
+            </label>
+
+            <button type="button" class="button" id="add-scenario-v1">Ajouter une ligne</button>
+            <button type="button" class="button button-light" id="reset-scenarios-v1">Reinitialiser</button>
+          </section>
+
+          <section id="scenario-list-v1" class="scenario-list" aria-live="polite"></section>
+
+          <section class="summary" aria-label="Resume du calculateur">
+            <p><span>Scenarios</span><strong data-v1-summary="scenario-count">1</strong></p>
+            <p><span>Depense models</span><strong data-v1-summary="model-spent">$0.00</strong></p>
+            <p><span>Credits Kinn</span><strong data-v1-summary="total-credits">0</strong></p>
+            <p><span>Depense totale</span><strong data-v1-summary="total-spent">$0.00</strong></p>
+          </section>
+
+          <section class="table-shell">
+            <table>
+              <thead>
+                <tr>
+                  <th>Scenario</th>
+                  <th>Modele</th>
+                  <th>Type</th>
+                  <th>Tokens</th>
+                  <th>Prix modele</th>
+                  <th>Prix depense</th>
+                  <th>Prix Kinn / 1000</th>
+                  <th>Credits Kinn</th>
+                </tr>
+              </thead>
+              <tbody id="comparison-body-v1"></tbody>
+            </table>
+          </section>
+        </div>
+
+        <aside class="calculator-sidebar" aria-label="Explication du calcul">
+          <h3>Comment les calculs sont faits</h3>
+          <p class="sidebar-intro">Les valeurs pre-remplies correspondent a un cas reel de creation de workflow sur Kinn: un appel `gpt-5.2` en input avec `510509` tokens et un appel `gpt-5.2` en output avec `2435` tokens.</p>
+
+          <ol class="explain-list">
+            <li>
+              <strong>Depense models</strong>
+              <p>Pour chaque ligne, on calcule d'abord le cout reel du modele avec la formule `tokens / 1 000 000 x prix du modele`.</p>
+              <p>Avec les valeurs pre-remplies cela donne: `(510509 / 1 000 000) x prix gpt-5.2 input` et `(2435 / 1 000 000) x prix gpt-5.2 output`.</p>
+              <p>`Depense models` est ensuite la somme de toutes les lignes.</p>
+            </li>
+            <li>
+              <strong>Depense totale</strong>
+              <p>Une fois `Depense models` obtenue, on applique la marge pour obtenir ce que l'utilisateur paye.</p>
+              <p>Formule: `Depense totale = Depense models x marge`.</p>
+              <p>Avec la valeur pre-remplie `marge = 2.5`, on multiplie donc le cout reel par `2.5`.</p>
+            </li>
+            <li>
+              <strong>Credits Kinn consommes</strong>
+              <p>Une fois `Depense totale` calculee, on la convertit en credits Kinn a partir du prix Kinn pour `1000` credits.</p>
+              <p>Formule: `Credits Kinn = (Depense totale / prix Kinn pour 1000 credits) x 1000`.</p>
+              <p>Avec la valeur pre-remplie `Prix Kinn credits / 1000 = 50`, cela revient a dire qu'un montant de `$50` represente `1000` credits Kinn.</p>
+            </li>
+          </ol>
+
+          <p class="sidebar-note">En resume: `Depense models` = cout reel des appels IA, `Depense totale` = prix facture a l'utilisateur, et `Credits Kinn` = equivalent de cette depense dans ton systeme de credits.</p>
+        </aside>
+      </div>
+    </section>
+
+    <section class="calculator-section" aria-labelledby="calc-v2-title">
+      <header class="section-header">
+        <h2 id="calc-v2-title">Version 2 - Credits achetes vs credits utilises</h2>
+        <p>Tu saisis les credits Kinn utilises, les credits Kinn achetes et le prix paye pour ces credits. Le cout models est toujours calcule avec la regle fixe: 50 credits Kinn consommes = 1 $ depense dans les models.</p>
+      </header>
+
+      <section class="controls controls-compact" aria-label="Parametres version 2">
+        <button type="button" class="button" id="add-scenario-v2">Ajouter une ligne</button>
+        <button type="button" class="button button-light" id="reset-scenarios-v2">Reinitialiser</button>
+      </section>
+
+      <section id="scenario-list-v2" class="scenario-list" aria-live="polite"></section>
+
+      <section class="summary summary-7" aria-label="Resume version 2">
+        <p><span>Scenarios</span><strong data-v2-summary="scenario-count">1</strong></p>
+        <p><span>Credits utilises</span><strong data-v2-summary="used-credits">0</strong></p>
+        <p><span>Cout models</span><strong data-v2-summary="model-cost">$0.00</strong></p>
+        <p><span>Credits achetes</span><strong data-v2-summary="purchased-credits">0</strong></p>
+        <p><span>Prix payes</span><strong data-v2-summary="total-billed">$0.00</strong></p>
+        <p><span>Benefice total</span><strong data-v2-summary="total-benefit">$0.00</strong></p>
+        <p><span>Marge globale</span><strong data-v2-summary="global-margin">--</strong></p>
+      </section>
+
+      <section class="table-shell">
+        <table class="table-wide">
+          <thead>
+            <tr>
+              <th>Scenario</th>
+              <th>Credits utilises</th>
+              <th>Cout models</th>
+              <th>Credits achetes</th>
+              <th>Prix paye</th>
+              <th>Prix / 1000 credits</th>
+              <th>Credits restants</th>
+              <th>Benefice</th>
+              <th>Marge</th>
+            </tr>
+          </thead>
+          <tbody id="comparison-body-v2"></tbody>
+        </table>
+      </section>
+    </section>
+  </main>
+
+  <template id="scenario-template-v1">
+    <article class="scenario-row scenario-row-v1">
+      <p class="scenario-index"></p>
+
+      <label class="field">
+        <span>Modele</span>
+        <select data-field="model"></select>
+      </label>
+
+      <label class="field">
+        <span>Type</span>
+        <select data-field="tokenType">
+          <option value="input">Input</option>
+          <option value="output">Output</option>
+        </select>
+      </label>
+
+      <label class="field">
+        <span>Tokens</span>
+        <input
+          type="text"
+          inputmode="numeric"
+          data-field="tokens"
+          value="1000000"
+          placeholder="1000000"
+        >
+      </label>
+
+      <button type="button" class="remove-button" data-action="remove">Supprimer</button>
+
+      <section class="custom-fields is-hidden">
+        <label class="field">
+          <span>Nom du modele perso</span>
+          <input type="text" data-field="customName" placeholder="Ex: Kinn Fast">
+        </label>
+
+        <label class="field">
+          <span>Prix perso input / 1M</span>
+          <input type="text" inputmode="decimal" data-field="customInput" placeholder="0.25">
+        </label>
+
+        <label class="field">
+          <span>Prix perso output / 1M</span>
+          <input type="text" inputmode="decimal" data-field="customOutput" placeholder="2">
+        </label>
+      </section>
+
+      <p class="status-note" data-output="note"></p>
+    </article>
+  </template>
+
+  <template id="scenario-template-v2">
+    <article class="scenario-row scenario-row-v2">
+      <p class="scenario-index"></p>
+
+      <label class="field">
+        <span>Credits utilises</span>
+        <input
+          type="text"
+          inputmode="numeric"
+          data-field="usedCredits"
+          value="500"
+          placeholder="500"
+        >
+      </label>
+
+      <label class="field">
+        <span>Credits achetes</span>
+        <input
+          type="text"
+          inputmode="numeric"
+          data-field="purchasedCredits"
+          value="1000"
+          placeholder="1000"
+        >
+      </label>
+
+      <label class="field">
+        <span>Prix paye ($)</span>
+        <input
+          type="text"
+          inputmode="decimal"
+          data-field="salePrice"
+          value="50"
+          placeholder="50"
+        >
+      </label>
+
+      <button type="button" class="remove-button" data-action="remove">Supprimer</button>
+
+      <p class="status-note" data-output="note"></p>
+    </article>
+  </template>
+
+  <script src="script.js"></script>
+</body>
+</html>

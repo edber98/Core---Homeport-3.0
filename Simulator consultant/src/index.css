@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body, #root { height: 100%; }
+body { @apply bg-[#f6f7fb] text-slate-900 overflow-hidden; }
+
+.app-grid { display: grid; grid-template-columns: 280px 1fr; height: 100vh; }
+@media (max-width: 1024px) { .app-grid { grid-template-columns: 1fr; } }
+
+.panel { @apply bg-white rounded-xl border border-line shadow-soft; }
+.tableWrap { @apply overflow-auto border border-line rounded-xl bg-white; }
+.stickyHead th { position: sticky; top: 0; background: #fff; }
+
+.inspector { width: 420px; min-width: 360px; max-width: 480px; }
+

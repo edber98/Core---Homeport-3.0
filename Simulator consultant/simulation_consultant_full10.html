@@ -1,0 +1,1749 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Simulation vivante — Consultants / Clients (v9 FULL)</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <style>
+    :root{
+      --bg:#f6f7fb; --card:#fff; --text:#0f172a; --muted:#64748b;
+      --blue:#2563eb; --blue2:#93c5fd; --gray:#94a3b8; --line:#e2e8f0;
+      --shadow: 0 8px 26px rgba(15,23,42,.08); --r:14px;
+    }
+    *{box-sizing:border-box}
+    html, body { height: 100%; }
+    body{
+      margin:0;
+      font-family:Poppins,system-ui;
+      background:var(--bg);
+      color:var(--text);
+      overflow: hidden; /* ✅ pas de scroll global */
+    }
+
+    /* ✅ app full height */
+    .app{
+      height:100vh;
+      display:grid;
+      grid-template-rows: auto 1fr;
+      gap:12px;
+      padding:14px;
+      min-height:0;
+    }
+
+    /* TOP responsive */
+    .top{
+      background:var(--card);
+      border-radius:var(--r);
+      box-shadow:var(--shadow);
+      padding:12px;
+
+      display:grid;
+      grid-template-columns: 1.2fr 1fr 1fr;
+      gap:12px;
+      align-items:start;
+      min-height:0;
+    }
+    @media (max-width: 1200px){ .top{ grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 860px){ .top{ grid-template-columns: 1fr; } }
+
+    h1{margin:0; font-size:18px; font-weight:600}
+    .sub{color:var(--muted); font-size:12px; line-height:1.2; margin-top:4px}
+
+    .btnrow{display:flex; gap:8px; flex-wrap:wrap; margin-top:10px}
+    button{
+      border:0; border-radius:10px; padding:9px 11px; cursor:pointer;
+      font-family:Poppins; font-size:12px; font-weight:600;
+      background:var(--blue); color:white;
+    }
+    button.secondary{background:#0f172a}
+    button.ghost{background:#eef2ff; color:#1e293b}
+    button:disabled{opacity:.5; cursor:not-allowed}
+
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 10px; border-radius:999px;
+      background:#eef2ff; font-size:12px; color:#1e293b; font-weight:600;
+    }
+    .pill span{color:var(--muted); font-weight:400}
+    .kpi{display:flex; flex-wrap:wrap; gap:8px; margin-top:10px}
+
+    .controls{
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap:10px 12px;
+      align-content:start;
+      min-width:0;
+      min-height:0;
+    }
+    .field label{display:block; font-size:11px; color:var(--muted); margin-bottom:4px}
+    .field input, .field select{
+      width:100%; border:1px solid var(--line); border-radius:10px;
+      padding:9px 10px; font-size:12px; background:#fff; outline:none;
+    }
+    .hint{font-size:10px; color:var(--muted); margin-top:4px}
+
+    /* MAIN grid (scroll internal) */
+    .main{
+      display:grid;
+      grid-template-columns: minmax(520px, 1.35fr) minmax(560px, 1fr);
+      gap:12px;
+      align-items:stretch;
+
+      min-height:0;
+      height:100%;
+    }
+    @media (max-width: 1180px){ .main{ grid-template-columns: 1fr; } }
+
+    .card{
+      background:var(--card);
+      border-radius:var(--r);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      min-height:0;
+    }
+
+    /* LEFT viz */
+    #vizWrap{
+      display:grid;
+      grid-template-rows:auto auto 1fr;
+      min-height:0;
+    }
+    #timeline{
+      padding:10px 12px;
+      border-bottom:1px solid var(--line);
+      display:grid;
+      grid-template-columns:1fr auto;
+      gap:10px;
+      align-items:center;
+    }
+    #timeline input[type="range"]{width:100%}
+    #vizTopBar{
+      padding:8px 12px;
+      border-bottom:1px solid var(--line);
+      display:flex; justify-content:space-between; align-items:center; gap:10px;
+      background:#fbfdff; font-size:12px;
+    }
+    #vizTopBar .muted{color:var(--muted)}
+    #viz{
+      width:100%;
+      height:100%;
+      display:block;
+      background: radial-gradient(1200px 600px at 30% 20%, #f8fafc, #ffffff);
+      touch-action:none;
+    }
+
+    /* RIGHT tabs (IMPORTANT: min height + scroll OK) */
+    .tabs{
+      display:grid;
+      grid-template-rows:auto auto 1fr;
+      min-height: 640px;   /* ✅ minimum height demandé */
+      height:100%;
+      min-height:0;
+    }
+
+    .cardHeader{
+      padding:10px 12px;
+      border-bottom:1px solid var(--line);
+      display:flex; justify-content:space-between; align-items:center; gap:10px;
+      min-width:0;
+    }
+    .cardHeader .h{font-weight:600; font-size:13px}
+    .cardHeader .small{font-size:11px; color:var(--muted)}
+    .rightTools{display:flex; gap:8px; align-items:center; flex-wrap:wrap}
+
+    .tabbar{
+      display:flex; gap:8px;
+      padding:10px 12px;
+      border-bottom:1px solid var(--line);
+      flex-wrap:wrap;
+    }
+    .tabbar button{background:#eef2ff; color:#1e293b; padding:8px 10px;}
+    .tabbar button.active{background:var(--blue); color:white;}
+
+    .tabcontent{
+      display:none;
+      min-height:0;
+      height:100%;
+    }
+    .tabcontent.active{
+      display:block;
+      min-height:0;
+      height:100%;
+    }
+
+    .scrollArea{
+      height:100%;
+      min-height:0;
+      padding:12px;
+      overflow-y:auto;
+      overflow-x:auto;
+    }
+
+    .panel{
+      border:1px solid var(--line);
+      border-radius:12px;
+      background:#fff;
+      overflow:hidden;
+      margin-bottom:12px;
+      min-width:0;
+    }
+    .panelHeader{
+      padding:8px 10px;
+      font-weight:600;
+      font-size:12px;
+      border-bottom:1px solid var(--line);
+      display:flex; justify-content:space-between; align-items:center; gap:8px;
+      min-width:0;
+    }
+    .panelBody{padding:12px; min-width:0}
+
+    .tableWrap{
+      width:100%;
+      overflow-x:auto;
+    }
+
+    table{width:100%; border-collapse:collapse; font-size:12px;}
+    th,td{
+      border-bottom:1px solid var(--line);
+      padding:8px 10px;
+      text-align:center;
+      white-space:nowrap;
+    }
+    th{position:sticky; top:0; background:#fff; z-index:2; font-weight:600}
+
+    .details{display:grid; grid-template-columns:1fr 1fr; gap:10px; font-size:12px}
+    @media (max-width: 600px){ .details{ grid-template-columns:1fr; } }
+    .kv{border:1px solid var(--line); border-radius:10px; padding:10px; background:#fff;}
+    .k{color:var(--muted); font-size:11px}
+    .v{font-weight:600; margin-top:2px}
+
+    .badge{display:inline-block; padding:2px 7px; border-radius:999px; font-weight:600; font-size:10px;}
+    .b-ok{background:#dcfce7; color:#166534}
+    .b-off{background:#e2e8f0; color:#334155}
+    .b-warn{background:#fef3c7; color:#92400e}
+
+    .muted{color:var(--muted)}
+    .rowSel{ background:#f1f5ff !important; }
+    .note{font-size:12px; color:var(--muted); line-height:1.3; margin-top:8px}
+
+    /* Modal */
+    .modalOverlay{
+      position:fixed; inset:0; background:rgba(15,23,42,.45);
+      display:none; align-items:center; justify-content:center;
+      padding:18px;
+      z-index:9999;
+    }
+    .modal{
+      width:min(1020px, 100%);
+      max-height:85vh;
+      overflow:auto;
+      background:#fff;
+      border-radius:16px;
+      box-shadow: 0 24px 80px rgba(0,0,0,.25);
+      border:1px solid var(--line);
+    }
+    .modalHeader{
+      padding:12px 14px;
+      border-bottom:1px solid var(--line);
+      display:flex; justify-content:space-between; align-items:center; gap:10px;
+    }
+    .modalHeader .title{font-weight:700; font-size:14px}
+    .modalBody{padding:14px}
+    .modalClose{background:#0f172a}
+    .modalGrid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
+    }
+    @media (max-width: 900px){ .modalGrid{ grid-template-columns:1fr; } }
+  </style>
+</head>
+
+<body>
+<div class="app">
+
+  <!-- TOP -->
+  <div class="top">
+    <div>
+      <h1>Simulation vivante (FULL)</h1>
+      <div class="sub">
+        ✅ seed+cache stable · ✅ bulles · ✅ pool · ✅ churn pool · ✅ croissance annuelle recrutement · ✅ ROCO · ✅ modals “pourquoi” · ✅ charts · ✅ exports CSV+PNG
+      </div>
+
+      <div class="btnrow">
+        <button id="btnReset">Reset</button>
+        <button id="btnPlay">▶ Play</button>
+        <button id="btnPause" class="secondary" disabled>⏸ Pause</button>
+        <button id="btnStep" class="ghost">⏭ Step</button>
+      </div>
+
+      <div class="kpi">
+        <div class="pill" id="kpiDate">Date: <span>—</span></div>
+        <div class="pill" id="kpiAlive">Consultants vivants: <span>—</span></div>
+        <div class="pill" id="kpiClients">Clients actifs: <span>—</span></div>
+        <div class="pill" id="kpiPool">Pool actifs: <span>—</span></div>
+        <div class="pill" id="kpiLost">Perdus (mois): <span>—</span></div>
+        <div class="pill" id="kpiGained">Acquis (mois): <span>—</span></div>
+      </div>
+    </div>
+
+    <!-- Col 1 -->
+    <div class="controls">
+      <div class="field"><label>Date de départ</label><input id="startDate" type="month" value="2025-01"></div>
+      <div class="field"><label>Durée (mois)</label><input id="monthsTotal" type="number" min="12" max="240" value="60"></div>
+
+      <div class="field"><label>Seed (stabilité)</label><input id="seed" type="number" min="1" max="999999999" value="123456"></div>
+      <div class="field"><label>Consultants initiaux</label><input id="startConsultants" type="number" min="0" max="500" value="1"></div>
+
+      <div class="field"><label>Recrutement / an (base)</label><input id="recruitsPerYear" type="number" min="0" max="200" value="5"></div>
+      <div class="field"><label>Croissance annuelle recrutement (%)</label><input id="recruitGrowthPct" type="number" min="-90" max="300" step="1" value="20"></div>
+
+      <div class="field"><label>Ramp-up (mois)</label><input id="rampMonths" type="number" min="0" max="24" value="2"></div>
+      <div class="field"><label>Taux d’activité (moyenne)</label><input id="activityMean" type="number" step="0.05" min="0" max="1" value="0.70"></div>
+
+      <div class="field"><label>Min clients / mois</label><input id="minClients" type="number" min="0" max="50" value="0"></div>
+      <div class="field"><label>Max clients / mois</label><input id="maxClients" type="number" min="0" max="50" value="3"></div>
+
+      <div class="field"><label>Cap total clients / consultant</label><input id="maxPortfolio" type="number" min="1" max="1000" value="10"></div>
+      <div class="field"><label>Vitesse (ms / mois)</label><input id="speedMs" type="number" min="50" max="2000" value="350"></div>
+
+      <div class="field"><label>Alignement</label>
+        <select id="layoutMode">
+          <option value="seniority">Par ancienneté (grille)</option>
+          <option value="seniority-exited-right">Ancienneté + sortis à droite</option>
+        </select>
+      </div>
+      <div></div>
+    </div>
+
+    <!-- Col 2 -->
+    <div class="controls">
+      <div class="field"><label>Churn CLIENT mensuel (%)</label><input id="clientChurnPct" type="number" min="0" max="50" step="0.1" value="2.0"></div>
+      <div class="field"><label>Pool churn multiplier (0–1)</label><input id="poolChurnMultiplier" type="number" min="0" max="1" step="0.05" value="0.30"></div>
+
+      <div class="field"><label>Churn CONSULTANT mensuel (%)</label><input id="consultantChurnPct" type="number" min="0" max="30" step="0.1" value="2.5"></div>
+      <div class="field"><label>Sortie: part avec clients (%)</label><input id="leaveWithClientsPct" type="number" min="0" max="100" step="1" value="55"></div>
+
+      <div class="field"><label>Sortie: partiel (reste pool) (%)</label><input id="partialRetentionPct" type="number" min="0" max="100" step="1" value="25"></div>
+      <div class="field"><label>ROCO: tous les X clients gagnés</label><input id="projectsPerReferral" type="number" min="1" max="50" value="5"></div>
+
+      <div class="field"><label>Taux conversion ROCO (0–1)</label><input id="referralConv" type="number" min="0" max="1" step="0.05" value="0.7"></div>
+      <div class="field"><label>Marketplace: % participants</label><input id="marketplacePct" type="number" min="0" max="100" step="1" value="35"></div>
+
+      <div class="field"><label>Marketplace: € / client / mois</label><input id="marketplaceEurPerClient" type="number" min="0" max="200" step="1" value="8"></div>
+      <div></div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- LEFT VIZ -->
+    <div class="card" id="vizWrap">
+      <div id="timeline">
+        <input id="timeSlider" type="range" min="0" max="0" value="0" />
+        <div class="rightTools">
+          <span class="pill" id="pillMonth">Mois: <span>—</span></span>
+          <span class="pill" id="pillYear">Année: <span>—</span></span>
+        </div>
+      </div>
+      <div id="vizTopBar">
+        <div><b>Vue</b> : drag pour déplacer, molette pour zoomer.</div>
+        <div class="muted" id="poolInfo">Pool actifs: —</div>
+      </div>
+      <svg id="viz" viewBox="0 0 1200 740" preserveAspectRatio="xMidYMid meet"></svg>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="card tabs">
+      <div class="cardHeader">
+        <div>
+          <div class="h">Détails & exports</div>
+          <div class="small">Tout scrolle (vertical + horizontal). Clique Année/Consultant → modal “pourquoi”.</div>
+        </div>
+        <div class="rightTools">
+          <button class="ghost" id="btnExportAllCharts">Export PNG (tous graphs)</button>
+          <button class="ghost" id="btnExportMonthlyCsv">Export CSV Mensuel</button>
+          <button class="ghost" id="btnExportAnnualCsv">Export CSV Annuel</button>
+          <button class="ghost" id="btnRecalc">Recalculer</button>
+        </div>
+      </div>
+
+      <div class="tabbar">
+        <button id="tabBtnDetails" class="active">Détails</button>
+        <button id="tabBtnConsultants">Consultants</button>
+        <button id="tabBtnPool">Pool</button>
+        <button id="tabBtnCharts">Graphiques</button>
+        <button id="tabBtnMonthly">Mensuel</button>
+        <button id="tabBtnAnnual">Annuel</button>
+      </div>
+
+      <!-- DETAILS -->
+      <div id="tabDetails" class="tabcontent active">
+        <div class="scrollArea">
+          <div class="panel">
+            <div class="panelHeader"><div>Consultant sélectionné</div><div class="muted">origine + raison</div></div>
+            <div class="panelBody">
+              <div class="details" id="detailsBox"></div>
+              <div class="note">Sélectionne un consultant (table ou bulle) pour afficher les détails.</div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panelHeader"><div>Exports (mois courant)</div><div class="muted">CSV</div></div>
+            <div class="panelBody">
+              <div class="rightTools">
+                <button class="ghost" id="btnExportConsultantsCsv">Export CSV Consultants (mois)</button>
+                <button class="ghost" id="btnExportPoolCsv">Export CSV Pool (mois)</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CONSULTANTS -->
+      <div id="tabConsultants" class="tabcontent">
+        <div class="scrollArea">
+          <div class="panel">
+            <div class="panelHeader"><div>Consultants (clic = sélectionner)</div><div class="muted" id="consultantsTitle">—</div></div>
+            <div class="panelBody" style="padding:0">
+              <div class="tableWrap">
+                <table id="tblConsultants">
+                  <thead>
+                    <tr>
+                      <th>Nom</th><th>Origine</th><th>Créé</th><th>Début</th><th>Fin</th>
+                      <th>Actifs</th><th>Gagnés</th><th>Churn</th><th>Perdus sortie</th><th>Pool transférés</th>
+                      <th>ROCO créés</th><th>Recommandé par</th><th>Pourquoi</th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- POOL -->
+      <div id="tabPool" class="tabcontent">
+        <div class="scrollArea">
+          <div class="panel">
+            <div class="panelHeader"><div>Pool (clients sans consultant)</div><div class="muted" id="poolTitle">—</div></div>
+            <div class="panelBody" style="padding:0">
+              <div class="tableWrap">
+                <table id="tblPool">
+                  <thead>
+                    <tr>
+                      <th>Client</th><th>Début</th><th>Ancien consultant</th><th>Arrêt consultant</th>
+                      <th>Passage pool</th><th>Fin</th><th>Raison fin</th><th>Statut</th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+            </div>
+            <div class="panelBody">
+              <div class="note">Le churn pool est moins affecté : churn_pool = churn_base × multiplier.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CHARTS -->
+      <div id="tabCharts" class="tabcontent">
+        <div class="scrollArea">
+          <div class="panel">
+            <div class="panelHeader"><div>Stock</div><div class="muted">clients / consultants / pool</div></div>
+            <div class="panelBody"><canvas id="chartStock" height="220"></canvas></div>
+          </div>
+          <div class="panel">
+            <div class="panelHeader"><div>Flux</div><div class="muted">acquis / churn / sorties</div></div>
+            <div class="panelBody"><canvas id="chartFlow" height="220"></canvas></div>
+          </div>
+          <div class="panel">
+            <div class="panelHeader"><div>Marketplace</div><div class="muted">€ / mois</div></div>
+            <div class="panelBody"><canvas id="chartRevenue" height="180"></canvas></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MONTHLY -->
+      <div id="tabMonthly" class="tabcontent">
+        <div class="scrollArea">
+          <div class="panel">
+            <div class="panelHeader"><div>Mensuel</div><div class="muted">base vs ROCO</div></div>
+            <div class="panelBody" style="padding:0">
+              <div class="tableWrap">
+                <table id="tblMonthly">
+                  <thead>
+                    <tr>
+                      <th>Date</th><th>Consultants vivants</th><th>Clients actifs</th><th>Pool</th>
+                      <th>Acquis</th><th>Perdus churn</th><th>Perdus sorties</th>
+                      <th>BASE ajoutés</th><th>ROCO ajoutés</th><th>Recrutement/an effectif</th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ANNUAL -->
+      <div id="tabAnnual" class="tabcontent">
+        <div class="scrollArea">
+          <div class="panel">
+            <div class="panelHeader"><div>Annuel</div><div class="muted">clique une ligne → explication</div></div>
+            <div class="panelBody" style="padding:0">
+              <div class="tableWrap">
+                <table id="tblAnnual">
+                  <thead>
+                    <tr>
+                      <th>Année</th>
+                      <th>Clients obtenus</th>
+                      <th>Clients perdus</th>
+                      <th>Clients fin</th>
+                      <th>Consultants fin</th>
+                      <th>Pool fin</th>
+                      <th>Nouveaux consultants</th>
+                      <th>BASE recruits</th>
+                      <th>ROCO recruits</th>
+                      <th>Moy clients/consultant</th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- tabs -->
+  </div><!-- main -->
+</div><!-- app -->
+
+<!-- MODAL -->
+<div class="modalOverlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modalHeader">
+      <div class="title" id="modalTitle">Détails</div>
+      <button class="modalClose" id="modalClose">Fermer</button>
+    </div>
+    <div class="modalBody" id="modalBody"></div>
+  </div>
+</div>
+
+<script>
+/* ===================== RNG ===================== */
+function mulberry32(seed){
+  let t = seed >>> 0;
+  return function(){
+    t += 0x6D2B79F5;
+    let x = Math.imul(t ^ (t >>> 15), 1 | t);
+    x ^= x + Math.imul(x ^ (x >>> 7), 61 | x);
+    return ((x ^ (x >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+/* ================= UTIL ================= */
+function clamp(v,a,b){ return Math.max(a, Math.min(b, v)); }
+function toMonthDate(v){ const [y,m]=v.split("-").map(Number); return new Date(y, m-1, 1); }
+function addMonths(d,n){ return new Date(d.getFullYear(), d.getMonth()+n, 1); }
+function fmtMonth(d){ return d.toISOString().slice(0,7); }
+function monthsSince(d0,d1){ return (d1.getFullYear()-d0.getFullYear())*12 + (d1.getMonth()-d0.getMonth()); }
+
+/* ================= STATE ================= */
+let STATE = {
+  running:false, timer:null,
+  nowIndex:0,
+  selectedConsultantId:null,
+  selectedClientId:null,
+
+  cache: [],
+  globalHistory: [],
+  globalConsultants: new Map(),
+  globalClients: new Map(),
+  annualCache: [],
+
+  viewport: {x:0,y:0,k:1}
+};
+
+/* ============== PARAMS ================== */
+function readParams(){
+  const p = {
+    startDate: toMonthDate(document.getElementById("startDate").value),
+    monthsTotal: +document.getElementById("monthsTotal").value,
+    seed: +document.getElementById("seed").value,
+
+    startConsultants: +document.getElementById("startConsultants").value,
+    recruitsPerYear: +document.getElementById("recruitsPerYear").value,
+    recruitGrowthPct: (+document.getElementById("recruitGrowthPct").value)/100,
+
+    rampMonths: +document.getElementById("rampMonths").value,
+    activityMean: clamp(+document.getElementById("activityMean").value,0,1),
+
+    minClients: +document.getElementById("minClients").value,
+    maxClients: +document.getElementById("maxClients").value,
+    maxPortfolio: +document.getElementById("maxPortfolio").value,
+
+    clientChurn: clamp((+document.getElementById("clientChurnPct").value)/100, 0, 0.5),
+    poolChurnMultiplier: clamp(+document.getElementById("poolChurnMultiplier").value, 0, 1),
+
+    consultantChurn: clamp((+document.getElementById("consultantChurnPct").value)/100, 0, 0.3),
+    leaveWith: clamp((+document.getElementById("leaveWithClientsPct").value)/100, 0, 1),
+    partial: clamp((+document.getElementById("partialRetentionPct").value)/100, 0, 1),
+
+    projectsPerReferral: +document.getElementById("projectsPerReferral").value,
+    referralConv: clamp(+document.getElementById("referralConv").value, 0, 1),
+
+    marketplacePct: clamp((+document.getElementById("marketplacePct").value)/100,0,1),
+    eurPerClient: +document.getElementById("marketplaceEurPerClient").value,
+
+    speedMs: +document.getElementById("speedMs").value,
+    layoutMode: document.getElementById("layoutMode").value,
+  };
+  if(p.maxClients < p.minClients) p.maxClients = p.minClients;
+  return p;
+}
+
+/* ================= IDs ================= */
+function makeId(prefix, n){ return prefix + "-" + n.toString(36).toUpperCase().padStart(6,'0'); }
+
+/* ================= Entities ================= */
+function createConsultant(rng, p, date, id, origin, createdMonthIndex, referrerId=null, createdReason=null){
+  const activity = clamp((p.activityMean + (rng()-0.5)*0.5), 0.05, 0.98);
+  const minC = Math.max(0, Math.floor(p.minClients + (rng()*(p.maxClients-p.minClients+1))));
+  const maxC = Math.max(minC, Math.floor(minC + (rng()*(p.maxClients-minC+1))));
+  const market = (rng() < p.marketplacePct);
+
+  return {
+    id,
+    label: "C-" + id.slice(-4),
+    startDate: new Date(date),
+    exitDate: null,
+
+    origin,
+    createdMonthIndex,
+    createdReason,
+    referrerId,
+
+    activity,
+    rampMonths: p.rampMonths,
+    minClientsPerMonth: minC,
+    maxClientsPerMonth: maxC,
+    maxPortfolio: p.maxPortfolio,
+    marketParticipant: market,
+
+    recommendedIds: [],
+    projectsWon: 0,
+    referralsDone: 0,
+
+    churnLost: 0,
+    exitLost: 0,
+    poolTransferred: 0,
+    everWon: 0
+  };
+}
+
+function createClient(date, id, consultantId){
+  return {
+    id,
+    consultantId,
+    startDate: new Date(date),
+
+    inPool: false,
+    poolStartDate: null,
+
+    poolFromConsultantId: null,
+    poolFromConsultantExitDate: null,
+
+    endDate: null,
+    endReason: null
+  };
+}
+
+function clientIsActiveAt(client, date){
+  return (client.startDate <= date) && (!client.endDate || client.endDate > date);
+}
+function clientIsInPoolAt(client, date){
+  return clientIsActiveAt(client, date) && client.inPool && client.poolStartDate && client.poolStartDate <= date;
+}
+function clientIsAttachedAt(client, date){
+  return clientIsActiveAt(client, date) && (!clientIsInPoolAt(client, date));
+}
+function consultantIsAliveAt(cons, date){
+  return cons.startDate <= date && (!cons.exitDate || cons.exitDate > date);
+}
+
+/* ================= Simulation + Cache ================= */
+function runSimulationAndCache(){
+  const p = readParams();
+  const rng = mulberry32(p.seed);
+
+  STATE.cache = [];
+  STATE.globalHistory = [];
+  STATE.globalConsultants = new Map();
+  STATE.globalClients = new Map();
+  STATE.annualCache = [];
+  STATE.selectedConsultantId = null;
+  STATE.selectedClientId = null;
+
+  let consCounter = 0;
+  let clientCounter = 0;
+
+  for(let i=0;i<p.startConsultants;i++){
+    const id = makeId("CONS", consCounter++);
+    STATE.globalConsultants.set(id, createConsultant(rng, p, p.startDate, id, "INITIAL", 0, null, "Initial consultant"));
+  }
+
+  function activeAttachedClientIdsFor(consultantId, date){
+    const ids = [];
+    for(const [cid, cl] of STATE.globalClients){
+      if(cl.consultantId !== consultantId) continue;
+      if(clientIsAttachedAt(cl, date)) ids.push(cid);
+    }
+    return ids;
+  }
+
+  for(let m=0; m<p.monthsTotal; m++){
+    const date = addMonths(p.startDate, m);
+    const yearIndex = Math.floor(m/12);
+    const recruitsPerYearEffective = p.recruitsPerYear * Math.pow(1 + p.recruitGrowthPct, yearIndex);
+
+    let gained = 0, lostChurn = 0, lostExit = 0, exits = 0;
+    let baseRecruitsAdded = 0, rocoRecruitsAdded = 0;
+
+    // base recruit smoothing
+    const expected = recruitsPerYearEffective/12;
+    let toAdd = Math.floor(expected);
+    if(rng() < (expected - toAdd)) toAdd += 1;
+
+    // production
+    for(const [id, cons] of STATE.globalConsultants){
+      if(!consultantIsAliveAt(cons, date)) continue;
+
+      const age = monthsSince(cons.startDate, date);
+      if(age < cons.rampMonths) continue;
+      if(rng() > cons.activity) continue;
+
+      const attached = activeAttachedClientIdsFor(id, date);
+      const capRemain = Math.max(0, cons.maxPortfolio - attached.length);
+      if(capRemain <= 0) continue;
+
+      const raw = Math.floor(cons.minClientsPerMonth + rng()*(cons.maxClientsPerMonth - cons.minClientsPerMonth + 1));
+      const n = Math.min(raw, capRemain);
+      if(n <= 0) continue;
+
+      for(let k=0;k<n;k++){
+        const cid = makeId("CL", clientCounter++);
+        STATE.globalClients.set(cid, createClient(date, cid, id));
+      }
+
+      cons.projectsWon += n;
+      cons.everWon += n;
+      gained += n;
+    }
+
+    // ROCO
+    for(const [id, cons] of STATE.globalConsultants){
+      if(!consultantIsAliveAt(cons, date)) continue;
+
+      const shouldHave = Math.floor(cons.projectsWon / p.projectsPerReferral);
+      const toTrigger = shouldHave - cons.referralsDone;
+
+      if(toTrigger > 0){
+        for(let t=0; t<toTrigger; t++){
+          if(rng() < p.referralConv){
+            const childId = makeId("CONS", consCounter++);
+            const reason = `ROCO threshold ${p.projectsPerReferral} (projectsWon=${cons.projectsWon})`;
+            const child = createConsultant(rng, p, date, childId, "ROCO", m, id, reason);
+            STATE.globalConsultants.set(childId, child);
+            cons.recommendedIds.push(childId);
+            rocoRecruitsAdded += 1;
+          }
+        }
+        cons.referralsDone += toTrigger;
+      }
+    }
+
+    // BASE recruits
+    for(let i=0;i<toAdd;i++){
+      const id = makeId("CONS", consCounter++);
+      const reason = `Base recruitment (effective/year=${recruitsPerYearEffective.toFixed(2)})`;
+      STATE.globalConsultants.set(id, createConsultant(rng, p, date, id, "BASE", m, null, reason));
+      baseRecruitsAdded += 1;
+    }
+
+    // active lists
+    const activePoolIds = [];
+    const activeAttachedIds = [];
+    for(const [cid, cl] of STATE.globalClients){
+      if(!clientIsActiveAt(cl, date)) continue;
+      if(clientIsInPoolAt(cl, date)) activePoolIds.push(cid);
+      else activeAttachedIds.push(cid);
+    }
+
+    // churn pool and attached separately
+    const poolChurnRate = p.clientChurn * p.poolChurnMultiplier;
+    const churnPoolCount = Math.round(activePoolIds.length * poolChurnRate);
+    const churnAttachedCount = Math.round(activeAttachedIds.length * p.clientChurn);
+
+    activePoolIds.sort();
+    for(let i=0;i<Math.min(churnPoolCount, activePoolIds.length);i++){
+      const cid = activePoolIds[i];
+      const cl = STATE.globalClients.get(cid);
+      if(!cl.endDate){
+        cl.endDate = new Date(date);
+        cl.endReason = "CHURN";
+        lostChurn += 1;
+      }
+    }
+
+    let rem = churnAttachedCount;
+    while(rem > 0){
+      const candidates = [];
+      for(const cid of activeAttachedIds){
+        const cl = STATE.globalClients.get(cid);
+        if(clientIsActiveAt(cl, date) && !clientIsInPoolAt(cl, date)) candidates.push(cid);
+      }
+      if(candidates.length === 0) break;
+      const pick = candidates[Math.floor(rng()*candidates.length)];
+      const cl = STATE.globalClients.get(pick);
+      if(!cl.endDate){
+        cl.endDate = new Date(date);
+        cl.endReason = "CHURN";
+        lostChurn += 1;
+        const cons = STATE.globalConsultants.get(cl.consultantId);
+        if(cons) cons.churnLost += 1;
+      }
+      rem -= 1;
+    }
+
+    // consultant exits
+    for(const [id, cons] of STATE.globalConsultants){
+      if(!consultantIsAliveAt(cons, date)) continue;
+      if(rng() >= p.consultantChurn) continue;
+
+      cons.exitDate = new Date(date);
+      exits += 1;
+
+      const owned = [];
+      for(const [cid, cl] of STATE.globalClients){
+        if(cl.consultantId !== id) continue;
+        if(clientIsAttachedAt(cl, date)) owned.push(cid);
+      }
+
+      const r = rng();
+      if(r < p.leaveWith){
+        for(const cid of owned){
+          const cl = STATE.globalClients.get(cid);
+          if(!cl.endDate){
+            cl.endDate = new Date(date);
+            cl.endReason = "EXIT_WITH";
+            lostExit += 1;
+            cons.exitLost += 1;
+          }
+        }
+      } else if(r < (p.leaveWith + p.partial)){
+        const shuffled = owned.slice();
+        for(let i=shuffled.length-1;i>0;i--){
+          const j = Math.floor(rng()*(i+1));
+          [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+        const stay = Math.round(shuffled.length * (0.25 + rng()*0.5));
+        const toStay = shuffled.slice(0, stay);
+        const toLeave = shuffled.slice(stay);
+
+        for(const cid of toStay){
+          const cl = STATE.globalClients.get(cid);
+          cl.inPool = true;
+          cl.poolStartDate = new Date(date);
+          cl.poolFromConsultantId = id;
+          cl.poolFromConsultantExitDate = new Date(date);
+          cons.poolTransferred += 1;
+        }
+        for(const cid of toLeave){
+          const cl = STATE.globalClients.get(cid);
+          cl.endDate = new Date(date);
+          cl.endReason = "EXIT_PARTIAL_LEAVE";
+          lostExit += 1;
+          cons.exitLost += 1;
+        }
+      } else {
+        for(const cid of owned){
+          const cl = STATE.globalClients.get(cid);
+          cl.inPool = true;
+          cl.poolStartDate = new Date(date);
+          cl.poolFromConsultantId = id;
+          cl.poolFromConsultantExitDate = new Date(date);
+          cons.poolTransferred += 1;
+        }
+      }
+    }
+
+    // stock counts
+    let aliveConsultants = 0;
+    for(const [id, cons] of STATE.globalConsultants){
+      if(consultantIsAliveAt(cons, date)) aliveConsultants += 1;
+    }
+
+    let clientsActive = 0, poolClients = 0;
+    for(const [cid, cl] of STATE.globalClients){
+      if(clientIsActiveAt(cl, date)){
+        clientsActive += 1;
+        if(clientIsInPoolAt(cl, date)) poolClients += 1;
+      }
+    }
+
+    // marketplace proxy
+    let revenue = 0;
+    for(const [id, cons] of STATE.globalConsultants){
+      if(!consultantIsAliveAt(cons, date)) continue;
+      if(!cons.marketParticipant) continue;
+      const attached = activeAttachedClientIdsFor(id, date);
+      revenue += attached.length * p.eurPerClient;
+    }
+    revenue = Math.round(revenue);
+
+    STATE.globalHistory.push({
+      index: m,
+      date: new Date(date),
+      aliveConsultants,
+      clientsActive,
+      poolClients,
+      gained,
+      lostChurn,
+      lostExit,
+      exits,
+      revenue,
+      recruitsPerYearEffective: Math.round(recruitsPerYearEffective * 100) / 100,
+      baseRecruitsAdded,
+      rocoRecruitsAdded
+    });
+
+    // cache view
+    const consultantsView = [];
+    for(const [id, cons] of STATE.globalConsultants){
+      if(cons.startDate > date) continue;
+      const alive = consultantIsAliveAt(cons, date);
+      consultantsView.push({
+        id: cons.id,
+        label: cons.label,
+        startDate: cons.startDate,
+        exitDate: cons.exitDate,
+        alive,
+        origin: cons.origin,
+        createdMonthIndex: cons.createdMonthIndex,
+        createdReason: cons.createdReason,
+        referrerId: cons.referrerId,
+        recommendedIds: cons.recommendedIds.slice(),
+        projectsWon: cons.projectsWon,
+        everWon: cons.everWon,
+        churnLost: cons.churnLost,
+        exitLost: cons.exitLost,
+        poolTransferred: cons.poolTransferred
+      });
+    }
+    consultantsView.sort((a,b)=>a.startDate-b.startDate);
+
+    const attachedBy = new Map();
+    const poolIds = [];
+    for(const [cid, cl] of STATE.globalClients){
+      if(!clientIsActiveAt(cl, date)) continue;
+      if(clientIsInPoolAt(cl, date)) poolIds.push(cid);
+      else {
+        if(!attachedBy.has(cl.consultantId)) attachedBy.set(cl.consultantId, []);
+        attachedBy.get(cl.consultantId).push(cid);
+      }
+    }
+    for(const [k,v] of attachedBy) v.sort();
+    poolIds.sort();
+
+    STATE.cache.push({ date:new Date(date), consultantsView, attachedBy, poolIds });
+  }
+
+  document.getElementById("timeSlider").max = Math.max(0, p.monthsTotal-1);
+  document.getElementById("timeSlider").value = 0;
+
+  STATE.annualCache = computeAnnual();
+}
+
+/* ===================== Annual aggregation ===================== */
+function computeAnnual(){
+  const byYear = new Map();
+
+  const newCons = new Map(); // year -> {total, base, roco, initial}
+  for(const [id, c] of STATE.globalConsultants){
+    const y = c.startDate.getFullYear();
+    if(!newCons.has(y)) newCons.set(y, {total:0, base:0, roco:0, initial:0});
+    const o = newCons.get(y);
+    o.total += 1;
+    if(c.origin==="BASE") o.base += 1;
+    else if(c.origin==="ROCO") o.roco += 1;
+    else if(c.origin==="INITIAL") o.initial += 1;
+  }
+
+  for(const h of STATE.globalHistory){
+    const y = h.date.getFullYear();
+    if(!byYear.has(y)){
+      byYear.set(y, {year:y, gained:0, lost:0, endClients:0, endConsultants:0, endPool:0});
+    }
+    const a = byYear.get(y);
+    a.gained += h.gained;
+    a.lost += (h.lostChurn + h.lostExit);
+    a.endClients = h.clientsActive;
+    a.endConsultants = h.aliveConsultants;
+    a.endPool = h.poolClients;
+  }
+
+  const years = [...byYear.values()].sort((a,b)=>a.year-b.year);
+  for(const y of years){
+    const c = newCons.get(y.year) || {total:0, base:0, roco:0, initial:0};
+    y.newConsultants = c.total;
+    y.baseRecruits = c.base;
+    y.rocoRecruits = c.roco;
+    y.avgClientsPerConsultant = y.endConsultants > 0 ? Math.round((y.endClients / y.endConsultants)*100)/100 : 0;
+  }
+  return years;
+}
+
+/* ===================== Charts ===================== */
+let chartStock, chartFlow, chartRevenue;
+
+function buildCharts(){
+  if(chartStock) chartStock.destroy();
+  if(chartFlow) chartFlow.destroy();
+  if(chartRevenue) chartRevenue.destroy();
+
+  chartStock = new Chart(document.getElementById("chartStock"), {
+    type:"line",
+    data:{ labels:[], datasets:[
+      {label:"Clients actifs", data:[], borderWidth:2, tension:.25},
+      {label:"Consultants vivants", data:[], borderWidth:2, tension:.25},
+      {label:"Pool actifs", data:[], borderWidth:2, tension:.25},
+    ]},
+    options:{ responsive:true, plugins:{ legend:{ labels:{ font:{ family:"Poppins", size:12 } } } } }
+  });
+
+  chartFlow = new Chart(document.getElementById("chartFlow"), {
+    type:"bar",
+    data:{ labels:[], datasets:[
+      {label:"Acquis", data:[]},
+      {label:"Perdus churn", data:[]},
+      {label:"Perdus sorties", data:[]},
+      {label:"BASE recruits", data:[]},
+      {label:"ROCO recruits", data:[]},
+    ]},
+    options:{ responsive:true, plugins:{ legend:{ labels:{ font:{ family:"Poppins", size:12 } } } } }
+  });
+
+  chartRevenue = new Chart(document.getElementById("chartRevenue"), {
+    type:"line",
+    data:{ labels:[], datasets:[
+      {label:"Revenue € / mois", data:[], borderWidth:2, tension:.25}
+    ]},
+    options:{ responsive:true, plugins:{ legend:{ labels:{ font:{ family:"Poppins", size:12 } } } } }
+  });
+}
+
+function updateCharts(){
+  const labels = STATE.globalHistory.map(h=>fmtMonth(h.date));
+
+  chartStock.data.labels = labels;
+  chartStock.data.datasets[0].data = STATE.globalHistory.map(h=>h.clientsActive);
+  chartStock.data.datasets[1].data = STATE.globalHistory.map(h=>h.aliveConsultants);
+  chartStock.data.datasets[2].data = STATE.globalHistory.map(h=>h.poolClients);
+  chartStock.update();
+
+  chartFlow.data.labels = labels;
+  chartFlow.data.datasets[0].data = STATE.globalHistory.map(h=>h.gained);
+  chartFlow.data.datasets[1].data = STATE.globalHistory.map(h=>h.lostChurn);
+  chartFlow.data.datasets[2].data = STATE.globalHistory.map(h=>h.lostExit);
+  chartFlow.data.datasets[3].data = STATE.globalHistory.map(h=>h.baseRecruitsAdded);
+  chartFlow.data.datasets[4].data = STATE.globalHistory.map(h=>h.rocoRecruitsAdded);
+  chartFlow.update();
+
+  chartRevenue.data.labels = labels;
+  chartRevenue.data.datasets[0].data = STATE.globalHistory.map(h=>h.revenue);
+  chartRevenue.update();
+}
+
+/* ===================== VIZ (bulles) ===================== */
+const svg = document.getElementById("viz");
+const NS = "http://www.w3.org/2000/svg";
+
+function clearSvg(){
+  while(svg.firstChild) svg.removeChild(svg.firstChild);
+  const g = document.createElementNS(NS,"g");
+  g.setAttribute("id","world");
+  svg.appendChild(g);
+}
+function setViewTransform(){
+  const g = svg.querySelector("g#world");
+  if(!g) return;
+  g.setAttribute("transform", `translate(${STATE.viewport.x},${STATE.viewport.y}) scale(${STATE.viewport.k})`);
+}
+
+function consultantRadius(portfolio){ return clamp(30 + portfolio*3.2, 30, 96); }
+
+function layoutConsultants(consultantsView, layoutMode){
+  const all = consultantsView;
+  const alive = all.filter(c=>c.alive);
+  const exited = all.filter(c=>!c.alive);
+
+  const leftPad=24, topPad=22;
+  const colW=150, rowH=150;
+  const cols = 7;
+
+  const pos = new Map();
+  function place(list, x0, y0, colsCount){
+    list.forEach((c, idx)=>{
+      const col = idx % colsCount;
+      const row = Math.floor(idx / colsCount);
+      pos.set(c.id, { cx: x0 + col*colW + colW/2, cy: y0 + row*rowH + rowH/2 });
+    });
+  }
+  if(layoutMode==="seniority-exited-right"){
+    place(alive, leftPad, topPad, cols);
+    const xRight = 1040;
+    const rowH2 = 105;
+    exited.forEach((c, idx)=> pos.set(c.id, {cx:xRight, cy:80 + idx*rowH2}));
+  } else {
+    place(all, leftPad, topPad, cols);
+  }
+  return pos;
+}
+
+function gridPointsLowerSemicircle(cx, cy, R, n, dotR){
+  const pts=[];
+  if(n<=0) return pts;
+
+  const spacing = dotR*2 + 4;
+  const innerR = R - dotR - 6;
+  const cols = Math.max(1, Math.floor((innerR*2) / spacing));
+
+  let y = cy + 12;
+  while(pts.length < n && y <= cy + innerR){
+    const startX = cx - (cols-1)*spacing/2;
+    for(let c=0; c<cols && pts.length<n; c++){
+      const x = startX + c*spacing;
+      const dx = x - cx, dy = y - cy;
+      if(dy < 0) continue;
+      if(dx*dx + dy*dy <= innerR*innerR) pts.push({x,y});
+    }
+    y += spacing;
+  }
+  while(pts.length < n) pts.push({x:cx, y: cy + 12 + pts.length*(dotR*2+2)});
+  return pts;
+}
+
+function renderViz(monthIndex){
+  const p = readParams();
+  const cache = STATE.cache[monthIndex];
+  if(!cache) return;
+
+  clearSvg();
+  const g = svg.querySelector("g#world");
+
+  const pos = layoutConsultants(cache.consultantsView, p.layoutMode);
+
+  document.getElementById("poolInfo").textContent = `Pool actifs: ${cache.poolIds.length}`;
+
+  // pool zone
+  const poolBox = document.createElementNS(NS,"rect");
+  poolBox.setAttribute("x","820"); poolBox.setAttribute("y","570");
+  poolBox.setAttribute("width","340"); poolBox.setAttribute("height","140");
+  poolBox.setAttribute("rx","14");
+  poolBox.setAttribute("fill","#f1f5f9"); poolBox.setAttribute("stroke","#e2e8f0");
+  g.appendChild(poolBox);
+
+  const poolLabel = document.createElementNS(NS,"text");
+  poolLabel.setAttribute("x","835"); poolLabel.setAttribute("y","595");
+  poolLabel.setAttribute("fill","#334155");
+  poolLabel.setAttribute("font-size","12");
+  poolLabel.setAttribute("font-family","Poppins");
+  poolLabel.setAttribute("font-weight","600");
+  poolLabel.textContent = `POOL (clients actifs sans consultant)`;
+  g.appendChild(poolLabel);
+
+  const poolDraw = cache.poolIds.slice(0, 240);
+  for(let i=0;i<poolDraw.length;i++){
+    const c = document.createElementNS(NS,"circle");
+    const x = 840 + (i%34)*9;
+    const y = 610 + Math.floor(i/34)*9;
+    c.setAttribute("cx", x); c.setAttribute("cy", y);
+    c.setAttribute("r","3.4");
+    c.setAttribute("fill", "#94a3b8");
+    c.setAttribute("opacity","0.9");
+    g.appendChild(c);
+  }
+
+  for(const cons of cache.consultantsView){
+    const P = pos.get(cons.id) || {cx:600, cy:360};
+    const attached = (cache.attachedBy.get(cons.id) || []);
+    const R = consultantRadius(attached.length);
+
+    const group = document.createElementNS(NS,"g");
+    group.style.cursor="pointer";
+
+    const circle = document.createElementNS(NS,"circle");
+    circle.setAttribute("cx", P.cx); circle.setAttribute("cy", P.cy);
+    circle.setAttribute("r", R);
+    circle.setAttribute("fill", cons.alive ? "#2563eb" : "#cbd5e1");
+    circle.setAttribute("opacity", cons.alive ? "0.95" : "0.75");
+    circle.setAttribute("stroke", (STATE.selectedConsultantId===cons.id) ? "#0f172a" : "rgba(0,0,0,0)");
+    circle.setAttribute("stroke-width", (STATE.selectedConsultantId===cons.id) ? "3" : "0");
+    group.appendChild(circle);
+
+    const label = document.createElementNS(NS,"text");
+    label.setAttribute("x", P.cx); label.setAttribute("y", P.cy+4);
+    label.setAttribute("text-anchor","middle");
+    label.setAttribute("fill", cons.alive ? "white" : "#334155");
+    label.setAttribute("font-size","10");
+    label.setAttribute("font-family","Poppins");
+    label.setAttribute("font-weight","600");
+    label.textContent = cons.label;
+    group.appendChild(label);
+
+    const pts = gridPointsLowerSemicircle(P.cx, P.cy, R, attached.length, 4);
+    for(let i=0;i<Math.min(attached.length, pts.length);i++){
+      const dot = document.createElementNS(NS,"circle");
+      dot.setAttribute("cx", pts[i].x);
+      dot.setAttribute("cy", pts[i].y);
+      dot.setAttribute("r","4");
+      dot.setAttribute("fill", "#93c5fd");
+      dot.setAttribute("opacity","0.95");
+      group.appendChild(dot);
+    }
+
+    group.addEventListener("click", ()=>{
+      STATE.selectedConsultantId = cons.id;
+      renderViz(monthIndex);
+      renderDetails();
+      showConsultantExplainModal(cons.id);
+    });
+
+    g.appendChild(group);
+  }
+
+  setViewTransform();
+}
+
+/* ===================== KPI ===================== */
+function setKpi(monthIndex){
+  const h = STATE.globalHistory[monthIndex];
+  if(!h) return;
+  document.querySelector("#kpiDate span").textContent = fmtMonth(h.date);
+  document.querySelector("#kpiAlive span").textContent = h.aliveConsultants;
+  document.querySelector("#kpiClients span").textContent = h.clientsActive;
+  document.querySelector("#kpiPool span").textContent = h.poolClients;
+  document.querySelector("#kpiLost span").textContent = (h.lostChurn + h.lostExit);
+  document.querySelector("#kpiGained span").textContent = h.gained;
+
+  document.querySelector("#pillMonth span").textContent = h.index+1;
+  document.querySelector("#pillYear span").textContent = h.date.getFullYear();
+}
+
+/* ===================== Modal ===================== */
+function showModal(title, html){
+  document.getElementById("modalTitle").textContent = title;
+  document.getElementById("modalBody").innerHTML = html;
+  document.getElementById("modalOverlay").style.display = "flex";
+}
+function closeModal(){ document.getElementById("modalOverlay").style.display = "none"; }
+document.getElementById("modalClose").addEventListener("click", closeModal);
+document.getElementById("modalOverlay").addEventListener("click", (e)=>{
+  if(e.target && e.target.id === "modalOverlay") closeModal();
+});
+
+function showConsultantExplainModal(consultantId){
+  const c = STATE.globalConsultants.get(consultantId);
+  if(!c) return;
+  const created = fmtMonth(addMonths(readParams().startDate, c.createdMonthIndex));
+  const parent = c.referrerId ? STATE.globalConsultants.get(c.referrerId) : null;
+
+  const html = `
+    <div class="modalGrid">
+      <div class="panel">
+        <div class="panelHeader"><div>Origine</div><div class="muted">${c.label}</div></div>
+        <div class="panelBody">
+          <div><b>Origine :</b> ${c.origin}</div>
+          <div><b>Créé :</b> ${created}</div>
+          <div><b>Raison :</b> ${c.createdReason || "—"}</div>
+          <div><b>Parent ROCO :</b> ${parent ? parent.label : "—"}</div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panelHeader"><div>Stats</div><div class="muted">impact</div></div>
+        <div class="panelBody">
+          <div><b>Clients gagnés :</b> ${c.everWon}</div>
+          <div><b>Churn attribué :</b> ${c.churnLost}</div>
+          <div><b>Perdus sortie :</b> ${c.exitLost}</div>
+          <div><b>Pool transférés :</b> ${c.poolTransferred}</div>
+          <div><b>ROCO créés :</b> ${c.recommendedIds.length}</div>
+        </div>
+      </div>
+    </div>
+  `;
+  showModal("Pourquoi ce consultant existe ?", html);
+}
+
+function showYearExplainModal(year){
+  const yearMonths = STATE.globalHistory.filter(h=>h.date.getFullYear()===year);
+  const baseRecruits = yearMonths.reduce((s,h)=>s+h.baseRecruitsAdded,0);
+  const rocoRecruits = yearMonths.reduce((s,h)=>s+h.rocoRecruitsAdded,0);
+  const total = baseRecruits + rocoRecruits;
+
+  const targets = yearMonths.map(h=>h.recruitsPerYearEffective);
+  const avgTarget = targets.length ? Math.round((targets.reduce((a,b)=>a+b,0)/targets.length)*100)/100 : 0;
+
+  const yAgg = STATE.annualCache.find(y=>y.year===year);
+
+  const html = `
+    <div class="modalGrid">
+      <div class="panel">
+        <div class="panelHeader"><div>Recrutement</div><div class="muted">${year}</div></div>
+        <div class="panelBody">
+          <div><b>Objectif effectif/an (moyen) :</b> ${avgTarget}</div>
+          <div><b>Ajouts BASE :</b> ${baseRecruits}</div>
+          <div><b>Ajouts ROCO :</b> ${rocoRecruits}</div>
+          <div><b>Total nouveaux consultants :</b> ${total}</div>
+          <div class="note">Tu peux dépasser “5/an” à cause des ROCO (elles s’ajoutent au recrutement base).</div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panelHeader"><div>Fin d’année</div><div class="muted">stock</div></div>
+        <div class="panelBody">
+          <div><b>Consultants fin :</b> ${yAgg ? yAgg.endConsultants : "—"}</div>
+          <div><b>Clients fin :</b> ${yAgg ? yAgg.endClients : "—"}</div>
+          <div><b>Pool fin :</b> ${yAgg ? yAgg.endPool : "—"}</div>
+          <div><b>Moy clients/consultant :</b> ${yAgg ? yAgg.avgClientsPerConsultant : "—"}</div>
+        </div>
+      </div>
+    </div>
+  `;
+  showModal(`Pourquoi autant de consultants en ${year} ?`, html);
+}
+
+/* ===================== Render tables ===================== */
+function renderDetails(){
+  const box = document.getElementById("detailsBox");
+  box.innerHTML = "";
+  const monthIndex = STATE.nowIndex;
+  const cache = STATE.cache[monthIndex];
+
+  if(!cache || !STATE.selectedConsultantId){
+    box.innerHTML = `<div class="muted">Sélectionne un consultant.</div>`;
+    return;
+  }
+
+  const cons = cache.consultantsView.find(c=>c.id===STATE.selectedConsultantId);
+  if(!cons){
+    box.innerHTML = `<div class="muted">Consultant non visible ce mois.</div>`;
+    return;
+  }
+
+  const originBadge =
+    cons.origin==="INITIAL" ? `<span class="badge b-ok">INITIAL</span>` :
+    cons.origin==="BASE" ? `<span class="badge b-off">BASE</span>` :
+    `<span class="badge b-warn">ROCO</span>`;
+
+  const createdDate = fmtMonth(addMonths(readParams().startDate, cons.createdMonthIndex));
+  const parent = cons.referrerId ? (STATE.globalConsultants.get(cons.referrerId)?.label || cons.referrerId) : "—";
+  const attachedNow = (cache.attachedBy.get(cons.id) || []).length;
+
+  const items = [
+    ["Nom", cons.label],
+    ["Origine", originBadge],
+    ["Créé", createdDate],
+    ["Raison", cons.createdReason || "—"],
+    ["Parent ROCO", parent],
+    ["Actifs (mois)", String(attachedNow)],
+    ["Gagnés (ever)", String(cons.everWon)],
+    ["Churn", String(cons.churnLost)],
+    ["Perdus sortie", String(cons.exitLost)],
+    ["Pool transférés", String(cons.poolTransferred)],
+    ["ROCO créés", String(cons.recommendedIds.length)],
+  ];
+
+  for(const [k,v] of items){
+    const div=document.createElement("div");
+    div.className="kv";
+    div.innerHTML = `<div class="k">${k}</div><div class="v">${v}</div>`;
+    box.appendChild(div);
+  }
+}
+
+function renderConsultantsTable(){
+  const monthIndex = STATE.nowIndex;
+  const cache = STATE.cache[monthIndex];
+  const date = cache.date;
+  document.getElementById("consultantsTitle").textContent = `${fmtMonth(date)} — ${cache.consultantsView.length} consultants`;
+
+  const tb = document.querySelector("#tblConsultants tbody");
+  tb.innerHTML = "";
+
+  for(const c of cache.consultantsView){
+    const createdDate = fmtMonth(addMonths(readParams().startDate, c.createdMonthIndex));
+    const parent = c.referrerId ? (STATE.globalConsultants.get(c.referrerId)?.label || "—") : "—";
+    const attachedNow = (cache.attachedBy.get(c.id) || []).length;
+
+    const tr=document.createElement("tr");
+    if(STATE.selectedConsultantId===c.id) tr.classList.add("rowSel");
+    tr.style.cursor="pointer";
+    tr.innerHTML = `
+      <td>${c.label}</td>
+      <td>${c.origin}</td>
+      <td>${createdDate}</td>
+      <td>${fmtMonth(c.startDate)}</td>
+      <td>${c.exitDate ? fmtMonth(c.exitDate) : "—"}</td>
+      <td>${attachedNow}</td>
+      <td>${c.everWon}</td>
+      <td>${c.churnLost}</td>
+      <td>${c.exitLost}</td>
+      <td>${c.poolTransferred}</td>
+      <td>${c.recommendedIds.length}</td>
+      <td>${parent}</td>
+      <td><button class="ghost" data-explain="1">Pourquoi</button></td>
+    `;
+    tr.addEventListener("click",(ev)=>{
+      const btn = ev.target && ev.target.closest && ev.target.closest('button[data-explain="1"]');
+      STATE.selectedConsultantId = c.id;
+      renderViz(monthIndex);
+      renderDetails();
+      if(btn) showConsultantExplainModal(c.id);
+      else showConsultantExplainModal(c.id);
+    });
+    tb.appendChild(tr);
+  }
+}
+
+function renderPoolTable(){
+  const monthIndex = STATE.nowIndex;
+  const cache = STATE.cache[monthIndex];
+  const date = cache.date;
+  document.getElementById("poolTitle").textContent = `${fmtMonth(date)} — ${cache.poolIds.length} clients`;
+
+  const tb = document.querySelector("#tblPool tbody");
+  tb.innerHTML = "";
+
+  for(const cid of cache.poolIds){
+    const cl = STATE.globalClients.get(cid);
+    const fromId = cl.poolFromConsultantId;
+    const fromLabel = fromId ? (STATE.globalConsultants.get(fromId)?.label || fromId) : "—";
+    const fromStop = cl.poolFromConsultantExitDate ? fmtMonth(cl.poolFromConsultantExitDate) : "—";
+    const poolStart = cl.poolStartDate ? fmtMonth(cl.poolStartDate) : "—";
+    const end = cl.endDate ? fmtMonth(cl.endDate) : "—";
+    const reason = cl.endReason || "—";
+    const status = (clientIsActiveAt(cl, date) && clientIsInPoolAt(cl, date)) ? "POOL_ACTIF" : "—";
+
+    const tr=document.createElement("tr");
+    tr.innerHTML = `
+      <td>${cid.slice(-6)}</td>
+      <td>${fmtMonth(cl.startDate)}</td>
+      <td>${fromLabel}</td>
+      <td>${fromStop}</td>
+      <td>${poolStart}</td>
+      <td>${end}</td>
+      <td>${reason}</td>
+      <td><span class="badge b-off">${status}</span></td>
+    `;
+    tb.appendChild(tr);
+  }
+}
+
+function renderMonthlyTable(){
+  const tb = document.querySelector("#tblMonthly tbody");
+  tb.innerHTML = "";
+  for(const h of STATE.globalHistory){
+    const tr=document.createElement("tr");
+    tr.innerHTML = `
+      <td>${fmtMonth(h.date)}</td>
+      <td>${h.aliveConsultants}</td>
+      <td>${h.clientsActive}</td>
+      <td>${h.poolClients}</td>
+      <td>${h.gained}</td>
+      <td>${h.lostChurn}</td>
+      <td>${h.lostExit}</td>
+      <td>${h.baseRecruitsAdded}</td>
+      <td>${h.rocoRecruitsAdded}</td>
+      <td>${h.recruitsPerYearEffective}</td>
+    `;
+    tb.appendChild(tr);
+  }
+}
+
+function renderAnnualTable(){
+  const years = STATE.annualCache;
+  const tb = document.querySelector("#tblAnnual tbody");
+  tb.innerHTML = "";
+  for(const y of years){
+    const tr=document.createElement("tr");
+    tr.style.cursor="pointer";
+    tr.innerHTML = `
+      <td>${y.year}</td>
+      <td>${y.gained}</td>
+      <td>${y.lost}</td>
+      <td>${y.endClients}</td>
+      <td>${y.endConsultants}</td>
+      <td>${y.endPool}</td>
+      <td>${y.newConsultants}</td>
+      <td>${y.baseRecruits}</td>
+      <td>${y.rocoRecruits}</td>
+      <td>${y.avgClientsPerConsultant}</td>
+    `;
+    tr.addEventListener("click",()=>showYearExplainModal(y.year));
+    tb.appendChild(tr);
+  }
+}
+
+/* ===================== KPI + tabs ===================== */
+function setActiveTab(which){
+  const map = {
+    details:["tabBtnDetails","tabDetails"],
+    consultants:["tabBtnConsultants","tabConsultants"],
+    pool:["tabBtnPool","tabPool"],
+    charts:["tabBtnCharts","tabCharts"],
+    monthly:["tabBtnMonthly","tabMonthly"],
+    annual:["tabBtnAnnual","tabAnnual"],
+  };
+  for(const k of Object.keys(map)){
+    document.getElementById(map[k][0]).classList.toggle("active", k===which);
+    document.getElementById(map[k][1]).classList.toggle("active", k===which);
+  }
+}
+
+/* ===================== CSV exports ===================== */
+function toCsv(rows, headers){
+  const esc = (v)=>{
+    const s = (v===null || v===undefined) ? "" : String(v);
+    const needs = /[",\n;]/.test(s);
+    const s2 = s.replace(/"/g,'""');
+    return needs ? `"${s2}"` : s2;
+  };
+  const sep = ";";
+  const lines = [];
+  lines.push(headers.map(esc).join(sep));
+  for(const r of rows) lines.push(headers.map(h=>esc(r[h])).join(sep));
+  return lines.join("\n");
+}
+function downloadText(filename, content, mime="text/plain;charset=utf-8"){
+  const blob = new Blob([content], {type:mime});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href=url; a.download=filename; a.click();
+  URL.revokeObjectURL(url);
+}
+function exportMonthlyCsv(){
+  const rows = STATE.globalHistory.map(h=>({
+    "Date": fmtMonth(h.date),
+    "Consultants vivants": h.aliveConsultants,
+    "Clients actifs": h.clientsActive,
+    "Pool actifs": h.poolClients,
+    "Acquis": h.gained,
+    "Perdus churn": h.lostChurn,
+    "Perdus sorties": h.lostExit,
+    "BASE ajoutés": h.baseRecruitsAdded,
+    "ROCO ajoutés": h.rocoRecruitsAdded,
+    "Recrutement/an effectif": h.recruitsPerYearEffective
+  }));
+  downloadText("mensuel.csv", toCsv(rows, Object.keys(rows[0])), "text/csv;charset=utf-8");
+}
+function exportAnnualCsv(){
+  const rows = STATE.annualCache.map(y=>({
+    "Année": y.year,
+    "Clients obtenus": y.gained,
+    "Clients perdus": y.lost,
+    "Clients fin": y.endClients,
+    "Consultants fin": y.endConsultants,
+    "Pool fin": y.endPool,
+    "Nouveaux consultants": y.newConsultants,
+    "BASE recruits": y.baseRecruits,
+    "ROCO recruits": y.rocoRecruits,
+    "Moy clients/consultant": y.avgClientsPerConsultant
+  }));
+  downloadText("annuel.csv", toCsv(rows, Object.keys(rows[0])), "text/csv;charset=utf-8");
+}
+function exportConsultantsCsvForMonth(){
+  const monthIndex = STATE.nowIndex;
+  const cache = STATE.cache[monthIndex];
+  const rows = cache.consultantsView.map(c=>{
+    const attachedNow = (cache.attachedBy.get(c.id) || []).length;
+    return {
+      "Nom": c.label,
+      "ID": c.id,
+      "Origine": c.origin,
+      "Créé": fmtMonth(addMonths(readParams().startDate, c.createdMonthIndex)),
+      "Raison": c.createdReason || "",
+      "Parent ROCO": c.referrerId || "",
+      "Début": fmtMonth(c.startDate),
+      "Fin": c.exitDate ? fmtMonth(c.exitDate) : "",
+      "Actifs (mois)": attachedNow,
+      "Gagnés": c.everWon
+    };
+  });
+  downloadText(`consultants_${fmtMonth(cache.date)}.csv`, toCsv(rows, Object.keys(rows[0])), "text/csv;charset=utf-8");
+}
+function exportPoolCsvForMonth(){
+  const monthIndex = STATE.nowIndex;
+  const cache = STATE.cache[monthIndex];
+  const date = cache.date;
+  const rows = cache.poolIds.map(cid=>{
+    const cl = STATE.globalClients.get(cid);
+    const fromId = cl.poolFromConsultantId;
+    return {
+      "Client": cid,
+      "Début": fmtMonth(cl.startDate),
+      "Ancien consultant": fromId ? (STATE.globalConsultants.get(fromId)?.label || fromId) : "",
+      "Arrêt consultant": cl.poolFromConsultantExitDate ? fmtMonth(cl.poolFromConsultantExitDate) : "",
+      "Passage pool": cl.poolStartDate ? fmtMonth(cl.poolStartDate) : "",
+      "Fin": cl.endDate ? fmtMonth(cl.endDate) : "",
+      "Raison fin": cl.endReason || "",
+      "Statut": (clientIsActiveAt(cl, date) && clientIsInPoolAt(cl, date)) ? "POOL_ACTIF" : ""
+    };
+  });
+  downloadText(`pool_${fmtMonth(cache.date)}.csv`, toCsv(rows, Object.keys(rows[0])), "text/csv;charset=utf-8");
+}
+
+/* ===================== Charts PNG export ===================== */
+function downloadChartPng(canvasId, filename){
+  const canvas = document.getElementById(canvasId);
+  if(!canvas) return;
+  const a = document.createElement("a");
+  a.download=filename;
+  a.href=canvas.toDataURL("image/png");
+  a.click();
+}
+function exportAllChartsPng(){
+  downloadChartPng("chartStock", "chart_stock.png");
+  downloadChartPng("chartFlow", "chart_flow.png");
+  downloadChartPng("chartRevenue", "chart_revenue.png");
+}
+
+/* ===================== Pan/zoom ===================== */
+function onWheel(ev){
+  ev.preventDefault();
+  const delta = -ev.deltaY;
+  const zoomFactor = delta > 0 ? 1.08 : 0.92;
+
+  const rect = svg.getBoundingClientRect();
+  const mx = (ev.clientX - rect.left);
+  const my = (ev.clientY - rect.top);
+
+  const beforeX = (mx - STATE.viewport.x) / STATE.viewport.k;
+  const beforeY = (my - STATE.viewport.y) / STATE.viewport.k;
+
+  STATE.viewport.k = clamp(STATE.viewport.k * zoomFactor, 0.5, 2.8);
+
+  const afterX = beforeX * STATE.viewport.k + STATE.viewport.x;
+  const afterY = beforeY * STATE.viewport.k + STATE.viewport.y;
+
+  STATE.viewport.x += (mx - afterX);
+  STATE.viewport.y += (my - afterY);
+
+  setViewTransform();
+}
+let isPanning=false, panStart=null;
+function onPointerDown(ev){
+  isPanning=true;
+  panStart={x:ev.clientX,y:ev.clientY,vx:STATE.viewport.x,vy:STATE.viewport.y};
+}
+function onPointerMove(ev){
+  if(!isPanning) return;
+  const dx=ev.clientX-panStart.x;
+  const dy=ev.clientY-panStart.y;
+  STATE.viewport.x=panStart.vx+dx;
+  STATE.viewport.y=panStart.vy+dy;
+  setViewTransform();
+}
+function onPointerUp(){ isPanning=false; panStart=null; }
+
+/* ===================== Navigation ===================== */
+function goToMonth(idx){
+  const p = readParams();
+  const target = clamp(idx, 0, p.monthsTotal-1);
+  STATE.nowIndex = target;
+
+  setKpi(target);
+  renderViz(target);
+  renderDetails();
+  renderConsultantsTable();
+  renderPoolTable();
+  renderMonthlyTable();
+  renderAnnualTable();
+
+  document.getElementById("timeSlider").value = target;
+}
+
+function play(){
+  if(STATE.running) return;
+  STATE.running=true;
+  document.getElementById("btnPlay").disabled=true;
+  document.getElementById("btnPause").disabled=false;
+
+  const ms = readParams().speedMs;
+  STATE.timer=setInterval(()=>{
+    const next=STATE.nowIndex+1;
+    if(next>=readParams().monthsTotal){ pause(); return; }
+    goToMonth(next);
+  }, ms);
+}
+function pause(){
+  STATE.running=false;
+  if(STATE.timer) clearInterval(STATE.timer);
+  STATE.timer=null;
+  document.getElementById("btnPlay").disabled=false;
+  document.getElementById("btnPause").disabled=true;
+}
+function stepOnce(){ pause(); goToMonth(STATE.nowIndex+1); }
+
+function hardReset(){
+  pause();
+  runSimulationAndCache();
+  buildCharts();
+  updateCharts();
+  STATE.viewport = {x:0,y:0,k:1};
+  goToMonth(0);
+  setViewTransform();
+}
+
+/* ===================== Wire ===================== */
+document.getElementById("btnReset").onclick=hardReset;
+document.getElementById("btnRecalc").onclick=hardReset;
+document.getElementById("btnPlay").onclick=play;
+document.getElementById("btnPause").onclick=pause;
+document.getElementById("btnStep").onclick=stepOnce;
+
+document.getElementById("btnExportAllCharts").onclick=exportAllChartsPng;
+document.getElementById("btnExportMonthlyCsv").onclick=exportMonthlyCsv;
+document.getElementById("btnExportAnnualCsv").onclick=exportAnnualCsv;
+document.getElementById("btnExportConsultantsCsv").onclick=exportConsultantsCsvForMonth;
+document.getElementById("btnExportPoolCsv").onclick=exportPoolCsvForMonth;
+
+document.getElementById("tabBtnDetails").onclick=()=>setActiveTab("details");
+document.getElementById("tabBtnConsultants").onclick=()=>setActiveTab("consultants");
+document.getElementById("tabBtnPool").onclick=()=>setActiveTab("pool");
+document.getElementById("tabBtnCharts").onclick=()=>setActiveTab("charts");
+document.getElementById("tabBtnMonthly").onclick=()=>setActiveTab("monthly");
+document.getElementById("tabBtnAnnual").onclick=()=>setActiveTab("annual");
+
+document.getElementById("timeSlider").addEventListener("input", e=>{ pause(); goToMonth(+e.target.value); });
+
+svg.addEventListener("wheel", onWheel, {passive:false});
+svg.addEventListener("pointerdown", onPointerDown);
+svg.addEventListener("pointermove", onPointerMove);
+window.addEventListener("pointerup", onPointerUp);
+
+// init
+hardReset();
+</script>
+</body>
+</html>
