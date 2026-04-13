@@ -120,28 +120,28 @@ import { AiQuestion, AiQuestionOption, AiQuestionItem } from './ai.service';
     .aq-options { display: flex; flex-wrap: wrap; gap: 4px; }
     .aq-chip { display: inline-flex; align-items: center; gap: 3px; font-size: 12px; padding: 2px 10px; border-radius: 12px; background: #f0f0f0; color: #999; transition: all 0.15s ease; }
     .aq-chip.clickable { cursor: pointer; }
-    .aq-chip.clickable:hover { background: #e6f4ff; color: #1677ff; }
-    .aq-chip.selected { background: #e6f4ff; color: #1677ff; border: 1px solid #91caff; font-weight: 500; }
+    .aq-chip.clickable:hover { background: #e6f4ff; color: #e61982; }
+    .aq-chip.selected { background: #e6f4ff; color: #e61982; border: 1px solid #91caff; font-weight: 500; }
     .aq-check { font-size: 10px; }
     .aq-batch { margin: 6px 0; padding: 8px 10px; background: #fff; border: 1px solid #f0f0f0; border-radius: 6px; }
     .aq-sub-text { font-size: 12px; color: #333; margin-bottom: 4px; font-weight: 500; }
     .aq-input { margin-top: 4px; }
     .aq-other { margin-top: 6px; width: 100%; }
     .aq-actions { display: flex; align-items: center; gap: 6px; margin-top: 8px; }
-    .send-icon { cursor: pointer; color: #1677ff; }
+    .send-icon { cursor: pointer; color: #e61982; }
 
     :host ::ng-deep .aq .ant-input-affix-wrapper:not(.ant-input-affix-wrapper-disabled):hover {
-      border-color: #1677ff !important;
+      border-color: #e61982 !important;
       border-right-width: 1px !important;
       z-index: 1;
     }
 
     :host ::ng-deep .aq .ant-input-affix-wrapper-focused,
     :host ::ng-deep .aq .ant-input-affix-wrapper:focus-within {
-      border-color: #1677ff !important;
+      border-color: #e61982 !important;
       border-right-width: 1px !important;
       z-index: 1;
-      box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.15) !important;
+      box-shadow: 0 0 0 2px rgba(230, 25, 130, 0.15) !important;
     }
   `]
 })

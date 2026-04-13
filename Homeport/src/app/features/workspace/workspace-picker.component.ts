@@ -39,12 +39,12 @@ import { AccessControlService, Workspace } from '../../services/access-control.s
     .header p { color: #6b7280; margin: 0; }
     .grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
     .card { display: flex; align-items: center; gap: 14px; padding: 16px 20px; border-radius: 14px; background: #fff; border: 1px solid #e5e7eb; cursor: pointer; transition: transform 0.1s ease, box-shadow 0.15s ease, border-color 0.15s ease; }
-    .card:hover { transform: translateY(-2px); box-shadow: 0 12px 24px rgba(0,0,0,.08); border-color: #1677ff; }
-    .card.default { border-color: #1677ff; background: linear-gradient(180deg, #f0f5ff 0%, #fff 100%); }
-    .avatar { width: 44px; height: 44px; border-radius: 12px; background: radial-gradient(100% 100% at 100% 0%, #f5f7ff 0%, #eaeefc 100%); border: 1px solid #e5e7eb; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px; flex-shrink: 0; }
+    .card:hover { transform: translateY(-2px); box-shadow: 0 12px 24px rgba(0,0,0,.08); border-color: #e61982; }
+    .card.default { border-color: #e61982; background: linear-gradient(180deg, #f0f5ff 0%, #fff 100%); }
+    .avatar { width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%); border: 1px solid #e5e7eb; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px; flex-shrink: 0; }
     .info { flex: 1; }
     .name { font-weight: 600; font-size: 16px; }
-    .badge { display: inline-block; margin-top: 4px; font-size: 11px; background: #e6f4ff; color: #1677ff; padding: 1px 8px; border-radius: 999px; }
+    .badge { display: inline-block; margin-top: 4px; font-size: 11px; background: #e6f4ff; color: #e61982; padding: 1px 8px; border-radius: 999px; }
   `]
 })
 export class WorkspacePickerComponent implements OnInit {

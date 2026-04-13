@@ -125,11 +125,11 @@ import { AuthTokenService } from '../../services/auth-token.service';
     .list-page { padding: 20px; max-width: 100%; overflow-x: hidden; }
     .container { max-width: 1080px; width: 100%; min-width: 0; margin: 0 auto; }
     .page-header { display:flex; align-items:flex-end; justify-content:space-between; margin-bottom: 16px; gap:10px; flex-wrap: wrap; }
-    .page-header h1 { margin: 0; font-size: 22px; font-weight: 650; letter-spacing: -0.02em; }
-    .page-header p { margin: 4px 0 0; color:#6b7280; }
+    .page-header h1 { margin: 0; font-size: 24px; font-weight: 700; letter-spacing: -0.02em; }
+    .page-header p { margin: 4px 0 0; color:#8b8b8b; }
     .editor { background:#fff; border:1px solid #ececec; border-radius:14px; padding:12px; margin-bottom: 16px; }
     .row { display:flex; gap:10px; align-items:center; flex-wrap: wrap; }
-    .row .text { width: 220px; max-width: 100%; border:1px solid #e5e7eb; border-radius:8px; padding:6px 10px; outline:none; }
+    .row .text { width: 220px; max-width: 100%; border: none; border-radius: 14px; padding: 8px 14px; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.04); outline: none; font-size: 13px; }
     .row .select { min-width: 160px; }
     .row .workspace-select { min-width: 220px; }
     .native-role-select {
@@ -143,7 +143,7 @@ import { AuthTokenService } from '../../services/auth-token.service';
       padding: 0 10px;
       outline: none;
     }
-    .native-role-select:focus { border-color: #1677ff; }
+    .native-role-select:focus { border-color: #e61982; }
     .native-role-select:disabled { background:#f3f4f6; color:#9ca3af; cursor:not-allowed; }
     .native-workspace-select {
       min-width: 220px;
@@ -157,7 +157,7 @@ import { AuthTokenService } from '../../services/auth-token.service';
       outline: none;
     }
     .native-workspace-select option { padding: 4px 6px; }
-    .native-workspace-select:focus { border-color: #1677ff; }
+    .native-workspace-select:focus { border-color: #e61982; }
     .native-workspace-select:disabled { background:#f3f4f6; color:#9ca3af; cursor:not-allowed; }
     .native-workspace-field {
       min-width: 220px;
@@ -178,14 +178,14 @@ import { AuthTokenService } from '../../services/auth-token.service';
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    .row .primary { background:#1677ff; border-color:#1677ff; color:#fff; }
+    .row .primary { background:#e61982; border-color:#e61982; color:#fff; }
     .grid { display:grid; grid-template-columns: 1fr; gap:14px; width: 100%; min-width: 0; }
-    .card { display:flex; align-items:center; gap:10px; width: 100%; min-width: 0; padding:12px; border-radius:12px; background:linear-gradient(180deg,#fff,#fafafa); border:1px solid #ececec; }
-    .avatar { width:36px; height:36px; border-radius:12px; background: radial-gradient(100% 100% at 100% 0%, #f5f7ff 0%, #eaeefc 100%); border:1px solid #e5e7eb; display:flex; align-items:center; justify-content:center; font-weight:600; }
+    .card { display:flex; align-items:center; gap:10px; width: 100%; min-width: 0; padding:12px; border-radius:16px; background: #fff; }
+    .avatar { width:36px; height:36px; border-radius:12px; background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%); border:1px solid #e5e7eb; display:flex; align-items:center; justify-content:center; font-weight:600; }
     .leading { flex: 0 0 auto; }
     .content { flex:1 1 auto; min-width:0; }
     .name { font-weight: 600; letter-spacing: -0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .desc { color:#6b7280; font-size:12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .desc { color:#8b8b8b; font-size:12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .trailing { display:flex; align-items:center; gap:8px; min-width:0; flex: 0 1 auto; }
     .trailing > * { min-width: 0; }
     .small { min-width: 120px; }
@@ -193,7 +193,7 @@ import { AuthTokenService } from '../../services/auth-token.service';
     .native-role-select.small { min-width: 120px; }
     .native-workspace-select.small { min-width: 180px; min-height: 72px; }
     .icon-btn { border:1px solid #e5e7eb; background:#fff; color:#111; }
-    .icon-btn:hover:not([disabled]) { border-color:#1677ff; color:#1677ff; }
+    .icon-btn:hover:not([disabled]) { border-color:#e61982; color:#e61982; }
     @media (max-width: 1023px) {
       .editor .row > * { min-width: 0; }
       .row .text { flex: 1 1 100%; width: 100%; }
@@ -228,9 +228,9 @@ import { AuthTokenService } from '../../services/auth-token.service';
     }
     .loading .skeleton-grid { display:grid; grid-template-columns: 1fr; gap:14px; }
     .skeleton-card { height: 72px; border-radius: 12px; background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%); border:1px solid #ececec; position: relative; overflow: hidden; }
-    .skeleton-card:after { content:''; position:absolute; inset:0; transform: translateX(-100%); background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(0,0,0,0.05) 50%, rgba(255,255,255,0) 100%); animation: shimmer 1.2s infinite; }
+    .skeleton-card:after { content:''; position:absolute; inset:0; transform: translateX(-100%); background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(230,25,130,0.03) 50%, rgba(255,255,255,0) 100%); animation: shimmer 1.2s infinite; }
     @keyframes shimmer { 100% { transform: translateX(100%); } }
-    .error { color:#b42318; background:#fee4e2; border:1px solid #fecaca; padding:10px 12px; border-radius:10px; display:inline-block; }
+    .error { color:#b42318; background:#fef2f2; padding:10px 14px; border-radius:14px; font-size: 13px; }
   `]
 })
 export class UsersListComponent implements OnInit {

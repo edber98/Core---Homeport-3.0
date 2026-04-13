@@ -73,7 +73,7 @@ export class BuilderFactoryService {
         base.default = '';
       }
       if (type === 'color') {
-        base.default = '#1677ff';
+        base.default = '#e61982';
         base.col = { xs: 24, sm: 24, md: 12, lg: 12, xl: 12 };
       }
       if (type === 'rate') {

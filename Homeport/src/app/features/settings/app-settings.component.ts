@@ -89,7 +89,7 @@ import { Router } from '@angular/router';
     .page-header .intro { min-width: 0; }
     .page-header h1 { margin: 0; font-size: 22px; font-weight: 650; letter-spacing: -0.02em; }
     .page-header p { margin: 4px 0 0; color:#6b7280; }
-    .page-header .actions .primary { background:#1677ff; border-color:#1677ff; }
+    .page-header .actions .primary { background:#e61982; border-color:#e61982; }
     .page-header .actions .primary i { margin-right: 6px; }
     .cards { display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
     .card { border:1px solid #ececec; border-radius:12px; padding:12px; background:#fff; box-shadow: 0 8px 24px rgba(0,0,0,.04); }
@@ -103,8 +103,8 @@ import { Router } from '@angular/router';
     .card .actions { margin-top: 8px; display:flex; gap:8px; align-items:center; }
     .card .actions .import-btn { display:inline-flex; align-items:center; gap:8px; background:#fff; color:#111; border:1px solid #e5e7eb; border-radius:8px; padding:6px 10px; cursor:pointer; transition: border-color .15s ease, color .15s ease, background-color .15s ease, box-shadow .15s ease; }
     .card .actions .import-btn input[type=file] { display:none; }
-    .action-blue:hover { border-color:#1677ff; color:#1677ff; }
-    .card .actions .import-btn.action-blue:hover { border-color:#1677ff; color:#1677ff; }
+    .action-blue:hover { border-color:#e61982; color:#e61982; }
+    .card .actions .import-btn.action-blue:hover { border-color:#e61982; color:#e61982; }
     .action-red { background:#ef4444; border-color:#ef4444; color:#fff; }
     .action-red:hover { background:#dc2626; border-color:#dc2626; color:#fff; }
     .result { margin-top: 12px; color:#0f172a; }

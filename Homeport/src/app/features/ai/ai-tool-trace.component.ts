@@ -74,7 +74,7 @@ const TOOL_LABELS: Record<string, string> = {
   `,
   styles: [`
     .trace { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; background: #fafafa; border: 1px solid #f0f0f0; border-radius: 6px; font-size: 12px; color: #666; margin: 2px 0; }
-    .trace.running { color: #1677ff; border-color: #91caff; background: #e6f4ff; }
+    .trace.running { color: #e61982; border-color: #91caff; background: #e6f4ff; }
     .trace.error { color: #ff4d4f; border-color: #ffa39e; background: #fff2f0; }
     .label { font-weight: 500; max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .extra { color: #999; font-size: 11px; max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

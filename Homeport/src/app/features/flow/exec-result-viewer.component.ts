@@ -378,7 +378,7 @@ interface SectionGroup {
 
     .rv-img-preview { max-width: 160px; max-height: 100px; border-radius: 6px; object-fit: cover; cursor: pointer; transition: opacity 0.15s; }
     .rv-img-preview:hover { opacity: 0.8; }
-    .rv-file-link { color: #1677ff; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; }
+    .rv-file-link { color: #e61982; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; }
     .rv-file-link:hover { text-decoration: underline; }
     .rv-img-grid { display: flex; gap: 8px; flex-wrap: wrap; }
     .rv-file-list { display: flex; flex-direction: column; gap: 4px; }
@@ -387,7 +387,7 @@ interface SectionGroup {
     .rv-secret { color: #9ca3af; letter-spacing: 2px; }
     .rv-date-auto { font-variant-numeric: tabular-nums; }
 
-    .rv-link { color: #1677ff; text-decoration: none; word-break: break-all; }
+    .rv-link { color: #e61982; text-decoration: none; word-break: break-all; }
     .rv-link:hover { text-decoration: underline; }
 
     .rv-color { display: inline-flex; align-items: center; gap: 6px; font-family: monospace; }

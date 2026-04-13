@@ -351,7 +351,7 @@ import { DynamicForm } from '../../modules/dynamic-form/dynamic-form';
     .node-card .outputs .dot.error { background:#f759ab; }
 
     :host ::ng-deep button[nz-button], :host ::ng-deep .ant-btn { transition: background 160ms ease; }
-    :host ::ng-deep button[nz-button]:hover, :host ::ng-deep .ant-btn:hover { background: radial-gradient(100% 100% at 100% 0%, #f5f7ff 0%, #eaeefc 100%); }
+    :host ::ng-deep button[nz-button]:hover, :host ::ng-deep .ant-btn:hover { background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%); }
 
     .dialog-preview { display:flex; justify-content:center; padding: 6px 0; }
     .dialog-box {
@@ -485,7 +485,7 @@ export class NodeTemplateViewerComponent implements OnInit {
   simpleIconUrl(id: string) { return `https://cdn.simpleicons.org/${encodeURIComponent(id)}`; }
   simpleIconUrlWithColor(id: string, color?: string) { const hex = (color || '#111').replace('#',''); return `https://cdn.simpleicons.org/${encodeURIComponent(id)}/${hex}`; }
   fgColor(bg?: string|null): string {
-    const b = String(bg || '#1677ff');
+    const b = String(bg || '#e61982');
     try {
       const { r, g, b: bb } = this.hexToRgb(b);
       const yiq = (r * 299 + g * 587 + bb * 114) / 1000;

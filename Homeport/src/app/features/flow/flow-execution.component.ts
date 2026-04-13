@@ -420,12 +420,12 @@ import { NodeExecResultDialogComponent } from './node-exec-result-dialog.compone
     }
     :host ::ng-deep .mode-row .mode-select .ant-select-selector:hover { border-color:#d1d5db; }
     :host ::ng-deep .mode-row .ant-select-focused .ant-select-selector {
-      border-color:#1677ff;
-      box-shadow: 0 0 0 2px rgba(22,119,255,0.18);
+      border-color:#e61982;
+      box-shadow: 0 0 0 2px rgba(230,25,130,0.18);
     }
     :host ::ng-deep .mode-row .ant-select.ant-select-focused:not(.ant-select-disabled):not(.ant-select-customize-input) .ant-select-selector {
-      border-color:#1677ff !important;
-      box-shadow: 0 0 0 2px rgba(22,119,255,0.18) !important;
+      border-color:#e61982 !important;
+      box-shadow: 0 0 0 2px rgba(230,25,130,0.18) !important;
     }
     :host ::ng-deep .mode-row .mode-select .ant-select-selection-item { line-height: 26px; }
     :host ::ng-deep .mode-row .mode-select .ant-select-selection-item,
@@ -442,15 +442,15 @@ import { NodeExecResultDialogComponent } from './node-exec-result-dialog.compone
       color: #0b5ed7;
     }
     .mode-row .ant-btn { border:1px solid #e5e7eb; background:#fff; border-radius:10px; padding:6px 8px; font-size:12px; height:auto; line-height: 1; transition: background 150ms ease, color 150ms ease, box-shadow 150ms ease, transform 150ms ease, border-color 150ms ease; }
-    .mode-row .ant-btn:hover { border-color:#c7dbff; background:#e8f1ff; color:#0b5ed7; box-shadow:0 4px 12px rgba(22,119,255,0.18); transform: translateY(-1px); }
-    .mode-row .ant-btn-primary { background:#1677ff; border-color:#1677ff; color:#fff; }
-    .mode-row .ant-btn-primary:hover { background:#0b5ed7; border-color:#0b5ed7; color:#fff; box-shadow:0 4px 12px rgba(22,119,255,0.22); }
+    .mode-row .ant-btn:hover { border-color:#f9a8d4; background:#e8f1ff; color:#0b5ed7; box-shadow:0 4px 12px rgba(230,25,130,0.18); transform: translateY(-1px); }
+    .mode-row .ant-btn-primary { background:#e61982; border-color:#e61982; color:#fff; }
+    .mode-row .ant-btn-primary:hover { background:#0b5ed7; border-color:#0b5ed7; color:#fff; box-shadow:0 4px 12px rgba(230,25,130,0.22); }
     .exec-item .row.top .right .ant-btn { transition: background 150ms ease, color 150ms ease, box-shadow 150ms ease, transform 150ms ease, border-color 150ms ease; }
     .exec-item .row.top .right .ant-btn:hover {
-      border-color:#c7dbff;
+      border-color:#f9a8d4;
       background:#e8f1ff;
       color:#0b5ed7;
-      box-shadow:0 4px 12px rgba(22,119,255,0.18);
+      box-shadow:0 4px 12px rgba(230,25,130,0.18);
       transform: translateY(-1px);
     }
     .exec-item .row.top .right .ant-btn-dangerous:hover {
@@ -489,7 +489,7 @@ import { NodeExecResultDialogComponent } from './node-exec-result-dialog.compone
       justify-content: center;
       cursor: pointer;
     }
-    .exec-item .kebab:hover { border-color:#c7dbff; background:#e8f1ff; color:#0b5ed7; box-shadow:0 4px 12px rgba(22,119,255,0.18); transform: translateY(-1px); }
+    .exec-item .kebab:hover { border-color:#f9a8d4; background:#e8f1ff; color:#0b5ed7; box-shadow:0 4px 12px rgba(230,25,130,0.18); transform: translateY(-1px); }
     .exec-actions-menu {
       position: fixed;
       z-index: 50;
@@ -502,7 +502,7 @@ import { NodeExecResultDialogComponent } from './node-exec-result-dialog.compone
       box-shadow: 0 10px 24px rgba(0,0,0,0.12);
     }
     .exec-actions-menu .mi-label { display: none; }
-    .exec-item.active { border-color:#1677ff; background:#f3f7ff; box-shadow: 0 0 0 2px rgba(22,119,255,0.12); }
+    .exec-item.active { border-color:#e61982; background:#f3f7ff; box-shadow: 0 0 0 2px rgba(230,25,130,0.12); }
     .exec-day { display:flex; flex-direction:column; gap:8px; }
     .exec-day-title {
       font-weight: 700;
@@ -515,15 +515,15 @@ import { NodeExecResultDialogComponent } from './node-exec-result-dialog.compone
     .exec-item .row.header { justify-content:flex-start; }
     .exec-item .status-tag { text-transform: lowercase; }
     .exec-item .row.header .start { color:#111; font-size:12px; font-weight:700; }
-    .exec-item .row.id { color:#1677ff; font-size:12px; }
+    .exec-item .row.id { color:#e61982; font-size:12px; }
     .exec-item .row .id.mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
     .exec-item .row.meta { color:#6b7280; font-size:12px; }
     .exec-actions-menu .ant-btn { transition: background 150ms ease, color 150ms ease, box-shadow 150ms ease, transform 150ms ease, border-color 150ms ease; }
     .exec-actions-menu .ant-btn:hover {
-      border-color:#c7dbff;
+      border-color:#f9a8d4;
       background:#e8f1ff;
       color:#0b5ed7;
-      box-shadow:0 4px 12px rgba(22,119,255,0.18);
+      box-shadow:0 4px 12px rgba(230,25,130,0.18);
       transform: translateY(-1px);
     }
     .exec-actions-menu .ant-btn-dangerous:hover {
@@ -537,8 +537,8 @@ import { NodeExecResultDialogComponent } from './node-exec-result-dialog.compone
     .exec-item .badge.st.error { color:#842029; background:#f8d7da; border-color:#f5c2c7; }
     .exec-item .badge.st.running { color:#1d4ed8; background:#dbeafe; border-color:#bfdbfe; }
     /* Left panel scrolls itself; no internal max-height */
-    .icon-btn.primary { background:#1677ff; color:#fff; border:1px solid #1677ff; }
-    .exec-list li.sel { border-color:#1677ff; }
+    .icon-btn.primary { background:#e61982; color:#fff; border:1px solid #e61982; }
+    .exec-list li.sel { border-color:#e61982; }
     .attempts { margin-top: 10px; }
     .attempts h5 { margin: 8px 0; }
     .attempt { border:1px solid #e5e7eb; border-radius:10px; padding:8px; margin-bottom:8px; min-width: 0; }
@@ -650,10 +650,10 @@ import { NodeExecResultDialogComponent } from './node-exec-result-dialog.compone
       transition: background 150ms ease, color 150ms ease, box-shadow 150ms ease, transform 150ms ease, border-color 150ms ease;
     }
     .details-panel .details-meta .panel-actions .action-btn.ant-btn:hover {
-      border-color:#c7dbff;
+      border-color:#f9a8d4;
       background:#e8f1ff;
       color:#0b5ed7;
-      box-shadow:0 4px 12px rgba(22,119,255,0.18);
+      box-shadow:0 4px 12px rgba(230,25,130,0.18);
       transform: translateY(-1px);
     }
     .details-panel .attempt .sub .toggle {
@@ -667,10 +667,10 @@ import { NodeExecResultDialogComponent } from './node-exec-result-dialog.compone
       transition: background 150ms ease, color 150ms ease, box-shadow 150ms ease, transform 150ms ease, border-color 150ms ease;
     }
     .details-panel .attempt .sub .toggle:hover {
-      border-color:#c7dbff;
+      border-color:#f9a8d4;
       background:#e8f1ff;
       color:#0b5ed7;
-      box-shadow:0 4px 12px rgba(22,119,255,0.18);
+      box-shadow:0 4px 12px rgba(230,25,130,0.18);
       transform: translateY(-1px);
     }
     .details-panel .panel-heading.details-heading .status-tag { text-transform: lowercase; }

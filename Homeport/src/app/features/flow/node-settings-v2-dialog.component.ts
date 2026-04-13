@@ -223,7 +223,7 @@ import { FormsModule } from '@angular/forms';
     .header { display:flex; align-items:center; justify-content:flex-end; padding: 10px 10px 0 10px; flex: 0 0 auto; }
     .title { font-weight: 600; }
     .close { border:1px solid #e5e7eb; background:#fff; border-radius: 10px; width: 32px; height: 28px; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; color:#6b7280; font-size:14px; line-height:1; }
-    .close:hover { border-color:#c7dbff; background:#e8f1ff; color:#0b5ed7; }
+    .close:hover { border-color:#f9a8d4; background:#e8f1ff; color:#0b5ed7; }
     .body { flex:1 1 auto; min-height:0; display:grid; grid-template-columns: 1fr minmax(480px, 1.2fr) 1fr; gap: 12px; padding: 0; overflow:hidden; }
     .col { min-height:0; overflow-y:auto; border-radius: 10px; padding: 0; display:flex; flex-direction:column; gap:8px; }
     .col.center { overflow: hidden; display:flex; flex-direction:column; min-height:0; }
@@ -250,7 +250,7 @@ import { FormsModule } from '@angular/forms';
     .sc-list.compact { gap:4px; margin-top:-2px; }
     .sc-item { border:1px solid #e5e7eb; background:#fff; border-radius: 9px; padding:2px 6px; font-size:11px; cursor:pointer; display:inline-flex; align-items:center; gap:6px; max-width: 100%; overflow:hidden; text-overflow: ellipsis; white-space: nowrap; }
     .sc-item.active, .sc-item:hover { background:#F8FBFF; border-color:#DBEAFE; }
-    .sc-item .dot { width:6px; height:6px; border-radius:50%; background:#1677ff; display:inline-block; }
+    .sc-item .dot { width:6px; height:6px; border-radius:50%; background:#e61982; display:inline-block; }
     .badge.real { color:#0a7; border:1px solid #bfe; background:#eff; border-radius: 8px; padding: 0 6px; font-size:11px; }
     .exec-info { padding: 0 8px 6px 8px; font-size: 12px; color:#6b7280; display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
     .exec-info .sep { color:#9ca3af; }
@@ -296,7 +296,7 @@ import { FormsModule } from '@angular/forms';
       cursor: pointer;
       z-index: 6;
     }
-    .m-close:hover { border-color:#c7dbff; background:#e8f1ff; color:#0b5ed7; }
+    .m-close:hover { border-color:#f9a8d4; background:#e8f1ff; color:#0b5ed7; }
     :host(.tablet-portrait) .m-dialog { width: min(96vw, 920px); height: min(calc(var(--vh, 1vh) * 94), 940px); }
     @supports (height: 100dvh) {
       .m-dialog {
@@ -909,7 +909,7 @@ export class FlowNodeSettingsV2DialogComponent implements OnChanges, OnInit, Aft
       if (sc && sc.path && Array.isArray(sc.path.edges)) {
         const key = (e: any) => `${String(e.source || e.from)}|${String(e.target || e.to)}|${String(e.sourceHandle || '')}`;
         const wanted = new Set(sc.path.edges.map((it: any) => `${String(it.sourceId)}|${String(it.targetId)}|${String(it.sourceHandle || '')}`));
-        this.displayEdges = (this.baseEdges || []).map((e: any) => wanted.has(key(e)) ? ({ ...e, data: { ...(e as any).data, color: '#1677ff', strokeWidth: 2, onPath: true } }) : ({ ...e, data: { ...(e as any).data, onPath: false } }));
+        this.displayEdges = (this.baseEdges || []).map((e: any) => wanted.has(key(e)) ? ({ ...e, data: { ...(e as any).data, color: '#e61982', strokeWidth: 2, onPath: true } }) : ({ ...e, data: { ...(e as any).data, onPath: false } }));
         const nidSet = new Set<string>(); for (const it of sc.path.edges) { nidSet.add(String(it.sourceId)); nidSet.add(String(it.targetId)); }
         this.focusNodeIds = Array.from(nidSet.values());
       }

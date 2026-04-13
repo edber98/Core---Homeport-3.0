@@ -14,7 +14,7 @@ export function launchConfetti(targetEl?: HTMLElement): void {
   document.body.appendChild(canvas);
 
   const ctx = canvas.getContext('2d')!;
-  const colors = ['#1890ff', '#52c41a', '#faad14', '#ff4d4f', '#722ed1', '#13c2c2'];
+  const colors = ['#e61982', '#52c41a', '#faad14', '#ff4d4f', '#722ed1', '#13c2c2'];
   const particles: Particle[] = [];
   const count = 60;
 

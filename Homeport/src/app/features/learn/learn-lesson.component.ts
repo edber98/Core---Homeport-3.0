@@ -128,7 +128,7 @@ import { launchConfetti } from './learn-confetti';
       <div class="ll-tours" *ngIf="relatedTours.length">
         <nz-divider></nz-divider>
         <div class="ll-tours-header">
-          <span nz-icon nzType="compass" nzTheme="outline" style="font-size:16px; color:#1890ff"></span>
+          <span nz-icon nzType="compass" nzTheme="outline" style="font-size:16px; color:#e61982"></span>
           <span class="ll-tours-title">Visites guidées</span>
         </div>
         <div class="ll-tours-list">
@@ -196,7 +196,7 @@ import { launchConfetti } from './learn-confetti';
     }
     .ll-theory th { background: #fafafa; font-weight: 600; }
     .ll-theory strong { font-weight: 600; }
-    .ll-theory a { color: #1890ff; }
+    .ll-theory a { color: #e61982; }
 
     /* Tip */
     .ll-tip {
@@ -220,7 +220,7 @@ import { launchConfetti } from './learn-confetti';
     .ll-exercise-header {
       display: flex; align-items: center; gap: 8px; margin-bottom: 12px;
     }
-    .ll-exercise-icon { color: #1890ff; font-size: 16px; }
+    .ll-exercise-icon { color: #e61982; font-size: 16px; }
     .ll-exercise-title { font-weight: 600; font-size: 15px; }
     .ll-exercise-success { border-color: #52c41a; box-shadow: 0 0 0 2px rgba(82, 196, 26, 0.15); }
     .ll-exercise-failure { animation: ll-shake 0.4s ease-in-out; }

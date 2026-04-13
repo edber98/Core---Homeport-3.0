@@ -57,7 +57,7 @@ import { FormsModule } from '@angular/forms';
       font-family: 'SFMono-Regular', Consolas, monospace; font-size: 14px;
       outline: none; transition: border-color 0.2s; box-sizing: border-box;
     }
-    .dee-input:focus { border-color: #1890ff; }
+    .dee-input:focus { border-color: #e61982; }
 
     .dee-examples { margin-top: 10px; }
     .dee-examples-title { font-size: 12px; color: #999; margin-bottom: 6px; }
@@ -67,7 +67,7 @@ import { FormsModule } from '@angular/forms';
       font-family: monospace; font-size: 12px; cursor: pointer;
       transition: all 0.15s;
     }
-    .dee-example-btn:hover { border-color: #1890ff; color: #1890ff; }
+    .dee-example-btn:hover { border-color: #e61982; color: #e61982; }
 
     .dee-result {
       flex: 1; background: #f6ffed; border: 1px solid #b7eb8f; border-radius: 8px;

@@ -134,7 +134,7 @@ export class AppProviderViewerComponent implements OnInit, OnDestroy {
   }
   simpleIconUrl(id: string) { return `https://cdn.simpleicons.org/${encodeURIComponent(id)}`; }
   fgColor(bg?: string | null): string {
-    const b = String(bg || '#1677ff');
+    const b = String(bg || '#e61982');
     try {
       const { r, g, b: bb } = this.hexToRgb(b);
       const yiq = (r * 299 + g * 587 + bb * 114) / 1000;

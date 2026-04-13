@@ -13,6 +13,11 @@ import { LearnProgressService } from './learn-progress.service';
   template: `
     <!-- Collapsed mode -->
     <ng-container *ngIf="collapsed">
+      <div class="ls-collapsed-toggle">
+        <button class="ls-toggle-btn" (click)="toggleClick.emit()" nz-tooltip nzTooltipTitle="Ouvrir" nzTooltipPlacement="right">
+          <span nz-icon nzType="menu-unfold" nzTheme="outline"></span>
+        </button>
+      </div>
       <div class="ls-collapsed-icons">
         <div *ngFor="let mod of modules" class="ls-icon-btn"
              [class.active]="activeModuleId === mod.id"
@@ -28,6 +33,9 @@ import { LearnProgressService } from './learn-progress.service';
     <ng-container *ngIf="!collapsed">
       <div class="ls-header">
         <span class="ls-title">Formation</span>
+        <button class="ls-toggle-btn" (click)="toggleClick.emit()" nz-tooltip nzTooltipTitle="Réduire">
+          <span nz-icon nzType="menu-fold" nzTheme="outline"></span>
+        </button>
       </div>
       <div class="ls-modules">
         <div *ngFor="let mod of modules" class="ls-module" [class.expanded]="expandedModuleId() === mod.id">
@@ -68,55 +76,72 @@ import { LearnProgressService } from './learn-progress.service';
   styles: [`
     :host { display: flex; flex-direction: column; height: 100%; }
 
-    /* Collapsed */
-    .ls-collapsed-icons { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 12px 0; }
+    /* ── Collapsed ── */
+    .ls-collapsed-toggle { display: flex; justify-content: center; padding: 10px 0 4px; }
+    .ls-collapsed-icons { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 4px 0; }
     .ls-icon-btn {
       position: relative; display: flex; align-items: center; justify-content: center;
-      width: 36px; height: 36px; border-radius: 8px; cursor: pointer; font-size: 18px; color: #595959;
-      transition: all 0.2s;
+      width: 36px; height: 36px; border-radius: 10px; cursor: pointer; font-size: 18px; color: #8b8b8b;
+      transition: all 0.12s;
     }
-    .ls-icon-btn:hover { background: #f0f0f0; color: #1890ff; }
-    .ls-icon-btn.active { background: #e6f7ff; color: #1890ff; }
+    .ls-icon-btn:hover { background: #fdf2f8; color: #e61982; }
+    .ls-icon-btn.active { background: #e61982; color: #fff; box-shadow: 0 2px 8px rgba(230,25,130,0.25); }
     .ls-icon-dot {
-      position: absolute; bottom: 2px; right: 2px; width: 8px; height: 8px;
-      border-radius: 50%; background: #52c41a;
+      position: absolute; bottom: 2px; right: 2px; width: 7px; height: 7px;
+      border-radius: 50%; background: #16a34a;
     }
 
-    /* Expanded */
+    /* ── Header (like AI conversations) ── */
     .ls-header {
-      padding: 16px 16px 12px; border-bottom: 1px solid #f0f0f0;
+      display: flex; align-items: center; gap: 10px;
+      padding: 12px 16px; flex-shrink: 0;
     }
-    .ls-title { font-size: 16px; font-weight: 600; }
+    .ls-title { font-size: 15px; font-weight: 700; color: #1a1a1a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .ls-toggle-btn {
+      margin-left: auto;
+      display: flex; align-items: center; justify-content: center;
+      width: 28px; height: 28px;
+      border: none; border-radius: 8px; background: transparent;
+      color: #8b8b8b; cursor: pointer; font-size: 14px;
+      transition: all 0.12s;
+    }
+    .ls-toggle-btn:hover { background: #fdf2f8; color: #e61982; }
 
-    .ls-modules { flex: 1; overflow-y: auto; padding: 8px 0; }
-    .ls-module { border-bottom: 1px solid #f5f5f5; }
+    /* ── Modules ── */
+    .ls-modules { flex: 1; overflow-y: auto; padding: 4px 8px; scrollbar-width: none; }
+    .ls-modules::-webkit-scrollbar { display: none; }
+    .ls-module { margin-bottom: 2px; }
     .ls-module-header {
-      display: flex; align-items: center; gap: 8px; padding: 10px 16px;
-      cursor: pointer; font-size: 14px; transition: background 0.15s;
+      display: flex; align-items: center; gap: 8px; padding: 9px 12px;
+      cursor: pointer; font-size: 13px; border-radius: 10px; transition: background 0.1s;
     }
-    .ls-module-header:hover { background: #fafafa; }
-    .ls-module-icon { font-size: 16px; color: #1890ff; flex-shrink: 0; }
-    .ls-module-title { flex: 1; font-weight: 500; }
+    .ls-module-header:hover { background: #e8e8e8; }
+    .ls-module.expanded .ls-module-header { background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+    .ls-module-icon { font-size: 16px; color: #e61982; flex-shrink: 0; }
+    .ls-module-title { flex: 1; font-weight: 500; color: #1a1a1a; }
     .ls-module-badge { flex-shrink: 0; }
-    .ls-module-progress { font-size: 12px; color: #999; flex-shrink: 0; }
-    .ls-chevron { font-size: 12px; color: #999; flex-shrink: 0; }
+    .ls-module-progress { font-size: 11px; color: #b0b0b0; flex-shrink: 0; }
+    .ls-chevron { font-size: 11px; color: #b0b0b0; flex-shrink: 0; }
 
-    .ls-lessons { padding: 0 0 4px; }
+    /* ── Lessons ── */
+    .ls-lessons { padding: 2px 0 4px 12px; }
     .ls-lesson {
-      display: flex; align-items: center; gap: 8px; padding: 7px 16px 7px 40px;
-      cursor: pointer; font-size: 13px; transition: all 0.15s; border-left: 2px solid transparent;
+      display: flex; align-items: center; gap: 8px; padding: 7px 12px 7px 20px;
+      cursor: pointer; font-size: 13px; border-radius: 8px; transition: all 0.1s;
+      border-left: none;
     }
-    .ls-lesson:hover { background: #fafafa; }
-    .ls-lesson.active { background: #e6f7ff; border-left-color: #1890ff; }
-    .ls-lesson.completed .ls-lesson-title { color: #8c8c8c; }
+    .ls-lesson:hover { background: #e8e8e8; }
+    .ls-lesson.active { background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+    .ls-lesson.completed .ls-lesson-title { color: #b0b0b0; }
     .ls-lesson-icon { flex-shrink: 0; width: 16px; display: flex; align-items: center; justify-content: center; }
-    .ls-lesson-bullet { width: 6px; height: 6px; border-radius: 50%; background: #d9d9d9; }
-    .ls-lesson.active .ls-lesson-bullet { background: #1890ff; }
-    .ls-lesson-title { flex: 1; }
-    .ls-lesson-time { color: #bbb; font-size: 12px; flex-shrink: 0; }
+    .ls-lesson-bullet { width: 6px; height: 6px; border-radius: 50%; background: #d4d4d4; }
+    .ls-lesson.active .ls-lesson-bullet { background: #e61982; }
+    .ls-lesson-title { flex: 1; color: #1a1a1a; }
+    .ls-lesson-time { color: #c0c0c0; font-size: 11px; flex-shrink: 0; }
 
-    .ls-footer { padding: 12px 16px; border-top: 1px solid #f0f0f0; }
-    .ls-global-label { font-size: 12px; color: #999; margin-bottom: 4px; }
+    /* ── Footer ── */
+    .ls-footer { padding: 12px 16px; margin-top: auto; }
+    .ls-global-label { font-size: 11px; color: #b0b0b0; margin-bottom: 4px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
   `]
 })
 export class LearnSidebarComponent {
@@ -127,6 +152,7 @@ export class LearnSidebarComponent {
 
   @Output() selectModule = new EventEmitter<string>();
   @Output() selectLesson = new EventEmitter<{ moduleId: string; lessonId: string }>();
+  @Output() toggleClick = new EventEmitter<void>();
 
   expandedModuleId = signal<string | null>(null);
 

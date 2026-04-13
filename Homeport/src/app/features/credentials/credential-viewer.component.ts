@@ -157,7 +157,7 @@ import { CredentialEditDialogComponent } from './credential-edit-dialog.componen
       padding: 0 10px;
       box-shadow: none;
     }
-    .apple-btn:hover:not([disabled]) { border-color:#c7dbff; background: rgba(22,119,255,0.1); color:#1677ff; }
+    .apple-btn:hover:not([disabled]) { border-color:#f9a8d4; background: rgba(230,25,130,0.1); color:#e61982; }
     .apple-btn[disabled] { opacity: .55; cursor: not-allowed; }
     @media (max-width: 640px) {
       .page-header { flex-direction: row; align-items: flex-start; }

@@ -451,7 +451,7 @@ import { ApiClientService } from '../../services/api-client.service';
     .section-title { font-weight: 600; font-size: 14px; margin-bottom: 2px; display: flex; align-items: center; gap: 6px; }
     .section-desc { font-size: 12px; color: #999; margin-bottom: 10px; }
     .agent-option { display: flex; align-items: center; gap: 8px; padding: 2px 0; }
-    .agent-icon { font-size: 16px; color: #1677ff; }
+    .agent-icon { font-size: 16px; color: #e61982; }
     .agent-icon.custom { color: #722ed1; }
     .agent-icon-img { width: 20px; height: 20px; border-radius: 4px; object-fit: contain; }
     .agent-option-text { display: flex; flex-direction: column; min-width: 0; }
@@ -491,13 +491,13 @@ import { ApiClientService } from '../../services/api-client.service';
       transition: border-color .18s ease, box-shadow .18s ease, background-color .18s ease, transform .1s ease, color .18s ease;
     }
     .as-native-select:hover {
-      border-color: #1677ff;
+      border-color: #e61982;
       background: #fff;
-      box-shadow: 0 2px 6px rgba(22, 119, 255, 0.15);
+      box-shadow: 0 2px 6px rgba(230, 25, 130, 0.15);
     }
     .as-native-select:focus {
-      border-color: #1677ff;
-      box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.15);
+      border-color: #e61982;
+      box-shadow: 0 0 0 2px rgba(230, 25, 130, 0.15);
       background: #fff;
       color: #0958d9;
     }
@@ -526,25 +526,25 @@ import { ApiClientService } from '../../services/api-client.service';
     .create-agent { margin-top: 4px; }
     .create-agent-btn.ant-btn-dashed:hover:not(:disabled),
     .create-agent-btn.ant-btn-dashed:focus-visible:not(:disabled) {
-      border-color: #1677ff !important;
-      color: #1677ff !important;
+      border-color: #e61982 !important;
+      color: #e61982 !important;
       border-style: dashed;
     }
     :host ::ng-deep .active-agent-select .ant-select-selector:hover {
-      border-color: #1677ff !important;
+      border-color: #e61982 !important;
     }
     :host ::ng-deep .active-agent-select .ant-select-focused .ant-select-selector,
     :host ::ng-deep .active-agent-select .ant-select-open .ant-select-selector,
     :host ::ng-deep .active-agent-select .ant-select.ant-select-focused:not(.ant-select-disabled):not(.ant-select-customize-input) .ant-select-selector,
     :host ::ng-deep .active-agent-select.ant-select-focused .ant-select-selector,
     :host ::ng-deep .active-agent-select.ant-select-open .ant-select-selector {
-      border-color: #1677ff !important;
-      box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.15) !important;
+      border-color: #e61982 !important;
+      box-shadow: 0 0 0 2px rgba(230, 25, 130, 0.15) !important;
     }
     :host ::ng-deep .agent-customization-form .ant-input:hover,
     :host ::ng-deep .agent-customization-form .ant-input-number:hover,
     :host ::ng-deep .agent-customization-form .ant-select-selector:hover {
-      border-color: #1677ff !important;
+      border-color: #e61982 !important;
     }
     :host ::ng-deep .agent-customization-form .ant-input:focus,
     :host ::ng-deep .agent-customization-form .ant-input-focused,
@@ -552,8 +552,8 @@ import { ApiClientService } from '../../services/api-client.service';
     :host ::ng-deep .agent-customization-form .ant-select-focused .ant-select-selector,
     :host ::ng-deep .agent-customization-form .ant-select-open .ant-select-selector,
     :host ::ng-deep .agent-customization-form .ant-select.ant-select-focused:not(.ant-select-disabled):not(.ant-select-customize-input) .ant-select-selector {
-      border-color: #1677ff !important;
-      box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.15) !important;
+      border-color: #e61982 !important;
+      box-shadow: 0 0 0 2px rgba(230, 25, 130, 0.15) !important;
     }
     :host ::ng-deep .agent-customization-form .ant-input-number-focused .ant-input-number-input {
       box-shadow: none !important;
@@ -562,8 +562,8 @@ import { ApiClientService } from '../../services/api-client.service';
     .create-btns { display: flex; gap: 6px; margin-top: 6px; justify-content: flex-end; }
     .mcp-create-btns .mcp-add-btn.ant-btn-primary,
     .mcp-create-btns .mcp-add-btn.ant-btn-primary:not(:disabled) {
-      background: #1677ff;
-      border-color: #1677ff;
+      background: #e61982;
+      border-color: #e61982;
       color: #fff;
     }
     .mcp-create-btns .mcp-add-btn.ant-btn-primary:hover:not(:disabled),
@@ -587,8 +587,8 @@ import { ApiClientService } from '../../services/api-client.service';
     .save-hint { font-size: 11px; color: #999; margin-top: 4px; }
     .admin-stats-btn.ant-btn,
     .admin-stats-btn.ant-btn:not(:disabled) {
-      background: #1677ff;
-      border-color: #1677ff;
+      background: #e61982;
+      border-color: #e61982;
       color: #fff;
     }
     .admin-stats-btn.ant-btn:hover:not(:disabled),
@@ -619,23 +619,23 @@ import { ApiClientService } from '../../services/api-client.service';
     .tool-groups-grid label { font-size: 12px; }
     :host ::ng-deep .tool-groups-grid .ant-checkbox-wrapper:hover .ant-checkbox-inner,
     :host ::ng-deep .tool-groups-grid .ant-checkbox:hover .ant-checkbox-inner {
-      border-color: #1677ff !important;
+      border-color: #e61982 !important;
     }
     :host ::ng-deep .tool-groups-grid .ant-checkbox-checked .ant-checkbox-inner {
-      background-color: #1677ff !important;
-      border-color: #1677ff !important;
+      background-color: #e61982 !important;
+      border-color: #e61982 !important;
     }
     :host ::ng-deep .tool-groups-grid .ant-checkbox-input:focus + .ant-checkbox-inner {
-      border-color: #1677ff !important;
-      box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.15) !important;
+      border-color: #e61982 !important;
+      box-shadow: 0 0 0 2px rgba(230, 25, 130, 0.15) !important;
     }
     :host ::ng-deep textarea.custom-instructions-input.ant-input:hover {
-      border-color: #1677ff !important;
+      border-color: #e61982 !important;
     }
     :host ::ng-deep textarea.custom-instructions-input.ant-input:focus,
     :host ::ng-deep textarea.custom-instructions-input.ant-input-focused {
-      border-color: #1677ff !important;
-      box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.15) !important;
+      border-color: #e61982 !important;
+      box-shadow: 0 0 0 2px rgba(230, 25, 130, 0.15) !important;
     }
     .mcp-server-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
     .mcp-server-item { padding: 10px 12px; background: #fafafa; border-radius: 8px; border: 1px solid #f0f0f0; }

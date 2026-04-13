@@ -116,8 +116,8 @@ interface DragItem {
     /* Actions */
     .ddn-actions { display: flex; gap: 8px; margin-top: 14px; }
     .ddn-btn {
-      padding: 6px 18px; border: 1px solid #1890ff; border-radius: 6px;
-      background: #1890ff; color: #fff; cursor: pointer; font-size: 13px;
+      padding: 6px 18px; border: 1px solid #e61982; border-radius: 6px;
+      background: #e61982; color: #fff; cursor: pointer; font-size: 13px;
       transition: opacity 0.2s;
     }
     .ddn-btn:disabled { opacity: 0.5; cursor: default; }
@@ -141,7 +141,7 @@ interface DragItem {
 export class DemoDragNodesComponent {
   palette: DragItem[] = [
     { id: 'start', label: 'Start', icon: 'play-circle', color: '#52c41a' },
-    { id: 'http', label: 'HTTP', icon: 'api', color: '#1890ff' },
+    { id: 'http', label: 'HTTP', icon: 'api', color: '#e61982' },
     { id: 'condition', label: 'Condition', icon: 'fork', color: '#faad14' },
     { id: 'email', label: 'Email', icon: 'mail', color: '#722ed1' },
   ];

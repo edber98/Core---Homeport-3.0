@@ -325,30 +325,30 @@ interface ProcessedSegment {
     .args-value-wrap { min-width: 0; flex: 1; }
     .args-value { color: #333; word-break: break-word; white-space: pre-wrap; display: block; }
     .args-value-clamped { max-height: calc(4 * 1.5em); overflow: hidden; }
-    .args-expand-toggle { display: inline-block; font-size: 10px; color: #1677ff; cursor: pointer; margin-top: 1px; }
+    .args-expand-toggle { display: inline-block; font-size: 10px; color: #e61982; cursor: pointer; margin-top: 1px; }
     .args-expand-toggle:hover { text-decoration: underline; }
     .answered-question { background: #fafafa; border: 1px solid #f0f0f0; border-radius: 8px; padding: 10px 12px; margin: 4px 0; max-width: 85%; }
     .aq-text { font-size: 12px; color: #666; margin-bottom: 6px; }
     .aq-options { display: flex; flex-wrap: wrap; gap: 4px; }
     .aq-chip { display: inline-flex; align-items: center; gap: 3px; font-size: 12px; padding: 2px 10px; border-radius: 12px; background: #f0f0f0; color: #999; }
-    .aq-chip.selected { background: #e6f4ff; color: #1677ff; border: 1px solid #91caff; font-weight: 500; }
+    .aq-chip.selected { background: #e6f4ff; color: #e61982; border: 1px solid #91caff; font-weight: 500; }
     .aq-check { font-size: 10px; }
     .aq-batch { margin: 6px 0; }
     .aq-sub-text { font-size: 12px; color: #333; margin-bottom: 4px; font-weight: 500; }
     .cancelled-banner { display: flex; align-items: center; gap: 8px; padding: 4px 0; }
     .cancelled-tag { color: #ff4d4f; border: 1px solid #ff4d4f; background: transparent; margin: 0; }
     .retry-btn { color: #666; font-size: 12px; }
-    .retry-btn:hover { color: #1677ff; }
+    .retry-btn:hover { color: #e61982; }
     .msg-attachments { display: flex; flex-wrap: wrap; gap: 6px; max-width: 85%; }
     .msg-att-chip { display: inline-flex; }
     .msg-att-img { max-width: 200px; max-height: 150px; border-radius: 8px; cursor: pointer; object-fit: cover; border: 1px solid #e8e8e8; transition: opacity 0.2s; }
     .msg-att-img:hover { opacity: 0.85; }
     .msg-att-file { display: inline-flex; align-items: center; gap: 4px; background: #f5f5f5; border: 1px solid #e8e8e8; border-radius: 6px; padding: 4px 8px; font-size: 12px; color: #333; text-decoration: none; transition: border-color 0.2s; }
-    .msg-att-file:hover { border-color: #1677ff; color: #1677ff; }
+    .msg-att-file:hover { border-color: #e61982; color: #e61982; }
     .msg-att-size { color: #999; font-size: 10px; }
     .tool-files { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
     .tool-file-img { max-width: 200px; max-height: 150px; border-radius: 6px; object-fit: cover; border: 1px solid #e8e8e8; }
-    .tool-file-link { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; color: #1677ff; }
+    .tool-file-link { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; color: #e61982; }
   `]
 })
 export class AiMessageComponent {

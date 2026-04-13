@@ -34,19 +34,14 @@ import { LearnLessonComponent } from './learn-lesson.component';
         (touchend)="onSidebarTouchEnd()"
         (touchcancel)="onSidebarTouchEnd()"
       >
-        <div class="lp-sidebar-toggle">
-          <button nz-button nzType="text" nzSize="small" class="lp-sidebar-toggle-btn" (click)="toggleSidebar()"
-                  [nz-tooltip]="sidebarCollapsed ? 'Ouvrir la sidebar' : 'Réduire la sidebar'" nzTooltipPlacement="right">
-            <span nz-icon [nzType]="sidebarCollapsed ? 'menu-unfold' : 'menu-fold'"></span>
-          </button>
-        </div>
         <learn-sidebar
           [modules]="modules"
           [activeModuleId]="activeModuleId"
           [activeLessonId]="activeLessonId"
           [collapsed]="sidebarCollapsed"
           (selectModule)="onSelectModule($event)"
-          (selectLesson)="onSelectLesson($event)">
+          (selectLesson)="onSelectLesson($event)"
+          (toggleClick)="toggleSidebar()">
         </learn-sidebar>
       </div>
 
@@ -87,7 +82,7 @@ import { LearnLessonComponent } from './learn-lesson.component';
                     {{ mod.lessons.length }} leçons · ~{{ getModuleMinutes(mod) }} min
                   </div>
                   <nz-progress [nzPercent]="getModulePercent(mod)" nzSize="small"
-                               [nzStrokeColor]="getModulePercent(mod) === 100 ? '#52c41a' : '#1890ff'"
+                               [nzStrokeColor]="getModulePercent(mod) === 100 ? '#52c41a' : '#e61982'"
                                [nzShowInfo]="false"></nz-progress>
                 </div>
               </div>

@@ -3009,7 +3009,7 @@ export class FlowBuilderComponent {
       'restore': { type: 'Restore', color: '#0ea5e9' },
       'palette.click.add': { type: 'Add', color: '#10b981' },
       'drop.node': { type: 'Add', color: '#10b981' },
-      'connect.edge': { type: 'Connect', color: '#1677ff' },
+      'connect.edge': { type: 'Connect', color: '#e61982' },
       'delete.edge': { type: 'Delete', color: '#b91c1c' },
       'nodes.removed': { type: 'Delete', color: '#b91c1c' },
       'edges.removed': { type: 'Cleanup', color: '#9ca3af' },

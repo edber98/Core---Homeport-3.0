@@ -92,7 +92,7 @@ import { UiClassStyleService, UiState } from '../services/ui-class-style.service
   .danger { color:#b91c1c; }
   .classes { display:flex; flex-wrap:wrap; gap:6px; margin:6px 0; }
   .classes .chip { border:1px solid #e5e7eb; border-radius:999px; padding:4px 8px; font-size:12px; background:#fff; cursor:pointer; }
-  .classes .chip.sel { border-color:#1677ff; color:#1677ff; }
+  .classes .chip.sel { border-color:#e61982; color:#e61982; }
   .kv { display:grid; grid-template-columns: 1fr 1fr 58px auto; gap:6px; align-items:center; margin-bottom:6px; }
   .u { border:1px solid #e5e7eb; border-radius:6px; padding:4px 6px; font-size:12px; width:58px; }
   .mini { font-size:12px; padding:4px 8px; }

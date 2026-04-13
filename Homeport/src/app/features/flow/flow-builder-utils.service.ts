@@ -284,7 +284,7 @@ export class FlowBuilderUtilsService {
           newData.error = false;
           // keep stroke width at least 2 and color blue
           newData.strokeWidth = Math.max(2, Number(newData.strokeWidth ?? 2));
-          newData.color = '#1677ff';
+          newData.color = '#e61982';
         } else if (isErr) {
           newData.error = true;
           newData.strokeWidth = 1;

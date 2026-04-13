@@ -322,13 +322,13 @@ import { environment } from '../../../../environments/environment';
       transition: border-color .18s ease, box-shadow .18s ease, background-color .18s ease, transform .1s ease, color .18s ease;
     }
     .wf-native-select:hover {
-      border-color: #1677ff;
+      border-color: #e61982;
       background: #fff;
-      box-shadow: 0 2px 6px rgba(22, 119, 255, 0.15);
+      box-shadow: 0 2px 6px rgba(230, 25, 130, 0.15);
     }
     .wf-native-select:focus {
-      border-color: #1677ff;
-      box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.15);
+      border-color: #e61982;
+      box-shadow: 0 0 0 2px rgba(230, 25, 130, 0.15);
       background: #fff;
       color: #0958d9;
     }

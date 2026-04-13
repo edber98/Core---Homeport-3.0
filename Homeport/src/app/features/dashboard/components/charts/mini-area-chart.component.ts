@@ -35,7 +35,7 @@ export class MiniAreaChartComponent implements OnInit, OnChanges {
   @Input() data: number[] = [];
   @Input() width = 200;
   @Input() height = 48;
-  @Input() stroke = '#1677ff';
+  @Input() stroke = '#e61982';
   @Input() strokeWidth = 2;
   @Input() showAxes = false;
 

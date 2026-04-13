@@ -70,7 +70,7 @@ import { Website, WebsiteRoute, WebsiteService } from './website.service';
     .page-header .actions button i { margin-right: 6px; }
     .routes { display:flex; flex-direction:column; gap:8px; }
     .routes .row { display:grid; grid-template-columns: minmax(220px, 1.2fr) minmax(200px, 1fr) 100px 120px; gap:10px; align-items:center; padding:10px 12px; border-radius:12px; border:1px solid #ececec; background:#fff; transition: background 160ms ease; }
-    .routes .row:not(.header):hover { background: radial-gradient(100% 100% at 100% 0%, #f5f7ff 0%, #eaeefc 100%); }
+    .routes .row:not(.header):hover { background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%); }
     .routes .row.header { font-size:12px; color:#6b7280; background:transparent; border:none; padding:0 2px; }
     .routes .row.add { background:#fafafa; border:1px dashed #e5e7eb; }
     .routes .row .inp { border:1px solid #e5e7eb; border-radius:8px; padding:4px 8px; font-size:12px; height:32px; max-width: 100%; }

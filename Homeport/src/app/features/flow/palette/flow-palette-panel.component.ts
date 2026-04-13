@@ -256,7 +256,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
     .palette .palette-search.searching { margin-bottom: 0; }
     :host ::ng-deep .palette .palette-search .ant-input:focus,
     :host ::ng-deep .palette .palette-search .ant-input-focused {
-      border-color: #1677ff;
+      border-color: #e61982;
       box-shadow: none;
     }
     .palette .palette-scroll { flex: 1 1 auto; min-height: 0; overflow: auto; padding-right: 1px; }
@@ -267,7 +267,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
     .palette .palette-loading.search-loading,
     .palette .palette-loading.more-loading,
     .palette .palette-loading.group-loading { min-height: 0; height: auto; padding: 14px 12px; }
-    .palette .palette-loading-spinner { width: 24px; height: 24px; border-radius: 50%; border: 3px solid #dbe4ef; border-top-color: #1677ff; animation: palette-spin .75s linear infinite; }
+    .palette .palette-loading-spinner { width: 24px; height: 24px; border-radius: 50%; border: 3px solid #dbe4ef; border-top-color: #e61982; animation: palette-spin .75s linear infinite; }
     .palette .palette-loading-text { font-size: 12px; font-weight: 500; color:#475569; }
     @keyframes palette-spin { to { transform: rotate(360deg); } }
     .palette .groups { display:flex; flex-direction: column; gap: 0; margin: 0; }
@@ -301,7 +301,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
       text-align: left;
       margin: 0;
     }
-    .palette .group-row:hover { border-color:#c7dbff; background:#e8f1ff; color:#0b5ed7; }
+    .palette .group-row:hover { border-color:#f9a8d4; background:#e8f1ff; color:#0b5ed7; }
     .palette .group-row .group-mini { width: 26px; height: 26px; display:inline-flex; align-items:center; justify-content:center; border-radius:6px; }
     .palette .group-row .group-mini i { font-size: 16px; line-height: 1; color: #fff; }
     .palette .group-row .group-mini img { width: 16px; height: 16px; object-fit: contain; display:block; }
@@ -348,7 +348,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
     .palette .item.disabled { opacity: .5; cursor: not-allowed; }
     .palette .item.disabled .drag-proxy { pointer-events: none; }
     .palette .item:active { cursor: grabbing; }
-    .palette .item:hover:not(.disabled) { border-color:#1677ff; border-width:2px; }
+    .palette .item:hover:not(.disabled) { border-color:#e61982; border-width:2px; }
     /* Leave space for the info tooltip icon to receive hover events */
     .palette .item .drag-proxy { position:absolute; inset:0; right:32px; z-index: 1; }
     .palette .item .title .start-dot { width:8px; height:8px; border-radius:50%; background:#10b981; display:inline-block; margin-left:6px; box-shadow: 0 0 0 1px rgba(0,0,0,0.06); vertical-align: middle; }
@@ -691,7 +691,7 @@ export class FlowPalettePanelComponent implements OnInit, OnDestroy, OnChanges {
     return appId.includes('openai');
   }
   fgColor(bg?: string|null): string {
-    const b = String(bg || '#1677ff');
+    const b = String(bg || '#e61982');
     try {
       const { r, g, b: bb } = this.hexToRgb(b);
       const yiq = (r * 299 + g * 587 + bb * 114) / 1000;

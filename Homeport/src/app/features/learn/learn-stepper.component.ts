@@ -84,7 +84,7 @@ import { ExerciseOrderingComponent } from './exercises/exercise-ordering.compone
           <!-- Exercise -->
           <div *ngIf="sub.type === 'exercise'" class="ls-exercise">
             <div class="ls-exercise-header">
-              <span nz-icon nzType="edit" style="color:#1890ff;font-size:16px"></span>
+              <span nz-icon nzType="edit" style="color:#e61982;font-size:16px"></span>
               <span style="font-weight:600;font-size:15px">{{ sub.title }}</span>
               <nz-tag *ngIf="progress.isExerciseCompleted(sub.id)" nzColor="green" style="margin-left:auto">
                 <span nz-icon nzType="check"></span> Fait
@@ -140,10 +140,10 @@ import { ExerciseOrderingComponent } from './exercises/exercise-ordering.compone
       background: #e8e8e8; font-size: 13px; font-weight: 600; color: #666;
       transition: all 0.2s;
     }
-    .ls-dot-btn.active .ls-dot { background: #1890ff; color: #fff; }
+    .ls-dot-btn.active .ls-dot { background: #e61982; color: #fff; }
     .ls-dot-btn.completed .ls-dot { background: #52c41a; color: #fff; }
     .ls-dot-label { font-size: 12px; color: #666; white-space: nowrap; }
-    .ls-dot-btn.active .ls-dot-label { color: #1890ff; font-weight: 600; }
+    .ls-dot-btn.active .ls-dot-label { color: #e61982; font-weight: 600; }
 
     /* Content */
     .ls-content {

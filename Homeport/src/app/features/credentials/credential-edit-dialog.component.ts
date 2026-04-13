@@ -35,7 +35,7 @@ import { DynamicForm } from '../../modules/dynamic-form/dynamic-form';
   `,
   styles: [`
     .actions { display:flex; justify-content:flex-end; gap:8px; margin-top: 10px; }
-    .actions .primary-cta { background:#1677ff; border-color:#1677ff; color:#fff; box-shadow:none; }
+    .actions .primary-cta { background:#e61982; border-color:#e61982; color:#fff; box-shadow:none; }
     .actions .primary-cta:hover:not([disabled]),
     .actions .primary-cta:focus:not([disabled]) { background:#0f6ae6; border-color:#0f6ae6; color:#fff; }
     .actions .primary-cta[disabled] { background:#f3f4f6; border-color:#e5e7eb; color:#9ca3af; }

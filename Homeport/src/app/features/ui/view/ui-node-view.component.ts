@@ -357,7 +357,7 @@ import { UiApplyStylesDirective } from '../directives/apply-styles.directive';
   `,
   styles: [`
   :host { display: contents; }
-  .selected { outline: 2px solid #1677ff; outline-offset: 2px; }
+  .selected { outline: 2px solid #e61982; outline-offset: 2px; }
   .ui-node { position: relative; }
   .hover-actions { position: absolute; top: -10px; right: -10px; display:none; gap:6px; }
   .ui-node:hover > .hover-actions { display: inline-flex; }

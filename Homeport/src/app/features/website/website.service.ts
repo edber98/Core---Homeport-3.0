@@ -9276,7 +9276,7 @@ export class WebsiteService {
                 }
               ],
               "tokens": {
-                "--color-primary": "#1677ff",
+                "--color-primary": "#e61982",
                 "--space-2": "8px",
                 "--radius-sm": "6px",
                 "--shadow-md": "0 6px 18px rgba(0,0,0,.12)",

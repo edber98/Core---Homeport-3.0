@@ -145,10 +145,10 @@ import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
     .notif-page { padding: 24px; }
     .container { max-width: 1200px; margin: 0 auto; }
     .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
-    .header-left h2 { margin: 0; font-size: 22px; font-weight: 600; }
+    .header-left h2 { margin: 0; font-size: 24px; font-weight: 600; }
     .header-left .subtitle { color: #8c8c8c; font-size: 13px; }
     .header-actions { display: flex; gap: 8px; }
-    .header-actions .primary { background:#1677ff; border-color:#1677ff; color:#fff; }
+    .header-actions .primary { background:#e61982; border-color:#e61982; color:#fff; }
     .filters { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; flex-wrap: wrap; }
     .filter-group { display: flex; align-items: center; gap: 6px; }
     .filter-label { font-size: 12px; color: #8c8c8c; white-space: nowrap; }

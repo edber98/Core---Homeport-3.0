@@ -322,20 +322,20 @@ import { NodeInspectorItemComponent } from './node-inspector-item.component';
     }
     :host ::ng-deep .meta-form .ant-select-focused .ant-select-selector,
     :host ::ng-deep .meta-form .ant-select.ant-select-focused:not(.ant-select-disabled):not(.ant-select-customize-input) .ant-select-selector {
-      border-color: #1677ff;
-      box-shadow: 0 0 0 2px rgba(22,119,255,0.18);
+      border-color: #e61982;
+      box-shadow: 0 0 0 2px rgba(230,25,130,0.18);
     }
     :host ::ng-deep .meta-form .ant-switch.ant-switch-checked {
-      background-color: #1677ff;
-      border-color: #1677ff;
+      background-color: #e61982;
+      border-color: #e61982;
     }
     :host ::ng-deep .meta-form .ant-switch:not(.ant-switch-checked) {
       background-color: #dbe8ff;
       border-color: #9dbdff;
     }
     :host ::ng-deep .meta-form .ant-checkbox-checked .ant-checkbox-inner {
-      background-color: #1677ff;
-      border-color: #1677ff;
+      background-color: #e61982;
+      border-color: #e61982;
     }
     :host ::ng-deep .meta-form .ant-checkbox:not(.ant-checkbox-checked) .ant-checkbox-inner {
       border: 1px solid #9dbdff !important;
@@ -358,8 +358,8 @@ import { NodeInspectorItemComponent } from './node-inspector-item.component';
     }
     .wf-native-select:hover { border-color: #d1d5db; }
     .wf-native-select:focus {
-      border-color: #1677ff;
-      box-shadow: 0 0 0 2px rgba(22,119,255,0.18);
+      border-color: #e61982;
+      box-shadow: 0 0 0 2px rgba(230,25,130,0.18);
     }
     .exec-row .apple-btn { display:inline-flex; align-items:center; gap:6px; border-radius:8px; }
     .exec-row .apple-btn.icon-only { width:34px; height:34px; justify-content:center; }
@@ -371,13 +371,13 @@ import { NodeInspectorItemComponent } from './node-inspector-item.component';
     .exec-status .row .k { color:#6b7280; }
     .actions-wrap { display:flex; flex-wrap: wrap; gap:8px; justify-content:flex-end; margin-top:6px; }
     .actions-wrap button { display:inline-flex; align-items:center; gap:6px; }
-    .actions-wrap .run-btn { background:#1677ff !important; color:#fff !important; border-color:#1677ff !important; }
+    .actions-wrap .run-btn { background:#e61982 !important; color:#fff !important; border-color:#e61982 !important; }
     .actions-wrap .run-btn:hover { background:#0f66e8 !important; border-color:#0f66e8 !important; }
     :host ::ng-deep .inspector-meta .apple-btn:hover:not([disabled]) {
       background: #e8f1ff !important;
-      border-color: #c7dbff !important;
+      border-color: #f9a8d4 !important;
       color: #0b5ed7 !important;
-      box-shadow: 0 6px 14px rgba(22,119,255,0.18);
+      box-shadow: 0 6px 14px rgba(230,25,130,0.18);
       transform: translateY(-1px);
     }
     .pub-row { align-items:center; }
@@ -482,16 +482,16 @@ import { NodeInspectorItemComponent } from './node-inspector-item.component';
     .modal-args .label { color:#6b7280; font-size:13px; font-weight:600; }
     .modal-args .value { color:#111; font-size:13px; max-width: 70%; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; text-align:right; }
     :host ::ng-deep .ant-modal-footer .ant-btn-primary {
-      background:#1677ff !important;
-      border-color:#1677ff !important;
+      background:#e61982 !important;
+      border-color:#e61982 !important;
     }
     :host ::ng-deep .ant-modal-footer .ant-btn-primary:hover {
       background:#0f66e8 !important;
       border-color:#0f66e8 !important;
     }
     :host ::ng-deep .ant-modal-footer .ant-btn:hover {
-      border-color:#1677ff !important;
-      color:#1677ff !important;
+      border-color:#e61982 !important;
+      color:#e61982 !important;
     }
   `]
 })

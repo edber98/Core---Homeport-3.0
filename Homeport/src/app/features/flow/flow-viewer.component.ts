@@ -303,7 +303,7 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
     .node-card.dim-safari .node-header .subtitle { color:#cbd5e1; }
     .node-card.dim-safari .desc { color:#9ca3af; }
     .node-card.dim-safari .link-label { color:#9ca3af; }
-    .node-card.ro.selected { border-color:#1677ff; box-shadow: 0 0 0 2px rgba(22,119,255,0.25); }
+    .node-card.ro.selected { border-color:#e61982; box-shadow: 0 0 0 2px rgba(230,25,130,0.25); }
    
     .node-card.ro.horizontal { min-height: 70px; }
     .node-card.ro.locked { pointer-events: none; }
@@ -344,7 +344,7 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
     /* Bottom bar and tooltips (unchanged) */
     .bottom-bar { position: absolute; left: 0; right: 0; bottom: 12px; z-index: 20; display:flex; justify-content:center; pointer-events:none; }
     .bottom-bar .actions { pointer-events:auto; display:flex; align-items:center; gap:10px; background:#fff; border:1px solid #e5e7eb; border-radius:10px; padding:8px 12px; box-shadow:0 8px 20px rgba(0,0,0,.08); }
-    .bottom-bar button { background:#1677ff; color:#fff; border:none; border-radius:6px; padding:6px 10px; cursor:pointer; font-size:12px; }
+    .bottom-bar button { background:#e61982; color:#fff; border:none; border-radius:6px; padding:6px 10px; cursor:pointer; font-size:12px; }
     .bottom-bar .icon-btn { background:#fff; color:#111; border:1px solid #e5e7eb; border-radius:8px; padding:6px 8px; }
     .bottom-bar .icon-btn i { font-size:16px; }
     .bottom-bar .icon-btn:disabled { color:#bbb; border-color:#eee; background:#fafafa; cursor:not-allowed; }
@@ -629,7 +629,7 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy, OnChanges 
         try {
           this.activeNodeSet = new Set<string>();
           for (const e of this.vEdges || []) {
-            const on = !!((e as any)?.data?.onPath) || ((e as any)?.data?.color === '#1677ff');
+            const on = !!((e as any)?.data?.onPath) || ((e as any)?.data?.color === '#e61982');
             if (on) {
               const s = String((e as any).source || (e as any).from || '');
               const t = String((e as any).target || (e as any).to || '');
@@ -691,7 +691,7 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy, OnChanges 
       } catch {}
     }
   }
-  isEdgeActive(e: any): boolean { try { return !!(e?.data?.onPath) || (e?.data?.color === '#1677ff'); } catch { return false; } }
+  isEdgeActive(e: any): boolean { try { return !!(e?.data?.onPath) || (e?.data?.color === '#e61982'); } catch { return false; } }
   isNodeActive(id: string): boolean { try { return this.activeNodeSet.has(String(id)); } catch { return false; } }
 
   inputId(tmpl: any): string | null {

@@ -49,8 +49,8 @@ import { QuizData } from '../learn-curriculum';
       background: #fff; cursor: pointer; text-align: left; font-size: 14px;
       transition: all 0.2s;
     }
-    .quiz-option:hover:not([disabled]) { border-color: #1890ff; background: #e6f7ff; }
-    .quiz-option.selected { border-color: #1890ff; background: #e6f7ff; }
+    .quiz-option:hover:not([disabled]) { border-color: #e61982; background: #e6f7ff; }
+    .quiz-option.selected { border-color: #e61982; background: #e6f7ff; }
     .quiz-option.correct { border-color: #52c41a; background: #f6ffed; }
     .quiz-option.incorrect { border-color: #ff4d4f; background: #fff2f0; }
     .quiz-option[disabled] { cursor: default; opacity: 0.85; }
@@ -59,7 +59,7 @@ import { QuizData } from '../learn-curriculum';
       width: 26px; height: 26px; border-radius: 50%; background: #f0f0f0;
       font-weight: 600; font-size: 13px; flex-shrink: 0;
     }
-    .selected .opt-letter { background: #1890ff; color: #fff; }
+    .selected .opt-letter { background: #e61982; color: #fff; }
     .correct .opt-letter { background: #52c41a; color: #fff; }
     .incorrect .opt-letter { background: #ff4d4f; color: #fff; }
     .opt-text { flex: 1; }

@@ -92,7 +92,7 @@ import { Website, WebsiteRoute, WebsiteService } from './website.service';
     @media (max-width: 960px) { .grid.cols-2 { grid-template-columns: 1fr; } }
     .routes { display:flex; flex-direction:column; gap:6px; }
     .routes .row { display:grid; grid-template-columns: 24px 1fr 1fr 160px auto auto; gap:6px; align-items:center; padding:6px 8px; border-radius:8px; transition: background 160ms ease; }
-    .routes .row:hover { background: radial-gradient(100% 100% at 100% 0%, #f5f7ff 0%, #eaeefc 100%); }
+    .routes .row:hover { background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%); }
     .drag { cursor: grab; color:#94a3b8; user-select:none; padding:0 4px; }
   `]
 })

@@ -173,7 +173,7 @@ export class AppProviderEditorComponent implements OnInit {
       title: new FormControl<string>(''),
       iconClass: new FormControl<string>(''),
       iconUrl: new FormControl<string>(''),
-      color: new FormControl<string>('#1677ff'),
+      color: new FormControl<string>('#e61982'),
       tags: new FormControl<string>(''),
       hasCredentials: new FormControl<boolean>(false, { nonNullable: true }),
       allowWithoutCredentials: new FormControl<boolean>(false, { nonNullable: true }),
@@ -266,7 +266,7 @@ export class AppProviderEditorComponent implements OnInit {
       title: a.title || '',
       iconClass: a.iconClass || '',
       iconUrl: a.iconUrl || '',
-      color: a.color || '#1677ff',
+      color: a.color || '#e61982',
       tags: (a.tags || []).join(', '),
     };
     // When returning from Form Builder, do NOT override credentials toggles from storage

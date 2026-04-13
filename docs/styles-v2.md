@@ -99,6 +99,19 @@ Le principe v2 : **les ombres définissent la hiérarchie**, pas les bordures. O
 | Brand | `0 2px 10px rgba(230,25,130,0.3)` | Nav item actif |
 | Brand hover | `0 4px 14px rgba(230,25,130,0.3)` | Bouton IA hover |
 
+### Dégradé sidebar (pattern réutilisable)
+
+Quand un panneau latéral (sidebar conversations, panneau de filtres, etc.) est adjacent au header ou à une zone de fond `#f8f8f8`, on utilise un dégradé vertical pour éviter la coupure nette :
+
+```css
+background: linear-gradient(180deg, #f8f8f8 0%, #ececec 100%);
+```
+
+- **Haut** : `#f8f8f8` — se fond avec le fond de l'app / header
+- **Bas** : `#ececec` — assez foncé pour que le panneau se distingue
+
+Ce pattern remplace une bordure droite et crée une transition naturelle.
+
 ### Quand utiliser une bordure ?
 - **Séparateurs internes** : `1px solid #f0f0f0` (très subtil, presque invisible)
 - **Sidebar** : aucune bordure droite, le contraste blanc/gris suffit

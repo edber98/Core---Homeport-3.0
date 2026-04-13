@@ -414,7 +414,7 @@ interface StreamTool {
     .messages { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 12px 16px; display: flex; flex-direction: column; gap: 4px; }
     .empty { flex: 1; display: flex; align-items: center; justify-content: center; }
     .streaming-msg .ai-msg { display: flex; gap: 10px; padding: 8px 0; }
-    .streaming-msg .avatar { width: 32px; height: 32px; border-radius: 50%; background: #e6f4ff; color: #1677ff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 16px; }
+    .streaming-msg .avatar { width: 32px; height: 32px; border-radius: 50%; background: #e6f4ff; color: #e61982; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 16px; }
     .streaming-msg .body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
     .streaming-msg .content { background: #f5f5f5; border-radius: 12px 12px 12px 2px; padding: 8px 14px; max-width: 85%; min-width: 0; overflow: hidden; word-break: break-word; line-height: 1.5; }
     .streaming-msg .content :host ::ng-deep p { margin: 0 0 4px; }
@@ -466,9 +466,9 @@ interface StreamTool {
     .tool-viewer-header { display: flex; align-items: center; gap: 6px; font-size: 12px; padding: 2px 0; }
     .viewer-title { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .tool-building { color: #8c8c8c; }
-    .tool-running { color: #1677ff; }
+    .tool-running { color: #e61982; }
     .tool-clickable { cursor: pointer; border-radius: 4px; padding: 2px 6px; margin: 0 -6px; transition: background 0.15s; }
-    .tool-clickable:hover { background: rgba(22, 119, 255, 0.06); }
+    .tool-clickable:hover { background: rgba(230, 25, 130, 0.06); }
     .tool-success { color: #52c41a; }
     .tool-error { color: #ff4d4f; }
     .args-tree { padding: 4px 0 4px 22px; border-left: 2px solid #e8e8e8; margin-left: 7px; }
@@ -477,11 +477,11 @@ interface StreamTool {
     .args-value-wrap { min-width: 0; flex: 1; }
     .args-value { color: #333; word-break: break-word; white-space: pre-wrap; display: block; }
     .args-value-clamped { max-height: calc(4 * 1.5em); overflow: hidden; }
-    .args-expand-toggle { display: inline-block; font-size: 10px; color: #1677ff; cursor: pointer; margin-top: 1px; }
+    .args-expand-toggle { display: inline-block; font-size: 10px; color: #e61982; cursor: pointer; margin-top: 1px; }
     .args-expand-toggle:hover { text-decoration: underline; }
     .fade-token { animation: tokenFadeIn 400ms ease-out; }
-    @keyframes tokenFadeIn { 0% { opacity: 0.3; color: #1677ff; } 100% { opacity: 1; color: #333; } }
-    .args-row-new { background: rgba(22, 119, 255, 0.04); border-radius: 3px; }
+    @keyframes tokenFadeIn { 0% { opacity: 0.3; color: #e61982; } 100% { opacity: 1; color: #333; } }
+    .args-row-new { background: rgba(230, 25, 130, 0.04); border-radius: 3px; }
     .tool-item-wrap { }
     .item-expandable { cursor: default; }
     .item-chevron { font-size: 10px; color: #bbb; margin-left: 4px; cursor: pointer; transition: color 0.2s; }
@@ -511,8 +511,8 @@ interface StreamTool {
     .input-row { display: flex; align-items: center; gap: 6px; border: 1px solid #dbe4ef; border-radius: 20px; padding: 5px 12px; margin-inline: clamp(10px, 2vw, 24px); transition: border-color 0.2s, box-shadow 0.2s; background: #fff; }
     .input-row:hover,
     .input-row:focus-within {
-      border-color: #1677ff;
-      box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.15);
+      border-color: #e61982;
+      box-shadow: 0 0 0 2px rgba(230, 25, 130, 0.15);
     }
     .input-row textarea { flex: 1; min-width: 0; min-height: 30px; border: none !important; outline: none !important; box-shadow: none !important; resize: none; padding: 6px 4px; font-size: 13px; line-height: 1.4; background: transparent; }
     .input-row textarea:focus { box-shadow: none !important; }
@@ -539,15 +539,15 @@ interface StreamTool {
     .attach-btn:focus-visible:not(:disabled),
     .chat-send-btn:hover:not(:disabled),
     .chat-send-btn:focus-visible:not(:disabled) {
-      background: rgba(22,119,255,0.1) !important;
-      color: #1677ff !important;
-      box-shadow: 0 4px 12px rgba(22,119,255,0.18);
+      background: rgba(230,25,130,0.1) !important;
+      color: #e61982 !important;
+      box-shadow: 0 4px 12px rgba(230,25,130,0.18);
       transform: translateY(-1px);
     }
     .chat-send-btn.ant-btn-primary,
     .chat-send-btn.ant-btn-primary:not(:disabled) {
-      background: #1677ff;
-      border-color: #1677ff;
+      background: #e61982;
+      border-color: #e61982;
       color: #fff !important;
     }
     .chat-send-btn.ant-btn-primary:hover,
@@ -580,10 +580,10 @@ interface StreamTool {
     .system-content { margin-top: 6px; font-size: 12px; color: #666; line-height: 1.5; }
     .system-content ::ng-deep p { margin: 0 0 4px; }
     .question-msg { display: flex; gap: 10px; padding: 8px 0; }
-    .question-msg .avatar { width: 32px; height: 32px; border-radius: 50%; background: #e6f4ff; color: #1677ff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 16px; }
+    .question-msg .avatar { width: 32px; height: 32px; border-radius: 50%; background: #e6f4ff; color: #e61982; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 16px; }
     .question-msg .question-body { flex: 1; min-width: 0; max-width: 85%; }
     .interrupted-tag { padding: 4px 0; }
-    .drag-over { border-color: #1677ff !important; background: rgba(22, 119, 255, 0.04); }
+    .drag-over { border-color: #e61982 !important; background: rgba(230, 25, 130, 0.04); }
     .att-previews { display: flex; flex-wrap: wrap; gap: 6px; padding: 0px 24px 2px; }
     .att-chip { display: inline-flex; align-items: center; gap: 4px; background: #f5f5f5; border: 1px solid #e8e8e8; border-radius: 6px; padding: 3px 6px; font-size: 12px; max-width: 200px; }
     .att-chip.att-uploading { opacity: 0.7; }
@@ -592,7 +592,7 @@ interface StreamTool {
     .att-icon { font-size: 16px; color: #999; flex-shrink: 0; }
     .att-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100px; color: #333; }
     .att-size { color: #999; font-size: 10px; flex-shrink: 0; }
-    .att-loading { font-size: 12px; color: #1677ff; flex-shrink: 0; }
+    .att-loading { font-size: 12px; color: #e61982; flex-shrink: 0; }
     .att-warn { font-size: 12px; color: #ff4d4f; flex-shrink: 0; }
     .att-remove { padding: 0 !important; min-width: auto !important; height: auto !important; color: #999 !important; font-size: 10px !important; }
     .att-remove:hover { color: #ff4d4f !important; }

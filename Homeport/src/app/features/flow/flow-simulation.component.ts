@@ -72,7 +72,7 @@ import { backAwareCurve } from './edge-curves';
     .sc-item .label { display:block; font-size:12px; line-height:1.3; word-break: break-word; overflow-wrap: anywhere; }
     .sc-item.active, .sc-item:hover { background:#F8FBFF; border-color:#DBEAFE; }
     .loading { position:absolute; inset:0; display:flex; flex-direction:column; gap:8px; align-items:center; justify-content:center; background: rgba(255,255,255,0.6); z-index: 2; }
-    .spinner { width:26px; height:26px; border-radius:50%; border:3px solid #eee; border-top-color:#1677ff; animation:spin 1s linear infinite; }
+    .spinner { width:26px; height:26px; border-radius:50%; border:3px solid #eee; border-top-color:#e61982; animation:spin 1s linear infinite; }
     @keyframes spin { from { transform: rotate(0); } to { transform: rotate(360deg); } }
     /* Panel toggle FAB (local copy to match Flow Builder look) */
     .panel-toggle-fab { position: absolute; left: 12px; top: 12px; width: 40px; height: 40px; border-radius: 12px; padding: 0; display:inline-flex; align-items:center; justify-content:center; background:#fff; border:1px solid #e5e7eb; box-shadow: 0 8px 20px rgba(0,0,0,0.12); z-index: 3000; }
@@ -205,7 +205,7 @@ export class FlowSimulationComponent implements OnInit, OnDestroy {
         ee.forEach(e => pathEdges.add(e));
       }
     }
-    this.edges = this.edges.map(e => pathEdges.has(e) ? ({ ...e, data: { ...(e as any).data, color: '#1677ff', strokeWidth: 2 } }) : e);
+    this.edges = this.edges.map(e => pathEdges.has(e) ? ({ ...e, data: { ...(e as any).data, color: '#e61982', strokeWidth: 2 } }) : e);
     try { this.cdr.detectChanges(); } catch {}
   }
 
@@ -215,7 +215,7 @@ export class FlowSimulationComponent implements OnInit, OnDestroy {
     const wanted = new Set(list.map(it => `${String(it.sourceId)}|${String(it.targetId)}|${String(it.sourceHandle || '')}`));
     this.edges = (this.edges || []).map(e => {
       const match = wanted.has(key(e));
-      return match ? { ...e, data: { ...(e as any).data, color: '#1677ff', strokeWidth: 2, onPath: true } } : { ...e, data: { ...(e as any).data, color: (e as any).data?.color && (e as any).data?.color !== '#1677ff' ? (e as any).data?.color : undefined, strokeWidth: undefined, onPath: false } };
+      return match ? { ...e, data: { ...(e as any).data, color: '#e61982', strokeWidth: 2, onPath: true } } : { ...e, data: { ...(e as any).data, color: (e as any).data?.color && (e as any).data?.color !== '#e61982' ? (e as any).data?.color : undefined, strokeWidth: undefined, onPath: false } };
     });
     // Update focused node ids for subset centering
     try {

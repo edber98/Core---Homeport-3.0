@@ -55,9 +55,9 @@ interface NodeDef { id: string; label: string; x: number; y: number; color: stri
     .dcn-node-rect { stroke: rgba(0,0,0,0.08); stroke-width: 1; }
     .dcn-node-label { fill: #fff; font-size: 14px; font-weight: 600; pointer-events: none; }
     .dcn-handle { fill: #fff; stroke: #999; stroke-width: 2; cursor: crosshair; transition: all 0.15s; }
-    .dcn-handle:hover { stroke: #1890ff; fill: #e6f7ff; r: 9; }
+    .dcn-handle:hover { stroke: #e61982; fill: #e6f7ff; r: 9; }
     .dcn-handle-out { stroke: #52c41a; }
-    .dcn-handle-in { stroke: #1890ff; }
+    .dcn-handle-in { stroke: #e61982; }
     .dcn-line { stroke-width: 2.5; stroke-linecap: round; fill: none; }
     .dcn-line-preview { stroke: #bbb; stroke-dasharray: 6,4; }
     .dcn-line-done { stroke: #52c41a; }

@@ -529,8 +529,8 @@ import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
     }
     :host ::ng-deep .section-card .ant-input:focus,
     :host ::ng-deep .section-card .ant-select-focused .ant-select-selector {
-      border-color:#1677ff !important;
-      box-shadow: 0 0 0 2px rgba(22,119,255,0.16) !important;
+      border-color:#e61982 !important;
+      box-shadow: 0 0 0 2px rgba(230,25,130,0.16) !important;
     }
 
     .outputs { display:flex; flex-direction:column; gap:8px; }
@@ -589,8 +589,8 @@ import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
     }
     .wf-native-select:hover { border-color: #c1d2ed; }
     .wf-native-select:focus {
-      border-color: #1677ff;
-      box-shadow: 0 0 0 2px rgba(22,119,255,0.16);
+      border-color: #e61982;
+      box-shadow: 0 0 0 2px rgba(230,25,130,0.16);
     }
     .wf-native-select.wf-native-select-multi {
       min-height: 96px;
@@ -606,9 +606,9 @@ import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
     :host ::ng-deep .cdk-drag-placeholder { opacity: .35; border:1px dashed #cbd5e1; border-radius:8px; }
 
     .apple-btn { transition: background 160ms ease; }
-    .apple-btn:hover { background: radial-gradient(100% 100% at 100% 0%, #f5f7ff 0%, #eaeefc 100%); }
+    .apple-btn:hover { background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%); }
     :host ::ng-deep button[nz-button], :host ::ng-deep .ant-btn { transition: background 160ms ease; }
-    :host ::ng-deep button[nz-button]:hover, :host ::ng-deep .ant-btn:hover { background: radial-gradient(100% 100% at 100% 0%, #f5f7ff 0%, #eaeefc 100%); }
+    :host ::ng-deep button[nz-button]:hover, :host ::ng-deep .ant-btn:hover { background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%); }
 
     .args-controls { display:flex; align-items:center; gap:10px; margin: 0 0 8px; flex-wrap: wrap; }
     .args-controls .spacer { flex: 1 1 auto; }
