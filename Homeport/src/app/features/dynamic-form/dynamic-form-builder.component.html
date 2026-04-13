@@ -281,7 +281,7 @@
 
   <!-- CANVAS -->
   <div class="center">
-    <ng-template #previewTitle>
+    <div class="center-header">
       <div class="preview-head">
         <div class="preview-head-actions preview-head-actions--left">
           <button nz-button nzSize="small" class="apple-btn" (click)="openPanel('left', $event)" nz-tooltip [nzTooltipTitle]="!isMobile ? 'Palette & Contexte' : null" [nzTooltipTrigger]="'hover'" aria-label="Panneau gauche">
@@ -306,8 +306,8 @@
           </button>
         </div>
       </div>
-    </ng-template>
-    <nz-card [nzTitle]="previewTitle" nzSize="small" class="card fill no-chrome">
+    </div>
+    <div class="center-body">
       <div #previewFrame class="preview-frame" [style.width.px]="previewWidth || null">
         <app-dynamic-form
         [schema]="schema"
@@ -477,7 +477,7 @@
         </div>
       </div>
       </ng-container>
-    </nz-card>
+    </div>
 
   </div>
 
