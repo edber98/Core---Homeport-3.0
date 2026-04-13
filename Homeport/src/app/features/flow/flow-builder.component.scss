@@ -164,7 +164,7 @@
 
 
 .node-card { background: #fff; border: 1px solid #e8e8e8; border-radius: 10px; padding: 6px 0 0 0; width: 223px; min-width: 223px; max-width: 223px; min-height: 70px; display: grid; grid-template-columns: 1fr; align-items: center; column-gap: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.02); }
-//.node-card.no-inputs { padding-top: 0; }
+.node-card.horizontal.no-inputs { padding-top: 0; }
 /* removed paint containment to avoid any visual artifact on Safari */
 
 .node-card .center-wrap { grid-column: 1; grid-row: 1; display:flex; flex-direction: column; align-items: stretch; justify-content:flex-start; padding: 0 8px 2px; text-align: left; pointer-events: initial; }
@@ -369,7 +369,8 @@ nz-drawer { display: contents; }
 .bottom-bar .icon-btn.active { border-color: #e61982; color: #e61982; }
 
 
-.node-card .exec-badge { grid-column: 1; grid-row: 1; align-self: start; justify-self: end; display:flex; align-items:center; gap:6px; background:#fff; border:1px solid #e5e7eb; border-radius:10px; padding:2px 6px; box-shadow:0 1px 2px rgba(0,0,0,.06); }
+.node-card .exec-badge { grid-column: 1; grid-row: 1; align-self: start; justify-self: end; display:flex; align-items:center; gap:6px; background:#fff; border:1px solid #e5e7eb; border-radius:10px; padding:2px 6px; box-shadow:0 1px 2px rgba(0,0,0,.06); margin-right: 8px; }
+.node-card.horizontal.no-inputs .exec-badge { margin-top: 8px; }
 .node-card .exec-badge .fa-circle-check.ok { color:#16a34a; }
 .node-card .exec-badge .fa-triangle-exclamation.err { color:#ef4444; }
 .node-card .exec-badge .fa-stop.stop { color:#111827; }
