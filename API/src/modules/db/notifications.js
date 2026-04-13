@@ -9,11 +9,19 @@ module.exports = function(){
   r.use(requireCompanyScope());
 
   r.get('/notifications', async (req, res) => {
-    const { workspaceId, entityType, entityId, acknowledged, q: search, sort } = req.query;
+    const { workspaceId, entityType, entityId, acknowledged, severity, q: search, sort, pagination } = req.query;
+    if (workspaceId && !Types.ObjectId.isValid(String(workspaceId))) {
+      const withMeta = String(pagination || '').toLowerCase() === 'true';
+      if (withMeta) {
+        return res.apiOk({ items: [], total: 0, page: 1, limit: Math.max(1, Math.min(200, Number(req.query?.limit) || 100)), pages: 1 });
+      }
+      return res.apiOk([]);
+    }
     const base = { companyId: req.user.companyId };
-    if (workspaceId && Types.ObjectId.isValid(String(workspaceId))) base.workspaceId = workspaceId;
+    if (workspaceId) base.workspaceId = workspaceId;
     if (entityType) base.entityType = entityType;
     if (entityId) base.entityId = entityId;
+    if (severity) base.severity = severity;
     if (acknowledged != null) base.acknowledged = acknowledged === 'true';
     let { limit = 100, page = 1 } = req.query;
     limit = Math.max(1, Math.min(200, Number(limit) || 100));
@@ -27,16 +35,27 @@ module.exports = function(){
       .skip((page - 1) * limit)
       .limit(limit)
       .lean();
-    res.apiOk(list);
+    const withMeta = String(pagination || '').toLowerCase() === 'true';
+    if (!withMeta) return res.apiOk(list);
+    const total = await Notification.countDocuments(findQ);
+    return res.apiOk({
+      items: list,
+      total,
+      page,
+      limit,
+      pages: Math.max(1, Math.ceil(total / limit)),
+    });
   });
 
   // Count notifications matching filters (useful for unread badge)
   r.get('/notifications/count', async (req, res) => {
-    const { workspaceId, entityType, entityId, acknowledged, q: search } = req.query;
+    const { workspaceId, entityType, entityId, acknowledged, severity, q: search } = req.query;
+    if (workspaceId && !Types.ObjectId.isValid(String(workspaceId))) return res.apiOk({ total: 0 });
     const base = { companyId: req.user.companyId };
-    if (workspaceId && Types.ObjectId.isValid(String(workspaceId))) base.workspaceId = workspaceId;
+    if (workspaceId) base.workspaceId = workspaceId;
     if (entityType) base.entityType = entityType;
     if (entityId) base.entityId = entityId;
+    if (severity) base.severity = severity;
     if (acknowledged != null) base.acknowledged = acknowledged === 'true';
     const findQ = { ...base };
     if (search) Object.assign(findQ, { $or: [ { code: { $regex: String(search), $options: 'i' } }, { message: { $regex: String(search), $options: 'i' } } ] });

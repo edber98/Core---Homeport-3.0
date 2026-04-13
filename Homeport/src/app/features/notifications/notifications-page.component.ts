@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, OnDestroy, NgZone, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { NotificationsBackendService, BackendNotification } from '../../services/notifications-backend.service';
 import { AccessControlService } from '../../services/access-control.service';
 import { UiMessageService } from '../../services/ui-message.service';
@@ -11,7 +12,6 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzBadgeModule } from 'ng-zorro-antd/badge';
 import { NzEmptyModule } from 'ng-zorro-antd/empty';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
-import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
@@ -23,7 +23,7 @@ import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
   imports: [
     CommonModule, FormsModule,
     NzTableModule, NzTagModule, NzButtonModule, NzBadgeModule,
-    NzEmptyModule, NzSpinModule, NzInputModule, NzSelectModule,
+    NzEmptyModule, NzSpinModule, NzSelectModule,
     NzIconModule, NzToolTipModule, NzPopconfirmModule,
   ],
   template: `
@@ -39,7 +39,7 @@ import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
           <button nz-button nzType="default" (click)="ackAll()" [disabled]="!hasUnread" nz-tooltip nzTooltipTitle="Tout marquer comme lu">
             <i class="fa-regular fa-envelope-open"></i> Tout marquer comme lu
           </button>
-          <button nz-button nzType="primary" (click)="reload()">
+          <button nz-button nzType="primary" class="primary" (click)="reload()">
             <span nz-icon nzType="reload"></span> Actualiser
           </button>
         </div>
@@ -69,12 +69,6 @@ import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
             <nz-option nzValue="true" nzLabel="Lus"></nz-option>
           </nz-select>
         </div>
-        <div class="filter-group search-group">
-          <nz-input-group [nzPrefix]="searchIcon" style="width: 220px">
-            <input nz-input [(ngModel)]="q" (keyup.enter)="reload()" placeholder="Rechercher…" />
-          </nz-input-group>
-          <ng-template #searchIcon><span nz-icon nzType="search"></span></ng-template>
-        </div>
       </div>
 
       <!-- Table -->
@@ -82,10 +76,14 @@ import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
         <nz-table
           #notifTable
           [nzData]="items"
+          [nzFrontPagination]="false"
+          [nzTotal]="total"
+          [nzPageIndex]="pageIndex"
           [nzPageSize]="pageSize"
           [nzShowSizeChanger]="true"
           [nzPageSizeOptions]="[10, 20, 50]"
-          (nzPageSizeChange)="pageSize = $event"
+          (nzPageIndexChange)="onPageIndexChange($event)"
+          (nzPageSizeChange)="onPageSizeChange($event)"
           nzSize="middle"
           [nzNoResult]="emptyTpl"
           [nzShowTotal]="totalTpl"
@@ -150,6 +148,7 @@ import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
     .header-left h2 { margin: 0; font-size: 22px; font-weight: 600; }
     .header-left .subtitle { color: #8c8c8c; font-size: 13px; }
     .header-actions { display: flex; gap: 8px; }
+    .header-actions .primary { background:#1677ff; border-color:#1677ff; color:#fff; }
     .filters { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; flex-wrap: wrap; }
     .filter-group { display: flex; align-items: center; gap: 6px; }
     .filter-label { font-size: 12px; color: #8c8c8c; white-space: nowrap; }
@@ -190,12 +189,17 @@ export class NotificationsPageComponent implements OnInit, OnDestroy {
   acknowledged: string | null = null;
   severityFilter: string | null = null;
   sort = 'createdAt:desc';
-  q = '';
+  pageIndex = 1;
   pageSize = 20;
+  total = 0;
+  unreadTotal = 0;
+  private fetchSub?: Subscription;
+  private lastWorkspaceId = '';
+  private loadingFailsafe?: any;
 
   get wsId() { return this.acl.currentWorkspaceId(); }
-  get hasUnread() { return this.items.some(n => !n.acknowledged); }
-  private sub: any;
+  get hasUnread() { return this.unreadTotal > 0; }
+  private sub?: Subscription;
 
   constructor(
     private api: NotificationsBackendService,
@@ -207,46 +211,115 @@ export class NotificationsPageComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    this.lastWorkspaceId = String(this.wsId || '');
     this.reload();
     try {
       this.sub = this.acl.changes$.subscribe(() => this.zone.run(() => {
+        const wsIdNow = String(this.wsId || '');
+        if (wsIdNow === this.lastWorkspaceId) return;
+        this.lastWorkspaceId = wsIdNow;
         this.reload();
         try { this.cdr.detectChanges(); } catch {}
       }));
     } catch {}
   }
 
-  ngOnDestroy(): void { try { this.sub?.unsubscribe?.(); } catch {} }
+  ngOnDestroy(): void {
+    try { this.sub?.unsubscribe(); } catch {}
+    try { this.fetchSub?.unsubscribe(); } catch {}
+    try { if (this.loadingFailsafe) clearTimeout(this.loadingFailsafe); } catch {}
+  }
 
-  reload() {
+  reload(resetPage = true) {
+    if (resetPage) this.pageIndex = 1;
+    this.refreshTotalCount();
+    this.fetchPage();
+  }
+
+  onPageIndexChange(page: number) {
+    const next = Math.max(1, Number(page) || 1);
+    if (next === this.pageIndex) return;
+    this.pageIndex = next;
+    this.fetchPage();
+  }
+
+  onPageSizeChange(size: number) {
+    const next = Math.max(1, Number(size) || 20);
+    if (next === this.pageSize) return;
+    this.pageSize = next;
+    this.pageIndex = 1;
+    this.fetchPage();
+  }
+
+  private fetchPage() {
+    try { this.fetchSub?.unsubscribe(); } catch {}
+    try { if (this.loadingFailsafe) clearTimeout(this.loadingFailsafe); } catch {}
     this.loading = true;
     this.error = null;
-    const wsRaw = this.wsId;
-    const ws = (wsRaw && /^[a-fA-F0-9]{24}$/.test(String(wsRaw))) ? wsRaw : undefined;
+    this.loadingFailsafe = setTimeout(() => {
+      this.loading = false;
+      try { this.cdr.detectChanges(); } catch {}
+    }, 10000);
+    const ws = String(this.wsId || '').trim();
+    if (!ws) {
+      this.items = [];
+      this.total = 0;
+      this.loading = false;
+      try { this.cdr.detectChanges(); } catch {}
+      return;
+    }
     const ack = (this.acknowledged == null || this.acknowledged === '') ? undefined : (this.acknowledged as 'true' | 'false');
-    this.api.list({
+    this.fetchSub = this.api.list({
       workspaceId: ws,
       entityType: this.entityType || undefined,
       acknowledged: ack,
-      q: this.q || undefined,
+      severity: this.severityFilter || undefined,
       sort: this.sort,
-      page: 1,
-      limit: 200,
+      page: this.pageIndex,
+      limit: this.pageSize,
     }).subscribe({
-      next: (list: any[]) => {
-        let items = (list || []).map((n: any) => ({
+      next: (resp: any[]) => {
+        try { if (this.loadingFailsafe) clearTimeout(this.loadingFailsafe); } catch {}
+        const items = (resp || []).map((n: any) => ({
           ...n,
           id: String(n.id || n._id || ''),
           createdAt: n.createdAt || n.updatedAt || '',
         }));
-        // Filter severity client-side (backend doesn't expose severity filter)
-        if (this.severityFilter) {
-          items = items.filter((n: any) => n.severity === this.severityFilter);
-        }
         this.items = items;
+        this.refreshUnreadCount();
+        this.loading = false;
+        try { this.cdr.detectChanges(); } catch {}
       },
-      error: () => { this.error = 'Échec du chargement des notifications'; },
-      complete: () => { this.loading = false; }
+      error: () => {
+        try { if (this.loadingFailsafe) clearTimeout(this.loadingFailsafe); } catch {}
+        this.error = 'Échec du chargement des notifications';
+        this.loading = false;
+        try { this.cdr.detectChanges(); } catch {}
+      },
+    });
+  }
+
+  private refreshTotalCount() {
+    const ws = String(this.wsId || '').trim();
+    if (!ws) { this.total = 0; return; }
+    const ack = (this.acknowledged == null || this.acknowledged === '') ? undefined : (this.acknowledged as 'true' | 'false');
+    this.api.count({
+      workspaceId: ws,
+      entityType: this.entityType || undefined,
+      acknowledged: ack,
+      severity: this.severityFilter || undefined,
+    }).subscribe({
+      next: (n) => { this.total = Math.max(0, Number(n) || 0); },
+      error: () => {},
+    });
+  }
+
+  private refreshUnreadCount() {
+    const ws = String(this.wsId || '').trim();
+    if (!ws) { this.unreadTotal = 0; return; }
+    this.api.count({ workspaceId: ws, acknowledged: 'false' }).subscribe({
+      next: (n) => { this.unreadTotal = Math.max(0, Number(n) || 0); },
+      error: () => {},
     });
   }
 
@@ -255,7 +328,7 @@ export class NotificationsPageComponent implements OnInit, OnDestroy {
     const id = String((n as any).id);
     if (!id || !/^[a-fA-F0-9]{24}$/.test(id)) { this.ui.error('Identifiant invalide'); return; }
     this.api.ack(id).subscribe({
-      next: () => { n.acknowledged = true; this.ui.success('Marquée comme lue'); },
+      next: () => { n.acknowledged = true; this.ui.success('Marquée comme lue'); this.refreshUnreadCount(); },
       error: () => this.ui.error('Échec du marquage'),
     });
   }
@@ -264,18 +337,23 @@ export class NotificationsPageComponent implements OnInit, OnDestroy {
     const id = String((n as any).id);
     if (!id || !/^[a-fA-F0-9]{24}$/.test(id)) { this.ui.error('Identifiant invalide'); return; }
     this.api.delete(id).subscribe({
-      next: () => { this.items = this.items.filter(x => (x as any).id !== id); this.ui.success('Notification supprimée'); },
+      next: () => {
+        this.ui.success('Notification supprimée');
+        const shouldGoPrevPage = this.items.length === 1 && this.pageIndex > 1;
+        if (shouldGoPrevPage) this.pageIndex -= 1;
+        this.refreshTotalCount();
+        this.fetchPage();
+      },
       error: () => this.ui.error('Échec de la suppression'),
     });
   }
 
   ackAll() {
-    const wsRaw = this.wsId;
-    const ws = (wsRaw && /^[a-fA-F0-9]{24}$/.test(String(wsRaw))) ? wsRaw : undefined;
+    const ws = String(this.wsId || '').trim() || undefined;
     this.api.ackAll(ws).subscribe({
       next: () => {
-        this.items.forEach(n => n.acknowledged = true);
         this.ui.success('Toutes les notifications marquées comme lues');
+        this.fetchPage();
       },
       error: () => this.ui.error('Échec du marquage'),
     });
@@ -287,7 +365,7 @@ export class NotificationsPageComponent implements OnInit, OnDestroy {
       if (!n.acknowledged) {
         const id = String((n as any).id);
         if (id && /^[a-fA-F0-9]{24}$/.test(id)) {
-          this.api.ack(id).subscribe({ next: () => n.acknowledged = true });
+          this.api.ack(id).subscribe({ next: () => { n.acknowledged = true; this.refreshUnreadCount(); } });
         }
       }
       this.router.navigateByUrl(n.link);
