@@ -256,10 +256,10 @@ interface ProcessedSegment {
     .ai-msg { display: flex; gap: 10px; padding: 8px 0; }
     .ai-msg.user { flex-direction: row-reverse; }
     .ai-msg.user .body { align-items: flex-end; }
-    .ai-msg.user .content { background: #e6f4ff; border-radius: 12px 12px 2px 12px; padding: 8px 14px; }
-    .ai-msg.assistant .content { background: #f5f5f5; border-radius: 12px 12px 12px 2px; padding: 8px 14px; }
+    .ai-msg.user .content { background: #fdf2f8; border-radius: 14px 14px 2px 14px; padding: 10px 16px; }
+    .ai-msg.assistant .content { background: #ebebeb; border-radius: 14px 14px 14px 2px; padding: 10px 16px; }
     .avatar { width: 32px; height: 32px; border-radius: 50%; background: #f0f0f0; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 16px; }
-    .ai-msg.assistant .avatar { background: #e6f4ff; color: #1677ff; }
+    .ai-msg.assistant .avatar { background: #fdf2f8; color: #e61982; }
     .body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
     .content { max-width: 85%; min-width: 0; overflow: hidden; word-break: break-word; line-height: 1.5; }
     .content :host ::ng-deep p { margin: 0 0 4px; }
