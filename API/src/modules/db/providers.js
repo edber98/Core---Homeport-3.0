@@ -1,6 +1,7 @@
 const express = require('express');
 const { authMiddleware, requireCompanyScope } = require('../../auth/jwt');
 const Provider = require('../../db/models/provider.model');
+const NodeTemplate = require('../../db/models/node-template.model');
 
 module.exports = function(){
   const r = express.Router();
@@ -14,7 +15,8 @@ module.exports = function(){
     // Hide providers when all their repos are disabled
     const PluginRepo = require('../../db/models/plugin-repo.model');
     const enabledRepos = await PluginRepo.find({ enabled: true }).select('_id').lean();
-    const enabledIds = new Set(enabledRepos.map(r => String(r._id)));
+    const enabledRepoIds = (enabledRepos || []).map(r => r._id);
+    const enabledIds = new Set(enabledRepoIds.map(id => String(id)));
     const filters = [{ enabled: true }];
     if (q) {
       const rx = { $regex: String(q), $options: 'i' };
@@ -38,7 +40,36 @@ module.exports = function(){
       .skip((page - 1) * limit)
       .limit(limit)
       .lean();
-    res.apiOk(list);
+    if (!list.length) return res.apiOk(list);
+
+    // Count templates per provider without loading templates payloads.
+    const providerKeys = Array.from(new Set(list.map(p => String(p?.key || '').trim()).filter(Boolean)));
+    let countsByProvider = new Map();
+    if (providerKeys.length) {
+      const templateFilters = [
+        { enabled: { $ne: false } },
+        { providerKey: { $in: providerKeys } },
+        {
+          $or: [
+            { repos: { $exists: false } },
+            { repos: { $size: 0 } },
+            { repos: { $in: enabledRepoIds } },
+          ],
+        },
+      ];
+      const templateQuery = { $and: templateFilters };
+      const counts = await NodeTemplate.aggregate([
+        { $match: templateQuery },
+        { $group: { _id: '$providerKey', count: { $sum: 1 } } },
+      ]);
+      countsByProvider = new Map((counts || []).map(c => [String(c?._id || ''), Number(c?.count || 0)]));
+    }
+
+    const enriched = list.map((p) => ({
+      ...p,
+      nodeTemplateCount: countsByProvider.get(String(p?.key || '')) || 0,
+    }));
+    res.apiOk(enriched);
   });
 
   const { requireAdmin } = require('../../auth/jwt');

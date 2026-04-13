@@ -6,6 +6,7 @@ export interface BackendProvider {
   key: string;
   name: string;
   title?: string;
+  nodeTemplateCount?: number;
   iconClass?: string;
   iconUrl?: string;
   color?: string;

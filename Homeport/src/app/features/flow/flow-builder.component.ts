@@ -765,7 +765,7 @@ export class FlowBuilderComponent {
   private paletteProvidersLoading = true;
   private paletteWorkspaceLoadCycle = 0;
   private paletteWorkspacePending: { filters: boolean; flows: boolean } = { filters: false, flows: false };
-  paletteGroups: { title: string; items: any[]; appId?: string; appColor?: string; appIconClass?: string; appIconUrl?: string }[] = [];
+  paletteGroups: { title: string; items: any[]; itemCount?: number; appId?: string; appColor?: string; appIconClass?: string; appIconUrl?: string }[] = [];
   paletteSearchGroups: Array<{ group: any; items: any[]; index: number }> = [];
   paletteSearchLoading = false;
   paletteSearchLoadingMore = false;
@@ -1545,12 +1545,13 @@ export class FlowBuilderComponent {
       if (ob != null) return 1;
       return String(a?.title || a?.name || a?.id || '').localeCompare(String(b?.title || b?.name || b?.id || ''));
     });
-    const groups: Array<{ title: string; items: any[]; appId?: string; appColor?: string; appIconClass?: string; appIconUrl?: string }> = apps.map((app) => {
+    const groups: Array<{ title: string; items: any[]; itemCount?: number; appId?: string; appColor?: string; appIconClass?: string; appIconUrl?: string }> = apps.map((app) => {
       const key = this.paletteGroupKey({ appId: app.id, title: app.title || app.name || app.id });
       const state = this.paletteGroupStates.get(key);
       return {
         title: app.title || app.name || app.id,
         items: state?.items || [],
+        itemCount: Number((app as any)?.nodeTemplateCount || 0),
         appId: app.id,
         appColor: app.color,
         appIconClass: app.iconClass,

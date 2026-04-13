@@ -122,7 +122,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
                 <img *ngIf="!isOpenAiGroup(g) && !g.appIconUrl && !g.appIconClass" [src]="simpleIconUrlFn?.(g.appId) || ''" alt="icon" />
               </span>
                 <span class="group-name">{{ g.title }}</span>
-                <span class="group-count" *ngIf="groupCount(g) as count">{{ count }}</span>
+                <span class="group-count" *ngIf="groupCount(g) !== null">{{ groupCount(g) }}</span>
                 <i class="fa-solid fa-chevron-right"></i>
               </button>
             </div>
@@ -681,8 +681,8 @@ export class FlowPalettePanelComponent implements OnInit, OnDestroy, OnChanges {
     return { group: this.groups[index], index };
   }
   groupCount(g: any): number | null {
-    if (typeof g?.itemCount === 'number') return g.itemCount;
-    if (Array.isArray(g?.items) && g.items.length) return g.items.length;
+    if (typeof g?.itemCount === 'number') return Math.max(0, Number(g.itemCount) || 0);
+    if (Array.isArray(g?.items)) return g.items.length;
     return null;
   }
   openAiIconUrl = 'https://assets.streamlinehq.com/image/private/w_240,h_240,ar_1/f_auto/v1/icons/technology/openai_1-moa3pqsiii7l4dkheifi8.png/openai_1-gv7rd0u7lcncyfalyjodt.png?_a=DATAg1AAZAA0';

@@ -56,6 +56,7 @@ export type AppProvider = {
   id: string;             // ex: 'gmail'
   name: string;           // ex: 'Gmail'
   title?: string;         // affichage alternatif
+  nodeTemplateCount?: number; // counted server-side
   order?: number;         // ordre d'affichage optionnel
   iconClass?: string;     // ex: 'fa-brands fa-google'
   iconUrl?: string;       // PNG/SVG
@@ -367,6 +368,7 @@ export class CatalogService {
         id: p.key,
         name: p.name,
         title: p.title || p.name,
+        nodeTemplateCount: Number(p?.nodeTemplateCount || 0),
         order: (p as any).order,
         iconClass: p.iconClass,
         iconUrl: p.iconUrl,
