@@ -1,13 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, NgZone, ChangeDetectorRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, NgZone, ChangeDetectorRef, OnDestroy, HostListener, AfterViewInit, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { CatalogService, NodeTemplate, AppProvider } from '../../services/catalog.service';
 import { AccessControlService } from '../../services/access-control.service';
 import { FormsModule } from '@angular/forms';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
-import { Subscription } from 'rxjs';
-import { auditTime, finalize, map, switchMap } from 'rxjs/operators';
+import { Subject, Subscription, fromEvent, of } from 'rxjs';
+import { auditTime, debounceTime, distinctUntilChanged, finalize, switchMap } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'node-template-list',
@@ -22,7 +23,7 @@ import { auditTime, finalize, map, switchMap } from 'rxjs/operators';
           <p>Gestion des templates (start, function, condition, loop…). À connecter à la base de données.</p>
         </div>
         <div class="actions">
-          <input [(ngModel)]="q" placeholder="Rechercher (nom, catégorie, app, tags)" class="search"/>
+          <input [(ngModel)]="q" (ngModelChange)="onQueryInput($event)" placeholder="Rechercher (nom, catégorie, app, tags)" class="search"/>
           <button nz-button nzType="primary" class="primary with-text" (click)="createNew()" [disabled]="!isAdmin" title="Admin uniquement">
             <i class="fa-solid fa-plus"></i> Nouveau template
           </button>
@@ -31,14 +32,14 @@ import { auditTime, finalize, map, switchMap } from 'rxjs/operators';
           </button>
         </div>
       </div>
-    <div class="loading" *ngIf="loading" role="status" aria-live="polite">
+    <div class="loading" *ngIf="loading && templates.length===0" role="status" aria-live="polite">
       <span class="loading-spinner" aria-hidden="true"></span>
       <span class="loading-text">Chargement des templates…</span>
     </div>
     <div class="error" *ngIf="!loading && error">{{ error }}</div>
-      <div class="empty" *ngIf="!loading && !error && filtered.length===0">Aucun élément trouvé.</div>
-      <div class="grid" *ngIf="!loading && !error && filtered.length>0">
-        <div class="card" *ngFor="let it of filtered" (click)="view(it)">
+      <div class="empty" *ngIf="!loading && !error && templates.length===0">Aucun élément trouvé.</div>
+      <div class="grid" *ngIf="!loading && !error && templates.length>0">
+        <div class="card" *ngFor="let it of templates" (click)="view(it)">
           <div class="leading">
             <div class="avatar" *ngIf="!appFor(it); else appIcon">{{ (it.name || it.id) | slice:0:1 | uppercase }}</div>
             <ng-template #appIcon>
@@ -63,6 +64,11 @@ import { auditTime, finalize, map, switchMap } from 'rxjs/operators';
           </div>
         </div>
       </div>
+      <div class="palette-loading more-loading" *ngIf="!loading && !error && loadingMore" role="status" aria-live="polite">
+        <span class="palette-loading-spinner" aria-hidden="true"></span>
+        <span class="palette-loading-text">Chargement des nœuds suivants…</span>
+      </div>
+      <div class="list-bottom-space" *ngIf="!loading && !error && templates.length>0" aria-hidden="true"></div>
     </div>
     
   </div>
@@ -97,6 +103,15 @@ import { auditTime, finalize, map, switchMap } from 'rxjs/operators';
     .loading-spinner { width:24px; height:24px; border-radius:50%; border:3px solid #dbe4ef; border-top-color:#1677ff; animation: list-spin .75s linear infinite; }
     .loading-text { font-size: 12px; font-weight: 500; color:#475569; }
     @keyframes list-spin { to { transform: rotate(360deg); } }
+    .palette-loading { min-height: 200px; height: 100%; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; color:#64748b; }
+    .palette-loading.more-loading { min-height: 0; height: auto; padding: 14px 12px; }
+    .palette-loading-spinner { width: 24px; height: 24px; border-radius: 50%; border: 3px solid #dbe4ef; border-top-color: #1677ff; animation: palette-spin .75s linear infinite; }
+    .palette-loading-text { font-size: 12px; font-weight: 500; color:#475569; }
+    @keyframes palette-spin { to { transform: rotate(360deg); } }
+    .list-bottom-space { height: 96px; }
+    @media (max-width: 768px) {
+      .list-bottom-space { height: calc(120px + env(safe-area-inset-bottom)); }
+    }
     .error { color:#b42318; background:#fee4e2; border:1px solid #fecaca; padding:10px 12px; border-radius:10px; display:inline-block; }
     .grid { display:grid; gap:16px; grid-template-columns: 1fr; min-width: 0; }
     @media (min-width: 640px) { .grid { grid-template-columns: repeat(2, 1fr); } }
@@ -122,30 +137,34 @@ import { auditTime, finalize, map, switchMap } from 'rxjs/operators';
     .modal-actions { display:flex; justify-content:flex-end; gap:8px; margin-top:8px; }
   `]
 })
-export class NodeTemplateListComponent implements OnInit, OnDestroy {
+export class NodeTemplateListComponent implements OnInit, OnDestroy, AfterViewInit {
   templates: NodeTemplate[] = [];
   loading = true;
+  loadingMore = false;
+  hasMore = false;
   error: string | null = null;
   appsMap = new Map<string, AppProvider>();
   q = '';
+  private readonly pageSize = 50;
+  private readonly queryDebounceMs = 400;
+  private currentQuery = '';
+  private currentPage = 0;
+  private queryInput$ = new Subject<string>();
   private loadSub?: Subscription;
   private loadTicket = 0;
-  get filtered() {
-    const s = (this.q || '').trim().toLowerCase();
-    if (!s) return this.templates;
-    return this.templates.filter(t => {
-      const name = (t.name || '').toLowerCase();
-      const title = ((t as any).title || '').toLowerCase();
-      const cat = (t.category || '').toLowerCase();
-      const tags = ((t as any).tags || []).join(' ').toLowerCase();
-      const appId = ((t as any).app && (t as any).app._id) ? (t as any).app._id : ((t as any).appId || '');
-      const app = appId ? (this.appsMap.get(appId) || null) : null;
-      const appText = app ? `${(app.title || app.name || app.id)}`.toLowerCase() : '';
-      return name.includes(s) || title.includes(s) || cat.includes(s) || tags.includes(s) || appText.includes(s);
-    });
-  }
+  private querySub?: Subscription;
+  private scrollSub?: Subscription;
+  private scrollContainer?: HTMLElement | null;
+  private loadingMoreStartedAt = 0;
 
-  constructor(private router: Router, private catalog: CatalogService, private zone: NgZone, private cdr: ChangeDetectorRef, private acl: AccessControlService) {}
+  constructor(
+    private router: Router,
+    private catalog: CatalogService,
+    private zone: NgZone,
+    private cdr: ChangeDetectorRef,
+    private acl: AccessControlService,
+    private elRef: ElementRef<HTMLElement>,
+  ) {}
   get isAdmin() { return (this.acl.currentUser()?.role || 'member') === 'admin'; }
   titleOf(it: any): string { try { return (it && (it.title || it.name)) || ''; } catch { return ''; } }
   primaryChip(it: any): string { const c = this.chipsFor(it); return c.length ? c[0] : ''; }
@@ -163,55 +182,157 @@ export class NodeTemplateListComponent implements OnInit, OnDestroy {
   restChips(it: any): string[] { const c = this.chipsFor(it); return c.slice(1); }
 
   private changesSub?: Subscription;
+  private appsSub?: Subscription;
   ngOnInit() {
-    this.load();
-    this.catalog.listApps().subscribe(list => { (list||[]).forEach(a => this.appsMap.set(a.id, a)); });
-    try { this.changesSub = this.acl.changes$.pipe(auditTime(50)).subscribe(() => this.load()); } catch {}
+    this.querySub = this.queryInput$
+      .pipe(debounceTime(this.queryDebounceMs), distinctUntilChanged())
+      .subscribe((value) => {
+        this.currentQuery = String(value || '').trim();
+        this.load(false);
+      });
+    this.load(false);
+    this.appsSub = this.catalog.listApps().subscribe(list => { (list||[]).forEach(a => this.appsMap.set(a.id, a)); });
+    try { this.changesSub = this.acl.changes$.pipe(auditTime(50)).subscribe(() => this.load(false)); } catch {}
+  }
+  ngAfterViewInit(): void {
+    setTimeout(() => this.attachScrollContainer(), 0);
   }
   ngOnDestroy(): void {
     try { this.changesSub?.unsubscribe(); } catch {}
+    try { this.appsSub?.unsubscribe(); } catch {}
+    try { this.querySub?.unsubscribe(); } catch {}
+    try { this.scrollSub?.unsubscribe(); } catch {}
     try { this.loadSub?.unsubscribe(); } catch {}
   }
 
-  load() {
+  @HostListener('window:scroll')
+  onWindowScroll(): void {
+    this.checkLoadMore();
+  }
+
+  onQueryInput(value: string) {
+    this.q = value || '';
+    this.queryInput$.next(this.q);
+  }
+
+  load(append = false) {
     const ticket = ++this.loadTicket;
-    this.loading = true;
-    this.error = null;
     const ws = this.acl.currentWorkspaceId();
     try { this.loadSub?.unsubscribe(); } catch {}
 
     // ACL can be empty during app bootstrap; keep loading until context is ready.
     if (!ws) return;
 
-    this.loadSub = this.catalog.listNodeTemplates().pipe(
-      switchMap((list) => this.acl.listAllowedTemplates(ws).pipe(
-        map((ids) => ({ list: list || [], ids: Array.isArray(ids) ? ids : [] }))
-      )),
+    const page = append ? (this.currentPage + 1) : 1;
+    if (append) {
+      this.loadingMore = true;
+      this.loadingMoreStartedAt = Date.now();
+      this.error = null;
+      try { this.cdr.detectChanges(); } catch {}
+    } else {
+      this.loading = true;
+      this.loadingMore = false;
+      this.error = null;
+      this.templates = [];
+      this.currentPage = 0;
+      this.hasMore = false;
+    }
+
+    this.loadSub = this.resolveTemplatePage(ws, page, this.currentQuery).pipe(
       finalize(() => {
         if (ticket !== this.loadTicket) return;
-        this.zone.run(() => {
-          this.loading = false;
-          setTimeout(() => { try { this.cdr.detectChanges(); } catch {} }, 0);
-        });
+        const completeLoading = () => {
+          this.zone.run(() => {
+            this.loading = false;
+            this.loadingMore = false;
+            setTimeout(() => { try { this.cdr.detectChanges(); } catch {} }, 0);
+          });
+        };
+        if (append) {
+          const elapsed = Date.now() - this.loadingMoreStartedAt;
+          const remaining = Math.max(0, 250 - elapsed);
+          if (remaining > 0) {
+            setTimeout(completeLoading, remaining);
+            return;
+          }
+        }
+        completeLoading();
       })
     ).subscribe({
-      next: ({ list, ids }) => {
+      next: (pageItems) => {
         if (ticket !== this.loadTicket) return;
         this.zone.run(() => {
-          const allow = new Set(ids);
-          this.templates = allow.size === 0 ? [] : list.filter(t => allow.has((t as any).id));
+          const items = pageItems || [];
+          this.templates = append ? [...this.templates, ...items] : items;
+          this.currentPage = page;
+          this.hasMore = items.length === this.pageSize;
           try { this.cdr.detectChanges(); } catch {}
+          setTimeout(() => this.checkLoadMore(), 0);
         });
       },
       error: () => {
         if (ticket !== this.loadTicket) return;
         this.zone.run(() => {
-          this.templates = [];
+          if (!append) this.templates = [];
+          this.hasMore = false;
           this.error = 'Impossible de charger les templates.';
         });
       }
     });
   }
+
+  private resolveTemplatePage(wsId: string, page: number, query: string) {
+    const workspaces = this.acl.workspaces?.() || [];
+    const currentWorkspace = workspaces.find(w => w.id === wsId) || this.acl.currentWorkspace?.() || null;
+    const params = {
+      page,
+      limit: this.pageSize,
+      q: query || undefined,
+    } as { page: number; limit: number; q?: string; keys?: string[] };
+    if (environment.useBackend && currentWorkspace?.isDefault) {
+      return this.catalog.listNodeTemplatesPage(params);
+    }
+    return this.acl.listAllowedTemplates(wsId).pipe(
+      switchMap((ids) => {
+        const keys = Array.from(new Set((ids || []).map(id => String(id || '').trim()).filter(Boolean)));
+        if (!keys.length) return of([] as NodeTemplate[]);
+        return this.catalog.listNodeTemplatesPage({ ...params, keys });
+      })
+    );
+  }
+
+  private attachScrollContainer(): void {
+    const host = this.elRef?.nativeElement || null;
+    this.scrollContainer = host?.closest('.inner-content') as HTMLElement | null;
+    try { this.scrollSub?.unsubscribe(); } catch {}
+    if (!this.scrollContainer) return;
+    this.scrollSub = fromEvent(this.scrollContainer, 'scroll')
+      .pipe(auditTime(50))
+      .subscribe(() => this.checkLoadMore(this.scrollContainer));
+    this.checkLoadMore(this.scrollContainer);
+  }
+
+  private checkLoadMore(container?: HTMLElement | null): void {
+    if (this.loading || this.loadingMore || !this.hasMore || !!this.error) return;
+    const target = container || this.scrollContainer;
+    if (target) {
+      const remaining = target.scrollHeight - (target.scrollTop + target.clientHeight);
+      if (remaining <= 220) {
+        this.load(true);
+      }
+      return;
+    }
+    const scrollTop = window.scrollY || document.documentElement.scrollTop || 0;
+    const viewportHeight = window.innerHeight || document.documentElement.clientHeight || 0;
+    const documentHeight = Math.max(
+      document.body?.scrollHeight || 0,
+      document.documentElement?.scrollHeight || 0
+    );
+    if ((documentHeight - (scrollTop + viewportHeight)) <= 220) {
+      this.load(true);
+    }
+  }
+
   fgColor(bg?: string|null): string {
     const b = String(bg || '#1677ff');
     try {
