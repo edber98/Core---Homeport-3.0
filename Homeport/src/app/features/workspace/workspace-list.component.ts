@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, ChangeDetectorRef, NgZone } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit, ChangeDetectorRef, NgZone, HostListener, ElementRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
@@ -13,7 +13,7 @@ import { AccessControlService, Workspace } from '../../services/access-control.s
 import { WorkspaceBackendService } from '../../services/workspace-backend.service';
 import { CatalogService, NodeTemplate, CredentialSummary, CredentialDoc } from '../../services/catalog.service';
 import { WebsiteService, Website } from '../website/website.service';
-import { forkJoin, of, Subscription } from 'rxjs';
+import { forkJoin, of, Subscription, fromEvent } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { auditTime } from 'rxjs/operators';
 
@@ -51,6 +51,106 @@ import { auditTime } from 'rxjs/operators';
       </div>
 
         <div class="editor" *ngIf="selected as ws">
+          <div class="transfer-block">
+            <div class="section-title">Éléments de « {{ ws.name }} »</div>
+            <div class="move-form" *ngIf="!loadingItems; else itemsLoading">
+              <!-- Flows -->
+              <div class="row">
+                <label class="field-label">Flows</label>
+                <div class="items" *ngIf="(flowsAvail?.length || 0) > 0; else emptyFlows">
+                  <div class="muted" style="margin-bottom:4px">{{ flowsAvail.length }} élément(s)</div>
+                  <div class="item" *ngFor="let it of flowsAvail">
+                    <span class="name">{{ it.name || it.id }}</span>
+                    <span class="id">{{ it.id }}</span>
+                    <button nz-button nzSize="small" nz-dropdown [nzDropdownMenu]="menuFlows" (click)="$event.stopPropagation()">Actions <i class="fa-solid fa-chevron-down"></i></button>
+                    <nz-dropdown-menu #menuFlows="nzDropdownMenu">
+                      <ul nz-menu>
+                        <li nz-menu-item nzDisabled="true">Transférer vers</li>
+                        <li nz-menu-item *ngFor="let w of workspaces" (click)="transferOne('flow', it.id, w.id)">{{ w.name }}</li>
+                        <li nz-menu-divider></li>
+                        <li nz-menu-item nzDisabled="true">Dupliquer vers</li>
+                        <li nz-menu-item *ngFor="let w of workspaces" (click)="duplicateOne('flow', it.id, w.id)">{{ w.name }}</li>
+                      </ul>
+                    </nz-dropdown-menu>
+                  </div>
+                </div>
+                <ng-template #emptyFlows><div class="empty">Aucun flow.</div></ng-template>
+              </div>
+              <!-- Forms -->
+              <div class="row">
+                <label class="field-label">Forms</label>
+                <div class="items" *ngIf="(formsAvail?.length || 0) > 0; else emptyForms">
+                  <div class="muted" style="margin-bottom:4px">{{ formsAvail.length }} élément(s)</div>
+                  <div class="item" *ngFor="let it of formsAvail">
+                    <span class="name">{{ it.name || it.id }}</span>
+                    <span class="id">{{ it.id }}</span>
+                    <button nz-button nzSize="small" nz-dropdown [nzDropdownMenu]="menuForms" (click)="$event.stopPropagation()">Actions <i class="fa-solid fa-chevron-down"></i></button>
+                    <nz-dropdown-menu #menuForms="nzDropdownMenu">
+                      <ul nz-menu>
+                        <li nz-menu-item nzDisabled="true">Transférer vers</li>
+                        <li nz-menu-item *ngFor="let w of workspaces" (click)="transferOne('form', it.id, w.id)">{{ w.name }}</li>
+                        <li nz-menu-divider></li>
+                        <li nz-menu-item nzDisabled="true">Dupliquer vers</li>
+                        <li nz-menu-item *ngFor="let w of workspaces" (click)="duplicateOne('form', it.id, w.id)">{{ w.name }}</li>
+                      </ul>
+                    </nz-dropdown-menu>
+                  </div>
+                </div>
+                <ng-template #emptyForms><div class="empty">Aucun formulaire.</div></ng-template>
+              </div>
+              <!-- Websites -->
+              <div class="row">
+                <label class="field-label">Websites</label>
+                <div class="items" *ngIf="(sitesAvail?.length || 0) > 0; else emptySites">
+                  <div class="muted" style="margin-bottom:4px">{{ sitesAvail.length }} élément(s)</div>
+                  <div class="item" *ngFor="let it of sitesAvail">
+                    <span class="name">{{ it.name || it.id }}</span>
+                    <span class="id">{{ it.id }}</span>
+                    <button nz-button nzSize="small" nz-dropdown [nzDropdownMenu]="menuSites" (click)="$event.stopPropagation()">Actions <i class="fa-solid fa-chevron-down"></i></button>
+                    <nz-dropdown-menu #menuSites="nzDropdownMenu">
+                      <ul nz-menu>
+                        <li nz-menu-item nzDisabled="true">Transférer vers</li>
+                        <li nz-menu-item *ngFor="let w of workspaces" (click)="transferOne('website', it.id, w.id)">{{ w.name }}</li>
+                        <li nz-menu-divider></li>
+                        <li nz-menu-item nzDisabled="true">Dupliquer vers</li>
+                        <li nz-menu-item *ngFor="let w of workspaces" (click)="duplicateOne('website', it.id, w.id)">{{ w.name }}</li>
+                      </ul>
+                    </nz-dropdown-menu>
+                  </div>
+                </div>
+                <ng-template #emptySites><div class="empty">Aucun site.</div></ng-template>
+              </div>
+              <!-- Credentials -->
+              <div class="row">
+                <label class="field-label">Credentials</label>
+                <div class="items" *ngIf="(credsAvail?.length || 0) > 0; else emptyCreds">
+                  <div class="muted" style="margin-bottom:4px">{{ credsAvail.length }} élément(s)</div>
+                  <div class="item" *ngFor="let it of credsAvail">
+                    <span class="name">{{ it.name || it.id }}</span>
+                    <span class="id">{{ it.id }}</span>
+                    <button nz-button nzSize="small" nz-dropdown [nzDropdownMenu]="menuCreds" (click)="$event.stopPropagation()">Actions <i class="fa-solid fa-chevron-down"></i></button>
+                    <nz-dropdown-menu #menuCreds="nzDropdownMenu">
+                      <ul nz-menu>
+                        <li nz-menu-item nzDisabled="true">Transférer vers</li>
+                        <li nz-menu-item *ngFor="let w of workspaces" (click)="transferOne('credential', it.id, w.id)">{{ w.name }}</li>
+                        <li nz-menu-divider></li>
+                        <li nz-menu-item nzDisabled="true">Dupliquer vers</li>
+                        <li nz-menu-item *ngFor="let w of workspaces" (click)="duplicateOne('credential', it.id, w.id)">{{ w.name }}</li>
+                      </ul>
+                    </nz-dropdown-menu>
+                  </div>
+                </div>
+                <ng-template #emptyCreds><div class="empty">Aucun credential.</div></ng-template>
+              </div>
+            </div>
+            <ng-template #itemsLoading>
+              <div class="skeleton-grid">
+                <div class="skeleton-card" *ngFor="let _ of [1,2,3,4]"></div>
+              </div>
+            </ng-template>
+          </div>
+
+          <div class="templates-block">
           <div class="editor-header">
             <div class="title">Autorisations de templates — {{ ws.name }}</div>
             <div class="actions">
@@ -58,7 +158,7 @@ import { auditTime } from 'rxjs/operators';
             <button nz-button class="btn" (click)="selectAll(false)" [disabled]="ws.isDefault || savingAllowed">Tout retirer</button>
             </div>
           </div>
-        <div class="tpl-grid" *ngIf="!loadingAllowed; else allowedLoading">
+        <div class="tpl-grid" *ngIf="!loadingAllowed && !loadingTemplates; else allowedLoading">
           <label class="tpl-item" *ngFor="let t of templates" nz-tooltip [nzTooltipTitle]="tplLabel(t)">
             <input type="checkbox" [checked]="isAllowed(t.id)" (change)="toggle(t, $any($event.target).checked)" [disabled]="ws.isDefault || savingAllowed"/>
             <span class="tpl-line">{{ tplLabel(t) }}</span>
@@ -70,104 +170,14 @@ import { auditTime } from 'rxjs/operators';
             <div class="skeleton-line" *ngFor="let _ of [1,2,3,4,5,6,7,8]"></div>
           </div>
         </ng-template>
-
-        <div class="transfer-block">
-          <div class="section-title">Éléments de « {{ ws.name }} »</div>
-          <div class="move-form" *ngIf="!loadingItems; else itemsLoading">
-            <!-- Flows -->
-            <div class="row">
-              <label class="field-label">Flows</label>
-              <div class="items" *ngIf="(flowsAvail?.length || 0) > 0; else emptyFlows">
-                <div class="muted" style="margin-bottom:4px">{{ flowsAvail.length }} élément(s)</div>
-                <div class="item" *ngFor="let it of flowsAvail">
-                  <span class="name">{{ it.name || it.id }}</span>
-                  <span class="id">{{ it.id }}</span>
-                  <button nz-button nzSize="small" nz-dropdown [nzDropdownMenu]="menuFlows" (click)="$event.stopPropagation()">Actions <i class="fa-solid fa-chevron-down"></i></button>
-                  <nz-dropdown-menu #menuFlows="nzDropdownMenu">
-                    <ul nz-menu>
-                      <li nz-menu-item nzDisabled="true">Transférer vers</li>
-                      <li nz-menu-item *ngFor="let w of workspaces" (click)="transferOne('flow', it.id, w.id)">{{ w.name }}</li>
-                      <li nz-menu-divider></li>
-                      <li nz-menu-item nzDisabled="true">Dupliquer vers</li>
-                      <li nz-menu-item *ngFor="let w of workspaces" (click)="duplicateOne('flow', it.id, w.id)">{{ w.name }}</li>
-                    </ul>
-                  </nz-dropdown-menu>
-                </div>
-              </div>
-              <ng-template #emptyFlows><div class="empty">Aucun flow.</div></ng-template>
-            </div>
-            <!-- Forms -->
-            <div class="row">
-              <label class="field-label">Forms</label>
-              <div class="items" *ngIf="(formsAvail?.length || 0) > 0; else emptyForms">
-                <div class="muted" style="margin-bottom:4px">{{ formsAvail.length }} élément(s)</div>
-                <div class="item" *ngFor="let it of formsAvail">
-                  <span class="name">{{ it.name || it.id }}</span>
-                  <span class="id">{{ it.id }}</span>
-                  <button nz-button nzSize="small" nz-dropdown [nzDropdownMenu]="menuForms" (click)="$event.stopPropagation()">Actions <i class="fa-solid fa-chevron-down"></i></button>
-                  <nz-dropdown-menu #menuForms="nzDropdownMenu">
-                    <ul nz-menu>
-                      <li nz-menu-item nzDisabled="true">Transférer vers</li>
-                      <li nz-menu-item *ngFor="let w of workspaces" (click)="transferOne('form', it.id, w.id)">{{ w.name }}</li>
-                      <li nz-menu-divider></li>
-                      <li nz-menu-item nzDisabled="true">Dupliquer vers</li>
-                      <li nz-menu-item *ngFor="let w of workspaces" (click)="duplicateOne('form', it.id, w.id)">{{ w.name }}</li>
-                    </ul>
-                  </nz-dropdown-menu>
-                </div>
-              </div>
-              <ng-template #emptyForms><div class="empty">Aucun formulaire.</div></ng-template>
-            </div>
-            <!-- Websites -->
-            <div class="row">
-              <label class="field-label">Websites</label>
-              <div class="items" *ngIf="(sitesAvail?.length || 0) > 0; else emptySites">
-                <div class="muted" style="margin-bottom:4px">{{ sitesAvail.length }} élément(s)</div>
-                <div class="item" *ngFor="let it of sitesAvail">
-                  <span class="name">{{ it.name || it.id }}</span>
-                  <span class="id">{{ it.id }}</span>
-                  <button nz-button nzSize="small" nz-dropdown [nzDropdownMenu]="menuSites" (click)="$event.stopPropagation()">Actions <i class="fa-solid fa-chevron-down"></i></button>
-                  <nz-dropdown-menu #menuSites="nzDropdownMenu">
-                    <ul nz-menu>
-                      <li nz-menu-item nzDisabled="true">Transférer vers</li>
-                      <li nz-menu-item *ngFor="let w of workspaces" (click)="transferOne('website', it.id, w.id)">{{ w.name }}</li>
-                      <li nz-menu-divider></li>
-                      <li nz-menu-item nzDisabled="true">Dupliquer vers</li>
-                      <li nz-menu-item *ngFor="let w of workspaces" (click)="duplicateOne('website', it.id, w.id)">{{ w.name }}</li>
-                    </ul>
-                  </nz-dropdown-menu>
-                </div>
-              </div>
-              <ng-template #emptySites><div class="empty">Aucun site.</div></ng-template>
-            </div>
-            <!-- Credentials -->
-            <div class="row">
-              <label class="field-label">Credentials</label>
-              <div class="items" *ngIf="(credsAvail?.length || 0) > 0; else emptyCreds">
-                <div class="muted" style="margin-bottom:4px">{{ credsAvail.length }} élément(s)</div>
-                <div class="item" *ngFor="let it of credsAvail">
-                  <span class="name">{{ it.name || it.id }}</span>
-                  <span class="id">{{ it.id }}</span>
-                  <button nz-button nzSize="small" nz-dropdown [nzDropdownMenu]="menuCreds" (click)="$event.stopPropagation()">Actions <i class="fa-solid fa-chevron-down"></i></button>
-                  <nz-dropdown-menu #menuCreds="nzDropdownMenu">
-                    <ul nz-menu>
-                      <li nz-menu-item nzDisabled="true">Transférer vers</li>
-                      <li nz-menu-item *ngFor="let w of workspaces" (click)="transferOne('credential', it.id, w.id)">{{ w.name }}</li>
-                      <li nz-menu-divider></li>
-                      <li nz-menu-item nzDisabled="true">Dupliquer vers</li>
-                      <li nz-menu-item *ngFor="let w of workspaces" (click)="duplicateOne('credential', it.id, w.id)">{{ w.name }}</li>
-                    </ul>
-                  </nz-dropdown-menu>
-                </div>
-              </div>
-              <ng-template #emptyCreds><div class="empty">Aucun credential.</div></ng-template>
-            </div>
-          </div>
-          <ng-template #itemsLoading>
-            <div class="skeleton-grid">
-              <div class="skeleton-card" *ngFor="let _ of [1,2,3,4]"></div>
-            </div>
-          </ng-template>
+        <div class="palette-loading more-loading" *ngIf="templatesLoadingMore" role="status" aria-live="polite">
+          <span class="palette-loading-spinner" aria-hidden="true"></span>
+          <span class="palette-loading-text">Chargement des nœuds suivants…</span>
+        </div>
+        <div class="tpl-load-hint" *ngIf="!loadingTemplates && !templatesLoadingMore && templatesHasMore">
+          Descendez pour charger plus de templates.
+        </div>
+        <div class="templates-bottom-space" *ngIf="templatesHasMore || templatesLoadingMore" aria-hidden="true"></div>
         </div>
       </div>
     </div>
@@ -212,6 +222,7 @@ import { auditTime } from 'rxjs/operators';
     .content .desc { color:#6b7280; font-size:12px; }
 
     .editor { background:#fff; border:1px solid #ececec; border-radius:14px; padding:12px; }
+    .templates-block { display:block; }
     .editor-header { display:flex; align-items:center; justify-content:space-between; margin-bottom: 10px; }
     .editor-header .title { font-weight:600; }
     .editor-header .actions { display:flex; align-items:center; gap:8px; }
@@ -220,7 +231,14 @@ import { auditTime } from 'rxjs/operators';
     .tpl-item { display:flex; align-items:center; gap:8px; padding:8px 10px; border:1px solid #f0f0f0; border-radius:10px; min-width: 0; }
     .tpl-line { flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .muted { grid-column: 1 / -1; color:#9ca3af; font-size:12px; padding:4px 2px; }
-    .transfer-block { margin-top: 16px; padding-top: 8px; border-top: 1px solid #f0f0f0; }
+    .palette-loading { min-height: 200px; height: 100%; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; color:#64748b; }
+    .palette-loading.more-loading { min-height: 0; height: auto; padding: 14px 12px; position: sticky; bottom: 0; z-index: 2; background: linear-gradient(180deg, rgba(255,255,255,0) 0%, #ffffff 35%); }
+    .palette-loading-spinner { width: 24px; height: 24px; border-radius: 50%; border: 3px solid #dbe4ef; border-top-color: #1677ff; animation: palette-spin .75s linear infinite; }
+    .palette-loading-text { font-size: 12px; font-weight: 500; color:#475569; }
+    .tpl-load-hint { color:#9ca3af; font-size:12px; text-align:center; padding: 4px 2px 10px; }
+    .templates-bottom-space { height: 72px; }
+    @keyframes palette-spin { to { transform: rotate(360deg); } }
+    .transfer-block { margin-top: 0; margin-bottom: 14px; padding-top: 0; padding-bottom: 12px; border-bottom: 1px solid #f0f0f0; }
     .transfer-block .section-title { font-weight:600; color:#6b7280; margin-bottom: 8px; }
     .row-actions { display:flex; gap:8px; }
     .move-form { display:flex; flex-direction:column; gap:10px; }
@@ -244,9 +262,12 @@ import { auditTime } from 'rxjs/operators';
     .transfer-block .skeleton-grid { display: grid; grid-template-columns: 1fr; gap: 12px; padding: 4px 0 14px; }
   `]
 })
-export class WorkspaceListComponent implements OnInit {
+export class WorkspaceListComponent implements OnInit, OnDestroy, AfterViewInit {
   workspaces: Workspace[] = [];
   templates: NodeTemplate[] = [];
+  loadingTemplates = true;
+  templatesLoadingMore = false;
+  templatesHasMore = false;
   allowed: string[] = [];
   selected: Workspace | null = null;
   draftName = '';
@@ -258,23 +279,25 @@ export class WorkspaceListComponent implements OnInit {
   // Accept both ObjectId and custom ids in backend mode; UI no longer blocks by id format
   isBackendId(id: string | null | undefined): boolean { return true; }
   private itemsReqId = 0;
+  private templatesReqId = 0;
+  private templatesPage = 0;
+  private readonly templatesPageSize = 100;
+  private templatesLoadingMoreStartedAt = 0;
+  private scrollSub?: Subscription;
+  private scrollContainer?: HTMLElement | null;
   private dbg(msg: string, data?: any) { try { console.debug('[WorkspaceList]', msg, data ?? ''); } catch {} }
 
-  constructor(private acl: AccessControlService, private catalog: CatalogService, private websites: WebsiteService, private wsApi: WorkspaceBackendService, private cdr: ChangeDetectorRef, private zone: NgZone) {}
+  constructor(private acl: AccessControlService, private catalog: CatalogService, private websites: WebsiteService, private wsApi: WorkspaceBackendService, private cdr: ChangeDetectorRef, private zone: NgZone, private elRef: ElementRef<HTMLElement>) {}
   ngOnInit(): void {
     // N'afficher que les workspaces de l'entreprise de l'utilisateur courant
     this.loadingWs = true;
     this.syncWorkspacesFromAcl();
-    this.catalog.listNodeTemplates().subscribe(list => {
-      this.templates = list || [];
-      if (this.selected && (this.selected as any).isDefault) {
-        this.loadingAllowed = false;
-        this.allowed = this.templates.map(t => t.id);
-        try { this.cdr.detectChanges(); } catch {}
-      }
-    });
+    this.loadTemplatesPage(false);
     // Rafraîchir la liste et la sélection quand l'ACL change (ex: au premier sync backend)
     try { this.changesSub = this.acl.changes$.pipe(auditTime(50)).subscribe(() => this.syncWorkspacesFromAcl()); } catch {}
+  }
+  ngAfterViewInit(): void {
+    setTimeout(() => this.attachScrollContainer(), 0);
   }
   private syncWorkspacesFromAcl() {
     this.acl.listCompanyWorkspaces().subscribe(ws => {
@@ -315,6 +338,11 @@ export class WorkspaceListComponent implements OnInit {
     });
   }
   ngOnDestroy() { try { this.changesSub?.unsubscribe(); } catch {}
+    try { this.scrollSub?.unsubscribe(); } catch {}
+  }
+  @HostListener('window:scroll')
+  onWindowScroll(): void {
+    this.maybeLoadMoreTemplates();
   }
   isAllowed(id: string): boolean { return this.allowed.includes(id); }
   toggle(t: NodeTemplate, on: boolean) {
@@ -327,11 +355,20 @@ export class WorkspaceListComponent implements OnInit {
   }
   selectAll(on: boolean) {
     if (!this.selected) return;
-    const ids = on ? this.templates.map(t => t.id) : [];
     this.savingAllowed = true;
-    this.acl.setAllowedTemplates(this.selected.id, ids).subscribe({
-      next: () => this.select(this.selected!),
-      complete: () => { this.savingAllowed = false; }
+    if (!on) {
+      this.acl.setAllowedTemplates(this.selected.id, []).subscribe({
+        next: () => this.select(this.selected!),
+        complete: () => { this.savingAllowed = false; }
+      });
+      return;
+    }
+    // Keep semantic of "Tout autoriser": fetch every template id in pages of 100.
+    this.fetchAllTemplateIds((ids) => {
+      this.acl.setAllowedTemplates(this.selected!.id, ids).subscribe({
+        next: () => this.select(this.selected!),
+        complete: () => { this.savingAllowed = false; }
+      });
     });
   }
   canCreate() { return (this.draftName || '').trim().length >= 2; }
@@ -576,4 +613,109 @@ export class WorkspaceListComponent implements OnInit {
 
   // Helpers
   getWsName(id: string | null): string { if (!id) return ''; return this.workspaces.find(w => w.id === id)?.name || id; }
+
+  private loadTemplatesPage(append = false): void {
+    if (append) {
+      if (this.loadingTemplates || this.templatesLoadingMore || !this.templatesHasMore) return;
+      this.templatesLoadingMore = true;
+      this.templatesLoadingMoreStartedAt = Date.now();
+      try { this.cdr.detectChanges(); } catch {}
+    } else {
+      this.loadingTemplates = true;
+      this.templatesLoadingMore = false;
+      this.templatesHasMore = false;
+      this.templatesPage = 0;
+      this.templates = [];
+    }
+    const reqId = ++this.templatesReqId;
+    const page = append ? (this.templatesPage + 1) : 1;
+    this.catalog.listNodeTemplatesPage({ page, limit: this.templatesPageSize }).subscribe({
+      next: (list) => this.zone.run(() => {
+        const apply = () => {
+          if (reqId !== this.templatesReqId) return;
+          const pageItems = list || [];
+          this.templates = append ? [...this.templates, ...pageItems] : pageItems;
+          this.templatesPage = page;
+          this.templatesHasMore = pageItems.length === this.templatesPageSize;
+          this.loadingTemplates = false;
+          this.templatesLoadingMore = false;
+          if (this.selected && (this.selected as any).isDefault) {
+            this.allowed = this.templates.map(t => t.id);
+          }
+          try { this.cdr.detectChanges(); } catch {}
+          setTimeout(() => this.maybeLoadMoreTemplates(), 0);
+        };
+        if (append) {
+          const elapsed = Date.now() - this.templatesLoadingMoreStartedAt;
+          const remain = Math.max(0, 250 - elapsed);
+          if (remain > 0) { setTimeout(apply, remain); return; }
+        }
+        apply();
+      }),
+      error: () => this.zone.run(() => {
+        const applyError = () => {
+          if (reqId !== this.templatesReqId) return;
+          this.templatesHasMore = false;
+          this.loadingTemplates = false;
+          this.templatesLoadingMore = false;
+          try { this.cdr.detectChanges(); } catch {}
+        };
+        if (append) {
+          const elapsed = Date.now() - this.templatesLoadingMoreStartedAt;
+          const remain = Math.max(0, 250 - elapsed);
+          if (remain > 0) { setTimeout(applyError, remain); return; }
+        }
+        applyError();
+      })
+    });
+  }
+
+  private attachScrollContainer(): void {
+    const host = this.elRef?.nativeElement || null;
+    this.scrollContainer = host?.closest('.inner-content') as HTMLElement | null;
+    try { this.scrollSub?.unsubscribe(); } catch {}
+    if (!this.scrollContainer) return;
+    this.scrollSub = fromEvent(this.scrollContainer, 'scroll')
+      .pipe(auditTime(50))
+      .subscribe(() => this.maybeLoadMoreTemplates(this.scrollContainer));
+    this.maybeLoadMoreTemplates(this.scrollContainer);
+  }
+
+  private maybeLoadMoreTemplates(container?: HTMLElement | null): void {
+    if (this.loadingTemplates || this.templatesLoadingMore || !this.templatesHasMore) return;
+    const target = container || this.scrollContainer;
+    if (target) {
+      const remaining = target.scrollHeight - (target.scrollTop + target.clientHeight);
+      if (remaining <= 220) this.loadTemplatesPage(true);
+      return;
+    }
+    const scrollTop = window.scrollY || document.documentElement.scrollTop || 0;
+    const viewportHeight = window.innerHeight || document.documentElement.clientHeight || 0;
+    const documentHeight = Math.max(
+      document.body?.scrollHeight || 0,
+      document.documentElement?.scrollHeight || 0
+    );
+    if ((documentHeight - (scrollTop + viewportHeight)) <= 220) {
+      this.loadTemplatesPage(true);
+    }
+  }
+
+  private fetchAllTemplateIds(done: (ids: string[]) => void): void {
+    const all = new Set<string>();
+    const walk = (page: number) => {
+      this.catalog.listNodeTemplatesPage({ page, limit: this.templatesPageSize }).subscribe({
+        next: (list) => {
+          const items = list || [];
+          items.forEach((t) => { if (t?.id) all.add(String(t.id)); });
+          if (items.length === this.templatesPageSize) {
+            walk(page + 1);
+            return;
+          }
+          done(Array.from(all));
+        },
+        error: () => done(Array.from(all)),
+      });
+    };
+    walk(1);
+  }
 }
