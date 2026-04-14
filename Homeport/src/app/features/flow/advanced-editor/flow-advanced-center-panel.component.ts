@@ -167,7 +167,7 @@ import { environment } from '../../../../environments/environment';
                   [schema]="s"
                   [value]="model?.context || {}"
                   [ctx]="ctx"
-                  [nativeSelectOnMobile]="true"
+                  [nativeSelectOnMobile]="false"
                   [hideActions]="true"
                   (valueChange)="onValue($event)"
                   (valueCommitted)="onValueCommitted($event)"
@@ -438,7 +438,7 @@ export class FlowAdvancedCenterPanelComponent implements OnDestroy {
   private updateSelectMode() {
     try {
       const width = window.innerWidth || 0;
-      this.useNativeSelect = width <= 1023;
+      this.useNativeSelect = false;
       if (width <= 768) this.formSelectPlacement = 'topLeft';
       else if (width <= 1023) this.formSelectPlacement = 'bottomLeft';
       else this.formSelectPlacement = null;

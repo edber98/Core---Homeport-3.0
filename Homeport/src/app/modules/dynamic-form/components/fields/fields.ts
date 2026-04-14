@@ -105,7 +105,7 @@ export class Fields implements OnInit, OnDestroy {
   }
 
   get useNativeSelect(): boolean {
-    return this.nativeSelectOnMobile && this.isMobileOrTablet;
+    return false;
   }
 
   /** champ required ? */

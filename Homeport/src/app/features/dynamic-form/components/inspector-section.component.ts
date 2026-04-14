@@ -352,7 +352,7 @@ export class InspectorSectionComponent {
   @Output() openCondition = new EventEmitter<void>();
 
   activeTab: 'general'|'logic'|'json' = 'general';
-  isMobileOrTablet = (typeof window !== 'undefined') ? window.innerWidth <= 1280 : false;
+  isMobileOrTablet = false;
   sectionsOpen = {
     ui: false,
     spacing: false,
@@ -360,7 +360,7 @@ export class InspectorSectionComponent {
 
   @HostListener('window:resize')
   onWindowResize() {
-    this.isMobileOrTablet = (typeof window !== 'undefined') ? window.innerWidth <= 1280 : this.isMobileOrTablet;
+    this.isMobileOrTablet = false;
   }
 
   toggleSection(key: keyof InspectorSectionComponent['sectionsOpen']) {

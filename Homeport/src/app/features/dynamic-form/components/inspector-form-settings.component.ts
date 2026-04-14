@@ -34,7 +34,7 @@ export class InspectorFormSettingsComponent implements OnInit, OnDestroy {
   buttonSpacing!: FormGroup;
   private subs: Subscription[] = [];
   activeTab: 'general'|'logic'|'json' = 'general';
-  isMobileOrTablet = (typeof window !== 'undefined') ? window.innerWidth <= 1280 : false;
+  isMobileOrTablet = false;
   sectionsOpen = {
     ui: false,
     actions: false,
@@ -59,7 +59,7 @@ export class InspectorFormSettingsComponent implements OnInit, OnDestroy {
 
   @HostListener('window:resize')
   onWindowResize() {
-    this.isMobileOrTablet = (typeof window !== 'undefined') ? window.innerWidth <= 1280 : this.isMobileOrTablet;
+    this.isMobileOrTablet = false;
   }
 
   toggleSection(key: keyof InspectorFormSettingsComponent['sectionsOpen']) {
