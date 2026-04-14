@@ -531,7 +531,7 @@ export class FlowRightPanelComponent implements OnChanges {
   @Input() runsHasMore = false;
   @Input() selectedRunId: string | null = null;
   selectedRecentId: string | null = null;
-  get useNativeSelect(): boolean { return this.mode === 'drawer'; }
+  get useNativeSelect(): boolean { return false; }
   @Output() selectRun = new EventEmitter<string>();
   @Output() loadMoreRuns = new EventEmitter<void>();
   // no search field per request

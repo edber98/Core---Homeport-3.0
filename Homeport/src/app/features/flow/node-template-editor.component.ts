@@ -685,11 +685,7 @@ export class NodeTemplateEditorComponent implements OnInit {
   onWindowResize() { this.updateSelectMode(); }
 
   private updateSelectMode() {
-    try {
-      this.useNativeSelect = window.innerWidth <= 1023;
-    } catch {
-      this.useNativeSelect = false;
-    }
+    this.useNativeSelect = false;
   }
 
   ngOnInit(): void {

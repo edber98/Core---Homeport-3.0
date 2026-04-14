@@ -743,11 +743,7 @@ export class AiSettingsComponent implements OnInit, OnDestroy {
   }
 
   private updateSelectMode() {
-    try {
-      this.settingsUseNativeSelect = window.innerWidth <= 768;
-    } catch {
-      this.settingsUseNativeSelect = false;
-    }
+    this.settingsUseNativeSelect = false;
   }
 
   loadAll() {

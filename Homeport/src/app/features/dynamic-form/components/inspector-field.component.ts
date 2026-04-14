@@ -668,7 +668,7 @@ export class InspectorFieldComponent implements OnChanges, OnDestroy, DoCheck {
     ui: false,
     advanced: false,
   };
-  isMobileOrTablet = (typeof window !== 'undefined') ? window.innerWidth <= 1280 : false;
+  isMobileOrTablet = false;
 
   setTab(tab: 'general'|'logic'|'json') { this.activeTab = tab; }
 
@@ -696,7 +696,7 @@ export class InspectorFieldComponent implements OnChanges, OnDestroy, DoCheck {
 
   @HostListener('window:resize')
   onWindowResize() {
-    this.isMobileOrTablet = (typeof window !== 'undefined') ? window.innerWidth <= 1280 : this.isMobileOrTablet;
+    this.isMobileOrTablet = false;
   }
 
   ngOnChanges(_c: SimpleChanges) {

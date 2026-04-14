@@ -129,6 +129,13 @@ textarea.ant-input {
   padding: 6px !important;
   box-shadow: 0 12px 40px rgba(0,0,0,0.1) !important;
 }
+/* iPhone Safari + NZ Select: dropdown can render with a fake top gap */
+@supports (-webkit-touch-callout: none) {
+  .cdk-overlay-pane .ant-select-dropdown {
+    top: 0 !important;
+    margin-top: 0 !important;
+  }
+}
 .ant-select-item-option {
   border-radius: 8px !important;
 }

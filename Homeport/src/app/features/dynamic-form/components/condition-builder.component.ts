@@ -18,7 +18,7 @@ import { NzDividerModule } from 'ng-zorro-antd/divider';
 export class ConditionBuilderComponent {
   @Input({ required: true }) group!: FormGroup; // conditionForm { logic, items[] }
   @Input() inputFieldKeys: string[] = [];
-  isMobileOrTablet = (typeof window !== 'undefined') ? window.innerWidth <= 1280 : false;
+  isMobileOrTablet = false;
   readonly operatorOptions = [
     { value: '==', label: '==' },
     { value: '!=', label: '!=' },
@@ -53,6 +53,6 @@ export class ConditionBuilderComponent {
 
   @HostListener('window:resize')
   onWindowResize() {
-    this.isMobileOrTablet = (typeof window !== 'undefined') ? window.innerWidth <= 1280 : this.isMobileOrTablet;
+    this.isMobileOrTablet = false;
   }
 }

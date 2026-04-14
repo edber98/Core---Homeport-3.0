@@ -927,19 +927,11 @@ export class AiFullpageComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private updateThreadSettingsSelectMode() {
-    try {
-      this.threadSettingsUseNative = window.innerWidth <= 768;
-    } catch {
-      this.threadSettingsUseNative = false;
-    }
+    this.threadSettingsUseNative = false;
   }
 
   private updateSidebarAgentSelectMode() {
-    try {
-      this.sidebarAgentUseNative = window.innerWidth <= 1023;
-    } catch {
-      this.sidebarAgentUseNative = false;
-    }
+    this.sidebarAgentUseNative = false;
   }
 
   ngOnDestroy() {

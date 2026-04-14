@@ -314,7 +314,7 @@ export class AiPanelComponent implements OnInit {
   private updateDrawerWidth() {
     const w = window.innerWidth;
     this.drawerWidth = w < 576 ? '100%' : w < 768 ? '90%' : 460;
-    this.threadSettingsUseNative = w <= 768;
+    this.threadSettingsUseNative = false;
   }
 
   constructor(public ai: AiService, private cdr: ChangeDetectorRef, private router: Router) {

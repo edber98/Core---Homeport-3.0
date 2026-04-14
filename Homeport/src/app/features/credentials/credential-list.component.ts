@@ -232,7 +232,7 @@ export class CredentialListComponent implements OnInit, OnDestroy {
   private updateFilterSelectMode() {
     try {
       const width = window.innerWidth;
-      this.useNativeFilterSelect = width <= 1023;
+      this.useNativeFilterSelect = false;
       this.isMobile = width <= 768;
     } catch {
       this.useNativeFilterSelect = false;
