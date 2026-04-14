@@ -21,7 +21,7 @@ import { AccessControlService, Workspace } from '../../services/access-control.s
           *ngFor="let w of workspaces"
           (click)="pick(w)"
           [class.default]="w.isDefault">
-          <div class="avatar">{{ (w.name || '?') | slice:0:1 | uppercase }}</div>
+          <div class="avatar">{{ (w.name || '?').charAt(0) | uppercase }}</div>
           <div class="info">
             <div class="name">{{ w.name }}</div>
             <div class="badge" *ngIf="w.isDefault">Par défaut</div>

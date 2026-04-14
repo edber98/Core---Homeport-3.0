@@ -45,7 +45,7 @@ import { auditTime } from 'rxjs/operators';
           </div>
         </div>
         <div class="card" *ngFor="let w of workspaces" (click)="select(w)" [class.active]="selected?.id===w.id">
-          <div class="leading"><div class="avatar">{{ w.name | slice:0:1 | uppercase }}</div></div>
+          <div class="leading"><div class="avatar">{{ (w.name || '').charAt(0) | uppercase }}</div></div>
           <div class="content"><div class="name">{{ w.name }}</div><div class="desc">{{ w.id }}</div></div>
         </div>
       </div>
@@ -283,6 +283,7 @@ export class WorkspaceListComponent implements OnInit, OnDestroy, AfterViewInit 
   private templatesPage = 0;
   private readonly templatesPageSize = 100;
   private templatesLoadingMoreStartedAt = 0;
+  private templatesScrollArmed = false;
   private scrollSub?: Subscription;
   private scrollContainer?: HTMLElement | null;
   private dbg(msg: string, data?: any) { try { console.debug('[WorkspaceList]', msg, data ?? ''); } catch {} }
@@ -342,7 +343,8 @@ export class WorkspaceListComponent implements OnInit, OnDestroy, AfterViewInit 
   }
   @HostListener('window:scroll')
   onWindowScroll(): void {
-    this.maybeLoadMoreTemplates();
+    this.templatesScrollArmed = true;
+    this.maybeLoadMoreTemplates(undefined, true);
   }
   isAllowed(id: string): boolean { return this.allowed.includes(id); }
   toggle(t: NodeTemplate, on: boolean) {
@@ -625,6 +627,7 @@ export class WorkspaceListComponent implements OnInit, OnDestroy, AfterViewInit 
       this.templatesLoadingMore = false;
       this.templatesHasMore = false;
       this.templatesPage = 0;
+      this.templatesScrollArmed = false;
       this.templates = [];
     }
     const reqId = ++this.templatesReqId;
@@ -643,7 +646,7 @@ export class WorkspaceListComponent implements OnInit, OnDestroy, AfterViewInit 
             this.allowed = this.templates.map(t => t.id);
           }
           try { this.cdr.detectChanges(); } catch {}
-          setTimeout(() => this.maybeLoadMoreTemplates(), 0);
+          setTimeout(() => this.maybeLoadMoreTemplates(undefined, false), 0);
         };
         if (append) {
           const elapsed = Date.now() - this.templatesLoadingMoreStartedAt;
@@ -672,17 +675,39 @@ export class WorkspaceListComponent implements OnInit, OnDestroy, AfterViewInit 
 
   private attachScrollContainer(): void {
     const host = this.elRef?.nativeElement || null;
-    this.scrollContainer = host?.closest('.inner-content') as HTMLElement | null;
+    this.scrollContainer = this.resolveScrollContainer(host);
     try { this.scrollSub?.unsubscribe(); } catch {}
     if (!this.scrollContainer) return;
     this.scrollSub = fromEvent(this.scrollContainer, 'scroll')
       .pipe(auditTime(50))
-      .subscribe(() => this.maybeLoadMoreTemplates(this.scrollContainer));
-    this.maybeLoadMoreTemplates(this.scrollContainer);
+      .subscribe(() => {
+        this.templatesScrollArmed = true;
+        this.maybeLoadMoreTemplates(this.scrollContainer, true);
+      });
   }
 
-  private maybeLoadMoreTemplates(container?: HTMLElement | null): void {
+  private resolveScrollContainer(host: HTMLElement | null): HTMLElement | null {
+    if (!host) return null;
+    // Current layout scrolls inside <main class="content">.
+    const byClass = (host.closest('.content') as HTMLElement | null) || (host.closest('.inner-content') as HTMLElement | null);
+    if (byClass) return byClass;
+    // Fallback: nearest ancestor with scrollable overflow.
+    let cur: HTMLElement | null = host.parentElement;
+    while (cur) {
+      try {
+        const st = getComputedStyle(cur);
+        const oy = String(st?.overflowY || '').toLowerCase();
+        if (oy === 'auto' || oy === 'scroll' || oy === 'overlay') return cur;
+      } catch {}
+      cur = cur.parentElement;
+    }
+    return null;
+  }
+
+  private maybeLoadMoreTemplates(container?: HTMLElement | null, triggeredByScroll = false): void {
     if (this.loadingTemplates || this.templatesLoadingMore || !this.templatesHasMore) return;
+    if (!this.selected || this.loadingAllowed) return;
+    if (!triggeredByScroll && !this.templatesScrollArmed) return;
     const target = container || this.scrollContainer;
     if (target) {
       const remaining = target.scrollHeight - (target.scrollTop + target.clientHeight);
