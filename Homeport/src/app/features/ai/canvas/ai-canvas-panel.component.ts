@@ -25,21 +25,21 @@ import { AiCanvasFilesComponent } from './ai-canvas-files.component';
       <div class="canvas-header">
         <div class="canvas-tabs-wrap">
           <div class="canvas-tabs">
-            <button class="ctab" [class.active]="activeTab === 'document'" (click)="setTab('document')">
+            <button *ngIf="showDocumentTab()" class="ctab" [class.active]="activeTab === 'document'" (click)="setTab('document')">
               <span nz-icon nzType="file-text" nzTheme="outline"></span>
               <span>Document</span>
             </button>
-            <button class="ctab" [class.active]="activeTab === 'research'" (click)="setTab('research')">
+            <button *ngIf="showResearchTab()" class="ctab" [class.active]="activeTab === 'research'" (click)="setTab('research')">
               <span nz-icon nzType="search" nzTheme="outline"></span>
               <span>Recherche</span>
               <nz-badge *ngIf="researchCount()" [nzCount]="researchCount()" [nzOverflowCount]="9" nzSize="small"></nz-badge>
             </button>
-            <button class="ctab" [class.active]="activeTab === 'tasks'" (click)="setTab('tasks')">
+            <button *ngIf="showTasksTab()" class="ctab" [class.active]="activeTab === 'tasks'" (click)="setTab('tasks')">
               <span nz-icon nzType="ordered-list" nzTheme="outline"></span>
               <span>Tâches</span>
               <nz-badge *ngIf="tasksCount()" [nzCount]="tasksCount()" [nzOverflowCount]="9" nzSize="small"></nz-badge>
             </button>
-            <button class="ctab" [class.active]="activeTab === 'files'" (click)="setTab('files')">
+            <button *ngIf="showFilesTab()" class="ctab" [class.active]="activeTab === 'files'" (click)="setTab('files')">
               <span nz-icon nzType="folder" nzTheme="outline"></span>
               <span>Fichiers</span>
             </button>
@@ -91,19 +91,68 @@ export class AiCanvasPanelComponent implements OnInit, OnDestroy {
   researchCount = computed(() => this.ai.canvasState()?.research?.steps?.length || 0);
   tasksCount = computed(() => this.ai.canvasState()?.tasks?.length || 0);
 
+  // Visibilité des onglets selon le mode du thread + activité
+  // - Mode projet : tous les onglets
+  // - Chat classique : seuls les onglets PERTINENTS (ceux qui ont du contenu)
+  showDocumentTab = computed(() => {
+    if (this.isProject()) return true;
+    return !!this.ai.canvasState()?.document?.previewHtml;
+  });
+  showResearchTab = computed(() => {
+    if (this.isProject()) return true;
+    return (this.ai.canvasState()?.research?.steps?.length || 0) > 0;
+  });
+  showTasksTab = computed(() => {
+    if (this.isProject()) return true;
+    return (this.ai.canvasState()?.tasks?.length || 0) > 0;
+  });
+  // Fichiers toujours visible : en projet = fichiers distant + chat ; en chat = fichiers partagés dans le thread
+  showFilesTab = computed(() => true);
+
+  private isProject(): boolean {
+    return this.ai.currentThread()?.mode === 'project';
+  }
+
   constructor() {
+    // Effect unifié : sélectionne l'onglet actif selon state serveur + onglets visibles.
+    // Priorité : research (si steps) > document (si preview) > tasks > files.
+    // L'état serveur activeTab est respecté UNIQUEMENT si l'onglet est encore visible.
     effect(() => {
       const state = this.ai.canvasState();
-      if (state?.activeTab && state.activeTab !== this.activeTab) {
-        this.activeTab = state.activeTab;
+      const visible = this.visibleTabs();
+      if (!visible.length) return;
+
+      const serverTab = state?.activeTab as ('document' | 'research' | 'tasks' | 'files' | undefined);
+      const currentIsVisible = visible.includes(this.activeTab);
+      const serverTabVisible = serverTab && visible.includes(serverTab);
+
+      // 1. Si le server a un tab valide et visible → priorité serveur
+      if (serverTabVisible && serverTab !== this.activeTab) {
+        this.activeTab = serverTab!;
+        return;
       }
+      // 2. Si l'actuel est toujours visible → on reste
+      if (currentIsVisible) return;
+      // 3. Sinon, choisir par priorité
+      const priority: Array<'research' | 'document' | 'tasks' | 'files'> = ['research', 'document', 'tasks', 'files'];
+      const next = priority.find(t => visible.includes(t)) || visible[0];
+      this.activeTab = next;
+      this.ai.setCanvasTab(next);
     });
+  }
+
+  private visibleTabs(): Array<'document' | 'research' | 'tasks' | 'files'> {
+    const tabs: Array<'document' | 'research' | 'tasks' | 'files'> = [];
+    if (this.showDocumentTab()) tabs.push('document');
+    if (this.showResearchTab()) tabs.push('research');
+    if (this.showTasksTab()) tabs.push('tasks');
+    if (this.showFilesTab()) tabs.push('files');
+    return tabs;
   }
 
   ngOnInit() {
     if (this.threadId) this.ai.loadCanvas(this.threadId);
-    const cur = this.ai.canvasState();
-    if (cur?.activeTab) this.activeTab = cur.activeTab;
+    // L'effect du constructor gère la sélection automatique dès que canvasState/visibleTabs changent.
   }
 
   ngOnDestroy() { this.sub?.unsubscribe(); }

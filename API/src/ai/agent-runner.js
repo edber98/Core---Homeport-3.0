@@ -176,6 +176,12 @@ async function* runAgent({ mode, messages, context, metadata, agentOverrides }) 
     }
   }
   if (agentOverrides?.llmModel) llmConfig.model = agentOverrides.llmModel;
+  // AI_PROVIDER env explicite → override priorité absolue sur agent config
+  if (process.env.AI_PROVIDER) {
+    llmConfig.provider = process.env.AI_PROVIDER;
+    const p = process.env.AI_PROVIDER.toLowerCase();
+    llmConfig.apiKey = (p === 'anthropic' || p === 'claude') ? env.ANTHROPIC_API_KEY : env.OPENAI_API_KEY;
+  }
   const llm = createLlmClient(llmConfig.provider, llmConfig);
 
   // 5. Build conversation

@@ -559,7 +559,11 @@ function createWebExecutor(metadata, emit) {
   };
 
   function emitStep(payload) {
-    try { safeEmit({ type: 'canvas.research.step', ...payload }); } catch {}
+    // Génère un ID unique par step si absent. L'ID est réutilisé lors du status=done
+    // pour mettre à jour le MÊME step (pas en créer un nouveau).
+    const id = payload.id || randomUUID();
+    try { safeEmit({ type: 'canvas.research.step', id, ...payload }); } catch {}
+    return id;
   }
 
   function emitPreviewUpdate(patch) {
@@ -575,14 +579,14 @@ function createWebExecutor(metadata, emit) {
     const safeSearch = input.safeSearch !== false;
     const site = input.site || undefined;
 
-    emitStep({ stepType: 'search', query, status: 'running' });
+    const searchId = emitStep({ stepType: 'search', query, status: 'running', title: `Recherche : ${query}` });
     try {
       const { engine, results } = await runSearch({ query, limit, locale, safeSearch, site });
       const preview = results.slice(0, 3).map(r => ({ title: r.title, url: r.url }));
-      emitStep({ stepType: 'search', query, status: 'done', engine, count: results.length, resultPreview: preview });
+      emitStep({ id: searchId, stepType: 'search', query, status: 'done', engine, count: results.length, resultPreview: preview, title: `Recherche : ${query}` });
       return { engine, query, results };
     } catch (e) {
-      emitStep({ stepType: 'search', query, status: 'error', error: e.message });
+      emitStep({ id: searchId, stepType: 'search', query, status: 'error', error: e.message, title: `Recherche : ${query}` });
       return { error: e.message };
     }
   }
@@ -596,7 +600,7 @@ function createWebExecutor(metadata, emit) {
     const prompt = input.prompt || null;
     const fetchedAt = new Date().toISOString();
 
-    emitStep({ stepType: 'fetch', url, status: 'running' });
+    const fetchId = emitStep({ stepType: 'fetch', url, status: 'running', title: url });
 
     try {
       let resp = null;
@@ -673,10 +677,10 @@ function createWebExecutor(metadata, emit) {
       }
 
       const previewSrc = out.extracted || out.text || out.markdown || out.html || '';
-      emitStep({ stepType: 'fetch', url, status: 'done', statusCode: out.statusCode, wasJsRendered, resultPreview: previewSrc.slice(0, 400) });
+      emitStep({ id: fetchId, stepType: 'fetch', url, status: 'done', statusCode: out.statusCode, wasJsRendered, title: out.title || url, resultPreview: previewSrc.slice(0, 400) });
       return out;
     } catch (e) {
-      emitStep({ stepType: 'fetch', url, status: 'error', error: e.message });
+      emitStep({ id: fetchId, stepType: 'fetch', url, status: 'error', error: e.message, title: url });
       return { error: e.message, url, fetchedAt };
     }
   }

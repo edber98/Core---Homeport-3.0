@@ -1205,6 +1205,12 @@ export class AiService {
     return this.api.get<AiJob[]>(`/api/ai/threads/${threadId}/jobs`, { workspaceId: this.wsId() });
   }
 
+  async listThreadFiles(threadId: string): Promise<Array<{ id: string; name: string; mimeType: string; size: number; createdAt?: string; origin?: string }>> {
+    try {
+      return await this.api.get<any>(`/api/ai/threads/${threadId}/files`, { workspaceId: this.wsId() }).toPromise() || [];
+    } catch { return []; }
+  }
+
   getJob(jobId: string): Observable<AiJob> {
     return this.api.get<AiJob>(`/api/ai/jobs/${jobId}`, { workspaceId: this.wsId() });
   }

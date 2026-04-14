@@ -364,6 +364,12 @@ import { NzAvatarModule } from 'ng-zorro-antd/avatar';
                   <span nz-icon nzType="copy" nzTheme="outline"></span>
                 </button>
                 <button nz-button nzType="text" nzSize="small" class="chat-action-btn"
+                  [class.active]="ai.canvasOpen()"
+                  (click)="toggleCanvasPanel()"
+                  nz-tooltip [nzTooltipTitle]="ai.canvasOpen() ? 'Fermer le panneau' : 'Ouvrir le panneau (fichiers, recherche…)'" nzTooltipOverlayClassName="chat-action-tooltip">
+                  <span nz-icon [nzType]="ai.canvasOpen() ? 'layout' : 'appstore'" nzTheme="outline"></span>
+                </button>
+                <button nz-button nzType="text" nzSize="small" class="chat-action-btn"
                   nz-popover [nzPopoverContent]="settingsPopover" nzPopoverTrigger="click" nzPopoverPlacement="bottomRight" nzPopoverOverlayClassName="thread-settings-popover"
                   nz-tooltip nzTooltipTitle="Paramètres" nzTooltipOverlayClassName="chat-action-tooltip">
                   <span nz-icon nzType="setting" nzTheme="outline"></span>
@@ -885,16 +891,42 @@ export class AiFullpageComponent implements OnInit, OnDestroy, AfterViewInit {
       if (!tid || tid === this._lastLoadedCanvasThreadId) return;
       this._lastLoadedCanvasThreadId = tid;
       this.ai.loadCanvas(tid);
+      // Ferme le canvas à chaque switch de thread (sauf mode projet ou si on est sur mobile
+      // — l'utilisateur contrôle manuellement sur mobile).
+      if (cur?.mode !== 'project' && !this.isMobileSidebar() && this.ai.canvasOpen()) {
+        this.ai.closeCanvas();
+      }
+    });
+
+    // Auto-open au refresh : si le DERNIER message du thread est un widget canvas
+    // (research/diagram/structured/plan/document), ouvre automatiquement le panel.
+    // Si d'autres messages user/assistant existent APRÈS, n'ouvre pas.
+    // DÉSACTIVÉ sur mobile : ne pas perturber le champ visuel.
+    effect(() => {
+      const msgs = this.ai.messages();
+      const cur = this.ai.currentThread();
+      if (!cur || !msgs || !msgs.length) return;
+      if (cur.mode === 'project') return; // projet déjà géré
+      if (this.isMobileSidebar()) return;  // mobile : ouverture manuelle uniquement
+      const last = msgs[msgs.length - 1];
+      const kind = last?.metadata?.kind;
+      const isCanvasWidget = ['structured', 'diagram', 'plan_proposal'].includes(kind as string);
+      const state = this.ai.canvasState();
+      const hasResearch = (state?.research?.steps?.length || 0) > 0;
+      if ((isCanvasWidget || (hasResearch && last?.role === 'assistant')) && !this.ai.canvasOpen()) {
+        this.ai.openCanvas();
+      }
     });
 
     // Ouverture auto du canvas
-    // Project → ouvre toujours à l'arrivée
-    // Chat classique → ouvre dès qu'une activité apparaît (task, research, document).
+    // DÉSACTIVÉ sur mobile : ouverture manuelle uniquement via le bouton header.
+    // Project (desktop) → ouvre toujours à l'arrivée
+    // Chat classique (desktop) → ouvre dès qu'une activité apparaît (task, research, document).
     // NE FERME JAMAIS automatiquement : c'est à l'utilisateur de fermer via le bouton.
-    // Le close auto ne se fait QUE quand on switche de thread (autre effect).
     effect(() => {
       const cur = this.ai.currentThread();
       if (!cur) return;
+      if (this.isMobileSidebar()) return; // mobile : pas d'auto-open, pas d'auto-close
       const state = this.ai.canvasState();
       const hasActivity = !!(
         state?.tasks?.length ||
@@ -1550,6 +1582,11 @@ export class AiFullpageComponent implements OnInit, OnDestroy, AfterViewInit {
     if (found) return found.name;
     if (agentId.startsWith('provider:')) return agentId.slice('provider:'.length);
     return agentId;
+  }
+
+  toggleCanvasPanel() {
+    if (this.ai.canvasOpen()) this.ai.closeCanvas();
+    else this.ai.openCanvas();
   }
 
   regenerateTitle() {

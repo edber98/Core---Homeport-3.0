@@ -184,12 +184,20 @@ async function* runHarness({ mode, messages, context, metadata, agentOverrides, 
   // LLM client (with agent overrides)
   const env = require('../config/env');
   const llmConfig = { ...context.llmConfig };
-  if (agentOverrides?.llmProvider) {
+  // Si AI_PROVIDER est set explicitement en env, il gagne TOUJOURS sur l'override
+  // de l'agent sélectionné (fix demandé par le user : env AI_PROVIDER=openai doit
+  // être respecté même si l'AiAgent.llmProvider est 'anthropic').
+  const envForcesProvider = !!process.env.AI_PROVIDER;
+  if (agentOverrides?.llmProvider && !envForcesProvider) {
     llmConfig.provider = agentOverrides.llmProvider;
     const p = agentOverrides.llmProvider.toLowerCase();
     llmConfig.apiKey = (p === 'anthropic' || p === 'claude') ? env.ANTHROPIC_API_KEY : env.OPENAI_API_KEY;
   }
-  if (agentOverrides?.llmModel) llmConfig.model = agentOverrides.llmModel;
+  if (agentOverrides?.llmModel && !envForcesProvider) llmConfig.model = agentOverrides.llmModel;
+  // Log pour debug
+  if (envForcesProvider) {
+    console.log(`[harness] AI_PROVIDER=${process.env.AI_PROVIDER} forcé (agent override ignoré)`);
+  }
   const llm = createLlmClient(llmConfig.provider, llmConfig);
 
   // Build conversation

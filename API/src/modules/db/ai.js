@@ -795,6 +795,47 @@ ${toolLines.join('\n')}
             send(event);
             break;
 
+          // ── Canvas research step (incrémental : push/update une étape par ID) ──
+          case 'canvas.research.step': {
+            try {
+              const AiCanvasState = require('../../db/models/ai-canvas-state.model');
+              const threadId = thread._id;
+              const stepId = event.id || `${Date.now()}`;
+              const stepData = {
+                id: stepId,
+                type: event.stepType || event.type_ || 'step',
+                status: event.status || 'running',
+                title: event.title || event.url || '',
+                url: event.url || null,
+                query: event.query || null,
+                snippet: event.snippet || null,
+                resultPreview: event.resultPreview || null,
+                error: event.error || null,
+                updatedAt: new Date(),
+              };
+              // pull ancien step avec ce ID puis push le nouveau (upsert atomique)
+              await AiCanvasState.updateOne(
+                { threadId },
+                {
+                  $pull: { 'research.steps': { id: stepId } },
+                  $setOnInsert: { threadId },
+                },
+                { upsert: true }
+              );
+              await AiCanvasState.updateOne(
+                { threadId },
+                {
+                  $push: { 'research.steps': { $each: [stepData], $slice: -200 } },
+                  $set: { 'research.lastUpdatedAt': new Date() },
+                }
+              );
+            } catch (e) {
+              console.error('[ai-sse] research step persist:', e?.message);
+            }
+            send(event);
+            break;
+          }
+
           // ── Canvas updates — persist to AiCanvasState ──
           case 'canvas.document':
           case 'canvas.research':
@@ -1607,6 +1648,103 @@ ${toolLines.join('\n')}
     const normalized = String(decision).startsWith('allow') ? 'allow' : 'deny';
     emitJobEvent(job.id, { type: 'permission.resolved', requestId, decision: normalized });
     res.apiOk({ ok: true });
+  });
+
+  // Liste les fichiers partagés/générés dans le thread :
+  // - attachments (user uploads) via AiMessage.attachments[]
+  // - producedFiles IA via tool_call results (_files)
+  r.get('/ai/threads/:threadId/files', requireThreadAccess('view'), async (req, res) => {
+    try {
+      const thread = req.aiThread;
+      const FileRecord = require('../../db/models/file.model');
+      const msgs = await AiMessage.find({ threadId: thread._id }, 'attachments tool_calls metadata createdAt role').sort({ createdAt: 1 }).lean();
+      const fileMap = new Map(); // id → { id, name, mimeType, size, createdAt, origin }
+      for (const m of msgs) {
+        // User uploads
+        if (Array.isArray(m.attachments)) {
+          for (const att of m.attachments) {
+            const fid = att.fileId || att.id;
+            if (!fid) continue;
+            if (!fileMap.has(fid)) {
+              fileMap.set(fid, {
+                id: fid,
+                name: att.name || att.filename || fid,
+                mimeType: att.mimeType || att.contentType || 'application/octet-stream',
+                size: att.size || 0,
+                createdAt: m.createdAt,
+                origin: m.role === 'user' ? 'upload' : 'ai',
+              });
+            }
+          }
+        }
+        // AI produced files (dans tool_calls[].result._files ou metadata.imageInline.fileId)
+        const scanFiles = (obj) => {
+          if (!obj || typeof obj !== 'object') return;
+          if (Array.isArray(obj._files)) {
+            for (const f of obj._files) {
+              const fid = f.fileId || f.id;
+              if (fid && !fileMap.has(fid)) {
+                fileMap.set(fid, {
+                  id: fid,
+                  name: f.name || fid,
+                  mimeType: f.mimeType || 'application/octet-stream',
+                  size: f.size || 0,
+                  createdAt: m.createdAt,
+                  origin: 'ai',
+                });
+              }
+            }
+          }
+          if (Array.isArray(obj.producedFiles)) {
+            for (const f of obj.producedFiles) {
+              const fid = f.fileId || f.id;
+              if (fid && !fileMap.has(fid)) {
+                fileMap.set(fid, {
+                  id: fid,
+                  name: f.name || (f.path && f.path.split('/').pop()) || fid,
+                  mimeType: f.mimeType || 'application/octet-stream',
+                  size: f.size || 0,
+                  createdAt: m.createdAt,
+                  origin: 'ai',
+                });
+              }
+            }
+          }
+        };
+        if (Array.isArray(m.tool_calls)) {
+          for (const tc of m.tool_calls) { scanFiles(tc?.result); scanFiles(tc?.result?.result); }
+        }
+        if (m.metadata?.imageInline?.fileId) {
+          const fid = m.metadata.imageInline.fileId;
+          if (!fileMap.has(fid)) {
+            fileMap.set(fid, { id: fid, name: m.metadata.imageInline.caption || fid, mimeType: 'image/*', size: 0, createdAt: m.createdAt, origin: 'ai' });
+          }
+        }
+      }
+
+      // Enrichit avec vraies infos FileRecord (taille/mime si manque)
+      const ids = [...fileMap.keys()];
+      if (ids.length) {
+        const records = await FileRecord.find({ id: { $in: ids } }, 'id name mimeType size createdAt').lean();
+        for (const r of records) {
+          const existing = fileMap.get(r.id);
+          if (existing) {
+            fileMap.set(r.id, {
+              ...existing,
+              name: r.name || existing.name,
+              mimeType: r.mimeType || existing.mimeType,
+              size: r.size || existing.size,
+              createdAt: existing.createdAt || r.createdAt,
+            });
+          }
+        }
+      }
+
+      const list = [...fileMap.values()].sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+      res.apiOk(list);
+    } catch (e) {
+      res.apiError(500, 'list_thread_files_failed', e?.message);
+    }
   });
 
   r.get('/ai/threads/:threadId/jobs', requireThreadAccess('view'), async (req, res) => {
