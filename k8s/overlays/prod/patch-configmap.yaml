@@ -1,0 +1,7 @@
+# Overrides ConfigMap pour la prod
+- op: replace
+  path: /data/LOG_LEVEL
+  value: "info"
+- op: replace
+  path: /data/CORS_ORIGIN
+  value: "https://app.homeport.io"

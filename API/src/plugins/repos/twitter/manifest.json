@@ -611,7 +611,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Tweets"
+      "group": "Tweets",
+      "risk": "write"
     },
     {
       "key": "twitter_get_tweet",
@@ -672,7 +673,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Tweets"
+      "group": "Tweets",
+      "risk": "safe"
     },
     {
       "key": "twitter_delete_tweet",
@@ -733,7 +735,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Tweets"
+      "group": "Tweets",
+      "risk": "destructive"
     },
     {
       "key": "twitter_search_tweets",
@@ -804,7 +807,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Tweets"
+      "group": "Tweets",
+      "risk": "safe"
     },
     {
       "key": "twitter_list_user_tweets",
@@ -875,7 +879,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Tweets"
+      "group": "Tweets",
+      "risk": "safe"
     },
     {
       "key": "twitter_list_mentions",
@@ -946,7 +951,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Tweets"
+      "group": "Tweets",
+      "risk": "safe"
     },
     {
       "key": "twitter_get_user",
@@ -1007,7 +1013,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Utilisateurs"
+      "group": "Utilisateurs",
+      "risk": "safe"
     },
     {
       "key": "twitter_get_me",
@@ -1053,7 +1060,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Utilisateurs"
+      "group": "Utilisateurs",
+      "risk": "safe"
     },
     {
       "key": "twitter_list_followers",
@@ -1124,7 +1132,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Abonnements"
+      "group": "Abonnements",
+      "risk": "safe"
     },
     {
       "key": "twitter_list_following",
@@ -1195,7 +1204,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Abonnements"
+      "group": "Abonnements",
+      "risk": "safe"
     },
     {
       "key": "twitter_follow_user",
@@ -1270,7 +1280,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Abonnements"
+      "group": "Abonnements",
+      "risk": "safe"
     },
     {
       "key": "twitter_unfollow_user",
@@ -1345,7 +1356,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Abonnements"
+      "group": "Abonnements",
+      "risk": "safe"
     },
     {
       "key": "twitter_get_list",
@@ -1406,7 +1418,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Listes"
+      "group": "Listes",
+      "risk": "safe"
     },
     {
       "key": "twitter_list_tweets",
@@ -1477,7 +1490,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Listes"
+      "group": "Listes",
+      "risk": "safe"
     },
     {
       "key": "twitter_list_bookmarks",
@@ -1548,7 +1562,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Signets"
+      "group": "Signets",
+      "risk": "safe"
     }
   ]
 }

@@ -133,7 +133,8 @@
       "tags": [
         "lecture",
         "GitLab"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "gitlab_projects_list",
@@ -239,7 +240,8 @@
       "tags": [
         "liste",
         "GitLab"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "gitlab_project_create",
@@ -365,7 +367,8 @@
       "tags": [
         "création",
         "GitLab"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "gitlab_project_update",
@@ -490,7 +493,8 @@
       "tags": [
         "mise-à-jour",
         "GitLab"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "gitlab_project_delete",
@@ -558,7 +562,8 @@
       "tags": [
         "suppression",
         "GitLab"
-      ]
+      ],
+      "risk": "destructive"
     },
     {
       "key": "gitlab_issue_create",
@@ -715,7 +720,8 @@
       "tags": [
         "création",
         "GitLab"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "gitlab_issue_get",
@@ -802,7 +808,8 @@
       "tags": [
         "lecture",
         "GitLab"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "gitlab_issue_update",
@@ -970,7 +977,8 @@
       "tags": [
         "mise-à-jour",
         "GitLab"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "gitlab_issues_list",
@@ -1110,7 +1118,8 @@
       "tags": [
         "liste",
         "GitLab"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "gitlab_issue_note_create",
@@ -1216,7 +1225,8 @@
       "tags": [
         "création",
         "GitLab"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "gitlab_mr_create",
@@ -1383,7 +1393,8 @@
       "tags": [
         "création",
         "GitLab"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "gitlab_mr_get",
@@ -1470,7 +1481,8 @@
       "tags": [
         "lecture",
         "GitLab"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "gitlab_mr_update",
@@ -1624,7 +1636,8 @@
       "tags": [
         "mise-à-jour",
         "GitLab"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "gitlab_mrs_list",
@@ -1768,7 +1781,8 @@
       "tags": [
         "liste",
         "GitLab"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "gitlab_mr_merge",
@@ -1897,7 +1911,9 @@
       "tags": [
         "mise-à-jour",
         "GitLab"
-      ]
+      ],
+      "risk": "destructive",
+      "riskReason": "Merge une MR"
     },
     {
       "key": "gitlab_pipelines_list",
@@ -2035,7 +2051,8 @@
       "tags": [
         "liste",
         "GitLab"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "gitlab_pipeline_get",
@@ -2122,7 +2139,8 @@
       "tags": [
         "lecture",
         "GitLab"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "gitlab_pipeline_create",
@@ -2209,7 +2227,8 @@
       "tags": [
         "création",
         "GitLab"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "gitlab_pipeline_retry",
@@ -2296,7 +2315,9 @@
       "tags": [
         "mise-à-jour",
         "GitLab"
-      ]
+      ],
+      "risk": "elevated",
+      "riskReason": "Relance un pipeline (budget CI)"
     },
     {
       "key": "gitlab_branches_list",
@@ -2393,7 +2414,8 @@
       "tags": [
         "liste",
         "GitLab"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "gitlab_branch_create",
@@ -2499,7 +2521,8 @@
       "tags": [
         "création",
         "GitLab"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "gitlab_branch_delete",
@@ -2586,7 +2609,8 @@
       "tags": [
         "suppression",
         "GitLab"
-      ]
+      ],
+      "risk": "destructive"
     },
     {
       "key": "gitlab_commits_list",
@@ -2721,7 +2745,8 @@
       "tags": [
         "liste",
         "GitLab"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "gitlab_commit_get",
@@ -2808,7 +2833,8 @@
       "tags": [
         "lecture",
         "GitLab"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "gitlab_releases_list",
@@ -2891,7 +2917,8 @@
       "tags": [
         "liste",
         "GitLab"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "gitlab_release_create",
@@ -3006,7 +3033,8 @@
       "tags": [
         "création",
         "GitLab"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "gitlab_user_get",
@@ -3069,7 +3097,8 @@
       "tags": [
         "lecture",
         "GitLab"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "gitlab_users_list",
@@ -3147,7 +3176,8 @@
       "tags": [
         "liste",
         "GitLab"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "gitlab_groups_list",
@@ -3225,7 +3255,8 @@
       "tags": [
         "liste",
         "GitLab"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "gitlab_group_get",
@@ -3293,7 +3324,8 @@
       "tags": [
         "lecture",
         "GitLab"
-      ]
+      ],
+      "risk": "safe"
     }
   ],
   "variables": {

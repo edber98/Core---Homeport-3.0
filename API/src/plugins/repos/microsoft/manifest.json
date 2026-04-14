@@ -1532,7 +1532,8 @@
       "tags": [
         "envoi",
         "Microsoft Teams"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "ms_teams_reply_message",
@@ -1632,7 +1633,8 @@
       "tags": [
         "envoi",
         "Microsoft Teams"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "ms_teams_send_chat_message",
@@ -1706,7 +1708,8 @@
       "tags": [
         "envoi",
         "Microsoft Teams"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "ms_teams_list_messages",
@@ -1789,7 +1792,8 @@
       "tags": [
         "liste",
         "Microsoft Teams"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "ms_teams_get_message",
@@ -1876,7 +1880,8 @@
       "tags": [
         "lecture",
         "Microsoft Teams"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "ms_teams_create_channel",
@@ -1984,7 +1989,8 @@
       "tags": [
         "création",
         "Microsoft Teams"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "ms_teams_list_channels",
@@ -2045,7 +2051,8 @@
       "tags": [
         "liste",
         "Microsoft Teams"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "ms_teams_get_channel",
@@ -2119,7 +2126,8 @@
       "tags": [
         "lecture",
         "Microsoft Teams"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "ms_teams_delete_channel",
@@ -2193,7 +2201,8 @@
       "tags": [
         "suppression",
         "Microsoft Teams"
-      ]
+      ],
+      "risk": "destructive"
     },
     {
       "key": "ms_teams_list_teams",
@@ -2240,7 +2249,8 @@
       "tags": [
         "liste",
         "Microsoft Teams"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "ms_teams_get_team",
@@ -2301,7 +2311,8 @@
       "tags": [
         "lecture",
         "Microsoft Teams"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "ms_teams_list_members",
@@ -2362,7 +2373,8 @@
       "tags": [
         "liste",
         "Microsoft Teams"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "ms_teams_add_member",
@@ -2458,7 +2470,8 @@
       "tags": [
         "création",
         "Microsoft Teams"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "ms_teams_create_meeting",
@@ -2572,7 +2585,8 @@
       "tags": [
         "création",
         "Microsoft Teams"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "ms_teams_get_meeting",
@@ -2633,7 +2647,8 @@
       "tags": [
         "lecture",
         "Microsoft Teams"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "ms_teams_list_meetings",
@@ -2689,7 +2704,8 @@
       "tags": [
         "liste",
         "Microsoft Teams"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "ms_teams_create_chat",
@@ -2776,7 +2792,8 @@
       "tags": [
         "création",
         "Microsoft Teams"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "ms_teams_list_chats",
@@ -2832,7 +2849,8 @@
       "tags": [
         "liste",
         "Microsoft Teams"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "ms_teams_get_chat",
@@ -2893,7 +2911,8 @@
       "tags": [
         "lecture",
         "Microsoft Teams"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "ms_sp_get_site",
@@ -2954,7 +2973,8 @@
       "tags": [
         "lecture",
         "SharePoint"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "ms_sp_search_sites",
@@ -3015,7 +3035,8 @@
       "tags": [
         "recherche",
         "SharePoint"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "ms_sp_list_subsites",
@@ -3076,7 +3097,8 @@
       "tags": [
         "liste",
         "SharePoint"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "ms_sp_create_list",
@@ -3172,7 +3194,8 @@
       "tags": [
         "création",
         "SharePoint"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "ms_sp_get_list",
@@ -3246,7 +3269,8 @@
       "tags": [
         "lecture",
         "SharePoint"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "ms_sp_list_items",
@@ -3328,7 +3352,8 @@
       "tags": [
         "liste",
         "SharePoint"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "ms_sp_create_item",
@@ -3411,7 +3436,8 @@
       "tags": [
         "création",
         "SharePoint"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "ms_sp_update_item",
@@ -3507,7 +3533,8 @@
       "tags": [
         "mise-à-jour",
         "SharePoint"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "ms_sp_list_files",
@@ -3577,7 +3604,8 @@
       "tags": [
         "liste",
         "SharePoint"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "ms_sp_get_file",
@@ -3651,7 +3679,8 @@
       "tags": [
         "lecture",
         "SharePoint"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "ms_sp_upload_file",
@@ -3735,7 +3764,8 @@
       "tags": [
         "téléversement",
         "SharePoint"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "ms_sp_download_file",
@@ -3809,7 +3839,8 @@
       "tags": [
         "téléchargement",
         "SharePoint"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "ms_sp_delete_file",
@@ -3883,7 +3914,8 @@
       "tags": [
         "suppression",
         "SharePoint"
-      ]
+      ],
+      "risk": "destructive"
     },
     {
       "key": "ms_users_list",
@@ -3948,7 +3980,8 @@
       "tags": [
         "liste",
         "Microsoft 365"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "ms_user_get",
@@ -4009,7 +4042,8 @@
       "tags": [
         "lecture",
         "Microsoft 365"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "ms_user_get_me",
@@ -4056,7 +4090,8 @@
       "tags": [
         "lecture",
         "Microsoft 365"
-      ]
+      ],
+      "risk": "safe"
     }
   ]
 }

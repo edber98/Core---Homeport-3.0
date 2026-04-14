@@ -1,0 +1,112 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: homeport-api
+  labels:
+    {{- include "homeport-api.labels" . | nindent 4 }}
+    app: homeport-api
+    component: api
+spec:
+  replicas: {{ .Values.api.replicas }}
+  strategy:
+    type: {{ .Values.api.strategy.type }}
+    rollingUpdate:
+      maxUnavailable: {{ .Values.api.strategy.maxUnavailable }}
+      maxSurge: {{ .Values.api.strategy.maxSurge }}
+  selector:
+    matchLabels:
+      app: homeport-api
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        {{- include "homeport-api.labels" . | nindent 8 }}
+        app: homeport-api
+        release: {{ .Release.Name }}
+        component: api
+    spec:
+      {{- with .Values.image.pullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: ScheduleAnyway
+          labelSelector:
+            matchLabels:
+              app: homeport-api
+      containers:
+        - name: api
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 3000
+          env:
+            - { name: NODE_ENV, value: "production" }
+            - { name: PORT, value: "3000" }
+            {{- include "homeport-api.aiEnv" . | nindent 12 }}
+          envFrom:
+            - secretRef:
+                name: {{ include "homeport-api.secretName" . }}
+            - configMapRef:
+                name: homeport-config
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          resources:
+            {{- toYaml .Values.api.resources | nindent 12 }}
+          volumeMounts:
+            - { name: agent-cache, mountPath: /var/lib/homeport/agent-cache }
+            - { name: tmp, mountPath: /tmp }
+          readinessProbe:
+            httpGet: { path: {{ .Values.probes.readiness.path }}, port: http }
+            initialDelaySeconds: {{ .Values.probes.readiness.initialDelaySeconds }}
+            periodSeconds: {{ .Values.probes.readiness.periodSeconds }}
+          livenessProbe:
+            httpGet: { path: {{ .Values.probes.liveness.path }}, port: http }
+            initialDelaySeconds: {{ .Values.probes.liveness.initialDelaySeconds }}
+            periodSeconds: {{ .Values.probes.liveness.periodSeconds }}
+      volumes:
+        - name: agent-cache
+          persistentVolumeClaim: { claimName: agent-cache }
+        - name: tmp
+          emptyDir: { sizeLimit: 2Gi }
+      {{- with .Values.nodeSelector }}
+      nodeSelector: {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations: {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity: {{ toYaml . | nindent 8 }}
+      {{- end }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: homeport-api
+  labels:
+    {{- include "homeport-api.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.api.service.type }}
+  selector:
+    app: homeport-api
+    release: {{ .Release.Name }}
+  ports:
+    - name: http
+      port: {{ .Values.api.service.port }}
+      targetPort: http
+{{- if .Values.podDisruptionBudget.enabled }}
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: homeport-api
+spec:
+  minAvailable: {{ .Values.podDisruptionBudget.minAvailable }}
+  selector:
+    matchLabels:
+      app: homeport-api
+      release: {{ .Release.Name }}
+{{- end }}

@@ -10,9 +10,18 @@ const { buildOrchestratorToolSet, getCapsuleInfo, CAPSULE_NAMES } = require('./t
 const { buildSystemPrompt } = require('./agent-runner');
 const { createLlmClient } = require('./llm');
 const { trackToolUsage } = require('./context/memory-manager');
+const { checkPermission } = require('./permissions');
+const crypto = require('crypto');
 
 // Fallback for onboarding mode
 const { runAgent } = require('./agent-runner');
+
+function _summarizeArgs(args, maxChars = 300) {
+  try {
+    const s = JSON.stringify(args || {});
+    return s.length > maxChars ? s.slice(0, maxChars) + '…' : s;
+  } catch { return String(args || ''); }
+}
 
 const DEFAULT_MAX_LOOPS = 40;
 const STREAM_TIMEOUT_MS = 120_000; // 120s per-event timeout
@@ -99,7 +108,7 @@ ${lines.join('\n')}
  * @param {object} [opts.agentOverrides]
  * @yields SSE events
  */
-async function* runHarness({ mode, messages, context, metadata, agentOverrides, signal }) {
+async function* runHarness({ mode, messages, context, metadata, agentOverrides, signal, jobContext }) {
   // Onboarding → fallback to original runAgent
   if (mode === 'onboarding') {
     console.log('[harness] onboarding → original runAgent');
@@ -116,6 +125,11 @@ async function* runHarness({ mode, messages, context, metadata, agentOverrides, 
   if (mode === 'workflow') activeCapsules.add('workflow');
   if (mode === 'form') activeCapsules.add('form');
   if (mode === 'node_args') activeCapsules.add('node_args');
+  if (mode === 'project') {
+    activeCapsules.add('project_fs');
+    activeCapsules.add('document');
+    activeCapsules.add('code_exec');
+  }
   // chat mode: NO capsules initially — LLM activates on demand
 
   // Load MCP tools for workspace
@@ -135,6 +149,8 @@ async function* runHarness({ mode, messages, context, metadata, agentOverrides, 
     workspaceId: context.workspaceId || metadata?.workspaceId,
   };
   context._metadata = modeMetadata;
+  // Expose jobContext so meta-tools (spawn_subagent, research_deep) can use it.
+  if (jobContext) context._jobContext = jobContext;
 
   // Build tool set (mutable — supports dynamic capsule activation)
   const toolSet = buildOrchestratorToolSet({
@@ -337,6 +353,58 @@ async function* runHarness({ mode, messages, context, metadata, agentOverrides, 
       const startTime = Date.now();
       console.log(`[harness] tool: ${tc.name}`, JSON.stringify(tc.input || {}).slice(0, 500));
 
+      // ── Permission gate ────────────────────────────────────────────
+      let permCheck = { decision: 'allow', risk: 'safe' };
+      try {
+        permCheck = await checkPermission({
+          threadId: modeMetadata.threadId || context._threadId,
+          workspaceId: modeMetadata.workspaceId,
+          jobId: jobContext?.jobId,
+          toolName: tc.name,
+          toolArgs: tc.input || {},
+          autonomy: context._autonomyLevel || 'autonomous',
+          userId: context.userId,
+        });
+      } catch (permErr) {
+        // If the gate itself errors, we default to allow to keep legacy behavior.
+        console.error('[harness] permission check error:', permErr?.message);
+      }
+
+      if (permCheck.decision === 'deny') {
+        const denyResult = { ok: false, error: 'permission_denied', reason: permCheck.reason, risk: permCheck.risk };
+        toolResults.push({ id: tc.id, name: tc.name, content: JSON.stringify(denyResult), status: 'error', duration: 0 });
+        yield { type: 'tool.end', id: tc.id, name: tc.name, args: tc.input, result: denyResult, status: 'error', duration: 0 };
+        continue;
+      }
+
+      if (permCheck.decision === 'pending') {
+        if (!jobContext) {
+          // Legacy mode: auto-allow but log a warning.
+          console.warn(`[harness] permission pending for ${tc.name} but no jobContext — auto-allowing (legacy)`);
+        } else {
+          const requestId = crypto.randomUUID();
+          yield {
+            type: 'ai.permission.request',
+            requestId,
+            toolName: tc.name,
+            argsPreview: _summarizeArgs(tc.input),
+            risk: permCheck.risk,
+          };
+          jobContext.broadcast && jobContext.broadcast({
+            type: 'ai.permission.request',
+            requestId, toolName: tc.name, risk: permCheck.risk,
+            argsPreview: _summarizeArgs(tc.input),
+          });
+          const resolved = await jobContext.waitForPermission(requestId, 5 * 60_000);
+          if (resolved !== 'allow') {
+            const denyResult = { ok: false, error: 'permission_denied', reason: 'user_denied', risk: permCheck.risk };
+            toolResults.push({ id: tc.id, name: tc.name, content: JSON.stringify(denyResult), status: 'error', duration: 0 });
+            yield { type: 'tool.end', id: tc.id, name: tc.name, args: tc.input, result: denyResult, status: 'error', duration: 0 };
+            continue;
+          }
+        }
+      }
+
       try {
         const result = await toolSet.execute(tc.name, tc.input);
         const duration = Date.now() - startTime;
@@ -428,6 +496,12 @@ async function* runHarness({ mode, messages, context, metadata, agentOverrides, 
     });
     for (const tr of toolResults) {
       conversation.push({ role: 'tool', tool_call_id: tr.id, content: tr.content });
+    }
+
+    // Checkpoint + heartbeat (no-op without jobContext)
+    if (jobContext) {
+      try { await jobContext.persistCheckpoint(loopCount, conversation); } catch { /* non-fatal */ }
+      try { await jobContext.heartbeat(); } catch { /* non-fatal */ }
     }
   }
 

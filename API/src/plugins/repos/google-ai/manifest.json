@@ -243,7 +243,8 @@
       "tags": [
         "google",
         "gemini"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "google_ai_classify",
@@ -425,7 +426,9 @@
         "gemini",
         "classification",
         "ai"
-      ]
+      ],
+      "risk": "safe",
+      "riskReason": "Appel LLM lecture (coût tokens)"
     },
     {
       "key": "google_ai_extract",
@@ -568,7 +571,9 @@
         "gemini",
         "extraction",
         "ai"
-      ]
+      ],
+      "risk": "safe",
+      "riskReason": "Appel LLM lecture (coût tokens)"
     },
     {
       "key": "google_ai_vision",
@@ -694,7 +699,9 @@
         "gemini",
         "vision",
         "ai"
-      ]
+      ],
+      "risk": "safe",
+      "riskReason": "Appel LLM lecture (coût tokens)"
     },
     {
       "key": "google_ai_image_generate",
@@ -813,7 +820,8 @@
         "gemini",
         "images",
         "ai"
-      ]
+      ],
+      "risk": "write"
     }
   ]
 }

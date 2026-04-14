@@ -1,0 +1,4 @@
+# Workers IA : 3 replicas en prod pour absorber les pics
+- op: replace
+  path: /spec/replicas
+  value: 3

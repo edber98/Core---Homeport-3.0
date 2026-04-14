@@ -16,6 +16,21 @@ const TOOL_LABELS: Record<string, string> = {
   save_memory: 'Sauvegarde mémoire',
   get_memory: 'Lecture mémoire',
   enrich_context: 'Enrichissement contexte',
+  // Project FS
+  project_list_dir: 'Liste dossier projet', project_tree: 'Arborescence projet',
+  project_read_file: 'Lecture fichier projet', project_read_batch: 'Lecture multiple',
+  project_grep: 'Recherche texte', project_search: 'Recherche fichiers',
+  project_write_file: 'Écriture fichier', project_create_folder: 'Création dossier',
+  project_delete: 'Suppression fichier', project_move: 'Déplacement fichier',
+  project_refresh_tree: 'Actualisation arbo', project_sync_remote: 'Synchronisation distant',
+  // Web
+  web_search: 'Recherche web', web_fetch: 'Lecture page web', research_deep: 'Recherche approfondie',
+  // Code + subagents + skills + docs
+  execute_code: 'Exécution code', prepare_code_environment: 'Préparation environnement',
+  spawn_subagent: 'Sous-agent',
+  skill_list: 'Liste skills', skill_get: 'Détails skill', skill_execute: 'Exécution skill',
+  generate_document: 'Génération document', edit_document: 'Édition document',
+  render_html_preview: 'Aperçu HTML', build_website: 'Construction site',
   // Workflow tools
   create_flow: 'Création flow',
   list_graph: 'Lecture du graphe',

@@ -1163,7 +1163,8 @@
         "Shopify",
         "lecture"
       ],
-      "group": "Commandes"
+      "group": "Commandes",
+      "risk": "safe"
     },
     {
       "key": "shopify_orders_list",
@@ -1238,7 +1239,8 @@
         "Shopify",
         "liste"
       ],
-      "group": "Commandes"
+      "group": "Commandes",
+      "risk": "safe"
     },
     {
       "key": "shopify_order_create",
@@ -1318,7 +1320,8 @@
         "Shopify",
         "création"
       ],
-      "group": "Commandes"
+      "group": "Commandes",
+      "risk": "write"
     },
     {
       "key": "shopify_order_update",
@@ -1407,7 +1410,8 @@
         "Shopify",
         "mise-à-jour"
       ],
-      "group": "Commandes"
+      "group": "Commandes",
+      "risk": "write"
     },
     {
       "key": "shopify_order_cancel",
@@ -1478,7 +1482,8 @@
         "Shopify",
         "suppression"
       ],
-      "group": "Commandes"
+      "group": "Commandes",
+      "risk": "destructive"
     },
     {
       "key": "shopify_order_close",
@@ -1540,7 +1545,9 @@
         "Shopify",
         "mise-à-jour"
       ],
-      "group": "Commandes"
+      "group": "Commandes",
+      "risk": "write",
+      "riskReason": "Ferme une commande (rouvrable)"
     },
     {
       "key": "shopify_orders_count",
@@ -1597,7 +1604,8 @@
         "Shopify",
         "lecture"
       ],
-      "group": "Commandes"
+      "group": "Commandes",
+      "risk": "safe"
     },
     {
       "key": "shopify_product_get",
@@ -1659,7 +1667,8 @@
         "Shopify",
         "lecture"
       ],
-      "group": "Produits"
+      "group": "Produits",
+      "risk": "safe"
     },
     {
       "key": "shopify_products_list",
@@ -1743,7 +1752,8 @@
         "Shopify",
         "liste"
       ],
-      "group": "Produits"
+      "group": "Produits",
+      "risk": "safe"
     },
     {
       "key": "shopify_product_create",
@@ -1841,7 +1851,8 @@
         "Shopify",
         "création"
       ],
-      "group": "Produits"
+      "group": "Produits",
+      "risk": "write"
     },
     {
       "key": "shopify_product_update",
@@ -1948,7 +1959,8 @@
         "Shopify",
         "mise-à-jour"
       ],
-      "group": "Produits"
+      "group": "Produits",
+      "risk": "write"
     },
     {
       "key": "shopify_product_delete",
@@ -2010,7 +2022,8 @@
         "Shopify",
         "suppression"
       ],
-      "group": "Produits"
+      "group": "Produits",
+      "risk": "destructive"
     },
     {
       "key": "shopify_products_count",
@@ -2076,7 +2089,8 @@
         "Shopify",
         "lecture"
       ],
-      "group": "Produits"
+      "group": "Produits",
+      "risk": "safe"
     },
     {
       "key": "shopify_customer_get",
@@ -2138,7 +2152,8 @@
         "Shopify",
         "lecture"
       ],
-      "group": "Clients"
+      "group": "Clients",
+      "risk": "safe"
     },
     {
       "key": "shopify_customers_list",
@@ -2204,7 +2219,8 @@
         "Shopify",
         "liste"
       ],
-      "group": "Clients"
+      "group": "Clients",
+      "risk": "safe"
     },
     {
       "key": "shopify_customer_create",
@@ -2293,7 +2309,8 @@
         "Shopify",
         "création"
       ],
-      "group": "Clients"
+      "group": "Clients",
+      "risk": "write"
     },
     {
       "key": "shopify_customer_update",
@@ -2391,7 +2408,8 @@
         "Shopify",
         "mise-à-jour"
       ],
-      "group": "Clients"
+      "group": "Clients",
+      "risk": "write"
     },
     {
       "key": "shopify_customers_search",
@@ -2462,7 +2480,8 @@
         "Shopify",
         "recherche"
       ],
-      "group": "Clients"
+      "group": "Clients",
+      "risk": "safe"
     },
     {
       "key": "shopify_inventory_levels_list",
@@ -2528,7 +2547,8 @@
         "Shopify",
         "liste"
       ],
-      "group": "Inventaire"
+      "group": "Inventaire",
+      "risk": "safe"
     },
     {
       "key": "shopify_inventory_adjust",
@@ -2618,7 +2638,9 @@
         "Shopify",
         "mise-à-jour"
       ],
-      "group": "Inventaire"
+      "group": "Inventaire",
+      "risk": "write",
+      "riskReason": "Ajuste l'inventaire"
     },
     {
       "key": "shopify_inventory_set",
@@ -2708,7 +2730,9 @@
         "Shopify",
         "mise-à-jour"
       ],
-      "group": "Inventaire"
+      "group": "Inventaire",
+      "risk": "write",
+      "riskReason": "Définit la valeur d'inventaire"
     },
     {
       "key": "shopify_collection_get",
@@ -2770,7 +2794,8 @@
         "Shopify",
         "lecture"
       ],
-      "group": "Collections"
+      "group": "Collections",
+      "risk": "safe"
     },
     {
       "key": "shopify_collections_list",
@@ -2836,7 +2861,8 @@
         "Shopify",
         "liste"
       ],
-      "group": "Collections"
+      "group": "Collections",
+      "risk": "safe"
     },
     {
       "key": "shopify_fulfillment_create",
@@ -2925,7 +2951,8 @@
         "Shopify",
         "création"
       ],
-      "group": "Expéditions"
+      "group": "Expéditions",
+      "risk": "write"
     },
     {
       "key": "shopify_fulfillments_list",
@@ -2996,7 +3023,8 @@
         "Shopify",
         "liste"
       ],
-      "group": "Expéditions"
+      "group": "Expéditions",
+      "risk": "safe"
     },
     {
       "key": "shopify_variants_list",
@@ -3067,7 +3095,8 @@
         "Shopify",
         "liste"
       ],
-      "group": "Variantes"
+      "group": "Variantes",
+      "risk": "safe"
     },
     {
       "key": "shopify_variant_get",
@@ -3129,7 +3158,8 @@
         "Shopify",
         "lecture"
       ],
-      "group": "Variantes"
+      "group": "Variantes",
+      "risk": "safe"
     },
     {
       "key": "shopify_webhook_event",
@@ -3178,7 +3208,8 @@
         "Shopify",
         "événement"
       ],
-      "group": "Déclencheur"
+      "group": "Déclencheur",
+      "risk": "safe"
     }
   ]
 }

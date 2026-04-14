@@ -20,11 +20,13 @@ import { debounceTime, takeUntil } from 'rxjs/operators';
 import { AiService, AiAvailableAgent } from './ai.service';
 import { AccessControlService } from '../../services/access-control.service';
 import { ApiClientService } from '../../services/api-client.service';
+import { AiUserPreferencesComponent } from './settings/ai-user-preferences.component';
+import { AiActivePermissionsComponent } from './settings/ai-active-permissions.component';
 
 @Component({
   selector: 'ai-settings',
   standalone: true,
-  imports: [CommonModule, FormsModule, NzSelectModule, NzInputModule, NzButtonModule, NzIconModule, NzEmptyModule, NzPopconfirmModule, NzToolTipModule, NzSpinModule, NzDividerModule, NzTagModule, NzAvatarModule, NzTabsModule, NzCheckboxModule, NzInputNumberModule],
+  imports: [CommonModule, FormsModule, NzSelectModule, NzInputModule, NzButtonModule, NzIconModule, NzEmptyModule, NzPopconfirmModule, NzToolTipModule, NzSpinModule, NzDividerModule, NzTagModule, NzAvatarModule, NzTabsModule, NzCheckboxModule, NzInputNumberModule, AiUserPreferencesComponent, AiActivePermissionsComponent],
   template: `
     <div class="settings-container" *ngIf="!loading; else loadingTpl">
       <nz-tabset nzSize="small" nzType="card">
@@ -434,6 +436,18 @@ import { ApiClientService } from '../../services/api-client.service';
               <pre class="context-json" *ngIf="stats?.workspaceContext">{{ formatJson(stats.workspaceContext) }}</pre>
               <div *ngIf="!stats?.workspaceContext" class="memory-empty-inline"><span class="empty-hint">Non chargé</span></div>
             </div>
+          </div>
+        </nz-tab>
+
+        <!-- V2 Tabs -->
+        <nz-tab nzTitle="Préférences">
+          <div class="tab-content">
+            <ai-user-preferences></ai-user-preferences>
+          </div>
+        </nz-tab>
+        <nz-tab nzTitle="Permissions actives">
+          <div class="tab-content">
+            <ai-active-permissions></ai-active-permissions>
           </div>
         </nz-tab>
       </nz-tabset>

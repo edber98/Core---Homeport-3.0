@@ -8,6 +8,9 @@ const { META_TOOL_DEFINITIONS, executeMetaTool } = require('./tools/meta-tools')
 const { createWorkflowExecutor } = require('./tools/workflow-tools');
 const { createNodeArgsExecutor } = require('./tools/node-args-tools');
 const { createFormExecutor } = require('./tools/form-tools');
+const { createProjectFsExecutor } = require('./tools/project-fs-tools');
+const { createDocumentExecutor } = require('./tools/document-tools');
+const { createCodeExecExecutor } = require('./tools/code-exec-tools');
 
 // ── Primitive groups (always available in orchestrator) ──
 const PRIMITIVE_GROUPS = {
@@ -18,13 +21,14 @@ const PRIMITIVE_GROUPS = {
   project_memory:  ['save_project_memory', 'get_project_memory'],
   thread:          ['compact_and_transfer'],
   manual:          ['search_manual', 'get_manual_section'],
+  subagent:        ['spawn_subagent', 'research_deep'],
 };
 
 // All primitive tool names (flat)
 const ALL_PRIMITIVE_NAMES = new Set(Object.values(PRIMITIVE_GROUPS).flat());
 
 // ── Capsules (activated on demand) ──
-const CAPSULE_NAMES = ['workflow', 'form', 'node_args'];
+const CAPSULE_NAMES = ['workflow', 'form', 'node_args', 'project_fs', 'document', 'code_exec'];
 
 const CAPSULE_INFO = {
   workflow: {
@@ -41,6 +45,21 @@ const CAPSULE_INFO = {
     label: 'Configuration nœud',
     description: 'Outils de configuration d\'un nœud : schéma, prédécesseurs, scénarios, mapping, arguments',
     toolCount: '~9 outils',
+  },
+  project_fs: {
+    label: 'Système de fichiers projet',
+    description: 'Lecture/écriture de fichiers dans un projet distant (Nextcloud, Drive, Dropbox, OneDrive).',
+    toolCount: '~12 outils',
+  },
+  document: {
+    label: 'Rédaction de documents',
+    description: 'Génère et édite des livrables (docx, pptx, xlsx, html).',
+    toolCount: '~6 outils',
+  },
+  code_exec: {
+    label: 'Exécution de code',
+    description: 'Exécute du code Python ou Node.js en sandbox isolée.',
+    toolCount: '~2 outils',
   },
 };
 
@@ -97,9 +116,12 @@ function buildOrchestratorToolSet(opts) {
   // Helper: create a capsule executor
   function _createExecutor(name) {
     switch (name) {
-      case 'workflow': return createWorkflowExecutor(metadata || {}, emit);
-      case 'form': return createFormExecutor(metadata || {}, emit);
-      case 'node_args': return createNodeArgsExecutor(metadata || {}, emit);
+      case 'workflow':   return createWorkflowExecutor(metadata || {}, emit);
+      case 'form':       return createFormExecutor(metadata || {}, emit);
+      case 'node_args':  return createNodeArgsExecutor(metadata || {}, emit);
+      case 'project_fs': return createProjectFsExecutor(metadata || {}, emit);
+      case 'document':   return createDocumentExecutor(metadata || {}, emit);
+      case 'code_exec':  return createCodeExecExecutor(metadata || {}, emit);
       default: return null;
     }
   }

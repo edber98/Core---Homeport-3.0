@@ -343,7 +343,8 @@
       "group": "Complétions",
       "tags": [
         "openai"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "openai_memory_static",
@@ -393,7 +394,8 @@
       "group": "Mémoire",
       "tags": [
         "openai"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "openai_memory_merge",
@@ -449,7 +451,8 @@
       "group": "Mémoire",
       "tags": [
         "openai"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "openai_tool_define",
@@ -518,7 +521,8 @@
       "group": "Outils",
       "tags": [
         "openai"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "openai_embeddings",
@@ -588,7 +592,8 @@
       "group": "Embeddings",
       "tags": [
         "openai"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "openai_image_generate",
@@ -741,7 +746,8 @@
       "tags": [
         "création",
         "openai"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "openai_memory_embed",
@@ -806,7 +812,8 @@
       "group": "Mémoire",
       "tags": [
         "openai"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "openai_agent",
@@ -916,7 +923,9 @@
       "group": "Agent",
       "tags": [
         "openai"
-      ]
+      ],
+      "risk": "elevated",
+      "riskReason": "Agent LLM pouvant appeler des outils"
     },
     {
       "key": "openai_classify",
@@ -1101,7 +1110,9 @@
         "openai",
         "classification",
         "ai"
-      ]
+      ],
+      "risk": "safe",
+      "riskReason": "Appel LLM lecture (coût tokens)"
     },
     {
       "key": "openai_extract",
@@ -1247,7 +1258,9 @@
         "openai",
         "extraction",
         "ai"
-      ]
+      ],
+      "risk": "safe",
+      "riskReason": "Appel LLM lecture (coût tokens)"
     },
     {
       "key": "openai_vision",
@@ -1372,7 +1385,9 @@
         "openai",
         "vision",
         "ai"
-      ]
+      ],
+      "risk": "safe",
+      "riskReason": "Appel LLM lecture (coût tokens)"
     }
   ]
 }

@@ -1,0 +1,42 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# Le namespace est créé par Rancher (un par client).
+# Override via --namespace lors du kubectl apply, ou par le pipeline.
+namespace: homeport-prod
+
+resources:
+  - ../../base
+
+# Image immuable par digest en prod (à remplir par CI)
+images:
+  - name: registry.example.com/homeport-api
+    newName: registry.example.com/homeport-api
+    newTag: "stable"
+
+# Patches spécifiques à la prod
+patches:
+  - path: patch-replicas.yaml
+    target:
+      kind: Deployment
+      name: homeport-api
+  - path: patch-worker-replicas.yaml
+    target:
+      kind: Deployment
+      name: homeport-ai-worker
+  - path: patch-resources.yaml
+    target:
+      kind: Deployment
+      name: homeport-api
+  - path: patch-configmap.yaml
+    target:
+      kind: ConfigMap
+      name: homeport-config
+  - path: patch-pvc-size.yaml
+    target:
+      kind: PersistentVolumeClaim
+      name: agent-cache
+
+# Commonlabels propres à l'environnement
+commonLabels:
+  env: prod

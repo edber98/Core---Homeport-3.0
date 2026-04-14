@@ -750,7 +750,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Événements"
+      "group": "Événements",
+      "risk": "write"
     },
     {
       "key": "calendly_event_get",
@@ -812,7 +813,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Événements"
+      "group": "Événements",
+      "risk": "safe"
     },
     {
       "key": "calendly_event_cancel",
@@ -883,7 +885,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Événements"
+      "group": "Événements",
+      "risk": "destructive"
     },
     {
       "key": "calendly_event_types_list",
@@ -967,7 +970,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Types d'événements"
+      "group": "Types d'événements",
+      "risk": "safe"
     },
     {
       "key": "calendly_event_type_get",
@@ -1029,7 +1033,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Types d'événements"
+      "group": "Types d'événements",
+      "risk": "safe"
     },
     {
       "key": "calendly_invitees_list",
@@ -1109,7 +1114,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Invités"
+      "group": "Invités",
+      "risk": "write"
     },
     {
       "key": "calendly_invitee_get",
@@ -1171,7 +1177,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Invités"
+      "group": "Invités",
+      "risk": "write"
     },
     {
       "key": "calendly_user_get_me",
@@ -1218,7 +1225,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Utilisateurs"
+      "group": "Utilisateurs",
+      "risk": "safe"
     },
     {
       "key": "calendly_scheduling_link_create",
@@ -1300,7 +1308,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Liens de planification"
+      "group": "Liens de planification",
+      "risk": "write"
     },
     {
       "key": "calendly_organization_get",
@@ -1347,7 +1356,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Organisation"
+      "group": "Organisation",
+      "risk": "safe"
     },
     {
       "key": "calendly_organization_members_list",
@@ -1413,7 +1423,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Organisation"
+      "group": "Organisation",
+      "risk": "safe"
     },
     {
       "key": "calendly_webhook_create",
@@ -1499,7 +1510,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Webhooks"
+      "group": "Webhooks",
+      "risk": "write"
     },
     {
       "key": "calendly_webhooks_list",
@@ -1557,7 +1569,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Webhooks"
+      "group": "Webhooks",
+      "risk": "safe"
     },
     {
       "key": "calendly_webhook_delete",
@@ -1619,7 +1632,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Webhooks"
+      "group": "Webhooks",
+      "risk": "destructive"
     },
     {
       "key": "calendly_webhook_event",
@@ -1656,7 +1670,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Événements"
+      "group": "Événements",
+      "risk": "safe"
     }
   ]
 }

@@ -1,0 +1,97 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: homeport-ai-worker
+  labels:
+    app: homeport-ai-worker
+    component: worker
+    tier: backend
+    version: v2
+spec:
+  # Scalable indépendamment de l'API (jobs IA long-running)
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: homeport-ai-worker
+  template:
+    metadata:
+      labels:
+        app: homeport-ai-worker
+        component: worker
+        tier: backend
+        version: v2
+    spec:
+      containers:
+        - name: worker
+          image: registry.example.com/homeport-api:latest
+          imagePullPolicy: IfNotPresent
+          # Override CMD : pas de serveur HTTP, boucle de consommation de jobs
+          command: ["node", "src/ai/jobs/worker-process.js"]
+          env:
+            - { name: NODE_ENV, value: "production" }
+            - { name: AGENT_USE_QUEUE, value: "1" }
+            - { name: AI_SANDBOX_BACKEND, value: "bwrap" }
+            - { name: AI_CACHE_ROOT, value: "/var/lib/homeport/agent-cache" }
+            - { name: AI_CACHE_TTL_IDLE_DEFAULT, value: "86400" }
+            - { name: AI_CACHE_MAX_SIZE_PER_THREAD, value: "1073741824" }
+            - { name: AI_CACHE_MAX_SIZE_GLOBAL, value: "107374182400" }
+            - { name: AI_CACHE_CLEANUP_CRON, value: "*/15 * * * *" }
+            - { name: AI_MAX_CONCURRENT_SANDBOX, value: "5" }
+            - { name: AI_MAX_CONCURRENT_SUBAGENTS, value: "10" }
+            - { name: AI_MAX_SUBAGENT_DEPTH, value: "3" }
+            - { name: REDIS_HOST, value: "redis" }
+            - { name: REDIS_PORT, value: "6379" }
+            - { name: PLUGIN_IMPORT_ENABLED, value: "1" }
+            # Identifie l'instance comme worker (utile pour logs/metrics)
+            - { name: HOMEPORT_ROLE, value: "ai-worker" }
+          envFrom:
+            - secretRef:
+                name: homeport-secrets
+            - configMapRef:
+                name: homeport-config
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+            seccompProfile:
+              type: RuntimeDefault
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "1Gi"
+            limits:
+              cpu: "4000m"
+              memory: "4Gi"
+          volumeMounts:
+            - name: agent-cache
+              mountPath: /var/lib/homeport/agent-cache
+            - name: tmp
+              mountPath: /tmp
+          # Pas de probe HTTP : le worker n'expose pas de serveur.
+          # Liveness via exec pour détecter les process figés.
+          livenessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - "test -f /tmp/.ai-worker-alive && find /tmp/.ai-worker-alive -mmin -2 | grep -q ."
+            initialDelaySeconds: 60
+            periodSeconds: 30
+            timeoutSeconds: 5
+            failureThreshold: 3
+      terminationGracePeriodSeconds: 60
+      volumes:
+        - name: agent-cache
+          persistentVolumeClaim:
+            claimName: agent-cache
+        - name: tmp
+          emptyDir:
+            sizeLimit: 2Gi

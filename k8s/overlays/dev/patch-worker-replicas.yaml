@@ -1,0 +1,4 @@
+# Dev : 1 worker suffit
+- op: replace
+  path: /spec/replicas
+  value: 1

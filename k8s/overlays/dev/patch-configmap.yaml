@@ -1,0 +1,10 @@
+# Dev : logs verbeux, CORS ouvert
+- op: replace
+  path: /data/LOG_LEVEL
+  value: "debug"
+- op: replace
+  path: /data/LOG_FORMAT
+  value: "pretty"
+- op: replace
+  path: /data/CORS_ORIGIN
+  value: "*"

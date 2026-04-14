@@ -1187,7 +1187,8 @@
       "tags": [
         "création",
         "signature"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "yousign_signature_request_get",
@@ -1255,7 +1256,8 @@
       "tags": [
         "lecture",
         "signature"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "yousign_signature_requests_list",
@@ -1376,7 +1378,8 @@
       "tags": [
         "liste",
         "signature"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "yousign_signature_request_activate",
@@ -1443,7 +1446,8 @@
       "tags": [
         "activation",
         "signature"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "yousign_signature_request_cancel",
@@ -1538,7 +1542,8 @@
       "tags": [
         "annulation",
         "signature"
-      ]
+      ],
+      "risk": "destructive"
     },
     {
       "key": "yousign_signature_request_delete",
@@ -1615,7 +1620,8 @@
       "tags": [
         "suppression",
         "signature"
-      ]
+      ],
+      "risk": "destructive"
     },
     {
       "key": "yousign_document_upload",
@@ -1729,7 +1735,8 @@
       "tags": [
         "téléversement",
         "document"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "yousign_documents_list",
@@ -1796,7 +1803,8 @@
       "tags": [
         "liste",
         "document"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "yousign_documents_download",
@@ -1883,7 +1891,8 @@
       "tags": [
         "téléchargement",
         "document"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "yousign_audit_trail_download",
@@ -1950,7 +1959,8 @@
       "tags": [
         "audit",
         "preuve"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "yousign_signer_create",
@@ -2141,7 +2151,8 @@
       "tags": [
         "création",
         "signataire"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "yousign_signers_list",
@@ -2208,7 +2219,8 @@
       "tags": [
         "liste",
         "signataire"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "yousign_signer_get",
@@ -2275,7 +2287,8 @@
       "tags": [
         "lecture",
         "signataire"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "yousign_signer_send_reminder",
@@ -2355,7 +2368,8 @@
       "tags": [
         "rappel",
         "signataire"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "yousign_contact_create",
@@ -2491,7 +2505,8 @@
       "tags": [
         "création",
         "contact"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "yousign_contacts_list",
@@ -2563,7 +2578,8 @@
       "tags": [
         "liste",
         "contact"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "yousign_contact_get",
@@ -2630,7 +2646,8 @@
       "tags": [
         "lecture",
         "contact"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "yousign_contact_delete",
@@ -2697,7 +2714,8 @@
       "tags": [
         "suppression",
         "contact"
-      ]
+      ],
+      "risk": "destructive"
     },
     {
       "key": "yousign_webhook_create",
@@ -2817,7 +2835,8 @@
       "tags": [
         "création",
         "webhook"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "yousign_webhooks_list",
@@ -2870,7 +2889,8 @@
       "tags": [
         "liste",
         "webhook"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "yousign_webhook_delete",
@@ -2937,7 +2957,8 @@
       "tags": [
         "suppression",
         "webhook"
-      ]
+      ],
+      "risk": "destructive"
     },
     {
       "key": "yousign_webhook_event",
@@ -2974,7 +2995,8 @@
         "événement",
         "webhook",
         "signature"
-      ]
+      ],
+      "risk": "safe"
     }
   ]
 }

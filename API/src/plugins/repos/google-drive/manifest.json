@@ -1118,7 +1118,8 @@
       "tags": [
         "liste",
         "Google Drive"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "gdrive_get_file",
@@ -1180,7 +1181,8 @@
       "tags": [
         "lecture",
         "Google Drive"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "gdrive_upload_file",
@@ -1277,7 +1279,8 @@
       "tags": [
         "téléversement",
         "Google Drive"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "gdrive_download_file",
@@ -1348,7 +1351,8 @@
       "tags": [
         "téléchargement",
         "Google Drive"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "gdrive_delete_file",
@@ -1410,7 +1414,9 @@
       "tags": [
         "suppression",
         "Google Drive"
-      ]
+      ],
+      "risk": "destructive",
+      "riskReason": "Supprime un fichier Google Drive"
     },
     {
       "key": "gdrive_create_folder",
@@ -1481,7 +1487,8 @@
       "tags": [
         "création",
         "Google Drive"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "gdrive_move_file",
@@ -1566,7 +1573,8 @@
       "tags": [
         "mise-à-jour",
         "Google Drive"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "gdrive_copy_file",
@@ -1646,7 +1654,8 @@
       "tags": [
         "création",
         "Google Drive"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "gdrive_share_file",
@@ -1771,7 +1780,8 @@
       "tags": [
         "mise-à-jour",
         "Google Drive"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "gdrive_search",
@@ -1843,7 +1853,8 @@
       "tags": [
         "recherche",
         "Google Drive"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "gdocs_create_doc",
@@ -1914,7 +1925,8 @@
       "tags": [
         "création",
         "Google Docs"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "gdocs_get_doc",
@@ -1976,7 +1988,8 @@
       "tags": [
         "lecture",
         "Google Docs"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "gdocs_append_text",
@@ -2047,7 +2060,8 @@
       "tags": [
         "mise-à-jour",
         "Google Docs"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "gdocs_replace_text",
@@ -2137,7 +2151,8 @@
       "tags": [
         "mise-à-jour",
         "Google Docs"
-      ]
+      ],
+      "risk": "destructive"
     },
     {
       "key": "gdocs_get_content",
@@ -2199,7 +2214,8 @@
       "tags": [
         "lecture",
         "Google Docs"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "gdocs_export_pdf",
@@ -2261,7 +2277,8 @@
       "tags": [
         "téléchargement",
         "Google Docs"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "gsheets_create_spreadsheet",
@@ -2323,7 +2340,8 @@
       "tags": [
         "création",
         "Google Sheets"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "gsheets_get_spreadsheet",
@@ -2385,7 +2403,8 @@
       "tags": [
         "lecture",
         "Google Sheets"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "gsheets_get_values",
@@ -2461,7 +2480,8 @@
       "tags": [
         "lecture",
         "Google Sheets"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "gsheets_update_values",
@@ -2546,7 +2566,8 @@
       "tags": [
         "mise-à-jour",
         "Google Sheets"
-      ]
+      ],
+      "risk": "elevated"
     },
     {
       "key": "gsheets_append_rows",
@@ -2631,7 +2652,8 @@
       "tags": [
         "création",
         "Google Sheets"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "gsheets_clear_range",
@@ -2707,7 +2729,8 @@
       "tags": [
         "suppression",
         "Google Sheets"
-      ]
+      ],
+      "risk": "destructive"
     },
     {
       "key": "gsheets_add_sheet",
@@ -2783,7 +2806,8 @@
       "tags": [
         "création",
         "Google Sheets"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "gsheets_delete_sheet",
@@ -2859,7 +2883,9 @@
       "tags": [
         "suppression",
         "Google Sheets"
-      ]
+      ],
+      "risk": "destructive",
+      "riskReason": "Supprime un onglet Google Sheets"
     },
     {
       "key": "gsheets_copy_sheet",
@@ -2949,7 +2975,8 @@
       "tags": [
         "création",
         "Google Sheets"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "gsheets_get_sheet_list",
@@ -3011,7 +3038,8 @@
       "tags": [
         "liste",
         "Google Sheets"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "gcal_list_calendars",
@@ -3058,7 +3086,8 @@
       "tags": [
         "liste",
         "Google Calendar"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "gcal_get_calendar",
@@ -3119,7 +3148,8 @@
       "tags": [
         "lecture",
         "Google Calendar"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "gcal_create_calendar",
@@ -3197,7 +3227,8 @@
       "tags": [
         "création",
         "Google Calendar"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "gcal_delete_calendar",
@@ -3258,7 +3289,9 @@
       "tags": [
         "suppression",
         "Google Calendar"
-      ]
+      ],
+      "risk": "destructive",
+      "riskReason": "Supprime un calendrier Google"
     },
     {
       "key": "gcal_list_events",
@@ -3405,7 +3438,8 @@
       "tags": [
         "liste",
         "Google Calendar"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "gcal_get_event",
@@ -3479,7 +3513,8 @@
       "tags": [
         "lecture",
         "Google Calendar"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "gcal_create_event",
@@ -3659,7 +3694,8 @@
       "tags": [
         "création",
         "Google Calendar"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "gcal_update_event",
@@ -3798,7 +3834,8 @@
       "tags": [
         "mise-à-jour",
         "Google Calendar"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "gcal_delete_event",
@@ -3872,7 +3909,9 @@
       "tags": [
         "suppression",
         "Google Calendar"
-      ]
+      ],
+      "risk": "destructive",
+      "riskReason": "Supprime un événement du calendrier"
     },
     {
       "key": "gcal_quick_add",
@@ -3944,7 +3983,8 @@
       "tags": [
         "création",
         "Google Calendar"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "gcal_move_event",
@@ -4031,7 +4071,8 @@
       "tags": [
         "mise-à-jour",
         "Google Calendar"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "gcal_event_instances",
@@ -4139,7 +4180,8 @@
       "tags": [
         "liste",
         "Google Calendar"
-      ]
+      ],
+      "risk": "safe"
     }
   ]
 }

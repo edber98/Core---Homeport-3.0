@@ -89,7 +89,9 @@
           "key": "hasMore",
           "label": "Plus de résultats",
           "description": "Indique s'il y a plus de résultats disponibles.",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         },
         {
           "type": "section",
@@ -231,7 +233,9 @@
           "key": "hasMore",
           "label": "Plus de résultats",
           "description": "Indique s'il y a plus de résultats disponibles.",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         },
         {
           "type": "section",
@@ -375,7 +379,9 @@
           "key": "hasMore",
           "label": "Plus de résultats",
           "description": "Indique s'il y a plus de résultats disponibles.",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         },
         {
           "type": "section",
@@ -535,7 +541,9 @@
           "key": "hasMore",
           "label": "Plus de résultats",
           "description": "Indique s'il y a plus de résultats disponibles.",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         },
         {
           "type": "section",
@@ -695,7 +703,9 @@
           "key": "hasMore",
           "label": "Plus de résultats",
           "description": "Indique s'il y a plus de résultats disponibles.",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         },
         {
           "type": "section",
@@ -864,7 +874,9 @@
           "key": "hasMore",
           "label": "Plus de résultats",
           "description": "Indique s'il y a plus de résultats disponibles.",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         },
         {
           "type": "section",
@@ -1032,7 +1044,9 @@
           "key": "hasMore",
           "label": "Plus de résultats",
           "description": "Indique s'il y a plus de résultats disponibles.",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         },
         {
           "type": "section",
@@ -1192,7 +1206,9 @@
           "key": "hasMore",
           "label": "Plus de résultats",
           "description": "Indique s'il y a plus de résultats disponibles.",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         },
         {
           "type": "section",
@@ -1352,7 +1368,9 @@
           "key": "hasMore",
           "label": "Plus de résultats",
           "description": "Indique s'il y a plus de résultats disponibles.",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         },
         {
           "type": "section",
@@ -1557,7 +1575,9 @@
           "key": "hasMore",
           "label": "Plus de résultats",
           "description": "Indique s'il y a plus de résultats disponibles.",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         },
         {
           "type": "section",
@@ -1803,7 +1823,8 @@
       "tags": [
         "création",
         "stripe"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "stripe_customer_get",
@@ -1865,7 +1886,8 @@
       "tags": [
         "lecture",
         "stripe"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "stripe_customer_update",
@@ -1963,7 +1985,8 @@
       "tags": [
         "mise-à-jour",
         "stripe"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "stripe_customer_delete",
@@ -2025,7 +2048,9 @@
       "tags": [
         "suppression",
         "stripe"
-      ]
+      ],
+      "risk": "destructive",
+      "riskReason": "Supprime un client Stripe"
     },
     {
       "key": "stripe_customers_list",
@@ -2100,7 +2125,8 @@
       "tags": [
         "liste",
         "stripe"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "stripe_product_create",
@@ -2180,7 +2206,8 @@
       "tags": [
         "création",
         "stripe"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "stripe_product_get",
@@ -2242,7 +2269,8 @@
       "tags": [
         "lecture",
         "stripe"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "stripe_product_update",
@@ -2331,7 +2359,8 @@
       "tags": [
         "mise-à-jour",
         "stripe"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "stripe_products_list",
@@ -2406,7 +2435,8 @@
       "tags": [
         "liste",
         "stripe"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "stripe_price_create",
@@ -2505,7 +2535,8 @@
       "tags": [
         "création",
         "stripe"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "stripe_price_get",
@@ -2567,7 +2598,8 @@
       "tags": [
         "lecture",
         "stripe"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "stripe_prices_list",
@@ -2651,7 +2683,8 @@
       "tags": [
         "liste",
         "stripe"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "stripe_payment_intent_create",
@@ -2754,7 +2787,9 @@
       "tags": [
         "création",
         "stripe"
-      ]
+      ],
+      "risk": "destructive",
+      "riskReason": "Crée un débit sur la carte"
     },
     {
       "key": "stripe_payment_intent_get",
@@ -2816,7 +2851,8 @@
       "tags": [
         "lecture",
         "stripe"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "stripe_payment_intent_confirm",
@@ -2887,7 +2923,8 @@
       "tags": [
         "mise-à-jour",
         "stripe"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "stripe_payment_intent_cancel",
@@ -2949,7 +2986,8 @@
       "tags": [
         "mise-à-jour",
         "stripe"
-      ]
+      ],
+      "risk": "destructive"
     },
     {
       "key": "stripe_payment_intents_list",
@@ -3024,7 +3062,8 @@
       "tags": [
         "liste",
         "stripe"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "stripe_subscription_create",
@@ -3109,7 +3148,8 @@
       "tags": [
         "création",
         "stripe"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "stripe_subscription_get",
@@ -3171,7 +3211,8 @@
       "tags": [
         "lecture",
         "stripe"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "stripe_subscription_update",
@@ -3251,7 +3292,8 @@
       "tags": [
         "mise-à-jour",
         "stripe"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "stripe_subscription_cancel",
@@ -3313,7 +3355,9 @@
       "tags": [
         "mise-à-jour",
         "stripe"
-      ]
+      ],
+      "risk": "destructive",
+      "riskReason": "Annule un abonnement payant"
     },
     {
       "key": "stripe_subscriptions_list",
@@ -3397,7 +3441,8 @@
       "tags": [
         "liste",
         "stripe"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "stripe_invoice_create",
@@ -3477,7 +3522,8 @@
       "tags": [
         "création",
         "stripe"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "stripe_invoice_get",
@@ -3539,7 +3585,8 @@
       "tags": [
         "lecture",
         "stripe"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "stripe_invoice_finalize",
@@ -3601,7 +3648,8 @@
       "tags": [
         "lecture",
         "stripe"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "stripe_invoice_pay",
@@ -3663,7 +3711,8 @@
       "tags": [
         "lecture",
         "stripe"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "stripe_invoices_list",
@@ -3747,7 +3796,8 @@
       "tags": [
         "liste",
         "stripe"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "stripe_charge_get",
@@ -3809,7 +3859,8 @@
       "tags": [
         "lecture",
         "stripe"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "stripe_charges_list",
@@ -3884,7 +3935,8 @@
       "tags": [
         "liste",
         "stripe"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "stripe_refund_create",
@@ -3968,7 +4020,9 @@
       "tags": [
         "création",
         "stripe"
-      ]
+      ],
+      "risk": "destructive",
+      "riskReason": "Remboursement (mouvement financier)"
     },
     {
       "key": "stripe_refund_get",
@@ -4030,7 +4084,8 @@
       "tags": [
         "lecture",
         "stripe"
-      ]
+      ],
+      "risk": "destructive"
     },
     {
       "key": "stripe_refunds_list",
@@ -4105,7 +4160,8 @@
       "tags": [
         "liste",
         "stripe"
-      ]
+      ],
+      "risk": "destructive"
     },
     {
       "key": "stripe_checkout_session_create",
@@ -4223,7 +4279,8 @@
       "tags": [
         "création",
         "stripe"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "stripe_checkout_session_get",
@@ -4285,7 +4342,8 @@
       "tags": [
         "lecture",
         "stripe"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "stripe_checkout_sessions_list",
@@ -4351,7 +4409,8 @@
       "tags": [
         "liste",
         "stripe"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "stripe_balance_get",
@@ -4398,7 +4457,8 @@
       "tags": [
         "lecture",
         "stripe"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "stripe_balance_transactions_list",
@@ -4473,7 +4533,8 @@
       "tags": [
         "liste",
         "stripe"
-      ]
+      ],
+      "risk": "safe"
     }
   ]
 }

@@ -1,0 +1,11 @@
+# Dev : 1 replica API, stratégie permissive
+- op: replace
+  path: /spec/replicas
+  value: 1
+- op: replace
+  path: /spec/strategy
+  value:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1

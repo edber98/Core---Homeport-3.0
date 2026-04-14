@@ -11,21 +11,38 @@
       "title": "Pappers",
       "iconClass": "fa-solid fa-building",
       "color": "#1a2b6d",
-      "tags": ["pappers", "entreprise", "siren", "france", "legal"],
-      "categories": ["Business"],
+      "tags": [
+        "pappers",
+        "entreprise",
+        "siren",
+        "france",
+        "legal"
+      ],
+      "categories": [
+        "Business"
+      ],
       "hasCredentials": true,
       "credentialsForm": {
         "title": "Identifiants Pappers",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
           {
             "type": "text",
             "key": "apiToken",
             "label": "Clé API",
             "description": "Clé API Pappers (disponible sur votre espace client pappers.fr).",
-            "col": { "xs": 24 },
+            "col": {
+              "xs": 24
+            },
             "secret": true,
-            "validators": [{ "type": "required" }]
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
           }
         ],
         "displayTitle": false,
@@ -46,32 +63,76 @@
       "providerKey": "pappers",
       "icon": "fa-solid fa-building",
       "description": "Récupérer les détails d'une entreprise par SIREN ou SIRET",
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:pappers_entreprise" }],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pappers_entreprise"
+        }
+      ],
       "authorize_catch_error": true,
       "args": {
         "title": "Obtenir une entreprise",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
           {
-            "type": "text", "key": "siren", "label": "SIREN",
-            "col": { "xs": 24, "sm": 24, "md": 24 },
+            "type": "text",
+            "key": "siren",
+            "label": "SIREN",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
             "description": "Numéro SIREN de l'entreprise (9 chiffres).",
-            "validators": [{ "type": "required" }],
-            "expression": { "allow": true }
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
           },
           {
-            "type": "text", "key": "siret", "label": "SIRET",
-            "col": { "xs": 24, "sm": 24, "md": 24 },
+            "type": "text",
+            "key": "siret",
+            "label": "SIRET",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
             "description": "Numéro SIRET de l'établissement (14 chiffres, optionnel).",
-            "expression": { "allow": true }
+            "expression": {
+              "allow": true
+            }
           }
         ],
         "displayTitle": false,
         "displayDescription": false
       },
       "group": "Entreprises",
-      "tags": ["lecture", "Pappers"]
+      "tags": [
+        "lecture",
+        "Pappers"
+      ],
+      "risk": "safe"
     },
     {
       "key": "pappers_entreprise_search",
@@ -85,86 +146,198 @@
       "providerKey": "pappers",
       "icon": "fa-solid fa-magnifying-glass",
       "description": "Rechercher des entreprises par nom, code NAF, localisation, etc.",
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:pappers_entreprises" }],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pappers_entreprises"
+        }
+      ],
       "authorize_catch_error": true,
       "args": {
         "title": "Rechercher des entreprises",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
           {
-            "type": "text", "key": "q", "label": "Recherche",
-            "col": { "xs": 24, "sm": 24, "md": 24 },
+            "type": "text",
+            "key": "q",
+            "label": "Recherche",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
             "description": "Nom, SIREN, ou mot-clé de recherche.",
-            "expression": { "allow": true }
+            "expression": {
+              "allow": true
+            }
           },
           {
-            "type": "text", "key": "code_naf", "label": "Code NAF",
-            "col": { "xs": 24, "sm": 24, "md": 24 },
+            "type": "text",
+            "key": "code_naf",
+            "label": "Code NAF",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
             "description": "Filtrer par code NAF (ex: 6201Z).",
-            "expression": { "allow": true }
+            "expression": {
+              "allow": true
+            }
           },
           {
-            "type": "text", "key": "departement", "label": "Département",
-            "col": { "xs": 24, "sm": 24, "md": 24 },
+            "type": "text",
+            "key": "departement",
+            "label": "Département",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
             "description": "Filtrer par département (ex: 75).",
-            "expression": { "allow": true }
+            "expression": {
+              "allow": true
+            }
           },
           {
-            "type": "text", "key": "code_postal", "label": "Code postal",
-            "col": { "xs": 24, "sm": 24, "md": 24 },
+            "type": "text",
+            "key": "code_postal",
+            "label": "Code postal",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
             "description": "Filtrer par code postal.",
-            "expression": { "allow": true }
+            "expression": {
+              "allow": true
+            }
           },
           {
-            "type": "checkbox", "key": "entreprise_cessee", "label": "Entreprise cessée",
-            "col": { "xs": 24, "sm": 24, "md": 24 },
+            "type": "checkbox",
+            "key": "entreprise_cessee",
+            "label": "Entreprise cessée",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
             "description": "Inclure les entreprises cessées.",
-            "expression": { "allow": true }
+            "expression": {
+              "allow": true
+            }
           },
           {
-            "type": "number", "key": "capital_min", "label": "Capital minimum",
-            "col": { "xs": 24, "sm": 24, "md": 24 },
+            "type": "number",
+            "key": "capital_min",
+            "label": "Capital minimum",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
             "description": "Capital social minimum en euros.",
-            "expression": { "allow": true }
+            "expression": {
+              "allow": true
+            }
           },
           {
-            "type": "number", "key": "capital_max", "label": "Capital maximum",
-            "col": { "xs": 24, "sm": 24, "md": 24 },
+            "type": "number",
+            "key": "capital_max",
+            "label": "Capital maximum",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
             "description": "Capital social maximum en euros.",
-            "expression": { "allow": true }
+            "expression": {
+              "allow": true
+            }
           },
           {
-            "type": "number", "key": "chiffre_affaires_min", "label": "CA minimum",
-            "col": { "xs": 24, "sm": 24, "md": 24 },
+            "type": "number",
+            "key": "chiffre_affaires_min",
+            "label": "CA minimum",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
             "description": "Chiffre d'affaires minimum en euros.",
-            "expression": { "allow": true }
+            "expression": {
+              "allow": true
+            }
           },
           {
-            "type": "number", "key": "chiffre_affaires_max", "label": "CA maximum",
-            "col": { "xs": 24, "sm": 24, "md": 24 },
+            "type": "number",
+            "key": "chiffre_affaires_max",
+            "label": "CA maximum",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
             "description": "Chiffre d'affaires maximum en euros.",
-            "expression": { "allow": true }
+            "expression": {
+              "allow": true
+            }
           },
           {
-            "type": "number", "key": "par_page", "label": "Par page",
-            "col": { "xs": 24, "sm": 24, "md": 24 },
+            "type": "number",
+            "key": "par_page",
+            "label": "Par page",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
             "description": "Nombre de résultats par page.",
             "default": 10,
-            "expression": { "allow": true }
+            "expression": {
+              "allow": true
+            }
           },
           {
-            "type": "number", "key": "page", "label": "Page",
-            "col": { "xs": 24, "sm": 24, "md": 24 },
+            "type": "number",
+            "key": "page",
+            "label": "Page",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
             "description": "Numéro de page.",
-            "expression": { "allow": true }
+            "expression": {
+              "allow": true
+            }
           }
         ],
         "displayTitle": false,
         "displayDescription": false
       },
       "group": "Entreprises",
-      "tags": ["recherche", "Pappers"]
+      "tags": [
+        "recherche",
+        "Pappers"
+      ],
+      "risk": "safe"
     },
     {
       "key": "pappers_suggestions",
@@ -178,32 +351,76 @@
       "providerKey": "pappers",
       "icon": "fa-solid fa-lightbulb",
       "description": "Autocomplétion pour rechercher une entreprise par nom",
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:pappers_suggestions_list" }],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pappers_suggestions_list"
+        }
+      ],
       "authorize_catch_error": true,
       "args": {
         "title": "Suggestions d'entreprises",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
           {
-            "type": "text", "key": "q", "label": "Recherche",
-            "col": { "xs": 24, "sm": 24, "md": 24 },
+            "type": "text",
+            "key": "q",
+            "label": "Recherche",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
             "description": "Début du nom de l'entreprise.",
-            "validators": [{ "type": "required" }],
-            "expression": { "allow": true }
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
           },
           {
-            "type": "number", "key": "longueur", "label": "Nombre de résultats",
-            "col": { "xs": 24, "sm": 24, "md": 24 },
+            "type": "number",
+            "key": "longueur",
+            "label": "Nombre de résultats",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
             "description": "Nombre de suggestions à retourner.",
-            "expression": { "allow": true }
+            "expression": {
+              "allow": true
+            }
           }
         ],
         "displayTitle": false,
         "displayDescription": false
       },
       "group": "Entreprises",
-      "tags": ["recherche", "Pappers"]
+      "tags": [
+        "recherche",
+        "Pappers"
+      ],
+      "risk": "safe"
     },
     {
       "key": "pappers_dirigeants_search",
@@ -217,56 +434,128 @@
       "providerKey": "pappers",
       "icon": "fa-solid fa-user-tie",
       "description": "Rechercher des dirigeants d'entreprise",
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:pappers_dirigeants" }],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pappers_dirigeants"
+        }
+      ],
       "authorize_catch_error": true,
       "args": {
         "title": "Rechercher des dirigeants",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
           {
-            "type": "text", "key": "q", "label": "Recherche",
-            "col": { "xs": 24, "sm": 24, "md": 24 },
+            "type": "text",
+            "key": "q",
+            "label": "Recherche",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
             "description": "Terme de recherche (nom, entreprise).",
-            "expression": { "allow": true }
+            "expression": {
+              "allow": true
+            }
           },
           {
-            "type": "text", "key": "nom_dirigeant", "label": "Nom",
-            "col": { "xs": 24, "sm": 24, "md": 24 },
+            "type": "text",
+            "key": "nom_dirigeant",
+            "label": "Nom",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
             "description": "Nom du dirigeant.",
-            "expression": { "allow": true }
+            "expression": {
+              "allow": true
+            }
           },
           {
-            "type": "text", "key": "prenom_dirigeant", "label": "Prénom",
-            "col": { "xs": 24, "sm": 24, "md": 24 },
+            "type": "text",
+            "key": "prenom_dirigeant",
+            "label": "Prénom",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
             "description": "Prénom du dirigeant.",
-            "expression": { "allow": true }
+            "expression": {
+              "allow": true
+            }
           },
           {
-            "type": "text", "key": "siren", "label": "SIREN",
-            "col": { "xs": 24, "sm": 24, "md": 24 },
+            "type": "text",
+            "key": "siren",
+            "label": "SIREN",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
             "description": "Filtrer par SIREN de l'entreprise.",
-            "expression": { "allow": true }
+            "expression": {
+              "allow": true
+            }
           },
           {
-            "type": "number", "key": "par_page", "label": "Par page",
-            "col": { "xs": 24, "sm": 24, "md": 24 },
+            "type": "number",
+            "key": "par_page",
+            "label": "Par page",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
             "description": "Nombre de résultats par page.",
             "default": 10,
-            "expression": { "allow": true }
+            "expression": {
+              "allow": true
+            }
           },
           {
-            "type": "number", "key": "page", "label": "Page",
-            "col": { "xs": 24, "sm": 24, "md": 24 },
+            "type": "number",
+            "key": "page",
+            "label": "Page",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
             "description": "Numéro de page.",
-            "expression": { "allow": true }
+            "expression": {
+              "allow": true
+            }
           }
         ],
         "displayTitle": false,
         "displayDescription": false
       },
       "group": "Dirigeants",
-      "tags": ["recherche", "Pappers"]
+      "tags": [
+        "recherche",
+        "Pappers"
+      ],
+      "risk": "safe"
     },
     {
       "key": "pappers_beneficiaires_search",
@@ -280,50 +569,114 @@
       "providerKey": "pappers",
       "icon": "fa-solid fa-people-arrows",
       "description": "Rechercher des bénéficiaires effectifs d'entreprise",
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:pappers_beneficiaires" }],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pappers_beneficiaires"
+        }
+      ],
       "authorize_catch_error": true,
       "args": {
         "title": "Rechercher des bénéficiaires",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
           {
-            "type": "text", "key": "q", "label": "Recherche",
-            "col": { "xs": 24, "sm": 24, "md": 24 },
+            "type": "text",
+            "key": "q",
+            "label": "Recherche",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
             "description": "Terme de recherche.",
-            "expression": { "allow": true }
+            "expression": {
+              "allow": true
+            }
           },
           {
-            "type": "text", "key": "nationalite_beneficiaire", "label": "Nationalité",
-            "col": { "xs": 24, "sm": 24, "md": 24 },
+            "type": "text",
+            "key": "nationalite_beneficiaire",
+            "label": "Nationalité",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
             "description": "Filtrer par nationalité du bénéficiaire.",
-            "expression": { "allow": true }
+            "expression": {
+              "allow": true
+            }
           },
           {
-            "type": "text", "key": "siren", "label": "SIREN",
-            "col": { "xs": 24, "sm": 24, "md": 24 },
+            "type": "text",
+            "key": "siren",
+            "label": "SIREN",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
             "description": "Filtrer par SIREN de l'entreprise.",
-            "expression": { "allow": true }
+            "expression": {
+              "allow": true
+            }
           },
           {
-            "type": "number", "key": "par_page", "label": "Par page",
-            "col": { "xs": 24, "sm": 24, "md": 24 },
+            "type": "number",
+            "key": "par_page",
+            "label": "Par page",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
             "description": "Nombre de résultats par page.",
             "default": 10,
-            "expression": { "allow": true }
+            "expression": {
+              "allow": true
+            }
           },
           {
-            "type": "number", "key": "page", "label": "Page",
-            "col": { "xs": 24, "sm": 24, "md": 24 },
+            "type": "number",
+            "key": "page",
+            "label": "Page",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
             "description": "Numéro de page.",
-            "expression": { "allow": true }
+            "expression": {
+              "allow": true
+            }
           }
         ],
         "displayTitle": false,
         "displayDescription": false
       },
       "group": "Bénéficiaires",
-      "tags": ["recherche", "Pappers"]
+      "tags": [
+        "recherche",
+        "Pappers"
+      ],
+      "risk": "safe"
     },
     {
       "key": "pappers_comptes_get",
@@ -337,32 +690,76 @@
       "providerKey": "pappers",
       "icon": "fa-solid fa-chart-line",
       "description": "Récupérer les comptes annuels d'une entreprise",
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:pappers_comptes" }],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pappers_comptes"
+        }
+      ],
       "authorize_catch_error": true,
       "args": {
         "title": "Obtenir les comptes annuels",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
           {
-            "type": "text", "key": "siren", "label": "SIREN",
-            "col": { "xs": 24, "sm": 24, "md": 24 },
+            "type": "text",
+            "key": "siren",
+            "label": "SIREN",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
             "description": "Numéro SIREN de l'entreprise.",
-            "validators": [{ "type": "required" }],
-            "expression": { "allow": true }
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
           },
           {
-            "type": "text", "key": "annee", "label": "Année",
-            "col": { "xs": 24, "sm": 24, "md": 24 },
+            "type": "text",
+            "key": "annee",
+            "label": "Année",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
             "description": "Année des comptes (ex: 2023).",
-            "expression": { "allow": true }
+            "expression": {
+              "allow": true
+            }
           }
         ],
         "displayTitle": false,
         "displayDescription": false
       },
       "group": "Finance",
-      "tags": ["lecture", "Pappers"]
+      "tags": [
+        "lecture",
+        "Pappers"
+      ],
+      "risk": "safe"
     },
     {
       "key": "pappers_documents_search",
@@ -376,56 +773,128 @@
       "providerKey": "pappers",
       "icon": "fa-solid fa-file-lines",
       "description": "Rechercher des documents officiels d'entreprise",
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:pappers_documents" }],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pappers_documents"
+        }
+      ],
       "authorize_catch_error": true,
       "args": {
         "title": "Rechercher des documents",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
           {
-            "type": "text", "key": "q", "label": "Recherche",
-            "col": { "xs": 24, "sm": 24, "md": 24 },
+            "type": "text",
+            "key": "q",
+            "label": "Recherche",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
             "description": "Terme de recherche.",
-            "expression": { "allow": true }
+            "expression": {
+              "allow": true
+            }
           },
           {
-            "type": "text", "key": "siren", "label": "SIREN",
-            "col": { "xs": 24, "sm": 24, "md": 24 },
+            "type": "text",
+            "key": "siren",
+            "label": "SIREN",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
             "description": "Filtrer par SIREN.",
-            "expression": { "allow": true }
+            "expression": {
+              "allow": true
+            }
           },
           {
-            "type": "text", "key": "date_depot_document_min", "label": "Date de dépôt min",
-            "col": { "xs": 24, "sm": 24, "md": 24 },
+            "type": "text",
+            "key": "date_depot_document_min",
+            "label": "Date de dépôt min",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
             "description": "Date minimum de dépôt (JJ-MM-AAAA).",
-            "expression": { "allow": true }
+            "expression": {
+              "allow": true
+            }
           },
           {
-            "type": "text", "key": "date_depot_document_max", "label": "Date de dépôt max",
-            "col": { "xs": 24, "sm": 24, "md": 24 },
+            "type": "text",
+            "key": "date_depot_document_max",
+            "label": "Date de dépôt max",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
             "description": "Date maximum de dépôt (JJ-MM-AAAA).",
-            "expression": { "allow": true }
+            "expression": {
+              "allow": true
+            }
           },
           {
-            "type": "number", "key": "par_page", "label": "Par page",
-            "col": { "xs": 24, "sm": 24, "md": 24 },
+            "type": "number",
+            "key": "par_page",
+            "label": "Par page",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
             "description": "Nombre de résultats par page.",
             "default": 10,
-            "expression": { "allow": true }
+            "expression": {
+              "allow": true
+            }
           },
           {
-            "type": "number", "key": "page", "label": "Page",
-            "col": { "xs": 24, "sm": 24, "md": 24 },
+            "type": "number",
+            "key": "page",
+            "label": "Page",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
             "description": "Numéro de page.",
-            "expression": { "allow": true }
+            "expression": {
+              "allow": true
+            }
           }
         ],
         "displayTitle": false,
         "displayDescription": false
       },
       "group": "Documents",
-      "tags": ["recherche", "Pappers"]
+      "tags": [
+        "recherche",
+        "Pappers"
+      ],
+      "risk": "safe"
     },
     {
       "key": "pappers_publications_search",
@@ -439,62 +908,142 @@
       "providerKey": "pappers",
       "icon": "fa-solid fa-newspaper",
       "description": "Rechercher des publications au BODACC",
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:pappers_publications" }],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pappers_publications"
+        }
+      ],
       "authorize_catch_error": true,
       "args": {
         "title": "Rechercher des publications BODACC",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
           {
-            "type": "text", "key": "q", "label": "Recherche",
-            "col": { "xs": 24, "sm": 24, "md": 24 },
+            "type": "text",
+            "key": "q",
+            "label": "Recherche",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
             "description": "Terme de recherche.",
-            "expression": { "allow": true }
+            "expression": {
+              "allow": true
+            }
           },
           {
-            "type": "text", "key": "siren", "label": "SIREN",
-            "col": { "xs": 24, "sm": 24, "md": 24 },
+            "type": "text",
+            "key": "siren",
+            "label": "SIREN",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
             "description": "Filtrer par SIREN.",
-            "expression": { "allow": true }
+            "expression": {
+              "allow": true
+            }
           },
           {
-            "type": "text", "key": "type_publication", "label": "Type de publication",
-            "col": { "xs": 24, "sm": 24, "md": 24 },
+            "type": "text",
+            "key": "type_publication",
+            "label": "Type de publication",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
             "description": "Type de publication BODACC.",
-            "expression": { "allow": true }
+            "expression": {
+              "allow": true
+            }
           },
           {
-            "type": "text", "key": "date_publication_min", "label": "Date de publication min",
-            "col": { "xs": 24, "sm": 24, "md": 24 },
+            "type": "text",
+            "key": "date_publication_min",
+            "label": "Date de publication min",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
             "description": "Date minimum de publication.",
-            "expression": { "allow": true }
+            "expression": {
+              "allow": true
+            }
           },
           {
-            "type": "text", "key": "date_publication_max", "label": "Date de publication max",
-            "col": { "xs": 24, "sm": 24, "md": 24 },
+            "type": "text",
+            "key": "date_publication_max",
+            "label": "Date de publication max",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
             "description": "Date maximum de publication.",
-            "expression": { "allow": true }
+            "expression": {
+              "allow": true
+            }
           },
           {
-            "type": "number", "key": "par_page", "label": "Par page",
-            "col": { "xs": 24, "sm": 24, "md": 24 },
+            "type": "number",
+            "key": "par_page",
+            "label": "Par page",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
             "description": "Nombre de résultats par page.",
             "default": 10,
-            "expression": { "allow": true }
+            "expression": {
+              "allow": true
+            }
           },
           {
-            "type": "number", "key": "page", "label": "Page",
-            "col": { "xs": 24, "sm": 24, "md": 24 },
+            "type": "number",
+            "key": "page",
+            "label": "Page",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
             "description": "Numéro de page.",
-            "expression": { "allow": true }
+            "expression": {
+              "allow": true
+            }
           }
         ],
         "displayTitle": false,
         "displayDescription": false
       },
       "group": "Publications",
-      "tags": ["recherche", "Pappers"]
+      "tags": [
+        "recherche",
+        "Pappers"
+      ],
+      "risk": "safe"
     },
     {
       "key": "pappers_conformite_check",
@@ -508,40 +1057,100 @@
       "providerKey": "pappers",
       "icon": "fa-solid fa-shield-halved",
       "description": "Vérifier la conformité d'une personne physique (sanctions, PEP)",
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:pappers_conformite" }],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pappers_conformite"
+        }
+      ],
       "authorize_catch_error": true,
       "args": {
         "title": "Vérifier la conformité",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
           {
-            "type": "text", "key": "nom", "label": "Nom",
-            "col": { "xs": 24, "sm": 24, "md": 24 },
+            "type": "text",
+            "key": "nom",
+            "label": "Nom",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
             "description": "Nom de la personne.",
-            "validators": [{ "type": "required" }],
-            "expression": { "allow": true }
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
           },
           {
-            "type": "text", "key": "prenom", "label": "Prénom",
-            "col": { "xs": 24, "sm": 24, "md": 24 },
+            "type": "text",
+            "key": "prenom",
+            "label": "Prénom",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
             "description": "Prénom de la personne.",
-            "validators": [{ "type": "required" }],
-            "expression": { "allow": true }
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
           },
           {
-            "type": "text", "key": "date_de_naissance", "label": "Date de naissance",
-            "col": { "xs": 24, "sm": 24, "md": 24 },
+            "type": "text",
+            "key": "date_de_naissance",
+            "label": "Date de naissance",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
             "description": "Date de naissance (format JJ/MM/AAAA).",
-            "validators": [{ "type": "required" }],
-            "expression": { "allow": true }
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
           }
         ],
         "displayTitle": false,
         "displayDescription": false
       },
       "group": "Conformité",
-      "tags": ["conformité", "Pappers"]
+      "tags": [
+        "conformité",
+        "Pappers"
+      ],
+      "risk": "safe"
     },
     {
       "key": "pappers_avis_insee",
@@ -555,26 +1164,62 @@
       "providerKey": "pappers",
       "icon": "fa-solid fa-file-pdf",
       "description": "Télécharger l'avis de situation INSEE d'une entreprise",
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:pappers_document_file" }],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pappers_document_file"
+        }
+      ],
       "authorize_catch_error": true,
       "args": {
         "title": "Télécharger l'avis INSEE",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
           {
-            "type": "text", "key": "siren", "label": "SIREN",
-            "col": { "xs": 24, "sm": 24, "md": 24 },
+            "type": "text",
+            "key": "siren",
+            "label": "SIREN",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
             "description": "Numéro SIREN de l'entreprise.",
-            "validators": [{ "type": "required" }],
-            "expression": { "allow": true }
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
           }
         ],
         "displayTitle": false,
         "displayDescription": false
       },
       "group": "Documents",
-      "tags": ["document", "Pappers"]
+      "tags": [
+        "document",
+        "Pappers"
+      ],
+      "risk": "safe"
     },
     {
       "key": "pappers_extrait_inpi",
@@ -588,26 +1233,62 @@
       "providerKey": "pappers",
       "icon": "fa-solid fa-file-pdf",
       "description": "Télécharger l'extrait INPI d'une entreprise",
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:pappers_document_file" }],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pappers_document_file"
+        }
+      ],
       "authorize_catch_error": true,
       "args": {
         "title": "Télécharger l'extrait INPI",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
           {
-            "type": "text", "key": "siren", "label": "SIREN",
-            "col": { "xs": 24, "sm": 24, "md": 24 },
+            "type": "text",
+            "key": "siren",
+            "label": "SIREN",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
             "description": "Numéro SIREN de l'entreprise.",
-            "validators": [{ "type": "required" }],
-            "expression": { "allow": true }
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
           }
         ],
         "displayTitle": false,
         "displayDescription": false
       },
       "group": "Documents",
-      "tags": ["document", "Pappers"]
+      "tags": [
+        "document",
+        "Pappers"
+      ],
+      "risk": "safe"
     },
     {
       "key": "pappers_association_get",
@@ -621,78 +1302,363 @@
       "providerKey": "pappers",
       "icon": "fa-solid fa-people-group",
       "description": "Récupérer les détails d'une association",
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:pappers_association" }],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pappers_association"
+        }
+      ],
       "authorize_catch_error": true,
       "args": {
         "title": "Obtenir une association",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
           {
-            "type": "text", "key": "siren", "label": "SIREN",
-            "col": { "xs": 24, "sm": 24, "md": 24 },
+            "type": "text",
+            "key": "siren",
+            "label": "SIREN",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
             "description": "Numéro SIREN de l'association.",
-            "expression": { "allow": true }
+            "expression": {
+              "allow": true
+            }
           },
           {
-            "type": "text", "key": "siret", "label": "SIRET",
-            "col": { "xs": 24, "sm": 24, "md": 24 },
+            "type": "text",
+            "key": "siret",
+            "label": "SIRET",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
             "description": "Numéro SIRET de l'association.",
-            "expression": { "allow": true }
+            "expression": {
+              "allow": true
+            }
           },
           {
-            "type": "text", "key": "id_association", "label": "ID association",
-            "col": { "xs": 24, "sm": 24, "md": 24 },
+            "type": "text",
+            "key": "id_association",
+            "label": "ID association",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
             "description": "Identifiant RNA de l'association. Au moins un identifiant est requis.",
-            "expression": { "allow": true }
+            "expression": {
+              "allow": true
+            }
           }
         ],
         "displayTitle": false,
         "displayDescription": false
       },
       "group": "Associations",
-      "tags": ["lecture", "Pappers"]
+      "tags": [
+        "lecture",
+        "Pappers"
+      ],
+      "risk": "safe"
     }
   ],
   "variables": {
     "pappers_entreprise": {
       "title": "Entreprise Pappers",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "checkbox", "key": "ok", "label": "OK", "description": "Succès de la requête.", "col": { "xs": 24 } },
-        { "type": "number", "key": "status", "label": "Status HTTP", "description": "Code de statut HTTP.", "col": { "xs": 24 } },
         {
-          "type": "section", "title": "Données", "key": "data", "col": { "xs": 24 },
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "description": "Succès de la requête.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Status HTTP",
+          "description": "Code de statut HTTP.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Données",
+          "key": "data",
+          "col": {
+            "xs": 24
+          },
           "fields": [
-            { "type": "text", "key": "siren", "label": "SIREN", "description": "Numéro SIREN.", "col": { "xs": 24 } },
-            { "type": "text", "key": "siret", "label": "SIRET", "description": "Numéro SIRET du siège.", "col": { "xs": 24 } },
-            { "type": "text", "key": "denomination", "label": "Dénomination", "description": "Dénomination sociale.", "col": { "xs": 24 } },
-            { "type": "text", "key": "nom_entreprise", "label": "Nom entreprise", "description": "Nom de l'entreprise.", "col": { "xs": 24 } },
-            { "type": "text", "key": "forme_juridique", "label": "Forme juridique", "description": "Forme juridique.", "col": { "xs": 24 } },
-            { "type": "text", "key": "date_creation", "label": "Date de création", "description": "Date de création.", "col": { "xs": 24 } },
-            { "type": "text", "key": "date_cessation", "label": "Date de cessation", "description": "Date de cessation.", "col": { "xs": 24 } },
-            { "type": "checkbox", "key": "entreprise_cessee", "label": "Cessée", "description": "Entreprise cessée.", "col": { "xs": 24 } },
-            { "type": "text", "key": "categorie_juridique", "label": "Catégorie juridique", "description": "Catégorie juridique.", "col": { "xs": 24 } },
-            { "type": "text", "key": "effectif", "label": "Effectif", "description": "Effectif salarié.", "col": { "xs": 24 } },
-            { "type": "number", "key": "capital", "label": "Capital", "description": "Capital social en euros.", "col": { "xs": 24 } },
-            { "type": "number", "key": "chiffre_affaires", "label": "Chiffre d'affaires", "description": "Chiffre d'affaires.", "col": { "xs": 24 } },
-            { "type": "number", "key": "resultat", "label": "Résultat", "description": "Résultat net.", "col": { "xs": 24 } },
-            { "type": "text", "key": "tranche_effectif", "label": "Tranche effectif", "description": "Tranche d'effectif.", "col": { "xs": 24 } },
-            { "type": "text", "key": "code_naf", "label": "Code NAF", "description": "Code NAF.", "col": { "xs": 24 } },
-            { "type": "text", "key": "libelle_code_naf", "label": "Libellé NAF", "description": "Libellé du code NAF.", "col": { "xs": 24 } },
-            { "type": "text", "key": "domaine_activite", "label": "Domaine d'activité", "description": "Domaine d'activité.", "col": { "xs": 24 } },
-            { "type": "textarea", "key": "objet_social", "label": "Objet social", "description": "Objet social.", "col": { "xs": 24 } },
-            { "type": "text", "key": "numero_tva", "label": "N° TVA", "description": "Numéro de TVA intracommunautaire.", "col": { "xs": 24 } },
             {
-              "type": "section", "title": "Siège", "key": "siege", "col": { "xs": 24 },
+              "type": "text",
+              "key": "siren",
+              "label": "SIREN",
+              "description": "Numéro SIREN.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "siret",
+              "label": "SIRET",
+              "description": "Numéro SIRET du siège.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "denomination",
+              "label": "Dénomination",
+              "description": "Dénomination sociale.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "nom_entreprise",
+              "label": "Nom entreprise",
+              "description": "Nom de l'entreprise.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "forme_juridique",
+              "label": "Forme juridique",
+              "description": "Forme juridique.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "date_creation",
+              "label": "Date de création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "date_cessation",
+              "label": "Date de cessation",
+              "description": "Date de cessation.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "checkbox",
+              "key": "entreprise_cessee",
+              "label": "Cessée",
+              "description": "Entreprise cessée.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "categorie_juridique",
+              "label": "Catégorie juridique",
+              "description": "Catégorie juridique.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "effectif",
+              "label": "Effectif",
+              "description": "Effectif salarié.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "capital",
+              "label": "Capital",
+              "description": "Capital social en euros.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "chiffre_affaires",
+              "label": "Chiffre d'affaires",
+              "description": "Chiffre d'affaires.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "resultat",
+              "label": "Résultat",
+              "description": "Résultat net.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "tranche_effectif",
+              "label": "Tranche effectif",
+              "description": "Tranche d'effectif.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "code_naf",
+              "label": "Code NAF",
+              "description": "Code NAF.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "libelle_code_naf",
+              "label": "Libellé NAF",
+              "description": "Libellé du code NAF.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "domaine_activite",
+              "label": "Domaine d'activité",
+              "description": "Domaine d'activité.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "objet_social",
+              "label": "Objet social",
+              "description": "Objet social.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "numero_tva",
+              "label": "N° TVA",
+              "description": "Numéro de TVA intracommunautaire.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "section",
+              "title": "Siège",
+              "key": "siege",
+              "col": {
+                "xs": 24
+              },
               "fields": [
-                { "type": "text", "key": "siret", "label": "SIRET", "description": "SIRET du siège.", "col": { "xs": 24 } },
-                { "type": "text", "key": "adresse_ligne_1", "label": "Adresse", "description": "Adresse du siège.", "col": { "xs": 24 } },
-                { "type": "text", "key": "code_postal", "label": "Code postal", "description": "Code postal.", "col": { "xs": 24 } },
-                { "type": "text", "key": "ville", "label": "Ville", "description": "Ville.", "col": { "xs": 24 } },
-                { "type": "text", "key": "pays", "label": "Pays", "description": "Pays.", "col": { "xs": 24 } },
-                { "type": "text", "key": "latitude", "label": "Latitude", "description": "Latitude GPS.", "col": { "xs": 24 } },
-                { "type": "text", "key": "longitude", "label": "Longitude", "description": "Longitude GPS.", "col": { "xs": 24 } }
+                {
+                  "type": "text",
+                  "key": "siret",
+                  "label": "SIRET",
+                  "description": "SIRET du siège.",
+                  "col": {
+                    "xs": 24
+                  }
+                },
+                {
+                  "type": "text",
+                  "key": "adresse_ligne_1",
+                  "label": "Adresse",
+                  "description": "Adresse du siège.",
+                  "col": {
+                    "xs": 24
+                  }
+                },
+                {
+                  "type": "text",
+                  "key": "code_postal",
+                  "label": "Code postal",
+                  "description": "Code postal.",
+                  "col": {
+                    "xs": 24
+                  }
+                },
+                {
+                  "type": "text",
+                  "key": "ville",
+                  "label": "Ville",
+                  "description": "Ville.",
+                  "col": {
+                    "xs": 24
+                  }
+                },
+                {
+                  "type": "text",
+                  "key": "pays",
+                  "label": "Pays",
+                  "description": "Pays.",
+                  "col": {
+                    "xs": 24
+                  }
+                },
+                {
+                  "type": "text",
+                  "key": "latitude",
+                  "label": "Latitude",
+                  "description": "Latitude GPS.",
+                  "col": {
+                    "xs": 24
+                  }
+                },
+                {
+                  "type": "text",
+                  "key": "longitude",
+                  "label": "Longitude",
+                  "description": "Longitude GPS.",
+                  "col": {
+                    "xs": 24
+                  }
+                }
               ]
             }
           ]
@@ -701,207 +1667,1028 @@
     },
     "pappers_entreprises": {
       "title": "Recherche entreprises Pappers",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "checkbox", "key": "ok", "label": "OK", "description": "Succès de la requête.", "col": { "xs": 24 } },
-        { "type": "number", "key": "totalCount", "label": "Nombre total", "col": { "xs": 24 } },
         {
-          "type": "section", "title": "Résultats", "key": "resultats", "col": { "xs": 24 },
-          "mode": "array", "array": { "initialItems": 0, "minItems": 0 },
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "description": "Succès de la requête.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Résultats",
+          "key": "resultats",
+          "col": {
+            "xs": 24
+          },
+          "mode": "array",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
           "fields": [
-            { "type": "text", "key": "siren", "label": "SIREN", "description": "Numéro SIREN.", "col": { "xs": 24 } },
-            { "type": "text", "key": "siret", "label": "SIRET", "description": "Numéro SIRET.", "col": { "xs": 24 } },
-            { "type": "text", "key": "denomination", "label": "Dénomination", "description": "Dénomination sociale.", "col": { "xs": 24 } },
-            { "type": "text", "key": "nom_entreprise", "label": "Nom entreprise", "description": "Nom de l'entreprise.", "col": { "xs": 24 } },
-            { "type": "text", "key": "forme_juridique", "label": "Forme juridique", "description": "Forme juridique.", "col": { "xs": 24 } },
-            { "type": "text", "key": "code_naf", "label": "Code NAF", "description": "Code NAF.", "col": { "xs": 24 } },
-            { "type": "text", "key": "libelle_code_naf", "label": "Libellé NAF", "description": "Libellé du code NAF.", "col": { "xs": 24 } },
-            { "type": "text", "key": "effectif", "label": "Effectif", "description": "Effectif salarié.", "col": { "xs": 24 } },
-            { "type": "text", "key": "date_creation", "label": "Date de création", "description": "Date de création.", "col": { "xs": 24 } },
-            { "type": "checkbox", "key": "entreprise_cessee", "label": "Cessée", "description": "Entreprise cessée.", "col": { "xs": 24 } },
-            { "type": "text", "key": "siege_adresse", "label": "Adresse siège", "description": "Adresse du siège.", "col": { "xs": 24 } },
-            { "type": "text", "key": "siege_code_postal", "label": "Code postal siège", "description": "Code postal du siège.", "col": { "xs": 24 } },
-            { "type": "text", "key": "siege_ville", "label": "Ville siège", "description": "Ville du siège.", "col": { "xs": 24 } }
+            {
+              "type": "text",
+              "key": "siren",
+              "label": "SIREN",
+              "description": "Numéro SIREN.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "siret",
+              "label": "SIRET",
+              "description": "Numéro SIRET.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "denomination",
+              "label": "Dénomination",
+              "description": "Dénomination sociale.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "nom_entreprise",
+              "label": "Nom entreprise",
+              "description": "Nom de l'entreprise.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "forme_juridique",
+              "label": "Forme juridique",
+              "description": "Forme juridique.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "code_naf",
+              "label": "Code NAF",
+              "description": "Code NAF.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "libelle_code_naf",
+              "label": "Libellé NAF",
+              "description": "Libellé du code NAF.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "effectif",
+              "label": "Effectif",
+              "description": "Effectif salarié.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "date_creation",
+              "label": "Date de création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "checkbox",
+              "key": "entreprise_cessee",
+              "label": "Cessée",
+              "description": "Entreprise cessée.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "siege_adresse",
+              "label": "Adresse siège",
+              "description": "Adresse du siège.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "siege_code_postal",
+              "label": "Code postal siège",
+              "description": "Code postal du siège.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "siege_ville",
+              "label": "Ville siège",
+              "description": "Ville du siège.",
+              "col": {
+                "xs": 24
+              }
+            }
           ]
         }
       ]
     },
     "pappers_suggestions_list": {
       "title": "Suggestions Pappers",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "checkbox", "key": "ok", "label": "OK", "description": "Succès de la requête.", "col": { "xs": 24 } },
-        { "type": "number", "key": "totalCount", "label": "Nombre total", "col": { "xs": 24 } },
         {
-          "type": "section", "title": "Suggestions", "key": "suggestions", "col": { "xs": 24 },
-          "mode": "array", "array": { "initialItems": 0, "minItems": 0 },
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "description": "Succès de la requête.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Suggestions",
+          "key": "suggestions",
+          "col": {
+            "xs": 24
+          },
+          "mode": "array",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
           "fields": [
-            { "type": "text", "key": "siren", "label": "SIREN", "description": "Numéro SIREN.", "col": { "xs": 24 } },
-            { "type": "text", "key": "denomination", "label": "Dénomination", "description": "Dénomination sociale.", "col": { "xs": 24 } },
-            { "type": "text", "key": "nom_entreprise", "label": "Nom entreprise", "description": "Nom de l'entreprise.", "col": { "xs": 24 } },
-            { "type": "text", "key": "forme_juridique", "label": "Forme juridique", "description": "Forme juridique.", "col": { "xs": 24 } },
-            { "type": "text", "key": "siege_ville", "label": "Ville", "description": "Ville du siège.", "col": { "xs": 24 } },
-            { "type": "text", "key": "siege_code_postal", "label": "Code postal", "description": "Code postal du siège.", "col": { "xs": 24 } }
+            {
+              "type": "text",
+              "key": "siren",
+              "label": "SIREN",
+              "description": "Numéro SIREN.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "denomination",
+              "label": "Dénomination",
+              "description": "Dénomination sociale.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "nom_entreprise",
+              "label": "Nom entreprise",
+              "description": "Nom de l'entreprise.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "forme_juridique",
+              "label": "Forme juridique",
+              "description": "Forme juridique.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "siege_ville",
+              "label": "Ville",
+              "description": "Ville du siège.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "siege_code_postal",
+              "label": "Code postal",
+              "description": "Code postal du siège.",
+              "col": {
+                "xs": 24
+              }
+            }
           ]
         }
       ]
     },
     "pappers_dirigeants": {
       "title": "Dirigeants Pappers",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "checkbox", "key": "ok", "label": "OK", "description": "Succès de la requête.", "col": { "xs": 24 } },
-        { "type": "number", "key": "totalCount", "label": "Nombre total", "col": { "xs": 24 } },
         {
-          "type": "section", "title": "Dirigeants", "key": "dirigeants", "col": { "xs": 24 },
-          "mode": "array", "array": { "initialItems": 0, "minItems": 0 },
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "description": "Succès de la requête.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Dirigeants",
+          "key": "dirigeants",
+          "col": {
+            "xs": 24
+          },
+          "mode": "array",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
           "fields": [
-            { "type": "text", "key": "nom", "label": "Nom", "description": "Nom du dirigeant.", "col": { "xs": 24 } },
-            { "type": "text", "key": "prenom", "label": "Prénom", "description": "Prénom du dirigeant.", "col": { "xs": 24 } },
-            { "type": "text", "key": "date_de_naissance", "label": "Date de naissance", "description": "Date de naissance.", "col": { "xs": 24 } },
-            { "type": "text", "key": "qualite", "label": "Qualité", "description": "Qualité du mandat.", "col": { "xs": 24 } },
-            { "type": "text", "key": "denomination", "label": "Entreprise", "description": "Dénomination de l'entreprise.", "col": { "xs": 24 } },
-            { "type": "text", "key": "siren", "label": "SIREN", "description": "SIREN de l'entreprise.", "col": { "xs": 24 } },
-            { "type": "text", "key": "forme_juridique", "label": "Forme juridique", "description": "Forme juridique.", "col": { "xs": 24 } }
+            {
+              "type": "text",
+              "key": "nom",
+              "label": "Nom",
+              "description": "Nom du dirigeant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "prenom",
+              "label": "Prénom",
+              "description": "Prénom du dirigeant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "date_de_naissance",
+              "label": "Date de naissance",
+              "description": "Date de naissance.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "qualite",
+              "label": "Qualité",
+              "description": "Qualité du mandat.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "denomination",
+              "label": "Entreprise",
+              "description": "Dénomination de l'entreprise.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "siren",
+              "label": "SIREN",
+              "description": "SIREN de l'entreprise.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "forme_juridique",
+              "label": "Forme juridique",
+              "description": "Forme juridique.",
+              "col": {
+                "xs": 24
+              }
+            }
           ]
         }
       ]
     },
     "pappers_beneficiaires": {
       "title": "Bénéficiaires Pappers",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "checkbox", "key": "ok", "label": "OK", "description": "Succès de la requête.", "col": { "xs": 24 } },
-        { "type": "number", "key": "totalCount", "label": "Nombre total", "col": { "xs": 24 } },
         {
-          "type": "section", "title": "Bénéficiaires", "key": "beneficiaires", "col": { "xs": 24 },
-          "mode": "array", "array": { "initialItems": 0, "minItems": 0 },
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "description": "Succès de la requête.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Bénéficiaires",
+          "key": "beneficiaires",
+          "col": {
+            "xs": 24
+          },
+          "mode": "array",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
           "fields": [
-            { "type": "text", "key": "nom", "label": "Nom", "description": "Nom du bénéficiaire.", "col": { "xs": 24 } },
-            { "type": "text", "key": "prenom", "label": "Prénom", "description": "Prénom du bénéficiaire.", "col": { "xs": 24 } },
-            { "type": "text", "key": "nationalite", "label": "Nationalité", "description": "Nationalité.", "col": { "xs": 24 } },
-            { "type": "text", "key": "date_de_naissance", "label": "Date de naissance", "description": "Date de naissance.", "col": { "xs": 24 } },
-            { "type": "number", "key": "pourcentage_parts", "label": "% parts", "description": "Pourcentage de parts détenues.", "col": { "xs": 24 } },
-            { "type": "text", "key": "denomination", "label": "Entreprise", "description": "Dénomination de l'entreprise.", "col": { "xs": 24 } },
-            { "type": "text", "key": "siren", "label": "SIREN", "description": "SIREN de l'entreprise.", "col": { "xs": 24 } }
+            {
+              "type": "text",
+              "key": "nom",
+              "label": "Nom",
+              "description": "Nom du bénéficiaire.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "prenom",
+              "label": "Prénom",
+              "description": "Prénom du bénéficiaire.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "nationalite",
+              "label": "Nationalité",
+              "description": "Nationalité.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "date_de_naissance",
+              "label": "Date de naissance",
+              "description": "Date de naissance.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "pourcentage_parts",
+              "label": "% parts",
+              "description": "Pourcentage de parts détenues.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "denomination",
+              "label": "Entreprise",
+              "description": "Dénomination de l'entreprise.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "siren",
+              "label": "SIREN",
+              "description": "SIREN de l'entreprise.",
+              "col": {
+                "xs": 24
+              }
+            }
           ]
         }
       ]
     },
     "pappers_comptes": {
       "title": "Comptes annuels Pappers",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "checkbox", "key": "ok", "label": "OK", "description": "Succès de la requête.", "col": { "xs": 24 } },
-        { "type": "number", "key": "totalCount", "label": "Nombre total", "col": { "xs": 24 } },
         {
-          "type": "section", "title": "Comptes", "key": "comptes", "col": { "xs": 24 },
-          "mode": "array", "array": { "initialItems": 0, "minItems": 0 },
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "description": "Succès de la requête.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Comptes",
+          "key": "comptes",
+          "col": {
+            "xs": 24
+          },
+          "mode": "array",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
           "fields": [
-            { "type": "text", "key": "annee", "label": "Année", "description": "Année de l'exercice.", "col": { "xs": 24 } },
-            { "type": "text", "key": "date_cloture", "label": "Date de clôture", "description": "Date de clôture.", "col": { "xs": 24 } },
-            { "type": "number", "key": "duree_exercice", "label": "Durée exercice", "description": "Durée de l'exercice en mois.", "col": { "xs": 24 } },
-            { "type": "number", "key": "chiffre_affaires", "label": "Chiffre d'affaires", "description": "Chiffre d'affaires.", "col": { "xs": 24 } },
-            { "type": "number", "key": "resultat", "label": "Résultat", "description": "Résultat net.", "col": { "xs": 24 } },
-            { "type": "number", "key": "effectif", "label": "Effectif", "description": "Effectif moyen.", "col": { "xs": 24 } },
-            { "type": "number", "key": "capital_social", "label": "Capital social", "description": "Capital social.", "col": { "xs": 24 } }
+            {
+              "type": "text",
+              "key": "annee",
+              "label": "Année",
+              "description": "Année de l'exercice.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "date_cloture",
+              "label": "Date de clôture",
+              "description": "Date de clôture.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "duree_exercice",
+              "label": "Durée exercice",
+              "description": "Durée de l'exercice en mois.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "chiffre_affaires",
+              "label": "Chiffre d'affaires",
+              "description": "Chiffre d'affaires.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "resultat",
+              "label": "Résultat",
+              "description": "Résultat net.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "effectif",
+              "label": "Effectif",
+              "description": "Effectif moyen.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "capital_social",
+              "label": "Capital social",
+              "description": "Capital social.",
+              "col": {
+                "xs": 24
+              }
+            }
           ]
         }
       ]
     },
     "pappers_documents": {
       "title": "Documents Pappers",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "checkbox", "key": "ok", "label": "OK", "description": "Succès de la requête.", "col": { "xs": 24 } },
-        { "type": "number", "key": "totalCount", "label": "Nombre total", "col": { "xs": 24 } },
         {
-          "type": "section", "title": "Documents", "key": "documents", "col": { "xs": 24 },
-          "mode": "array", "array": { "initialItems": 0, "minItems": 0 },
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "description": "Succès de la requête.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Documents",
+          "key": "documents",
+          "col": {
+            "xs": 24
+          },
+          "mode": "array",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
           "fields": [
-            { "type": "text", "key": "titre", "label": "Titre", "description": "Titre du document.", "col": { "xs": 24 } },
-            { "type": "text", "key": "type", "label": "Type", "description": "Type de document.", "col": { "xs": 24 } },
-            { "type": "text", "key": "date_depot", "label": "Date de dépôt", "description": "Date de dépôt.", "col": { "xs": 24 } },
-            { "type": "text", "key": "siren", "label": "SIREN", "description": "SIREN de l'entreprise.", "col": { "xs": 24 } },
-            { "type": "text", "key": "denomination", "label": "Entreprise", "description": "Dénomination.", "col": { "xs": 24 } },
-            { "type": "url", "key": "url_telechargement", "label": "URL téléchargement", "description": "URL de téléchargement du document.", "col": { "xs": 24 } }
+            {
+              "type": "text",
+              "key": "titre",
+              "label": "Titre",
+              "description": "Titre du document.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "type",
+              "label": "Type",
+              "description": "Type de document.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "date_depot",
+              "label": "Date de dépôt",
+              "description": "Date de dépôt.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "siren",
+              "label": "SIREN",
+              "description": "SIREN de l'entreprise.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "denomination",
+              "label": "Entreprise",
+              "description": "Dénomination.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "url",
+              "key": "url_telechargement",
+              "label": "URL téléchargement",
+              "description": "URL de téléchargement du document.",
+              "col": {
+                "xs": 24
+              }
+            }
           ]
         }
       ]
     },
     "pappers_publications": {
       "title": "Publications BODACC Pappers",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "checkbox", "key": "ok", "label": "OK", "description": "Succès de la requête.", "col": { "xs": 24 } },
-        { "type": "number", "key": "totalCount", "label": "Nombre total", "col": { "xs": 24 } },
         {
-          "type": "section", "title": "Publications", "key": "publications", "col": { "xs": 24 },
-          "mode": "array", "array": { "initialItems": 0, "minItems": 0 },
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "description": "Succès de la requête.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Publications",
+          "key": "publications",
+          "col": {
+            "xs": 24
+          },
+          "mode": "array",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
           "fields": [
-            { "type": "text", "key": "type", "label": "Type", "description": "Type de publication.", "col": { "xs": 24 } },
-            { "type": "text", "key": "date_publication", "label": "Date de publication", "description": "Date de publication.", "col": { "xs": 24 } },
-            { "type": "textarea", "key": "contenu", "label": "Contenu", "description": "Contenu de la publication.", "col": { "xs": 24 } },
-            { "type": "text", "key": "siren", "label": "SIREN", "description": "SIREN.", "col": { "xs": 24 } },
-            { "type": "text", "key": "denomination", "label": "Entreprise", "description": "Dénomination.", "col": { "xs": 24 } },
-            { "type": "text", "key": "numero_bodacc", "label": "N° BODACC", "description": "Numéro BODACC.", "col": { "xs": 24 } }
+            {
+              "type": "text",
+              "key": "type",
+              "label": "Type",
+              "description": "Type de publication.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "date_publication",
+              "label": "Date de publication",
+              "description": "Date de publication.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "contenu",
+              "label": "Contenu",
+              "description": "Contenu de la publication.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "siren",
+              "label": "SIREN",
+              "description": "SIREN.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "denomination",
+              "label": "Entreprise",
+              "description": "Dénomination.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "numero_bodacc",
+              "label": "N° BODACC",
+              "description": "Numéro BODACC.",
+              "col": {
+                "xs": 24
+              }
+            }
           ]
         }
       ]
     },
     "pappers_conformite": {
       "title": "Conformité Pappers",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "checkbox", "key": "ok", "label": "OK", "description": "Succès de la requête.", "col": { "xs": 24 } },
-        { "type": "number", "key": "status", "label": "Status HTTP", "description": "Code de statut HTTP.", "col": { "xs": 24 } },
         {
-          "type": "section", "title": "Données", "key": "data", "col": { "xs": 24 },
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "description": "Succès de la requête.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Status HTTP",
+          "description": "Code de statut HTTP.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Données",
+          "key": "data",
+          "col": {
+            "xs": 24
+          },
           "fields": [
-            { "type": "checkbox", "key": "conforme", "label": "Conforme", "description": "Résultat de la vérification.", "col": { "xs": 24 } },
-            { "type": "text", "key": "liste_sanctions", "label": "Liste sanctions", "description": "Présence sur liste de sanctions.", "col": { "xs": 24 } },
-            { "type": "text", "key": "liste_pep", "label": "Liste PEP", "description": "Personne exposée politiquement.", "col": { "xs": 24 } },
-            { "type": "number", "key": "nombre_resultats", "label": "Nombre de résultats", "description": "Nombre de résultats trouvés.", "col": { "xs": 24 } }
+            {
+              "type": "checkbox",
+              "key": "conforme",
+              "label": "Conforme",
+              "description": "Résultat de la vérification.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "liste_sanctions",
+              "label": "Liste sanctions",
+              "description": "Présence sur liste de sanctions.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "liste_pep",
+              "label": "Liste PEP",
+              "description": "Personne exposée politiquement.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "nombre_resultats",
+              "label": "Nombre de résultats",
+              "description": "Nombre de résultats trouvés.",
+              "col": {
+                "xs": 24
+              }
+            }
           ]
         }
       ]
     },
     "pappers_document_file": {
       "title": "Document PDF Pappers",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "checkbox", "key": "ok", "label": "OK", "description": "Succès de la requête.", "col": { "xs": 24 } },
-        { "type": "number", "key": "status", "label": "Status HTTP", "description": "Code de statut HTTP.", "col": { "xs": 24 } },
         {
-          "type": "section", "title": "Données", "key": "data", "col": { "xs": 24 },
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "description": "Succès de la requête.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Status HTTP",
+          "description": "Code de statut HTTP.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Données",
+          "key": "data",
+          "col": {
+            "xs": 24
+          },
           "fields": [
-            { "type": "text", "key": "filename", "label": "Nom du fichier", "description": "Nom du fichier PDF.", "col": { "xs": 24 } },
-            { "type": "url", "key": "fileUrl", "label": "URL du fichier", "description": "URL de téléchargement du fichier.", "col": { "xs": 24 } },
-            { "type": "text", "key": "siren", "label": "SIREN", "description": "SIREN de l'entreprise.", "col": { "xs": 24 } }
+            {
+              "type": "text",
+              "key": "filename",
+              "label": "Nom du fichier",
+              "description": "Nom du fichier PDF.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "url",
+              "key": "fileUrl",
+              "label": "URL du fichier",
+              "description": "URL de téléchargement du fichier.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "siren",
+              "label": "SIREN",
+              "description": "SIREN de l'entreprise.",
+              "col": {
+                "xs": 24
+              }
+            }
           ]
         }
       ]
     },
     "pappers_association": {
       "title": "Association Pappers",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "checkbox", "key": "ok", "label": "OK", "description": "Succès de la requête.", "col": { "xs": 24 } },
-        { "type": "number", "key": "status", "label": "Status HTTP", "description": "Code de statut HTTP.", "col": { "xs": 24 } },
         {
-          "type": "section", "title": "Données", "key": "data", "col": { "xs": 24 },
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "description": "Succès de la requête.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Status HTTP",
+          "description": "Code de statut HTTP.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Données",
+          "key": "data",
+          "col": {
+            "xs": 24
+          },
           "fields": [
-            { "type": "text", "key": "id_association", "label": "ID association", "description": "Identifiant RNA.", "col": { "xs": 24 } },
-            { "type": "text", "key": "siren", "label": "SIREN", "description": "Numéro SIREN.", "col": { "xs": 24 } },
-            { "type": "text", "key": "denomination", "label": "Dénomination", "description": "Nom de l'association.", "col": { "xs": 24 } },
-            { "type": "textarea", "key": "objet", "label": "Objet", "description": "Objet de l'association.", "col": { "xs": 24 } },
-            { "type": "text", "key": "date_creation", "label": "Date de création", "description": "Date de création.", "col": { "xs": 24 } },
-            { "type": "text", "key": "date_publication", "label": "Date de publication", "description": "Date de publication au JO.", "col": { "xs": 24 } },
-            { "type": "text", "key": "adresse_siege", "label": "Adresse siège", "description": "Adresse du siège.", "col": { "xs": 24 } },
-            { "type": "text", "key": "code_postal", "label": "Code postal", "description": "Code postal.", "col": { "xs": 24 } },
-            { "type": "text", "key": "ville", "label": "Ville", "description": "Ville.", "col": { "xs": 24 } },
-            { "type": "text", "key": "nature", "label": "Nature", "description": "Nature de l'association.", "col": { "xs": 24 } },
-            { "type": "checkbox", "key": "is_waldec", "label": "WALDEC", "description": "Inscrite au répertoire WALDEC.", "col": { "xs": 24 } }
+            {
+              "type": "text",
+              "key": "id_association",
+              "label": "ID association",
+              "description": "Identifiant RNA.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "siren",
+              "label": "SIREN",
+              "description": "Numéro SIREN.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "denomination",
+              "label": "Dénomination",
+              "description": "Nom de l'association.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "objet",
+              "label": "Objet",
+              "description": "Objet de l'association.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "date_creation",
+              "label": "Date de création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "date_publication",
+              "label": "Date de publication",
+              "description": "Date de publication au JO.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "adresse_siege",
+              "label": "Adresse siège",
+              "description": "Adresse du siège.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "code_postal",
+              "label": "Code postal",
+              "description": "Code postal.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "ville",
+              "label": "Ville",
+              "description": "Ville.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "nature",
+              "label": "Nature",
+              "description": "Nature de l'association.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "checkbox",
+              "key": "is_waldec",
+              "label": "WALDEC",
+              "description": "Inscrite au répertoire WALDEC.",
+              "col": {
+                "xs": 24
+              }
+            }
           ]
         }
       ]

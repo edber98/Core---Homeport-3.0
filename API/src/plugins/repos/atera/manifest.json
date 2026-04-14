@@ -2488,7 +2488,8 @@
       "tags": [
         "création",
         "atera"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "atera_customer_get",
@@ -2550,7 +2551,8 @@
       "tags": [
         "lecture",
         "atera"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "atera_customer_update",
@@ -2684,7 +2686,8 @@
       "tags": [
         "mise-à-jour",
         "atera"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "atera_customer_delete",
@@ -2746,7 +2749,8 @@
       "tags": [
         "suppression",
         "atera"
-      ]
+      ],
+      "risk": "destructive"
     },
     {
       "key": "atera_customers_list",
@@ -2812,7 +2816,8 @@
       "tags": [
         "liste",
         "atera"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "atera_customer_search",
@@ -2946,7 +2951,8 @@
         "recherche",
         "filtre",
         "atera"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "atera_customer_find",
@@ -3080,7 +3086,8 @@
         "recherche",
         "filtre",
         "atera"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "atera_contact_create",
@@ -3196,7 +3203,8 @@
       "tags": [
         "création",
         "atera"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "atera_contact_get",
@@ -3258,7 +3266,8 @@
       "tags": [
         "lecture",
         "atera"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "atera_contact_update",
@@ -3356,7 +3365,8 @@
       "tags": [
         "mise-à-jour",
         "atera"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "atera_contact_delete",
@@ -3418,7 +3428,8 @@
       "tags": [
         "suppression",
         "atera"
-      ]
+      ],
+      "risk": "destructive"
     },
     {
       "key": "atera_contacts_list",
@@ -3484,7 +3495,8 @@
       "tags": [
         "liste",
         "atera"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "atera_ticket_create",
@@ -3623,7 +3635,8 @@
       "tags": [
         "création",
         "atera"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "atera_ticket_get",
@@ -3685,7 +3698,8 @@
       "tags": [
         "lecture",
         "atera"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "atera_ticket_update",
@@ -3801,7 +3815,8 @@
       "tags": [
         "mise-à-jour",
         "atera"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "atera_ticket_delete",
@@ -3863,7 +3878,8 @@
       "tags": [
         "suppression",
         "atera"
-      ]
+      ],
+      "risk": "destructive"
     },
     {
       "key": "atera_tickets_list",
@@ -3947,7 +3963,8 @@
       "tags": [
         "liste",
         "atera"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "atera_ticket_add_comment",
@@ -4050,7 +4067,8 @@
       "tags": [
         "création",
         "atera"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "atera_agent_get",
@@ -4112,7 +4130,8 @@
       "tags": [
         "lecture",
         "atera"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "atera_agents_list",
@@ -4178,7 +4197,8 @@
       "tags": [
         "liste",
         "atera"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "atera_agent_delete",
@@ -4240,7 +4260,8 @@
       "tags": [
         "suppression",
         "atera"
-      ]
+      ],
+      "risk": "destructive"
     },
     {
       "key": "atera_alert_get",
@@ -4302,7 +4323,8 @@
       "tags": [
         "lecture",
         "atera"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "atera_alerts_list",
@@ -4377,7 +4399,8 @@
       "tags": [
         "liste",
         "atera"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "atera_alert_close",
@@ -4439,7 +4462,9 @@
       "tags": [
         "lecture",
         "atera"
-      ]
+      ],
+      "risk": "write",
+      "riskReason": "Ferme une alerte (rouvrable)"
     },
     {
       "key": "atera_alerts_count",
@@ -4486,7 +4511,8 @@
       "tags": [
         "lecture",
         "atera"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "atera_device_get",
@@ -4548,7 +4574,8 @@
       "tags": [
         "lecture",
         "atera"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "atera_devices_list",
@@ -4623,7 +4650,8 @@
       "tags": [
         "liste",
         "atera"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "atera_device_by_agent",
@@ -4703,7 +4731,8 @@
       "tags": [
         "lecture",
         "atera"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "atera_contract_create",
@@ -4831,7 +4860,8 @@
       "tags": [
         "création",
         "atera"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "atera_contract_get",
@@ -4893,7 +4923,8 @@
       "tags": [
         "lecture",
         "atera"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "atera_contracts_list",
@@ -4959,7 +4990,8 @@
       "tags": [
         "liste",
         "atera"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "atera_contract_delete",
@@ -5021,7 +5053,8 @@
       "tags": [
         "suppression",
         "atera"
-      ]
+      ],
+      "risk": "destructive"
     },
     {
       "key": "atera_kb_create",
@@ -5105,7 +5138,8 @@
       "tags": [
         "création",
         "atera"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "atera_kb_get",
@@ -5167,7 +5201,8 @@
       "tags": [
         "lecture",
         "atera"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "atera_kb_list",
@@ -5233,7 +5268,8 @@
       "tags": [
         "liste",
         "atera"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "atera_department_get",
@@ -5295,7 +5331,8 @@
       "tags": [
         "lecture",
         "atera"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "atera_departments_list",
@@ -5361,7 +5398,8 @@
       "tags": [
         "liste",
         "atera"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "atera_rates_get",
@@ -5428,7 +5466,8 @@
         "lecture",
         "liste",
         "atera"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "atera_billing_contact_get",
@@ -5490,7 +5529,8 @@
       "tags": [
         "lecture",
         "atera"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "atera_invoice_get",
@@ -5557,7 +5597,8 @@
         "lecture",
         "liste",
         "atera"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "atera_custom_value_get",
@@ -5619,7 +5660,8 @@
       "tags": [
         "lecture",
         "atera"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "atera_custom_values_list",
@@ -5666,7 +5708,8 @@
       "tags": [
         "liste",
         "atera"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "atera_custom_value_update",
@@ -5756,7 +5799,8 @@
       "tags": [
         "mise-à-jour",
         "atera"
-      ]
+      ],
+      "risk": "write"
     }
   ]
 }

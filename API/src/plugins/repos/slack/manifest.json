@@ -1194,7 +1194,9 @@
       "tags": [
         "envoi",
         "slack"
-      ]
+      ],
+      "risk": "write",
+      "riskReason": "Envoi d'un message visible par le canal"
     },
     {
       "key": "slack_update_message",
@@ -1292,7 +1294,9 @@
       "tags": [
         "mise-à-jour",
         "slack"
-      ]
+      ],
+      "risk": "write",
+      "riskReason": "Modifie un message existant"
     },
     {
       "key": "slack_delete_message",
@@ -1376,7 +1380,9 @@
       "tags": [
         "suppression",
         "slack"
-      ]
+      ],
+      "risk": "destructive",
+      "riskReason": "Supprime un message (pas de rollback)"
     },
     {
       "key": "slack_reply_message",
@@ -1466,7 +1472,9 @@
       "tags": [
         "envoi",
         "slack"
-      ]
+      ],
+      "risk": "write",
+      "riskReason": "Réponse publiée en thread"
     },
     {
       "key": "slack_get_permalink",
@@ -1550,7 +1558,8 @@
       "tags": [
         "lecture",
         "slack"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "slack_schedule_message",
@@ -1640,7 +1649,9 @@
       "tags": [
         "envoi",
         "slack"
-      ]
+      ],
+      "risk": "write",
+      "riskReason": "Planifie un envoi de message"
     },
     {
       "key": "slack_post_ephemeral",
@@ -1731,7 +1742,9 @@
         "envoi",
         "envoi",
         "slack"
-      ]
+      ],
+      "risk": "write",
+      "riskReason": "Envoi d'un message éphémère"
     },
     {
       "key": "slack_create_channel",
@@ -1802,7 +1815,8 @@
       "tags": [
         "création",
         "slack"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "slack_list_channels",
@@ -1891,7 +1905,8 @@
       "tags": [
         "liste",
         "slack"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "slack_get_channel",
@@ -1953,7 +1968,8 @@
       "tags": [
         "lecture",
         "slack"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "slack_archive_channel",
@@ -2015,7 +2031,9 @@
       "tags": [
         "mise-à-jour",
         "slack"
-      ]
+      ],
+      "risk": "destructive",
+      "riskReason": "Archive un canal (difficilement réversible)"
     },
     {
       "key": "slack_invite_to_channel",
@@ -2091,7 +2109,8 @@
       "tags": [
         "envoi",
         "slack"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "slack_list_users",
@@ -2149,7 +2168,8 @@
       "tags": [
         "liste",
         "slack"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "slack_get_user",
@@ -2211,7 +2231,8 @@
       "tags": [
         "lecture",
         "slack"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "slack_get_user_profile",
@@ -2273,7 +2294,8 @@
       "tags": [
         "lecture",
         "slack"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "slack_lookup_by_email",
@@ -2336,7 +2358,8 @@
         "recherche",
         "recherche",
         "slack"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "slack_add_reaction",
@@ -2434,7 +2457,8 @@
       "tags": [
         "création",
         "slack"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "slack_remove_reaction",
@@ -2532,7 +2556,9 @@
       "tags": [
         "suppression",
         "slack"
-      ]
+      ],
+      "risk": "destructive",
+      "riskReason": "Retire une réaction"
     },
     {
       "key": "slack_get_reactions",
@@ -2616,7 +2642,8 @@
       "tags": [
         "lecture",
         "slack"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "slack_upload_file",
@@ -2708,7 +2735,8 @@
       "tags": [
         "envoi",
         "slack"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "slack_list_files",
@@ -2806,7 +2834,8 @@
       "tags": [
         "liste",
         "slack"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "slack_get_file",
@@ -2868,7 +2897,8 @@
       "tags": [
         "lecture",
         "slack"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "slack_delete_file",
@@ -2930,7 +2960,9 @@
       "tags": [
         "suppression",
         "slack"
-      ]
+      ],
+      "risk": "destructive",
+      "riskReason": "Supprime un fichier"
     },
     {
       "key": "slack_pin_message",
@@ -3014,7 +3046,8 @@
       "tags": [
         "mise-à-jour",
         "slack"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "slack_list_pins",
@@ -3077,7 +3110,8 @@
         "liste",
         "mise-à-jour",
         "slack"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "slack_create_reminder",
@@ -3162,7 +3196,8 @@
       "tags": [
         "création",
         "slack"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "slack_list_reminders",
@@ -3209,7 +3244,8 @@
       "tags": [
         "liste",
         "slack"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "slack_delete_reminder",
@@ -3271,7 +3307,9 @@
       "tags": [
         "suppression",
         "slack"
-      ]
+      ],
+      "risk": "destructive",
+      "riskReason": "Supprime un rappel"
     },
     {
       "key": "slack_add_bookmark",
@@ -3371,7 +3409,8 @@
       "tags": [
         "création",
         "slack"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "slack_list_bookmarks",
@@ -3433,7 +3472,8 @@
       "tags": [
         "liste",
         "slack"
-      ]
+      ],
+      "risk": "safe"
     }
   ]
 }

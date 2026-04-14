@@ -1342,7 +1342,8 @@
         "création",
         "wordpress"
       ],
-      "group": "Articles"
+      "group": "Articles",
+      "risk": "write"
     },
     {
       "key": "wp_post_get",
@@ -1404,7 +1405,8 @@
         "lecture",
         "wordpress"
       ],
-      "group": "Articles"
+      "group": "Articles",
+      "risk": "write"
     },
     {
       "key": "wp_post_update",
@@ -1502,7 +1504,8 @@
         "mise-à-jour",
         "wordpress"
       ],
-      "group": "Articles"
+      "group": "Articles",
+      "risk": "write"
     },
     {
       "key": "wp_post_delete",
@@ -1564,7 +1567,8 @@
         "suppression",
         "wordpress"
       ],
-      "group": "Articles"
+      "group": "Articles",
+      "risk": "destructive"
     },
     {
       "key": "wp_posts_list",
@@ -1648,7 +1652,8 @@
         "liste",
         "wordpress"
       ],
-      "group": "Articles"
+      "group": "Articles",
+      "risk": "write"
     },
     {
       "key": "wp_page_create",
@@ -1737,7 +1742,8 @@
         "création",
         "wordpress"
       ],
-      "group": "Pages"
+      "group": "Pages",
+      "risk": "write"
     },
     {
       "key": "wp_page_get",
@@ -1799,7 +1805,8 @@
         "lecture",
         "wordpress"
       ],
-      "group": "Pages"
+      "group": "Pages",
+      "risk": "safe"
     },
     {
       "key": "wp_page_update",
@@ -1888,7 +1895,8 @@
         "mise-à-jour",
         "wordpress"
       ],
-      "group": "Pages"
+      "group": "Pages",
+      "risk": "write"
     },
     {
       "key": "wp_page_delete",
@@ -1950,7 +1958,8 @@
         "suppression",
         "wordpress"
       ],
-      "group": "Pages"
+      "group": "Pages",
+      "risk": "destructive"
     },
     {
       "key": "wp_pages_list",
@@ -2034,7 +2043,8 @@
         "liste",
         "wordpress"
       ],
-      "group": "Pages"
+      "group": "Pages",
+      "risk": "safe"
     },
     {
       "key": "wp_media_upload",
@@ -2114,7 +2124,8 @@
         "création",
         "wordpress"
       ],
-      "group": "Médias"
+      "group": "Médias",
+      "risk": "write"
     },
     {
       "key": "wp_media_get",
@@ -2176,7 +2187,8 @@
         "lecture",
         "wordpress"
       ],
-      "group": "Médias"
+      "group": "Médias",
+      "risk": "safe"
     },
     {
       "key": "wp_media_list",
@@ -2251,7 +2263,8 @@
         "liste",
         "wordpress"
       ],
-      "group": "Médias"
+      "group": "Médias",
+      "risk": "safe"
     },
     {
       "key": "wp_media_delete",
@@ -2313,7 +2326,8 @@
         "suppression",
         "wordpress"
       ],
-      "group": "Médias"
+      "group": "Médias",
+      "risk": "destructive"
     },
     {
       "key": "wp_category_create",
@@ -2393,7 +2407,8 @@
         "création",
         "wordpress"
       ],
-      "group": "Catégories"
+      "group": "Catégories",
+      "risk": "write"
     },
     {
       "key": "wp_category_get",
@@ -2455,7 +2470,8 @@
         "lecture",
         "wordpress"
       ],
-      "group": "Catégories"
+      "group": "Catégories",
+      "risk": "safe"
     },
     {
       "key": "wp_categories_list",
@@ -2521,7 +2537,8 @@
         "liste",
         "wordpress"
       ],
-      "group": "Catégories"
+      "group": "Catégories",
+      "risk": "safe"
     },
     {
       "key": "wp_tag_create",
@@ -2592,7 +2609,8 @@
         "création",
         "wordpress"
       ],
-      "group": "Tags"
+      "group": "Tags",
+      "risk": "write"
     },
     {
       "key": "wp_tags_list",
@@ -2658,7 +2676,8 @@
         "liste",
         "wordpress"
       ],
-      "group": "Tags"
+      "group": "Tags",
+      "risk": "safe"
     },
     {
       "key": "wp_comment_create",
@@ -2752,7 +2771,8 @@
         "création",
         "wordpress"
       ],
-      "group": "Commentaires"
+      "group": "Commentaires",
+      "risk": "write"
     },
     {
       "key": "wp_comment_get",
@@ -2814,7 +2834,8 @@
         "lecture",
         "wordpress"
       ],
-      "group": "Commentaires"
+      "group": "Commentaires",
+      "risk": "write"
     },
     {
       "key": "wp_comments_list",
@@ -2889,7 +2910,8 @@
         "liste",
         "wordpress"
       ],
-      "group": "Commentaires"
+      "group": "Commentaires",
+      "risk": "write"
     },
     {
       "key": "wp_comment_update",
@@ -2969,7 +2991,8 @@
         "mise-à-jour",
         "wordpress"
       ],
-      "group": "Commentaires"
+      "group": "Commentaires",
+      "risk": "write"
     },
     {
       "key": "wp_user_get",
@@ -3031,7 +3054,8 @@
         "lecture",
         "wordpress"
       ],
-      "group": "Utilisateurs"
+      "group": "Utilisateurs",
+      "risk": "safe"
     },
     {
       "key": "wp_users_list",
@@ -3097,7 +3121,8 @@
         "liste",
         "wordpress"
       ],
-      "group": "Utilisateurs"
+      "group": "Utilisateurs",
+      "risk": "safe"
     },
     {
       "key": "wp_plugins_list",
@@ -3154,7 +3179,8 @@
         "liste",
         "wordpress"
       ],
-      "group": "Extensions"
+      "group": "Extensions",
+      "risk": "safe"
     },
     {
       "key": "wp_webhook_event",
@@ -3201,7 +3227,8 @@
         "événement",
         "wordpress"
       ],
-      "group": "Événements"
+      "group": "Événements",
+      "risk": "safe"
     }
   ]
 }

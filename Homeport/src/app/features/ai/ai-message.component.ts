@@ -7,11 +7,25 @@ import { marked } from 'marked';
 import DOMPurify from 'dompurify';
 import { AiMessage, AiMessageSegment, AiToolCall, AiQuestionOption, AiService, AiAttachment } from './ai.service';
 import { NodeExecResultDialogComponent } from '../flow/node-exec-result-dialog.component';
+import { AiPermissionRequestCardComponent } from './permissions/ai-permission-request-card.component';
+import { AiCacheSyncRequestCardComponent } from './permissions/ai-cache-sync-request-card.component';
 
 const TOOL_LABELS: Record<string, string> = {
   search_tools: 'Recherche d\'outils', get_tool_details: 'Détails outil', execute_tool: 'Exécution',
   list_providers: 'Providers', ask_user: 'Question', search_workflows: 'Recherche workflows',
   run_workflow: 'Lancement workflow', save_memory: 'Mémoire', get_memory: 'Mémoire',
+  project_list_dir: 'Liste dossier projet', project_tree: 'Arborescence projet',
+  project_read_file: 'Lecture fichier projet', project_read_batch: 'Lecture multiple',
+  project_grep: 'Recherche texte', project_search: 'Recherche fichiers',
+  project_write_file: 'Écriture fichier', project_create_folder: 'Création dossier',
+  project_delete: 'Suppression fichier', project_move: 'Déplacement fichier',
+  project_refresh_tree: 'Actualisation arbo', project_sync_remote: 'Synchronisation distant',
+  web_search: 'Recherche web', web_fetch: 'Lecture page web', research_deep: 'Recherche approfondie',
+  execute_code: 'Exécution code', prepare_code_environment: 'Préparation environnement',
+  spawn_subagent: 'Sous-agent',
+  skill_list: 'Liste skills', skill_get: 'Détails skill', skill_execute: 'Exécution skill',
+  generate_document: 'Génération document', edit_document: 'Édition document',
+  render_html_preview: 'Aperçu HTML', build_website: 'Construction site',
   enrich_context: 'Contexte', open_element: 'Ouverture', list_credentials: 'Lister les identifiants', open_credentials: 'Identifiants',
   save_project_memory: 'Mémoire projet', get_project_memory: 'Mémoire projet',
   compact_and_transfer: 'Transfert', activate_capsule: 'Activation outils',
@@ -91,7 +105,7 @@ interface ProcessedSegment {
 @Component({
   selector: 'ai-message',
   standalone: true,
-  imports: [CommonModule, NzButtonModule, NzIconModule, NzTagModule, NodeExecResultDialogComponent],
+  imports: [CommonModule, NzButtonModule, NzIconModule, NzTagModule, NodeExecResultDialogComponent, AiPermissionRequestCardComponent, AiCacheSyncRequestCardComponent],
   template: `
     <div class="ai-msg" [class.user]="msg.role === 'user'" [class.assistant]="msg.role === 'assistant'">
       <div class="avatar">
@@ -99,9 +113,29 @@ interface ProcessedSegment {
         <span *ngIf="msg.role === 'assistant'" nz-icon nzType="robot" nzTheme="outline"></span>
       </div>
 
-      <div class="body">
+      <div class="body" [attr.data-kind]="msg.metadata?.kind || null" [attr.data-job-id]="msg.metadata?.jobId || null">
+        <!-- V2 special message kinds -->
+        <ng-container [ngSwitch]="msg.metadata?.kind">
+          <ai-permission-request-card
+            *ngSwitchCase="'permission_request'"
+            [request]="msg.metadata!.permissionRequest!"
+            (answered)="onPermissionAnswer($event)">
+          </ai-permission-request-card>
+          <ai-cache-sync-request-card
+            *ngSwitchCase="'cache_sync_request'"
+            [request]="msg.metadata!.cacheSyncRequest!"
+            (answered)="onCacheSyncAnswer($event)">
+          </ai-cache-sync-request-card>
+          <div *ngSwitchCase="'comment'" class="comment-msg">
+            <nz-tag nzColor="purple">
+              <span nz-icon nzType="comment" nzTheme="outline"></span> Commentaire
+            </nz-tag>
+            <div class="comment-content" [innerHTML]="renderMarkdown(msg.content)"></div>
+          </div>
+        </ng-container>
+
         <!-- User message attachments -->
-        <div class="msg-attachments" *ngIf="msg.role === 'user' && msg.attachments?.length">
+        <div class="msg-attachments" *ngIf="msg.role === 'user' && msg.attachments?.length && !msg.metadata?.kind">
           <div class="msg-att-chip" *ngFor="let att of msg.attachments">
             <img *ngIf="isImage(att.mimeType) && att.fileId" [src]="ai.fileUrl(att.fileId)" class="msg-att-img"
                  loading="lazy" (click)="openImagePreview(att)" />
@@ -113,6 +147,8 @@ interface ProcessedSegment {
           </div>
         </div>
 
+        <!-- Standard rendering (skipped for special metadata kinds) -->
+        <ng-container *ngIf="!msg.metadata?.kind">
         <!-- Segments mode: reasoning blocks with text + tools, final text at end -->
         <ng-container *ngIf="msg.segments?.length; else flatLayout">
           <ng-container *ngFor="let ps of getProcessedSegments()">
@@ -240,6 +276,7 @@ interface ProcessedSegment {
             <span nz-icon nzType="redo" nzTheme="outline"></span> Réessayer
           </button>
         </div>
+        </ng-container>
 
         <!-- Tool result dialog -->
         <node-exec-result-dialog
@@ -346,6 +383,9 @@ interface ProcessedSegment {
     .msg-att-file { display: inline-flex; align-items: center; gap: 4px; background: #f5f5f5; border: 1px solid #e8e8e8; border-radius: 6px; padding: 4px 8px; font-size: 12px; color: #333; text-decoration: none; transition: border-color 0.2s; }
     .msg-att-file:hover { border-color: #e61982; color: #e61982; }
     .msg-att-size { color: #999; font-size: 10px; }
+    .comment-msg { background: #faf5ff; border-left: 3px solid #722ed1; border-radius: 0 8px 8px 0; padding: 8px 12px; margin: 4px 0; max-width: 85%; }
+    .comment-msg .comment-content { margin-top: 4px; font-size: 13px; color: #333; line-height: 1.5; }
+    .comment-msg nz-tag { margin-bottom: 4px; }
     .tool-files { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
     .tool-file-img { max-width: 200px; max-height: 150px; border-radius: 6px; object-fit: cover; border: 1px solid #e8e8e8; }
     .tool-file-link { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; color: #e61982; }
@@ -380,6 +420,40 @@ export class AiMessageComponent {
   expandedToolItems = new Set<string>();
   expandedArgValues = new Set<string>();
   private _processedCache = new WeakMap<AiMessageSegment[], ProcessedSegment[]>();
+
+  /** V2 — handle permission card response */
+  onPermissionAnswer(evt: { decision: string; pathPattern?: string }) {
+    const req = this.msg.metadata?.permissionRequest;
+    const jobId = (this.msg.metadata as any)?.jobId;
+    if (!req || !jobId) return;
+    this.ai.respondToPermission(jobId, req.requestId, evt.decision, evt.pathPattern).subscribe({
+      next: () => {
+        // Optimistic local update
+        if (this.msg.metadata?.permissionRequest) {
+          this.msg.metadata.permissionRequest.answer = evt.decision;
+          this.msg.metadata.permissionRequest.answeredAt = new Date().toISOString();
+        }
+        this.cdr.markForCheck();
+      },
+    });
+  }
+
+  /** V2 — handle cache sync card response */
+  onCacheSyncAnswer(evt: { decision: string }) {
+    const req = this.msg.metadata?.cacheSyncRequest;
+    const jobId = (this.msg.metadata as any)?.jobId;
+    const requestId = (this.msg.metadata as any)?.requestId;
+    if (!req || !jobId || !requestId) return;
+    this.ai.respondToCacheSync(jobId, requestId, evt.decision).subscribe({
+      next: () => {
+        if (this.msg.metadata?.cacheSyncRequest) {
+          this.msg.metadata.cacheSyncRequest.answer = evt.decision;
+          this.msg.metadata.cacheSyncRequest.answeredAt = new Date().toISOString();
+        }
+        this.cdr.markForCheck();
+      },
+    });
+  }
 
   /** Open tool result dialog when clicking on a tool tag */
   openToolResult(tc: AiToolCall) {

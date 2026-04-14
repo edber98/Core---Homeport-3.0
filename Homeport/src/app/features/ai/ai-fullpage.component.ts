@@ -19,11 +19,18 @@ import { ApiClientService } from '../../services/api-client.service';
 import { AccessControlService } from '../../services/access-control.service';
 import { AiChatComponent } from './ai-chat.component';
 import { AiSettingsComponent } from './ai-settings.component';
+import { AiCanvasPanelComponent } from './canvas/ai-canvas-panel.component';
+import { AiProjectRootPickerComponent } from './project/ai-project-root-picker.component';
+import { AiThreadShareDialogComponent } from './sharing/ai-thread-share-dialog.component';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
+import { NzDrawerModule } from 'ng-zorro-antd/drawer';
+import { NzBadgeModule } from 'ng-zorro-antd/badge';
+import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 
 @Component({
   selector: 'ai-fullpage',
   standalone: true,
-  imports: [CommonModule, FormsModule, NzButtonModule, NzIconModule, NzSelectModule, NzInputModule, NzTagModule, NzSpinModule, NzEmptyModule, NzToolTipModule, NzPopconfirmModule, NzPopoverModule, AiChatComponent, AiSettingsComponent],
+  imports: [CommonModule, FormsModule, NzButtonModule, NzIconModule, NzSelectModule, NzInputModule, NzTagModule, NzSpinModule, NzEmptyModule, NzToolTipModule, NzPopconfirmModule, NzPopoverModule, NzModalModule, NzDrawerModule, NzBadgeModule, NzAvatarModule, AiChatComponent, AiSettingsComponent, AiCanvasPanelComponent, AiProjectRootPickerComponent, AiThreadShareDialogComponent],
   template: `
     <div
       class="fp-layout"
@@ -92,9 +99,13 @@ import { AiSettingsComponent } from './ai-settings.component';
           </div>
 
           <!-- New thread button -->
-          <div class="sidebar-new">
-            <button nz-button nzType="primary" nzSize="small" nzBlock class="new-thread-btn" (click)="newThread()">
+          <div class="sidebar-new sidebar-new-v2">
+            <button nz-button nzType="primary" nzSize="small" class="new-thread-btn" (click)="newThread()">
               <span nz-icon nzType="plus" nzTheme="outline"></span> Nouvelle conversation
+            </button>
+            <button nz-button nzType="default" nzSize="small" class="new-project-btn" (click)="openProjectPicker()"
+              nz-tooltip nzTooltipTitle="Nouveau projet (dossier distant)">
+              <span nz-icon nzType="folder-add" nzTheme="outline"></span>
             </button>
           </div>
 
@@ -107,22 +118,55 @@ import { AiSettingsComponent } from './ai-settings.component';
             <div *ngIf="!threadsLoading && threads.length === 0" class="empty-threads">
               <nz-empty nzNotFoundContent="Aucune conversation" [nzNotFoundImage]="'simple'"></nz-empty>
             </div>
+            <!-- Owned threads -->
+            <div class="threads-group" *ngIf="ownedThreads().length">
+              <div class="threads-group-title" *ngIf="sharedThreads().length">Mes conversations</div>
+            </div>
             <div class="thread-item"
-              *ngFor="let t of threads"
+              *ngFor="let t of ownedThreads()"
               (click)="selectThread(t)"
               [class.active]="t._id === ai.currentThread()?._id">
-              <div class="thread-title">{{ t.title }}</div>
+              <div class="thread-title">
+                {{ t.title }}
+                <span *ngIf="t.visibility === 'shared'" nz-icon nzType="team" nzTheme="outline" class="shared-badge"
+                  nz-tooltip nzTooltipTitle="Partagée"></span>
+              </div>
               <div class="thread-meta">
                 <span class="mode-tag" [class]="'mode-' + t.mode">{{ modeLabel(t.mode) }}</span>
                 <span class="thread-agent" *ngIf="t.agentId && t.agentId !== 'general'">{{ agentName(t.agentId) }}</span>
                 <span class="thread-date">{{ t.updatedAt | date:'short' }}</span>
               </div>
+              <button class="thread-share" nz-button nzType="text" nzSize="small"
+                (click)="openShareDialog(t, $event)"
+                nz-tooltip nzTooltipTitle="Partager">
+                <span nz-icon nzType="share-alt" nzTheme="outline"></span>
+              </button>
               <button class="thread-delete" nz-button nzType="text" nzSize="small" nzDanger
                 nz-popconfirm nzPopconfirmTitle="Supprimer ?"
                 (nzOnConfirm)="deleteThread(t)"
                 (click)="$event.stopPropagation()">
                 <span nz-icon nzType="delete" nzTheme="outline"></span>
               </button>
+            </div>
+
+            <!-- Shared threads -->
+            <div class="threads-group" *ngIf="sharedThreads().length">
+              <div class="threads-group-title">
+                <span nz-icon nzType="team" nzTheme="outline"></span> Partagées avec moi
+              </div>
+            </div>
+            <div class="thread-item thread-item-shared"
+              *ngFor="let t of sharedThreads()"
+              (click)="selectThread(t)"
+              [class.active]="t._id === ai.currentThread()?._id">
+              <nz-avatar nzIcon="user" [nzSize]="22" class="shared-owner-avatar"></nz-avatar>
+              <div class="thread-item-body">
+                <div class="thread-title">{{ t.title }}</div>
+                <div class="thread-meta">
+                  <span class="mode-tag" [class]="'mode-' + t.mode">{{ modeLabel(t.mode) }}</span>
+                  <span class="thread-date">{{ t.updatedAt | date:'short' }}</span>
+                </div>
+              </div>
             </div>
             <div *ngIf="threadsLoadingMore" class="threads-loading-more">
               <nz-spin nzSimple nzSize="small"></nz-spin>
@@ -459,6 +503,51 @@ import { AiSettingsComponent } from './ai-settings.component';
           </ng-container>
         </ng-container>
       </div>
+
+      <!-- V2: Canvas panel (desktop split) -->
+      <div class="fp-canvas" *ngIf="ai.canvasOpen() && !isMobileSidebar() && ai.currentThread()">
+        <ai-canvas-panel [threadId]="currentThreadId()"></ai-canvas-panel>
+      </div>
+
+      <!-- V2: Canvas drawer (mobile) -->
+      <nz-drawer
+        *ngIf="ai.canvasOpen() && isMobileSidebar() && ai.currentThread()"
+        [nzVisible]="ai.canvasOpen()"
+        nzPlacement="right"
+        [nzClosable]="true"
+        [nzTitle]="'Canvas'"
+        [nzWidth]="'100%'"
+        (nzOnClose)="ai.closeCanvas()">
+        <ng-container *nzDrawerContent>
+          <ai-canvas-panel [threadId]="currentThreadId()"></ai-canvas-panel>
+        </ng-container>
+      </nz-drawer>
+
+      <!-- V2: Project picker modal -->
+      <nz-drawer
+        *ngIf="showProjectPicker"
+        [nzVisible]="showProjectPicker"
+        nzTitle="Nouveau projet"
+        [nzWidth]="720"
+        nzPlacement="right"
+        (nzOnClose)="closeProjectPicker()">
+        <ng-container *nzDrawerContent>
+          <ai-project-root-picker (close)="closeProjectPicker()" (created)="onProjectCreated($event)"></ai-project-root-picker>
+        </ng-container>
+      </nz-drawer>
+
+      <!-- V2: Share dialog -->
+      <nz-drawer
+        *ngIf="showShareDialog && shareThread"
+        [nzVisible]="showShareDialog"
+        nzTitle="Partager la conversation"
+        [nzWidth]="520"
+        nzPlacement="right"
+        (nzOnClose)="closeShareDialog()">
+        <ng-container *nzDrawerContent>
+          <ai-thread-share-dialog [thread]="shareThread!" (close)="closeShareDialog()"></ai-thread-share-dialog>
+        </ng-container>
+      </nz-drawer>
     </div>
   `,
   styles: [`
@@ -527,6 +616,19 @@ import { AiSettingsComponent } from './ai-settings.component';
 
     /* ── Main ── */
     .fp-main { flex: 1; display: flex; flex-direction: column; min-width: 0; position: relative; background: #f8f8f8; border-radius: 18px 0 0 18px; }
+    .fp-canvas { width: 480px; min-width: 360px; max-width: 50vw; flex-shrink: 0; border-left: 1px solid #e5e5e5; background: #fff; display: flex; flex-direction: column; overflow: hidden; }
+    .fp-layout.canvas-collapsed .fp-canvas { width: 0; }
+    .sidebar-new-v2 { display: flex; gap: 6px; align-items: center; }
+    .sidebar-new-v2 .new-thread-btn { flex: 1; }
+    .sidebar-new-v2 .new-project-btn { flex-shrink: 0; }
+    @media (max-width: 1023px) { .fp-canvas { display: none; } }
+    .threads-group-title { font-size: 11px; font-weight: 600; color: #999; padding: 8px 12px 4px; text-transform: uppercase; letter-spacing: 0.4px; display: flex; align-items: center; gap: 4px; }
+    .thread-share { position: absolute; right: 30px; top: 8px; opacity: 0; transition: opacity .15s; }
+    .thread-item:hover .thread-share { opacity: 1; }
+    .thread-item-shared { display: flex; gap: 6px; align-items: flex-start; background: #fcfaff; }
+    .thread-item-shared .shared-owner-avatar { flex-shrink: 0; margin-top: 2px; background: #f0e6ff !important; color: #722ed1 !important; }
+    .thread-item-shared .thread-item-body { flex: 1; min-width: 0; }
+    .shared-badge { font-size: 11px; color: #722ed1; margin-left: 4px; }
     .mobile-sidebar-open-btn { display: none; }
     .mobile-sidebar-backdrop { display: none; }
     .fp-empty { flex: 1; display: flex; align-items: center; justify-content: center; padding: 0 20px; }
@@ -775,6 +877,21 @@ export class AiFullpageComponent implements OnInit, OnDestroy, AfterViewInit {
   private readonly sidebarSwipeMaxVerticalDelta = 44;
 
   constructor(public ai: AiService, public audioService: AiAudioService, private cdr: ChangeDetectorRef, private router: Router, private nzMsg: NzMessageService, private apiClient: ApiClientService, private acl: AccessControlService) {
+    // V2 — Auto-open canvas on project threads
+    effect(() => {
+      const cur = this.ai.currentThread();
+      if (cur?.mode === 'project' && !this.ai.canvasOpen()) {
+        this.ai.openCanvas();
+      }
+      // Load canvas + preferences for current thread
+      if (cur && (cur._id || cur.id)) {
+        this.ai.loadCanvas(cur._id || cur.id);
+      }
+    });
+
+    // V2 — Load preferences on mount
+    this.ai.loadPreferences().catch(() => {});
+
     // Sync currentThread changes (title, mode, flowId) back to local threads list in real-time
     effect(() => {
       const cur = this.ai.currentThread();
@@ -1060,6 +1177,44 @@ export class AiFullpageComponent implements OnInit, OnDestroy, AfterViewInit {
     await this.ai.createThread('chat', undefined, this.selectedAgentId);
     this.loadThreads();
     this.cdr.detectChanges();
+  }
+
+  // V2 — project picker
+  showProjectPicker = false;
+  openProjectPicker() { this.showProjectPicker = true; }
+  closeProjectPicker() { this.showProjectPicker = false; }
+
+  async onProjectCreated(evt: { threadId: string; root: any }) {
+    this.showProjectPicker = false;
+    await this.ai.loadThread(evt.threadId);
+    this.ai.openCanvas();
+    this.loadThreads();
+    this.cdr.detectChanges();
+  }
+
+  // V2 — sharing
+  showShareDialog = false;
+  shareThread: AiThread | null = null;
+  openShareDialog(thread: AiThread, ev?: Event) {
+    if (ev) { ev.preventDefault(); ev.stopPropagation(); }
+    this.shareThread = thread;
+    this.showShareDialog = true;
+  }
+  closeShareDialog() { this.showShareDialog = false; this.shareThread = null; }
+
+  // V2 — canvas helpers
+  currentThreadId(): string {
+    const t = this.ai.currentThread();
+    return t?._id || t?.id || '';
+  }
+
+  // V2 — thread grouping (mine vs shared with me)
+  ownedThreads(): AiThread[] {
+    return this.threads.filter(t => !t._shared);
+  }
+
+  sharedThreads(): AiThread[] {
+    return this.threads.filter(t => t._shared);
   }
 
   async sendAiMessage() {

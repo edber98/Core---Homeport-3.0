@@ -1,5 +1,6 @@
 import { Injectable, NgZone, signal, computed } from '@angular/core';
 import { Subject, Observable } from 'rxjs';
+import { throttleTime } from 'rxjs/operators';
 import { ApiClientService } from '../../services/api-client.service';
 import { AccessControlService } from '../../services/access-control.service';
 import { AuthTokenService } from '../../services/auth-token.service';
@@ -9,18 +10,159 @@ import { environment } from '../../../environments/environment';
 
 // ── Types ──
 
+export interface AiThreadShare {
+  userId: string;
+  permission: 'view' | 'comment' | 'edit';
+  addedBy: string;
+  addedAt: string;
+}
+
 export interface AiThread {
   _id: string;
   id: string;
-  mode: 'chat' | 'workflow' | 'node_args' | 'form' | 'onboarding';
+  mode: 'chat' | 'workflow' | 'node_args' | 'form' | 'onboarding' | 'project';
   title: string;
   flowId?: string;
   nodeId?: string;
   agentId?: string;
   metadata?: any;
   workspaceId: string;
+  ownerId?: string;
+  visibility?: 'private' | 'shared';
+  sharedWith?: AiThreadShare[];
+  _shared?: boolean;
   createdAt: string;
   updatedAt: string;
+}
+
+// ── V2 Types ──
+
+export interface AiProjectRoot {
+  id: string;
+  threadId: string;
+  workspaceId: string;
+  connectorType: 'nextcloud' | 'google_drive' | 'dropbox' | 'onedrive_sharepoint';
+  credentialId: string;
+  rootPath: string;
+  label: string;
+  cachedTree?: any;
+  treeRefreshedAt?: string;
+  extraConfig?: any;
+}
+
+export interface AiCanvasState {
+  threadId: string;
+  activeTab: 'document' | 'research' | 'tasks' | 'files';
+  document?: {
+    format?: 'docx' | 'pptx' | 'xlsx' | 'html' | 'md';
+    title?: string;
+    previewHtml?: string;
+    fileId?: string;
+    updatedAt?: string;
+  };
+  research?: {
+    query?: string;
+    steps: Array<{
+      id: string;
+      type: 'search' | 'fetch' | 'synth';
+      status: string;
+      title?: string;
+      url?: string;
+      snippet?: string;
+      resultPreview?: string;
+    }>;
+  };
+  tasks?: Array<{
+    id: string;
+    jobId: string;
+    subject: string;
+    description?: string;
+    status: string;
+    parentTaskId?: string;
+    startedAt?: string;
+    finishedAt?: string;
+    toolCalls?: any[];
+  }>;
+  files?: {
+    rootLabel: string;
+    tree: any;
+    lastRefreshedAt?: string;
+  };
+}
+
+export interface AiJob {
+  id: string;
+  threadId: string;
+  workspaceId: string;
+  type: string;
+  status: string;
+  mode: string;
+  parentJobId?: string;
+  depth?: number;
+  subagentType?: string;
+  iteration?: number;
+  usage?: { input: number; output: number };
+  result?: { summary?: string; artifacts?: any[] };
+  startedAt?: string;
+  finishedAt?: string;
+  heartbeatAt?: string;
+}
+
+export interface AiPermissionGrant {
+  id: string;
+  threadId: string;
+  toolName: string;
+  scope: 'tool' | 'tool+path' | 'tool+pattern' | 'tool+workspace';
+  pathPattern?: string;
+  decision: string;
+  riskLevel: string;
+  expiresAt?: string | null;
+}
+
+export interface AiPermissionRequest {
+  requestId: string;
+  toolName: string;
+  argsPreview: string;
+  risk: 'safe' | 'write' | 'destructive' | 'elevated';
+  scope: { path?: string; pattern?: string };
+  choices: Array<{ id: 'once' | 'session' | 'always' | 'deny'; label: string }>;
+  answer?: string;
+  answeredAt?: string;
+  answeredBy?: string;
+}
+
+export interface AiCacheSyncRequest {
+  pendingFiles: any[];
+  sizeBytes: number;
+  choices: any[];
+  answer?: string;
+  answeredAt?: string;
+}
+
+export interface AiUserPreferences {
+  userId: string;
+  workspaceId: string;
+  defaultAutonomyLevel: 'prudent' | 'balanced' | 'autonomous';
+  defaultAgentId?: string;
+  cacheBehavior: {
+    autoSyncOnIdle: boolean;
+    idleTtlHours: number;
+    askBeforeSync: boolean;
+    askBeforeCleanup: boolean;
+    keepCacheAfterClose: boolean;
+  };
+  permissionDefaults: {
+    alwaysAllowSafe: boolean;
+    autoAllowWriteInProjectScope: boolean;
+    codeExecutionAllowed: boolean;
+  };
+  canvasBehavior: {
+    autoOpenOnDocument: boolean;
+    autoOpenOnResearch: boolean;
+    autoOpenOnProjectMode: boolean;
+    defaultTab: string;
+  };
+  webSearchProvider?: string;
 }
 
 export interface AiToolCall {
@@ -79,6 +221,13 @@ export interface AiMessage {
   answer?: any;
   cancelled?: boolean;
   createdAt?: string;
+  metadata?: {
+    kind?: 'permission_request' | 'cache_sync_request' | 'comment';
+    permissionRequest?: AiPermissionRequest;
+    cacheSyncRequest?: AiCacheSyncRequest;
+    jobId?: string;
+    [k: string]: any;
+  };
 }
 
 export type AiStreamEvent =
@@ -157,6 +306,13 @@ export class AiService {
   pageContext = signal<AiPageContext>({ page: 'other' });
   availableAgents = signal<AiAvailableAgent[]>([]);
   selectedAgentId = signal<string>('general');
+
+  // V2: canvas, preferences, presence
+  canvasState = signal<AiCanvasState | null>(null);
+  canvasOpen = signal<boolean>(false);
+  canvasPinned = signal<boolean>(false);
+  preferences = signal<AiUserPreferences | null>(null);
+  presence = signal<Array<{ userId: string; name?: string; avatar?: string }>>([]);
 
   // Action requests — the panel subscribes and opens appropriate modals
   actionRequests$ = new Subject<AiAction>();
@@ -419,6 +575,21 @@ export class AiService {
             if ((event as any).type === 'action') {
               this.actionRequests$.next(event as any);
             }
+            // V2 canvas events
+            const evType = (event as any).type as string;
+            if (evType && evType.startsWith('canvas.')) {
+              this.handleCanvasEvent(event as any);
+              this.sideEvents$.next(event as any);
+            }
+            if (evType === 'ai.permission.request' || evType === 'ai.permission.granted' || evType === 'ai.permission.denied') {
+              this.sideEvents$.next(event as any);
+            }
+            if (evType === 'thread.presence') {
+              try {
+                const list = (event as any).users || [];
+                this.presence.set(list);
+              } catch {}
+            }
             if ((event as any).type === 'thread.transfer') {
               // Auto-switch to new thread after stream completes
               const transferId = (event as any).threadId;
@@ -650,5 +821,420 @@ export class AiService {
     this.messages.set([]);
     this.pendingQuestion.set(null);
     this.drawerOpen.set(true);
+  }
+
+  // ─────────────────────────────────────────────
+  // V2 — Canvas event handling
+  // ─────────────────────────────────────────────
+
+  private handleCanvasEvent(event: any) {
+    const type = event.type as string;
+    const thread = this.currentThread();
+    const threadId = thread?._id || thread?.id || event.threadId;
+    const cur: AiCanvasState = this.canvasState() || {
+      threadId: threadId || '',
+      activeTab: 'document',
+    };
+
+    switch (type) {
+      case 'canvas.switch_tab': {
+        this.canvasState.set({ ...cur, activeTab: event.tab || cur.activeTab });
+        this.canvasOpen.set(true);
+        break;
+      }
+      case 'canvas.document.update': {
+        this.canvasState.set({
+          ...cur,
+          document: {
+            ...(cur.document || {}),
+            format: event.format || cur.document?.format,
+            title: event.title || cur.document?.title,
+            previewHtml: event.previewHtml !== undefined ? event.previewHtml : cur.document?.previewHtml,
+            updatedAt: new Date().toISOString(),
+          },
+        });
+        this.autoOpenCanvasFor('document');
+        break;
+      }
+      case 'canvas.document.done': {
+        this.canvasState.set({
+          ...cur,
+          document: {
+            ...(cur.document || {}),
+            fileId: event.fileId,
+            format: event.format || cur.document?.format,
+            title: event.title || cur.document?.title,
+            previewHtml: event.previewHtml || cur.document?.previewHtml,
+            updatedAt: new Date().toISOString(),
+          },
+        });
+        this.autoOpenCanvasFor('document');
+        break;
+      }
+      case 'canvas.research.step': {
+        const steps = cur.research?.steps ? [...cur.research.steps] : [];
+        const existingIdx = steps.findIndex(s => s.id === event.id);
+        const step = {
+          id: event.id,
+          type: event.stepType || event.type_ || 'search',
+          status: event.status || 'running',
+          title: event.title,
+          url: event.url,
+          snippet: event.snippet,
+          resultPreview: event.resultPreview,
+        };
+        if (existingIdx >= 0) steps[existingIdx] = { ...steps[existingIdx], ...step } as any;
+        else steps.push(step as any);
+        this.canvasState.set({
+          ...cur,
+          research: { query: event.query || cur.research?.query, steps },
+        });
+        this.autoOpenCanvasFor('research');
+        break;
+      }
+      case 'canvas.task.create': {
+        const tasks = cur.tasks ? [...cur.tasks] : [];
+        tasks.push({
+          id: event.id,
+          jobId: event.jobId,
+          subject: event.subject || event.title || 'Tâche',
+          description: event.description,
+          status: event.status || 'running',
+          parentTaskId: event.parentTaskId,
+          startedAt: new Date().toISOString(),
+          toolCalls: [],
+        });
+        this.canvasState.set({ ...cur, tasks });
+        break;
+      }
+      case 'canvas.task.update': {
+        const tasks = cur.tasks ? [...cur.tasks] : [];
+        const idx = tasks.findIndex(t => t.id === event.id || t.jobId === event.jobId);
+        if (idx >= 0) {
+          tasks[idx] = {
+            ...tasks[idx],
+            status: event.status || tasks[idx].status,
+            description: event.description || tasks[idx].description,
+            finishedAt: event.finishedAt || tasks[idx].finishedAt,
+            toolCalls: event.toolCalls || tasks[idx].toolCalls,
+          };
+          this.canvasState.set({ ...cur, tasks });
+        }
+        break;
+      }
+      case 'canvas.files.tree': {
+        this.canvasState.set({
+          ...cur,
+          files: {
+            rootLabel: event.rootLabel || cur.files?.rootLabel || '',
+            tree: event.tree,
+            lastRefreshedAt: new Date().toISOString(),
+          },
+        });
+        break;
+      }
+      case 'canvas.file.conflict': {
+        // emit via sideEvents for dialog handling
+        break;
+      }
+    }
+  }
+
+  private autoOpenCanvasFor(kind: 'document' | 'research' | 'project') {
+    const p = this.preferences();
+    if (!p) {
+      this.canvasOpen.set(true);
+      return;
+    }
+    const cb = p.canvasBehavior;
+    if (kind === 'document' && cb?.autoOpenOnDocument) this.canvasOpen.set(true);
+    if (kind === 'research' && cb?.autoOpenOnResearch) this.canvasOpen.set(true);
+    if (kind === 'project' && cb?.autoOpenOnProjectMode) this.canvasOpen.set(true);
+  }
+
+  openCanvas() { this.canvasOpen.set(true); }
+  closeCanvas() { this.canvasOpen.set(false); }
+  toggleCanvas() { this.canvasOpen.set(!this.canvasOpen()); }
+  togglePinCanvas() { this.canvasPinned.set(!this.canvasPinned()); }
+  setCanvasTab(tab: 'document' | 'research' | 'tasks' | 'files') {
+    const cur = this.canvasState();
+    if (cur) this.canvasState.set({ ...cur, activeTab: tab });
+  }
+
+  // ─────────────────────────────────────────────
+  // V2 — Project roots
+  // ─────────────────────────────────────────────
+
+  async createProjectRoot(threadId: string, payload: Partial<AiProjectRoot>): Promise<{ root: AiProjectRoot }> {
+    return (await this.api.post<{ root: AiProjectRoot }>(
+      `/api/ai/threads/${threadId}/project-root`,
+      payload,
+      { workspaceId: this.wsId() },
+    ).toPromise())!;
+  }
+
+  async getProjectRoot(threadId: string): Promise<{ root?: AiProjectRoot; tree?: any }> {
+    return (await this.api.get<any>(
+      `/api/ai/threads/${threadId}/project-root`,
+      { workspaceId: this.wsId() },
+    ).toPromise()) || {};
+  }
+
+  async updateProjectRoot(threadId: string, payload: Partial<AiProjectRoot>) {
+    return this.api.put<any>(
+      `/api/ai/threads/${threadId}/project-root`,
+      payload,
+      { workspaceId: this.wsId() },
+    ).toPromise();
+  }
+
+  async refreshProjectRoot(threadId: string) {
+    return this.api.post<any>(
+      `/api/ai/threads/${threadId}/project-root/refresh`,
+      {},
+      { workspaceId: this.wsId() },
+    ).toPromise();
+  }
+
+  async deleteProjectRoot(threadId: string) {
+    return this.api.delete<any>(
+      `/api/ai/threads/${threadId}/project-root`,
+      { workspaceId: this.wsId() },
+    ).toPromise();
+  }
+
+  listProjectConnectors(): Observable<Array<{ type: string; label: string; requiresCredential: boolean; credentialOptions: any[] }>> {
+    return this.api.get<any>(`/api/ai/project-connectors`, { workspaceId: this.wsId() });
+  }
+
+  browseProjectPath(connectorType: string, credentialId: string, path: string = '/'): Observable<any> {
+    return this.api.get<any>(`/api/ai/project-connectors/browse`, {
+      workspaceId: this.wsId(),
+      connectorType,
+      credentialId,
+      path,
+    });
+  }
+
+  // ─────────────────────────────────────────────
+  // V2 — Canvas
+  // ─────────────────────────────────────────────
+
+  async loadCanvas(threadId: string) {
+    try {
+      const data = await this.api.get<AiCanvasState>(
+        `/api/ai/threads/${threadId}/canvas`,
+        { workspaceId: this.wsId() },
+      ).toPromise();
+      if (data) this.canvasState.set(data as any);
+    } catch {}
+  }
+
+  async resetCanvas(threadId: string) {
+    await this.api.post<any>(
+      `/api/ai/threads/${threadId}/canvas/reset`,
+      {},
+      { workspaceId: this.wsId() },
+    ).toPromise();
+    this.canvasState.set(null);
+  }
+
+  async exportCanvasDocument(threadId: string): Promise<{ fileId?: string; url?: string }> {
+    return (await this.api.post<any>(
+      `/api/ai/threads/${threadId}/canvas/export`,
+      {},
+      { workspaceId: this.wsId() },
+    ).toPromise()) || {};
+  }
+
+  // ─────────────────────────────────────────────
+  // V2 — Jobs
+  // ─────────────────────────────────────────────
+
+  listJobs(threadId: string): Observable<AiJob[]> {
+    return this.api.get<AiJob[]>(`/api/ai/threads/${threadId}/jobs`, { workspaceId: this.wsId() });
+  }
+
+  getJob(jobId: string): Observable<AiJob> {
+    return this.api.get<AiJob>(`/api/ai/jobs/${jobId}`, { workspaceId: this.wsId() });
+  }
+
+  streamJob(jobId: string): Observable<any> {
+    const subj = new Subject<any>();
+    const url = this.buildFetchUrl(`/api/ai/jobs/${jobId}/stream?workspaceId=${encodeURIComponent(this.wsId())}`);
+    const ctrl = new AbortController();
+    (async () => {
+      try {
+        const res = await fetch(url, {
+          headers: { Authorization: `Bearer ${this.auth.token || ''}` },
+          signal: ctrl.signal,
+        });
+        const reader = res.body!.getReader();
+        const decoder = new TextDecoder();
+        let buffer = '';
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split('\n');
+          buffer = lines.pop() || '';
+          for (const line of lines) {
+            const t = line.trim();
+            if (!t.startsWith('data:')) continue;
+            try {
+              const data = JSON.parse(t.slice(5).trim());
+              this.zone.run(() => subj.next(data));
+            } catch {}
+          }
+        }
+        this.zone.run(() => subj.complete());
+      } catch (e) {
+        this.zone.run(() => subj.error(e));
+      }
+    })();
+    return subj.asObservable().pipe(throttleTime(100, undefined, { leading: true, trailing: true }));
+  }
+
+  pauseJob(jobId: string): Observable<any> {
+    return this.api.post<any>(`/api/ai/jobs/${jobId}/pause`, {}, { workspaceId: this.wsId() });
+  }
+
+  resumeJob(jobId: string): Observable<any> {
+    return this.api.post<any>(`/api/ai/jobs/${jobId}/resume`, {}, { workspaceId: this.wsId() });
+  }
+
+  cancelJob(jobId: string): Observable<any> {
+    return this.api.post<any>(`/api/ai/jobs/${jobId}/cancel`, {}, { workspaceId: this.wsId() });
+  }
+
+  respondToPermission(jobId: string, requestId: string, decision: string, pathPattern?: string): Observable<any> {
+    return this.api.post<any>(
+      `/api/ai/jobs/${jobId}/permission/${requestId}`,
+      { decision, pathPattern },
+      { workspaceId: this.wsId() },
+    );
+  }
+
+  respondToCacheSync(jobId: string, requestId: string, decision: string): Observable<any> {
+    return this.api.post<any>(
+      `/api/ai/jobs/${jobId}/cache-sync/${requestId}`,
+      { decision },
+      { workspaceId: this.wsId() },
+    );
+  }
+
+  // ─────────────────────────────────────────────
+  // V2 — Permissions
+  // ─────────────────────────────────────────────
+
+  listPermissions(threadId: string): Observable<AiPermissionGrant[]> {
+    return this.api.get<AiPermissionGrant[]>(
+      `/api/ai/threads/${threadId}/permissions`,
+      { workspaceId: this.wsId() },
+    );
+  }
+
+  listWorkspacePermissions(): Observable<AiPermissionGrant[]> {
+    return this.api.get<AiPermissionGrant[]>(
+      `/api/ai/permissions`,
+      { workspaceId: this.wsId() },
+    );
+  }
+
+  revokePermission(threadId: string, grantId: string): Observable<any> {
+    return this.api.delete<any>(
+      `/api/ai/threads/${threadId}/permissions/${grantId}`,
+      { workspaceId: this.wsId() },
+    );
+  }
+
+  // ─────────────────────────────────────────────
+  // V2 — Preferences
+  // ─────────────────────────────────────────────
+
+  async loadPreferences(): Promise<AiUserPreferences | null> {
+    try {
+      const data = await this.api.get<AiUserPreferences>(
+        `/api/ai/preferences`,
+        { workspaceId: this.wsId() },
+      ).toPromise();
+      if (data) this.preferences.set(data);
+      return data || null;
+    } catch {
+      return null;
+    }
+  }
+
+  async updateUserPreferences(partial: Partial<AiUserPreferences>): Promise<AiUserPreferences | null> {
+    const data = await this.api.put<AiUserPreferences>(
+      `/api/ai/preferences`,
+      partial,
+      { workspaceId: this.wsId() },
+    ).toPromise();
+    if (data) this.preferences.set(data);
+    return data || null;
+  }
+
+  getThreadPreferences(threadId: string): Observable<Partial<AiUserPreferences>> {
+    return this.api.get<Partial<AiUserPreferences>>(
+      `/api/ai/threads/${threadId}/preferences`,
+      { workspaceId: this.wsId() },
+    );
+  }
+
+  updateThreadPreferences(threadId: string, partial: Partial<AiUserPreferences>): Observable<any> {
+    return this.api.put<any>(
+      `/api/ai/threads/${threadId}/preferences`,
+      partial,
+      { workspaceId: this.wsId() },
+    );
+  }
+
+  resetThreadPreferences(threadId: string): Observable<any> {
+    return this.api.delete<any>(
+      `/api/ai/threads/${threadId}/preferences`,
+      { workspaceId: this.wsId() },
+    );
+  }
+
+  // ─────────────────────────────────────────────
+  // V2 — Sharing
+  // ─────────────────────────────────────────────
+
+  shareThread(threadId: string, userIds: string[], permission: 'view' | 'comment' | 'edit', notify = true): Observable<any> {
+    return this.api.post<any>(
+      `/api/ai/threads/${threadId}/shares`,
+      { userIds, permission, notify },
+      { workspaceId: this.wsId() },
+    );
+  }
+
+  listShares(threadId: string): Observable<AiThreadShare[]> {
+    return this.api.get<AiThreadShare[]>(
+      `/api/ai/threads/${threadId}/shares`,
+      { workspaceId: this.wsId() },
+    );
+  }
+
+  updateShare(threadId: string, userId: string, permission: 'view' | 'comment' | 'edit'): Observable<any> {
+    return this.api.put<any>(
+      `/api/ai/threads/${threadId}/shares/${userId}`,
+      { permission },
+      { workspaceId: this.wsId() },
+    );
+  }
+
+  revokeShare(threadId: string, userId: string): Observable<any> {
+    return this.api.delete<any>(
+      `/api/ai/threads/${threadId}/shares/${userId}`,
+      { workspaceId: this.wsId() },
+    );
+  }
+
+  listWorkspaceMembers(): Observable<any[]> {
+    return this.api.get<any[]>(
+      `/api/workspaces/${this.wsId()}/members`,
+      {},
+    );
   }
 }

@@ -989,7 +989,8 @@
         "jira",
         "création"
       ],
-      "group": "Issues"
+      "group": "Issues",
+      "risk": "write"
     },
     {
       "key": "jira_issue_get",
@@ -1051,7 +1052,8 @@
         "jira",
         "lecture"
       ],
-      "group": "Issues"
+      "group": "Issues",
+      "risk": "write"
     },
     {
       "key": "jira_issue_update",
@@ -1149,7 +1151,8 @@
         "jira",
         "mise-à-jour"
       ],
-      "group": "Issues"
+      "group": "Issues",
+      "risk": "write"
     },
     {
       "key": "jira_issue_delete",
@@ -1211,7 +1214,9 @@
         "jira",
         "suppression"
       ],
-      "group": "Issues"
+      "group": "Issues",
+      "risk": "destructive",
+      "riskReason": "Supprime un ticket"
     },
     {
       "key": "jira_issues_list",
@@ -1282,7 +1287,8 @@
         "jira",
         "liste"
       ],
-      "group": "Issues"
+      "group": "Issues",
+      "risk": "safe"
     },
     {
       "key": "jira_issue_search_jql",
@@ -1353,7 +1359,8 @@
         "jira",
         "recherche"
       ],
-      "group": "Issues"
+      "group": "Issues",
+      "risk": "write"
     },
     {
       "key": "jira_issue_add_comment",
@@ -1429,7 +1436,8 @@
         "jira",
         "création"
       ],
-      "group": "Issues"
+      "group": "Issues",
+      "risk": "write"
     },
     {
       "key": "jira_issue_transition",
@@ -1505,7 +1513,9 @@
         "jira",
         "mise-à-jour"
       ],
-      "group": "Issues"
+      "group": "Issues",
+      "risk": "write",
+      "riskReason": "Change le statut d'un ticket"
     },
     {
       "key": "jira_project_get",
@@ -1567,7 +1577,8 @@
         "jira",
         "lecture"
       ],
-      "group": "Projets"
+      "group": "Projets",
+      "risk": "safe"
     },
     {
       "key": "jira_projects_list",
@@ -1624,7 +1635,8 @@
         "jira",
         "liste"
       ],
-      "group": "Projets"
+      "group": "Projets",
+      "risk": "safe"
     },
     {
       "key": "jira_boards_list",
@@ -1681,7 +1693,8 @@
         "jira",
         "liste"
       ],
-      "group": "Boards"
+      "group": "Boards",
+      "risk": "safe"
     },
     {
       "key": "jira_board_get",
@@ -1743,7 +1756,8 @@
         "jira",
         "lecture"
       ],
-      "group": "Boards"
+      "group": "Boards",
+      "risk": "safe"
     },
     {
       "key": "jira_sprints_list",
@@ -1814,7 +1828,8 @@
         "jira",
         "liste"
       ],
-      "group": "Sprints"
+      "group": "Sprints",
+      "risk": "safe"
     },
     {
       "key": "jira_sprint_get",
@@ -1876,7 +1891,8 @@
         "jira",
         "lecture"
       ],
-      "group": "Sprints"
+      "group": "Sprints",
+      "risk": "safe"
     },
     {
       "key": "jira_sprint_create",
@@ -1995,7 +2011,8 @@
         "jira",
         "création"
       ],
-      "group": "Sprints"
+      "group": "Sprints",
+      "risk": "write"
     },
     {
       "key": "jira_user_search",
@@ -2057,7 +2074,8 @@
         "jira",
         "recherche"
       ],
-      "group": "Utilisateurs"
+      "group": "Utilisateurs",
+      "risk": "safe"
     },
     {
       "key": "jira_user_get_myself",
@@ -2104,7 +2122,8 @@
         "jira",
         "lecture"
       ],
-      "group": "Utilisateurs"
+      "group": "Utilisateurs",
+      "risk": "safe"
     },
     {
       "key": "jira_worklog_add",
@@ -2189,7 +2208,8 @@
         "jira",
         "création"
       ],
-      "group": "Worklogs"
+      "group": "Worklogs",
+      "risk": "write"
     },
     {
       "key": "jira_webhook_event",
@@ -2238,7 +2258,8 @@
         "jira",
         "événement"
       ],
-      "group": "Événements"
+      "group": "Événements",
+      "risk": "safe"
     }
   ]
 }

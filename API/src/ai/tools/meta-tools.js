@@ -1,6 +1,11 @@
 // Meta-tools — Tier 1 tools always available to the AI agent
 const { toolIndex } = require('./tool-index');
 const { executeTool } = require('./tool-executor');
+const {
+  SKILL_META_TOOL_DEFINITIONS,
+  SKILL_META_TOOL_NAMES,
+  executeSkillMetaTool,
+} = require('./skill-meta-tools');
 const { argsToJsonSchema, extractOutputSchema } = require('./tool-converter');
 const NodeTemplate = require('../../db/models/node-template.model');
 const Credential = require('../../db/models/credential.model');
@@ -345,6 +350,45 @@ const META_TOOL_DEFINITIONS = [
       required: ['topic'],
     },
   },
+  {
+    name: 'spawn_subagent',
+    description: "Lance un sous-agent spécialisé pour une tâche autonome. Utilise pour paralléliser des explorations ou déléguer une recherche/analyse/rédaction. Types : research (web), file_analyzer (fichiers), doc_writer (livrables), general (polyvalent).",
+    parameters: {
+      type: 'object',
+      properties: {
+        subagent_type: { type: 'string', enum: ['research', 'file_analyzer', 'doc_writer', 'general'] },
+        prompt: { type: 'string', description: 'Instruction détaillée à donner au sous-agent.' },
+        max_loops: { type: 'number', description: 'Itérations max (défaut: 20).' },
+        context_slice: { type: 'object', description: 'Contexte additionnel à transmettre.' },
+        parallel: {
+          type: 'array',
+          description: 'Pour lancer plusieurs sous-agents en parallèle.',
+          items: {
+            type: 'object',
+            properties: {
+              subagent_type: { type: 'string' },
+              prompt: { type: 'string' },
+            },
+            required: ['prompt'],
+          },
+        },
+      },
+      required: ['subagent_type', 'prompt'],
+    },
+  },
+  {
+    name: 'research_deep',
+    description: "Recherche approfondie multi-étapes (web + synthèse). Lance un sous-agent de type 'research'.",
+    parameters: {
+      type: 'object',
+      properties: {
+        question: { type: 'string' },
+        depth: { type: 'number', description: 'Profondeur de recherche (1-3).' },
+        scope: { type: 'string', description: 'Domaine ou site à privilégier.' },
+      },
+      required: ['question'],
+    },
+  },
 ];
 
 /** Recursively extract fileRef objects from a result */
@@ -358,6 +402,12 @@ function extractFileRefs(obj, found = []) {
 
 // Execute a meta-tool by name
 async function executeMetaTool(name, input, ctx) {
+  // Skill meta-tools (skill_list, skill_get, skill_execute) are routed to a
+  // dedicated module to keep this file manageable.
+  if (SKILL_META_TOOL_NAMES.has(name)) {
+    return executeSkillMetaTool(name, input, ctx);
+  }
+
   await toolIndex.ensureBuilt();
 
   switch (name) {
@@ -734,6 +784,51 @@ async function executeMetaTool(name, input, ctx) {
       return section;
     }
 
+    case 'spawn_subagent': {
+      try {
+        const { spawnSubagent } = require('../subagent/sub-runner');
+        const jc = ctx?._jobContext;
+        if (!jc?.jobId) {
+          return { ok: false, error: 'spawn_subagent nécessite un job parent (pas exécutable hors contexte de job).' };
+        }
+        const res = await spawnSubagent({
+          parentJobId: jc.jobId,
+          subagentType: input.subagent_type || 'general',
+          prompt: input.prompt || '',
+          maxLoops: input.max_loops,
+          contextSlice: input.context_slice || null,
+          parallel: Array.isArray(input.parallel) ? input.parallel.map(p => ({
+            subagentType: p.subagent_type,
+            prompt: p.prompt,
+          })) : null,
+          depth: jc.depth || 0,
+        });
+        return { ok: true, result: res };
+      } catch (e) {
+        return { ok: false, error: e?.message || String(e) };
+      }
+    }
+
+    case 'research_deep': {
+      try {
+        const { spawnSubagent } = require('../subagent/sub-runner');
+        const jc = ctx?._jobContext;
+        if (!jc?.jobId) {
+          return { ok: false, error: 'research_deep nécessite un job parent.' };
+        }
+        const res = await spawnSubagent({
+          parentJobId: jc.jobId,
+          subagentType: 'research',
+          prompt: `Recherche approfondie: ${input.question}` + (input.scope ? `\nPérimètre: ${input.scope}` : ''),
+          maxLoops: Math.min(Math.max((input.depth || 2) * 6, 6), 24),
+          depth: jc.depth || 0,
+        });
+        return { ok: true, result: res };
+      } catch (e) {
+        return { ok: false, error: e?.message || String(e) };
+      }
+    }
+
     default:
       return { error: `Unknown meta-tool: ${name}` };
   }
@@ -747,4 +842,13 @@ function _resolveProjectElement(ctx) {
   return null;
 }
 
-module.exports = { META_TOOL_DEFINITIONS, executeMetaTool };
+// Expose a merged definitions array so capsules / tool-groups can surface all
+// tier-1 tools (including skill_* tools) without touching individual files.
+const ALL_META_TOOL_DEFINITIONS = [...META_TOOL_DEFINITIONS, ...SKILL_META_TOOL_DEFINITIONS];
+
+module.exports = {
+  META_TOOL_DEFINITIONS,
+  SKILL_META_TOOL_DEFINITIONS,
+  ALL_META_TOOL_DEFINITIONS,
+  executeMetaTool,
+};

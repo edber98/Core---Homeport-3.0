@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: homeport-config
+  labels:
+    app: homeport-api
+    component: config
+data:
+  # Valeurs non-sensibles — overridables par overlay (prod/dev)
+  AI_PROVIDER: "anthropic"
+  AI_MODEL: "claude-sonnet-4-5"
+  WEB_SEARCH_ENGINE: "duckduckgo"
+  LOG_LEVEL: "info"
+  LOG_FORMAT: "json"
+  # Limites et timeouts
+  HTTP_REQUEST_TIMEOUT: "60000"
+  HTTP_BODY_LIMIT: "25mb"
+  # Socket.IO
+  SOCKET_IO_PATH: "/socket.io"
+  # CORS : liste séparée par des virgules, à adapter par overlay
+  CORS_ORIGIN: "*"
+  # Feature flags
+  FEATURE_AI_FULLPAGE: "1"
+  FEATURE_AI_COMPACT_TRANSFER: "1"

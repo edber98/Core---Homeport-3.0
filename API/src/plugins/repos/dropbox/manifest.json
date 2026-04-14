@@ -553,7 +553,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Fichiers"
+      "group": "Fichiers",
+      "risk": "destructive"
     },
     {
       "key": "dbx_download_file",
@@ -614,7 +615,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Fichiers"
+      "group": "Fichiers",
+      "risk": "destructive"
     },
     {
       "key": "dbx_delete_file",
@@ -675,7 +677,9 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Fichiers"
+      "group": "Fichiers",
+      "risk": "destructive",
+      "riskReason": "Supprime un fichier Dropbox"
     },
     {
       "key": "dbx_move_file",
@@ -749,7 +753,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Fichiers"
+      "group": "Fichiers",
+      "risk": "destructive"
     },
     {
       "key": "dbx_copy_file",
@@ -823,7 +828,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Fichiers"
+      "group": "Fichiers",
+      "risk": "destructive"
     },
     {
       "key": "dbx_get_metadata",
@@ -884,7 +890,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Fichiers"
+      "group": "Fichiers",
+      "risk": "safe"
     },
     {
       "key": "dbx_list_folder",
@@ -978,7 +985,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Dossiers"
+      "group": "Dossiers",
+      "risk": "destructive"
     },
     {
       "key": "dbx_search",
@@ -1056,7 +1064,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Fichiers"
+      "group": "Fichiers",
+      "risk": "destructive"
     },
     {
       "key": "dbx_create_folder",
@@ -1117,7 +1126,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Dossiers"
+      "group": "Dossiers",
+      "risk": "destructive"
     },
     {
       "key": "dbx_get_thumbnail",
@@ -1209,7 +1219,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Fichiers"
+      "group": "Fichiers",
+      "risk": "safe"
     },
     {
       "key": "dbx_create_shared_link",
@@ -1270,7 +1281,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Partage"
+      "group": "Partage",
+      "risk": "write"
     },
     {
       "key": "dbx_list_shared_links",
@@ -1326,7 +1338,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Partage"
+      "group": "Partage",
+      "risk": "write"
     },
     {
       "key": "dbx_share_folder",
@@ -1419,7 +1432,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Partage"
+      "group": "Partage",
+      "risk": "write"
     },
     {
       "key": "dbx_get_account",
@@ -1466,7 +1480,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Compte"
+      "group": "Compte",
+      "risk": "safe"
     },
     {
       "key": "dbx_list_paper_docs",
@@ -1523,7 +1538,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Paper"
+      "group": "Paper",
+      "risk": "destructive"
     },
     {
       "key": "dbx_watch_folder",
@@ -1586,7 +1602,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Événements"
+      "group": "Événements",
+      "risk": "safe"
     }
   ]
 }

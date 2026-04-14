@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: homeport-ai-worker
+  labels:
+    {{- include "homeport-api.labels" . | nindent 4 }}
+    app: homeport-ai-worker
+    component: worker
+spec:
+  replicas: {{ .Values.aiWorker.replicas }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: homeport-ai-worker
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        {{- include "homeport-api.labels" . | nindent 8 }}
+        app: homeport-ai-worker
+        release: {{ .Release.Name }}
+        component: worker
+    spec:
+      {{- with .Values.image.pullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: worker
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: {{ toJson .Values.aiWorker.command }}
+          env:
+            - { name: NODE_ENV, value: "production" }
+            - { name: HOMEPORT_ROLE, value: "ai-worker" }
+            {{- include "homeport-api.aiEnv" . | nindent 12 }}
+          envFrom:
+            - secretRef:
+                name: {{ include "homeport-api.secretName" . }}
+            - configMapRef:
+                name: homeport-config
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          resources:
+            {{- toYaml .Values.aiWorker.resources | nindent 12 }}
+          volumeMounts:
+            - { name: agent-cache, mountPath: /var/lib/homeport/agent-cache }
+            - { name: tmp, mountPath: /tmp }
+          livenessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - "test -f /tmp/.ai-worker-alive && find /tmp/.ai-worker-alive -mmin -2 | grep -q ."
+            initialDelaySeconds: 60
+            periodSeconds: 30
+            failureThreshold: 3
+      terminationGracePeriodSeconds: 60
+      volumes:
+        - name: agent-cache
+          persistentVolumeClaim: { claimName: agent-cache }
+        - name: tmp
+          emptyDir: { sizeLimit: 2Gi }

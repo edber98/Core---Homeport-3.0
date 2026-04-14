@@ -527,7 +527,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Base de données"
+      "group": "Base de données",
+      "risk": "safe"
     },
     {
       "key": "supa_insert",
@@ -602,7 +603,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Base de données"
+      "group": "Base de données",
+      "risk": "write"
     },
     {
       "key": "supa_update",
@@ -690,7 +692,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Base de données"
+      "group": "Base de données",
+      "risk": "write"
     },
     {
       "key": "supa_upsert",
@@ -773,7 +776,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Base de données"
+      "group": "Base de données",
+      "risk": "safe"
     },
     {
       "key": "supa_delete",
@@ -848,7 +852,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Base de données"
+      "group": "Base de données",
+      "risk": "destructive"
     },
     {
       "key": "supa_rpc_call",
@@ -918,7 +923,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Base de données"
+      "group": "Base de données",
+      "risk": "write"
     },
     {
       "key": "supa_auth_sign_up",
@@ -1009,7 +1015,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Authentification"
+      "group": "Authentification",
+      "risk": "safe"
     },
     {
       "key": "supa_auth_sign_in",
@@ -1084,7 +1091,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Authentification"
+      "group": "Authentification",
+      "risk": "safe"
     },
     {
       "key": "supa_auth_get_user",
@@ -1145,7 +1153,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Authentification"
+      "group": "Authentification",
+      "risk": "safe"
     },
     {
       "key": "supa_auth_list_users",
@@ -1211,7 +1220,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Authentification"
+      "group": "Authentification",
+      "risk": "safe"
     },
     {
       "key": "supa_auth_delete_user",
@@ -1272,7 +1282,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Authentification"
+      "group": "Authentification",
+      "risk": "destructive"
     },
     {
       "key": "supa_storage_upload",
@@ -1372,7 +1383,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Stockage"
+      "group": "Stockage",
+      "risk": "write"
     },
     {
       "key": "supa_storage_download",
@@ -1446,7 +1458,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Stockage"
+      "group": "Stockage",
+      "risk": "safe"
     },
     {
       "key": "supa_storage_list",
@@ -1524,7 +1537,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Stockage"
+      "group": "Stockage",
+      "risk": "safe"
     },
     {
       "key": "supa_storage_delete",
@@ -1598,7 +1612,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Stockage"
+      "group": "Stockage",
+      "risk": "destructive"
     }
   ]
 }

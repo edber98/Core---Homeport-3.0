@@ -10,6 +10,7 @@ const { buildWorkflowPrompt } = require('./prompts/workflow-builder');
 const { buildNodeArgsPrompt } = require('./prompts/node-args');
 const { buildFormPrompt } = require('./prompts/form-builder');
 const { buildOnboardingPrompt } = require('./prompts/onboarding');
+const { buildProjectPrompt } = require('./prompts/project');
 const { trackToolUsage } = require('./context/memory-manager');
 
 const MAX_TOOL_LOOPS = 40;
@@ -32,6 +33,9 @@ function buildSystemPrompt(mode, ctx) {
       break;
     case 'onboarding':
       prompt += buildOnboardingPrompt();
+      break;
+    case 'project':
+      prompt += buildProjectPrompt(ctx);
       break;
   }
 

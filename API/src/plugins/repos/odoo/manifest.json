@@ -491,7 +491,8 @@
       "tags": [
         "création",
         "odoo"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "odoo_partner_get",
@@ -554,7 +555,8 @@
       "tags": [
         "lecture",
         "odoo"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "odoo_partner_update",
@@ -662,7 +664,8 @@
       "tags": [
         "mise-à-jour",
         "odoo"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "odoo_partner_delete",
@@ -725,7 +728,8 @@
       "tags": [
         "suppression",
         "odoo"
-      ]
+      ],
+      "risk": "destructive"
     },
     {
       "key": "odoo_partners_list",
@@ -883,7 +887,8 @@
       "tags": [
         "liste",
         "odoo"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "odoo_product_create",
@@ -1001,7 +1006,8 @@
       "tags": [
         "création",
         "odoo"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "odoo_product_get",
@@ -1064,7 +1070,8 @@
       "tags": [
         "lecture",
         "odoo"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "odoo_product_update",
@@ -1154,7 +1161,8 @@
       "tags": [
         "mise-à-jour",
         "odoo"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "odoo_product_delete",
@@ -1217,7 +1225,8 @@
       "tags": [
         "suppression",
         "odoo"
-      ]
+      ],
+      "risk": "destructive"
     },
     {
       "key": "odoo_products_list",
@@ -1307,7 +1316,8 @@
       "tags": [
         "liste",
         "odoo"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "odoo_sale_order_create",
@@ -1396,7 +1406,8 @@
       "tags": [
         "création",
         "odoo"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "odoo_sale_order_get",
@@ -1459,7 +1470,8 @@
       "tags": [
         "lecture",
         "odoo"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "odoo_sale_order_confirm",
@@ -1522,7 +1534,9 @@
       "tags": [
         "mise-à-jour",
         "odoo"
-      ]
+      ],
+      "risk": "destructive",
+      "riskReason": "Confirme une commande de vente (engagement)"
     },
     {
       "key": "odoo_sale_order_cancel",
@@ -1585,7 +1599,8 @@
       "tags": [
         "mise-à-jour",
         "odoo"
-      ]
+      ],
+      "risk": "destructive"
     },
     {
       "key": "odoo_sale_orders_list",
@@ -1692,7 +1707,8 @@
       "tags": [
         "liste",
         "odoo"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "odoo_purchase_order_create",
@@ -1772,7 +1788,8 @@
       "tags": [
         "création",
         "odoo"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "odoo_purchase_order_get",
@@ -1835,7 +1852,8 @@
       "tags": [
         "lecture",
         "odoo"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "odoo_purchase_order_confirm",
@@ -1898,7 +1916,9 @@
       "tags": [
         "mise-à-jour",
         "odoo"
-      ]
+      ],
+      "risk": "destructive",
+      "riskReason": "Confirme une commande d'achat (engagement)"
     },
     {
       "key": "odoo_purchase_orders_list",
@@ -1996,7 +2016,8 @@
       "tags": [
         "liste",
         "odoo"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "odoo_invoice_create",
@@ -2108,7 +2129,9 @@
       "tags": [
         "création",
         "odoo"
-      ]
+      ],
+      "risk": "destructive",
+      "riskReason": "Crée une facture (document comptable engageant)"
     },
     {
       "key": "odoo_invoice_get",
@@ -2171,7 +2194,8 @@
       "tags": [
         "lecture",
         "odoo"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "odoo_invoice_post",
@@ -2234,7 +2258,9 @@
       "tags": [
         "mise-à-jour",
         "odoo"
-      ]
+      ],
+      "risk": "destructive",
+      "riskReason": "Comptabilise la facture"
     },
     {
       "key": "odoo_invoice_cancel",
@@ -2297,7 +2323,9 @@
       "tags": [
         "mise-à-jour",
         "odoo"
-      ]
+      ],
+      "risk": "destructive",
+      "riskReason": "Annule une facture validée"
     },
     {
       "key": "odoo_invoices_list",
@@ -2431,7 +2459,8 @@
       "tags": [
         "liste",
         "odoo"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "odoo_lead_create",
@@ -2539,7 +2568,8 @@
       "tags": [
         "création",
         "odoo"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "odoo_lead_get",
@@ -2602,7 +2632,8 @@
       "tags": [
         "lecture",
         "odoo"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "odoo_lead_update",
@@ -2692,7 +2723,8 @@
       "tags": [
         "mise-à-jour",
         "odoo"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "odoo_lead_won",
@@ -2755,7 +2787,8 @@
       "tags": [
         "mise-à-jour",
         "odoo"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "odoo_leads_list",
@@ -2850,7 +2883,8 @@
       "tags": [
         "liste",
         "odoo"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "odoo_project_create",
@@ -2931,7 +2965,8 @@
       "tags": [
         "création",
         "odoo"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "odoo_project_get",
@@ -2994,7 +3029,8 @@
       "tags": [
         "lecture",
         "odoo"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "odoo_task_create",
@@ -3115,7 +3151,8 @@
       "tags": [
         "création",
         "odoo"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "odoo_task_update",
@@ -3222,7 +3259,8 @@
       "tags": [
         "mise-à-jour",
         "odoo"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "odoo_tasks_list",
@@ -3299,7 +3337,8 @@
       "tags": [
         "liste",
         "odoo"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "odoo_stock_picking_create",
@@ -3380,7 +3419,8 @@
       "tags": [
         "création",
         "odoo"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "odoo_stock_picking_get",
@@ -3443,7 +3483,8 @@
       "tags": [
         "lecture",
         "odoo"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "odoo_stock_quant_list",
@@ -3520,7 +3561,8 @@
       "tags": [
         "liste",
         "odoo"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "odoo_stock_pickings_list",
@@ -3627,7 +3669,8 @@
       "tags": [
         "liste",
         "odoo"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "odoo_ticket_create",
@@ -3749,7 +3792,8 @@
       "tags": [
         "création",
         "odoo"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "odoo_ticket_get",
@@ -3812,7 +3856,8 @@
       "tags": [
         "lecture",
         "odoo"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "odoo_ticket_update",
@@ -3933,7 +3978,8 @@
       "tags": [
         "mise-à-jour",
         "odoo"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "odoo_ticket_close",
@@ -3996,7 +4042,9 @@
       "tags": [
         "mise-à-jour",
         "odoo"
-      ]
+      ],
+      "risk": "write",
+      "riskReason": "Ferme un ticket (réouvrable)"
     },
     {
       "key": "odoo_tickets_list",
@@ -4108,7 +4156,8 @@
       "tags": [
         "liste",
         "odoo"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "odoo_employee_create",
@@ -4207,7 +4256,8 @@
       "tags": [
         "création",
         "odoo"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "odoo_employee_get",
@@ -4270,7 +4320,8 @@
       "tags": [
         "lecture",
         "odoo"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "odoo_employee_update",
@@ -4360,7 +4411,8 @@
       "tags": [
         "mise-à-jour",
         "odoo"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "odoo_employees_list",
@@ -4428,7 +4480,8 @@
       "tags": [
         "liste",
         "odoo"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "odoo_mrp_production_create",
@@ -4514,7 +4567,8 @@
       "tags": [
         "création",
         "odoo"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "odoo_mrp_production_get",
@@ -4577,7 +4631,8 @@
       "tags": [
         "lecture",
         "odoo"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "odoo_mrp_productions_list",
@@ -4684,7 +4739,8 @@
       "tags": [
         "liste",
         "odoo"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "odoo_account_list",
@@ -4752,7 +4808,8 @@
       "tags": [
         "liste",
         "odoo"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "odoo_journal_list",
@@ -4850,7 +4907,8 @@
       "tags": [
         "liste",
         "odoo"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "odoo_execute",
@@ -4945,7 +5003,8 @@
       "tags": [
         "lecture",
         "odoo"
-      ]
+      ],
+      "risk": "elevated"
     },
     {
       "key": "odoo_search_read",
@@ -5047,7 +5106,8 @@
         "recherche",
         "lecture",
         "odoo"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "odoo_count",
@@ -5119,7 +5179,8 @@
       "tags": [
         "compteur",
         "odoo"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "odoo_projects_list",
@@ -5187,7 +5248,8 @@
       "tags": [
         "liste",
         "odoo"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "odoo_project_update",
@@ -5295,7 +5357,8 @@
       "tags": [
         "mise à jour",
         "odoo"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "odoo_project_delete",
@@ -5358,7 +5421,8 @@
       "tags": [
         "suppression",
         "odoo"
-      ]
+      ],
+      "risk": "destructive"
     },
     {
       "key": "odoo_task_get",
@@ -5421,7 +5485,8 @@
       "tags": [
         "tâche",
         "odoo"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "odoo_task_delete",
@@ -5484,7 +5549,8 @@
       "tags": [
         "suppression",
         "odoo"
-      ]
+      ],
+      "risk": "destructive"
     },
     {
       "key": "odoo_sale_order_update",
@@ -5609,7 +5675,8 @@
       "tags": [
         "mise à jour",
         "odoo"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "odoo_purchase_order_cancel",
@@ -5672,7 +5739,8 @@
       "tags": [
         "annulation",
         "odoo"
-      ]
+      ],
+      "risk": "destructive"
     },
     {
       "key": "odoo_users_list",
@@ -5741,7 +5809,8 @@
       "tags": [
         "liste",
         "odoo"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "odoo_companies_list",
@@ -5800,7 +5869,8 @@
       "tags": [
         "liste",
         "odoo"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "odoo_sale_order_lines_list",
@@ -5882,7 +5952,8 @@
       "tags": [
         "liste",
         "odoo"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "odoo_sale_order_line_create",
@@ -5996,7 +6067,8 @@
       "tags": [
         "création",
         "odoo"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "odoo_invoice_lines_list",
@@ -6087,7 +6159,8 @@
       "tags": [
         "liste",
         "odoo"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "odoo_invoice_line_create",
@@ -6205,7 +6278,8 @@
       "tags": [
         "création",
         "odoo"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "odoo_product_categories_list",
@@ -6273,7 +6347,8 @@
       "tags": [
         "liste",
         "odoo"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "odoo_crm_stages_list",
@@ -6341,7 +6416,8 @@
       "tags": [
         "liste",
         "odoo"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "odoo_countries_list",
@@ -6400,7 +6476,8 @@
       "tags": [
         "liste",
         "odoo"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "odoo_purchase_order_lines_list",
@@ -6482,7 +6559,8 @@
       "tags": [
         "liste",
         "odoo"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "odoo_purchase_order_line_create",
@@ -6604,7 +6682,8 @@
       "tags": [
         "création",
         "odoo"
-      ]
+      ],
+      "risk": "write"
     }
   ],
   "variables": {

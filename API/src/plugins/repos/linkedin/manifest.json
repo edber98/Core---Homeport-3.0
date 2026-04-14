@@ -478,7 +478,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Profil"
+      "group": "Profil",
+      "risk": "safe"
     },
     {
       "key": "linkedin_create_text_post",
@@ -578,7 +579,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Publications"
+      "group": "Publications",
+      "risk": "write"
     },
     {
       "key": "linkedin_create_image_post",
@@ -696,7 +698,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Publications"
+      "group": "Publications",
+      "risk": "write"
     },
     {
       "key": "linkedin_create_article_post",
@@ -823,7 +826,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Publications"
+      "group": "Publications",
+      "risk": "write"
     },
     {
       "key": "linkedin_list_posts",
@@ -894,7 +898,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Publications"
+      "group": "Publications",
+      "risk": "write"
     },
     {
       "key": "linkedin_delete_post",
@@ -955,7 +960,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Publications"
+      "group": "Publications",
+      "risk": "destructive"
     },
     {
       "key": "linkedin_get_organization",
@@ -1016,7 +1022,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Organisations"
+      "group": "Organisations",
+      "risk": "safe"
     },
     {
       "key": "linkedin_list_org_posts",
@@ -1087,7 +1094,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Organisations"
+      "group": "Organisations",
+      "risk": "write"
     },
     {
       "key": "linkedin_create_comment",
@@ -1176,7 +1184,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Commentaires"
+      "group": "Commentaires",
+      "risk": "write"
     },
     {
       "key": "linkedin_list_comments",
@@ -1237,7 +1246,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Commentaires"
+      "group": "Commentaires",
+      "risk": "write"
     },
     {
       "key": "linkedin_list_reactions",
@@ -1298,7 +1308,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Réactions"
+      "group": "Réactions",
+      "risk": "write"
     }
   ]
 }

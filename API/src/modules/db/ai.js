@@ -169,12 +169,25 @@ ${toolLines.join('\n')}
       }
     }
     if (req.query.formId) filter['metadata.formId'] = req.query.formId;
-    const list = await AiThread.find(filter)
+    // Include threads shared with the current user
+    const sharedClause = {
+      workspaceId: ws._id,
+      'sharedWith.userId': req.user.id,
+      ...(filter.mode ? { mode: filter.mode } : {}),
+      ...(filter.flowId !== undefined ? { flowId: filter.flowId } : {}),
+    };
+    const list = await AiThread.find({ $or: [filter, sharedClause] })
       .sort({ updatedAt: -1 })
       .skip((page - 1) * limit)
       .limit(limit)
       .lean();
-    res.apiOk(list);
+    // Tag threads the current user doesn't own as _shared:true
+    const uid = String(req.user.id);
+    const tagged = list.map(t => {
+      const ownerId = String(t.ownerId || t.userId || '');
+      return ownerId !== uid ? { ...t, _shared: true } : t;
+    });
+    res.apiOk(tagged);
   });
 
   // Create thread
@@ -226,8 +239,33 @@ ${toolLines.join('\n')}
     if (!thread) return res.apiError(404, 'thread_not_found', 'Thread not found');
     const ws = await Workspace.findById(thread.workspaceId);
     if (!ws || String(ws.companyId) !== req.user.companyId) return res.apiError(404, 'thread_not_found', 'Thread not found');
-    await AiMessage.deleteMany({ threadId: thread._id });
-    await AiThread.deleteOne({ _id: thread._id });
+    const tid = thread._id;
+    // Lazy require (cascades peuvent tourner avant que modèles soient référencés plus bas)
+    const AiProjectRoot = require('../../db/models/ai-project-root.model');
+    const AiProjectCache = require('../../db/models/ai-project-cache.model');
+    const AiCanvasState = require('../../db/models/ai-canvas-state.model');
+    const AiJob = require('../../db/models/ai-job.model');
+    const AiJobTask = require('../../db/models/ai-job-task.model');
+    const AiPermissionGrant = require('../../db/models/ai-permission-grant.model');
+    const fsp = require('fs/promises');
+    // Récupère le cacheRoot avant suppression pour rm -rf
+    const cache = await AiProjectCache.findOne({ threadId: tid }, 'cacheRoot').lean();
+    const jobs = await AiJob.find({ threadId: tid }, '_id').lean();
+    const jobIds = jobs.map(j => j._id);
+    await Promise.all([
+      AiMessage.deleteMany({ threadId: tid }),
+      AiProjectRoot.deleteOne({ threadId: tid }),
+      AiProjectCache.deleteOne({ threadId: tid }),
+      AiCanvasState.deleteOne({ threadId: tid }),
+      AiPermissionGrant.deleteMany({ threadId: tid }),
+      AiJobTask.deleteMany({ jobId: { $in: jobIds } }),
+      AiJob.deleteMany({ threadId: tid }),
+    ]);
+    // Purge cache disque (best-effort)
+    if (cache?.cacheRoot) {
+      try { await fsp.rm(cache.cacheRoot, { recursive: true, force: true }); } catch {}
+    }
+    await AiThread.deleteOne({ _id: tid });
     res.apiOk(true);
   });
 
@@ -586,6 +624,9 @@ ${toolLines.join('\n')}
       graph: graph || thread.metadata?.graph || undefined,
       schema: schema || thread.metadata?.schema || undefined,
       workspaceId: String(ws._id),
+      threadId: String(thread._id),
+      companyId: req.user?.companyId ? String(req.user.companyId) : undefined,
+      userId: req.user?.id ? String(req.user.id) : undefined,
     };
 
     try {
@@ -724,6 +765,44 @@ ${toolLines.join('\n')}
           case 'snapshot':
           case 'args':
           case 'desc':
+            send(event);
+            break;
+
+          // ── Canvas updates — persist to AiCanvasState ──
+          case 'canvas.document':
+          case 'canvas.research':
+          case 'canvas.tasks':
+          case 'canvas.files.tree':
+          case 'canvas.tab': {
+            try {
+              const AiCanvasState = require('../../db/models/ai-canvas-state.model');
+              const threadId = thread._id;
+              const set = {};
+              if (event.type === 'canvas.document' && event.document) set.document = event.document;
+              if (event.type === 'canvas.research' && event.research) set.research = event.research;
+              if (event.type === 'canvas.tasks' && Array.isArray(event.tasks)) set.tasks = event.tasks;
+              if (event.type === 'canvas.files.tree') {
+                set['files.lastRefreshedAt'] = new Date();
+                if (event.tree) set['files.tree'] = event.tree;
+                if (event.rootLabel) set['files.rootLabel'] = event.rootLabel;
+              }
+              if (event.type === 'canvas.tab' && event.activeTab) set.activeTab = event.activeTab;
+              if (Object.keys(set).length) {
+                await AiCanvasState.updateOne(
+                  { threadId },
+                  { $set: set, $setOnInsert: { threadId } },
+                  { upsert: true }
+                );
+              }
+            } catch (e) {
+              console.error('[ai-sse] canvas persist error:', e?.message);
+            }
+            send(event);
+            break;
+          }
+
+          // Permission request event — forward to client
+          case 'ai.permission.request':
             send(event);
             break;
 
@@ -1365,6 +1444,560 @@ ${toolLines.join('\n')}
     } catch (e) {
       res.apiError(500, 'tools_error', e.message);
     }
+  });
+
+  // ══════════════════════════════
+  //  JOBS
+  // ══════════════════════════════
+
+  const AiJob = require('../../db/models/ai-job.model');
+  const {
+    createJob, runJob, resumeJob, pauseJob, cancelJob, onJobEvent,
+  } = require('../../ai/jobs/job-runner');
+  const { emitJobEvent } = require('../../ai/jobs/job-events');
+  const {
+    checkPermission, resolvePendingDecision,
+  } = require('../../ai/permissions');
+  const { requireThreadAccess } = require('../../ai/access/thread-access');
+
+  // Create a job
+  r.post('/ai/jobs', async (req, res) => {
+    const { threadId, type, mode, subagentType, subagentInstructions, maxLoops, agentId, initiatorMessageId } = req.body || {};
+    if (!threadId) return res.apiError(400, 'missing_thread', 'threadId required');
+    const thread = await findThread(threadId);
+    if (!thread) return res.apiError(404, 'thread_not_found', 'Thread not found');
+    const ws = await Workspace.findById(thread.workspaceId);
+    if (!ws || String(ws.companyId) !== req.user.companyId) return res.apiError(404, 'thread_not_found', 'Thread not found');
+    try {
+      const job = await createJob({
+        threadId: thread._id,
+        type: type || 'agent_run',
+        mode, subagentType, subagentInstructions,
+        maxLoops, agentId, initiatorMessageId,
+      });
+      // Fire-and-forget
+      setImmediate(() => { runJob(job.id).catch(e => console.error(`[ai/jobs] run error ${job.id}:`, e?.message)); });
+      res.status(201).json({ success: true, data: job, requestId: req.requestId, ts: Date.now() });
+    } catch (e) {
+      res.apiError(500, 'job_create_error', e?.message || 'Failed to create job');
+    }
+  });
+
+  // Get job
+  r.get('/ai/jobs/:jobId', async (req, res) => {
+    const job = await AiJob.findOne({ id: req.params.jobId }).lean();
+    if (!job) return res.apiError(404, 'job_not_found', 'Job not found');
+    const ws = await Workspace.findById(job.workspaceId);
+    if (!ws || String(ws.companyId) !== req.user.companyId) return res.apiError(404, 'job_not_found', 'Job not found');
+    res.apiOk(job);
+  });
+
+  // SSE: stream job events
+  r.get('/ai/jobs/:jobId/stream', async (req, res) => {
+    const job = await AiJob.findOne({ id: req.params.jobId }).lean();
+    if (!job) return res.apiError(404, 'job_not_found', 'Job not found');
+    const ws = await Workspace.findById(job.workspaceId);
+    if (!ws || String(ws.companyId) !== req.user.companyId) return res.apiError(404, 'job_not_found', 'Job not found');
+
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+    res.setHeader('X-Accel-Buffering', 'no');
+    if (res.socket) res.socket.setNoDelay(true);
+    res.flushHeaders();
+
+    const send = (obj) => {
+      try { res.write(`data: ${JSON.stringify(obj)}\n\n`); if (res.flush) res.flush(); } catch {}
+    };
+    // Replay last sideEvents if any
+    if (Array.isArray(job.sideEvents)) {
+      for (const ev of job.sideEvents.slice(-50)) send(ev);
+    }
+    send({ type: 'job.status', status: job.status, iteration: job.iteration });
+
+    const off = onJobEvent(job.id, (ev) => send(ev));
+    const heartbeat = setInterval(() => { try { res.write(':keepalive\n\n'); } catch {} }, 15000);
+    const cleanup = () => {
+      clearInterval(heartbeat);
+      try { off(); } catch {}
+      try { res.end(); } catch {}
+    };
+    req.on('close', cleanup);
+    res.on('close', cleanup);
+  });
+
+  r.post('/ai/jobs/:jobId/pause', async (req, res) => {
+    const job = await AiJob.findOne({ id: req.params.jobId }).lean();
+    if (!job) return res.apiError(404, 'job_not_found', 'Job not found');
+    const ws = await Workspace.findById(job.workspaceId);
+    if (!ws || String(ws.companyId) !== req.user.companyId) return res.apiError(404, 'job_not_found', 'Job not found');
+    await pauseJob(job.id);
+    res.apiOk({ paused: true });
+  });
+
+  r.post('/ai/jobs/:jobId/resume', async (req, res) => {
+    const job = await AiJob.findOne({ id: req.params.jobId }).lean();
+    if (!job) return res.apiError(404, 'job_not_found', 'Job not found');
+    const ws = await Workspace.findById(job.workspaceId);
+    if (!ws || String(ws.companyId) !== req.user.companyId) return res.apiError(404, 'job_not_found', 'Job not found');
+    setImmediate(() => { resumeJob(job.id).catch(e => console.error('[ai/jobs] resume:', e?.message)); });
+    res.apiOk({ resumed: true });
+  });
+
+  r.post('/ai/jobs/:jobId/cancel', async (req, res) => {
+    const job = await AiJob.findOne({ id: req.params.jobId }).lean();
+    if (!job) return res.apiError(404, 'job_not_found', 'Job not found');
+    const ws = await Workspace.findById(job.workspaceId);
+    if (!ws || String(ws.companyId) !== req.user.companyId) return res.apiError(404, 'job_not_found', 'Job not found');
+    await cancelJob(job.id);
+    res.apiOk({ cancelled: true });
+  });
+
+  // Resolve a pending permission
+  r.post('/ai/jobs/:jobId/permissions', async (req, res) => {
+    const job = await AiJob.findOne({ id: req.params.jobId });
+    if (!job) return res.apiError(404, 'job_not_found', 'Job not found');
+    const ws = await Workspace.findById(job.workspaceId);
+    if (!ws || String(ws.companyId) !== req.user.companyId) return res.apiError(404, 'job_not_found', 'Job not found');
+    const { requestId, decision, pathPattern, scope, toolName, risk, ttlMs } = req.body || {};
+    if (!requestId || !decision) return res.apiError(400, 'missing_fields', 'requestId + decision required');
+
+    // Persist grant (for allow_session/allow_always/etc.)
+    if (toolName && decision !== 'allow_once' && decision !== 'deny_once') {
+      try {
+        await resolvePendingDecision({
+          threadId: job.threadId,
+          workspaceId: job.workspaceId,
+          toolName, decision, pathPattern, scope, risk, ttlMs,
+          userId: req.user.id,
+          jobId: job.id,
+        });
+      } catch (e) {
+        console.error('[permissions] persist error:', e?.message);
+      }
+    }
+    // Notify the running job via pub/sub
+    const normalized = String(decision).startsWith('allow') ? 'allow' : 'deny';
+    emitJobEvent(job.id, { type: 'permission.resolved', requestId, decision: normalized });
+    res.apiOk({ ok: true });
+  });
+
+  r.get('/ai/threads/:threadId/jobs', requireThreadAccess('view'), async (req, res) => {
+    const thread = req.aiThread;
+    const jobs = await AiJob.find({ threadId: thread._id })
+      .sort({ createdAt: -1 }).limit(50).lean();
+    res.apiOk(jobs);
+  });
+
+  // ══════════════════════════════
+  //  PROJECT ROOT
+  // ══════════════════════════════
+
+  const AiProjectRoot = require('../../db/models/ai-project-root.model');
+
+  r.post('/ai/threads/:threadId/project-root', requireThreadAccess('edit'), async (req, res) => {
+    const thread = req.aiThread;
+    const { connectorType, credentialId, rootPath, label, extraConfig } = req.body || {};
+    if (!connectorType) return res.apiError(400, 'connector_required', 'connectorType required');
+    // Resolve short ID (cred_xxx) to ObjectId if needed
+    let resolvedCredId;
+    if (credentialId) {
+      if (Types.ObjectId.isValid(credentialId)) {
+        resolvedCredId = credentialId;
+      } else {
+        const Credential = require('../../db/models/credential.model');
+        const cred = await Credential.findOne({ id: credentialId }, '_id').lean();
+        if (!cred) return res.apiError(404, 'credential_not_found', `Credential '${credentialId}' introuvable`);
+        resolvedCredId = cred._id;
+      }
+    }
+    const doc = await AiProjectRoot.findOneAndUpdate(
+      { threadId: thread._id },
+      {
+        $set: {
+          workspaceId: thread.workspaceId,
+          connectorType,
+          credentialId: resolvedCredId || undefined,
+          rootPath: rootPath || '/',
+          label: label || '',
+          extraConfig: extraConfig || {},
+        },
+        $setOnInsert: { threadId: thread._id },
+      },
+      { upsert: true, new: true }
+    );
+    // Mirror lightweight copy in thread metadata
+    await AiThread.updateOne({ _id: thread._id }, {
+      $set: {
+        'metadata.projectRoot': {
+          connectorType, credentialId: credentialId || null,
+          rootPath: rootPath || '/', label: label || '',
+        },
+      },
+    });
+    res.status(201).json({ success: true, data: doc, requestId: req.requestId, ts: Date.now() });
+  });
+
+  r.get('/ai/threads/:threadId/project-root', requireThreadAccess('view'), async (req, res) => {
+    const doc = await AiProjectRoot.findOne({ threadId: req.aiThread._id }).lean();
+    if (!doc) return res.apiError(404, 'not_configured', 'No project root for this thread');
+    res.apiOk(doc);
+  });
+
+  r.put('/ai/threads/:threadId/project-root', requireThreadAccess('edit'), async (req, res) => {
+    const allowed = ['connectorType', 'credentialId', 'rootPath', 'label', 'extraConfig'];
+    const patch = {};
+    for (const k of allowed) if (req.body[k] !== undefined) patch[k] = req.body[k];
+    // Resolve short credentialId if needed
+    if (patch.credentialId && !Types.ObjectId.isValid(patch.credentialId)) {
+      const Credential = require('../../db/models/credential.model');
+      const cred = await Credential.findOne({ id: patch.credentialId }, '_id').lean();
+      if (!cred) return res.apiError(404, 'credential_not_found', `Credential '${patch.credentialId}' introuvable`);
+      patch.credentialId = cred._id;
+    }
+    const doc = await AiProjectRoot.findOneAndUpdate(
+      { threadId: req.aiThread._id },
+      { $set: patch },
+      { new: true }
+    );
+    if (!doc) return res.apiError(404, 'not_configured', 'No project root for this thread');
+    res.apiOk(doc);
+  });
+
+  r.post('/ai/threads/:threadId/project-root/refresh', requireThreadAccess('edit'), async (req, res) => {
+    const doc = await AiProjectRoot.findOne({ threadId: req.aiThread._id });
+    if (!doc) return res.apiError(404, 'not_configured', 'No project root for this thread');
+    try {
+      const { createProjectFsExecutor } = require('../../ai/tools/project-fs-tools');
+      const exec = createProjectFsExecutor(
+        { threadId: req.aiThread._id, workspaceId: req.aiThread.workspaceId, userId: req.user.id, companyId: req.user.companyId },
+        () => {}
+      );
+      const result = await exec.execute('project_refresh_tree', {});
+      // Construit un arbre pour le canvas à partir des entrées (flat → tree)
+      const entries = (result && result.entries) || [];
+      const treeRoot = { name: doc.label || 'Projet', path: '/', type: 'directory', children: [] };
+      for (const e of entries) {
+        const parts = String(e.path || '').split('/').filter(Boolean);
+        let cur = treeRoot;
+        for (let i = 0; i < parts.length; i++) {
+          const part = parts[i];
+          const partPath = '/' + parts.slice(0, i + 1).join('/');
+          const isLast = i === parts.length - 1;
+          let next = cur.children.find(c => c.name === part);
+          if (!next) {
+            next = {
+              name: part,
+              path: partPath,
+              type: isLast ? (e.type || 'file') : 'directory',
+              children: [],
+            };
+            cur.children.push(next);
+          }
+          cur = next;
+        }
+      }
+      // Persist into AiCanvasState.files pour le panel
+      const AiCanvasState = require('../../db/models/ai-canvas-state.model');
+      await AiCanvasState.updateOne(
+        { threadId: req.aiThread._id },
+        {
+          $set: {
+            'files.rootLabel': doc.label || 'Projet',
+            'files.tree': treeRoot.children,
+            'files.lastRefreshedAt': new Date(),
+          },
+          $setOnInsert: { threadId: req.aiThread._id },
+        },
+        { upsert: true }
+      );
+      res.apiOk({ tree: treeRoot.children, entries, rootLabel: doc.label || 'Projet' });
+    } catch (e) {
+      res.apiError(500, 'refresh_error', e?.message || 'Failed to refresh tree');
+    }
+  });
+
+  r.delete('/ai/threads/:threadId/project-root', requireThreadAccess('edit'), async (req, res) => {
+    await AiProjectRoot.deleteOne({ threadId: req.aiThread._id });
+    await AiThread.updateOne({ _id: req.aiThread._id }, { $unset: { 'metadata.projectRoot': 1 } });
+    res.apiOk({ deleted: true });
+  });
+
+  // List connector-capable credentials available in workspace
+  r.get('/ai/project-connectors', async (req, res) => {
+    const ws = await ensureWorkspaceAccess(req, res);
+    if (!ws) return;
+    const Credential = require('../../db/models/credential.model');
+    const Provider = require('../../db/models/provider.model');
+    const connectorKeys = ['nextcloudFiles', 'googleDrive', 'dropbox', 'oneDrive', 'sharePoint'];
+    const credentials = await Credential.find(
+      { workspaceId: ws._id, providerKey: { $in: connectorKeys } },
+      'id _id name providerKey'
+    ).lean();
+    const providers = await Provider.find(
+      { key: { $in: connectorKeys } },
+      'key name title iconUrl'
+    ).lean();
+    res.apiOk({
+      connectors: providers.map(p => ({
+        key: p.key,
+        name: p.title || p.name,
+        icon: p.iconUrl || null,
+        credentials: credentials.filter(c => c.providerKey === p.key)
+          .map(c => ({ id: c.id || String(c._id), name: c.name })),
+      })),
+    });
+  });
+
+  // Browse remote path — appelle le NodeTemplate list du connecteur
+  r.get('/ai/project-connectors/browse', async (req, res) => {
+    const ws = await ensureWorkspaceAccess(req, res);
+    if (!ws) return;
+    const { connectorType, credentialId, path: listPath = '/' } = req.query;
+    if (!connectorType || !credentialId) {
+      return res.apiError(400, 'missing_params', 'connectorType and credentialId required');
+    }
+    const { CONNECTOR_MAP } = require('../../ai/tools/project-fs-tools');
+    const map = CONNECTOR_MAP[connectorType];
+    if (!map || !map.list) {
+      return res.apiError(400, 'unsupported_connector', `${connectorType} ne supporte pas le listing`);
+    }
+    try {
+      const { executeTool } = require('../../ai/tools/tool-executor');
+      const result = await executeTool(map.list, { path: listPath, credentialId }, {
+        workspaceId: ws._id,
+        companyId: req.user.companyId,
+        userId: req.user.id,
+      });
+      // Traverse la structure (result peut être wrappé plusieurs niveaux : result.result.files, result.entries, ...)
+      function findEntriesArray(obj, depth = 0) {
+        if (depth > 4 || !obj) return null;
+        for (const key of ['entries', 'files', 'items', 'children', 'contents', 'list']) {
+          if (Array.isArray(obj[key])) return obj[key];
+        }
+        if (Array.isArray(obj)) return obj;
+        for (const v of Object.values(obj)) {
+          if (v && typeof v === 'object') {
+            const found = findEntriesArray(v, depth + 1);
+            if (found) return found;
+          }
+        }
+        return null;
+      }
+      const entries = findEntriesArray(result) || [];
+      // Normalise les chemins en RELATIFS (retire préfixes connecteur-spécifiques)
+      function stripConnectorPrefix(p) {
+        if (typeof p !== 'string') return p;
+        // Nextcloud WebDAV: /remote.php/dav/files/<user>/ -> /
+        p = p.replace(/^\/?remote\.php\/dav\/files\/[^/]+/, '');
+        // S'assure qu'il commence par /
+        if (!p.startsWith('/')) p = '/' + p;
+        return p;
+      }
+      const normalized = entries.map(e => {
+        const rawPath = e.path || e.fullPath || e.name || '';
+        const relPath = stripConnectorPrefix(rawPath);
+        const pathEndsSlash = typeof rawPath === 'string' && rawPath.endsWith('/');
+        const contentTypeEmpty = e.contentType === '' || e.contentType === null;
+        const isDir = e.type === 'folder' || e.type === 'directory'
+          || e.isFolder || e.is_dir
+          || e.mimeType === 'application/vnd.google-apps.folder'
+          || e['.tag'] === 'folder'
+          || e.mime === 'httpd/unix-directory'
+          || (pathEndsSlash && contentTypeEmpty);
+        return {
+          name: e.name || e.title || relPath.split('/').filter(Boolean).pop() || '(sans nom)',
+          path: relPath,
+          type: isDir ? 'directory' : 'file',
+          size: typeof e.size === 'number' ? e.size : 0,
+          modifiedAt: e.modifiedAt || e.mtime || e.lastModified || e.server_modified || null,
+          contentType: e.contentType || e.mimeType || null,
+        };
+      });
+      res.apiOk({ path: listPath, entries: normalized, count: normalized.length });
+    } catch (err) {
+      res.apiError(500, 'browse_failed', err.message || String(err));
+    }
+  });
+
+  // ══════════════════════════════
+  //  CANVAS
+  // ══════════════════════════════
+
+  const AiCanvasState = require('../../db/models/ai-canvas-state.model');
+
+  r.get('/ai/threads/:threadId/canvas', requireThreadAccess('view'), async (req, res) => {
+    const doc = await AiCanvasState.findOne({ threadId: req.aiThread._id }).lean();
+    res.apiOk(doc || { threadId: req.aiThread._id, activeTab: 'none' });
+  });
+
+  r.put('/ai/threads/:threadId/canvas', requireThreadAccess('edit'), async (req, res) => {
+    const patch = {};
+    const allowed = ['activeTab', 'document', 'research', 'tasks', 'files'];
+    for (const k of allowed) if (req.body[k] !== undefined) patch[k] = req.body[k];
+    const doc = await AiCanvasState.findOneAndUpdate(
+      { threadId: req.aiThread._id },
+      { $set: patch, $setOnInsert: { threadId: req.aiThread._id } },
+      { upsert: true, new: true }
+    );
+    res.apiOk(doc);
+  });
+
+  r.post('/ai/threads/:threadId/canvas/document/export', requireThreadAccess('edit'), async (req, res) => {
+    const doc = await AiCanvasState.findOne({ threadId: req.aiThread._id }).lean();
+    if (!doc?.document) return res.apiError(404, 'no_document', 'No canvas document to export');
+    res.apiOk({
+      format: doc.document.format,
+      title: doc.document.title,
+      fileId: doc.document.fileId || null,
+      previewHtml: doc.document.previewHtml || '',
+    });
+  });
+
+  // ══════════════════════════════
+  //  PERMISSIONS
+  // ══════════════════════════════
+
+  const AiPermissionGrant = require('../../db/models/ai-permission-grant.model');
+
+  r.get('/ai/threads/:threadId/permissions', requireThreadAccess('view'), async (req, res) => {
+    const grants = await AiPermissionGrant.find({ threadId: req.aiThread._id })
+      .sort({ decidedAt: -1 }).lean();
+    res.apiOk(grants);
+  });
+
+  r.delete('/ai/threads/:threadId/permissions/:grantId', requireThreadAccess('edit'), async (req, res) => {
+    const g = await AiPermissionGrant.findOne({ id: req.params.grantId, threadId: req.aiThread._id });
+    if (!g) return res.apiError(404, 'grant_not_found', 'Grant not found');
+    await AiPermissionGrant.deleteOne({ _id: g._id });
+    res.apiOk({ deleted: true });
+  });
+
+  r.get('/ai/workspaces/:wsId/permissions', async (req, res) => {
+    const ws = await ensureWorkspaceAccess(req, res);
+    if (!ws) return;
+    if (String(ws._id) !== String(req.params.wsId) && ws.id !== req.params.wsId) {
+      return res.apiError(403, 'forbidden', 'Workspace mismatch');
+    }
+    const grants = await AiPermissionGrant.find({ workspaceId: ws._id })
+      .sort({ decidedAt: -1 }).limit(200).lean();
+    res.apiOk(grants);
+  });
+
+  // ══════════════════════════════
+  //  USER PREFERENCES
+  // ══════════════════════════════
+
+  const AiUserPreferences = require('../../db/models/ai-user-preferences.model');
+
+  r.get('/ai/preferences', async (req, res) => {
+    const doc = await AiUserPreferences.findOne({ userId: req.user.id }).lean();
+    res.apiOk(doc || {
+      userId: req.user.id,
+      defaultAutonomyLevel: 'autonomous',
+      cacheBehavior: {}, permissionDefaults: {}, canvasBehavior: {},
+    });
+  });
+
+  r.put('/ai/preferences', async (req, res) => {
+    const allowed = [
+      'defaultAutonomyLevel', 'defaultAgentId', 'cacheBehavior',
+      'permissionDefaults', 'canvasBehavior', 'webSearchProvider', 'workspaceId',
+    ];
+    const patch = {};
+    for (const k of allowed) if (req.body[k] !== undefined) patch[k] = req.body[k];
+    const doc = await AiUserPreferences.findOneAndUpdate(
+      { userId: req.user.id },
+      { $set: patch, $setOnInsert: { userId: req.user.id } },
+      { upsert: true, new: true }
+    );
+    res.apiOk(doc);
+  });
+
+  r.get('/ai/threads/:threadId/preferences', requireThreadAccess('view'), async (req, res) => {
+    res.apiOk(req.aiThread.metadata?.preferencesOverride || {});
+  });
+
+  r.put('/ai/threads/:threadId/preferences', requireThreadAccess('edit'), async (req, res) => {
+    const override = req.body || {};
+    await AiThread.updateOne(
+      { _id: req.aiThread._id },
+      { $set: { 'metadata.preferencesOverride': override } }
+    );
+    res.apiOk(override);
+  });
+
+  r.delete('/ai/threads/:threadId/preferences', requireThreadAccess('edit'), async (req, res) => {
+    await AiThread.updateOne(
+      { _id: req.aiThread._id },
+      { $unset: { 'metadata.preferencesOverride': 1 } }
+    );
+    res.apiOk({ deleted: true });
+  });
+
+  // ══════════════════════════════
+  //  THREAD SHARING
+  // ══════════════════════════════
+
+  r.post('/ai/threads/:threadId/share', requireThreadAccess('admin'), async (req, res) => {
+    const { userId, permission } = req.body || {};
+    if (!userId) return res.apiError(400, 'missing_user', 'userId required');
+    const perm = ['view', 'comment', 'edit'].includes(permission) ? permission : 'view';
+    const thread = req.aiThread;
+    const idx = (thread.sharedWith || []).findIndex(s => String(s.userId) === String(userId));
+    let ops;
+    if (idx >= 0) {
+      ops = { $set: {
+        [`sharedWith.${idx}.permission`]: perm,
+        [`sharedWith.${idx}.addedBy`]: req.user.id,
+        visibility: 'shared',
+      }};
+    } else {
+      ops = {
+        $set: { visibility: 'shared' },
+        $push: { sharedWith: { userId, permission: perm, addedBy: req.user.id, addedAt: new Date(), notificationSent: false } },
+      };
+    }
+    await AiThread.updateOne({ _id: thread._id }, ops);
+    const updated = await AiThread.findById(thread._id).lean();
+    res.apiOk(updated);
+  });
+
+  r.get('/ai/threads/:threadId/shares', requireThreadAccess('view'), async (req, res) => {
+    res.apiOk({
+      visibility: req.aiThread.visibility || 'private',
+      sharedWith: req.aiThread.sharedWith || [],
+      sharedWithRoles: req.aiThread.sharedWithRoles || [],
+    });
+  });
+
+  r.put('/ai/threads/:threadId/shares/:userId', requireThreadAccess('admin'), async (req, res) => {
+    const { permission } = req.body || {};
+    const perm = ['view', 'comment', 'edit'].includes(permission) ? permission : 'view';
+    const thread = req.aiThread;
+    const idx = (thread.sharedWith || []).findIndex(s => String(s.userId) === String(req.params.userId));
+    if (idx < 0) return res.apiError(404, 'share_not_found', 'User not shared with this thread');
+    await AiThread.updateOne(
+      { _id: thread._id },
+      { $set: { [`sharedWith.${idx}.permission`]: perm } }
+    );
+    const updated = await AiThread.findById(thread._id).lean();
+    res.apiOk(updated);
+  });
+
+  r.delete('/ai/threads/:threadId/shares/:userId', requireThreadAccess('admin'), async (req, res) => {
+    const thread = req.aiThread;
+    await AiThread.updateOne(
+      { _id: thread._id },
+      { $pull: { sharedWith: { userId: req.params.userId } } }
+    );
+    // If no one else, mark private
+    const updated = await AiThread.findById(thread._id).lean();
+    if (!(updated.sharedWith || []).length) {
+      await AiThread.updateOne({ _id: thread._id }, { $set: { visibility: 'private' } });
+      updated.visibility = 'private';
+    }
+    res.apiOk(updated);
   });
 
   // ── Helper ──

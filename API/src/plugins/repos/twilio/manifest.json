@@ -164,7 +164,8 @@
         "envoi",
         "twilio"
       ],
-      "group": "SMS"
+      "group": "SMS",
+      "risk": "write"
     },
     {
       "key": "twilio_list_sms",
@@ -241,7 +242,8 @@
         "liste",
         "twilio"
       ],
-      "group": "SMS"
+      "group": "SMS",
+      "risk": "safe"
     },
     {
       "key": "twilio_create_call",
@@ -345,7 +347,8 @@
         "création",
         "twilio"
       ],
-      "group": "Appels"
+      "group": "Appels",
+      "risk": "write"
     },
     {
       "key": "twilio_get_call",
@@ -408,7 +411,8 @@
         "lecture",
         "twilio"
       ],
-      "group": "Appels"
+      "group": "Appels",
+      "risk": "safe"
     },
     {
       "key": "twilio_list_calls",
@@ -528,7 +532,8 @@
         "liste",
         "twilio"
       ],
-      "group": "Appels"
+      "group": "Appels",
+      "risk": "safe"
     },
     {
       "key": "twilio_list_phone_numbers",
@@ -587,7 +592,8 @@
         "liste",
         "twilio"
       ],
-      "group": "Numéros"
+      "group": "Numéros",
+      "risk": "safe"
     },
     {
       "key": "twilio_get_phone_number",
@@ -650,7 +656,8 @@
         "lecture",
         "twilio"
       ],
-      "group": "Numéros"
+      "group": "Numéros",
+      "risk": "safe"
     },
     {
       "key": "twilio_get_message",
@@ -713,7 +720,8 @@
         "lecture",
         "twilio"
       ],
-      "group": "Messages"
+      "group": "Messages",
+      "risk": "safe"
     },
     {
       "key": "twilio_delete_message",
@@ -776,7 +784,8 @@
         "suppression",
         "twilio"
       ],
-      "group": "Messages"
+      "group": "Messages",
+      "risk": "destructive"
     },
     {
       "key": "twilio_create_verify_service",
@@ -849,7 +858,8 @@
         "création",
         "twilio"
       ],
-      "group": "Vérification"
+      "group": "Vérification",
+      "risk": "write"
     },
     {
       "key": "twilio_create_verification",
@@ -962,7 +972,8 @@
         "envoi",
         "twilio"
       ],
-      "group": "Vérification"
+      "group": "Vérification",
+      "risk": "write"
     },
     {
       "key": "twilio_check_verification",
@@ -1053,7 +1064,8 @@
         "lecture",
         "twilio"
       ],
-      "group": "Vérification"
+      "group": "Vérification",
+      "risk": "safe"
     },
     {
       "key": "twilio_phone_lookup",
@@ -1125,7 +1137,8 @@
         "recherche",
         "twilio"
       ],
-      "group": "Recherche"
+      "group": "Recherche",
+      "risk": "safe"
     },
     {
       "key": "twilio_webhook_event",
@@ -1172,7 +1185,8 @@
         "événement",
         "twilio"
       ],
-      "group": "Événements"
+      "group": "Événements",
+      "risk": "safe"
     }
   ],
   "variables": {

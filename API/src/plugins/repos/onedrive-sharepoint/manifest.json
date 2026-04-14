@@ -253,7 +253,8 @@
       "tags": [
         "téléversement",
         "OneDrive"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "sharepoint_upload_file",
@@ -345,7 +346,8 @@
       "tags": [
         "téléversement",
         "SharePoint"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "sharepoint_share_link",
@@ -431,7 +433,8 @@
       "tags": [
         "création",
         "SharePoint"
-      ]
+      ],
+      "risk": "write"
     }
   ]
 }

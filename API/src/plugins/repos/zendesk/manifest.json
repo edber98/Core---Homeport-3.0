@@ -1056,7 +1056,8 @@
         "création",
         "zendesk"
       ],
-      "group": "Tickets"
+      "group": "Tickets",
+      "risk": "write"
     },
     {
       "key": "zd_ticket_get",
@@ -1118,7 +1119,8 @@
         "lecture",
         "zendesk"
       ],
-      "group": "Tickets"
+      "group": "Tickets",
+      "risk": "safe"
     },
     {
       "key": "zd_ticket_update",
@@ -1273,7 +1275,8 @@
         "mise-à-jour",
         "zendesk"
       ],
-      "group": "Tickets"
+      "group": "Tickets",
+      "risk": "write"
     },
     {
       "key": "zd_ticket_delete",
@@ -1335,7 +1338,8 @@
         "suppression",
         "zendesk"
       ],
-      "group": "Tickets"
+      "group": "Tickets",
+      "risk": "destructive"
     },
     {
       "key": "zd_tickets_list",
@@ -1401,7 +1405,8 @@
         "liste",
         "zendesk"
       ],
-      "group": "Tickets"
+      "group": "Tickets",
+      "risk": "safe"
     },
     {
       "key": "zd_ticket_search",
@@ -1463,7 +1468,8 @@
         "recherche",
         "zendesk"
       ],
-      "group": "Tickets"
+      "group": "Tickets",
+      "risk": "safe"
     },
     {
       "key": "zd_user_create",
@@ -1570,7 +1576,8 @@
         "création",
         "zendesk"
       ],
-      "group": "Utilisateurs"
+      "group": "Utilisateurs",
+      "risk": "write"
     },
     {
       "key": "zd_user_get",
@@ -1632,7 +1639,8 @@
         "lecture",
         "zendesk"
       ],
-      "group": "Utilisateurs"
+      "group": "Utilisateurs",
+      "risk": "safe"
     },
     {
       "key": "zd_user_update",
@@ -1721,7 +1729,8 @@
         "mise-à-jour",
         "zendesk"
       ],
-      "group": "Utilisateurs"
+      "group": "Utilisateurs",
+      "risk": "write"
     },
     {
       "key": "zd_users_list",
@@ -1787,7 +1796,8 @@
         "liste",
         "zendesk"
       ],
-      "group": "Utilisateurs"
+      "group": "Utilisateurs",
+      "risk": "safe"
     },
     {
       "key": "zd_user_search",
@@ -1849,7 +1859,8 @@
         "recherche",
         "zendesk"
       ],
-      "group": "Utilisateurs"
+      "group": "Utilisateurs",
+      "risk": "safe"
     },
     {
       "key": "zd_organization_create",
@@ -1920,7 +1931,8 @@
         "création",
         "zendesk"
       ],
-      "group": "Organisations"
+      "group": "Organisations",
+      "risk": "write"
     },
     {
       "key": "zd_organization_get",
@@ -1982,7 +1994,8 @@
         "lecture",
         "zendesk"
       ],
-      "group": "Organisations"
+      "group": "Organisations",
+      "risk": "safe"
     },
     {
       "key": "zd_organizations_list",
@@ -2048,7 +2061,8 @@
         "liste",
         "zendesk"
       ],
-      "group": "Organisations"
+      "group": "Organisations",
+      "risk": "safe"
     },
     {
       "key": "zd_group_get",
@@ -2110,7 +2124,8 @@
         "lecture",
         "zendesk"
       ],
-      "group": "Groupes"
+      "group": "Groupes",
+      "risk": "safe"
     },
     {
       "key": "zd_groups_list",
@@ -2157,7 +2172,8 @@
         "liste",
         "zendesk"
       ],
-      "group": "Groupes"
+      "group": "Groupes",
+      "risk": "safe"
     },
     {
       "key": "zd_comment_create",
@@ -2256,7 +2272,8 @@
         "création",
         "zendesk"
       ],
-      "group": "Commentaires"
+      "group": "Commentaires",
+      "risk": "write"
     },
     {
       "key": "zd_comments_list",
@@ -2318,7 +2335,8 @@
         "liste",
         "zendesk"
       ],
-      "group": "Commentaires"
+      "group": "Commentaires",
+      "risk": "write"
     },
     {
       "key": "zd_tags_add",
@@ -2394,7 +2412,8 @@
         "création",
         "zendesk"
       ],
-      "group": "Tags"
+      "group": "Tags",
+      "risk": "write"
     },
     {
       "key": "zd_tags_remove",
@@ -2470,7 +2489,8 @@
         "suppression",
         "zendesk"
       ],
-      "group": "Tags"
+      "group": "Tags",
+      "risk": "destructive"
     },
     {
       "key": "zd_macros_list",
@@ -2517,7 +2537,8 @@
         "liste",
         "zendesk"
       ],
-      "group": "Macros"
+      "group": "Macros",
+      "risk": "safe"
     },
     {
       "key": "zd_macro_apply",
@@ -2593,7 +2614,8 @@
         "lecture",
         "zendesk"
       ],
-      "group": "Macros"
+      "group": "Macros",
+      "risk": "safe"
     },
     {
       "key": "zd_satisfaction_list",
@@ -2650,7 +2672,8 @@
         "liste",
         "zendesk"
       ],
-      "group": "Satisfaction"
+      "group": "Satisfaction",
+      "risk": "safe"
     },
     {
       "key": "zd_webhook_event",
@@ -2718,7 +2741,8 @@
         "événement",
         "zendesk"
       ],
-      "group": "Événements"
+      "group": "Événements",
+      "risk": "safe"
     }
   ]
 }

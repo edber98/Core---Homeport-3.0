@@ -745,7 +745,9 @@
       "tags": [
         "envoi",
         "email"
-      ]
+      ],
+      "risk": "write",
+      "riskReason": "Envoi d'un email (action externe visible)"
     },
     {
       "key": "email_read",
@@ -823,7 +825,9 @@
       "tags": [
         "téléchargement",
         "email"
-      ]
+      ],
+      "risk": "safe",
+      "riskReason": "Lecture d'emails"
     },
     {
       "key": "email_new_message",
@@ -870,7 +874,8 @@
       "tags": [
         "événement",
         "email"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "email_list_labels",
@@ -917,7 +922,9 @@
       "tags": [
         "liste",
         "email"
-      ]
+      ],
+      "risk": "safe",
+      "riskReason": "Liste les labels (lecture)"
     },
     {
       "key": "email_add_label",
@@ -993,7 +1000,9 @@
       "tags": [
         "création",
         "email"
-      ]
+      ],
+      "risk": "write",
+      "riskReason": "Ajoute un label (réversible)"
     },
     {
       "key": "email_remove_label",
@@ -1069,7 +1078,9 @@
       "tags": [
         "suppression",
         "email"
-      ]
+      ],
+      "risk": "write",
+      "riskReason": "Retire un label (réversible)"
     }
   ]
 }

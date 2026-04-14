@@ -180,7 +180,8 @@
       "tags": [
         "envoi",
         "telegram"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "tg_forward_message",
@@ -280,7 +281,8 @@
       "tags": [
         "envoi",
         "telegram"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "tg_copy_message",
@@ -380,7 +382,8 @@
       "tags": [
         "envoi",
         "telegram"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "tg_edit_message",
@@ -498,7 +501,8 @@
       "tags": [
         "mise-à-jour",
         "telegram"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "tg_delete_message",
@@ -575,7 +579,8 @@
       "tags": [
         "suppression",
         "telegram"
-      ]
+      ],
+      "risk": "destructive"
     },
     {
       "key": "tg_send_photo",
@@ -690,7 +695,8 @@
       "tags": [
         "envoi",
         "telegram"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "tg_send_document",
@@ -778,7 +784,8 @@
       "tags": [
         "envoi",
         "telegram"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "tg_send_location",
@@ -878,7 +885,8 @@
       "tags": [
         "envoi",
         "telegram"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "tg_send_inline_keyboard",
@@ -964,7 +972,8 @@
       "tags": [
         "envoi",
         "telegram"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "tg_answer_callback",
@@ -1045,7 +1054,8 @@
       "tags": [
         "envoi",
         "telegram"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "tg_edit_reply_markup",
@@ -1131,7 +1141,8 @@
       "tags": [
         "mise-à-jour",
         "telegram"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "tg_get_chat",
@@ -1194,7 +1205,8 @@
       "tags": [
         "lecture",
         "telegram"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "tg_get_chat_members_count",
@@ -1257,7 +1269,8 @@
       "tags": [
         "lecture",
         "telegram"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "tg_get_chat_member",
@@ -1334,7 +1347,8 @@
       "tags": [
         "lecture",
         "telegram"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "tg_ban_chat_member",
@@ -1420,7 +1434,8 @@
       "tags": [
         "mise-à-jour",
         "telegram"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "tg_unban_chat_member",
@@ -1507,7 +1522,8 @@
       "tags": [
         "mise-à-jour",
         "telegram"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "tg_set_chat_title",
@@ -1584,7 +1600,8 @@
       "tags": [
         "mise-à-jour",
         "telegram"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "tg_get_me",
@@ -1632,7 +1649,8 @@
       "tags": [
         "lecture",
         "telegram"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "tg_get_updates",
@@ -1718,7 +1736,8 @@
       "tags": [
         "lecture",
         "telegram"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "tg_set_webhook",
@@ -1809,7 +1828,8 @@
         "mise-à-jour",
         "événement",
         "telegram"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "tg_send_sticker",
@@ -1888,7 +1908,8 @@
       "tags": [
         "envoi",
         "telegram"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "tg_send_video",
@@ -2003,7 +2024,8 @@
       "tags": [
         "envoi",
         "telegram"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "tg_send_voice",
@@ -2100,7 +2122,8 @@
       "tags": [
         "envoi",
         "telegram"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "tg_send_poll",
@@ -2233,7 +2256,8 @@
       "tags": [
         "envoi",
         "telegram"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "tg_send_contact",
@@ -2333,7 +2357,8 @@
       "tags": [
         "envoi",
         "telegram"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "tg_send_venue",
@@ -2452,7 +2477,8 @@
       "tags": [
         "envoi",
         "telegram"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "tg_pin_message",
@@ -2538,7 +2564,8 @@
       "tags": [
         "mise-à-jour",
         "telegram"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "tg_unpin_message",
@@ -2610,7 +2637,8 @@
       "tags": [
         "mise-à-jour",
         "telegram"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "tg_webhook_event",
@@ -2657,7 +2685,8 @@
       "tags": [
         "événement",
         "telegram"
-      ]
+      ],
+      "risk": "safe"
     }
   ],
   "variables": {
@@ -3024,70 +3053,90 @@
           "key": "update_id",
           "label": "ID de mise à jour",
           "description": "Identifiant unique de la mise à jour.",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         },
         {
           "type": "textarea",
           "key": "message_text",
           "label": "Texte du message",
           "description": "Texte du message, légende de fichier ou données de callback.",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         },
         {
           "type": "text",
           "key": "message_chat_id",
           "label": "ID du chat",
           "description": "Identifiant du chat du message.",
-          "col": { "xs": 12 }
+          "col": {
+            "xs": 12
+          }
         },
         {
           "type": "text",
           "key": "message_from_id",
           "label": "ID de l'expéditeur",
           "description": "Identifiant de l'expéditeur.",
-          "col": { "xs": 12 }
+          "col": {
+            "xs": 12
+          }
         },
         {
           "type": "text",
           "key": "message_from_name",
           "label": "Prénom de l'expéditeur",
           "description": "Prénom de l'utilisateur qui a envoyé le message.",
-          "col": { "xs": 12 }
+          "col": {
+            "xs": 12
+          }
         },
         {
           "type": "text",
           "key": "message_from_username",
           "label": "Nom d'utilisateur",
           "description": "Username Telegram de l'expéditeur (sans @).",
-          "col": { "xs": 12 }
+          "col": {
+            "xs": 12
+          }
         },
         {
           "type": "text",
           "key": "callback_data",
           "label": "Données du callback",
           "description": "Données du callback (si applicable).",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         },
         {
           "type": "text",
           "key": "file_type",
           "label": "Type de fichier",
           "description": "Type de pièce jointe : photo, document, video, audio, voice, sticker, ou vide.",
-          "col": { "xs": 12 }
+          "col": {
+            "xs": 12
+          }
         },
         {
           "type": "text",
           "key": "file_name",
           "label": "Nom du fichier",
           "description": "Nom du fichier reçu.",
-          "col": { "xs": 12 }
+          "col": {
+            "xs": 12
+          }
         },
         {
           "type": "file",
           "key": "file",
           "label": "Fichier",
           "description": "Pièce jointe téléchargée depuis Telegram (fileRef).",
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         }
       ]
     },

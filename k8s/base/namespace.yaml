@@ -1,0 +1,11 @@
+# Namespace Homeport — un par client (multi-tenant Rancher).
+# En pratique, le namespace est créé par Rancher avant le kubectl apply.
+# Décommenter uniquement pour un déploiement manuel hors Rancher.
+#
+# apiVersion: v1
+# kind: Namespace
+# metadata:
+#   name: homeport-client
+#   labels:
+#     app.kubernetes.io/part-of: homeport
+#     tier: application

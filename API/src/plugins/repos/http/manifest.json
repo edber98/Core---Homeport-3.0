@@ -255,7 +255,8 @@
       "group": "Webhooks",
       "tags": [
         "http"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "http",
@@ -377,7 +378,9 @@
       "group": "Call API",
       "tags": [
         "http"
-      ]
+      ],
+      "risk": "elevated",
+      "riskReason": "Appel HTTP arbitraire (URL/méthode libre)"
     }
   ]
 }

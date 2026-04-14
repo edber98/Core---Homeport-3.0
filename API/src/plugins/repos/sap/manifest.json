@@ -1471,7 +1471,8 @@
       "tags": [
         "création",
         "SAP"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "sap_bp_get",
@@ -1533,7 +1534,8 @@
       "tags": [
         "lecture",
         "SAP"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "sap_bp_update",
@@ -1613,7 +1615,8 @@
       "tags": [
         "mise-à-jour",
         "SAP"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "sap_bp_delete",
@@ -1675,7 +1678,8 @@
       "tags": [
         "suppression",
         "SAP"
-      ]
+      ],
+      "risk": "destructive"
     },
     {
       "key": "sap_bp_list",
@@ -1752,7 +1756,8 @@
       "tags": [
         "liste",
         "SAP"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "sap_sales_order_create",
@@ -1865,7 +1870,8 @@
       "tags": [
         "création",
         "SAP"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "sap_sales_order_get",
@@ -1927,7 +1933,8 @@
       "tags": [
         "lecture",
         "SAP"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "sap_sales_order_update",
@@ -1998,7 +2005,8 @@
       "tags": [
         "mise-à-jour",
         "SAP"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "sap_sales_order_item_add",
@@ -2092,7 +2100,8 @@
       "tags": [
         "création",
         "SAP"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "sap_sales_orders_list",
@@ -2169,7 +2178,8 @@
       "tags": [
         "liste",
         "SAP"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "sap_purchase_order_create",
@@ -2273,7 +2283,8 @@
       "tags": [
         "création",
         "SAP"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "sap_purchase_order_get",
@@ -2335,7 +2346,8 @@
       "tags": [
         "lecture",
         "SAP"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "sap_purchase_order_update",
@@ -2406,7 +2418,8 @@
       "tags": [
         "mise-à-jour",
         "SAP"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "sap_purchase_orders_list",
@@ -2483,7 +2496,8 @@
       "tags": [
         "liste",
         "SAP"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "sap_material_create",
@@ -2577,7 +2591,8 @@
       "tags": [
         "création",
         "SAP"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "sap_material_get",
@@ -2639,7 +2654,8 @@
       "tags": [
         "lecture",
         "SAP"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "sap_material_update",
@@ -2719,7 +2735,8 @@
       "tags": [
         "mise-à-jour",
         "SAP"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "sap_materials_list",
@@ -2796,7 +2813,8 @@
       "tags": [
         "liste",
         "SAP"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "sap_billing_doc_get",
@@ -2858,7 +2876,8 @@
       "tags": [
         "lecture",
         "SAP"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "sap_billing_docs_list",
@@ -2935,7 +2954,8 @@
       "tags": [
         "liste",
         "SAP"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "sap_billing_doc_items_list",
@@ -3017,7 +3037,8 @@
       "tags": [
         "liste",
         "SAP"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "sap_gl_account_get",
@@ -3093,7 +3114,8 @@
       "tags": [
         "lecture",
         "SAP"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "sap_gl_accounts_list",
@@ -3179,7 +3201,8 @@
       "tags": [
         "liste",
         "SAP"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "sap_cost_center_get",
@@ -3255,7 +3278,8 @@
       "tags": [
         "lecture",
         "SAP"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "sap_cost_centers_list",
@@ -3332,7 +3356,8 @@
       "tags": [
         "liste",
         "SAP"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "sap_production_order_get",
@@ -3394,7 +3419,8 @@
       "tags": [
         "lecture",
         "SAP"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "sap_production_order_confirm",
@@ -3483,7 +3509,9 @@
       "tags": [
         "mise-à-jour",
         "SAP"
-      ]
+      ],
+      "risk": "destructive",
+      "riskReason": "Confirme un ordre de fabrication (engageant)"
     },
     {
       "key": "sap_production_orders_list",
@@ -3560,7 +3588,8 @@
       "tags": [
         "liste",
         "SAP"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "sap_odata_get",
@@ -3622,7 +3651,8 @@
       "tags": [
         "lecture",
         "SAP"
-      ]
+      ],
+      "risk": "elevated"
     },
     {
       "key": "sap_odata_post",
@@ -3693,7 +3723,8 @@
       "tags": [
         "envoi",
         "SAP"
-      ]
+      ],
+      "risk": "elevated"
     }
   ]
 }

@@ -32,6 +32,12 @@ const NodeTemplateSchema = new Schema({
   output_array_field: { type: String, default: undefined },
   output_schema_field: { type: String, default: undefined },
   outputSchema: { type: [Schema.Types.Mixed], default: undefined },
+  // Risk classification consumed by the AI assistant / permission layer.
+  // Values: safe | write | destructive | elevated. Defaults to 'write' when absent.
+  risk: { type: String, enum: ['safe', 'write', 'destructive', 'elevated'], default: 'write', index: true },
+  riskReason: { type: String },
+  // Free-form metadata bag (also includes risk/riskReason mirrored for convenience).
+  metadata: { type: Schema.Types.Mixed, default: undefined },
   checksumArgs: { type: String },
   checksumFeature: { type: String },
   // Origin repo (optional)

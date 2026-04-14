@@ -1,0 +1,138 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: homeport-api-netpol
+  labels:
+    app: homeport-api
+    component: security
+spec:
+  podSelector:
+    matchLabels:
+      app: homeport-api
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    # Autorise uniquement le trafic venant de l'ingress-nginx
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: ingress-nginx
+      ports:
+        - protocol: TCP
+          port: 3000
+  egress:
+    # DNS (kube-dns) — nécessaire pour tout résoudre
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+    # Redis interne
+    - to:
+        - podSelector:
+            matchLabels:
+              app: redis
+      ports:
+        - protocol: TCP
+          port: 6379
+    # LLM APIs + intégrations métier externes (HTTPS).
+    # On autorise tout le port 443 : restreindre par IP est fragile
+    # (Anthropic/OpenAI/connecteurs utilisent CDN avec IPs tournantes).
+    - to:
+        - ipBlock:
+            cidr: 0.0.0.0/0
+            except:
+              - 10.0.0.0/8
+              - 172.16.0.0/12
+              - 192.168.0.0/16
+              - 169.254.0.0/16
+      ports:
+        - protocol: TCP
+          port: 443
+        - protocol: TCP
+          port: 80
+    # MongoDB — si externe (CIDR à adapter selon l'infra)
+    - to:
+        - ipBlock:
+            cidr: 10.0.0.0/8
+      ports:
+        - protocol: TCP
+          port: 27017
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: homeport-ai-worker-netpol
+  labels:
+    app: homeport-ai-worker
+    component: security
+spec:
+  podSelector:
+    matchLabels:
+      app: homeport-ai-worker
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress: []  # Aucun trafic entrant (pas de serveur HTTP)
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+      ports:
+        - protocol: UDP
+          port: 53
+    - to:
+        - podSelector:
+            matchLabels:
+              app: redis
+      ports:
+        - protocol: TCP
+          port: 6379
+    - to:
+        - ipBlock:
+            cidr: 0.0.0.0/0
+            except:
+              - 10.0.0.0/8
+              - 172.16.0.0/12
+              - 192.168.0.0/16
+      ports:
+        - protocol: TCP
+          port: 443
+    - to:
+        - ipBlock:
+            cidr: 10.0.0.0/8
+      ports:
+        - protocol: TCP
+          port: 27017
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: homeport-redis-netpol
+  labels:
+    app: redis
+    component: security
+spec:
+  podSelector:
+    matchLabels:
+      app: redis
+  policyTypes:
+    - Ingress
+  ingress:
+    # Uniquement les pods Homeport (API + workers)
+    - from:
+        - podSelector:
+            matchLabels:
+              app: homeport-api
+        - podSelector:
+            matchLabels:
+              app: homeport-ai-worker
+      ports:
+        - protocol: TCP
+          port: 6379

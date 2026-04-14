@@ -248,7 +248,8 @@
       "tags": [
         "création",
         "zoom"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "zoom_meeting_get",
@@ -313,7 +314,8 @@
       "tags": [
         "lecture",
         "zoom"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "zoom_meeting_update",
@@ -430,7 +432,8 @@
       "tags": [
         "mise-à-jour",
         "zoom"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "zoom_meeting_delete",
@@ -495,7 +498,8 @@
       "tags": [
         "suppression",
         "zoom"
-      ]
+      ],
+      "risk": "destructive"
     },
     {
       "key": "zoom_meetings_list",
@@ -598,7 +602,8 @@
       "tags": [
         "liste",
         "zoom"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "zoom_meeting_registrants_list",
@@ -663,7 +668,8 @@
       "tags": [
         "liste",
         "zoom"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "zoom_meeting_participants_list",
@@ -728,7 +734,8 @@
       "tags": [
         "liste",
         "zoom"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "zoom_webinar_create",
@@ -873,7 +880,8 @@
       "tags": [
         "création",
         "zoom"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "zoom_webinar_get",
@@ -938,7 +946,8 @@
       "tags": [
         "lecture",
         "zoom"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "zoom_webinar_update",
@@ -1044,7 +1053,8 @@
       "tags": [
         "mise-à-jour",
         "zoom"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "zoom_webinar_delete",
@@ -1109,7 +1119,8 @@
       "tags": [
         "suppression",
         "zoom"
-      ]
+      ],
+      "risk": "destructive"
     },
     {
       "key": "zoom_webinars_list",
@@ -1182,7 +1193,8 @@
       "tags": [
         "liste",
         "zoom"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "zoom_user_get",
@@ -1243,7 +1255,8 @@
       "tags": [
         "lecture",
         "zoom"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "zoom_users_list",
@@ -1334,7 +1347,8 @@
       "tags": [
         "liste",
         "zoom"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "zoom_user_get_settings",
@@ -1395,7 +1409,8 @@
       "tags": [
         "lecture",
         "zoom"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "zoom_user_update",
@@ -1504,7 +1519,8 @@
       "tags": [
         "mise-à-jour",
         "zoom"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "zoom_recordings_list",
@@ -1616,7 +1632,8 @@
         "liste",
         "lecture",
         "zoom"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "zoom_meeting_recordings",
@@ -1681,7 +1698,8 @@
       "tags": [
         "lecture",
         "zoom"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "zoom_recording_delete",
@@ -1747,7 +1765,8 @@
         "suppression",
         "lecture",
         "zoom"
-      ]
+      ],
+      "risk": "destructive"
     },
     {
       "key": "zoom_recording_get_settings",
@@ -1812,7 +1831,8 @@
       "tags": [
         "lecture",
         "zoom"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "zoom_dashboard_meetings",
@@ -1935,7 +1955,8 @@
       "tags": [
         "lecture",
         "zoom"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "zoom_reports_meetings",
@@ -2044,7 +2065,8 @@
       "tags": [
         "lecture",
         "zoom"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "zoom_phone_users_list",
@@ -2131,7 +2153,8 @@
       "tags": [
         "liste",
         "zoom"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "zoom_contacts_list",
@@ -2218,7 +2241,8 @@
       "tags": [
         "liste",
         "zoom"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "zoom_contact_get",
@@ -2283,7 +2307,8 @@
       "tags": [
         "lecture",
         "zoom"
-      ]
+      ],
+      "risk": "safe"
     }
   ],
   "variables": {

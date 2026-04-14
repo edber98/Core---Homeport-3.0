@@ -134,7 +134,9 @@
         "displayDescription": false
       },
       "authorize_catch_error": false,
-      "authorize_skip_error": false
+      "authorize_skip_error": false,
+      "risk": "safe",
+      "riskReason": "Évaluation de condition, pas d'effet de bord"
     },
     {
       "key": "loop",
@@ -276,7 +278,8 @@
         "displayDescription": false
       },
       "authorize_catch_error": false,
-      "authorize_skip_error": false
+      "authorize_skip_error": false,
+      "risk": "elevated"
     },
     {
       "key": "core_barrier",
@@ -295,7 +298,10 @@
           "name": "In",
           "type": "any",
           "multiple": true,
-          "accepts": ["any", "payload"]
+          "accepts": [
+            "any",
+            "payload"
+          ]
         }
       ],
       "outputHandles": [
@@ -305,9 +311,21 @@
           "type": "payload",
           "schema": {
             "fields": [
-              { "key": "type", "type": "text", "label": "Type" },
-              { "key": "arrived", "type": "number", "label": "Branches arrivées" },
-              { "key": "expected", "type": "number", "label": "Branches attendues" }
+              {
+                "key": "type",
+                "type": "text",
+                "label": "Type"
+              },
+              {
+                "key": "arrived",
+                "type": "number",
+                "label": "Branches arrivées"
+              },
+              {
+                "key": "expected",
+                "type": "number",
+                "label": "Branches attendues"
+              }
             ]
           }
         }
@@ -323,7 +341,9 @@
         "displayDescription": false
       },
       "authorize_catch_error": false,
-      "authorize_skip_error": false
+      "authorize_skip_error": false,
+      "risk": "safe",
+      "riskReason": "Synchronisation, pas d'effet de bord"
     },
     {
       "key": "core_race",
@@ -342,7 +362,10 @@
           "name": "In",
           "type": "any",
           "multiple": true,
-          "accepts": ["any", "payload"]
+          "accepts": [
+            "any",
+            "payload"
+          ]
         }
       ],
       "outputHandles": [
@@ -352,10 +375,26 @@
           "type": "payload",
           "schema": {
             "fields": [
-              { "key": "type", "type": "text", "label": "Type" },
-              { "key": "winner", "type": "text", "label": "Branche gagnante" },
-              { "key": "arrived", "type": "number", "label": "Branches arrivées" },
-              { "key": "expected", "type": "number", "label": "Branches attendues" }
+              {
+                "key": "type",
+                "type": "text",
+                "label": "Type"
+              },
+              {
+                "key": "winner",
+                "type": "text",
+                "label": "Branche gagnante"
+              },
+              {
+                "key": "arrived",
+                "type": "number",
+                "label": "Branches arrivées"
+              },
+              {
+                "key": "expected",
+                "type": "number",
+                "label": "Branches attendues"
+              }
             ]
           }
         }
@@ -371,7 +410,9 @@
         "displayDescription": false
       },
       "authorize_catch_error": false,
-      "authorize_skip_error": false
+      "authorize_skip_error": false,
+      "risk": "safe",
+      "riskReason": "Synchronisation, pas d'effet de bord"
     },
     {
       "key": "delay",
@@ -400,8 +441,16 @@
           "type": "payload",
           "schema": {
             "fields": [
-              { "key": "ok", "type": "boolean", "label": "Succès" },
-              { "key": "waited", "type": "number", "label": "Temps attendu (ms)" }
+              {
+                "key": "ok",
+                "type": "boolean",
+                "label": "Succès"
+              },
+              {
+                "key": "waited",
+                "type": "number",
+                "label": "Temps attendu (ms)"
+              }
             ]
           }
         }
@@ -435,7 +484,9 @@
         "displayDescription": false
       },
       "description": "Attendre un certain temps",
-      "authorize_catch_error": true
+      "authorize_catch_error": true,
+      "risk": "safe",
+      "riskReason": "Attente passive, pas d'effet de bord"
     }
   ]
 }

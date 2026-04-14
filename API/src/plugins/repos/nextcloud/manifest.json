@@ -1372,7 +1372,8 @@
       "tags": [
         "liste",
         "Nextcloud"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "nc_file_get",
@@ -1433,7 +1434,8 @@
       "tags": [
         "lecture",
         "Nextcloud"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "nc_file_upload",
@@ -1511,7 +1513,8 @@
       "tags": [
         "création",
         "Nextcloud"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "nc_file_delete",
@@ -1572,7 +1575,9 @@
       "tags": [
         "suppression",
         "Nextcloud"
-      ]
+      ],
+      "risk": "destructive",
+      "riskReason": "Supprime un fichier Nextcloud"
     },
     {
       "key": "nc_file_move",
@@ -1647,7 +1652,8 @@
       "tags": [
         "mise-à-jour",
         "Nextcloud"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "nc_file_copy",
@@ -1722,7 +1728,8 @@
       "tags": [
         "création",
         "Nextcloud"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "nc_folder_create",
@@ -1783,7 +1790,8 @@
       "tags": [
         "création",
         "Nextcloud"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "nc_file_share",
@@ -1912,7 +1920,8 @@
       "tags": [
         "création",
         "Nextcloud"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "nc_file_shares_list",
@@ -1977,7 +1986,8 @@
       "tags": [
         "liste",
         "Nextcloud"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "nc_file_search",
@@ -2038,7 +2048,8 @@
       "tags": [
         "recherche",
         "Nextcloud"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "nc_talk_room_create",
@@ -2135,7 +2146,8 @@
       "tags": [
         "création",
         "Nextcloud"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "nc_talk_rooms_list",
@@ -2181,7 +2193,8 @@
       "tags": [
         "liste",
         "Nextcloud"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "nc_talk_room_get",
@@ -2242,7 +2255,8 @@
       "tags": [
         "lecture",
         "Nextcloud"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "nc_talk_room_delete",
@@ -2303,7 +2317,9 @@
       "tags": [
         "suppression",
         "Nextcloud"
-      ]
+      ],
+      "risk": "destructive",
+      "riskReason": "Supprime une conversation"
     },
     {
       "key": "nc_talk_send_message",
@@ -2387,7 +2403,8 @@
       "tags": [
         "envoi",
         "Nextcloud"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "nc_talk_messages_list",
@@ -2482,7 +2499,8 @@
       "tags": [
         "liste",
         "Nextcloud"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "nc_talk_add_participant",
@@ -2585,7 +2603,8 @@
       "tags": [
         "mise-à-jour",
         "Nextcloud"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "nc_talk_remove_participant",
@@ -2660,7 +2679,8 @@
       "tags": [
         "suppression",
         "Nextcloud"
-      ]
+      ],
+      "risk": "destructive"
     },
     {
       "key": "nc_talk_set_message_read",
@@ -2730,7 +2750,8 @@
       "tags": [
         "mise-à-jour",
         "Nextcloud"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "nc_talk_room_rename",
@@ -2805,7 +2826,9 @@
       "tags": [
         "mise-à-jour",
         "Nextcloud"
-      ]
+      ],
+      "risk": "write",
+      "riskReason": "Renomme une conversation"
     },
     {
       "key": "nc_calendar_list",
@@ -2851,7 +2874,8 @@
       "tags": [
         "liste",
         "Nextcloud"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "nc_calendar_create",
@@ -2935,7 +2959,8 @@
       "tags": [
         "création",
         "Nextcloud"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "nc_calendar_delete",
@@ -2996,7 +3021,8 @@
       "tags": [
         "suppression",
         "Nextcloud"
-      ]
+      ],
+      "risk": "destructive"
     },
     {
       "key": "nc_event_create",
@@ -3117,7 +3143,8 @@
       "tags": [
         "création",
         "Nextcloud"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "nc_event_get",
@@ -3192,7 +3219,8 @@
       "tags": [
         "lecture",
         "Nextcloud"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "nc_events_list",
@@ -3271,7 +3299,8 @@
       "tags": [
         "liste",
         "Nextcloud"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "nc_event_update",
@@ -3391,7 +3420,8 @@
       "tags": [
         "mise-à-jour",
         "Nextcloud"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "nc_event_delete",
@@ -3466,7 +3496,8 @@
       "tags": [
         "suppression",
         "Nextcloud"
-      ]
+      ],
+      "risk": "destructive"
     },
     {
       "key": "nc_users_list",
@@ -3539,7 +3570,8 @@
       "tags": [
         "liste",
         "Nextcloud"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "nc_user_get",
@@ -3599,7 +3631,8 @@
       "tags": [
         "lecture",
         "Nextcloud"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "nc_user_create",
@@ -3700,7 +3733,8 @@
       "tags": [
         "création",
         "Nextcloud"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "nc_user_update",
@@ -3810,7 +3844,8 @@
       "tags": [
         "mise-à-jour",
         "Nextcloud"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "nc_activity_list",
@@ -3893,7 +3928,8 @@
       "tags": [
         "liste",
         "Nextcloud"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "nc_notifications_list",
@@ -3938,7 +3974,8 @@
       "tags": [
         "liste",
         "Nextcloud"
-      ]
+      ],
+      "risk": "safe"
     }
   ]
 }

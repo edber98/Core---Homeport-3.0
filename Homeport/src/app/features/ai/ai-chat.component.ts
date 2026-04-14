@@ -44,6 +44,24 @@ const TOOL_LABELS: Record<string, string> = {
   deploy_flow: 'Déploiement', undeploy_flow: 'Arrêt production',
   get_deployment_status: 'Statut déploiement', start_run: 'Lancement exécution',
   list_runs: 'Historique', get_run_stats: 'Statistiques',
+  // Project FS tools
+  project_list_dir: 'Liste dossier projet', project_tree: 'Arborescence projet',
+  project_read_file: 'Lecture fichier projet', project_read_batch: 'Lecture multiple',
+  project_grep: 'Recherche texte', project_search: 'Recherche fichiers',
+  project_write_file: 'Écriture fichier', project_create_folder: 'Création dossier',
+  project_delete: 'Suppression fichier', project_move: 'Déplacement fichier',
+  project_refresh_tree: 'Actualisation arbo', project_sync_remote: 'Synchronisation distant',
+  // Web tools
+  web_search: 'Recherche web', web_fetch: 'Lecture page web', research_deep: 'Recherche approfondie',
+  // Code execution
+  execute_code: 'Exécution code', prepare_code_environment: 'Préparation environnement',
+  // Subagents
+  spawn_subagent: 'Sous-agent',
+  // Skills
+  skill_list: 'Liste skills', skill_get: 'Détails skill', skill_execute: 'Exécution skill',
+  // Document generation
+  generate_document: 'Génération document', edit_document: 'Édition document',
+  render_html_preview: 'Aperçu HTML', build_website: 'Construction site',
 };
 
 /** Human-readable labels for meta-tool arguments (non-execute_tool tools) */
@@ -378,11 +396,11 @@ interface StreamTool {
         <textarea
           nz-input
           [(ngModel)]="inputText"
-          placeholder="Écris un message..."
+          [placeholder]="placeholderText()"
           (keydown)="onInputKeydown($event)"
           (paste)="onPaste($event)"
           [nzAutosize]="{ minRows: 1, maxRows: 6 }"
-          [disabled]="audio.transcribing()">
+          [disabled]="audio.transcribing() || readOnly()">
         </textarea>
         <div class="input-suffix">
           <button *ngIf="ai.streaming()" nz-button nzType="text" nzSize="small" nzShape="circle" nzDanger (click)="stopStream()">
@@ -614,6 +632,21 @@ export class AiChatComponent implements AfterViewInit {
   pendingAttachments: AiAttachment[] = [];
   isDragOver = false;
   maxFiles = AI_MAX_FILES;
+
+  // V2 — permission-based chat behavior
+  readOnly(): boolean {
+    const t = this.ai.currentThread() as any;
+    return t?._sharedPermission === 'view';
+  }
+  commentMode(): boolean {
+    const t = this.ai.currentThread() as any;
+    return t?._sharedPermission === 'comment';
+  }
+  placeholderText(): string {
+    if (this.readOnly()) return "Vous n'avez pas l'autorisation de répondre";
+    if (this.commentMode()) return 'Écrire un commentaire...';
+    return 'Écris un message...';
+  }
 
   // Auto-scroll: only scroll if user is near the bottom
   private _userAtBottom = true;
