@@ -66,7 +66,7 @@ import { environment } from '../../../environments/environment';
                 <img *ngIf="!p.iconUrl && !p.iconClass" [src]="simpleIconUrlWithColor(p.id, fgColor(p.color))" alt="" />
               </ng-container>
               <ng-template #providerFallback>
-                <span>{{ (c.providerId || c.name || 'C') | slice:0:1 | uppercase }}</span>
+                <span>{{ (c.providerId || c.name || 'C').charAt(0) | uppercase }}</span>
               </ng-template>
             </div>
           </div>

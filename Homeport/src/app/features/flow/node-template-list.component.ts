@@ -41,7 +41,7 @@ import { environment } from '../../../environments/environment';
       <div class="grid" *ngIf="!loading && !error && templates.length>0">
         <div class="card" *ngFor="let it of templates" (click)="view(it)">
           <div class="leading">
-            <div class="avatar" *ngIf="!appFor(it); else appIcon">{{ (it.name || it.id) | slice:0:1 | uppercase }}</div>
+            <div class="avatar" *ngIf="!appFor(it); else appIcon">{{ (it.name || it.id || '').charAt(0) | uppercase }}</div>
             <ng-template #appIcon>
               <div class="app-icon" [style.background]="appFor(it)?.color || '#f3f4f6'">
                 <img *ngIf="appFor(it)?.iconUrl" [src]="appFor(it)?.iconUrl" alt="icon"/>
@@ -303,13 +303,29 @@ export class NodeTemplateListComponent implements OnInit, OnDestroy, AfterViewIn
 
   private attachScrollContainer(): void {
     const host = this.elRef?.nativeElement || null;
-    this.scrollContainer = host?.closest('.inner-content') as HTMLElement | null;
+    this.scrollContainer = this.resolveScrollContainer(host);
     try { this.scrollSub?.unsubscribe(); } catch {}
     if (!this.scrollContainer) return;
     this.scrollSub = fromEvent(this.scrollContainer, 'scroll')
       .pipe(auditTime(50))
       .subscribe(() => this.checkLoadMore(this.scrollContainer));
     this.checkLoadMore(this.scrollContainer);
+  }
+
+  private resolveScrollContainer(host: HTMLElement | null): HTMLElement | null {
+    if (!host) return null;
+    const byClass = (host.closest('.content') as HTMLElement | null) || (host.closest('.inner-content') as HTMLElement | null);
+    if (byClass) return byClass;
+    let cur: HTMLElement | null = host.parentElement;
+    while (cur) {
+      try {
+        const st = getComputedStyle(cur);
+        const oy = String(st?.overflowY || '').toLowerCase();
+        if (oy === 'auto' || oy === 'scroll' || oy === 'overlay') return cur;
+      } catch {}
+      cur = cur.parentElement;
+    }
+    return null;
   }
 
   private checkLoadMore(container?: HTMLElement | null): void {

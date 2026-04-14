@@ -60,7 +60,7 @@ import { CredentialEditDialogComponent } from './credential-edit-dialog.componen
           <div class="panel hero span-2">
             <div class="hero-main">
               <div class="icon fallback">
-                <span>{{ (d.providerId || d.name || 'C') | slice:0:1 | uppercase }}</span>
+                <span>{{ (d.providerId || d.name || 'C').charAt(0) | uppercase }}</span>
               </div>
               <div class="hero-meta">
                 <div class="hero-title">{{ d.name || 'Credential' }}</div>
