@@ -157,11 +157,30 @@ function formatMessages(messages) {
         })),
       };
     }
-    // Content arrays (multimodal) — convert to OpenAI format
+    // Content arrays (multimodal) — convert to OpenAI Chat Completions format
     if (Array.isArray(m.content)) {
       const parts = m.content.map(b => {
         if (b.type === 'image') {
-          return { type: 'image_url', image_url: { url: `data:${b.media_type};base64,${b.data}` } };
+          const src = b.source || { data: b.data, media_type: b.media_type };
+          return { type: 'image_url', image_url: { url: `data:${src.media_type};base64,${src.data}` } };
+        }
+        if (b.type === 'document') {
+          // OpenAI Chat Completions supports input via "file" content part (type: 'file', file: {file_data})
+          const src = b.source || { data: b.data, media_type: b.media_type || 'application/pdf' };
+          return {
+            type: 'file',
+            file: {
+              filename: b.name || 'document.pdf',
+              file_data: `data:${src.media_type};base64,${src.data}`,
+            },
+          };
+        }
+        if (b.type === 'input_audio' || b.type === 'audio') {
+          const src = b.source || { data: b.data, media_type: b.media_type || 'audio/mpeg' };
+          return {
+            type: 'input_audio',
+            input_audio: { data: src.data, format: (src.media_type || '').split('/').pop() || 'mp3' },
+          };
         }
         return { type: 'text', text: b.text || '' };
       });

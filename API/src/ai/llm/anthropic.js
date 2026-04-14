@@ -145,11 +145,16 @@ function formatMessages(messages) {
 
     if (m.role === 'tool') {
       const toolContent = [];
-      // Support multimodal tool results (text + images)
+      // Support multimodal tool results (text + images + PDFs documents)
       if (Array.isArray(m.content)) {
         for (const b of m.content) {
           if (b.type === 'image') {
-            toolContent.push({ type: 'image', source: { type: 'base64', media_type: b.media_type, data: b.data } });
+            const src = b.source || { type: 'base64', media_type: b.media_type, data: b.data };
+            toolContent.push({ type: 'image', source: src });
+          } else if (b.type === 'document') {
+            // Anthropic supporte nativement les PDF via type:'document'
+            const src = b.source || { type: 'base64', media_type: b.media_type || 'application/pdf', data: b.data };
+            toolContent.push({ type: 'document', source: src });
           } else {
             toolContent.push({ type: 'text', text: b.text || '' });
           }
@@ -187,7 +192,12 @@ function formatMessages(messages) {
     if (Array.isArray(m.content)) {
       const blocks = m.content.map(b => {
         if (b.type === 'image') {
-          return { type: 'image', source: { type: 'base64', media_type: b.media_type, data: b.data } };
+          const src = b.source || { type: 'base64', media_type: b.media_type, data: b.data };
+          return { type: 'image', source: src };
+        }
+        if (b.type === 'document') {
+          const src = b.source || { type: 'base64', media_type: b.media_type || 'application/pdf', data: b.data };
+          return { type: 'document', source: src };
         }
         return { type: 'text', text: b.text || '' };
       });

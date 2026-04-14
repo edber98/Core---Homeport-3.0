@@ -289,11 +289,44 @@ function formatInputItems(messages) {
     }
 
     if (m.role === 'tool') {
-      items.push({
-        type: 'function_call_output',
-        call_id: m.tool_call_id,
-        output: typeof m.content === 'string' ? m.content : JSON.stringify(m.content),
-      });
+      // Tool result multimodal : extrait les blocks image/document et les émet
+      // comme message user séparé (Responses API ne supporte pas encore les
+      // content parts non-texte dans function_call_output).
+      if (Array.isArray(m.content)) {
+        const textParts = m.content.filter(b => b.type === 'text' || typeof b === 'string')
+          .map(b => typeof b === 'string' ? b : (b.text || ''));
+        const mediaParts = m.content.filter(b => b && (b.type === 'image' || b.type === 'document'));
+        items.push({
+          type: 'function_call_output',
+          call_id: m.tool_call_id,
+          output: textParts.join('\n') || '[contenu multimodal ci-dessous]',
+        });
+        if (mediaParts.length) {
+          const parts = [
+            { type: 'input_text', text: `(Contenu retourné par le tool pour call ${m.tool_call_id})` },
+          ];
+          for (const b of mediaParts) {
+            const src = b.source || { type: 'base64', media_type: b.media_type, data: b.data };
+            if (b.type === 'image') {
+              parts.push({ type: 'input_image', image_url: `data:${src.media_type};base64,${src.data}` });
+            } else if (b.type === 'document') {
+              // OpenAI Responses API : input_file avec file_data (base64)
+              parts.push({
+                type: 'input_file',
+                filename: b.name || 'document.pdf',
+                file_data: `data:${src.media_type || 'application/pdf'};base64,${src.data}`,
+              });
+            }
+          }
+          items.push({ type: 'message', role: 'user', content: parts });
+        }
+      } else {
+        items.push({
+          type: 'function_call_output',
+          call_id: m.tool_call_id,
+          output: typeof m.content === 'string' ? m.content : JSON.stringify(m.content),
+        });
+      }
       continue;
     }
 
@@ -316,7 +349,23 @@ function formatInputItems(messages) {
     if (Array.isArray(m.content)) {
       const parts = m.content.map(b => {
         if (b.type === 'image') {
-          return { type: 'input_image', image_url: `data:${b.media_type};base64,${b.data}` };
+          const src = b.source || { data: b.data, media_type: b.media_type };
+          return { type: 'input_image', image_url: `data:${src.media_type};base64,${src.data}` };
+        }
+        if (b.type === 'document') {
+          const src = b.source || { data: b.data, media_type: b.media_type || 'application/pdf' };
+          return {
+            type: 'input_file',
+            filename: b.name || 'document.pdf',
+            file_data: `data:${src.media_type};base64,${src.data}`,
+          };
+        }
+        if (b.type === 'input_audio' || b.type === 'audio') {
+          const src = b.source || { data: b.data, media_type: b.media_type || 'audio/mpeg' };
+          return {
+            type: 'input_audio',
+            input_audio: { data: src.data, format: (src.media_type || '').split('/').pop() || 'mp3' },
+          };
         }
         return { type: 'input_text', text: b.text || '' };
       });

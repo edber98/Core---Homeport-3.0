@@ -495,14 +495,17 @@ async function* runHarness({ mode, messages, context, metadata, agentOverrides, 
       tool_calls: pendingToolCalls.map(tc => ({ id: tc.id, name: tc.name, input: tc.input })),
     });
     for (const tr of toolResults) {
-      // Si le tool a retourné des _contentBlocks (image/document), les propager au LLM
-      // pour qu'il lise nativement via sa vision (pattern Claude Code / Codex).
+      // Si le tool a retourné des _contentBlocks (image/document/audio), les propager au LLM
+      // pour qu'il lise nativement via sa vision/audio (pattern Claude Code / Codex).
+      // Chaque provider LLM (anthropic/openai/openai-responses) convertit les blocks
+      // vers son format natif (image, document PDF, input_file, input_audio).
       const resultObj = tr.result;
       const blocks = Array.isArray(resultObj?._contentBlocks) ? resultObj._contentBlocks : null;
+      const MULTIMODAL_TYPES = new Set(['image', 'document', 'audio', 'input_audio']);
       if (blocks && blocks.length) {
         const contentParts = [{ type: 'text', text: tr.content }];
         for (const b of blocks) {
-          if (b.type === 'image' || b.type === 'document') contentParts.push(b);
+          if (MULTIMODAL_TYPES.has(b.type)) contentParts.push(b);
         }
         conversation.push({ role: 'tool', tool_call_id: tr.id, content: contentParts });
       } else {

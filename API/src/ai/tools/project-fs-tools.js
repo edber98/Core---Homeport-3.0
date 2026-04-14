@@ -379,29 +379,121 @@ function createProjectFsExecutor(metadata = {}, emit = () => {}) {
       const g = _guardSensitive(p); if (g) return g;
       const gr = _guardInsideRoot(root, p); if (gr) return gr;
 
+      const name = p.split('/').filter(Boolean).pop() || 'file';
+      const ext = (name.split('.').pop() || '').toLowerCase();
+      const mimeMap = {
+        pdf: 'application/pdf',
+        png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', gif: 'image/gif', webp: 'image/webp',
+        docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        mp3: 'audio/mpeg', wav: 'audio/wav', ogg: 'audio/ogg', m4a: 'audio/mp4', flac: 'audio/flac',
+      };
+      const guessedMime = mimeMap[ext];
+      const wantMultimodal = input?.asText !== true;
+      const isPdfByExt = guessedMime === 'application/pdf';
+      const isImageByExt = guessedMime?.startsWith('image/');
+      const isAudioByExt = guessedMime?.startsWith('audio/');
+
+      // ── FAST PATH multimodal : PDF/image/audio → download en mémoire, pas de cache disque ──
+      if (wantMultimodal && (isPdfByExt || isImageByExt || isAudioByExt)) {
+        try {
+          const res = await _callConnector(root, 'read', { path: _resolveRelToRoot(root, p) }, metadata);
+          if (!res || res.ok === false) {
+            return { ok: false, error: `Lecture échouée : ${res?.error || 'unknown'} (status=${res?.status || '?'})` };
+          }
+
+          // Helpers pour résoudre différents formats de réponse connecteur
+          const { createFilesHelper } = require('../../services/file-storage');
+          const filesHelper = createFilesHelper({ workspaceId });
+          async function resolveFileRefToBuffer(ref) {
+            if (!ref) return null;
+            if (typeof ref === 'object' && (ref._type === 'fileRef' || ref.fileId)) {
+              const target = typeof ref === 'object' ? (ref.fileId || ref.id) : ref;
+              const { stream } = await filesHelper.resolve(ref);
+              const chunks = [];
+              for await (const c of stream) chunks.push(c);
+              return Buffer.concat(chunks);
+            }
+            return null;
+          }
+
+          let buf;
+          // 1. fileRef dans res.file (pattern nc_file_get, dropbox_download_file, etc.)
+          const fileRef = res.file || res.fileRef || (typeof res.fileId === 'string' ? { fileId: res.fileId } : null);
+          if (fileRef && typeof fileRef === 'object') {
+            try {
+              buf = await resolveFileRefToBuffer(fileRef);
+            } catch (e) {
+              console.error('[project_read_file] resolveFileRef failed:', e?.message);
+            }
+          }
+          // 2. Fallback : contenu inline (content/data/body/buffer/base64)
+          if (!buf) {
+            const rawPayload = res.content ?? res.data ?? res.body ?? res.buffer ?? res.base64;
+            if (Buffer.isBuffer(rawPayload)) {
+              buf = rawPayload;
+            } else if (rawPayload && typeof rawPayload === 'object' && rawPayload.type === 'Buffer' && Array.isArray(rawPayload.data)) {
+              buf = Buffer.from(rawPayload.data);
+            } else if (typeof rawPayload === 'string') {
+              const looksBase64 = /^[A-Za-z0-9+/=\r\n]+$/.test(rawPayload.slice(0, 200));
+              buf = looksBase64 ? Buffer.from(rawPayload, 'base64') : Buffer.from(rawPayload, 'utf8');
+            }
+          }
+          if (!buf) {
+            const keysLog = res && typeof res === 'object' ? Object.keys(res).join(',') : typeof res;
+            console.error('[project_read_file] Payload non reconnu, keys:', keysLog);
+            return { ok: false, error: `Contenu non récupérable depuis le connecteur (clés reçues: ${keysLog}).` };
+          }
+          // Validation magic bytes PDF
+          const isPdf = isPdfByExt || (buf.length > 4 && buf[0] === 0x25 && buf[1] === 0x50 && buf[2] === 0x44 && buf[3] === 0x46);
+          const mime = isPdf ? 'application/pdf' : guessedMime;
+          if (isPdf && buf.length > 32 * 1024 * 1024) {
+            return { ok: false, error: 'PDF trop volumineux pour analyse multimodale (>32 MB). Relance avec asText:true.' };
+          }
+          if (isAudioByExt && buf.length > 25 * 1024 * 1024) {
+            return { ok: false, error: 'Audio trop volumineux (>25 MB) pour analyse directe.' };
+          }
+          if (isImageByExt && buf.length > 10 * 1024 * 1024) {
+            return { ok: false, error: 'Image trop volumineuse (>10 MB).' };
+          }
+          const base64 = buf.toString('base64');
+          const blockType = isPdf ? 'document' : (isAudioByExt ? 'audio' : 'image');
+          return {
+            ok: true,
+            path: p,
+            mimeType: mime,
+            size: buf.length,
+            _contentBlocks: [{
+              type: blockType,
+              source: { type: 'base64', media_type: mime, data: base64 },
+              name,
+            }],
+            message: isPdf
+              ? `PDF "${name}" chargé. Analyse-le directement via ta vision (numéros, dates, montants, fournisseurs, lignes).`
+              : (isAudioByExt ? `Audio "${name}" chargé. Analyse/transcris-le directement.` : `Image "${name}" chargée.`),
+          };
+        } catch (e) {
+          return { ok: false, error: `Lecture multimodale échouée : ${e?.message || e}` };
+        }
+      }
+
+      // ── Flow normal : texte ou asText:true → passe par le cache disque ──
       const downloader = async (absPath) => {
         const res = await _callConnector(root, 'read',
           { path: _resolveRelToRoot(root, p), writeTo: absPath }, metadata);
         if (res && res.ok === false) {
           throw new Error(`download_failed: ${res.error || 'unknown'} (status=${res.status || '?'})`);
         }
-        // Accepte plusieurs formats de retour : .content, .data (nc_file_get), .body
-        const rawPayload = res?.content ?? res?.data ?? res?.body;
-        const encoding = res?.encoding || (res?.rawResponse ? 'base64' : null);
-        if (rawPayload !== undefined && !fs.existsSync(absPath)) {
-          await fsp.mkdir(path.dirname(absPath), { recursive: true });
-          const isBase64Guess = encoding === 'base64'
-            || (typeof rawPayload === 'string' && /^[A-Za-z0-9+/=\r\n]+$/.test(rawPayload.slice(0, 200)) && rawPayload.length > 100);
-          const buf = isBase64Guess
-            ? Buffer.from(rawPayload, 'base64')
-            : (Buffer.isBuffer(rawPayload) ? rawPayload : Buffer.from(String(rawPayload), 'utf8'));
-          await fsp.writeFile(absPath, buf);
-        } else if (res?.fileId && !fs.existsSync(absPath)) {
-          // File stored via file-storage — resolve and stream to absPath
+        await fsp.mkdir(path.dirname(absPath), { recursive: true });
+
+        // 1. fileRef retourné par le connecteur (pattern nc_file_get etc.)
+        const fileRef = res?.file || res?.fileRef;
+        const fileIdOnly = !fileRef && typeof res?.fileId === 'string' ? res.fileId : null;
+        if ((fileRef || fileIdOnly) && !fs.existsSync(absPath)) {
           try {
             const { createFilesHelper } = require('../../services/file-storage');
             const files = createFilesHelper({ workspaceId });
-            const { stream } = await files.resolve(res.fileId);
+            const { stream } = await files.resolve(fileRef || fileIdOnly);
             await new Promise((resolve, reject) => {
               const ws = fs.createWriteStream(absPath);
               stream.pipe(ws);
@@ -409,9 +501,22 @@ function createProjectFsExecutor(metadata = {}, emit = () => {}) {
               ws.on('error', reject);
               stream.on('error', reject);
             });
+            return { size: res?.size, contentType: res?.contentType, etag: res?.etag };
           } catch (e) {
-            throw new Error(`project_read_file: download failed (${e?.message})`);
+            throw new Error(`project_read_file: download via fileRef failed (${e?.message})`);
           }
+        }
+
+        // 2. Contenu inline (content/data/body)
+        const rawPayload = res?.content ?? res?.data ?? res?.body;
+        const encoding = res?.encoding || (res?.rawResponse ? 'base64' : null);
+        if (rawPayload !== undefined && !fs.existsSync(absPath)) {
+          const isBase64Guess = encoding === 'base64'
+            || (typeof rawPayload === 'string' && /^[A-Za-z0-9+/=\r\n]+$/.test(rawPayload.slice(0, 200)) && rawPayload.length > 100);
+          const buf = isBase64Guess
+            ? Buffer.from(rawPayload, 'base64')
+            : (Buffer.isBuffer(rawPayload) ? rawPayload : Buffer.from(String(rawPayload), 'utf8'));
+          await fsp.writeFile(absPath, buf);
         }
         return { size: res?.size, contentType: res?.contentType, etag: res?.etag };
       };
@@ -421,63 +526,7 @@ function createProjectFsExecutor(metadata = {}, emit = () => {}) {
           cacheRoot, threadId, workspaceId, relativePath: p, downloader,
         });
         const buf = await fsp.readFile(abs);
-        const name = p.split('/').filter(Boolean).pop() || 'file';
-        // Détection MIME par extension + magic bytes
-        const ext = (name.split('.').pop() || '').toLowerCase();
-        const mimeMap = {
-          pdf: 'application/pdf',
-          png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', gif: 'image/gif', webp: 'image/webp',
-          docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-          xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-        };
-        const guessedMime = mimeMap[ext];
-        // PDF magic bytes
-        const isPdf = guessedMime === 'application/pdf' || (buf.length > 4 && buf[0] === 0x25 && buf[1] === 0x50 && buf[2] === 0x44 && buf[3] === 0x46);
-        const isImage = guessedMime?.startsWith('image/');
-
-        // ── Mode multimodal : PDF/image retournés comme content blocks ──
-        // L'agent (Claude/GPT-4o) peut lire directement le fichier via sa vision,
-        // bien plus fiable qu'une extraction regex.
-        if (isPdf && input?.asText !== true) {
-          const base64 = buf.toString('base64');
-          // Cap taille (Anthropic limite ~32 MB par document)
-          if (buf.length > 32 * 1024 * 1024) {
-            return { ok: false, error: 'PDF trop volumineux pour analyse multimodale (>32 MB). Relance avec asText:true pour extraction texte.' };
-          }
-          return {
-            ok: true,
-            path: p,
-            mimeType: 'application/pdf',
-            size: buf.length,
-            _contentBlocks: [{
-              type: 'document',
-              source: { type: 'base64', media_type: 'application/pdf', data: base64 },
-              name,
-            }],
-            message: `PDF "${name}" chargé pour analyse multimodale. Lis-le directement via ta vision plutôt qu'un parsing regex.`,
-          };
-        }
-
-        if (isImage && input?.asText !== true) {
-          const base64 = buf.toString('base64');
-          if (buf.length > 10 * 1024 * 1024) {
-            return { ok: false, error: 'Image trop volumineuse (>10 MB).' };
-          }
-          return {
-            ok: true,
-            path: p,
-            mimeType: guessedMime,
-            size: buf.length,
-            _contentBlocks: [{
-              type: 'image',
-              source: { type: 'base64', media_type: guessedMime, data: base64 },
-              name,
-            }],
-            message: `Image "${name}" chargée pour analyse visuelle.`,
-          };
-        }
-
-        // ── Mode texte : text/csv/md/code/json, ou forcé via asText ──
+        // Mode texte uniquement ici (multimodal déjà retourné plus haut via fast-path)
         const isText = buf.length === 0 || buf.slice(0, Math.min(buf.length, 8000)).every(b =>
           b === 9 || b === 10 || b === 13 || (b >= 32 && b < 127) || b >= 128);
         return isText
