@@ -26,6 +26,7 @@ const TOOL_RISK = {
   search_tools:         'safe',
   get_tool_details:     'safe',
   render_html_preview:  'safe',
+  get_project_knowledge: 'safe',
 
   // ── writes (create / edit / sync) ──
   project_write_file:    'write',
@@ -36,15 +37,18 @@ const TOOL_RISK = {
   build_website:         'write',
   save_memory:           'write',
   save_project_memory:   'write',
+  set_project_knowledge: 'write',
 
   // ── destructive ──
   project_delete: 'destructive',
   project_move:   'destructive',
 
   // ── elevated ──
-  spawn_subagent: 'elevated',
-  execute_code:   'elevated',
-  research_deep:  'elevated',
+  spawn_subagent:  'elevated',
+  execute_code:    'elevated',
+  research_deep:   'elevated',
+  install_package: 'elevated',
+  display_image:   'safe',
 };
 
 /**

@@ -25,6 +25,7 @@ RUN apk add --no-cache \
       python-docx python-pptx openpyxl pandas python-dateutil \
       requests beautifulsoup4 lxml Pillow pypdf readability-lxml \
       matplotlib seaborn numpy \
+      reportlab qrcode[pil] pdfplumber markdown \
  && rm -rf /var/cache/apk/*
 
 # Librairies Node.js pré-installées globalement (utilisables depuis la sandbox
@@ -33,7 +34,7 @@ RUN apk add --no-cache \
 RUN npm install -g --omit=dev \
       pptxgenjs \
       date-fns csv-parse xlsx mammoth cheerio turndown undici @mozilla/readability \
-      archiver jsdom
+      archiver jsdom marked
 # Use the system Chromium installed by apk above (smaller image than playwright-deps)
 ENV PLAYWRIGHT_BROWSERS_PATH=/usr/lib/chromium
 ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1

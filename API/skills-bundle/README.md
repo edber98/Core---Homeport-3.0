@@ -81,23 +81,66 @@ Variable d'env `HOMEPORT_WORKSPACE` pour override `/workspace`.
 ## Runtimes disponibles (Dockerfile Alpine)
 
 - **Node 24** — `pptxgenjs`, `archiver`, `date-fns`, `cheerio`, `mammoth`,
-  `turndown`, `undici`, `@mozilla/readability`, `jsdom`, `xlsx`.
+  `turndown`, `undici`, `@mozilla/readability`, `jsdom`, `xlsx`, `marked`.
 - **Python 3** — `python-docx`, `python-pptx`, `openpyxl`, `pandas`, `numpy`,
-  `Pillow`, `lxml`, `beautifulsoup4`, `pypdf`, `readability-lxml`, `matplotlib`,
-  `seaborn`, `requests`.
-- **Chromium** (Alpine `chromium` + Playwright env vars) pour les tâches headless.
+  `Pillow`, `lxml`, `beautifulsoup4`, `pypdf`, `pdfplumber`, `readability-lxml`,
+  `matplotlib`, `seaborn`, `requests`, `reportlab`, `qrcode[pil]`, `markdown`.
+- **Chromium** (Alpine `chromium` + Playwright env vars) pour les tâches headless
+  (utilisé par `html-to-pdf` via `chromium --headless=new --print-to-pdf`).
 
 ## Skills actuels
 
-| Nom              | Runtime | Sortie | Usage                                                      |
-|------------------|---------|--------|------------------------------------------------------------|
-| `docx-create`    | python  | .docx  | Document Word à partir d'une spec (paragraphes, tableaux). |
-| `docx-edit`      | python  | .docx  | Édition d'un Word existant (replace, append, insert).      |
-| `pptx-create`    | python  | .pptx  | Présentation sobre (python-pptx, layouts standards).       |
-| `pptx-designed`  | node    | .pptx  | Présentation design (pptxgenjs, charts natifs, thèmes).    |
-| `xlsx-create`    | python  | .xlsx  | Classeur Excel stylé (formules, charts bar/line/pie).      |
-| `frontend-html`  | node    | .html  | Page HTML autonome ou mini site multi-pages (Tailwind CDN).|
-| `webapp-bundle`  | node    | .zip   | Bundle web multi-pages avec assets, framework, zippé.      |
+| Nom                | Runtime | Sortie | Usage                                                         | Source       |
+|--------------------|---------|--------|---------------------------------------------------------------|--------------|
+| `docx-create`      | python  | .docx  | Document Word (paragraphes, tableaux, images).                | Homeport     |
+| `docx-edit`        | python  | .docx  | Édition d'un Word existant (replace, append, insert).         | Homeport     |
+| `pptx-create`      | python  | .pptx  | Présentation sobre (python-pptx, layouts standards).          | Homeport     |
+| `pptx-designed`    | node    | .pptx  | Présentation design (pptxgenjs, charts natifs, thèmes).       | Homeport     |
+| `xlsx-create`      | python  | .xlsx  | Classeur Excel stylé (formules, charts bar/line/pie).         | Homeport     |
+| `frontend-html`    | node    | .html  | Page HTML autonome ou mini site multi-pages (Tailwind CDN).   | Homeport     |
+| `webapp-bundle`    | node    | .zip   | Bundle web multi-pages avec assets, framework, zippé.         | Homeport     |
+| `pdf-create`       | python  | .pdf   | Génère un PDF depuis spec JSON (titres, paragraphes, tables). | inspiré Anthropic/pdf |
+| `pdf-merge`        | python  | .pdf   | Fusion, extract de pages, rotation (pypdf).                   | inspiré Anthropic/pdf |
+| `pdf-extract`      | python  | .json  | Extraction texte + tableaux d'un PDF (pdfplumber).            | inspiré Anthropic/pdf |
+| `markdown-to-html` | node    | .html  | Markdown → HTML stylé (github/tailwind).                      | Homeport     |
+| `html-to-pdf`      | node    | .pdf   | HTML → PDF via Chromium headless.                             | Homeport     |
+| `qrcode-gen`       | python  | .png   | Génération de QR codes (URL, vCard, Wi-Fi…).                  | Homeport     |
+| `image-ops`        | python  | .png   | Resize, convert, crop, thumbnail, watermark (Pillow).         | Homeport     |
+| `csv-tools`        | python  | .csv   | Filter, select, aggregate, join CSV via pandas.               | Homeport     |
+
+## Comment l'agent utilise les skills
+
+L'agent AI expose trois outils qui interagissent avec ce bundle :
+
+- `skill_list(filter?)` — liste les skills disponibles (filtre par tag/runtime/query).
+- `skill_get(name)` — renvoie le body du `SKILL.md` complet pour qu'il sache
+  construire la spec JSON d'entrée.
+- `skill_execute({ skillName, input, inputFiles? })` — lance l'exécution
+  sandboxée. Le résultat renvoyé contient `fileId` + `mimeType` ; le fichier
+  est accessible ensuite via les canaux de file-storage Homeport.
+
+Exemple d'appel côté agent :
+
+```js
+// 1) Découverte
+await skill_list({ tag: 'pdf' });
+
+// 2) Récupération des instructions
+await skill_get('pdf-create');
+
+// 3) Exécution avec une spec
+await skill_execute({
+  skillName: 'pdf-create',
+  input: {
+    title: 'Rapport Q1',
+    blocks: [
+      { type: 'heading', level: 1, text: 'Résumé' },
+      { type: 'paragraph', text: 'Synthèse des ventes.' },
+      { type: 'table', headers: ['Mois', 'CA'], rows: [['Jan', 120], ['Fev', 135]] },
+    ],
+  },
+});
+```
 
 ## Créer un nouveau skill
 

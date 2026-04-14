@@ -52,6 +52,24 @@ function buildSystemPrompt(mode, ctx) {
     prompt += '\n\n## Mémoire du projet\n' + lines.join('\n');
   }
 
+  // Inject structured project knowledge (key/value) if available
+  if (Array.isArray(ctx._projectKnowledge) && ctx._projectKnowledge.length) {
+    // Sort: pinned first, then by key
+    const sorted = [...ctx._projectKnowledge].sort((a, b) => {
+      if (!!a.pinned !== !!b.pinned) return a.pinned ? -1 : 1;
+      return String(a.key).localeCompare(String(b.key));
+    });
+    const lines = sorted.map(e => {
+      const v = typeof e.value === 'string' ? `"${e.value}"` : JSON.stringify(e.value);
+      const desc = e.description ? ` (${e.description})` : '';
+      const pin = e.pinned ? ' [épinglé]' : '';
+      return `- ${e.key}: ${v}${desc}${pin}`;
+    });
+    prompt += '\n\n## CONNAISSANCES PROJET (référence manuelle — remplies par l\'utilisateur)\n'
+      + 'Infos durables sur le projet. Utilise-les AVANT de poser des questions au user.\n'
+      + lines.join('\n');
+  }
+
   // Inject custom instructions
   const custom = ctx.user?.preferences?.customInstructions;
   if (custom?.trim()) {

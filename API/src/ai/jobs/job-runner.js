@@ -8,7 +8,7 @@ const AiThread = require('../../db/models/ai-thread.model');
 const AiMessage = require('../../db/models/ai-message.model');
 const { buildContext } = require('../context/context-builder');
 const { runHarness } = require('../agent-harness');
-const { emitJobEvent, onJobEvent, waitForPermission } = require('./job-events');
+const { emitJobEvent, onJobEvent, emitThreadEvent, waitForPermission, waitForPlanApproval } = require('./job-events');
 
 const HEARTBEAT_INTERVAL_MS = 15_000;
 
@@ -25,8 +25,16 @@ async function createJob(opts) {
     metadata,
   } = opts;
 
-  const thread = await AiThread.findById(threadId).lean();
-  if (!thread) throw new Error('createJob: thread not found');
+  // Support ObjectId ou short ID (ait_xxx)
+  const { Types } = require('mongoose');
+  let thread = null;
+  if (threadId) {
+    if (Types.ObjectId.isValid(threadId)) {
+      thread = await AiThread.findById(threadId).lean();
+    }
+    if (!thread) thread = await AiThread.findOne({ id: String(threadId) }).lean();
+  }
+  if (!thread) throw new Error(`createJob: thread not found (id=${threadId})`);
 
   const job = await AiJob.create({
     threadId: thread._id,
@@ -71,14 +79,57 @@ function _buildJobContext(job, ac) {
   }
 
   function broadcast(event) {
-    // Persist critical side events; emit on job bus for live subscribers.
-    if (event?.type && !event.type.startsWith('heartbeat')) {
+    if (!event?.type) return;
+    // Enrichit avec identifiants pour UI (tag subagent / job)
+    const enriched = {
+      ...event,
+      _jobId: jobId,
+      _subagentType: job.subagentType || null,
+      _agentLabel: job.subagentType ? `Sous-agent ${job.subagentType}` : 'Agent principal',
+    };
+    if (!enriched.type.startsWith('heartbeat')) {
       AiJob.updateOne(
         { id: jobId },
-        { $push: { sideEvents: { $each: [event], $slice: -200 } } },
+        { $push: { sideEvents: { $each: [enriched], $slice: -200 } } },
       ).catch(() => {});
     }
-    emitJobEvent(jobId, event);
+    emitJobEvent(jobId, enriched);
+    // Forward vers le thread bus pour que les SSE actifs du thread reçoivent
+    // les events des subagents (canvas.*, ai.permission.*, etc.)
+    if (job.threadId) {
+      emitThreadEvent(String(job.threadId), enriched);
+    }
+    // Persist canvas.* events dans AiCanvasState pour l'UI après reload
+    if (enriched.type.startsWith('canvas.')) {
+      persistCanvasEvent(enriched).catch(() => {});
+    }
+  }
+
+  async function persistCanvasEvent(event) {
+    const AiCanvasState = require('../../db/models/ai-canvas-state.model');
+    const threadId = job.threadId;
+    if (!threadId) return;
+    const update = { $set: {}, $setOnInsert: { threadId } };
+    if (event.type === 'canvas.research.step') {
+      await AiCanvasState.updateOne(
+        { threadId },
+        { $push: { 'research.steps': { $each: [{
+          id: event.id || `${jobId}_${Date.now()}`,
+          type: event.stepType || event.kind || 'step',
+          status: event.status || 'running',
+          title: event.title || '',
+          url: event.url || null,
+          snippet: event.snippet || event.resultPreview || null,
+          resultPreview: event.resultPreview || null,
+          startedAt: new Date(),
+          _jobId: event._jobId,
+          _agentLabel: event._agentLabel,
+        }], $slice: -200 } } },
+        { upsert: true }
+      );
+    } else if (event.type === 'canvas.task.create' || event.type === 'canvas.task.update') {
+      // géré côté SSE handler si besoin
+    }
   }
 
   function onAbort(cb) {
@@ -101,6 +152,7 @@ function _buildJobContext(job, ac) {
     broadcast,
     onAbort,
     waitForPermission: (requestId, timeoutMs) => waitForPermission(jobId, requestId, timeoutMs),
+    waitForPlanApproval: (requestId, timeoutMs) => waitForPlanApproval(jobId, requestId, timeoutMs),
   };
 }
 
@@ -134,7 +186,12 @@ async function runJob(jobId, opts = {}) {
 
   try {
     // Load thread + context
-    const thread = await AiThread.findById(job.threadId).lean();
+    const { Types } = require('mongoose');
+    let thread = null;
+    if (job.threadId) {
+      if (Types.ObjectId.isValid(job.threadId)) thread = await AiThread.findById(job.threadId).lean();
+      if (!thread) thread = await AiThread.findOne({ id: String(job.threadId) }).lean();
+    }
     if (!thread) throw new Error('runJob: thread not found');
 
     const context = await buildContext({

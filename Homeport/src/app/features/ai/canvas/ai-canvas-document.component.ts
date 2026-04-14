@@ -8,11 +8,12 @@ import { NzEmptyModule } from 'ng-zorro-antd/empty';
 import { AiService } from '../ai.service';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import DOMPurify from 'dompurify';
+import { AiDiagramRendererComponent } from '../diagram/ai-diagram-renderer.component';
 
 @Component({
   selector: 'ai-canvas-document',
   standalone: true,
-  imports: [CommonModule, FormsModule, NzButtonModule, NzIconModule, NzSegmentedModule, NzEmptyModule],
+  imports: [CommonModule, FormsModule, NzButtonModule, NzIconModule, NzSegmentedModule, NzEmptyModule, AiDiagramRendererComponent],
   template: `
     <div class="doc-wrap" *ngIf="doc(); else empty">
       <div class="doc-toolbar">
@@ -31,9 +32,17 @@ import DOMPurify from 'dompurify';
 
       <div class="doc-body">
         <div class="preview-pane" *ngIf="viewMode === 'preview'">
-          <div class="preview-html" [innerHTML]="safeHtml()"></div>
+          <ai-diagram-renderer
+            *ngIf="isMermaid(); else htmlPreview"
+            [mermaid]="doc()?.rawMermaid || ''"
+            [title]="doc()?.title || ''"
+            [interactive]="true">
+          </ai-diagram-renderer>
+          <ng-template #htmlPreview>
+            <div class="preview-html" [innerHTML]="safeHtml()"></div>
+          </ng-template>
         </div>
-        <pre class="code-pane" *ngIf="viewMode === 'code'">{{ doc()?.previewHtml || '' }}</pre>
+        <pre class="code-pane" *ngIf="viewMode === 'code'">{{ codeSource() }}</pre>
       </div>
     </div>
     <ng-template #empty>
@@ -107,5 +116,16 @@ export class AiCanvasDocumentComponent implements OnInit {
     const fileId = this.doc()?.fileId;
     if (!fileId) return;
     window.open(this.ai.fileUrl(fileId), '_blank');
+  }
+
+  isMermaid(): boolean {
+    const d = this.doc();
+    return !!(d && (d.format === 'mermaid' || d.rawMermaid));
+  }
+
+  codeSource(): string {
+    const d = this.doc();
+    if (!d) return '';
+    return d.rawMermaid || d.previewHtml || '';
   }
 }

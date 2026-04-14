@@ -37,6 +37,27 @@ export interface AiThread {
 
 // ── V2 Types ──
 
+export type AiProjectKnowledgeType = 'text' | 'number' | 'date' | 'url' | 'email' | 'file' | 'list' | 'boolean' | 'json';
+
+export interface AiProjectKnowledgeEntry {
+  _id?: string;
+  key: string;
+  value: any;
+  type?: AiProjectKnowledgeType;
+  description?: string;
+  source?: 'manual' | 'extracted' | 'ai';
+  pinned?: boolean;
+  tags?: string[];
+  updatedAt?: string;
+  updatedBy?: string;
+}
+
+export interface AiProjectKnowledge {
+  threadId: string;
+  workspaceId?: string;
+  entries: AiProjectKnowledgeEntry[];
+}
+
 export interface AiProjectRoot {
   id: string;
   threadId: string;
@@ -54,9 +75,10 @@ export interface AiCanvasState {
   threadId: string;
   activeTab: 'document' | 'research' | 'tasks' | 'files';
   document?: {
-    format?: 'docx' | 'pptx' | 'xlsx' | 'html' | 'md';
+    format?: 'docx' | 'pptx' | 'xlsx' | 'html' | 'md' | 'mermaid';
     title?: string;
     previewHtml?: string;
+    rawMermaid?: string;
     fileId?: string;
     updatedAt?: string;
   };
@@ -222,12 +244,69 @@ export interface AiMessage {
   cancelled?: boolean;
   createdAt?: string;
   metadata?: {
-    kind?: 'permission_request' | 'cache_sync_request' | 'comment';
+    kind?: 'permission_request' | 'cache_sync_request' | 'comment' | 'structured' | 'plan_proposal' | 'diagram' | 'image_inline';
     permissionRequest?: AiPermissionRequest;
     cacheSyncRequest?: AiCacheSyncRequest;
+    structured?: AiStructuredPayload;
+    planProposal?: AiPlanProposal;
+    diagram?: AiDiagramPayload;
+    imageInline?: AiInlineImagePayload;
     jobId?: string;
     [k: string]: any;
   };
+}
+
+/** Inline image payload (tool display_image) */
+export interface AiInlineImagePayload {
+  fileId?: string;
+  url?: string;
+  caption?: string;
+  alt?: string;
+}
+
+/** Plan proposal structures */
+export interface AiPlanStep {
+  id: string;
+  title: string;
+  rationale?: string;
+  tools?: string[];
+  duration_estimate?: string;
+  dependsOn?: string[];
+}
+
+export interface AiPlanProposal {
+  requestId: string;
+  summary: string;
+  steps: AiPlanStep[];
+  risks?: string[];
+  answer?: 'approve' | 'reject' | 'modify';
+  answeredAt?: string;
+  answeredBy?: string;
+  approvedSteps?: string[];
+  modifiedSteps?: AiPlanStep[];
+}
+
+/** Diagram payload (mermaid) */
+export interface AiDiagramPayload {
+  type: string;
+  title?: string;
+  mermaid: string;
+}
+
+/** Structured interactive message payload — rendered by AiStructuredMessageComponent */
+export type AiStructuredLayout =
+  | 'chips_tabs'
+  | 'stepped_plan'
+  | 'comparison_table'
+  | 'accordion'
+  | 'timeline'
+  | 'card_grid';
+
+export interface AiStructuredPayload {
+  layout: AiStructuredLayout;
+  title?: string;
+  data: any;
+  renderedAt?: string;
 }
 
 export type AiStreamEvent =
@@ -246,6 +325,10 @@ export type AiStreamEvent =
   | { type: 'args'; nodeId: string; args: any }
   | { type: 'desc'; nodeId: string; description: string }
   | { type: 'action'; action: string; providerKey?: string; providerName?: string }
+  | { type: 'ui.preview.start'; toolId: string; toolName: string; previewType: string }
+  | { type: 'ui.preview.delta'; toolId: string; toolName: string; previewType: string; patch: any[]; state?: any }
+  | { type: 'ui.preview.building_done'; toolId: string; toolName: string; previewType: string; state?: any }
+  | { type: 'ui.preview.update'; toolId: string; toolName: string; patch: any[] }
   | { type: 'error'; code?: string; message?: string }
   | { type: 'done' };
 
@@ -366,6 +449,17 @@ export class AiService {
     this.messages.set([]);
     this.pendingQuestion.set(null);
     return thread!;
+  }
+
+  /** Recharge silencieusement les messages du thread courant (utilisé après render_structured etc.) */
+  async reloadThreadMessages() {
+    const t = this.currentThread();
+    if (!t?.id && !t?._id) return;
+    const threadId = t.id || t._id;
+    try {
+      const data = await this.api.get<any>(`/api/ai/threads/${threadId}`, { workspaceId: this.wsId() }).toPromise();
+      if (data?.messages) this.messages.set(data.messages);
+    } catch {}
   }
 
   async loadThread(threadId: string) {
@@ -584,6 +678,15 @@ export class AiService {
             if (evType === 'ai.permission.request' || evType === 'ai.permission.granted' || evType === 'ai.permission.denied') {
               this.sideEvents$.next(event as any);
             }
+            if (evType === 'ai.plan.request' || evType === 'plan.resolved') {
+              // Forward side event + refresh messages so plan_proposal card appears
+              this.sideEvents$.next(event as any);
+              const curThread = this.currentThread();
+              const tid = curThread?.id || curThread?._id;
+              if (tid) {
+                setTimeout(() => { this.loadThread(tid).catch?.(() => {}); }, 150);
+              }
+            }
             if (evType === 'thread.presence') {
               try {
                 const list = (event as any).users || [];
@@ -712,6 +815,40 @@ export class AiService {
 
   deleteProjectMemoryKey(elementType: 'flow' | 'form', elementId: string, key: string): Observable<any> {
     return this.api.put<any>(`/api/ai/project-memory/${elementType}/${elementId}`, { memory: { [key]: null } }, { workspaceId: this.wsId() });
+  }
+
+  // ── Project knowledge (structured key/value, per thread) ──
+  getProjectKnowledge(threadId: string): Observable<AiProjectKnowledge> {
+    return this.api.get<AiProjectKnowledge>(`/api/ai/threads/${threadId}/knowledge`, { workspaceId: this.wsId() });
+  }
+
+  replaceProjectKnowledge(threadId: string, entries: AiProjectKnowledgeEntry[]): Observable<AiProjectKnowledge> {
+    return this.api.put<AiProjectKnowledge>(`/api/ai/threads/${threadId}/knowledge`, { entries }, { workspaceId: this.wsId() });
+  }
+
+  addKnowledgeEntry(threadId: string, entry: AiProjectKnowledgeEntry): Observable<AiProjectKnowledgeEntry> {
+    return this.api.post<AiProjectKnowledgeEntry>(`/api/ai/threads/${threadId}/knowledge/entries`, entry, { workspaceId: this.wsId() });
+  }
+
+  updateKnowledgeEntry(threadId: string, entryId: string, patch: Partial<AiProjectKnowledgeEntry>): Observable<AiProjectKnowledgeEntry> {
+    return this.api.patch<AiProjectKnowledgeEntry>(`/api/ai/threads/${threadId}/knowledge/entries/${entryId}`, patch, { workspaceId: this.wsId() });
+  }
+
+  deleteKnowledgeEntry(threadId: string, entryId: string): Observable<any> {
+    return this.api.delete<any>(`/api/ai/threads/${threadId}/knowledge/entries/${entryId}`, { workspaceId: this.wsId() });
+  }
+
+  importKnowledge(threadId: string, format: 'csv' | 'json', data: string | object, mode: 'merge' | 'replace' = 'merge'): Observable<any> {
+    return this.api.post<any>(`/api/ai/threads/${threadId}/knowledge/import`, { format, data, mode }, { workspaceId: this.wsId() });
+  }
+
+  async exportKnowledge(threadId: string, format: 'csv' | 'json' = 'json'): Promise<Blob> {
+    const token = this.auth.token;
+    const base = this.buildFetchUrl(`/api/ai/threads/${threadId}/knowledge/export`);
+    const url = `${base}?format=${format}&workspaceId=${encodeURIComponent(this.wsId())}`;
+    const res = await fetch(url, { headers: token ? { Authorization: `Bearer ${token}` } : {} });
+    if (!res.ok) throw new Error(`Export failed: ${res.status}`);
+    return res.blob();
   }
 
   // ── Agents ──
@@ -850,6 +987,7 @@ export class AiService {
             format: event.format || cur.document?.format,
             title: event.title || cur.document?.title,
             previewHtml: event.previewHtml !== undefined ? event.previewHtml : cur.document?.previewHtml,
+            rawMermaid: event.rawMermaid !== undefined ? event.rawMermaid : cur.document?.rawMermaid,
             updatedAt: new Date().toISOString(),
           },
         });
@@ -1117,6 +1255,24 @@ export class AiService {
 
   cancelJob(jobId: string): Observable<any> {
     return this.api.post<any>(`/api/ai/jobs/${jobId}/cancel`, {}, { workspaceId: this.wsId() });
+  }
+
+  /** Respond to a plan proposal (approve / reject / modify) */
+  respondToPlan(
+    threadId: string,
+    requestId: string,
+    decision: 'approve' | 'reject' | 'modify',
+    approvedSteps?: string[],
+    modifiedSteps?: AiPlanStep[],
+  ): Observable<any> {
+    const body: any = { requestId, decision };
+    if (approvedSteps) body.approvedSteps = approvedSteps;
+    if (modifiedSteps) body.modifiedSteps = modifiedSteps;
+    return this.api.post<any>(
+      `/api/ai/threads/${threadId}/plan-response`,
+      body,
+      { workspaceId: this.wsId() },
+    );
   }
 
   respondToPermission(jobId: string, requestId: string, decision: string, pathPattern?: string): Observable<any> {

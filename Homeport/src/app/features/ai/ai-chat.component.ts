@@ -13,6 +13,10 @@ import { AiService, AiStreamEvent, AiAttachment, AI_MAX_FILES, AI_MAX_FILE_SIZE 
 import { AiAudioService } from './ai-audio.service';
 import { AiMessageComponent } from './ai-message.component';
 import { AiQuestionComponent } from './ai-question.component';
+import { AiStructuredMessageComponent } from './structured/ai-structured-message.component';
+import { AiDiagramRendererComponent } from './diagram/ai-diagram-renderer.component';
+import { AiLivePreviewComponent, detectPreviewType, LivePreviewType } from './live-preview/ai-live-preview.component';
+import { PreviewParserService, ParsedPreview } from './live-preview/preview-parser.service';
 import { marked } from 'marked';
 import DOMPurify from 'dompurify';
 import { jsonrepair } from 'jsonrepair';
@@ -23,7 +27,9 @@ const TOOL_LABELS: Record<string, string> = {
   run_workflow: 'Lancement workflow', save_memory: 'Mémoire', get_memory: 'Mémoire',
   enrich_context: 'Contexte', open_element: 'Ouverture', list_credentials: 'Lister les identifiants', open_credentials: 'Identifiants',
   save_project_memory: 'Mémoire projet', get_project_memory: 'Mémoire projet',
+  set_project_knowledge: 'Mise à jour mémoire projet', get_project_knowledge: 'Mémoire projet',
   compact_and_transfer: 'Transfert', activate_capsule: 'Activation outils',
+  propose_plan: 'Plan d\'action', generate_diagram: 'Diagramme',
   read_file: 'Lecture fichier', search_manual: 'Manuel', get_manual_section: 'Manuel',
   create_flow: 'Création flow', list_graph: 'Graphe', get_templates: 'Templates',
   get_template_details: 'Détails template', ensure_start: 'Démarrage', add_node: 'Ajout noeud',
@@ -57,11 +63,14 @@ const TOOL_LABELS: Record<string, string> = {
   execute_code: 'Exécution code', prepare_code_environment: 'Préparation environnement',
   // Subagents
   spawn_subagent: 'Sous-agent',
+  install_package: 'Installation package', display_image: 'Affichage image',
   // Skills
   skill_list: 'Liste skills', skill_get: 'Détails skill', skill_execute: 'Exécution skill',
   // Document generation
   generate_document: 'Génération document', edit_document: 'Édition document',
   render_html_preview: 'Aperçu HTML', build_website: 'Construction site',
+  // Structured interactive messages
+  render_structured: 'Affichage structuré',
 };
 
 /** Human-readable labels for meta-tool arguments (non-execute_tool tools) */
@@ -102,6 +111,8 @@ const META_TOOL_ARG_LABELS: Record<string, Record<string, string>> = {
   open_credentials: { providerKey: 'Fournisseur' },
   save_project_memory: { content: 'Contenu' },
   compact_and_transfer: { summary: 'Résumé' },
+  propose_plan: { summary: 'Résumé', steps: 'Étapes', risks: 'Risques' },
+  generate_diagram: { type: 'Type', title: 'Titre', mermaid: 'Code' },
 };
 
 interface StreamSegment {
@@ -121,12 +132,14 @@ interface StreamTool {
   argsSchema?: { key: string; label: string }[];
   parsedArgs?: Record<string, any>;
   changedKeys?: Set<string>;
+  /** Live preview state (incremental, mis à jour via worker + ui.preview.update) */
+  livePreview?: { type: LivePreviewType; data: any };
 }
 
 @Component({
   selector: 'ai-chat',
   standalone: true,
-  imports: [CommonModule, FormsModule, NzInputModule, NzButtonModule, NzIconModule, NzEmptyModule, NzTagModule, NzToolTipModule, AiMessageComponent, AiQuestionComponent],
+  imports: [CommonModule, FormsModule, NzInputModule, NzButtonModule, NzIconModule, NzEmptyModule, NzTagModule, NzToolTipModule, AiMessageComponent, AiQuestionComponent, AiStructuredMessageComponent, AiDiagramRendererComponent, AiLivePreviewComponent],
   animations: [
     trigger('toolRotate', [
       transition(':enter', [
@@ -158,7 +171,7 @@ interface StreamTool {
         </div>
       </ng-container>
 
-      <ng-container *ngFor="let msg of ai.messages()">
+      <ng-container *ngFor="let msg of ai.messages(); let i = index">
         <!-- System context message (transferred context) -->
         <div class="system-msg" *ngIf="msg.role === 'system'">
           <div class="system-context">
@@ -170,8 +183,16 @@ interface StreamTool {
           </div>
           <div class="system-content" *ngIf="expandedMsgs.has(msg)" [innerHTML]="renderMd(msg.content)"></div>
         </div>
-        <!-- Regular message -->
-        <ai-message *ngIf="msg.role !== 'system'" [msg]="msg" (retryClick)="retry()"></ai-message>
+        <!-- Regular message (with contiguous assistant grouping) -->
+        <div *ngIf="msg.role !== 'system'"
+             class="msg-wrap"
+             [class.grouped]="isGroupedWithPrevious(msg, ai.messages()[i-1] || null)">
+          <ai-message
+            [msg]="msg"
+            [compact]="isGroupedWithPrevious(msg, ai.messages()[i-1] || null)"
+            (retryClick)="retry()">
+          </ai-message>
+        </div>
       </ng-container>
 
       <!-- Waiting for first token / thinking between iterations -->
@@ -276,7 +297,15 @@ interface StreamTool {
                         <span nz-icon *ngIf="t.status === 'running' && hasVisibleArgs(t)" class="item-chevron"
                               [nzType]="runningArgsExpanded.has(t.id) ? 'down' : 'right'" nzTheme="outline"></span>
                       </div>
-                      <div class="args-tree" *ngIf="(t.status === 'building' || (t.status === 'running' && runningArgsExpanded.has(t.id))) && hasVisibleArgs(t)" @argsExpand>
+                      <!-- Live preview universel (structured/diagram/plan/document/research/subagent/download/code) -->
+                      <div class="live-preview-wrap" *ngIf="hasLivePreview(t)">
+                        <ai-live-preview
+                          [previewType]="t.livePreview!.type"
+                          [data]="t.livePreview!.data"
+                          [status]="t.status">
+                        </ai-live-preview>
+                      </div>
+                      <div class="args-tree" *ngIf="!hasLivePreview(t) && (t.status === 'building' || (t.status === 'running' && runningArgsExpanded.has(t.id))) && hasVisibleArgs(t)" @argsExpand>
                         <div *ngFor="let field of getArgsFields(t); trackBy: trackArgField" class="args-row"
                              [class.args-row-new]="t.changedKeys?.has(field.key)">
                           <span class="args-label">{{ field.label }}</span>
@@ -431,6 +460,11 @@ interface StreamTool {
     :host { display: flex; flex-direction: column; height: 100%; min-width: 0; overflow-x: hidden; }
     .messages { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 12px 16px; display: flex; flex-direction: column; gap: 4px; }
     .empty { flex: 1; display: flex; align-items: center; justify-content: center; }
+    /* Grouped assistant messages — collapse space between stacked bubbles */
+    .msg-wrap { display: block; }
+    .msg-wrap.grouped { margin-top: -6px; }
+    .msg-wrap.grouped ::ng-deep .ai-msg { padding-top: 0 !important; padding-bottom: 2px !important; }
+    .msg-wrap.grouped ::ng-deep .ai-msg .avatar-spacer { background: transparent !important; }
     .streaming-msg .ai-msg { display: flex; gap: 10px; padding: 8px 0; }
     .streaming-msg .avatar { width: 32px; height: 32px; border-radius: 50%; background: #e6f4ff; color: #e61982; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 16px; }
     .streaming-msg .body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
@@ -663,6 +697,9 @@ export class AiChatComponent implements AfterViewInit {
   private stopFn?: () => void;
 
   private nzMsg = inject(NzMessageService);
+  private previewParser = inject(PreviewParserService);
+  // Souscriptions worker par toolId (pour cleanup)
+  private _previewSubs = new Map<string, { unsub: () => void }>();
 
   constructor(public ai: AiService, public audio: AiAudioService, private cdr: ChangeDetectorRef) {
     // Reset auto-scroll when switching threads
@@ -1026,30 +1063,14 @@ export class AiChatComponent implements AfterViewInit {
             this.segments = [...this.segments, { type: 'tools', tools: [tool] }];
           }
         }
-        // Parse partial args with jsonrepair
-        const lastSeg = this.segments[this.segments.length - 1];
-        if (lastSeg?.type === 'tools') {
-          const tool = lastSeg.tools?.find(t => t.id === deltaId);
-          if (tool?.inputJson) {
-            const parsed = this.parsePartialArgs(tool);
-            if (parsed) {
-              const prevKeys = tool.parsedArgs ? new Set(Object.keys(tool.parsedArgs)) : new Set<string>();
-              const changedKeys = new Set<string>();
-              // Only mark genuinely NEW keys (first appearance) — not value updates
-              for (const k of Object.keys(parsed)) {
-                if (!prevKeys.has(k)) changedKeys.add(k);
-              }
-              this.segments = this.segments.map(seg => {
-                if (seg.type !== 'tools' || !seg.tools) return seg;
-                const idx = seg.tools.findIndex(t => t.id === deltaId);
-                if (idx < 0) return seg;
-                return { ...seg, tools: seg.tools.map((t, i) =>
-                  i === idx ? { ...t, parsedArgs: parsed, changedKeys: changedKeys.size ? changedKeys : t.changedKeys } : t
-                )};
-              });
-            }
-          }
+        // Parse partial args via Web Worker (fallback main thread si worker indispo)
+        // pour éviter tout jank sur gros JSON. On démarre la session à la volée.
+        if (deltaId && !this._previewSubs.has(deltaId)) {
+          const obs = this.previewParser.startSession(deltaId, deltaName);
+          const sub = obs.subscribe((parsed: ParsedPreview) => this.onWorkerParsed(deltaId, parsed));
+          this._previewSubs.set(deltaId, { unsub: () => sub.unsubscribe() });
         }
+        if (deltaId) this.previewParser.feed(deltaId, deltaText);
         this.updateRotator();
         break;
       }
@@ -1114,6 +1135,17 @@ export class AiChatComponent implements AfterViewInit {
             this.segments = [...this.segments, { type: 'tools', tools: [tool] }];
           }
         }
+        // Cleanup worker session pour ce tool
+        {
+          const entry = this._previewSubs.get(evId);
+          if (entry) { try { entry.unsub(); } catch {} ; this._previewSubs.delete(evId); }
+          try { this.previewParser.closeSession(evId); } catch {}
+        }
+        // Quand un tool crée un AiMessage inline (structured/plan/diagram), le front doit
+        // recharger les messages pour que le widget s'affiche naturellement dans le flux.
+        if (['render_structured', 'propose_plan', 'generate_diagram', 'display_image'].includes(evName) && evStatus === 'success') {
+          try { this.ai.reloadThreadMessages?.(); } catch {}
+        }
         this.updateRotator();
         break;
       }
@@ -1137,10 +1169,56 @@ export class AiChatComponent implements AfterViewInit {
       }
       case 'done':
         this.resetRotator();
+        // Cleanup toutes les sessions preview pending
+        for (const [toolId, entry] of this._previewSubs.entries()) {
+          try { entry.unsub(); } catch {}
+          try { this.previewParser.closeSession(toolId); } catch {}
+        }
+        this._previewSubs.clear();
         // Clear segments immediately to avoid duplication with final message from messages signal
         this.segments = [];
         this.thinkingIteration = 0;
         break;
+      case 'ui.preview.start' as any: {
+        const pId = (ev as any).toolId;
+        const pType = (ev as any).previewType as LivePreviewType;
+        if (pId && pType) {
+          this.ensureLivePreview(pId, pType);
+        }
+        break;
+      }
+      case 'ui.preview.delta' as any: {
+        const pId = (ev as any).toolId;
+        const pType = (ev as any).previewType as LivePreviewType;
+        const pState = (ev as any).state;
+        if (!pId || !pType) break;
+        // Le backend envoie déjà l'état reconstitué — on l'utilise directement
+        // (le worker frontend sert pour les tool.input_delta non-preview, en fallback).
+        this.applyLivePreviewState(pId, pType, pState);
+        break;
+      }
+      case 'ui.preview.building_done' as any: {
+        const pId = (ev as any).toolId;
+        const pType = (ev as any).previewType as LivePreviewType;
+        const pState = (ev as any).state;
+        if (pId && pType && pState != null) {
+          this.applyLivePreviewState(pId, pType, pState);
+        }
+        break;
+      }
+      case 'ui.preview.update' as any: {
+        // Émis par les exécuteurs pendant l'exécution (research_deep steps, web_download progress,
+        // execute_code stdout lines, spawn_subagent status). `patch` est un tableau
+        // d'ops JSON-patch simplifiées : [{op, path, value?}].
+        const pId = (ev as any).toolId;
+        const pName = (ev as any).toolName;
+        const patch = (ev as any).patch as Array<{ op: string; path: string; value?: any }>;
+        if (!pId || !Array.isArray(patch)) break;
+        const pType = detectPreviewType(pName);
+        if (!pType) break;
+        this.applyLivePreviewPatch(pId, pType, patch);
+        break;
+      }
       case 'thinking' as any:
         this.thinkingIteration = (ev as any).iteration || 0;
         break;
@@ -1189,6 +1267,18 @@ export class AiChatComponent implements AfterViewInit {
     else this.expandedMsgs.add(msg);
   }
 
+  /**
+   * Returns true if `msg` should be visually grouped with `prev` (same author, close in time).
+   * Used to collapse consecutive assistant messages into a single bubble stack with one avatar.
+   */
+  isGroupedWithPrevious(msg: any, prev: any): boolean {
+    if (!prev || !msg) return false;
+    if (msg.role !== 'assistant' || prev.role !== 'assistant') return false;
+    const t1 = new Date(msg.createdAt || 0).getTime();
+    const t2 = new Date(prev.createdAt || 0).getTime();
+    if (!t1 || !t2) return false;
+    return Math.abs(t1 - t2) < 10_000; // 10s window
+  }
 
   toolLabel(name: string): string {
     return TOOL_LABELS[name] || name;
@@ -1309,6 +1399,133 @@ export class AiChatComponent implements AfterViewInit {
   /** Check if tool has args to display in tree */
   hasVisibleArgs(t: StreamTool): boolean {
     return this.getArgsFields(t).length > 0;
+  }
+
+  /** Rendu live render_structured : dès qu'on a layout + data partiel on affiche */
+  isStructuredLive(t: StreamTool): boolean {
+    if (t.name !== 'render_structured') return false;
+    const pa: any = t.parsedArgs;
+    return !!(pa && pa.layout && pa.data && typeof pa.data === 'object');
+  }
+
+  /** Rendu live generate_diagram : dès qu'on a mermaid (même partiel valide) */
+  isDiagramLive(t: StreamTool): boolean {
+    if (t.name !== 'generate_diagram') return false;
+    const pa: any = t.parsedArgs;
+    return !!(pa && typeof pa.mermaid === 'string' && pa.mermaid.trim().length > 10);
+  }
+
+  /** Callback depuis le worker : set parsedArgs + changedKeys sur le tool correspondant. */
+  private onWorkerParsed(toolId: string, res: ParsedPreview): void {
+    const parsed = res.parsed;
+    if (!parsed || typeof parsed !== 'object') return;
+    const changedKeys = new Set<string>(res.diffKeys || []);
+    this.segments = this.segments.map(seg => {
+      if (seg.type !== 'tools' || !seg.tools) return seg;
+      const idx = seg.tools.findIndex(t => t.id === toolId);
+      if (idx < 0) return seg;
+      return {
+        ...seg,
+        tools: seg.tools.map((t, i) => i === idx
+          ? { ...t, parsedArgs: parsed, changedKeys: changedKeys.size ? changedKeys : t.changedKeys }
+          : t),
+      };
+    });
+    this.cdr.markForCheck();
+  }
+
+  /** Initialise la structure livePreview pour un tool (sans écraser data si déjà là). */
+  private ensureLivePreview(toolId: string, type: LivePreviewType): void {
+    this.segments = this.segments.map(seg => {
+      if (seg.type !== 'tools' || !seg.tools) return seg;
+      const idx = seg.tools.findIndex(t => t.id === toolId);
+      if (idx < 0) return seg;
+      const t = seg.tools[idx];
+      if (t.livePreview?.type === type) return seg;
+      const tools = seg.tools.map((tt, i) => i === idx ? { ...tt, livePreview: { type, data: t.livePreview?.data || {} } } : tt);
+      return { ...seg, tools };
+    });
+  }
+
+  /** Remplace l'état complet de la live preview d'un tool. */
+  private applyLivePreviewState(toolId: string, type: LivePreviewType, state: any): void {
+    this.segments = this.segments.map(seg => {
+      if (seg.type !== 'tools' || !seg.tools) return seg;
+      const idx = seg.tools.findIndex(t => t.id === toolId);
+      if (idx < 0) return seg;
+      const tools = seg.tools.map((tt, i) => i === idx
+        ? { ...tt, livePreview: { type, data: this.cloneShallow(state) } }
+        : tt);
+      return { ...seg, tools };
+    });
+  }
+
+  /** Applique un patch JSON-simplifié ({op, path, value?}) sur l'état livePreview. */
+  private applyLivePreviewPatch(toolId: string, type: LivePreviewType, patch: Array<{ op: string; path: string; value?: any }>): void {
+    this.segments = this.segments.map(seg => {
+      if (seg.type !== 'tools' || !seg.tools) return seg;
+      const idx = seg.tools.findIndex(t => t.id === toolId);
+      if (idx < 0) return seg;
+      const t = seg.tools[idx];
+      const cur = t.livePreview?.data ? this.cloneShallow(t.livePreview.data) : {};
+      let next = cur;
+      for (const op of patch) {
+        next = this.applyJsonPatchOp(next, op);
+      }
+      const tools = seg.tools.map((tt, i) => i === idx ? { ...tt, livePreview: { type, data: next } } : tt);
+      return { ...seg, tools };
+    });
+  }
+
+  private cloneShallow<T>(v: T): T {
+    if (v == null || typeof v !== 'object') return v;
+    try { return JSON.parse(JSON.stringify(v)); } catch { return v; }
+  }
+
+  private applyJsonPatchOp(state: any, op: { op: string; path: string; value?: any }): any {
+    // Support : paths absolus de type /a/b/0 (RFC 6902 simplifié, séparateur '/')
+    const path = String(op.path || '');
+    if (!path || path === '/') {
+      if (op.op === 'replace' || op.op === 'add') return op.value;
+      if (op.op === 'remove') return null;
+      return state;
+    }
+    const segments = path.split('/').slice(1).map(s => s.replace(/~1/g, '/').replace(/~0/g, '~'));
+    // cloner en copiant les branches touchées
+    const root = state == null ? (Number.isInteger(parseInt(segments[0], 10)) ? [] : {}) : state;
+    const rootCopy = Array.isArray(root) ? [...root] : { ...root };
+    let cur: any = rootCopy;
+    for (let i = 0; i < segments.length - 1; i++) {
+      const key = segments[i];
+      const nextKey = segments[i + 1];
+      let child = cur[key];
+      if (child == null) child = Number.isInteger(parseInt(nextKey, 10)) ? [] : {};
+      const childCopy = Array.isArray(child) ? [...child] : { ...child };
+      cur[key] = childCopy;
+      cur = childCopy;
+    }
+    const lastKey = segments[segments.length - 1];
+    if (op.op === 'add' || op.op === 'replace') {
+      cur[lastKey] = op.value;
+    } else if (op.op === 'remove') {
+      if (Array.isArray(cur)) cur.splice(parseInt(lastKey, 10), 1);
+      else delete cur[lastKey];
+    }
+    return rootCopy;
+  }
+
+  /** Indique si le tool a une live preview prête à afficher (état non vide). */
+  hasLivePreview(t: StreamTool): boolean {
+    const lp = t.livePreview;
+    if (!lp || !lp.type) return false;
+    const d = lp.data;
+    if (d == null) return false;
+    if (typeof d === 'object' && !Array.isArray(d) && Object.keys(d).length === 0) return false;
+    // Cas spécifique : structured nécessite au moins layout
+    if (lp.type === 'structured') return !!d.layout;
+    // Cas diagram : attend mermaid non vide
+    if (lp.type === 'diagram') return typeof d.mermaid === 'string' && d.mermaid.trim().length > 10;
+    return true;
   }
 
   /** Build field list for template: key, label (from argsSchema → META_TOOL_ARG_LABELS → raw key), value */

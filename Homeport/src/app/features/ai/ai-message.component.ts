@@ -3,12 +3,21 @@ import { CommonModule } from '@angular/common';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzTagModule } from 'ng-zorro-antd/tag';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzMessageService } from 'ng-zorro-antd/message';
 import { marked } from 'marked';
 import DOMPurify from 'dompurify';
 import { AiMessage, AiMessageSegment, AiToolCall, AiQuestionOption, AiService, AiAttachment } from './ai.service';
 import { NodeExecResultDialogComponent } from '../flow/node-exec-result-dialog.component';
 import { AiPermissionRequestCardComponent } from './permissions/ai-permission-request-card.component';
 import { AiCacheSyncRequestCardComponent } from './permissions/ai-cache-sync-request-card.component';
+import { AiPlanProposalCardComponent } from './plan/ai-plan-proposal-card.component';
+import { AiDiagramRendererComponent } from './diagram/ai-diagram-renderer.component';
+import { AiStructuredMessageComponent } from './structured/ai-structured-message.component';
+import { AiInlineImageComponent } from './images/ai-inline-image.component';
+import { AiWidgetActionsComponent, WidgetAction, WidgetActionId } from './widgets/ai-widget-actions.component';
+import { AiWidgetModalComponent, WidgetType, WidgetModalData } from './widgets/ai-widget-modal.component';
+import { WidgetExportService } from './widgets/widget-export.service';
 
 const TOOL_LABELS: Record<string, string> = {
   search_tools: 'Recherche d\'outils', get_tool_details: 'Détails outil', execute_tool: 'Exécution',
@@ -23,12 +32,15 @@ const TOOL_LABELS: Record<string, string> = {
   web_search: 'Recherche web', web_fetch: 'Lecture page web', research_deep: 'Recherche approfondie', web_download: 'Téléchargement web',
   execute_code: 'Exécution code', prepare_code_environment: 'Préparation environnement',
   spawn_subagent: 'Sous-agent',
+  install_package: 'Installation package', display_image: 'Affichage image',
   skill_list: 'Liste skills', skill_get: 'Détails skill', skill_execute: 'Exécution skill',
   generate_document: 'Génération document', edit_document: 'Édition document',
   render_html_preview: 'Aperçu HTML', build_website: 'Construction site',
   enrich_context: 'Contexte', open_element: 'Ouverture', list_credentials: 'Lister les identifiants', open_credentials: 'Identifiants',
   save_project_memory: 'Mémoire projet', get_project_memory: 'Mémoire projet',
+  set_project_knowledge: 'Mise à jour mémoire projet', get_project_knowledge: 'Mémoire projet',
   compact_and_transfer: 'Transfert', activate_capsule: 'Activation outils',
+  propose_plan: 'Plan d\'action', generate_diagram: 'Diagramme',
   read_file: 'Lecture fichier', search_manual: 'Manuel', get_manual_section: 'Manuel',
   create_flow: 'Création flow', list_graph: 'Graphe',
   get_templates: 'Templates', get_template_details: 'Détails template', ensure_start: 'Démarrage',
@@ -52,6 +64,7 @@ const TOOL_LABELS: Record<string, string> = {
   deploy_flow: 'Déploiement', undeploy_flow: 'Arrêt production',
   get_deployment_status: 'Statut déploiement', start_run: 'Lancement exécution',
   list_runs: 'Historique exécutions', get_run_stats: 'Statistiques',
+  render_structured: 'Affichage structuré',
 };
 
 /** Human-readable labels for meta-tool arguments (non-execute_tool tools) */
@@ -92,6 +105,8 @@ const META_TOOL_ARG_LABELS: Record<string, Record<string, string>> = {
   open_credentials: { providerKey: 'Fournisseur' },
   save_project_memory: { content: 'Contenu' },
   compact_and_transfer: { summary: 'Résumé' },
+  propose_plan: { summary: 'Résumé', steps: 'Étapes', risks: 'Risques' },
+  generate_diagram: { type: 'Type', title: 'Titre', mermaid: 'Code' },
 };
 
 /** Processed segment for display — text-before-tools merged into reasoning blocks */
@@ -105,13 +120,14 @@ interface ProcessedSegment {
 @Component({
   selector: 'ai-message',
   standalone: true,
-  imports: [CommonModule, NzButtonModule, NzIconModule, NzTagModule, NodeExecResultDialogComponent, AiPermissionRequestCardComponent, AiCacheSyncRequestCardComponent],
+  imports: [CommonModule, NzButtonModule, NzIconModule, NzTagModule, NodeExecResultDialogComponent, AiPermissionRequestCardComponent, AiCacheSyncRequestCardComponent, AiStructuredMessageComponent, AiPlanProposalCardComponent, AiDiagramRendererComponent, AiInlineImageComponent, AiWidgetActionsComponent],
   template: `
-    <div class="ai-msg" [class.user]="msg.role === 'user'" [class.assistant]="msg.role === 'assistant'">
-      <div class="avatar">
+    <div class="ai-msg" [class.user]="msg.role === 'user'" [class.assistant]="msg.role === 'assistant'" [class.compact]="compact">
+      <div class="avatar" *ngIf="!compact">
         <span *ngIf="msg.role === 'user'" nz-icon nzType="user" nzTheme="outline"></span>
         <span *ngIf="msg.role === 'assistant'" nz-icon nzType="robot" nzTheme="outline"></span>
       </div>
+      <div class="avatar avatar-spacer" *ngIf="compact" aria-hidden="true"></div>
 
       <div class="body" [attr.data-kind]="msg.metadata?.kind || null" [attr.data-job-id]="msg.metadata?.jobId || null">
         <!-- V2 special message kinds -->
@@ -126,6 +142,51 @@ interface ProcessedSegment {
             [request]="msg.metadata!.cacheSyncRequest!"
             (answered)="onCacheSyncAnswer($event)">
           </ai-cache-sync-request-card>
+          <div *ngSwitchCase="'structured'" class="widget-bubble widget-wrap">
+            <ai-structured-message [data]="msg.metadata!.structured!"></ai-structured-message>
+            <div class="widget-overlay">
+              <ai-widget-actions
+                [actions]="structuredActions"
+                (action)="onWidgetAction($event, 'structured', msg.metadata!.structured)">
+              </ai-widget-actions>
+            </div>
+          </div>
+          <div *ngSwitchCase="'plan_proposal'" class="widget-bubble widget-wrap">
+            <ai-plan-proposal-card
+              [proposal]="msg.metadata!.planProposal!"
+              (answered)="onPlanAnswer($event)">
+            </ai-plan-proposal-card>
+            <div class="widget-overlay">
+              <ai-widget-actions
+                [actions]="planActions"
+                (action)="onWidgetAction($event, 'plan_proposal', msg.metadata!.planProposal)">
+              </ai-widget-actions>
+            </div>
+          </div>
+          <div *ngSwitchCase="'diagram'" class="diagram-bubble widget-bubble widget-wrap">
+            <div class="diagram-bubble-head">
+              <span nz-icon nzType="deployment-unit" nzTheme="outline" class="diagram-bubble-icon"></span>
+              <span class="diagram-bubble-title">{{ msg.metadata?.diagram?.title || 'Diagramme' }}</span>
+              <nz-tag nzColor="magenta" class="diagram-bubble-type">{{ msg.metadata?.diagram?.type }}</nz-tag>
+            </div>
+            <ai-diagram-renderer
+              [mermaid]="msg.metadata?.diagram?.mermaid || ''"
+              [title]="msg.metadata?.diagram?.title || ''"
+              [interactive]="false">
+            </ai-diagram-renderer>
+            <button nz-button nzSize="small" nzType="link" class="diagram-open-canvas" (click)="openDiagramInCanvas()">
+              <span nz-icon nzType="fullscreen" nzTheme="outline"></span> Ouvrir dans canvas
+            </button>
+            <div class="widget-overlay">
+              <ai-widget-actions
+                [actions]="diagramActions"
+                (action)="onWidgetAction($event, 'diagram', msg.metadata!.diagram)">
+              </ai-widget-actions>
+            </div>
+          </div>
+          <div *ngSwitchCase="'image_inline'" class="widget-bubble image-inline-wrap">
+            <ai-inline-image [data]="msg.metadata!.imageInline!"></ai-inline-image>
+          </div>
           <div *ngSwitchCase="'comment'" class="comment-msg">
             <nz-tag nzColor="purple">
               <span nz-icon nzType="comment" nzTheme="outline"></span> Commentaire
@@ -389,14 +450,171 @@ interface ProcessedSegment {
     .tool-files { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
     .tool-file-img { max-width: 200px; max-height: 150px; border-radius: 6px; object-fit: cover; border: 1px solid #e8e8e8; }
     .tool-file-link { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; color: #e61982; }
+    /* Wrapper unifié pour TOUS les widgets assistant — même max-width que les messages texte */
+    .widget-bubble { max-width: min(720px, 85%); min-width: 0; display: block; margin: 4px 0; }
+    @media (max-width: 640px) { .widget-bubble { max-width: 100%; } }
+    .widget-bubble :host ::ng-deep > * { max-width: 100%; }
+    .diagram-bubble { background: #fff; border: 1px solid #f0f0f0; border-left: 3px solid #e61982; border-radius: 0 8px 8px 0; padding: 8px 10px; }
+    .diagram-bubble-head { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+    .diagram-bubble-icon { color: #e61982; font-size: 16px; }
+    .diagram-bubble-title { font-weight: 600; font-size: 13px; color: #262626; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding-right: 32px; }
+    .diagram-bubble-type { margin: 0; font-size: 10px; }
+    .diagram-open-canvas { padding: 0; margin-top: 4px; font-size: 12px; }
+    /* Widget action menu overlay (top-right) */
+    .widget-wrap { position: relative; }
+    .widget-wrap .widget-overlay {
+      position: absolute; top: 8px; right: 8px; z-index: 10;
+      display: flex; gap: 4px;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 6px;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+      opacity: 0.85; transition: opacity 0.15s, box-shadow 0.15s;
+    }
+    .widget-wrap:hover .widget-overlay { opacity: 1; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12); }
+    .image-inline-wrap { display: inline-block; }
+    /* Compact mode — used when message is grouped with previous assistant message */
+    .ai-msg.compact { padding-top: 0; padding-bottom: 2px; }
+    .ai-msg.compact .avatar.avatar-spacer { background: transparent; }
   `]
 })
 export class AiMessageComponent {
   @Input() msg!: AiMessage;
+  @Input() compact = false;
   @Output() retryClick = new EventEmitter<void>();
   public ai = inject(AiService);
   private cdr = inject(ChangeDetectorRef);
   private el = inject(ElementRef);
+  private modal = inject(NzModalService);
+  private msgSvc = inject(NzMessageService);
+  private widgetExp = inject(WidgetExportService);
+
+  // Widget action presets (same list used inline + in the modal)
+  readonly structuredActions: WidgetAction[] = [
+    { id: 'fullscreen', label: 'Ouvrir en grand', icon: 'fullscreen' },
+    { id: 'copy', label: 'Copier les données', icon: 'copy' },
+    { id: 'export:json', label: 'Télécharger JSON', icon: 'code' },
+    { id: 'export:csv', label: 'Télécharger CSV', icon: 'file-text' },
+    { id: 'export:xlsx', label: 'Télécharger Excel', icon: 'file-excel' },
+    { id: 'export:pdf', label: 'Télécharger PDF', icon: 'file-pdf' },
+  ];
+  readonly planActions: WidgetAction[] = [
+    { id: 'fullscreen', label: 'Ouvrir en grand', icon: 'fullscreen' },
+    { id: 'copy', label: 'Copier les données', icon: 'copy' },
+    { id: 'export:json', label: 'Télécharger JSON', icon: 'code' },
+    { id: 'export:pdf', label: 'Télécharger PDF', icon: 'file-pdf' },
+  ];
+  readonly diagramActions: WidgetAction[] = [
+    { id: 'fullscreen', label: 'Ouvrir en grand', icon: 'fullscreen' },
+    { id: 'copy', label: 'Copier le code', icon: 'copy' },
+    { id: 'export:svg', label: 'Télécharger SVG', icon: 'file-image' },
+    { id: 'export:png', label: 'Télécharger PNG', icon: 'picture' },
+    { id: 'export:pdf', label: 'Télécharger PDF', icon: 'file-pdf' },
+  ];
+
+  async onWidgetAction(id: WidgetActionId, widgetType: WidgetType, widgetData: any): Promise<void> {
+    if (!widgetData) return;
+    if (id === 'fullscreen') {
+      this.openWidgetModal(widgetType, widgetData);
+      return;
+    }
+    const baseName = this.widgetFilename(widgetType, widgetData);
+    try {
+      switch (id) {
+        case 'copy': {
+          const payload = widgetType === 'diagram' ? (widgetData?.mermaid || '') : JSON.stringify(widgetData, null, 2);
+          const ok = await this.widgetExp.copyText(payload);
+          this.msgSvc[ok ? 'success' : 'error'](ok ? 'Copié' : 'Copie impossible');
+          return;
+        }
+        case 'export:json': this.widgetExp.exportAsJson(widgetData, baseName); return;
+        case 'export:csv': {
+          const { rows, cols } = this.extractTable(widgetType, widgetData);
+          if (!rows.length) { this.msgSvc.warning('Aucune ligne exportable'); return; }
+          this.widgetExp.exportAsCsv(rows, cols, baseName);
+          return;
+        }
+        case 'export:xlsx': {
+          const { rows, cols } = this.extractTable(widgetType, widgetData);
+          if (!rows.length) { this.msgSvc.warning('Aucune ligne exportable'); return; }
+          await this.widgetExp.exportAsXlsx(rows, cols, baseName);
+          return;
+        }
+        case 'export:svg':
+        case 'export:png':
+        case 'export:pdf': {
+          // For SVG/PNG/PDF, need DOM — open the modal to guarantee a rendered widget then export it
+          this.openWidgetModal(widgetType, widgetData, id);
+          return;
+        }
+      }
+    } catch (e: any) {
+      this.msgSvc.error('Export échoué: ' + (e?.message || 'erreur'));
+    }
+  }
+
+  private openWidgetModal(widgetType: WidgetType, widgetData: any, deferredAction?: WidgetActionId) {
+    const title = widgetData?.title || widgetData?.summary || undefined;
+    const ref = this.modal.create<AiWidgetModalComponent, WidgetModalData>({
+      nzContent: AiWidgetModalComponent,
+      nzData: { widgetType, widgetData, title },
+      nzWidth: '90vw',
+      nzFooter: null,
+      nzMaskClosable: true,
+      nzCloseIcon: undefined,
+      nzClosable: false,
+      nzBodyStyle: { padding: '16px 20px' },
+      nzClassName: 'ai-widget-modal-shell',
+    });
+    if (deferredAction) {
+      // Wait a tick for render then trigger the action on modal
+      ref.afterOpen.subscribe(() => {
+        const instance = ref.getContentComponent();
+        setTimeout(() => instance?.onAction(deferredAction), 200);
+      });
+    }
+  }
+
+  private widgetFilename(t: WidgetType, data: any): string {
+    const raw = data?.title || data?.summary || t;
+    return String(raw).slice(0, 60) || t;
+  }
+
+  private extractTable(t: WidgetType, wd: any): { rows: any[]; cols: { key: string; label?: string }[] } {
+    if (t === 'structured') {
+      const data = wd?.data;
+      if (wd?.layout === 'comparison_table' && data?.columns && data?.rows) {
+        return {
+          rows: data.rows,
+          cols: (data.columns || []).map((c: any) => ({
+            key: c.key || c.id || c.label, label: c.label || c.key || c.id,
+          })),
+        };
+      }
+      if (Array.isArray(data?.rows)) return { rows: data.rows, cols: [] };
+      if (Array.isArray(data?.items)) return { rows: data.items, cols: [] };
+      if (Array.isArray(data)) return { rows: data, cols: [] };
+    }
+    if (t === 'plan_proposal') {
+      const steps = (wd?.steps || []).map((s: any) => ({
+        id: s.id, title: s.title, rationale: s.rationale || '',
+        tools: (s.tools || []).join(', '),
+        duration_estimate: s.duration_estimate || '',
+        dependsOn: (s.dependsOn || []).join(', '),
+      }));
+      return {
+        rows: steps,
+        cols: [
+          { key: 'id', label: 'ID' },
+          { key: 'title', label: 'Titre' },
+          { key: 'rationale', label: 'Raison' },
+          { key: 'tools', label: 'Outils' },
+          { key: 'duration_estimate', label: 'Durée' },
+          { key: 'dependsOn', label: 'Dépend de' },
+        ],
+      };
+    }
+    return { rows: [], cols: [] };
+  }
 
   /** Intercept clicks on <img> inside .content (markdown-rendered images) to open lightbox */
   @HostListener('click', ['$event'])
@@ -436,6 +654,44 @@ export class AiMessageComponent {
         this.cdr.markForCheck();
       },
     });
+  }
+
+  /** V2 — handle plan proposal card response */
+  onPlanAnswer(evt: { decision: 'approve' | 'reject' | 'modify'; approvedSteps?: string[]; modifiedSteps?: any[] }) {
+    const prop = this.msg.metadata?.planProposal;
+    const threadId = this.msg.threadId;
+    if (!prop || !threadId) return;
+    this.ai.respondToPlan(threadId, prop.requestId, evt.decision, evt.approvedSteps, evt.modifiedSteps as any).subscribe({
+      next: () => {
+        if (this.msg.metadata?.planProposal) {
+          this.msg.metadata.planProposal.answer = evt.decision;
+          this.msg.metadata.planProposal.answeredAt = new Date().toISOString();
+          if (evt.approvedSteps) this.msg.metadata.planProposal.approvedSteps = evt.approvedSteps;
+          if (evt.modifiedSteps) this.msg.metadata.planProposal.modifiedSteps = evt.modifiedSteps as any;
+        }
+        this.cdr.markForCheck();
+      },
+    });
+  }
+
+  /** Open current diagram in the canvas panel (reuses canvas.document state) */
+  openDiagramInCanvas() {
+    const d = this.msg.metadata?.diagram;
+    if (!d) return;
+    // Push current diagram into canvas state so the canvas document renders it
+    const cur = this.ai.canvasState() || { threadId: this.msg.threadId || '', activeTab: 'document' as const };
+    this.ai.canvasState.set({
+      ...cur,
+      activeTab: 'document',
+      document: {
+        ...(cur.document || {}),
+        format: 'mermaid' as any,
+        title: d.title || 'Diagramme',
+        rawMermaid: d.mermaid,
+        updatedAt: new Date().toISOString(),
+      },
+    });
+    this.ai.canvasOpen.set(true);
   }
 
   /** V2 — handle cache sync card response */

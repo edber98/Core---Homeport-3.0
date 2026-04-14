@@ -557,6 +557,17 @@ ${toolLines.join('\n')}
       console.error('[ai] project memory load error:', e?.message);
     }
 
+    // Load structured project knowledge (key/value) scoped to thread
+    try {
+      const AiProjectKnowledge = require('../../db/models/ai-project-knowledge.model');
+      const kDoc = await AiProjectKnowledge.findOne({ threadId: thread._id }).lean();
+      if (kDoc?.entries?.length) {
+        context._projectKnowledge = kDoc.entries;
+      }
+    } catch (e) {
+      console.error('[ai] project knowledge load error:', e?.message);
+    }
+
     // Expose source thread agentId so compact_and_transfer can inherit it
     context._sourceThreadAgentId = thread.agentId || undefined;
 
@@ -610,7 +621,23 @@ ${toolLines.join('\n')}
     const ac = new AbortController();
     const threadKey = String(thread._id);
     activeStreams.set(threadKey, ac);
-    const onClose = () => { closed = true; clearInterval(heartbeat); ac.abort(); activeStreams.delete(threadKey); };
+
+    // ── Subscribe aux events des subagents (jobs async) pour ce thread ──
+    // Permet au SSE actif de recevoir canvas.*, ai.permission.*, etc. émis
+    // par les spawn_subagent / research_deep qui tournent en parallèle.
+    const { onThreadEvent } = require('../../ai/jobs/job-events');
+    const unsubThread = onThreadEvent(threadKey, (ev) => {
+      if (closed) return;
+      try { res.write(`data: ${JSON.stringify(ev)}\n\n`); } catch { /* ignore */ }
+    });
+
+    const onClose = () => {
+      closed = true;
+      clearInterval(heartbeat);
+      ac.abort();
+      activeStreams.delete(threadKey);
+      try { unsubThread(); } catch {}
+    };
     req.on('close', onClose);
     res.on('close', onClose);
 
@@ -1589,6 +1616,56 @@ ${toolLines.join('\n')}
     res.apiOk(jobs);
   });
 
+  // ── Plan proposal response ──
+  // POST /ai/threads/:threadId/plan-response
+  // Body: { requestId, decision:'approve'|'reject'|'modify', approvedSteps?, modifiedSteps? }
+  r.post('/ai/threads/:threadId/plan-response', requireThreadAccess('comment'), async (req, res) => {
+    const thread = req.aiThread;
+    const { requestId, decision, approvedSteps, modifiedSteps } = req.body || {};
+    if (!requestId || !decision) {
+      return res.apiError(400, 'missing_fields', 'requestId + decision required');
+    }
+    if (!['approve', 'reject', 'modify'].includes(decision)) {
+      return res.apiError(400, 'invalid_decision', 'decision must be approve|reject|modify');
+    }
+    // Locate the plan_proposal message
+    const msg = await AiMessage.findOne({
+      threadId: thread._id,
+      'metadata.kind': 'plan_proposal',
+      'metadata.planProposal.requestId': requestId,
+    });
+    if (!msg) return res.apiError(404, 'plan_not_found', 'Plan proposal not found');
+    if (msg.metadata?.planProposal?.answer) {
+      return res.apiError(409, 'already_answered', 'Plan already answered');
+    }
+    // Patch the message
+    const patch = {
+      'metadata.planProposal.answer': decision,
+      'metadata.planProposal.answeredAt': new Date(),
+      'metadata.planProposal.answeredBy': req.user.id,
+    };
+    if (Array.isArray(approvedSteps)) patch['metadata.planProposal.approvedSteps'] = approvedSteps;
+    if (Array.isArray(modifiedSteps)) patch['metadata.planProposal.modifiedSteps'] = modifiedSteps;
+    await AiMessage.updateOne({ _id: msg._id }, { $set: patch });
+
+    // Find the most recent running job on this thread to resume it
+    const runningJob = await AiJob.findOne({
+      threadId: thread._id,
+      status: { $in: ['running', 'queued', 'paused'] },
+    }).sort({ createdAt: -1 }).lean();
+    if (runningJob) {
+      emitJobEvent(runningJob.id, {
+        type: 'plan.resolved',
+        requestId,
+        decision,
+        approvedSteps: Array.isArray(approvedSteps) ? approvedSteps : [],
+        modifiedSteps: Array.isArray(modifiedSteps) ? modifiedSteps : null,
+      });
+    }
+    const updated = await AiMessage.findById(msg._id).lean();
+    res.apiOk({ ok: true, message: updated });
+  });
+
   // ══════════════════════════════
   //  PROJECT ROOT
   // ══════════════════════════════
@@ -1860,6 +1937,16 @@ ${toolLines.join('\n')}
 
   const AiPermissionGrant = require('../../db/models/ai-permission-grant.model');
 
+  // Liste globale des permissions actives pour le workspace courant (fallback
+  // quand le front n'a pas encore sélectionné de thread ou ouvre l'onglet settings global).
+  r.get('/ai/permissions', async (req, res) => {
+    const ws = await ensureWorkspaceAccess(req, res);
+    if (!ws) return;
+    const grants = await AiPermissionGrant.find({ workspaceId: ws._id })
+      .sort({ decidedAt: -1 }).limit(200).lean();
+    res.apiOk(grants);
+  });
+
   r.get('/ai/threads/:threadId/permissions', requireThreadAccess('view'), async (req, res) => {
     const grants = await AiPermissionGrant.find({ threadId: req.aiThread._id })
       .sort({ decidedAt: -1 }).lean();
@@ -1998,6 +2085,235 @@ ${toolLines.join('\n')}
       updated.visibility = 'private';
     }
     res.apiOk(updated);
+  });
+
+  // ══════════════════════════════
+  //  PROJECT KNOWLEDGE (structured key/value)
+  // ══════════════════════════════
+
+  const AiProjectKnowledge = require('../../db/models/ai-project-knowledge.model');
+
+  // Validation helpers
+  const KNOWLEDGE_TYPES = ['text', 'number', 'date', 'url', 'email', 'file', 'list', 'boolean', 'json'];
+  const KEY_REGEX = /^[a-zA-Z0-9][a-zA-Z0-9._-]{0,99}$/;
+  const MAX_VALUE_BYTES = 10 * 1024; // 10 KB
+
+  function _valueSize(v) {
+    try { return Buffer.byteLength(typeof v === 'string' ? v : JSON.stringify(v ?? ''), 'utf8'); }
+    catch { return 0; }
+  }
+
+  function _validateEntry(entry) {
+    if (!entry || typeof entry !== 'object') return 'entry required';
+    const key = typeof entry.key === 'string' ? entry.key.trim() : '';
+    if (!key) return 'key required';
+    if (!KEY_REGEX.test(key)) return `invalid key "${key}" (alphanumeric + . _ - only, <= 100 chars)`;
+    if (entry.type && !KNOWLEDGE_TYPES.includes(entry.type)) return `invalid type "${entry.type}"`;
+    if (entry.description && typeof entry.description === 'string' && entry.description.length > 500) {
+      return 'description too long (max 500)';
+    }
+    if (_valueSize(entry.value) > MAX_VALUE_BYTES) return 'value too large (max 10 KB)';
+    if (entry.tags && !Array.isArray(entry.tags)) return 'tags must be array';
+    if (Array.isArray(entry.tags) && entry.tags.some(t => typeof t !== 'string' || t.length > 40)) {
+      return 'invalid tag (string, max 40 chars)';
+    }
+    return null;
+  }
+
+  function _sanitizeEntry(entry, userId) {
+    return {
+      key: String(entry.key).trim(),
+      value: entry.value,
+      type: KNOWLEDGE_TYPES.includes(entry.type) ? entry.type : 'text',
+      description: entry.description ? String(entry.description).slice(0, 500) : '',
+      source: ['manual', 'extracted', 'ai'].includes(entry.source) ? entry.source : 'manual',
+      pinned: !!entry.pinned,
+      tags: Array.isArray(entry.tags) ? entry.tags.filter(t => typeof t === 'string').map(t => t.slice(0, 40)) : [],
+      updatedAt: new Date(),
+      updatedBy: userId || undefined,
+    };
+  }
+
+  // GET — full knowledge doc
+  r.get('/ai/threads/:threadId/knowledge', requireThreadAccess('view'), async (req, res) => {
+    const doc = await AiProjectKnowledge.findOne({ threadId: req.aiThread._id }).lean();
+    res.apiOk(doc || { threadId: req.aiThread._id, workspaceId: req.aiThread.workspaceId, entries: [] });
+  });
+
+  // PUT — replace all entries
+  r.put('/ai/threads/:threadId/knowledge', requireThreadAccess('edit'), async (req, res) => {
+    const { entries } = req.body || {};
+    if (!Array.isArray(entries)) return res.apiError(400, 'invalid_payload', 'entries[] required');
+    // Validate + enforce unique keys
+    const seen = new Set();
+    for (const e of entries) {
+      const err = _validateEntry(e);
+      if (err) return res.apiError(400, 'invalid_entry', err);
+      if (seen.has(e.key)) return res.apiError(400, 'duplicate_key', `duplicate key "${e.key}"`);
+      seen.add(e.key);
+    }
+    const sanitized = entries.map(e => _sanitizeEntry(e, req.user.id));
+    const doc = await AiProjectKnowledge.findOneAndUpdate(
+      { threadId: req.aiThread._id },
+      { $set: { entries: sanitized, workspaceId: req.aiThread.workspaceId }, $setOnInsert: { threadId: req.aiThread._id } },
+      { upsert: true, new: true }
+    );
+    res.apiOk(doc);
+  });
+
+  // POST — add single entry
+  r.post('/ai/threads/:threadId/knowledge/entries', requireThreadAccess('edit'), async (req, res) => {
+    const entry = req.body || {};
+    const err = _validateEntry(entry);
+    if (err) return res.apiError(400, 'invalid_entry', err);
+    // Reject duplicate key (application-level unique check)
+    const existing = await AiProjectKnowledge.findOne(
+      { threadId: req.aiThread._id, 'entries.key': entry.key },
+      { 'entries.$': 1 }
+    ).lean();
+    if (existing) return res.apiError(409, 'duplicate_key', `key "${entry.key}" already exists`);
+    const sanitized = _sanitizeEntry(entry, req.user.id);
+    const doc = await AiProjectKnowledge.findOneAndUpdate(
+      { threadId: req.aiThread._id },
+      { $push: { entries: sanitized }, $setOnInsert: { workspaceId: req.aiThread.workspaceId, threadId: req.aiThread._id } },
+      { upsert: true, new: true }
+    );
+    const added = doc.entries[doc.entries.length - 1];
+    res.apiOk(added);
+  });
+
+  // POST /import — bulk import CSV/JSON BEFORE :entryId routes
+  r.post('/ai/threads/:threadId/knowledge/import', requireThreadAccess('edit'), async (req, res) => {
+    const { format, data, mode } = req.body || {};
+    if (!['csv', 'json'].includes(format)) return res.apiError(400, 'invalid_format', 'format must be csv or json');
+    if (typeof data !== 'string' && typeof data !== 'object') return res.apiError(400, 'invalid_data', 'data required');
+
+    let imported = [];
+    try {
+      if (format === 'json') {
+        const parsed = typeof data === 'string' ? JSON.parse(data) : data;
+        const arr = Array.isArray(parsed) ? parsed : (Array.isArray(parsed?.entries) ? parsed.entries : null);
+        if (!arr) return res.apiError(400, 'invalid_json', 'JSON must be an array or {entries:[]}');
+        imported = arr;
+      } else {
+        // CSV — very simple parser: first line = headers
+        const text = String(data).trim();
+        if (!text) return res.apiError(400, 'empty_csv', 'CSV empty');
+        const lines = text.split(/\r?\n/);
+        const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
+        const keyIdx = headers.indexOf('key');
+        const valueIdx = headers.indexOf('value');
+        if (keyIdx < 0 || valueIdx < 0) return res.apiError(400, 'csv_missing_headers', 'CSV must have key,value columns');
+        for (let i = 1; i < lines.length; i++) {
+          const row = lines[i];
+          if (!row.trim()) continue;
+          // naive CSV split — values must not contain unescaped commas
+          const cells = row.split(',').map(c => c.trim().replace(/^"|"$/g, ''));
+          imported.push({
+            key: cells[keyIdx],
+            value: cells[valueIdx],
+            type: cells[headers.indexOf('type')] || 'text',
+            description: cells[headers.indexOf('description')] || '',
+            tags: (cells[headers.indexOf('tags')] || '').split('|').filter(Boolean),
+          });
+        }
+      }
+    } catch (e) {
+      return res.apiError(400, 'parse_error', e?.message || 'Failed to parse import data');
+    }
+
+    // Validate all
+    const errors = [];
+    const validated = [];
+    for (const e of imported) {
+      const err = _validateEntry(e);
+      if (err) { errors.push({ key: e?.key, error: err }); continue; }
+      validated.push(_sanitizeEntry(e, req.user.id));
+    }
+
+    // Apply merge: mode === 'replace' wipes, else upsert by key
+    const existingDoc = await AiProjectKnowledge.findOne({ threadId: req.aiThread._id });
+    let entries = (mode === 'replace' || !existingDoc) ? [] : [...existingDoc.entries];
+    for (const e of validated) {
+      const idx = entries.findIndex(x => x.key === e.key);
+      if (idx >= 0) entries[idx] = { ...entries[idx].toObject?.() || entries[idx], ...e };
+      else entries.push(e);
+    }
+
+    const doc = await AiProjectKnowledge.findOneAndUpdate(
+      { threadId: req.aiThread._id },
+      { $set: { entries, workspaceId: req.aiThread.workspaceId }, $setOnInsert: { threadId: req.aiThread._id } },
+      { upsert: true, new: true }
+    );
+    res.apiOk({ imported: validated.length, total: doc.entries.length, errors });
+  });
+
+  // GET /export — download JSON/CSV (static, BEFORE :entryId)
+  r.get('/ai/threads/:threadId/knowledge/export', requireThreadAccess('view'), async (req, res) => {
+    const format = req.query.format === 'csv' ? 'csv' : 'json';
+    const doc = await AiProjectKnowledge.findOne({ threadId: req.aiThread._id }).lean();
+    const entries = doc?.entries || [];
+
+    if (format === 'json') {
+      res.setHeader('Content-Type', 'application/json');
+      res.setHeader('Content-Disposition', `attachment; filename="knowledge-${req.aiThread._id}.json"`);
+      return res.send(JSON.stringify({ threadId: String(req.aiThread._id), entries }, null, 2));
+    }
+    // CSV
+    const headers = ['key', 'value', 'type', 'description', 'pinned', 'tags'];
+    const escape = (v) => {
+      const s = v == null ? '' : (typeof v === 'string' ? v : JSON.stringify(v));
+      return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+    };
+    const rows = [headers.join(',')];
+    for (const e of entries) {
+      rows.push([
+        escape(e.key), escape(e.value), escape(e.type), escape(e.description),
+        escape(e.pinned ? 'true' : 'false'), escape((e.tags || []).join('|')),
+      ].join(','));
+    }
+    res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+    res.setHeader('Content-Disposition', `attachment; filename="knowledge-${req.aiThread._id}.csv"`);
+    res.send(rows.join('\n'));
+  });
+
+  // PATCH — update a single entry
+  r.patch('/ai/threads/:threadId/knowledge/entries/:entryId', requireThreadAccess('edit'), async (req, res) => {
+    const patch = req.body || {};
+    // If key changed, re-validate and check unique
+    const doc = await AiProjectKnowledge.findOne({ threadId: req.aiThread._id });
+    if (!doc) return res.apiError(404, 'knowledge_not_found', 'No knowledge doc');
+    const entry = doc.entries.id(req.params.entryId);
+    if (!entry) return res.apiError(404, 'entry_not_found', 'Entry not found');
+
+    const merged = { ...entry.toObject(), ...patch };
+    const err = _validateEntry(merged);
+    if (err) return res.apiError(400, 'invalid_entry', err);
+
+    if (patch.key && patch.key !== entry.key) {
+      const dup = doc.entries.find(e => String(e._id) !== req.params.entryId && e.key === patch.key);
+      if (dup) return res.apiError(409, 'duplicate_key', `key "${patch.key}" already exists`);
+    }
+
+    // Apply patch manually (only allowed fields)
+    const allowed = ['key', 'value', 'type', 'description', 'pinned', 'tags', 'source'];
+    for (const k of allowed) {
+      if (k in patch) entry[k] = patch[k];
+    }
+    entry.updatedAt = new Date();
+    entry.updatedBy = req.user.id;
+    await doc.save();
+    res.apiOk(entry);
+  });
+
+  // DELETE — remove a single entry
+  r.delete('/ai/threads/:threadId/knowledge/entries/:entryId', requireThreadAccess('edit'), async (req, res) => {
+    const upd = await AiProjectKnowledge.updateOne(
+      { threadId: req.aiThread._id },
+      { $pull: { entries: { _id: req.params.entryId } } }
+    );
+    if (!upd.modifiedCount) return res.apiError(404, 'entry_not_found', 'Entry not found');
+    res.apiOk({ deleted: true });
   });
 
   // ── Helper ──

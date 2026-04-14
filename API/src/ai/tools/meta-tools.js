@@ -15,6 +15,7 @@ const AiUserContext = require('../../db/models/ai-user-context.model');
 const AiThread = require('../../db/models/ai-thread.model');
 const AiMessage = require('../../db/models/ai-message.model');
 const AiProjectMemory = require('../../db/models/ai-project-memory.model');
+const AiProjectKnowledge = require('../../db/models/ai-project-knowledge.model');
 const Run = require('../../db/models/run.model');
 const { Types } = require('mongoose');
 
@@ -251,6 +252,30 @@ const META_TOOL_DEFINITIONS = [
     parameters: { type: 'object', properties: {} },
   },
   {
+    name: 'get_project_knowledge',
+    description: 'Lit la mémoire structurée du projet actif (clé-valeur typée, remplie manuellement par l\'utilisateur OU par l\'agent). Retourne une entrée spécifique si key fournie, sinon toutes les entrées. La mémoire projet contient des infos durables sur le projet (nom client, budget, contacts, URLs, identifiants internes, deadline). Utilise-la AVANT de demander au user des infos qu\'elle pourrait contenir.',
+    parameters: {
+      type: 'object',
+      properties: {
+        key: { type: 'string', description: 'Clé précise à récupérer (ex: "client.name"). Si absent, retourne toutes les entrées.' },
+      },
+    },
+  },
+  {
+    name: 'set_project_knowledge',
+    description: 'Ajoute ou met à jour une entrée dans la mémoire structurée du projet. USE THIS quand tu apprends une info durable sur le projet (ex: l\'utilisateur mentionne un budget, un contact, une URL, une deadline). Classé write : nécessite confirmation user en mode prudent.',
+    parameters: {
+      type: 'object',
+      properties: {
+        key: { type: 'string', description: 'Clé courte type "client.name" ou "budget.total" (alphanumeric + . _ -, max 100 car.)' },
+        value: { description: 'Valeur (string, number, boolean, array, ou objet selon le type)' },
+        type: { type: 'string', enum: ['text', 'number', 'date', 'url', 'email', 'file', 'list', 'boolean', 'json'], description: 'Type sémantique de la valeur (défaut: text)' },
+        description: { type: 'string', description: 'Contexte court de cette info (max 500 car.)' },
+      },
+      required: ['key', 'value'],
+    },
+  },
+  {
     name: 'compact_and_transfer',
     description: 'Compacte la conversation actuelle en un résumé et crée un nouveau thread avec ce contexte. Utilise quand l\'utilisateur veut travailler sur un NOUVEL élément (workflow/formulaire) depuis une conversation liée à un autre élément. Le résumé sera le premier message du nouveau thread. IMPORTANT : si le nouveau thread concerne un élément existant (workflow/formulaire), passe le flowId ou formId pour maintenir le lien.',
     parameters: {
@@ -387,6 +412,114 @@ const META_TOOL_DEFINITIONS = [
         scope: { type: 'string', description: 'Domaine ou site à privilégier.' },
       },
       required: ['question'],
+    },
+  },
+  {
+    name: 'render_structured',
+    description: [
+      "Affiche un message structuré interactif dans le chat. RÈGLE ABSOLUE : tu dois TOUJOURS fournir les 3 champs obligatoires : layout, title ET data. JAMAIS sans data.",
+      "",
+      "data doit contenir le VRAI CONTENU (pas juste un titre). Le tool ÉCHOUE si data est vide ou manquant.",
+      "",
+      "Quand utiliser :",
+      "- Storyboards, variantes produit, options avec contenu riche → chips_tabs",
+      "- Plans étape par étape, checklists → stepped_plan",
+      "- Comparaisons multi-colonnes → comparison_table",
+      "- FAQ, sections pliables → accordion",
+      "- Chronologie, évolution → timeline",
+      "- Choix multiples avec visuel → card_grid",
+      "",
+      "Schémas `data` par layout (EXEMPLES COMPLETS à adapter) :",
+      "- chips_tabs : {\"chips\":[{\"id\":\"a\",\"label\":\"A\"}],\"tabs\":[{\"chipId\":\"a\",\"content\":{\"blocks\":[{\"type\":\"text\",\"content\":\"...\"}]}}]}",
+      "- stepped_plan : {\"steps\":[{\"id\":\"s1\",\"title\":\"Étape 1\",\"description\":\"...\",\"duration\":\"2 min\"}]}",
+      "- comparison_table : {\"columns\":[{\"key\":\"a\",\"header\":\"A\"}],\"rows\":[{\"label\":\"Feature\",\"a\":true}]}",
+      "- accordion : {\"sections\":[{\"id\":\"q1\",\"title\":\"Q1\",\"content\":\"Réponse\"}]}",
+      "- timeline : {\"events\":[{\"date\":\"2026-01-01\",\"title\":\"Evt\",\"description\":\"...\"}]}",
+      "- card_grid : {\"cards\":[{\"title\":\"Card 1\",\"description\":\"...\"}]}",
+    ].join('\n'),
+    parameters: {
+      type: 'object',
+      properties: {
+        layout: {
+          type: 'string',
+          enum: ['chips_tabs', 'stepped_plan', 'comparison_table', 'accordion', 'timeline', 'card_grid'],
+          description: 'Type de layout à rendre',
+        },
+        title: { type: 'string', description: 'Titre optionnel affiché au-dessus du composant structuré' },
+        data: {
+          type: 'object',
+          description: 'Structure dépendant du layout. Voir description du tool pour le schéma précis.',
+        },
+      },
+      required: ['layout', 'data'],
+    },
+  },
+  {
+    name: 'propose_plan',
+    description: 'Propose un plan d\'action structuré à l\'utilisateur AVANT d\'exécuter une tâche complexe. USE THIS quand tu as besoin de validation sur l\'approche (refonte, migration, analyse coûteuse) ou quand la demande est ambiguë. Le plan est affiché comme carte interactive dans le chat. L\'utilisateur peut Approuver (tout ou partie), Modifier, ou Rejeter. Ta tâche pause jusqu\'à sa réponse (max 10 min).',
+    parameters: {
+      type: 'object',
+      properties: {
+        summary: { type: 'string', description: 'Résumé 1-2 phrases du plan global' },
+        steps: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              id: { type: 'string', description: 'ID court ex: s1, s2' },
+              title: { type: 'string' },
+              rationale: { type: 'string', description: 'Pourquoi cette étape' },
+              tools: { type: 'array', items: { type: 'string' }, description: 'Tools qui seront utilisés' },
+              duration_estimate: { type: 'string', description: 'ex: 2 min, 30s' },
+              dependsOn: { type: 'array', items: { type: 'string' }, description: 'IDs des étapes prérequis' },
+            },
+            required: ['id', 'title'],
+          },
+        },
+        risks: { type: 'array', items: { type: 'string' }, description: 'Risques ou incertitudes' },
+      },
+      required: ['summary', 'steps'],
+    },
+  },
+  {
+    name: 'generate_diagram',
+    description: 'Génère un diagramme visuel (flowchart, séquence, mindmap, ER, état, Gantt) via syntaxe Mermaid. Le diagramme est affiché dans le canvas Document + comme preview dans le chat. USE THIS quand tu illustres : un workflow, une architecture, une hiérarchie, un processus, une relation de données.',
+    parameters: {
+      type: 'object',
+      properties: {
+        type: { type: 'string', enum: ['flowchart', 'sequence', 'class', 'state', 'er', 'gantt', 'mindmap', 'journey', 'timeline', 'pie'] },
+        title: { type: 'string' },
+        mermaid: { type: 'string', description: 'Code source Mermaid valide (ex: flowchart TD\\n  A-->B\\n  B-->C)' },
+        direction: { type: 'string', enum: ['TD', 'LR', 'BT', 'RL'], description: 'Pour flowchart' },
+      },
+      required: ['type', 'mermaid'],
+    },
+  },
+  {
+    name: 'install_package',
+    description: 'Installe un package Python (pip) ou Node (npm) manquant dans l\'environnement d\'exécution. USE THIS quand execute_code échoue avec ModuleNotFoundError ou si tu sais qu\'un package spécifique est nécessaire (ex: reportlab pour PDF avancé, cairosvg, opencv-python). Passe par permission (risque elevated). Règles admin configurables via AI_PACKAGE_INSTALL_MODE (blocked|ask|auto), AI_PACKAGE_WHITELIST, AI_PACKAGE_BLACKLIST.',
+    parameters: {
+      type: 'object',
+      properties: {
+        language: { type: 'string', enum: ['python', 'node'], description: 'Runtime cible' },
+        package: { type: 'string', description: 'Nom du package (ex: reportlab, cairosvg, @mermaid-js/mermaid-cli)' },
+        version: { type: 'string', description: 'Version optionnelle (ex: "1.2.3", "^2.0"). Sinon latest.' },
+        reason: { type: 'string', description: 'Raison brève (ex: "pour rendre Mermaid → PNG")' },
+      },
+      required: ['language', 'package'],
+    },
+  },
+  {
+    name: 'display_image',
+    description: "Affiche une image directement inline dans le chat (bubble avec l'image). Utile quand l'agent a produit une image via execute_code / generate_diagram / download et veut la montrer. Fournis soit fileId (image stockée), soit url (HTTP/HTTPS).",
+    parameters: {
+      type: 'object',
+      properties: {
+        fileId: { type: 'string', description: 'ID d\'une image stockée (priorité sur url)' },
+        url: { type: 'string', description: 'URL publique d\'une image' },
+        caption: { type: 'string', description: 'Légende optionnelle affichée sous l\'image' },
+        alt: { type: 'string', description: 'Alt text accessibilité' },
+      },
     },
   },
 ];
@@ -648,6 +781,56 @@ async function executeMetaTool(name, input, ctx) {
       return doc?.memory || {};
     }
 
+    case 'get_project_knowledge': {
+      const tid = ctx._metadata?.threadId || ctx.threadId;
+      if (!tid) return { ok: false, error: 'threadId manquant (mémoire structurée nécessite un thread actif)' };
+      const doc = await AiProjectKnowledge.findOne({ threadId: tid }).lean();
+      const entries = doc?.entries || [];
+      if (input.key) {
+        const found = entries.find(e => e.key === input.key);
+        if (found) return { ok: true, entry: found };
+        return { ok: false, error: `Clé "${input.key}" introuvable`, availableKeys: entries.map(e => e.key) };
+      }
+      return { ok: true, total: entries.length, entries };
+    }
+
+    case 'set_project_knowledge': {
+      const tid = ctx._metadata?.threadId || ctx.threadId;
+      if (!tid) return { ok: false, error: 'threadId manquant (mémoire structurée nécessite un thread actif)' };
+      const { key, value, type, description } = input || {};
+      if (!key || typeof key !== 'string') return { ok: false, error: 'key requis (string)' };
+      if (!/^[a-zA-Z0-9][a-zA-Z0-9._-]{0,99}$/.test(key)) {
+        return { ok: false, error: 'Clé invalide : alphanumérique + . _ - uniquement, max 100 caractères' };
+      }
+      if (value === undefined) return { ok: false, error: 'value requis' };
+      const allowedTypes = ['text', 'number', 'date', 'url', 'email', 'file', 'list', 'boolean', 'json'];
+      const resolvedType = allowedTypes.includes(type) ? type : 'text';
+      const desc = description ? String(description).slice(0, 500) : '';
+
+      // Upsert doc, then pull any existing entry by key, then push the new one.
+      await AiProjectKnowledge.updateOne(
+        { threadId: tid },
+        { $setOnInsert: { threadId: tid, workspaceId: ctx.workspaceId, entries: [] } },
+        { upsert: true }
+      );
+      await AiProjectKnowledge.updateOne(
+        { threadId: tid },
+        { $pull: { entries: { key } } }
+      );
+      await AiProjectKnowledge.updateOne(
+        { threadId: tid },
+        {
+          $push: {
+            entries: {
+              key, value, type: resolvedType, description: desc,
+              source: 'ai', updatedAt: new Date(), updatedBy: ctx.userId, pinned: false, tags: [],
+            },
+          },
+        }
+      );
+      return { ok: true, key, message: `Mémoire projet mise à jour : ${key}` };
+    }
+
     case 'compact_and_transfer': {
       const { summary, newMode, newTitle, agentId, flowId, formId } = input;
       // Create new thread with the summary as system context
@@ -788,6 +971,17 @@ async function executeMetaTool(name, input, ctx) {
       try {
         const { spawnSubagent } = require('../subagent/sub-runner');
         const jc = ctx?._jobContext;
+        // Live preview: emit subagent status
+        try {
+          ctx?._emit?.({
+            type: 'ui.preview.update',
+            patch: [
+              { op: 'replace', path: '/subagentType', value: input.subagent_type || 'general' },
+              { op: 'replace', path: '/prompt', value: String(input.prompt || '').slice(0, 500) },
+              { op: 'replace', path: '/status', value: 'running' },
+            ],
+          });
+        } catch { /* non-fatal */ }
         // Permet le spawn même sans job parent — crée un job éphémère si nécessaire
         let parentJobId = jc?.jobId;
         let depth = jc?.depth || 0;
@@ -820,8 +1014,20 @@ async function executeMetaTool(name, input, ctx) {
           })) : null,
           depth,
         });
+        try {
+          ctx?._emit?.({
+            type: 'ui.preview.update',
+            patch: [{ op: 'replace', path: '/status', value: 'success' }],
+          });
+        } catch { /* non-fatal */ }
         return { ok: true, result: res };
       } catch (e) {
+        try {
+          ctx?._emit?.({
+            type: 'ui.preview.update',
+            patch: [{ op: 'replace', path: '/status', value: 'error' }, { op: 'replace', path: '/error', value: e?.message || String(e) }],
+          });
+        } catch { /* non-fatal */ }
         return { ok: false, error: e?.message || String(e) };
       }
     }
@@ -861,9 +1067,342 @@ async function executeMetaTool(name, input, ctx) {
       }
     }
 
+    case 'render_structured': {
+      const validLayouts = ['chips_tabs', 'stepped_plan', 'comparison_table', 'accordion', 'timeline', 'card_grid'];
+      if (!input || !validLayouts.includes(input.layout)) {
+        return { ok: false, error: `Layout invalide. Valeurs possibles: ${validLayouts.join(', ')}` };
+      }
+      if (!input.data || typeof input.data !== 'object') {
+        const examples = {
+          chips_tabs: { chips: [{ id: 'a', label: 'A' }, { id: 'b', label: 'B' }], tabs: [{ chipId: 'a', content: { blocks: [{ type: 'text', content: 'Contenu A' }] } }, { chipId: 'b', content: { blocks: [{ type: 'text', content: 'Contenu B' }] } }] },
+          stepped_plan: { steps: [{ id: 's1', title: 'Étape 1', description: '...', duration: '2 min' }] },
+          comparison_table: { columns: [{ key: 'a', header: 'A' }, { key: 'b', header: 'B' }], rows: [{ label: 'Feature', a: true, b: false }] },
+          accordion: { sections: [{ id: 'q1', title: 'Question 1', content: 'Réponse 1' }] },
+          timeline: { events: [{ date: '2026-01-01', title: 'Event', description: '...' }] },
+          card_grid: { cards: [{ title: 'Card 1', description: '...' }] },
+        };
+        const ex = examples[input?.layout] || examples.card_grid;
+        return {
+          ok: false,
+          retry_required: true,
+          error: `ERREUR CRITIQUE : tu as appelé render_structured sans le champ "data". Le champ data est OBLIGATOIRE et doit contenir le contenu réel (pas juste un titre).`,
+          action_required: `RAPPELLE render_structured IMMÉDIATEMENT avec le paramètre complet, sans demander à l'utilisateur. Format attendu pour layout="${input?.layout}":`,
+          example_call: { layout: input?.layout, title: input?.title, data: ex },
+          must_do: `N'abandonne pas. Ton prochain tool call DOIT être render_structured avec data rempli selon le format ci-dessus.`,
+        };
+      }
+      // Shape validation per layout
+      const d = input.data;
+      const shapeErr = (() => {
+        switch (input.layout) {
+          case 'chips_tabs':
+            if (!Array.isArray(d.chips) || !Array.isArray(d.tabs)) return 'chips_tabs requiert data.chips[] et data.tabs[]';
+            return null;
+          case 'stepped_plan':
+            if (!Array.isArray(d.steps) || !d.steps.length) return 'stepped_plan requiert data.steps[] non vide';
+            return null;
+          case 'comparison_table':
+            if (!Array.isArray(d.columns) || !Array.isArray(d.rows)) return 'comparison_table requiert data.columns[] et data.rows[]';
+            return null;
+          case 'accordion':
+            if (!Array.isArray(d.sections) || !d.sections.length) return 'accordion requiert data.sections[] non vide';
+            return null;
+          case 'timeline':
+            if (!Array.isArray(d.events) || !d.events.length) return 'timeline requiert data.events[] non vide';
+            return null;
+          case 'card_grid':
+            if (!Array.isArray(d.cards) || !d.cards.length) return 'card_grid requiert data.cards[] non vide';
+            return null;
+          default:
+            return 'Layout inconnu';
+        }
+      })();
+      if (shapeErr) return { ok: false, error: shapeErr };
+      if (!ctx.threadId) return { ok: false, error: 'threadId manquant (render_structured doit être utilisé dans un thread actif).' };
+      try {
+        const doc = await AiMessage.create({
+          threadId: ctx.threadId,
+          workspaceId: ctx.workspaceId,
+          role: 'assistant',
+          content: input.title || '',
+          metadata: {
+            kind: 'structured',
+            structured: {
+              layout: input.layout,
+              title: input.title || '',
+              data: input.data,
+              renderedAt: new Date(),
+            },
+          },
+        });
+        // Retour minimal/silencieux : le widget est DÉJÀ visible dans le chat via le message inline.
+        return {
+          ok: true,
+          _silent: true,
+          layout: input.layout,
+          hint: "Widget affiché. RÈGLE STRICTE : ne recopie AUCUN contenu du widget dans ton texte (pas de JSON, pas de liste, pas de tableau markdown). Une courte phrase d'intro (≤1 ligne) si pertinent, puis silence. L'utilisateur voit déjà le widget.",
+        };
+      } catch (e) {
+        return { ok: false, error: e?.message || String(e) };
+      }
+    }
+
+    case 'propose_plan': {
+      if (!ctx.threadId) return { ok: false, error: 'threadId manquant' };
+      if (!input?.summary || !Array.isArray(input?.steps) || !input.steps.length) {
+        return { ok: false, error: 'summary + steps[] requis' };
+      }
+      const { randomUUID } = require('crypto');
+      const requestId = randomUUID();
+      try {
+        await AiMessage.create({
+          threadId: ctx.threadId,
+          workspaceId: ctx.workspaceId,
+          role: 'assistant',
+          content: input.summary || 'Plan proposé',
+          metadata: {
+            kind: 'plan_proposal',
+            planProposal: {
+              requestId,
+              summary: input.summary,
+              steps: input.steps,
+              risks: Array.isArray(input.risks) ? input.risks : [],
+            },
+          },
+        });
+      } catch (e) {
+        return { ok: false, error: `Impossible d'enregistrer le plan: ${e?.message}` };
+      }
+      // Emit SSE event so the frontend can surface the plan card
+      const jc = ctx._jobContext;
+      if (jc?.broadcast) {
+        jc.broadcast({
+          type: 'ai.plan.request',
+          requestId,
+          summary: input.summary,
+          stepCount: input.steps.length,
+        });
+      }
+      // Pause agent loop when running inside a job
+      if (jc?.waitForPlanApproval) {
+        const decision = await jc.waitForPlanApproval(requestId, 600000);
+        return {
+          ok: true,
+          requestId,
+          decision: decision.decision,
+          approvedSteps: decision.approvedSteps || [],
+          modifiedSteps: decision.modifiedSteps || null,
+        };
+      }
+      return {
+        ok: true,
+        pending: true,
+        requestId,
+        message: 'Plan proposé à l\'utilisateur — attente réponse.',
+      };
+    }
+
+    case 'generate_diagram': {
+      if (!input?.type || !input?.mermaid) {
+        return { ok: false, error: 'type + mermaid requis' };
+      }
+      const expectedStart = {
+        flowchart: /^(flowchart|graph)\s/,
+        sequence: /^sequenceDiagram/,
+        class: /^classDiagram/,
+        state: /^stateDiagram/,
+        er: /^erDiagram/,
+        gantt: /^gantt/,
+        mindmap: /^mindmap/,
+        journey: /^journey/,
+        timeline: /^timeline/,
+        pie: /^pie/,
+      };
+      const re = expectedStart[input.type];
+      const code = String(input.mermaid).trim();
+      if (re && !re.test(code)) {
+        return { ok: false, error: `Syntaxe Mermaid invalide pour type ${input.type}. Le code doit commencer par le mot-clé attendu.` };
+      }
+      // Validation pré-rendu : détecte les erreurs courantes AVANT d'afficher.
+      // Si invalide, retourne une erreur actionnable à l'agent pour qu'il corrige.
+      const validationIssue = _validateMermaidSyntax(input.type, code);
+      if (validationIssue) {
+        return {
+          ok: false,
+          error: `Mermaid invalide : ${validationIssue}. Corrige le code et rappelle generate_diagram. RAPPEL : pas de \\n littéral dans les labels, utilise <br/> ou un nouveau node. Échappe les caractères spéciaux avec des quotes autour du texte.`,
+        };
+      }
+      const safe = code.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+      const previewHtml = `<div class="mermaid-wrap"><pre class="mermaid">${safe}</pre></div>`;
+      const title = input.title || `Diagramme ${input.type}`;
+      // Emit canvas side event — front render via mermaid.js
+      const emitFn = ctx._emit;
+      const sideEvent = {
+        type: 'canvas.document.update',
+        format: 'mermaid',
+        title,
+        previewHtml,
+        rawMermaid: code,
+      };
+      if (typeof emitFn === 'function') emitFn(sideEvent);
+      else if (Array.isArray(ctx._sideEvents)) ctx._sideEvents.push(sideEvent);
+      // Persist a bubble in the chat
+      try {
+        await AiMessage.create({
+          threadId: ctx.threadId,
+          workspaceId: ctx.workspaceId,
+          role: 'assistant',
+          content: title,
+          metadata: {
+            kind: 'diagram',
+            diagram: { type: input.type, title, mermaid: code },
+          },
+        });
+      } catch (e) {
+        // non-fatal — the canvas update still goes through
+        console.warn('[generate_diagram] AiMessage persist error:', e?.message);
+      }
+      return {
+        ok: true,
+        _silent: true,
+        type: input.type,
+        title,
+        hint: "Diagramme affiché. RÈGLE STRICTE : ne recopie PAS le code Mermaid dans ton texte, ne redécris pas les étapes en listes. Si tu veux commenter, 1 phrase d'intro max. L'utilisateur voit déjà le diagramme.",
+      };
+    }
+
+    case 'install_package': {
+      const { language, package: pkg, version, reason } = input || {};
+      if (!['python', 'node'].includes(language)) return { ok: false, error: 'language doit être "python" ou "node"' };
+      if (!pkg || typeof pkg !== 'string') return { ok: false, error: 'package requis' };
+      // Validation stricte du nom (aucune injection shell possible)
+      if (!/^[@a-zA-Z0-9_\-./]+$/.test(pkg)) return { ok: false, error: 'Nom de package invalide (caractères autorisés: lettres, chiffres, _, -, ., /, @)' };
+      if (version && !/^[a-zA-Z0-9_.\-~^<>=*]+$/.test(version)) return { ok: false, error: 'Version invalide' };
+
+      const mode = String(process.env.AI_PACKAGE_INSTALL_MODE || 'ask').toLowerCase();
+      if (mode === 'blocked') return { ok: false, error: 'Installation de packages désactivée par l\'administrateur (AI_PACKAGE_INSTALL_MODE=blocked).' };
+
+      // Blacklist admin + défaut (packages potentiellement dangereux)
+      const adminBlacklist = (process.env.AI_PACKAGE_BLACKLIST || '').split(',').map(s => s.trim()).filter(Boolean);
+      const defaultBlacklist = ['shelljs', 'node-shell', 'execa-shell'];
+      const fullBlacklist = new Set([...adminBlacklist, ...defaultBlacklist]);
+      if (fullBlacklist.has(pkg)) return { ok: false, error: `Package "${pkg}" blacklisté par l'admin.` };
+
+      // Whitelist admin optionnelle
+      const whitelist = (process.env.AI_PACKAGE_WHITELIST || '').split(',').map(s => s.trim()).filter(Boolean);
+      if (whitelist.length && !whitelist.includes(pkg)) {
+        return { ok: false, error: `Package "${pkg}" pas dans la whitelist admin. Demande à l'admin de l'ajouter à AI_PACKAGE_WHITELIST pour installer ce package.` };
+      }
+
+      // Cap: max N installs par jour/workspace (configurable)
+      const maxPerDay = parseInt(process.env.AI_PACKAGE_INSTALL_MAX_PER_DAY || '20', 10);
+      // Note: compteur simple en mémoire process — pour du prod, utiliser Redis/Mongo
+      if (!global.__aiPackageInstallCounter) global.__aiPackageInstallCounter = { count: 0, day: new Date().toDateString() };
+      const ctr = global.__aiPackageInstallCounter;
+      const today = new Date().toDateString();
+      if (ctr.day !== today) { ctr.count = 0; ctr.day = today; }
+      if (ctr.count >= maxPerDay) return { ok: false, error: `Limite de ${maxPerDay} installs/jour atteinte.` };
+
+      const { spawn } = require('child_process');
+      const pipBin = process.env.AI_SANDBOX_PIP || 'pip3';
+      const npmBin = process.env.AI_SANDBOX_NPM || 'npm';
+      const cmdArgs = language === 'python'
+        ? [pipBin, 'install', '--break-system-packages', '--no-input', '--quiet', version ? `${pkg}==${version}` : pkg]
+        : [npmBin, 'install', '-g', '--silent', version ? `${pkg}@${version}` : pkg];
+
+      return new Promise((resolve) => {
+        const child = spawn(cmdArgs[0], cmdArgs.slice(1), {
+          env: { ...process.env, PIP_BREAK_SYSTEM_PACKAGES: '1', npm_config_yes: 'true' },
+          stdio: ['ignore', 'pipe', 'pipe'],
+        });
+        let stdout = '', stderr = '';
+        const killTimer = setTimeout(() => { try { child.kill('SIGKILL'); } catch {} }, 180_000);
+        child.stdout.on('data', d => { stdout += d.toString(); if (stdout.length > 8000) stdout = stdout.slice(-8000); });
+        child.stderr.on('data', d => { stderr += d.toString(); if (stderr.length > 8000) stderr = stderr.slice(-8000); });
+        child.on('error', (e) => { clearTimeout(killTimer); resolve({ ok: false, error: `spawn: ${e.message}` }); });
+        child.on('close', (code) => {
+          clearTimeout(killTimer);
+          if (code === 0) {
+            ctr.count++;
+            resolve({
+              ok: true,
+              language,
+              package: pkg,
+              version: version || 'latest',
+              reason: reason || null,
+              message: `Package ${pkg}${version ? `@${version}` : ''} installé (${language}). Tu peux maintenant le require/import dans execute_code.`,
+              stdoutTail: stdout.slice(-1000),
+            });
+          } else {
+            resolve({
+              ok: false,
+              error: `Installation échouée (exit ${code})`,
+              stderrTail: stderr.slice(-1500),
+              hint: "Essaie un autre package ou vérifie l'orthographe. Les registries utilisés sont pypi.org pour python et npmjs.com pour node.",
+            });
+          }
+        });
+      });
+    }
+
+    case 'display_image': {
+      if (!ctx.threadId) return { ok: false, error: 'threadId manquant' };
+      const { fileId, url, caption, alt } = input || {};
+      if (!fileId && !url) return { ok: false, error: 'fileId ou url requis' };
+      try {
+        await AiMessage.create({
+          threadId: ctx.threadId,
+          workspaceId: ctx.workspaceId,
+          role: 'assistant',
+          content: caption || '',
+          metadata: {
+            kind: 'image_inline',
+            imageInline: {
+              fileId: fileId || null,
+              url: url || null,
+              caption: caption || null,
+              alt: alt || 'image',
+            },
+          },
+        });
+        return {
+          ok: true,
+          _silent: true,
+          hint: "Image affichée inline. Pas de description redondante dans ton texte.",
+        };
+      } catch (e) {
+        return { ok: false, error: e?.message };
+      }
+    }
+
     default:
       return { error: `Unknown meta-tool: ${name}` };
   }
+}
+
+// Validation Mermaid stricte : détecte les pièges qui cassent le parser client
+function _validateMermaidSyntax(type, code) {
+  if (typeof code !== 'string' || !code.trim()) return 'code vide';
+  const labelBlocks = code.match(/\[[^\]]*\]|\{[^}]*\}|\(\([^)]*\)\)|\([^)]*\)/g) || [];
+  for (const block of labelBlocks) {
+    if (block.includes('\\n')) return 'labels contiennent "\\n" littéral, remplace par " " ou scinde en plusieurs nodes';
+    if (/\n/.test(block)) return 'labels multilignes détectés, remplace les retours à la ligne par " "';
+    const inner = block.slice(1, -1);
+    const hasQuotes = /^".*"$/.test(inner.trim());
+    if (!hasQuotes) {
+      // Les caractères suivants cassent systématiquement Mermaid dans un label non quoté
+      if (/[()\[\]{}<>]/.test(inner)) {
+        return `caractères spéciaux non quotés dans un label (${block.slice(0, 60)}...). Entoure le texte de guillemets : A["texte avec (parenthèses)"]`;
+      }
+      if (/[:;]/.test(inner) && inner.length > 5) {
+        return `ponctuation ":" ou ";" non quotée dans (${block.slice(0, 60)}...). Utilise A["texte : valeur"]`;
+      }
+    }
+  }
+  if (type === 'flowchart' && /^flowchart\s*$/m.test(code)) {
+    return 'flowchart sans direction, ajoute TD/LR/BT/RL (ex: "flowchart TD")';
+  }
+  return null;
 }
 
 // Resolve the linked project element (flow or form) from context metadata

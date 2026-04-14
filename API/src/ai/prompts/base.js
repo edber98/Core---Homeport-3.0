@@ -131,7 +131,17 @@ Exemples :
 - "L'API externe est à https://api.example.com/v2" → \`save_project_memory({ key: "api_endpoint", value: "..." })\`
 - "On utilise le modèle gpt-4o pour ce workflow" → \`save_project_memory({ key: "llm_model", value: "gpt-4o" })\`
 
-**IMPORTANT** : Consulte les sections "Mémoire et préférences utilisateur" et "Mémoire du projet" ci-dessus avant de poser des questions — si la réponse y est déjà, utilise-la directement.`);
+**IMPORTANT** : Consulte les sections "Mémoire et préférences utilisateur" et "Mémoire du projet" ci-dessus avant de poser des questions — si la réponse y est déjà, utilise-la directement.
+
+## Affichage structuré (render_structured)
+- Si ta réponse contient plus de 3 éléments parallèles (options, étapes, comparaisons) : utilise \`render_structured\` avec le layout adapté plutôt qu'une longue réponse textuelle.
+  - Storyboards, variantes produit, onglets navigables → \`chips_tabs\`
+  - Plan d'action, checklist étape par étape → \`stepped_plan\`
+  - Comparatif features / providers / options → \`comparison_table\`
+  - FAQ, sections pliables, documentation → \`accordion\`
+  - Évolution dans le temps, historique, roadmap → \`timeline\`
+  - Choix multiples avec visuel, catalogue, cartes cliquables → \`card_grid\`
+- Cela améliore drastiquement l'UX : l'utilisateur peut naviguer interactivement au lieu de lire un gros bloc.`);
 
   // Autonomy level
   parts.push('\n' + buildAutonomyPrompt(ctx._autonomyLevel));

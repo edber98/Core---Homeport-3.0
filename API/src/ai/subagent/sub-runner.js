@@ -63,8 +63,15 @@ async function spawnSubagent(opts) {
 
 async function _loadParent(parentJobId) {
   if (!parentJobId) return null;
-  try { return await AiJob.findOne({ id: parentJobId }).lean(); }
-  catch { return null; }
+  const { Types } = require('mongoose');
+  try {
+    // Accepte _id (ObjectId string) OU id (short ID)
+    if (Types.ObjectId.isValid(parentJobId)) {
+      const byId = await AiJob.findById(parentJobId).lean();
+      if (byId) return byId;
+    }
+    return await AiJob.findOne({ id: parentJobId }).lean();
+  } catch { return null; }
 }
 
 async function _spawnOne(opts) {

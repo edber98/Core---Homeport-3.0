@@ -11,6 +11,8 @@ const { buildSystemPrompt } = require('./agent-runner');
 const { createLlmClient } = require('./llm');
 const { trackToolUsage } = require('./context/memory-manager');
 const { checkPermission } = require('./permissions');
+const { createPreviewSession } = require('./live-preview/preview-parser');
+const { detectPreviewType } = require('./live-preview/preview-router');
 const crypto = require('crypto');
 
 // Fallback for onboarding mode
@@ -129,6 +131,11 @@ async function* runHarness({ mode, messages, context, metadata, agentOverrides, 
     activeCapsules.add('project_fs');
     activeCapsules.add('document');
     activeCapsules.add('code_exec');
+    activeCapsules.add('web');
+  }
+  // Mode chat : capsule web auto-activée pour les recherches / téléchargements
+  if (mode === 'chat') {
+    activeCapsules.add('web');
   }
   // chat mode: NO capsules initially — LLM activates on demand
 
@@ -149,6 +156,11 @@ async function* runHarness({ mode, messages, context, metadata, agentOverrides, 
     workspaceId: context.workspaceId || metadata?.workspaceId,
   };
   context._metadata = modeMetadata;
+  // Propage threadId + companyId + userId dans le context pour les meta-tools
+  // (spawn_subagent, research_deep, render_structured, propose_plan, etc.)
+  if (modeMetadata.threadId) context.threadId = modeMetadata.threadId;
+  if (modeMetadata.companyId && !context.companyId) context.companyId = modeMetadata.companyId;
+  if (modeMetadata.userId && !context.userId) context.userId = modeMetadata.userId;
   // Expose jobContext so meta-tools (spawn_subagent, research_deep) can use it.
   if (jobContext) context._jobContext = jobContext;
 
@@ -209,6 +221,7 @@ async function* runHarness({ mode, messages, context, metadata, agentOverrides, 
     const pendingToolCalls = [];
     const toolInputBuffers = new Map();   // id → accumulated JSON string
     const toolMetaResolved = new Set();   // ids where tool.meta already sent
+    const previewSessions = new Map();    // id → preview parser session (ui.preview.delta)
     let assistantText = '';
     let eventCount = 0;
 
@@ -234,6 +247,17 @@ async function* runHarness({ mode, messages, context, metadata, agentOverrides, 
           case 'tool_use_start':
             console.log(`[harness] stream: tool_use_start → ${event.name} (id=${event.id})`);
             yield { type: 'tool.start', id: event.id, name: event.name };
+            // Init live-preview session si le tool est concerné (render_structured, generate_diagram, etc.)
+            {
+              const pvType = detectPreviewType(event.name);
+              if (pvType && !previewSessions.has(event.id)) {
+                previewSessions.set(event.id, {
+                  session: createPreviewSession(event.id, event.name),
+                  previewType: pvType,
+                  started: false,
+                });
+              }
+            }
             break;
           case 'tool_input_delta': {
             // Accumulate JSON for early key detection
@@ -243,6 +267,40 @@ async function* runHarness({ mode, messages, context, metadata, agentOverrides, 
             console.log(`[harness] stream: tool_input_delta → ${event.name} +${event.text.length}chars (id=${event.id}), buf=${buf.length}chars`);
 
             yield { type: 'tool.input_delta', id: event.id, name: event.name, text: event.text };
+
+            // ── Live preview: emit `ui.preview.delta` with incremental JSON patch
+            {
+              const pv = previewSessions.get(event.id);
+              if (pv) {
+                try {
+                  const out = pv.session.apply(event.text);
+                  if (out) {
+                    if (!pv.started) {
+                      pv.started = true;
+                      yield {
+                        type: 'ui.preview.start',
+                        toolId: event.id,
+                        toolName: event.name,
+                        previewType: pv.previewType,
+                      };
+                    }
+                    yield {
+                      type: 'ui.preview.delta',
+                      toolId: event.id,
+                      toolName: event.name,
+                      previewType: pv.previewType,
+                      patch: out.patch,
+                      // Snapshot inclus pour permettre au front de récupérer l'état complet
+                      // sans appliquer manuellement chaque patch si worker indispo.
+                      state: out.state,
+                    };
+                  }
+                } catch (pvErr) {
+                  // Ne jamais casser le stream à cause d'une preview
+                  console.warn('[harness] preview apply error:', pvErr?.message);
+                }
+              }
+            }
 
             // Early detection: for execute_tool, extract "key" from partial JSON
             if (event.name === 'execute_tool' && !toolMetaResolved.has(event.id)) {
@@ -296,6 +354,19 @@ async function* runHarness({ mode, messages, context, metadata, agentOverrides, 
             }
             // Signal frontend: args are complete → transition building → running
             yield { type: 'tool.building_done', id: event.id };
+            // Flush live preview avec l'état final si session active
+            {
+              const pv = previewSessions.get(event.id);
+              if (pv && pv.started) {
+                yield {
+                  type: 'ui.preview.building_done',
+                  toolId: event.id,
+                  toolName: event.name,
+                  previewType: pv.previewType,
+                  state: pv.session.state,
+                };
+              }
+            }
             pendingToolCalls.push(tcEntry);
             break;
           }
@@ -406,7 +477,7 @@ async function* runHarness({ mode, messages, context, metadata, agentOverrides, 
       }
 
       try {
-        const result = await toolSet.execute(tc.name, tc.input);
+        const result = await toolSet.execute(tc.name, tc.input, { toolId: tc.id, toolName: tc.name });
         const duration = Date.now() - startTime;
 
         // ── Handle capsule activation ──

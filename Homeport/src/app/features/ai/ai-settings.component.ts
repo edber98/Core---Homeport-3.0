@@ -22,11 +22,12 @@ import { AccessControlService } from '../../services/access-control.service';
 import { ApiClientService } from '../../services/api-client.service';
 import { AiUserPreferencesComponent } from './settings/ai-user-preferences.component';
 import { AiActivePermissionsComponent } from './settings/ai-active-permissions.component';
+import { AiProjectKnowledgeComponent } from './knowledge/ai-project-knowledge.component';
 
 @Component({
   selector: 'ai-settings',
   standalone: true,
-  imports: [CommonModule, FormsModule, NzSelectModule, NzInputModule, NzButtonModule, NzIconModule, NzEmptyModule, NzPopconfirmModule, NzToolTipModule, NzSpinModule, NzDividerModule, NzTagModule, NzAvatarModule, NzTabsModule, NzCheckboxModule, NzInputNumberModule, AiUserPreferencesComponent, AiActivePermissionsComponent],
+  imports: [CommonModule, FormsModule, NzSelectModule, NzInputModule, NzButtonModule, NzIconModule, NzEmptyModule, NzPopconfirmModule, NzToolTipModule, NzSpinModule, NzDividerModule, NzTagModule, NzAvatarModule, NzTabsModule, NzCheckboxModule, NzInputNumberModule, AiUserPreferencesComponent, AiActivePermissionsComponent, AiProjectKnowledgeComponent],
   template: `
     <div class="settings-container" *ngIf="!loading; else loadingTpl">
       <nz-tabset nzSize="small" nzType="card">
@@ -289,6 +290,23 @@ import { AiActivePermissionsComponent } from './settings/ai-active-permissions.c
                   </button>
                 </div>
               </div>
+            </div>
+          </div>
+        </nz-tab>
+
+        <!-- Tab: Connaissances projet (mode project uniquement) -->
+        <nz-tab *ngIf="currentThreadMode === 'project' && currentThreadId" nzTitle="Connaissances projet">
+          <div class="tab-content">
+            <div class="settings-section">
+              <div class="section-title">
+                <span nz-icon nzType="database" nzTheme="outline"></span>
+                Connaissances structurées du projet
+              </div>
+              <div class="section-desc">
+                Infos durables sur le projet (client, budget, contacts, URLs, identifiants…).
+                Auto-injectées dans le contexte de l'agent pour qu'il puisse s'y référer.
+              </div>
+              <ai-project-knowledge [threadId]="currentThreadId"></ai-project-knowledge>
             </div>
           </div>
         </nz-tab>
@@ -675,6 +693,8 @@ export class AiSettingsComponent implements OnInit, OnDestroy {
   projectMemoryKeys: string[] = [];
   projectElementType: 'flow' | 'form' | null = null;
   projectElementId: string | null = null;
+  currentThreadId: string | null = null;
+  currentThreadMode: string | null = null;
   loading = true;
   isAdmin = false;
   stats: any = null;
@@ -786,6 +806,8 @@ export class AiSettingsComponent implements OnInit, OnDestroy {
 
         const thread = this.ai.currentThread();
         this.selectedAgentId = thread?.agentId || this.ai.selectedAgentId() || 'general';
+        this.currentThreadId = thread?._id || thread?.id || null;
+        this.currentThreadMode = thread?.mode || null;
 
         this.projectElementType = null;
         this.projectElementId = null;

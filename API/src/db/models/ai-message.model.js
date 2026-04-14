@@ -69,10 +69,62 @@ const CacheSyncRequestSchema = new Schema({
   answeredAt: { type: Date },
 }, { _id: false });
 
+// ── Structured interactive message metadata ──
+const StructuredPayloadSchema = new Schema({
+  layout: {
+    type: String,
+    enum: ['chips_tabs', 'stepped_plan', 'comparison_table', 'accordion', 'timeline', 'card_grid'],
+  },
+  title: { type: String },
+  data: { type: Schema.Types.Mixed },
+  renderedAt: { type: Date, default: Date.now },
+}, { _id: false });
+
+// ── Plan proposal metadata ──
+const PlanStepSchema = new Schema({
+  id: { type: String },
+  title: { type: String },
+  rationale: { type: String },
+  tools: { type: [String], default: undefined },
+  duration_estimate: { type: String },
+  dependsOn: { type: [String], default: undefined },
+}, { _id: false });
+
+const PlanProposalSchema = new Schema({
+  requestId: { type: String },
+  summary: { type: String },
+  steps: { type: [PlanStepSchema], default: undefined },
+  risks: { type: [String], default: undefined },
+  answer: { type: String, enum: ['approve', 'reject', 'modify'] },
+  answeredAt: { type: Date },
+  answeredBy: { type: Types.ObjectId, ref: 'User' },
+  approvedSteps: { type: [String], default: undefined },
+  modifiedSteps: { type: [PlanStepSchema], default: undefined },
+}, { _id: false });
+
+// ── Diagram metadata ──
+const DiagramSchema = new Schema({
+  type: { type: String },
+  title: { type: String },
+  mermaid: { type: String },
+}, { _id: false });
+
+// ── Inline image metadata (tool display_image) ──
+const ImageInlineSchema = new Schema({
+  fileId: { type: String },
+  url: { type: String },
+  caption: { type: String },
+  alt: { type: String },
+}, { _id: false });
+
 const MessageMetadataSchema = new Schema({
-  kind: { type: String, enum: ['permission_request', 'cache_sync_request', 'comment', 'system_note'] },
+  kind: { type: String, enum: ['permission_request', 'cache_sync_request', 'comment', 'system_note', 'structured', 'plan_proposal', 'diagram', 'image_inline'] },
   permissionRequest: { type: PermissionRequestSchema, default: undefined },
   cacheSyncRequest: { type: CacheSyncRequestSchema, default: undefined },
+  structured: { type: StructuredPayloadSchema, default: undefined },
+  planProposal: { type: PlanProposalSchema, default: undefined },
+  diagram: { type: DiagramSchema, default: undefined },
+  imageInline: { type: ImageInlineSchema, default: undefined },
   // Comment author (for shared threads)
   commentBy: { type: Types.ObjectId, ref: 'User' },
   // Free extensions

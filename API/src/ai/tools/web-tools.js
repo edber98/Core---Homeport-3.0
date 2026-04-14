@@ -277,16 +277,28 @@ async function httpFetch(url) {
   const ac = new AbortController();
   const t = setTimeout(() => ac.abort(), HTTP_TIMEOUT_MS);
   try {
-    const res = await request(url, {
-      method: 'GET',
-      headers: {
-        'user-agent': DEFAULT_UA,
-        'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-        'accept-language': 'fr-FR,fr;q=0.9,en;q=0.8',
-      },
-      signal: ac.signal,
-      maxRedirections: 5,
-    });
+    // Suit les redirects manuellement (undici récent: maxRedirections retiré)
+    let currentUrl = url;
+    let res;
+    for (let hop = 0; hop < 6; hop++) {
+      res = await request(currentUrl, {
+        method: 'GET',
+        headers: {
+          'user-agent': DEFAULT_UA,
+          'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+          'accept-language': 'fr-FR,fr;q=0.9,en;q=0.8',
+        },
+        signal: ac.signal,
+      });
+      if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
+        const next = new URL(String(res.headers.location), currentUrl).toString();
+        await validateUrl(next);
+        currentUrl = next;
+        try { res.body.destroy(); } catch {}
+        continue;
+      }
+      break;
+    }
     const ct = String(res.headers['content-type'] || '');
     const allowed = ALLOWED_CT.some(re => re.test(ct));
     if (!allowed) {
@@ -526,10 +538,17 @@ const WEB_TOOL_DEFINITIONS = [
  * @returns {{ definitions, canHandle, execute, cleanup }}
  */
 function createWebExecutor(metadata, emit) {
-  const safeEmit = typeof emit === 'function' ? emit : () => {};
+  const baseEmit = typeof emit === 'function' ? emit : () => {};
+  // scopedEmit peut être overridé par executeWithCtx pour injecter toolId dans ui.preview.update
+  let currentEmit = baseEmit;
+  const safeEmit = (ev) => { try { currentEmit(ev); } catch {} };
 
   function emitStep(payload) {
     try { safeEmit({ type: 'canvas.research.step', ...payload }); } catch {}
+  }
+
+  function emitPreviewUpdate(patch) {
+    try { safeEmit({ type: 'ui.preview.update', patch }); } catch {}
   }
 
   // ── web_search
@@ -667,11 +686,23 @@ function createWebExecutor(metadata, emit) {
     let queries = [scope ? `${question} ${scope}` : question];
     let searchRound = 0;
 
+    // Init live-preview state
+    emitPreviewUpdate([{ op: 'replace', path: '/question', value: question }]);
+    emitPreviewUpdate([{ op: 'replace', path: '/depth', value: depth }]);
+    emitPreviewUpdate([{ op: 'replace', path: '/steps', value: [] }]);
+    emitPreviewUpdate([{ op: 'replace', path: '/citations', value: [] }]);
+
     while (totalSteps < maxSteps && queries.length) {
       const q = queries.shift();
       totalSteps++;
+      const idxSearch = steps.length;
+      steps.push({ type: 'search', query: q, status: 'running' });
+      emitPreviewUpdate([{ op: 'add', path: `/steps/${idxSearch}`, value: steps[idxSearch] }]);
+
       const searchRes = await tool_web_search({ query: q, limit: fetchTopN * 2 });
-      steps.push({ type: 'search', query: q, summary: searchRes.error ? `Erreur: ${searchRes.error}` : `${(searchRes.results || []).length} résultats` });
+      const summary = searchRes.error ? `Erreur: ${searchRes.error}` : `${(searchRes.results || []).length} résultats`;
+      steps[idxSearch] = { type: 'search', query: q, status: searchRes.error ? 'error' : 'done', summary };
+      emitPreviewUpdate([{ op: 'replace', path: `/steps/${idxSearch}`, value: steps[idxSearch] }]);
 
       if (searchRes.error || !searchRes.results) continue;
 
@@ -682,17 +713,25 @@ function createWebExecutor(metadata, emit) {
         if (totalSteps >= maxSteps) break;
         totalSteps++;
         seenUrls.add(r.url);
+        const idxFetch = steps.length;
+        steps.push({ type: 'fetch', url: r.url, status: 'running' });
+        emitPreviewUpdate([{ op: 'add', path: `/steps/${idxFetch}`, value: steps[idxFetch] }]);
+
         const fetchRes = await tool_web_fetch({ url: r.url, mode: 'auto', extractMode: 'readability' });
         if (fetchRes.error) {
-          steps.push({ type: 'fetch', url: r.url, summary: `Erreur: ${fetchRes.error}` });
+          steps[idxFetch] = { type: 'fetch', url: r.url, status: 'error', summary: `Erreur: ${fetchRes.error}` };
+          emitPreviewUpdate([{ op: 'replace', path: `/steps/${idxFetch}`, value: steps[idxFetch] }]);
           continue;
         }
         const text = (fetchRes.text || '').slice(0, 12_000);
         if (text.length > 200) {
           corpus.push({ url: r.url, title: fetchRes.title || r.title, text });
+          const citationIdx = citations.length;
           citations.push({ title: fetchRes.title || r.title, url: r.url });
+          emitPreviewUpdate([{ op: 'add', path: `/citations/${citationIdx}`, value: citations[citationIdx] }]);
         }
-        steps.push({ type: 'fetch', url: r.url, summary: `${text.length} chars (${fetchRes.title || r.title})` });
+        steps[idxFetch] = { type: 'fetch', url: r.url, status: 'done', summary: `${text.length} chars (${fetchRes.title || r.title})`, title: fetchRes.title || r.title };
+        emitPreviewUpdate([{ op: 'replace', path: `/steps/${idxFetch}`, value: steps[idxFetch] }]);
       }
 
       // For deep mode: optionally generate follow-up queries via mini LLM
@@ -749,33 +788,68 @@ function createWebExecutor(metadata, emit) {
     const maxSize = Math.min(Math.max(parseInt(input.maxSizeBytes || (50 * 1024 * 1024), 10), 1024), 200 * 1024 * 1024);
 
     emitStep({ id: randomUUID(), type: 'fetch', status: 'running', url, title: 'Téléchargement asset' });
+    emitPreviewUpdate([
+      { op: 'replace', path: '/url', value: url },
+      { op: 'replace', path: '/status', value: 'running' },
+      { op: 'replace', path: '/receivedBytes', value: 0 },
+    ]);
 
     try {
+      // Suivi manuel des redirects (undici récent a retiré maxRedirections)
       const { request } = require('undici');
-      const { statusCode, headers, body } = await request(url, {
-        method: 'GET',
-        maxRedirections: 5,
-        headersTimeout: 15000,
-        bodyTimeout: 60000,
-      });
+      let currentUrl = url;
+      let statusCode, headers, body;
+      for (let redirectHop = 0; redirectHop < 6; redirectHop++) {
+        const res = await request(currentUrl, {
+          method: 'GET',
+          headersTimeout: 15000,
+          bodyTimeout: 60000,
+        });
+        statusCode = res.statusCode;
+        headers = res.headers;
+        body = res.body;
+        if (statusCode >= 300 && statusCode < 400 && headers.location) {
+          const next = new URL(headers.location, currentUrl).toString();
+          try { await validateUrl(next); } catch (e) { return { ok: false, error: `redirect bloqué: ${e?.message}` }; }
+          currentUrl = next;
+          // drain body pour libérer la socket
+          try { for await (const _ of res.body) { /* drain */ } } catch {}
+          continue;
+        }
+        break;
+      }
       if (statusCode >= 400) {
         emitStep({ id: randomUUID(), type: 'fetch', status: 'error', url, title: `HTTP ${statusCode}` });
+        emitPreviewUpdate([{ op: 'replace', path: '/status', value: 'error' }, { op: 'replace', path: '/error', value: `HTTP ${statusCode}` }]);
         return { ok: false, error: `HTTP ${statusCode}`, status: statusCode };
       }
       const mimeType = (headers['content-type'] || 'application/octet-stream').split(';')[0].trim();
       const contentLength = parseInt(headers['content-length'] || '0', 10);
+      emitPreviewUpdate([
+        { op: 'replace', path: '/mimeType', value: mimeType },
+        { op: 'replace', path: '/totalBytes', value: contentLength || null },
+      ]);
       if (contentLength && contentLength > maxSize) {
+        emitPreviewUpdate([{ op: 'replace', path: '/status', value: 'error' }]);
         return { ok: false, error: `Fichier > ${maxSize} bytes (${contentLength})` };
       }
       // Stream vers buffer avec cap
       const chunks = [];
       let total = 0;
+      let lastEmit = 0;
       for await (const c of body) {
         total += c.length;
         if (total > maxSize) {
+          emitPreviewUpdate([{ op: 'replace', path: '/status', value: 'error' }]);
           return { ok: false, error: `Fichier dépasse ${maxSize} bytes pendant download` };
         }
         chunks.push(c);
+        // Throttle : au plus toutes les 100ms
+        const now = Date.now();
+        if (now - lastEmit > 100) {
+          lastEmit = now;
+          emitPreviewUpdate([{ op: 'replace', path: '/receivedBytes', value: total }]);
+        }
       }
       const buf = Buffer.concat(chunks);
       // Déduire nom
@@ -796,6 +870,12 @@ function createWebExecutor(metadata, emit) {
       const stored = await files.store(buf, { name, mimeType, lifecycle: 'execution' });
 
       emitStep({ id: randomUUID(), type: 'fetch', status: 'done', url, title: name, resultPreview: `${(buf.length / 1024).toFixed(1)} Ko` });
+      emitPreviewUpdate([
+        { op: 'replace', path: '/status', value: 'done' },
+        { op: 'replace', path: '/name', value: name },
+        { op: 'replace', path: '/receivedBytes', value: buf.length },
+        { op: 'replace', path: '/fileId', value: stored.fileId || stored.id },
+      ]);
       return {
         ok: true,
         fileId: stored.fileId || stored.id,
@@ -806,6 +886,7 @@ function createWebExecutor(metadata, emit) {
       };
     } catch (e) {
       emitStep({ id: randomUUID(), type: 'fetch', status: 'error', url, title: e?.message || 'Erreur' });
+      emitPreviewUpdate([{ op: 'replace', path: '/status', value: 'error' }, { op: 'replace', path: '/error', value: e?.message || 'Erreur' }]);
       return { ok: false, error: e?.message || String(e) };
     }
   }
@@ -832,6 +913,15 @@ function createWebExecutor(metadata, emit) {
       } catch (err) {
         console.error(`${tag} ERROR:`, err.message);
         throw err;
+      }
+    },
+    async executeWithCtx(name, input, callCtx) {
+      const prev = currentEmit;
+      if (typeof callCtx?.emit === 'function') currentEmit = callCtx.emit;
+      try {
+        return await this.execute(name, input);
+      } finally {
+        currentEmit = prev;
       }
     },
     async cleanup() {

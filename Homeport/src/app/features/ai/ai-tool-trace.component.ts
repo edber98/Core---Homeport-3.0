@@ -15,7 +15,13 @@ const TOOL_LABELS: Record<string, string> = {
   run_workflow: 'Lancement workflow',
   save_memory: 'Sauvegarde mémoire',
   get_memory: 'Lecture mémoire',
+  save_project_memory: 'Mémoire projet',
+  get_project_memory: 'Mémoire projet',
+  set_project_knowledge: 'Mise à jour mémoire projet',
+  get_project_knowledge: 'Mémoire projet',
   enrich_context: 'Enrichissement contexte',
+  propose_plan: 'Plan d\'action',
+  generate_diagram: 'Diagramme',
   // Project FS
   project_list_dir: 'Liste dossier projet', project_tree: 'Arborescence projet',
   project_read_file: 'Lecture fichier projet', project_read_batch: 'Lecture multiple',
@@ -28,9 +34,11 @@ const TOOL_LABELS: Record<string, string> = {
   // Code + subagents + skills + docs
   execute_code: 'Exécution code', prepare_code_environment: 'Préparation environnement',
   spawn_subagent: 'Sous-agent',
+  install_package: 'Installation package', display_image: 'Affichage image',
   skill_list: 'Liste skills', skill_get: 'Détails skill', skill_execute: 'Exécution skill',
   generate_document: 'Génération document', edit_document: 'Édition document',
   render_html_preview: 'Aperçu HTML', build_website: 'Construction site',
+  render_structured: 'Affichage structuré',
   // Workflow tools
   create_flow: 'Création flow',
   list_graph: 'Lecture du graphe',

@@ -106,7 +106,13 @@ function createCodeExecExecutor(metadata, emit) {
     uploadedBy: metadata.uploadedBy || 'ai-agent',
   });
 
-  const safeEmit = typeof emit === 'function' ? emit : () => {};
+  const baseEmit = typeof emit === 'function' ? emit : () => {};
+  let currentEmit = baseEmit;
+  const safeEmit = (ev) => { try { currentEmit(ev); } catch {} };
+
+  function emitPreviewUpdate(patch) {
+    try { safeEmit({ type: 'ui.preview.update', patch }); } catch {}
+  }
 
   async function executeCode(input) {
     const {
@@ -159,6 +165,12 @@ function createCodeExecExecutor(metadata, emit) {
         argsSummary,
       }],
     });
+    emitPreviewUpdate([
+      { op: 'replace', path: '/language', value: language },
+      { op: 'replace', path: '/status', value: 'running' },
+      { op: 'replace', path: '/stdoutLines', value: [] },
+      { op: 'replace', path: '/stderrLines', value: [] },
+    ]);
 
     // 2. Télécharge les fichiers d'entrée dans un dir temporaire
     let stageDir = null;
@@ -194,6 +206,20 @@ function createCodeExecExecutor(metadata, emit) {
         allowNetwork: !!allowNetwork,
         filesIn: filesIn.map((f) => ({ hostPath: f.hostPath, name: f.name })),
       });
+
+      // Post-exec: publie stdout/stderr par lignes pour la live preview
+      // (idéalement le sandbox.run devrait streamer, mais ici on le fait bulk à la fin)
+      try {
+        const soLines = String(result.stdout || '').split(/\r?\n/).filter(l => l.length);
+        const seLines = String(result.stderr || '').split(/\r?\n/).filter(l => l.length);
+        if (soLines.length) emitPreviewUpdate(soLines.map((l, i) => ({ op: 'add', path: `/stdoutLines/${i}`, value: l })));
+        if (seLines.length) emitPreviewUpdate(seLines.map((l, i) => ({ op: 'add', path: `/stderrLines/${i}`, value: l })));
+        emitPreviewUpdate([
+          { op: 'replace', path: '/exitCode', value: result.exitCode },
+          { op: 'replace', path: '/duration', value: result.duration },
+          { op: 'replace', path: '/status', value: result.timedOut ? 'timeout' : (result.exitCode === 0 ? 'success' : 'error') },
+        ]);
+      } catch { /* non-fatal */ }
 
       // 4. Upload des fichiers produits
       const producedFiles = [];
@@ -297,6 +323,12 @@ function createCodeExecExecutor(metadata, emit) {
       } catch (err) {
         return { success: false, error: err?.message || String(err) };
       }
+    },
+    async executeWithCtx(name, input, callCtx) {
+      const prev = currentEmit;
+      if (typeof callCtx?.emit === 'function') currentEmit = callCtx.emit;
+      try { return await this.execute(name, input); }
+      finally { currentEmit = prev; }
     },
     async cleanup() { /* rien à persister */ },
   };
