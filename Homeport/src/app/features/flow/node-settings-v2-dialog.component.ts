@@ -114,7 +114,9 @@ import { FormsModule } from '@angular/forms';
             <span class="ts" *ngIf="testStartedAt as ts">{{ formatTime(ts) }}<ng-container *ngIf="testDurationMs as d"> • {{ formatDuration(d) }}</ng-container></span>
           </div>
           <div class="no-output" *ngIf="!isStart(model) && !isStartForm(model) && hasNoOutput()">
-            Aucune exécution — pas d’output.
+            <div class="no-output-icon"><i class="fa-regular fa-circle-pause"></i></div>
+            <div class="no-output-title">Aucune exécution</div>
+            <div class="no-output-desc">Pas d'output disponible. Lancez un test pour voir le résultat.</div>
           </div>
           <div class="section-title">Output</div>
           <!-- Start Form: Dynamic Form in right column -->
@@ -355,7 +357,21 @@ import { FormsModule } from '@angular/forms';
     /* Output (col droite): padding top plus grand */
     .top-bar.small { padding-top: 12px; padding-bottom: 0; font-size:12px; color:#6b7280; display:flex; align-items:center; gap:6px; }
     .top-bar .spacer { flex:1 1 auto; }
-    .no-output { padding: 8px; color:#6b7280; font-size:12px; }
+    .no-output {
+      display: flex; flex-direction: column; align-items: center; text-align: center;
+      padding: 32px 20px; gap: 8px;
+      background: #fff; border-radius: 14px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      margin: 8px;
+    }
+    .no-output-icon {
+      width: 48px; height: 48px; border-radius: 14px;
+      background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%);
+      color: #e61982; font-size: 20px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 4px;
+    }
+    .no-output-title { font-size: 14px; font-weight: 700; color: #1a1a1a; }
+    .no-output-desc { font-size: 12px; color: #8b8b8b; max-width: 240px; line-height: 1.5; }
     .json-pad { padding: 0 16px 12px; }
     .exec-times { padding: 0 8px 6px 8px; font-size:12px; color:#6b7280; }
     .col.left .exec-times { padding-left: 20px; }
