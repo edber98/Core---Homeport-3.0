@@ -989,11 +989,23 @@ export class AiService {
   }
 
   async refreshProjectRoot(threadId: string) {
-    return this.api.post<any>(
+    const resp = await this.api.post<any>(
       `/api/ai/threads/${threadId}/project-root/refresh`,
       {},
       { workspaceId: this.wsId() },
     ).toPromise();
+    // Met à jour le signal canvas avec l'arbo fraîche pour le panneau Fichiers
+    const tree = resp?.tree;
+    const rootLabel = resp?.rootLabel || 'Projet';
+    if (tree) {
+      const cur = this.canvasState() || { threadId, activeTab: 'files' as const };
+      this.canvasState.set({
+        ...cur,
+        threadId,
+        files: { rootLabel, tree, lastRefreshedAt: new Date().toISOString() },
+      });
+    }
+    return resp;
   }
 
   async deleteProjectRoot(threadId: string) {

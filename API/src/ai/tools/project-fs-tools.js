@@ -723,21 +723,42 @@ function createProjectFsExecutor(metadata = {}, emit = () => {}) {
       return r;
     },
 
-    async project_refresh_tree() {
+    async project_refresh_tree(input = {}) {
       const { root } = await _ctx();
-      const r = await _callConnector(root, 'list',
-        { path: root.rootPath || '/', recursive: true, maxDepth: 3, maxEntries: 200 },
-        metadata);
+      const maxDepth = Math.max(1, Math.min(input.maxDepth || 3, 10));
+      const maxEntries = Math.max(1, Math.min(input.maxEntries || 300, 2000));
+
+      // Walk BFS : le connecteur list ne fait que Depth:1, on récursive nous-mêmes
+      const allEntries = [];
+      const queue = [{ relPath: '/', depth: 0 }];
+      const seen = new Set(['/']);
+      let truncated = false;
+
+      while (queue.length && allEntries.length < maxEntries) {
+        const { relPath, depth } = queue.shift();
+        const rawRes = await _callConnector(root, 'list',
+          { path: _resolveRelToRoot(root, relPath) }, metadata);
+        const normalized = _normalizeListResult(root, rawRes, { includeSelf: false });
+        if (!normalized || normalized.ok === false) continue;
+        for (const e of (normalized.entries || [])) {
+          if (allEntries.length >= maxEntries) { truncated = true; break; }
+          allEntries.push(e);
+          if (e.type === 'directory' && depth + 1 < maxDepth && !seen.has(e.path)) {
+            seen.add(e.path);
+            queue.push({ relPath: e.path, depth: depth + 1 });
+          }
+        }
+      }
+
+      // Persiste la cachedTree dans AiProjectRoot pour usage contextuel (prompt)
       try {
         await AiProjectRoot.updateOne({ threadId }, {
-          $set: {
-            cachedTree: r?.tree || r?.entries || r?.data || r,
-            treeRefreshedAt: new Date(),
-          },
+          $set: { cachedTree: allEntries, treeRefreshedAt: new Date() },
         });
       } catch { /* non-fatal */ }
+
       emit({ type: 'canvas.files.tree', reason: 'refresh' });
-      return r;
+      return { ok: true, totalCount: allEntries.length, entries: allEntries, truncated };
     },
 
     async project_sync_remote() {

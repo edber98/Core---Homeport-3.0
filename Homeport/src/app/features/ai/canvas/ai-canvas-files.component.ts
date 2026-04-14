@@ -1,4 +1,4 @@
-import { Component, Input, inject, computed } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnInit, inject, computed, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NzButtonModule } from 'ng-zorro-antd/button';
@@ -49,11 +49,12 @@ import { AiService } from '../ai.service';
     .files-empty { flex: 1; display: flex; align-items: center; justify-content: center; padding: 20px; }
   `],
 })
-export class AiCanvasFilesComponent {
+export class AiCanvasFilesComponent implements OnInit {
   @Input() threadId!: string;
   public ai = inject(AiService);
   private modal = inject(NzModalService);
   private nzMsg = inject(NzMessageService);
+  private cdr = inject(ChangeDetectorRef);
 
   refreshing = false;
 
@@ -64,6 +65,22 @@ export class AiCanvasFilesComponent {
     if (!tree) return [];
     return Array.isArray(tree) ? this.mapNodes(tree) : this.mapNodes([tree]);
   });
+
+  constructor() {
+    effect(() => {
+      this.ai.canvasState()?.files;
+      queueMicrotask(() => this.cdr.markForCheck());
+    });
+  }
+
+  ngOnInit() {
+    // Auto-refresh si aucune arborescence n'est encore chargée
+    const tree = this.files()?.tree;
+    const hasData = Array.isArray(tree) ? tree.length > 0 : !!tree;
+    if (this.threadId && !hasData) {
+      this.refresh();
+    }
+  }
 
   private mapNodes(arr: any[]): NzTreeNodeOptions[] {
     return (arr || []).map((n, i) => ({
