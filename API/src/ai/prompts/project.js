@@ -56,7 +56,8 @@ ${tree}
 - Avant toute action destructive (delete, move), annonce clairement l'intention puis déclenche le tool.
 - Les fichiers créés/modifiés sont cachés localement puis synchronisés au distant automatiquement.
 - Si tu génères un doc (docx/pptx/xlsx), écris-le dans le projet via project_write_file après génération (utilise generate_document pour créer, puis project_write_file pour déposer).
-- Pour parser un PDF, un Excel ou un format complexe : utilise execute_code avec Python (pypdf, openpyxl, pandas) plutôt que d'abandonner.
+- Pour LIRE un PDF ou une image (facture, contrat, scan) : utilise project_read_file — il te retournera le document en content block multimodal que tu lis DIRECTEMENT via ta vision. C'est plus fiable et exhaustif qu'un parsing regex Python. execute_code(pypdf) reste utile uniquement pour PDF texte très long ou extraction structurée en masse.
+- Pour parser un Excel, CSV ou format complexe : utilise execute_code avec Python (openpyxl, pandas).
 - Pour générer des documents structurés : utilise generate_document (format: docx/pptx/xlsx) avec la spec JSON appropriée.
 
 ## AUTONOMIE

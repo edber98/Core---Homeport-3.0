@@ -495,7 +495,19 @@ async function* runHarness({ mode, messages, context, metadata, agentOverrides, 
       tool_calls: pendingToolCalls.map(tc => ({ id: tc.id, name: tc.name, input: tc.input })),
     });
     for (const tr of toolResults) {
-      conversation.push({ role: 'tool', tool_call_id: tr.id, content: tr.content });
+      // Si le tool a retourné des _contentBlocks (image/document), les propager au LLM
+      // pour qu'il lise nativement via sa vision (pattern Claude Code / Codex).
+      const resultObj = tr.result;
+      const blocks = Array.isArray(resultObj?._contentBlocks) ? resultObj._contentBlocks : null;
+      if (blocks && blocks.length) {
+        const contentParts = [{ type: 'text', text: tr.content }];
+        for (const b of blocks) {
+          if (b.type === 'image' || b.type === 'document') contentParts.push(b);
+        }
+        conversation.push({ role: 'tool', tool_call_id: tr.id, content: contentParts });
+      } else {
+        conversation.push({ role: 'tool', tool_call_id: tr.id, content: tr.content });
+      }
     }
 
     // Checkpoint + heartbeat (no-op without jobContext)

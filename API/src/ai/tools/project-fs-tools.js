@@ -90,10 +90,13 @@ const PROJECT_FS_TOOL_DEFINITIONS = [
   },
   {
     name: 'project_read_file',
-    description: 'Lit le contenu complet d\'un fichier (UTF-8 si texte, base64 sinon).',
+    description: 'Lit un fichier du projet. Les PDF et images sont retournés comme content blocks multimodaux : tu les LIS DIRECTEMENT via ta vision (bien plus fiable qu\'un parsing regex Python pour factures, contrats, documents scannés). Pour les fichiers texte (code, json, md, csv), le contenu UTF-8 est retourné. Utilise asText:true pour forcer l\'extraction texte d\'un PDF si besoin.',
     parameters: {
       type: 'object',
-      properties: { path: { type: 'string' } },
+      properties: {
+        path: { type: 'string' },
+        asText: { type: 'boolean', description: 'Force l\'extraction texte même pour PDF (désactive le mode vision multimodal). Défaut: false.' },
+      },
       required: ['path'],
     },
   },
@@ -138,16 +141,23 @@ const PROJECT_FS_TOOL_DEFINITIONS = [
   },
   {
     name: 'project_write_file',
-    description: 'Écrit (ou remplace) le contenu d\'un fichier.',
+    description: `Écrit (ou remplace) un fichier dans le projet.
+
+RÈGLE OBLIGATOIRE — choisis EXACTEMENT un des deux modes :
+  • Mode A (binaires : xlsx/docx/pptx/pdf/images/zip) : passer UNIQUEMENT fileId, JAMAIS content. Le fileId vient de execute_code.producedFiles[i].fileId ou generate_document.fileId.
+  • Mode B (texte court < 100 Ko : md, json, txt, csv, code) : passer content + contentType, JAMAIS fileId.
+
+NE JAMAIS utiliser content pour des binaires — ça corrompt le fichier (tu obtiendras un Word avec du base64 dedans au lieu d'un vrai xlsx). Si tu as un fileId disponible, utilise-le TOUJOURS même pour du texte.`,
     parameters: {
       type: 'object',
       properties: {
-        path: { type: 'string' },
-        content: { type: 'string', description: 'Contenu (texte ou base64)' },
-        contentType: { type: 'string' },
-        syncImmediate: { type: 'boolean', description: 'Pousser tout de suite vers le distant' },
+        path: { type: 'string', description: 'Chemin cible relatif à la racine projet' },
+        fileId: { type: 'string', description: 'REQUIS pour binaires : ID FileRecord retourné par execute_code.producedFiles ou generate_document. Mode exclusif avec content.' },
+        content: { type: 'string', description: 'Contenu TEXTE UTF-8 uniquement (jamais pour binaires). Mode exclusif avec fileId. Limite 100 Ko.' },
+        contentType: { type: 'string', description: 'Requis avec content. Ex: text/plain, application/json, text/markdown.' },
+        syncImmediate: { type: 'boolean', description: 'Pousser vers le distant (défaut: true)' },
       },
-      required: ['path', 'content'],
+      required: ['path'],
     },
   },
   {
@@ -411,12 +421,68 @@ function createProjectFsExecutor(metadata = {}, emit = () => {}) {
           cacheRoot, threadId, workspaceId, relativePath: p, downloader,
         });
         const buf = await fsp.readFile(abs);
-        // Detect text vs binary heuristically
+        const name = p.split('/').filter(Boolean).pop() || 'file';
+        // Détection MIME par extension + magic bytes
+        const ext = (name.split('.').pop() || '').toLowerCase();
+        const mimeMap = {
+          pdf: 'application/pdf',
+          png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', gif: 'image/gif', webp: 'image/webp',
+          docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+          xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        };
+        const guessedMime = mimeMap[ext];
+        // PDF magic bytes
+        const isPdf = guessedMime === 'application/pdf' || (buf.length > 4 && buf[0] === 0x25 && buf[1] === 0x50 && buf[2] === 0x44 && buf[3] === 0x46);
+        const isImage = guessedMime?.startsWith('image/');
+
+        // ── Mode multimodal : PDF/image retournés comme content blocks ──
+        // L'agent (Claude/GPT-4o) peut lire directement le fichier via sa vision,
+        // bien plus fiable qu'une extraction regex.
+        if (isPdf && input?.asText !== true) {
+          const base64 = buf.toString('base64');
+          // Cap taille (Anthropic limite ~32 MB par document)
+          if (buf.length > 32 * 1024 * 1024) {
+            return { ok: false, error: 'PDF trop volumineux pour analyse multimodale (>32 MB). Relance avec asText:true pour extraction texte.' };
+          }
+          return {
+            ok: true,
+            path: p,
+            mimeType: 'application/pdf',
+            size: buf.length,
+            _contentBlocks: [{
+              type: 'document',
+              source: { type: 'base64', media_type: 'application/pdf', data: base64 },
+              name,
+            }],
+            message: `PDF "${name}" chargé pour analyse multimodale. Lis-le directement via ta vision plutôt qu'un parsing regex.`,
+          };
+        }
+
+        if (isImage && input?.asText !== true) {
+          const base64 = buf.toString('base64');
+          if (buf.length > 10 * 1024 * 1024) {
+            return { ok: false, error: 'Image trop volumineuse (>10 MB).' };
+          }
+          return {
+            ok: true,
+            path: p,
+            mimeType: guessedMime,
+            size: buf.length,
+            _contentBlocks: [{
+              type: 'image',
+              source: { type: 'base64', media_type: guessedMime, data: base64 },
+              name,
+            }],
+            message: `Image "${name}" chargée pour analyse visuelle.`,
+          };
+        }
+
+        // ── Mode texte : text/csv/md/code/json, ou forcé via asText ──
         const isText = buf.length === 0 || buf.slice(0, Math.min(buf.length, 8000)).every(b =>
           b === 9 || b === 10 || b === 13 || (b >= 32 && b < 127) || b >= 128);
         return isText
           ? { ok: true, path: p, content: buf.toString('utf8'), encoding: 'utf8', size: buf.length }
-          : { ok: true, path: p, content: buf.toString('base64'), encoding: 'base64', size: buf.length };
+          : { ok: true, path: p, content: buf.toString('base64'), encoding: 'base64', size: buf.length, mimeType: guessedMime };
       } catch (e) {
         return { ok: false, error: e?.message || String(e) };
       }
@@ -485,6 +551,71 @@ function createProjectFsExecutor(metadata = {}, emit = () => {}) {
       const g = _guardSensitive(p); if (g) return g;
       const gr = _guardInsideRoot(root, p); if (gr) return gr;
 
+      // ── Mode fileId : transfert binaire efficace via FileRecord (comme openai_vision etc.) ──
+      if (input.fileId) {
+        // Copie le fichier depuis FileRecord vers scratch local (pour cache cohérent)
+        try {
+          const { createFilesHelper } = require('../../services/file-storage');
+          const files = createFilesHelper({ workspaceId });
+          const { scratch } = _locPaths(cacheRoot, p);
+          await fsp.mkdir(path.dirname(scratch), { recursive: true });
+          const { stream } = await files.resolve(input.fileId);
+          await new Promise((resolve, reject) => {
+            const ws = fs.createWriteStream(scratch);
+            stream.pipe(ws);
+            ws.on('finish', resolve);
+            ws.on('error', reject);
+            stream.on('error', reject);
+          });
+          const stat = await fsp.stat(scratch);
+          await markDirty({ cacheRoot, threadId, workspaceId, relativePath: p });
+
+          // Upload distant en passant le fileId — tool-executor le convertit en fileRef
+          // et le handler du connecteur (nc_file_upload etc.) stream le binaire.
+          const syncImmediate = input.syncImmediate !== false;
+          let uploadResult = null;
+          if (syncImmediate) {
+            const remotePath = _resolveRelToRoot(root, p);
+            uploadResult = await _callConnector(root, 'write', {
+              path: remotePath,
+              file: input.fileId,  // ← champ "file" type:'file' dans manifest → conversion auto
+            }, metadata);
+            if (uploadResult?.ok !== false) {
+              // Clean: déplace scratch → mirror, unset dirty
+              const { mirror } = _locPaths(cacheRoot, p);
+              await fsp.mkdir(path.dirname(mirror), { recursive: true });
+              await fsp.rename(scratch, mirror).catch(() => fsp.copyFile(scratch, mirror));
+              try { await fsp.unlink(scratch); } catch {}
+            }
+          }
+          emit({ type: 'canvas.files.tree', reason: 'write', path: p });
+          return {
+            ok: uploadResult ? (uploadResult.ok !== false) : true,
+            path: p,
+            size: stat.size,
+            dirty: !syncImmediate,
+            sync: uploadResult,
+            mode: 'fileId',
+          };
+        } catch (e) {
+          return { ok: false, error: `Erreur transfert fileId: ${e?.message || e}` };
+        }
+      }
+
+      // ── Mode content (texte ou base64 court) — rétrocompat ──
+      if (typeof input.content !== 'string' || !input.content) {
+        return { ok: false, error: 'project_write_file requiert soit fileId (binaires), soit content (texte). Reçu ni l\'un ni l\'autre.' };
+      }
+      // Garde-fou : si path suggère un binaire (xlsx/docx/pptx/pdf/zip/png/etc.)
+      // ET content > 100 Ko, on refuse — l'agent doit utiliser fileId
+      const ext = (p.split('.').pop() || '').toLowerCase();
+      const binaryExts = new Set(['xlsx','xls','docx','doc','pptx','ppt','pdf','zip','gz','tar','png','jpg','jpeg','gif','webp','mp3','mp4','wav']);
+      if (binaryExts.has(ext) && input.content.length > 100_000) {
+        return {
+          ok: false,
+          error: `Fichier ${ext.toUpperCase()} > 100 Ko : ne passe pas par content (ça va corrompre le fichier). Récupère le fileId depuis execute_code.producedFiles ou generate_document.fileId, puis rappelle project_write_file({path, fileId}).`,
+        };
+      }
       const { scratch } = _locPaths(cacheRoot, p);
       await fsp.mkdir(path.dirname(scratch), { recursive: true });
       const buf = typeof input.content === 'string'
@@ -500,7 +631,7 @@ function createProjectFsExecutor(metadata = {}, emit = () => {}) {
         syncResult = await tools.project_sync_remote();
       }
       emit({ type: 'canvas.files.tree', reason: 'write', path: p });
-      return { ok: true, path: p, size: buf.length, dirty: !input.syncImmediate, sync: syncResult };
+      return { ok: true, path: p, size: buf.length, dirty: !input.syncImmediate, sync: syncResult, mode: 'content' };
     },
 
     async project_create_folder(input) {

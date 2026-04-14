@@ -33,7 +33,7 @@ const PREINSTALLED_NODE = [
 const CODE_EXEC_TOOL_DEFINITIONS = [
   {
     name: 'execute_code',
-    description: 'Exécute du code Python ou Node.js dans une sandbox isolée. Supporte stdin, fichiers d\'entrée (via fileId) montés dans /workspace/in/, et récupère les fichiers produits dans /workspace/out/. IMPORTANT : pour écrire, crée toujours le dossier avec os.makedirs("/workspace/out", exist_ok=True) ou utilise Path(os.environ["WORKSPACE_OUT"]) si défini. Timeout configurable (1s à 120s).',
+    description: 'Exécute du code Python ou Node.js dans une sandbox isolée. Supporte stdin, fichiers d\'entrée (via fileId) montés dans /workspace/in/, et récupère les fichiers produits dans /workspace/out/. IMPORTANT : pour écrire, crée toujours le dossier avec os.makedirs("/workspace/out", exist_ok=True) ou utilise Path(os.environ["WORKSPACE_OUT"]) si défini. La réponse contient `producedFiles: [{path, fileId, size}]` — RÉUTILISE ce fileId pour project_write_file(fileId=...) au lieu de ré-encoder le contenu. Timeout configurable (1s à 120s).',
     parameters: {
       type: 'object',
       properties: {
