@@ -396,8 +396,11 @@ function extractMarkdown(html) {
 function extractReadability(html, url) {
   try {
     const { Readability } = loadReadability();
-    const { JSDOM } = loadJsdom();
-    const dom = new JSDOM(html, { url });
+    const { JSDOM, VirtualConsole } = loadJsdom();
+    // Virtual console silencieuse : évite les dumps jsdom "Could not parse CSS stylesheet"
+    // sur les CSS mal formés des sites publics (Google, etc.) — non bloquant mais très verbeux.
+    const virtualConsole = new VirtualConsole();
+    const dom = new JSDOM(html, { url, virtualConsole });
     const reader = new Readability(dom.window.document);
     const article = reader.parse();
     if (!article) return null;
@@ -539,9 +542,21 @@ const WEB_TOOL_DEFINITIONS = [
  */
 function createWebExecutor(metadata, emit) {
   const baseEmit = typeof emit === 'function' ? emit : () => {};
-  // scopedEmit peut être overridé par executeWithCtx pour injecter toolId dans ui.preview.update
   let currentEmit = baseEmit;
-  const safeEmit = (ev) => { try { currentEmit(ev); } catch {} };
+  // LIVE STREAMING : en plus du harness emit (drain à la fin du tool), pousse
+  // aussi chaque event sur le bus thread pour que les SSE actifs le reçoivent
+  // en TEMPS RÉEL (sans attendre la fin du tool long comme research_deep).
+  let threadEmitter = null;
+  try {
+    if (metadata?.threadId) {
+      const { emitThreadEvent } = require('../jobs/job-events');
+      threadEmitter = (ev) => emitThreadEvent(String(metadata.threadId), ev);
+    }
+  } catch {}
+  const safeEmit = (ev) => {
+    try { currentEmit(ev); } catch {}
+    try { if (threadEmitter) threadEmitter(ev); } catch {}
+  };
 
   function emitStep(payload) {
     try { safeEmit({ type: 'canvas.research.step', ...payload }); } catch {}

@@ -106,37 +106,39 @@ async function _spawnOne(opts) {
     maxLoops: maxLoops || 20,
   });
 
-  // Launch async — runJob handles its own state transitions.
-  // We lazy-require to avoid circular deps between job-runner and sub-runner.
-  setImmediate(async () => {
-    try {
-      const { runJob } = require('../jobs/job-runner');
-      await runJob(job.id, {
-        subagentType,
-        systemPromptOverride: typeDef.systemPrompt,
-        toolsAllowed: toolsAllowed || typeDef.toolsAllowed,
-        toolsDenied: typeDef.toolsDenied || null,
-        forcedAutonomy: typeDef.forcedAutonomy || null,
-        prompt,
-        contextSlice,
-      });
-    } catch (e) {
-      await AiJob.updateOne({ id: job.id }, {
-        $set: {
-          status: 'error',
-          error: e?.message || String(e),
-          finishedAt: new Date(),
-        },
-      }).catch(() => {});
-    }
-  });
+  // Exécution SYNCHRONE : le parent attend le subagent, ses events (canvas.research.step,
+  // canvas.task.*) remontent au SSE actif du thread parent via emitThreadEvent.
+  // Sans ça, le subagent tourne en background mais personne n'écoute → user ne voit rien.
+  let runError = null;
+  try {
+    const { runJob } = require('../jobs/job-runner');
+    await runJob(job.id, {
+      subagentType,
+      systemPromptOverride: typeDef.systemPrompt,
+      toolsAllowed: toolsAllowed || typeDef.toolsAllowed,
+      toolsDenied: typeDef.toolsDenied || null,
+      forcedAutonomy: typeDef.forcedAutonomy || null,
+      prompt,
+      contextSlice,
+    });
+  } catch (e) {
+    runError = e?.message || String(e);
+    await AiJob.updateOne({ id: job.id }, {
+      $set: { status: 'error', error: runError, finishedAt: new Date() },
+    }).catch(() => {});
+  }
 
+  // Relit le job final pour récupérer summary + artifacts
+  const finalJob = await AiJob.findOne({ id: job.id }).lean();
   return {
-    ok: true,
+    ok: !runError,
     jobId: job.id,
     subagentType,
     depth,
-    status: 'queued',
+    status: finalJob?.status || 'error',
+    summary: finalJob?.result?.summary || null,
+    artifacts: finalJob?.result?.artifacts || [],
+    error: runError,
   };
 }
 

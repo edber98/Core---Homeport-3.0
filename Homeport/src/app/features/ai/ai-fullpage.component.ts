@@ -872,21 +872,37 @@ export class AiFullpageComponent implements OnInit, OnDestroy, AfterViewInit {
   private mainSwipeHandled = false;
   private mobileSidebarAnimationTimer: ReturnType<typeof setTimeout> | null = null;
   private readonly mobileSidebarAnimationDurationMs = 340;
+  private _lastLoadedCanvasThreadId: string | null = null;
   private readonly sidebarSwipeOpenThreshold = 64;
   private readonly sidebarSwipeCloseThreshold = 56;
   private readonly sidebarSwipeMaxVerticalDelta = 44;
 
   constructor(public ai: AiService, public audioService: AiAudioService, private cdr: ChangeDetectorRef, private router: Router, private nzMsg: NzMessageService, private apiClient: ApiClientService, private acl: AccessControlService) {
-    // V2 — Auto-open canvas on project threads
+    // Charge le canvas une fois par thread (et uniquement si l'ID change)
     effect(() => {
       const cur = this.ai.currentThread();
-      if (cur?.mode === 'project' && !this.ai.canvasOpen()) {
-        this.ai.openCanvas();
-      }
-      // Load canvas + preferences for current thread
-      if (cur && (cur._id || cur.id)) {
-        this.ai.loadCanvas(cur._id || cur.id);
-      }
+      const tid = cur?._id || cur?.id;
+      if (!tid || tid === this._lastLoadedCanvasThreadId) return;
+      this._lastLoadedCanvasThreadId = tid;
+      this.ai.loadCanvas(tid);
+    });
+
+    // Ouverture auto du canvas
+    // Project → ouvre toujours à l'arrivée
+    // Chat classique → ouvre dès qu'une activité apparaît (task, research, document).
+    // NE FERME JAMAIS automatiquement : c'est à l'utilisateur de fermer via le bouton.
+    // Le close auto ne se fait QUE quand on switche de thread (autre effect).
+    effect(() => {
+      const cur = this.ai.currentThread();
+      if (!cur) return;
+      const state = this.ai.canvasState();
+      const hasActivity = !!(
+        state?.tasks?.length ||
+        state?.research?.steps?.length ||
+        state?.document?.previewHtml
+      );
+      const shouldOpen = cur.mode === 'project' || hasActivity;
+      if (shouldOpen && !this.ai.canvasOpen()) this.ai.openCanvas();
     });
 
     // V2 — Load preferences on mount
