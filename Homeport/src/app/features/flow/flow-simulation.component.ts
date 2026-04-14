@@ -64,7 +64,7 @@ import { backAwareCurve } from './edge-curves';
     .viewer { position:relative; flex:1 1 auto; min-height:0; display:grid; grid-template-columns: 300px 1fr; }
     /* Override global mobile padding in Simulation only */
     .viewer { padding-bottom: 0 !important; }
-    .left-panel { border: none; padding:8px; background: linear-gradient(180deg, #f8f8f8 0%, #ececec 100%); box-sizing: border-box; }
+    .left-panel { border: none; padding:8px; background: linear-gradient(130deg, #f8f8f8, #ffffff); box-sizing: border-box; }
     .panel-title { font-size:12px; color:#6b7280; margin-bottom:6px; display:flex; align-items:center; gap:6px; }
     .panel-title .count { color:#374151; font-weight:600; }
     .sc-list { display:grid; gap:6px; }

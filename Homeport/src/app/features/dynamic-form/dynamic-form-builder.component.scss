@@ -32,7 +32,7 @@
   padding-right: 0;
   border: none;
   align-self: stretch;
-  background: linear-gradient(180deg, #f8f8f8 0%, #ececec 100%);
+  background: linear-gradient(130deg, #f8f8f8, #ffffff);
   scrollbar-width: none;
   &::-webkit-scrollbar { display: none; }
 }
@@ -433,7 +433,7 @@
   height: 100%;
   overflow: auto;
   border: none;
-  background: linear-gradient(180deg, #f8f8f8 0%, #ececec 100%);
+  background: linear-gradient(130deg, #f8f8f8, #ffffff);
   scrollbar-width: none;
   &::-webkit-scrollbar { display: none; }
 }

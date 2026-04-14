@@ -316,7 +316,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
     .palette .group-row i.fa-chevron-right { color:#94a3b8; font-size: 12px; }
     .palette .back-btn { width: 28px; height: 28px; padding: 0; border:0; background: transparent; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; }
     .palette .back-btn i { color:#6b7280; font-size:16px; }
-    .palette .group-overlay { position:absolute; inset:0; background: linear-gradient(180deg, #f8f8f8 0%, #ececec 100%); padding:0; overflow:hidden; z-index: 2; display:flex; flex-direction:column; touch-action: pan-y; will-change: transform; animation: palette-page-in 220ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+    .palette .group-overlay { position:absolute; inset:0; background: linear-gradient(130deg, #f8f8f8, #ffffff); padding:0; overflow:hidden; z-index: 2; display:flex; flex-direction:column; touch-action: pan-y; will-change: transform; animation: palette-page-in 220ms cubic-bezier(0.22, 1, 0.36, 1) both; }
     @keyframes palette-page-in { from { transform: translateX(40%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
     .palette.drawer-mode .group-overlay { background: #fff; }
     .palette .group-overlay.swipe-animating { transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 180ms ease; animation: none; }

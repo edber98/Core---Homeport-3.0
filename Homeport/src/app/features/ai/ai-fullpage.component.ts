@@ -466,7 +466,7 @@ import { AiSettingsComponent } from './ai-settings.component';
     .fp-layout { display: flex; height: 100%; background: #f8f8f8; position: relative; }
 
     /* ── Sidebar ── */
-    .fp-sidebar { width: 300px; display: flex; flex-direction: column; flex-shrink: 0; background: linear-gradient(180deg, #f8f8f8 0%, #ececec 100%); transition: width 0.24s cubic-bezier(0.22, 1, 0.36, 1); overflow: hidden; }
+    .fp-sidebar { width: 300px; display: flex; flex-direction: column; flex-shrink: 0; background: linear-gradient(130deg, #f8f8f8, #ffffff); transition: width 0.24s cubic-bezier(0.22, 1, 0.36, 1); overflow: hidden; }
     .fp-sidebar.collapsed { width: 48px; }
     .sidebar-header { display: flex; align-items: center; gap: 10px; padding: 12px 16px; margin-top: 8px; flex-shrink: 0; }
     .sidebar-panel-body { display: flex; flex: 1 1 auto; min-height: 0; flex-direction: column; }

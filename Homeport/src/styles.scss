@@ -397,7 +397,7 @@ app-dashboard-home .panel-runs .panel-scroll::-webkit-scrollbar-button:vertical:
   border-top: 0;
   border-bottom: 1px solid #e5e7eb;
   border-radius: 0;
-  background: #fff;
+  background: transparent;
   overflow: hidden;
 }
 .inspector-panel:last-child { border-bottom: 0; }
@@ -409,7 +409,7 @@ app-dashboard-home .panel-runs .panel-scroll::-webkit-scrollbar-button:vertical:
   gap: 10px;
   padding: 12px 12px;
   border: 0;
-  background: #fff;
+  background: transparent;
   cursor: pointer;
   text-align: left;
   font-weight: 600;

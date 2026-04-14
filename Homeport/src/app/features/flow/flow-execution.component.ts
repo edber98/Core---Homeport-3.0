@@ -377,7 +377,7 @@ import { NodeExecResultDialogComponent } from './node-exec-result-dialog.compone
         .flow-exec { height: 100dvh; min-height: 100dvh; }
       }
     }
-    .side.executions { border: none; border-radius: 0; padding: 12px; padding-right: 9px; padding-top: 0 !important; background: linear-gradient(180deg, #f8f8f8 0%, #ececec 100%); overflow-y: auto; overflow-x: hidden; min-height: 0; scrollbar-width: none; }
+    .side.executions { border: none; border-radius: 0; padding: 12px; padding-right: 9px; padding-top: 0 !important; background: linear-gradient(130deg, #f8f8f8, #ffffff); overflow-y: auto; overflow-x: hidden; min-height: 0; scrollbar-width: none; }
     .side.executions::-webkit-scrollbar { display: none; }
     /* Drawer mode: white background, no gradient */
     .drawer-swipe-zone .side.executions { background: #fff !important; }
@@ -610,7 +610,7 @@ import { NodeExecResultDialogComponent } from './node-exec-result-dialog.compone
       text-align: center;
       max-width: min(92vw, 420px);
     }
-    .details-panel { border-left: none; background: linear-gradient(180deg, #f8f8f8 0%, #ececec 100%); height:100%; overflow:auto; padding:12px; min-width: 0; scrollbar-width: none; }
+    .details-panel { border-left: none; background: linear-gradient(130deg, #f8f8f8, #ffffff); height:100%; overflow:auto; padding:12px; min-width: 0; scrollbar-width: none; }
     .details-panel::-webkit-scrollbar { display: none; }
     .details-panel .panel-heading.details-heading {
       display:flex;
