@@ -796,6 +796,8 @@ export class FlowBuilderComponent {
   triggerStatus: TriggerStatus | null = null;
   deploying = false;
   undeploying = false;
+  // Previous status before deploy (restored on undeploy)
+  private _preDeployStatus: 'draft' | 'test' | 'production' | null = null;
   get isProduction(): boolean { return this.currentFlowStatus === 'production' && !!this.triggerStatus?.active; }
 
   // Long-press detection for mobile context menu
@@ -6356,6 +6358,10 @@ export class FlowBuilderComponent {
 
   deployFlow() {
     if (!this.currentFlowId || this.deploying) return;
+    // Remember status before deploy so we can restore it on undeploy
+    if (this.currentFlowStatus !== 'production') {
+      this._preDeployStatus = (this.currentFlowStatus as any) || 'draft';
+    }
     // Save first, then deploy
     const doDeploy = () => {
       this.deploying = true;
@@ -6364,6 +6370,8 @@ export class FlowBuilderComponent {
           this.zone.run(() => {
             this.deploying = false;
             this.currentFlowStatus = 'production';
+            // Deploy updates status server-side — realign checksum to avoid dirty state
+            this.lastSavedChecksum = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, portOrientation: this.portOrientation, alignmentHelper: this.alignmentHelper, snapGrid: this.snapGrid });
             this.loadTriggerStatus();
             this.triggersApi.notifyStatusChanged(this.currentFlowId!);
             const msg = res.webhookUrl
@@ -6413,9 +6421,37 @@ export class FlowBuilderComponent {
           next: () => {
             this.zone.run(() => {
               this.undeploying = false;
-              this.currentFlowStatus = 'draft';
+              // Restore previous status (draft/test) when undeploying
+              const restored = this._preDeployStatus || 'draft';
+              this._preDeployStatus = null;
+              this.currentFlowStatus = restored;
               this.triggerStatus = null;
               this.triggersApi.notifyStatusChanged(this.currentFlowId!);
+              // Persist the restored status on the backend so it's saved
+              if (environment.useBackend && this.currentFlowId) {
+                const fidSnap = this.currentFlowId;
+                const doc: any = {
+                  id: fidSnap,
+                  name: this.currentFlowName,
+                  description: this.currentFlowDesc,
+                  status: restored,
+                  enabled: this.currentFlowEnabled,
+                  nodes: this.nodes,
+                  edges: this.edges,
+                  meta: (this as any).currentFlowMeta || {}
+                };
+                try {
+                  this.catalog.saveFlow(doc).subscribe({
+                    next: () => {
+                      this.lastSavedChecksum = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, portOrientation: this.portOrientation, alignmentHelper: this.alignmentHelper, snapGrid: this.snapGrid });
+                      try { this.cdr.detectChanges(); } catch {}
+                    },
+                    error: () => {}
+                  });
+                } catch {}
+              } else {
+                this.lastSavedChecksum = this.computeChecksum({ nodes: this.nodes, edges: this.edges, name: this.currentFlowName, desc: this.currentFlowDesc, status: this.currentFlowStatus, enabled: this.currentFlowEnabled, portOrientation: this.portOrientation, alignmentHelper: this.alignmentHelper, snapGrid: this.snapGrid });
+              }
               try { this.message.success('Production arrêtée'); } catch { this.showToast('Production arrêtée'); }
               try { this.cdr.detectChanges(); } catch {}
             });
