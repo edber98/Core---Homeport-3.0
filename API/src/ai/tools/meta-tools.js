@@ -788,11 +788,28 @@ async function executeMetaTool(name, input, ctx) {
       try {
         const { spawnSubagent } = require('../subagent/sub-runner');
         const jc = ctx?._jobContext;
-        if (!jc?.jobId) {
-          return { ok: false, error: 'spawn_subagent nécessite un job parent (pas exécutable hors contexte de job).' };
+        // Permet le spawn même sans job parent — crée un job éphémère si nécessaire
+        let parentJobId = jc?.jobId;
+        let depth = jc?.depth || 0;
+        if (!parentJobId) {
+          try {
+            const { createJob } = require('../jobs/job-runner');
+            const ephemeralParent = await createJob({
+              threadId: ctx.threadId,
+              workspaceId: ctx.workspaceId,
+              userId: ctx.userId,
+              companyId: ctx.companyId,
+              type: 'agent_run',
+              mode: 'chat',
+              agentId: ctx.agentId,
+            });
+            parentJobId = String(ephemeralParent._id);
+          } catch (e) {
+            return { ok: false, error: `Impossible de créer un job parent éphémère: ${e?.message}` };
+          }
         }
         const res = await spawnSubagent({
-          parentJobId: jc.jobId,
+          parentJobId,
           subagentType: input.subagent_type || 'general',
           prompt: input.prompt || '',
           maxLoops: input.max_loops,
@@ -801,7 +818,7 @@ async function executeMetaTool(name, input, ctx) {
             subagentType: p.subagent_type,
             prompt: p.prompt,
           })) : null,
-          depth: jc.depth || 0,
+          depth,
         });
         return { ok: true, result: res };
       } catch (e) {
@@ -813,15 +830,30 @@ async function executeMetaTool(name, input, ctx) {
       try {
         const { spawnSubagent } = require('../subagent/sub-runner');
         const jc = ctx?._jobContext;
-        if (!jc?.jobId) {
-          return { ok: false, error: 'research_deep nécessite un job parent.' };
+        let parentJobId = jc?.jobId;
+        let depth = jc?.depth || 0;
+        if (!parentJobId) {
+          try {
+            const { createJob } = require('../jobs/job-runner');
+            const ephemeralParent = await createJob({
+              threadId: ctx.threadId,
+              workspaceId: ctx.workspaceId,
+              userId: ctx.userId,
+              companyId: ctx.companyId,
+              type: 'research',
+              mode: 'chat',
+            });
+            parentJobId = String(ephemeralParent._id);
+          } catch (e) {
+            return { ok: false, error: `Impossible de créer un job parent: ${e?.message}` };
+          }
         }
         const res = await spawnSubagent({
-          parentJobId: jc.jobId,
+          parentJobId,
           subagentType: 'research',
           prompt: `Recherche approfondie: ${input.question}` + (input.scope ? `\nPérimètre: ${input.scope}` : ''),
           maxLoops: Math.min(Math.max((input.depth || 2) * 6, 6), 24),
-          depth: jc.depth || 0,
+          depth,
         });
         return { ok: true, result: res };
       } catch (e) {

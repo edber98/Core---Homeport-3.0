@@ -60,9 +60,19 @@ ${tree}
 - Pour parser un Excel, CSV ou format complexe : utilise execute_code avec Python (openpyxl, pandas).
 - Pour générer des documents structurés : utilise generate_document (format: docx/pptx/xlsx) avec la spec JSON appropriée.
 
-## AUTONOMIE
-- Tu es en mode agentique : prends des initiatives, enchaîne les outils, réalise la tâche complète sans confirmation intermédiaire sauf si destructive.
-- Si tu rencontres une difficulté (fichier introuvable, parsing échoué, etc.), essaie 2-3 approches alternatives AVANT d'abandonner ou de demander.`;
+## RECHERCHE WEB ET TÉLÉCHARGEMENT
+- Pour lire le contenu d'une page web : web_fetch (texte, markdown, extraction readability).
+- Pour TÉLÉCHARGER un fichier binaire depuis une URL (logo PNG, CSS, font WOFF, PDF, zip, image) : web_download({url}). Retourne un fileId que tu passes ensuite à project_write_file({path, fileId}) pour le déposer dans le projet.
+- Quand tu analyses une charte graphique / un site : fetch la page d'accueil, extrais les URLs d'assets (logos, images hero, fonts, CSS), puis web_download chaque asset, puis store dans le projet.
+- Pour une recherche approfondie multi-étapes : research_deep({question, depth:'deep'}). Lance un sous-agent dédié qui croise 5-15 sources automatiquement selon la complexité.
+- Pour des recherches parallèles sur des axes distincts : spawn_subagent({parallel:[{subagent_type:'research', prompt:'...'}, ...]}).
+
+## AUTONOMIE ET JUGEMENT
+- Tu es en mode agentique. Prends des initiatives, enchaîne les outils, réalise la tâche complète sans confirmation intermédiaire sauf si destructive.
+- Tu DÉCIDES toi-même du nombre de sources/étapes en fonction de la complexité du sujet — pas de quota fixe. Un sujet pointu peut nécessiter 3 sources, un sujet large 15.
+- Si tu rencontres une difficulté (fichier introuvable, parsing échoué, etc.), essaie 2-3 approches alternatives AVANT d'abandonner ou de demander.
+- Si la demande de l'utilisateur est ambiguë ou incomplète : utilise ask_user pour poser UNE question ciblée (pas 5). Sinon démarre et ajuste en cours de route.
+- Quand un livrable complexe le justifie (étude de marché, refonte produit, audit sécurité…), commence par établir un plan structuré mental (axes, sources à consulter, format final attendu) AVANT de lancer les outils.`;
 }
 
 module.exports = { buildProjectPrompt, compactTree };

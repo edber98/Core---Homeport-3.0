@@ -3,6 +3,7 @@
 // Pattern mirrors workflow-tools.js (createXExecutor returning {definitions, canHandle, execute, cleanup})
 
 const dns = require('dns').promises;
+const { randomUUID } = require('crypto');
 const env = require('../../config/env');
 
 // Lazy requires — keep server boot light, only load when AI calls a web tool
@@ -499,6 +500,19 @@ const WEB_TOOL_DEFINITIONS = [
       required: ['question'],
     },
   },
+  {
+    name: 'web_download',
+    description: "Télécharge un fichier depuis une URL (image, logo, CSS, PDF, zip, font, vidéo…) et le stocke directement dans FileRecord. Retourne {fileId, name, mimeType, size}. UTILISE CE TOOL dès que tu dois récupérer un asset binaire depuis un site (ex: logo PNG, CSS complet, font WOFF) — ne passe PAS par web_fetch qui n'accepte que du texte/markdown. Pour sauvegarder ensuite dans le projet : project_write_file({path, fileId}).",
+    parameters: {
+      type: 'object',
+      properties: {
+        url: { type: 'string', description: 'URL HTTP/HTTPS (IPs privées bloquées)' },
+        filename: { type: 'string', description: 'Nom souhaité (sinon déduit de l\'URL)' },
+        maxSizeBytes: { type: 'number', description: 'Taille max acceptée (défaut 50 Mo)' },
+      },
+      required: ['url'],
+    },
+  },
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -727,10 +741,80 @@ function createWebExecutor(metadata, emit) {
     return { question, depth, summary, citations, steps };
   }
 
+  // ── web_download : télécharge asset binaire vers FileRecord
+  async function tool_web_download(input) {
+    const url = String(input.url || '').trim();
+    if (!url) return { ok: false, error: 'url requis' };
+    try { await validateUrl(url); } catch (e) { return { ok: false, error: e?.message || 'URL invalide/interdite' }; }
+    const maxSize = Math.min(Math.max(parseInt(input.maxSizeBytes || (50 * 1024 * 1024), 10), 1024), 200 * 1024 * 1024);
+
+    emitStep({ id: randomUUID(), type: 'fetch', status: 'running', url, title: 'Téléchargement asset' });
+
+    try {
+      const { request } = require('undici');
+      const { statusCode, headers, body } = await request(url, {
+        method: 'GET',
+        maxRedirections: 5,
+        headersTimeout: 15000,
+        bodyTimeout: 60000,
+      });
+      if (statusCode >= 400) {
+        emitStep({ id: randomUUID(), type: 'fetch', status: 'error', url, title: `HTTP ${statusCode}` });
+        return { ok: false, error: `HTTP ${statusCode}`, status: statusCode };
+      }
+      const mimeType = (headers['content-type'] || 'application/octet-stream').split(';')[0].trim();
+      const contentLength = parseInt(headers['content-length'] || '0', 10);
+      if (contentLength && contentLength > maxSize) {
+        return { ok: false, error: `Fichier > ${maxSize} bytes (${contentLength})` };
+      }
+      // Stream vers buffer avec cap
+      const chunks = [];
+      let total = 0;
+      for await (const c of body) {
+        total += c.length;
+        if (total > maxSize) {
+          return { ok: false, error: `Fichier dépasse ${maxSize} bytes pendant download` };
+        }
+        chunks.push(c);
+      }
+      const buf = Buffer.concat(chunks);
+      // Déduire nom
+      let name = String(input.filename || '').trim();
+      if (!name) {
+        try {
+          const u = new URL(url);
+          name = decodeURIComponent((u.pathname.split('/').pop() || '').trim());
+        } catch {}
+      }
+      if (!name || name === '/') {
+        const ext = (mimeType.split('/').pop() || 'bin').replace(/[^a-z0-9]/gi, '');
+        name = `download.${ext}`;
+      }
+      // Store via createFilesHelper
+      const { createFilesHelper } = require('../../services/file-storage');
+      const files = createFilesHelper({ workspaceId: metadata?.workspaceId });
+      const stored = await files.store(buf, { name, mimeType, lifecycle: 'execution' });
+
+      emitStep({ id: randomUUID(), type: 'fetch', status: 'done', url, title: name, resultPreview: `${(buf.length / 1024).toFixed(1)} Ko` });
+      return {
+        ok: true,
+        fileId: stored.fileId || stored.id,
+        name,
+        mimeType,
+        size: buf.length,
+        url,
+      };
+    } catch (e) {
+      emitStep({ id: randomUUID(), type: 'fetch', status: 'error', url, title: e?.message || 'Erreur' });
+      return { ok: false, error: e?.message || String(e) };
+    }
+  }
+
   const tools = {
     web_search: tool_web_search,
     web_fetch: tool_web_fetch,
     research_deep: tool_research_deep,
+    web_download: tool_web_download,
   };
 
   return {
