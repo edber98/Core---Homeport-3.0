@@ -32,6 +32,7 @@ const TOOL_RISK = {
   // permission (le memory_extractor tourne en autonomy 'prudent' avec parent
   // éphémère qui ne peut pas répondre à une demande de permission → deadlock 5 min).
   suggest_memory_entries: 'safe',
+  render_interactive_canvas: 'safe',
 
   // ── writes (create / edit / sync) ──
   project_write_file:    'write',

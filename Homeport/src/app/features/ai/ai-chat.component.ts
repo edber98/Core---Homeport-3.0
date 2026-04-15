@@ -71,6 +71,7 @@ const TOOL_LABELS: Record<string, string> = {
   render_html_preview: 'Aperçu HTML', build_website: 'Construction site',
   // Structured interactive messages
   render_structured: 'Affichage structuré',
+  render_interactive_canvas: 'Canvas interactif',
 };
 
 /** Human-readable labels for meta-tool arguments (non-execute_tool tools) */
@@ -1162,7 +1163,7 @@ export class AiChatComponent implements AfterViewInit {
         }
         // Quand un tool crée un AiMessage inline (structured/plan/diagram), le front doit
         // recharger les messages pour que le widget s'affiche naturellement dans le flux.
-        if (['render_structured', 'propose_plan', 'generate_diagram', 'display_image'].includes(evName) && evStatus === 'success') {
+        if (['render_structured', 'propose_plan', 'generate_diagram', 'display_image', 'render_interactive_canvas'].includes(evName) && evStatus === 'success') {
           try { this.ai.reloadThreadMessages?.(); } catch {}
         }
         this.updateRotator();

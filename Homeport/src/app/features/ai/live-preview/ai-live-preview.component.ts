@@ -8,10 +8,11 @@ import { AiLiveResearchPreviewComponent } from './ai-live-research-preview.compo
 import { AiLiveSubagentPreviewComponent } from './ai-live-subagent-preview.component';
 import { AiLiveDownloadPreviewComponent } from './ai-live-download-preview.component';
 import { AiLiveCodePreviewComponent } from './ai-live-code-preview.component';
+import { AiCanvasHtmlComponent } from '../canvas-html/ai-canvas-html.component';
 
 export type LivePreviewType =
   | 'structured' | 'diagram' | 'plan' | 'document'
-  | 'research' | 'subagent' | 'download' | 'code';
+  | 'research' | 'subagent' | 'download' | 'code' | 'canvas';
 
 export type LivePreviewStatus = 'building' | 'running' | 'success' | 'error';
 
@@ -25,6 +26,7 @@ const PREVIEW_MAP: Record<string, LivePreviewType> = {
   spawn_subagent:    'subagent',
   web_download:      'download',
   execute_code:      'code',
+  render_interactive_canvas: 'canvas',
 };
 
 export function detectPreviewType(toolName: string | undefined | null): LivePreviewType | null {
@@ -45,6 +47,7 @@ export function detectPreviewType(toolName: string | undefined | null): LivePrev
     AiLiveSubagentPreviewComponent,
     AiLiveDownloadPreviewComponent,
     AiLiveCodePreviewComponent,
+    AiCanvasHtmlComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -86,6 +89,11 @@ export function detectPreviewType(toolName: string | undefined | null): LivePrev
           <ai-live-code-preview *ngSwitchCase="'code'"
             [data]="displayData">
           </ai-live-code-preview>
+
+          <ai-canvas-html *ngSwitchCase="'canvas'"
+            [data]="displayData"
+            [streaming]="status === 'building'">
+          </ai-canvas-html>
         </ng-container>
       </div>
       <div class="adjusting-badge" *ngIf="adjusting" [attr.title]="'Ajustement en cours…'">
@@ -170,6 +178,7 @@ export class AiLivePreviewComponent implements OnChanges {
       case 'subagent': return !!d.subagent_type || !!d.prompt;
       case 'download': return !!d.url || !!d.fileId;
       case 'code':     return typeof d.code === 'string' || Array.isArray(d.stdoutLines);
+      case 'canvas':   return typeof d.html === 'string' && d.html.length > 50;
       default: return false;
     }
   }

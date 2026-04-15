@@ -584,6 +584,29 @@ const META_TOOL_DEFINITIONS = [
       },
     },
   },
+  {
+    name: 'render_interactive_canvas',
+    description: `Affiche un canvas HTML interactif inline dans le chat (animations 2D canvas/SVG, scènes 3D Three.js, démos WebGL, visualisations live…). Le HTML est rendu dans un iframe sandboxé isolé (allow-scripts uniquement, pas de DOM parent ni de cookies). Idéal pour : expliquer un principe avec une animation, montrer un objet 3D qui tourne, illustrer un concept physique, appliquer un logo sur un cube, etc.
+
+Le paramètre \`html\` doit contenir un document HTML complet, self-contained (doctype + html + head + body). Tu peux :
+- Utiliser Three.js via CDN : <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}</script>
+- Dessiner sur un <canvas> 2D avec requestAnimationFrame
+- Animer du SVG avec CSS / JS
+- Charger des images depuis des URLs publiques
+
+RÈGLE : tout le code JS doit être inline dans <script>, pas de fetch vers ton backend. Les imports CDN (three, d3, p5…) sont OK.`,
+    parameters: {
+      type: 'object',
+      properties: {
+        html: { type: 'string', description: 'Document HTML complet (doctype + html + head + body + scripts inline/CDN)' },
+        title: { type: 'string', description: 'Titre affiché au-dessus du canvas (ex: "Cube 3D rotatif")' },
+        description: { type: 'string', description: 'Courte description du principe illustré' },
+        height: { type: 'number', description: 'Hauteur du canvas en px (défaut 420, max 900)' },
+        type: { type: 'string', enum: ['2d', '3d', 'animation', 'demo'], description: 'Type de rendu pour l\'icône badge' },
+      },
+      required: ['html'],
+    },
+  },
 ];
 
 /** Recursively extract fileRef objects from a result */
@@ -1542,6 +1565,40 @@ async function executeMetaTool(name, input, ctx) {
           ok: true,
           _silent: true,
           hint: "Image affichée inline. Pas de description redondante dans ton texte.",
+        };
+      } catch (e) {
+        return { ok: false, error: e?.message };
+      }
+    }
+
+    case 'render_interactive_canvas': {
+      if (!ctx.threadId) return { ok: false, error: 'threadId manquant' };
+      const { html, title, description, height, type } = input || {};
+      if (!html || typeof html !== 'string') return { ok: false, error: 'html requis (document HTML complet)' };
+      // Taille raisonnable : 400KB max pour éviter de stocker des payloads géants
+      if (html.length > 400_000) return { ok: false, error: 'html trop volumineux (>400KB). Minimise le code ou charge via CDN.' };
+      const safeHeight = Math.max(200, Math.min(900, Number(height) || 420));
+      try {
+        await AiMessage.create({
+          threadId: ctx.threadId,
+          workspaceId: ctx.workspaceId,
+          role: 'assistant',
+          content: title || '',
+          metadata: {
+            kind: 'canvas_html',
+            canvasHtml: {
+              html,
+              title: title || null,
+              description: description || null,
+              height: safeHeight,
+              type: ['2d', '3d', 'animation', 'demo'].includes(type) ? type : 'demo',
+            },
+          },
+        });
+        return {
+          ok: true,
+          _silent: true,
+          hint: "Canvas HTML affiché inline. Ne décris pas le contenu dans ton texte, l'utilisateur le voit.",
         };
       } catch (e) {
         return { ok: false, error: e?.message };

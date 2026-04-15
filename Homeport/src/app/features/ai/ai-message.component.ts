@@ -18,6 +18,7 @@ import { AiPlanProposalCardComponent } from './plan/ai-plan-proposal-card.compon
 import { AiDiagramRendererComponent } from './diagram/ai-diagram-renderer.component';
 import { AiStructuredMessageComponent } from './structured/ai-structured-message.component';
 import { AiInlineImageComponent } from './images/ai-inline-image.component';
+import { AiCanvasHtmlComponent } from './canvas-html/ai-canvas-html.component';
 import { AiAgentReportCardComponent } from './agent-reports/ai-agent-report-card.component';
 import { AiWidgetActionsComponent, WidgetAction, WidgetActionId } from './widgets/ai-widget-actions.component';
 import { AiWidgetModalComponent, WidgetType, WidgetModalData } from './widgets/ai-widget-modal.component';
@@ -125,7 +126,7 @@ interface ProcessedSegment {
 @Component({
   selector: 'ai-message',
   standalone: true,
-  imports: [CommonModule, NzButtonModule, NzIconModule, NzTagModule, NzToolTipModule, NzBadgeModule, NodeExecResultDialogComponent, AiPermissionRequestCardComponent, AiCacheSyncRequestCardComponent, AiStructuredMessageComponent, AiPlanProposalCardComponent, AiDiagramRendererComponent, AiInlineImageComponent, AiWidgetActionsComponent, AiAgentReportCardComponent],
+  imports: [CommonModule, NzButtonModule, NzIconModule, NzTagModule, NzToolTipModule, NzBadgeModule, NodeExecResultDialogComponent, AiPermissionRequestCardComponent, AiCacheSyncRequestCardComponent, AiStructuredMessageComponent, AiPlanProposalCardComponent, AiDiagramRendererComponent, AiInlineImageComponent, AiCanvasHtmlComponent, AiWidgetActionsComponent, AiAgentReportCardComponent],
   template: `
     <div class="ai-msg" [class.user]="msg.role === 'user'" [class.assistant]="msg.role === 'assistant'" [class.compact]="compact">
       <div class="avatar" *ngIf="!compact">
@@ -191,6 +192,9 @@ interface ProcessedSegment {
           </div>
           <div *ngSwitchCase="'image_inline'" class="widget-bubble image-inline-wrap">
             <ai-inline-image [data]="msg.metadata!.imageInline!"></ai-inline-image>
+          </div>
+          <div *ngSwitchCase="'canvas_html'" class="canvas-html-bubble widget-bubble widget-wrap">
+            <ai-canvas-html [data]="msg.metadata!['canvasHtml']!"></ai-canvas-html>
           </div>
           <div *ngSwitchCase="'agent_report'" class="widget-bubble widget-wrap">
             <ai-agent-report-card [report]="msg.metadata!.agentReport!"></ai-agent-report-card>

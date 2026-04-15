@@ -31,13 +31,15 @@ function loadPlaywright() { if (!_playwright) _playwright = require('playwright'
 // Constants & limits
 // ─────────────────────────────────────────────────────────────────────────────
 
-const SEARCH_TIMEOUT_MS = parseInt(process.env.WEB_SEARCH_TIMEOUT_MS || '20000', 10);
+const SEARCH_TIMEOUT_MS = parseInt(process.env.WEB_SEARCH_TIMEOUT_MS || '40000', 10);
 const BROWSER_TIMEOUT_MS = parseInt(process.env.WEB_BROWSER_TIMEOUT_MS || '30000', 10);
 const HTTP_TIMEOUT_MS = parseInt(process.env.WEB_HTTP_TIMEOUT_MS || '30000', 10);
 const MAX_BYTES = parseInt(process.env.WEB_FETCH_MAX_BYTES || String(5 * 1024 * 1024), 10);
 const MAX_RAW_CHARS = parseInt(process.env.WEB_FETCH_MAX_RAW_CHARS || String(80_000), 10);
-const PRIMARY_ENGINE = process.env.WEB_SEARCH_ENGINE || 'duckduckgo';
-const FALLBACK_ENGINES = (process.env.WEB_SEARCH_FALLBACK || 'brave,startpage').split(',').map(s => s.trim()).filter(Boolean);
+// Bing par défaut : le plus stable en scraping HTML, peu de captchas / 403.
+// Brave / DDG / Startpage restent en fallback automatique.
+const PRIMARY_ENGINE = process.env.WEB_SEARCH_ENGINE || 'bing';
+const FALLBACK_ENGINES = (process.env.WEB_SEARCH_FALLBACK || 'brave,startpage,duckduckgo').split(',').map(s => s.trim()).filter(Boolean);
 
 const DEFAULT_UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
 const ALLOWED_CT = [/^text\//, /^application\/xhtml\+xml/, /^application\/json/, /^application\/pdf/, /^application\/xml/];
@@ -191,6 +193,48 @@ async function searchDuckDuckGo({ query, limit, locale, safeSearch, site }) {
   });
 }
 
+async function searchBing({ query, limit, locale, site }) {
+  const cheerio = loadCheerio();
+  const fullQuery = site ? `${query} site:${site}` : query;
+  const params = new URLSearchParams({ q: fullQuery, form: 'QBLH' });
+  return withBrowserContext(async (ctx) => {
+    const page = await ctx.newPage();
+    page.setDefaultTimeout(SEARCH_TIMEOUT_MS);
+    await page.goto(`https://www.bing.com/search?${params.toString()}`, { waitUntil: 'domcontentloaded', timeout: SEARCH_TIMEOUT_MS });
+    try { await page.waitForSelector('#b_results, .b_algo, h2', { timeout: 3000 }); } catch {}
+    const html = await page.content();
+    await page.close();
+    const $ = cheerio.load(html);
+    const results = [];
+    const seen = new Set();
+    $('#b_results > .b_algo, .b_algo').each((_, el) => {
+      if (results.length >= limit) return false;
+      const $el = $(el);
+      const $a = $el.find('h2 a').first();
+      const url = $a.attr('href') || '';
+      const title = $a.text().trim();
+      const snippet = ($el.find('.b_caption p, .b_snippet, .b_lineclamp2, .b_lineclamp4').first().text() || '').trim();
+      if (!url || !title || !/^https?:/.test(url) || seen.has(url)) return;
+      seen.add(url);
+      results.push({ title, url, snippet, rank: results.length + 1 });
+    });
+    // Fallback générique si Bing a changé
+    if (results.length === 0) {
+      $('h2 a[href^="http"]').each((_, el) => {
+        if (results.length >= limit) return false;
+        const $a = $(el);
+        const url = $a.attr('href') || '';
+        const title = $a.text().trim();
+        if (!url || !title || seen.has(url) || /bing\.com|microsoft\.com\/en-us\/bing/.test(url)) return;
+        seen.add(url);
+        results.push({ title, url, snippet: '', rank: results.length + 1 });
+      });
+    }
+    console.log(`[web-tool:bing] query="${fullQuery}" → ${results.length} résultats (htmlLen=${html.length})`);
+    return results;
+  });
+}
+
 async function searchBrave({ query, limit, locale, site }) {
   const cheerio = loadCheerio();
   const fullQuery = site ? `${query} site:${site}` : query;
@@ -199,20 +243,45 @@ async function searchBrave({ query, limit, locale, site }) {
     const page = await ctx.newPage();
     page.setDefaultTimeout(SEARCH_TIMEOUT_MS);
     await page.goto(`https://search.brave.com/search?${params.toString()}`, { waitUntil: 'domcontentloaded', timeout: SEARCH_TIMEOUT_MS });
+    // Attente courte pour laisser Brave hydrater les résultats JS
+    try { await page.waitForSelector('#results, .snippet, [data-type="web"], h2', { timeout: 3000 }); } catch {}
     const html = await page.content();
     await page.close();
     const $ = cheerio.load(html);
     const results = [];
-    $('div.snippet, [data-type="web"]').each((i, el) => {
+    const seen = new Set();
+
+    // Extraction 1 : sélecteurs "officiels" Brave
+    $('div.snippet, [data-type="web"]').each((_, el) => {
       if (results.length >= limit) return false;
       const $el = $(el);
       const $a = $el.find('a.result-header, a.heading-serpresult, h3 a, a').first();
       const url = $a.attr('href') || '';
       const title = ($el.find('.snippet-title, .title').first().text() || $a.text() || '').trim();
       const snippet = ($el.find('.snippet-description, .snippet-content').first().text() || '').trim();
-      if (!url || !title || !/^https?:/.test(url)) return;
+      if (!url || !title || !/^https?:/.test(url) || seen.has(url)) return;
+      seen.add(url);
       results.push({ title, url, snippet, rank: results.length + 1 });
     });
+
+    // Extraction 2 (fallback) : heuristique générique — tout h2/h3 avec a[href^="http"]
+    // extérieur aux domaines brave/privacy — marche même si les classes changent.
+    if (results.length === 0) {
+      $('h2 a[href^="http"], h3 a[href^="http"], .title a[href^="http"]').each((_, el) => {
+        if (results.length >= limit) return false;
+        const $a = $(el);
+        const url = $a.attr('href') || '';
+        const title = $a.text().trim();
+        if (!url || !title || seen.has(url)) return;
+        if (/brave\.com\/privacy|brave\.com\/settings|search\.brave\.com\/help/.test(url)) return;
+        // Cherche un snippet proche (parent ou sibling suivant)
+        const $parent = $a.closest('div, article, li');
+        const snippet = ($parent.find('p, .description, .snippet-description').first().text() || '').trim().slice(0, 300);
+        seen.add(url);
+        results.push({ title, url, snippet, rank: results.length + 1 });
+      });
+    }
+    console.log(`[web-tool:brave] query="${fullQuery}" → ${results.length} résultats (htmlLen=${html.length})`);
     return results;
   });
 }
@@ -246,24 +315,31 @@ async function searchStartpage({ query, limit, site }) {
 const SEARCH_ENGINES = {
   duckduckgo: searchDuckDuckGo,
   brave: searchBrave,
+  bing: searchBing,
   startpage: searchStartpage,
 };
 
 async function runSearch(opts) {
   const order = [PRIMARY_ENGINE, ...FALLBACK_ENGINES].filter((v, i, a) => a.indexOf(v) === i);
   let lastErr = null;
+  let emptyEngines = [];
   for (const engine of order) {
     const fn = SEARCH_ENGINES[engine];
     if (!fn) continue;
     try {
       const results = await rateLimitedSearch(() => fn(opts));
-      if (results && results.length) return { engine, results };
-      // Empty result is suspicious — try fallback
+      if (results && results.length) {
+        if (emptyEngines.length) console.warn(`[web-search] engine "${engine}" a retourné ${results.length} résultats après ${emptyEngines.join(',')} vides`);
+        return { engine, results };
+      }
+      emptyEngines.push(engine);
+      console.warn(`[web-search] engine "${engine}" → 0 résultat, tentative fallback`);
     } catch (e) {
       lastErr = e;
+      console.warn(`[web-search] engine "${engine}" ERREUR: ${e?.message?.slice(0, 200)}`);
     }
   }
-  if (lastErr) throw lastErr;
+  if (lastErr && !emptyEngines.length) throw lastErr;
   return { engine: order[0], results: [] };
 }
 

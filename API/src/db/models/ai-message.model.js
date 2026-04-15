@@ -146,14 +146,24 @@ const ImageInlineSchema = new Schema({
   alt: { type: String },
 }, { _id: false });
 
+// ── Canvas HTML interactif (tool render_interactive_canvas) ──
+const CanvasHtmlSchema = new Schema({
+  html: { type: String, required: true },
+  title: { type: String },
+  description: { type: String },
+  height: { type: Number, default: 420 },
+  type: { type: String, enum: ['2d', '3d', 'animation', 'demo'], default: 'demo' },
+}, { _id: false });
+
 const MessageMetadataSchema = new Schema({
-  kind: { type: String, enum: ['permission_request', 'cache_sync_request', 'comment', 'system_note', 'system_hint', 'structured', 'plan_proposal', 'diagram', 'image_inline', 'agent_report'] },
+  kind: { type: String, enum: ['permission_request', 'cache_sync_request', 'comment', 'system_note', 'system_hint', 'structured', 'plan_proposal', 'diagram', 'image_inline', 'agent_report', 'canvas_html'] },
   permissionRequest: { type: PermissionRequestSchema, default: undefined },
   cacheSyncRequest: { type: CacheSyncRequestSchema, default: undefined },
   structured: { type: StructuredPayloadSchema, default: undefined },
   planProposal: { type: PlanProposalSchema, default: undefined },
   diagram: { type: DiagramSchema, default: undefined },
   imageInline: { type: ImageInlineSchema, default: undefined },
+  canvasHtml: { type: CanvasHtmlSchema, default: undefined },
   agentReport: { type: AgentReportSchema, default: undefined },
   // Comment author (for shared threads)
   commentBy: { type: Types.ObjectId, ref: 'User' },

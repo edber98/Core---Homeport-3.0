@@ -379,3 +379,103 @@ Pour chaque KO ou ⚠️ :
 4. Ce qui était attendu
 
 Je debug point par point.
+
+---
+
+## ✨ NOUVEAU — Canvas interactif HTML (render_interactive_canvas)
+
+Tous ces tests demandent un canvas HTML inline sandbox, mode streaming pendant la génération, puis rendu final dans une bubble 100% width ~420 à 520 px de haut. Bouton reload (relance l'animation), fullscreen, copy HTML, ouvrir dans nouvel onglet.
+
+### CV-01 Cube 3D rotatif
+```
+Affiche-moi un cube bleu qui tourne en 3D avec Three.js.
+```
+Attendu : cube WebGL rotatif, badge « 3d », lumières ambiante + directional.
+
+### CV-02 Logo sur cube
+```
+Affiche un cube 3D rotatif avec sur chaque face un logo texte « HP » en rose #e61982 sur fond blanc.
+```
+Attendu : texture procédurale (canvas 2D converti en THREE.CanvasTexture) appliquée aux 6 faces.
+
+### CV-03 Sphère terrestre
+```
+Planète 3D qui tourne avec une texture Earth (utilise une URL publique), ambiance spatiale (fond noir, lumière directionnelle).
+```
+
+### CV-04 Système solaire mini
+```
+Système solaire simplifié : Soleil au centre + 4 planètes (Mercure, Vénus, Terre, Mars) qui tournent autour à vitesses différentes, taille proportionnelle simplifiée.
+```
+
+### CV-05 Camembert Chart.js
+```
+Camembert Chart.js avec 4 segments : 40% Desktop (bleu), 25% Mobile (vert), 20% Tablet (orange), 15% Autre (rouge). Avec tooltip au hover.
+```
+
+### CV-06 Multi-charts grid
+```
+Dashboard dans un seul canvas : line chart CA mensuel 2026, bar chart répartition produit, donut mix clients, gauge taux de conversion. 2x2 layout.
+```
+Attendu : 4 graphiques Chart.js dans une grid CSS, tous interactifs.
+
+### CV-07 Animation physique — pendule simple
+```
+Animation 2D canvas : pendule simple avec les équations du mouvement (θ(t) = θ₀·cos(√(g/L)·t)). Affiche angle, période, et courbe d'oscillation en dessous.
+```
+
+### CV-08 Animation physique — interférence d'ondes
+```
+Illustre le principe d'interférence : 2 sources d'ondes circulaires dans un canvas 2D, avec les franges d'interférence visibles. Sliders pour écarter les sources et changer la fréquence.
+```
+
+### CV-09 Animation physique — chute libre avec friction
+```
+100 particules qui tombent en chute libre avec frottement de l'air + rebonds sur le fond. Couleurs aléatoires, légère traînée.
+```
+
+### CV-10 Visualisation algo — tri à bulles
+```
+Animation d'un tri à bulles sur 30 barres de hauteurs aléatoires. Vert quand trié, rouge pendant les swaps.
+```
+
+### CV-11 Animation vectorielle SVG
+```
+SVG animé : horloge analogique fonctionnelle avec aiguilles heures/min/sec qui bougent en temps réel.
+```
+
+### CV-12 Mode streaming live
+Lance un prompt complexe (CV-04 ou CV-06). Observe la bubble :
+- badge « en construction… » pendant le streaming
+- l'iframe se repaint progressivement à chaque delta
+- à la fin, dernier render propre, badge disparu
+
+### CV-13 Fullscreen + copy
+Sur n'importe quel canvas :
+- Clic fullscreen → overlay noir plein écran
+- Clic copy → HTML copié dans le presse-papier (colle dans un éditeur pour vérifier)
+- Clic nouveau onglet → page standalone fonctionnelle
+
+### CV-14 Fallback erreur
+```
+Affiche un canvas avec du code HTML volontairement cassé (<scrpt>...).
+```
+Attendu : iframe tente de render, si crash → affichage dégradé sans casser la page parent (sandbox).
+
+---
+
+## 🔎 Web search après bascule Brave
+
+### WS-01 Recherche simple
+```
+Cherche-moi des news IA publiées cette semaine.
+```
+Attendu backend : `[web-tool:brave] query=... → N résultats`. Pas de 0. Temps < 10s.
+
+### WS-02 Recherche avec guillemets
+```
+Cherche "OpenAI Responses API" documentation.
+```
+
+### WS-03 Fallback automatique
+Si Brave renvoie 0 → log `[web-search] engine "brave" → 0 résultat, tentative fallback` → essai startpage puis duckduckgo.
