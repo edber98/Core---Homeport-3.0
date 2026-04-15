@@ -23,7 +23,7 @@ Règles strictes :
 - Si une section n'a pas de matière, écris "_(rien à signaler)_" dessous — ne supprime pas le titre.
 - Reste factuel et concis. Pas de fioritures, pas de "Voici la doc…".
 - Si un doc.overview existait déjà, tu le REMPLACES intégralement (pas de diff, pas de merge manuel) en intégrant les nouvelles informations pertinentes.
-- Longueur cible : 400–1500 mots. Plafond dur : 2000 mots.
+- Longueur cible : 200–600 mots TOTAL. Plafond dur : 800 mots. Sois bref — c'est une vue d'ensemble, pas un rapport détaillé.
 
 PROCÉDURE IMMUABLE :
 1. Lis le contexte fourni (messages, fichiers touchés, entries mémoire).
@@ -41,8 +41,14 @@ PROCÉDURE IMMUABLE :
     'generate_diagram', 'generate_document', 'research_deep',
     'suggest_memory_entries',
   ],
-  forcedAutonomy: 'prudent',
-  // Timeout dur global : le doc peut prendre 1-2 min à générer selon la taille
-  // du contexte (modèle reasoning + 1500 mots de markdown). 3 min de marge.
-  maxRuntimeMs: 180_000,
+  // 'autonomous' obligatoire ici : `set_project_knowledge` est classé `write` (et
+  // c'est correct au global pour éviter qu'un agent l'appelle sans confirmation
+  // user). Mais pour ce subagent éphémère sans humain qui répond, prudent →
+  // pending → escalade au parent → timeout 5min → deny → tool jamais exécuté.
+  // Le risque est nul ici car toolsAllowed = ['set_project_knowledge'] uniquement.
+  forcedAutonomy: 'autonomous',
+  // Timeout dur global : avec gpt-5.2 reasoning + génération de ~1000 mots de
+  // markdown + tool exec, on a vu jusqu'à 5 min. On donne 8 min de marge pour
+  // éviter le kill prématuré sans pour autant laisser un job zombie.
+  maxRuntimeMs: 480_000,
 };
