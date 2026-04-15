@@ -20,6 +20,7 @@ import { AiPlanProposalCardComponent } from './plan/ai-plan-proposal-card.compon
 import { AiDiagramRendererComponent } from './diagram/ai-diagram-renderer.component';
 import { AiStructuredMessageComponent } from './structured/ai-structured-message.component';
 import { AiInlineImageComponent } from './images/ai-inline-image.component';
+import { AiInlineFileComponent } from './files/ai-inline-file.component';
 import { AiCanvasHtmlComponent } from './canvas-html/ai-canvas-html.component';
 import { AiAgentReportCardComponent } from './agent-reports/ai-agent-report-card.component';
 import { AiWidgetActionsComponent, WidgetAction, WidgetActionId } from './widgets/ai-widget-actions.component';
@@ -129,7 +130,7 @@ interface ProcessedSegment {
 @Component({
   selector: 'ai-message',
   standalone: true,
-  imports: [CommonModule, FormsModule, NzButtonModule, NzIconModule, NzTagModule, NzToolTipModule, NzBadgeModule, NzInputModule, NodeExecResultDialogComponent, AiPermissionRequestCardComponent, AiCacheSyncRequestCardComponent, AiStructuredMessageComponent, AiPlanProposalCardComponent, AiDiagramRendererComponent, AiInlineImageComponent, AiCanvasHtmlComponent, AiWidgetActionsComponent, AiAgentReportCardComponent],
+  imports: [CommonModule, FormsModule, NzButtonModule, NzIconModule, NzTagModule, NzToolTipModule, NzBadgeModule, NzInputModule, NodeExecResultDialogComponent, AiPermissionRequestCardComponent, AiCacheSyncRequestCardComponent, AiStructuredMessageComponent, AiPlanProposalCardComponent, AiDiagramRendererComponent, AiInlineImageComponent, AiInlineFileComponent, AiCanvasHtmlComponent, AiWidgetActionsComponent, AiAgentReportCardComponent],
   template: `
     <div class="ai-msg" [class.user]="msg.role === 'user'" [class.assistant]="msg.role === 'assistant'" [class.compact]="compact">
       <div class="avatar" *ngIf="!compact">
@@ -197,6 +198,9 @@ interface ProcessedSegment {
           </div>
           <div *ngSwitchCase="'image_inline'" class="widget-bubble image-inline-wrap">
             <ai-inline-image [data]="msg.metadata!.imageInline!"></ai-inline-image>
+          </div>
+          <div *ngSwitchCase="'file_inline'" class="widget-bubble widget-wrap">
+            <ai-inline-file [data]="msg.metadata!.fileInline!"></ai-inline-file>
           </div>
           <div *ngSwitchCase="'canvas_html'" class="canvas-html-bubble widget-bubble widget-wrap">
             <ai-canvas-html [data]="msg.metadata!['canvasHtml']!"></ai-canvas-html>
@@ -608,7 +612,7 @@ export class AiMessageComponent {
   showActions(): boolean {
     // Pas d'actions sur les widgets (ils ont leur propre barre) ni sur les reports
     const kind = (this.msg.metadata as any)?.kind;
-    if (kind && ['structured', 'plan_proposal', 'diagram', 'image_inline', 'agent_report', 'comment'].includes(kind)) {
+    if (kind && ['structured', 'plan_proposal', 'diagram', 'image_inline', 'file_inline', 'canvas_html', 'agent_report', 'comment'].includes(kind)) {
       return false;
     }
     return !!this.msg.content;

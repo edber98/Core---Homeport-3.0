@@ -6,6 +6,62 @@ license: Proprietary. LICENSE.txt has complete terms
 
 # Requirements for Outputs
 
+## PRO LAYOUT RULES (read FIRST, always apply)
+
+Feuilles professionnelles (factures, devis, reportings, dashboards, modèles financiers) — règles obligatoires sauf charte cliente contraire explicite.
+
+### Typography + case
+- **Police** : Arial 11 pt par défaut, 10 pt pour les tables denses. Jamais Calibri par défaut.
+- **Titre feuille** : 18-20 pt bold en accent color, ligne 1 figée, hauteur 36 pt.
+- **Headers colonnes** : Title Case avec accents corrects ("Désignation", "Qté", "PU HT", "TVA", "Total TTC"). JAMAIS tout en minuscules.
+- **Labels de champ** : Title Case avec deux-points ("Numéro :", "Échéance :", "Société :").
+
+### Charte couleur Homeport (défaut)
+```
+Accent primary  : #e61982  (titres, header row, bordures totals)
+Accent soft     : #ff70a6  (sous-headers, sous-totaux)
+Text primary    : #262626
+Text secondary  : #595959
+Border light    : #e5e5e5
+Zebra row       : #fafafa
+Callout bg      : #fff5fa
+```
+Si un logo client est fourni, remplace l'accent primary par la couleur dominante du logo.
+
+### Layout table pro
+- Header row : remplissage accent color, texte BLANC bold 11 pt, hauteur 28 pt, border bottom 1.5 pt accent color (ton plus foncé).
+- Rows : zébrure blanc / `#fafafa` via conditional formatting (`=MOD(ROW(),2)=0`). Hauteur 22 pt.
+- Bordures : SEULEMENT bottom `#e5e5e5` 0.5 pt entre les lignes. Pas de full grid.
+- Alignements : texte à gauche pour Désignation/Référence, CENTRE pour Qté/%, DROITE pour montants (avec tabular-nums).
+- Freeze panes : ligne 1 (header) toujours figée. Si tableau large, figer aussi la 1re colonne.
+
+### Number formatting
+- **Euros** : `#,##0.00 €;-#,##0.00 €;"—"` (tiret cadratin pour zéro, pas "0.00 €")
+- **Pourcentages** : `0.0%;-0.0%;"—"`
+- **Dates** : `jj/mm/aaaa` (français) ou `yyyy-mm-dd` (ISO). Jamais le format US `mm/dd/yyyy` en FR.
+- **Entiers grandes valeurs** : `#,##0` avec séparateur milliers espace insécable.
+- **Totaux** : toujours en bold, bordure top 1 pt accent color, fond `#fff5fa` léger.
+
+### Invoice layout pro (si facture xlsx)
+Structure identique docx : logo header gauche, bloc FACTURE/N°/dates droite, zones Émetteur/Client en 2 colonnes, table lignes à bordures bottom seulement, totaux droite avec Total TTC en accent color bold, mentions légales en footer 8 pt gris.
+
+### Toujours à faire après création
+1. Recalculer les formules : `python scripts/recalc.py out.xlsx`
+2. Valider qu'aucune erreur `#REF!` `#DIV/0!` `#VALUE!` `#N/A` `#NAME?` n'apparaît.
+3. Upload via `files.upload` ou `project_write` → récupérer le `fileId`.
+4. Appeler `display_file({ fileId, caption: "<titre>" })` — viewer xlsx natif Homeport (onglets par feuille, rendu tables stylées charte).
+5. Ne convertis PAS manuellement en PDF+PNG — c'est inutile.
+
+### Anti-patterns à bannir
+- ❌ Tout en minuscules ("facture", "désignation") → amateur.
+- ❌ Cellules vides bleu clair `#E3F0FB` sans bordure → ressemble à un form web.
+- ❌ Bordures full grid grises partout → lourd.
+- ❌ Totaux alignés à gauche ou sans bold → pas de hiérarchie visible.
+- ❌ Format monétaire `0.00` sans symbole € et sans séparateur → illisible.
+- ❌ Fonction `SUM(A2:A999)` trop large avec lignes vides → remplacer par range explicite.
+
+---
+
 ## All Excel files
 
 ### Professional Font

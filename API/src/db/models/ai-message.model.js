@@ -160,8 +160,18 @@ const CanvasHtmlSchema = new Schema({
   type: { type: String, enum: ['2d', '3d', 'animation', 'demo'], default: 'demo' },
 }, { _id: false });
 
+// ── Viewer fichier inline (tool display_file) — docx/xlsx/pptx/pdf ──
+const FileInlineSchema = new Schema({
+  fileId: { type: String, required: true },
+  name: { type: String },
+  mimeType: { type: String },
+  size: { type: Number },
+  caption: { type: String },
+  kind: { type: String, enum: ['docx', 'xlsx', 'pptx', 'pdf', 'other'] },
+}, { _id: false });
+
 const MessageMetadataSchema = new Schema({
-  kind: { type: String, enum: ['permission_request', 'cache_sync_request', 'comment', 'system_note', 'system_hint', 'structured', 'plan_proposal', 'diagram', 'image_inline', 'agent_report', 'canvas_html'] },
+  kind: { type: String, enum: ['permission_request', 'cache_sync_request', 'comment', 'system_note', 'system_hint', 'structured', 'plan_proposal', 'diagram', 'image_inline', 'agent_report', 'canvas_html', 'file_inline'] },
   permissionRequest: { type: PermissionRequestSchema, default: undefined },
   cacheSyncRequest: { type: CacheSyncRequestSchema, default: undefined },
   structured: { type: StructuredPayloadSchema, default: undefined },
@@ -169,6 +179,7 @@ const MessageMetadataSchema = new Schema({
   diagram: { type: DiagramSchema, default: undefined },
   imageInline: { type: ImageInlineSchema, default: undefined },
   canvasHtml: { type: CanvasHtmlSchema, default: undefined },
+  fileInline: { type: FileInlineSchema, default: undefined },
   agentReport: { type: AgentReportSchema, default: undefined },
   // Comment author (for shared threads)
   commentBy: { type: Types.ObjectId, ref: 'User' },

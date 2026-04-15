@@ -69,6 +69,7 @@ const TOOL_RISK = {
   research_deep:   'elevated',
   install_package: 'elevated',
   display_image:   'safe',
+  display_file:    'safe',
 };
 
 /**

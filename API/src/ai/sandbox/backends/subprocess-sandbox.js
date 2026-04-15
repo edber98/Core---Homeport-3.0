@@ -47,12 +47,19 @@ async function run(opts) {
 
   const scriptName = language === 'python' ? 'script.py' : 'script.js';
   const scriptHostPath = path.join(scratch, scriptName);
-  // Remplace les chemins conventionnels bwrap (/workspace, /workspace/in, /workspace/out)
-  // par les vrais chemins scratch car /workspace n'existe pas hors bwrap.
+
+  // Skills bundle côté hôte — permet à l'agent d'appeler les scripts officiels
+  // (recalc.py, unpack.py, soffice.py) sans dépendre d'un chemin Docker `/app`.
+  const skillsBundleHost = process.env.SKILLS_BUNDLE_DIR
+    || path.resolve(__dirname, '..', '..', '..', '..', 'skills-bundle');
+
+  // Remplace les chemins conventionnels (/workspace, /app/skills-bundle) par
+  // leurs équivalents hôte car ces chemins n'existent pas hors container.
   const rewrittenCode = String(opts.code || '')
     .replace(/\/workspace\/out\b/g, scratchOut)
     .replace(/\/workspace\/in\b/g, scratchIn)
-    .replace(/\/workspace\b/g, scratch);
+    .replace(/\/workspace\b/g, scratch)
+    .replace(/\/app\/skills-bundle\b/g, skillsBundleHost);
   await fsp.writeFile(scriptHostPath, rewrittenCode, 'utf8');
 
   // Permet de forcer un interpréteur précis via env (utile sur macOS dev avec miniforge/conda)
@@ -119,6 +126,7 @@ async function run(opts) {
     WORKSPACE: scratch,
     WORKSPACE_OUT: scratchOut,
     WORKSPACE_IN: scratchIn,
+    SKILLS_BUNDLE_DIR: skillsBundleHost,
     // Propage les env critiques pour résolution des libs
     ...(parentEnv.PYTHONPATH ? { PYTHONPATH: parentEnv.PYTHONPATH } : {}),
     ...(parentEnv.VIRTUAL_ENV ? { VIRTUAL_ENV: parentEnv.VIRTUAL_ENV } : {}),

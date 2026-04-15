@@ -6,6 +6,86 @@ license: Proprietary. LICENSE.txt has complete terms
 
 # DOCX creation, editing, and analysis
 
+## PRO LAYOUT RULES (read FIRST, always apply)
+
+Documents professionnels (factures, devis, rapports, contrats, lettres, mémos, propositions commerciales) — ces règles sont obligatoires sauf charte cliente contraire fournie explicitement.
+
+### Typography
+- **Base font** : Arial 11 pt (22 half-points) corps de texte. Ne PAS utiliser 12 pt par défaut.
+- **Hiérarchie** : H1 = 20 pt bold, H2 = 14 pt bold, H3 = 11 pt bold italic. Interligne 1.15-1.25.
+- **Couleur titres** : toujours un accent de marque (ex: `#e61982` rose magenta Homeport, OU la couleur du logo du client s'il est fourni). JAMAIS noir pour un titre "Facture" / "Devis" / "Rapport" — ça fait fade.
+- **Espacement** : 6-12 pt après les paragraphes de corps, 12-18 pt avant les H1/H2. Pas de double saut de ligne manuel.
+
+### Capitalisation (critique)
+- **TITRES** : Title Case en français → "Facture N° 2025-001", "Devis Commercial", "Rapport d'Activité". **JAMAIS tout en minuscules** ("facture", "société") — c'est le bug classique qui fait amateur.
+- **Labels de champ** : Title Case avec deux-points ("Numéro :", "Date :", "Échéance :", "Société :", "Facturer à :").
+- **Accents obligatoires** : "Échéance", "Référence", "Société", "Général". Jamais "Echeance" ou "reference".
+- **Abréviations** : "N°" (pas "n°" ni "No"), "TVA" (pas "tva"), "HT" / "TTC" majuscules, "€" après le nombre avec espace insécable.
+
+### Invoice / Facture professional layout
+Structure obligatoire d'une facture A4 (portrait, marges 2.5 cm) :
+
+1. **Header** (bande 80-100 pt de haut) :
+   - Logo à GAUCHE (hauteur 40-50 px, proportions conservées).
+   - Bloc "FACTURE" + N° + dates à DROITE (alignement droite, titre 24 pt en accent color bold, méta 10 pt gris `#595959`).
+2. **Séparateur** : ligne fine 1 pt couleur accent en pleine largeur.
+3. **Deux colonnes égales 50/50** (pas de cadre bleu, juste du texte bien aligné) :
+   - Colonne gauche : "Émetteur" (H3 accent color) → Nom société, adresse multi-lignes, SIRET, TVA intracom, email, IBAN/BIC.
+   - Colonne droite : "Client" (H3 accent color) → Nom, adresse, contact, SIREN.
+4. **Tableau lignes** pleine largeur, 5 lignes par défaut (pas 8, trop aéré), colonnes : Référence 15% / Désignation 35% / Qté 8% / PU HT (€) 12% / Remise % 8% / TVA % 8% / Total HT (€) 14%.
+   - Header row : fond accent color, texte BLANC bold 10 pt, hauteur 28 pt, padding vertical 8 pt.
+   - Rows : alternance blanc / `#fafafa` (zébrure discrète), hauteur 24 pt, padding 6 pt.
+   - Bordures : seulement bottom `#e5e5e5` 0.5 pt, PAS de bordures full grid (plus moderne).
+   - Alignements : texte à gauche pour Référence/Désignation, CENTRE pour Qté/Remise/TVA, DROITE pour PU/Total. Nombres en tabular-nums.
+5. **Bloc totaux** aligné à DROITE sous le tableau, largeur 40% :
+   - "Total HT : ____ €" (gris `#595959`, 11 pt)
+   - "Remise globale : ____ €" (si applicable)
+   - "TVA 20% : ____ €"
+   - "**Total TTC : ____ €**" (accent color, 14 pt bold, bordure top 1.5 pt accent color)
+6. **Mentions légales** (footer, 8 pt gris `#8c8c8c`) :
+   - Conditions de paiement (ex: "Paiement à réception, sous 30 jours").
+   - "Pénalités de retard : taux légal en vigueur. Escompte : néant."
+   - "Dispensé d'immatriculation au RCS et au répertoire des métiers" si auto-entrepreneur.
+   - "TVA non applicable, art. 293 B du CGI" si franchise en base.
+7. **Pagination** footer : "Page X sur Y" centré, 8 pt gris.
+
+### Report / Rapport professional layout
+- **Page de couverture** : titre centré 32 pt accent color bold + sous-titre 14 pt gris + date en bas + logo client.
+- **Table des matières** sur page 2 via `TableOfContents` + `headingStyleRange: "1-3"`.
+- **Numérotation sections** : 1., 1.1, 1.1.1 automatiques via numbering config.
+- **Headers récurrents** : titre rapport à gauche, logo à droite, ligne séparatrice 0.5 pt.
+- **Footers récurrents** : nom client + "Confidentiel" à gauche, "Page X / Y" à droite.
+- **Callouts** : paragraphes avec `shading: { fill: 'fff5fa', type: ShadingType.CLEAR }` + bordure left 3 pt accent color pour mettre en avant une citation / chiffre clé / recommandation.
+
+### Color palette Homeport (default)
+```
+Accent primary  : #e61982  (rose magenta — titres, header table, bloc total, bordures accent)
+Accent soft     : #ff70a6  (secondaire pour sous-titres ou callouts secondaires)
+Text primary    : #262626
+Text secondary  : #595959
+Text muted      : #8c8c8c
+Border light    : #e5e5e5
+Background alt  : #fafafa  (zébrure tableau)
+Callout bg      : #fff5fa  (fond rose très clair pour bloc mis en avant)
+```
+Si le logo client est fourni, **remplace** l'accent primary par la couleur dominante du logo.
+
+### Toujours à faire après création
+1. Upload via `files.upload` ou `project_write` → récupérer le `fileId`.
+2. Appeler `display_file({ fileId, caption: "<titre>" })` pour afficher le docx inline dans le chat (rendu HTML natif via mammoth, stylé Homeport).
+3. Ne convertis PAS manuellement en PDF+PNG — Homeport a un viewer docx intégré, c'est inutile.
+
+### Anti-patterns à bannir (bugs classiques observés)
+- ❌ Tout en minuscules ("facture", "numéro", "société") → amateur.
+- ❌ Champs dans des cellules bleu clair vides (`#E3F0FB`) sans bordure → ressemble à un formulaire web, pas pro.
+- ❌ Tableau avec toutes les bordures grises partout → lourd, préférer juste bottom border.
+- ❌ Totaux centrés ou à gauche → toujours à DROITE, bien alignés verticalement.
+- ❌ Logo énorme qui prend 1/3 de la page → max 50 px de hauteur.
+- ❌ Pas de mentions légales → facture juridiquement invalide en France.
+- ❌ Police par défaut Calibri 11 pt sans customisation → générique Word.
+
+---
+
 ## Overview
 
 A .docx file is a ZIP archive containing XML files.

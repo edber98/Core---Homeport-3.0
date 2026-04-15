@@ -254,7 +254,7 @@ export interface AiMessage {
   cancelled?: boolean;
   createdAt?: string;
   metadata?: {
-    kind?: 'permission_request' | 'cache_sync_request' | 'comment' | 'system_hint' | 'structured' | 'plan_proposal' | 'diagram' | 'image_inline' | 'agent_report' | 'canvas_html';
+    kind?: 'permission_request' | 'cache_sync_request' | 'comment' | 'system_hint' | 'structured' | 'plan_proposal' | 'diagram' | 'image_inline' | 'agent_report' | 'canvas_html' | 'file_inline';
     canvasHtml?: { html: string; title?: string | null; description?: string | null; height?: number; type?: '2d' | '3d' | 'animation' | 'demo' };
     permissionRequest?: AiPermissionRequest;
     cacheSyncRequest?: AiCacheSyncRequest;
@@ -262,6 +262,7 @@ export interface AiMessage {
     planProposal?: AiPlanProposal;
     diagram?: AiDiagramPayload;
     imageInline?: AiInlineImagePayload;
+    fileInline?: AiInlineFilePayload;
     agentReport?: AgentReport;
     jobId?: string;
     [k: string]: any;
@@ -294,6 +295,16 @@ export interface AiInlineImagePayload {
   url?: string;
   caption?: string;
   alt?: string;
+}
+
+/** Inline file viewer payload (tool display_file) — docx/xlsx/pptx/pdf */
+export interface AiInlineFilePayload {
+  fileId: string;
+  name?: string;
+  mimeType?: string;
+  size?: number;
+  caption?: string;
+  kind?: 'docx' | 'xlsx' | 'pptx' | 'pdf' | 'other';
 }
 
 /** Plan proposal structures */
@@ -470,6 +481,13 @@ export class AiService {
   /** Build a download/preview URL for a file */
   fileUrl(fileId: string): string {
     return this.filesBackend.downloadUrl(fileId);
+  }
+
+  /** Build the inline preview URL (for docx/xlsx/pptx/pdf viewers). */
+  filePreviewUrl(fileId: string): string {
+    const wsId = this.wsId();
+    const q = wsId ? `?workspaceId=${encodeURIComponent(wsId)}` : '';
+    return `/api/files/${encodeURIComponent(fileId)}/preview${q}`;
   }
 
   // ── Drawer ──

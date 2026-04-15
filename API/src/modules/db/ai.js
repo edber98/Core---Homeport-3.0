@@ -2057,21 +2057,20 @@ ${toolLines.join('\n')}
     if (normalizedAnswers) patch['metadata.planProposal.missingInfoAnswers'] = normalizedAnswers;
     await AiMessage.updateOne({ _id: msg._id }, { $set: patch });
 
-    // Find the most recent ACTIVELY running job on this thread to resume it.
-    // Important : on filtre sur heartbeat récent (< 90s) pour exclure les jobs
-    // zombies (memory_extractor, doc_writer terminés mais pas marqués completed
-    // par bug, etc.) — sinon on emit plan.resolved dans le vide et le pipeline
-    // d'auto-resume parent ne se déclenche jamais.
+    // Find an actively running AGENT_RUN (pas un subagent) qui aurait fait le
+    // propose_plan et attendrait. On exclut les subagents (memory_extractor,
+    // project_doc_writer, research…) qui n'écoutent jamais plan.resolved.
     const aliveThreshold = new Date(Date.now() - 90_000);
     const runningJob = await AiJob.findOne({
       threadId: thread._id,
+      type: 'agent_run',
       status: { $in: ['running', 'queued', 'paused'] },
       $or: [
         { status: { $in: ['queued', 'paused'] } },
         { status: 'running', heartbeatAt: { $gte: aliveThreshold } },
       ],
     }).sort({ createdAt: -1 }).lean();
-    console.log(`[plan-response] thread=${thread._id} decision=${decision} runningJob=${runningJob?.id || 'none'}`);
+    console.log(`[plan-response] thread=${thread._id} decision=${decision} runningAgentRun=${runningJob?.id || 'none'}`);
     if (runningJob) {
       emitJobEvent(runningJob.id, {
         type: 'plan.resolved',

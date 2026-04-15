@@ -6,6 +6,49 @@ license: Proprietary. LICENSE.txt has complete terms
 
 # PPTX Skill
 
+## PRO LAYOUT RULES (read FIRST, always apply)
+
+Présentations pro (pitch deck, keynote, proposition commerciale, rapport interne). Règles obligatoires sauf charte cliente contraire fournie explicitement.
+
+### Typography + case
+- **Titre de slide** : 32-40 pt bold en accent color, Title Case avec accents ("Analyse de Marché", "Prochaines Étapes"). Jamais minuscules.
+- **Body** : 16-20 pt. Jamais plus de 6 lignes par slide.
+- **Police** : Inter, "Segoe UI" ou Arial. Pas Calibri par défaut.
+
+### Charte couleur Homeport (défaut)
+```
+Accent primary  : #e61982  (titres, éléments dominants, graphs 1er dataset)
+Accent soft     : #ff70a6
+Accent deep     : #722ed1  (violet complémentaire)
+Text primary    : #262626
+Text on-dark    : #ffffff
+Background light: #ffffff / #fafafa
+Background dark : #1a0a14  (rose très sombre pour slides "wow" title/conclusion)
+```
+Structure sandwich : slide 1 + conclusion en fond sombre avec titre blanc + accent rose, slides contenu en fond clair.
+
+### Layout rules
+- **Grille** : marges 50 px. Grid 12 colonnes, gutter 24 px. Pas de positionnement au hasard.
+- **1 idée par slide** : titre + visuel fort (chart, photo, big number). Pas de slides texte dense.
+- **Big numbers** : 80-120 pt bold en accent color, label 14 pt gris en dessous.
+- **Images** : pleine largeur ou 50/50 texte-image, jamais cropées n'importe comment. Border-radius 8 px, shadow subtile.
+- **Charts** : palette accent color + soft + deep. Gridlines `#e5e5e5` très fines. Labels 11 pt.
+- **Icons** : un style cohérent (line 1.5 pt ou filled), jamais mix des deux.
+
+### Toujours à faire après création
+1. Upload via `files.upload` ou `project_write` → récupérer le `fileId`.
+2. Appeler `display_file({ fileId, caption: "<titre>" })` — Homeport convertit le pptx en PDF à la volée via LibreOffice et l'affiche dans un viewer PDF inline.
+3. Ne convertis PAS manuellement en PDF+PNG — c'est fait automatiquement par le viewer.
+
+### Anti-patterns à bannir
+- ❌ Slides avec 10 bullet points 14 pt → illisible au projecteur.
+- ❌ Titres tout en minuscules ou sans accents.
+- ❌ Template Office default blue → générique.
+- ❌ Mélanger 3 polices différentes.
+- ❌ Logos étirés ou cropés.
+
+---
+
 ## Quick Reference
 
 | Task | Guide |

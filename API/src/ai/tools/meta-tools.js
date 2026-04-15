@@ -627,6 +627,25 @@ const META_TOOL_DEFINITIONS = [
     },
   },
   {
+    name: 'display_file',
+    description: `Affiche inline un fichier .docx / .xlsx / .pptx / .pdf dans le chat avec un viewer intégré (comme display_image pour les images). À utiliser SYSTÉMATIQUEMENT après avoir produit un document office via execute_code — l'utilisateur voit le rendu directement dans le chat sans télécharger ni convertir en PDF/PNG.
+
+- **.docx** → rendu HTML via mammoth (texte, titres, tableaux, images embarquées).
+- **.xlsx** → rendu HTML avec onglets par feuille (SheetJS).
+- **.pptx** → converti à la volée en PDF via LibreOffice et affiché dans un viewer PDF inline.
+- **.pdf** → viewer PDF natif du navigateur.
+
+Fournis uniquement le fileId retourné par files.upload / project_write. Pas besoin de convertir toi-même en PDF/PNG au préalable.`,
+    parameters: {
+      type: 'object',
+      properties: {
+        fileId: { type: 'string', description: 'ID du fichier docx/xlsx/pptx/pdf à afficher' },
+        caption: { type: 'string', description: 'Légende optionnelle affichée au-dessus du viewer (ex: "Facture modèle v1")' },
+      },
+      required: ['fileId'],
+    },
+  },
+  {
     name: 'render_interactive_canvas',
     description: `Affiche un canvas HTML interactif inline dans le chat (animations 2D canvas/SVG, scènes 3D Three.js, démos WebGL, visualisations live, dashboards charts).
 
@@ -1617,6 +1636,51 @@ async function executeMetaTool(name, input, ctx) {
           ok: true,
           _silent: true,
           hint: "Image affichée inline. Pas de description redondante dans ton texte.",
+        };
+      } catch (e) {
+        return { ok: false, error: e?.message };
+      }
+    }
+
+    case 'display_file': {
+      if (!ctx.threadId) return { ok: false, error: 'threadId manquant' };
+      const { fileId, caption } = input || {};
+      if (!fileId) return { ok: false, error: 'fileId requis' };
+      try {
+        const FileRecord = require('../../db/models/file.model');
+        const file = await FileRecord.findOne({ id: fileId }) || (require('mongoose').Types.ObjectId.isValid(fileId) ? await FileRecord.findById(fileId) : null);
+        if (!file) return { ok: false, error: `Fichier ${fileId} introuvable` };
+        const mime = (file.mimeType || '').toLowerCase();
+        const ext = (file.name || '').toLowerCase().split('.').pop();
+        let kind = 'other';
+        if (mime.includes('wordprocessingml') || ext === 'docx') kind = 'docx';
+        else if (mime.includes('spreadsheetml') || ext === 'xlsx') kind = 'xlsx';
+        else if (mime.includes('presentationml') || ext === 'pptx') kind = 'pptx';
+        else if (mime === 'application/pdf' || ext === 'pdf') kind = 'pdf';
+        if (kind === 'other') {
+          return { ok: false, error: `Type non supporté pour display_file (${mime || ext}). Utilise display_image pour les images.` };
+        }
+        await AiMessage.create({
+          threadId: ctx.threadId,
+          workspaceId: ctx.workspaceId,
+          role: 'assistant',
+          content: caption || file.name || '',
+          metadata: {
+            kind: 'file_inline',
+            fileInline: {
+              fileId: file.id,
+              name: file.name,
+              mimeType: file.mimeType,
+              size: file.size,
+              caption: caption || null,
+              kind,
+            },
+          },
+        });
+        return {
+          ok: true,
+          _silent: true,
+          hint: `Fichier ${kind} affiché inline dans le chat (viewer intégré). Pas besoin de décrire à nouveau son contenu.`,
         };
       } catch (e) {
         return { ok: false, error: e?.message };

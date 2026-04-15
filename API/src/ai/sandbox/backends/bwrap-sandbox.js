@@ -101,6 +101,15 @@ async function run(opts) {
   bwrapArgs.push('--proc', '/proc');
   bwrapArgs.push('--dev', '/dev');
   bwrapArgs.push('--tmpfs', '/tmp');
+
+  // Skills bundle (recalc.py, soffice helpers, unpack/pack, etc.) monté en
+  // lecture seule à /app/skills-bundle (chemin stable utilisé par les SKILL.md).
+  const skillsBundleHost = process.env.SKILLS_BUNDLE_DIR
+    || path.resolve(__dirname, '..', '..', '..', '..', 'skills-bundle');
+  if (existsSync(skillsBundleHost)) {
+    bwrapArgs.push('--ro-bind', skillsBundleHost, '/app/skills-bundle');
+  }
+
   bwrapArgs.push('--bind', scratch, '/workspace');
   if (filesIn.length > 0) {
     // Monte scratch/in en lecture seule (après le bind principal)
@@ -109,6 +118,7 @@ async function run(opts) {
   bwrapArgs.push('--chdir', '/workspace');
   bwrapArgs.push('--setenv', 'HOME', '/workspace');
   bwrapArgs.push('--setenv', 'PATH', '/usr/local/bin:/usr/bin:/bin');
+  bwrapArgs.push('--setenv', 'SKILLS_BUNDLE_DIR', '/app/skills-bundle');
 
   // 6. Wrapping prlimit (RAM 512 Mo, CPU 30s, 32 proc, 64 fd)
   // prlimit --as=536870912 --cpu=30 --nproc=32 --nofile=64 bwrap ...
