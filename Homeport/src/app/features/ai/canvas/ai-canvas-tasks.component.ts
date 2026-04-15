@@ -4,7 +4,9 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzEmptyModule } from 'ng-zorro-antd/empty';
+import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { AiService } from '../ai.service';
+import { AiToolLabelsService } from '../ai-tool-labels.service';
 
 interface TaskNode {
   id: string;
@@ -22,7 +24,7 @@ interface TaskNode {
 @Component({
   selector: 'ai-canvas-tasks',
   standalone: true,
-  imports: [CommonModule, NzButtonModule, NzIconModule, NzTagModule, NzEmptyModule],
+  imports: [CommonModule, NzButtonModule, NzIconModule, NzTagModule, NzEmptyModule, NzToolTipModule],
   template: `
     <div class="tasks-wrap" *ngIf="tree().length; else empty">
       <ng-container *ngTemplateOutlet="taskList; context: { $implicit: tree(), depth: 0 }"></ng-container>
@@ -44,10 +46,11 @@ interface TaskNode {
           </div>
           <div *ngIf="expanded.has(node.id)">
             <div class="task-tools" *ngIf="node.toolCalls?.length">
-              <div *ngFor="let tc of node.toolCalls" class="tool-line" [class.tool-err]="tc.status === 'error'">
+              <div *ngFor="let tc of node.toolCalls" class="tool-line" [class.tool-err]="tc.status === 'error'"
+                   [nz-tooltip]="tc.name">
                 <span nz-icon [nzType]="tc.status === 'error' ? 'close-circle' : tc.status === 'running' ? 'loading' : 'check-circle'"
                       nzTheme="outline" [nzSpin]="tc.status === 'running'"></span>
-                <span class="tool-name">{{ tc.name }}</span>
+                <span class="tool-name">{{ toolLabel(tc.name) }}</span>
                 <span class="tool-dur" *ngIf="tc.duration">{{ tc.duration }}ms</span>
               </div>
             </div>
@@ -91,7 +94,10 @@ export class AiCanvasTasksComponent {
   @Output() answerPermission = new EventEmitter<{ taskId: string; jobId: string }>();
 
   public ai = inject(AiService);
+  private toolLabels = inject(AiToolLabelsService);
   expanded = new Set<string>();
+
+  toolLabel(name?: string): string { return this.toolLabels.label(name); }
 
   tree = computed<TaskNode[]>(() => {
     const list = this.ai.canvasState()?.tasks || [];

@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef, OnInit, OnDestroy, HostListener } from '@angular/core';
+import { Component, ChangeDetectorRef, OnInit, OnDestroy, HostListener, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NzSelectModule } from 'ng-zorro-antd/select';
@@ -295,7 +295,7 @@ import { AiProjectKnowledgeComponent } from './knowledge/ai-project-knowledge.co
         </nz-tab>
 
         <!-- Tab: Connaissances projet (mode project uniquement) -->
-        <nz-tab *ngIf="currentThreadMode === 'project' && currentThreadId" nzTitle="Connaissances projet">
+        <nz-tab *ngIf="currentThreadMode() === 'project' && currentThreadId()" nzTitle="Connaissances projet">
           <div class="tab-content">
             <div class="settings-section">
               <div class="section-title">
@@ -306,7 +306,7 @@ import { AiProjectKnowledgeComponent } from './knowledge/ai-project-knowledge.co
                 Infos durables sur le projet (client, budget, contacts, URLs, identifiants…).
                 Auto-injectées dans le contexte de l'agent pour qu'il puisse s'y référer.
               </div>
-              <ai-project-knowledge [threadId]="currentThreadId" [initialFilter]="knowledgeInitialFilter"></ai-project-knowledge>
+              <ai-project-knowledge [threadId]="currentThreadId()!" [initialFilter]="knowledgeInitialFilter"></ai-project-knowledge>
             </div>
           </div>
         </nz-tab>
@@ -693,8 +693,13 @@ export class AiSettingsComponent implements OnInit, OnDestroy {
   projectMemoryKeys: string[] = [];
   projectElementType: 'flow' | 'form' | null = null;
   projectElementId: string | null = null;
-  currentThreadId: string | null = null;
-  currentThreadMode: string | null = null;
+  // computed : re-évalué dès que ai.currentThread() change → child ai-project-knowledge
+  // reçoit la nouvelle value via ngOnChanges → load() déclenché.
+  currentThreadId = computed<string | null>(() => {
+    const t = this.ai.currentThread();
+    return (t?._id || t?.id || null) as any;
+  });
+  currentThreadMode = computed<string | null>(() => this.ai.currentThread()?.mode || null);
   loading = true;
   isAdmin = false;
   stats: any = null;
@@ -771,7 +776,7 @@ export class AiSettingsComponent implements OnInit, OnDestroy {
     // badge du header chat est cliqué. L'onglet n'est visible qu'en mode
     // project (index 2 = Agents 0 + Mémoire 1 + Connaissances 2).
     this.ai.openKnowledgePending$.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      if (this.currentThreadMode === 'project' && this.currentThreadId) {
+      if (this.currentThreadMode() === 'project' && this.currentThreadId()) {
         this.knowledgeInitialFilter = 'pending';
         this.selectedTabIndex = 2;
         this.cdr.detectChanges();
@@ -825,8 +830,8 @@ export class AiSettingsComponent implements OnInit, OnDestroy {
 
         const thread = this.ai.currentThread();
         this.selectedAgentId = thread?.agentId || this.ai.selectedAgentId() || 'general';
-        this.currentThreadId = thread?._id || thread?.id || null;
-        this.currentThreadMode = thread?.mode || null;
+        // currentThreadId / currentThreadMode sont désormais des computed() basés
+        // sur ai.currentThread() — plus besoin de les set ici.
 
         this.projectElementType = null;
         this.projectElementId = null;

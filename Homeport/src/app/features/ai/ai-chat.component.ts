@@ -190,6 +190,7 @@ interface StreamTool {
           <ai-message
             [msg]="msg"
             [compact]="isGroupedWithPrevious(msg, ai.messages()[i-1] || null)"
+            [isLast]="i === ai.messages().length - 1"
             (retryClick)="retry()">
           </ai-message>
         </div>

@@ -113,12 +113,13 @@ interface AgentNode {
           <div class="agent-children" *ngIf="expanded().has(node.id)">
             <div class="toolcalls" *ngIf="node.toolCalls?.length">
               <div *ngFor="let tc of node.toolCalls; trackBy: trackByTc"
-                   class="tc-line" [class.tc-err]="tc.status === 'error'">
+                   class="tc-line" [class.tc-err]="tc.status === 'error'"
+                   [nz-tooltip]="tc.name">
                 <span nz-icon
                       [nzType]="tc.status === 'error' ? 'close-circle' : tc.status === 'running' ? 'loading' : 'check-circle'"
                       nzTheme="outline"
                       [nzSpin]="tc.status === 'running'"></span>
-                <span class="tc-name">{{ tc.name }}</span>
+                <span class="tc-name" [title]="tc.name">{{ toolLabel(tc.name) }}</span>
                 <span class="tc-dur" *ngIf="tc.duration != null">{{ tc.duration }}ms</span>
                 <span class="tc-args" *ngIf="tc.argsSummary"
                       [nz-tooltip]="tc.resultSummary || tc.argsSummary">
@@ -169,10 +170,10 @@ interface AgentNode {
     .agent-row.status-completed .agent-icon, .agent-row.status-done .agent-icon { opacity: 0.75; }
     .agent-children { margin-top: 3px; }
     .toolcalls { margin: 3px 0 6px 36px; border-left: 2px solid #f0f0f0; padding: 4px 0 4px 10px; }
-    .tc-line { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #666; padding: 2px 0; }
+    .tc-line { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #666; padding: 2px 0; min-width: 0; }
     .tc-line.tc-err { color: #ff4d4f; }
-    .tc-name { font-weight: 500; }
-    .tc-dur { font-size: 10px; color: #bbb; }
+    .tc-name { font-weight: 500; max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex-shrink: 0; }
+    .tc-dur { font-size: 10px; color: #bbb; flex-shrink: 0; }
     .tc-args { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #aaa; font-family: ui-monospace, monospace; font-size: 10px; }
     .agents-empty { display: flex; align-items: center; justify-content: center; height: 100%; padding: 20px; }
   `],
@@ -250,6 +251,37 @@ export class AiCanvasAgentsComponent implements OnInit, OnDestroy {
       case 'general': return '🤖';
       default: return '🤖';
     }
+  }
+
+  /** Mapping tool name → label humain (aligné avec TOOL_LABELS de ai-message). */
+  private static TOOL_LABELS: Record<string, string> = {
+    web_search: 'Recherche web', web_fetch: 'Lecture page web', web_download: 'Téléchargement',
+    research_deep: 'Recherche approfondie',
+    project_list_dir: 'Liste dossier', project_tree: 'Arborescence projet',
+    project_read_file: 'Lecture fichier', project_read_batch: 'Lecture multiple',
+    project_grep: 'Recherche texte', project_search: 'Recherche fichiers',
+    project_write_file: 'Écriture fichier', project_create_folder: 'Création dossier',
+    project_delete: 'Suppression', project_move: 'Déplacement',
+    project_refresh_tree: 'Actualisation arbo',
+    execute_code: 'Exécution code', install_package: 'Installation package',
+    generate_document: 'Génération document', edit_document: 'Édition document',
+    render_html_preview: 'Aperçu HTML', build_website: 'Site web',
+    ask_user: 'Question', spawn_subagent: 'Sous-agent',
+    render_structured: 'Affichage structuré', propose_plan: 'Plan d\'action',
+    generate_diagram: 'Diagramme', display_image: 'Image',
+    search_manual: 'Manuel', get_manual_section: 'Section manuel',
+    save_memory: 'Mémoire', get_memory: 'Mémoire',
+    save_project_memory: 'Mémoire projet', get_project_memory: 'Mémoire projet',
+    get_project_knowledge: 'Mémoire projet', set_project_knowledge: 'Mémoire projet',
+    suggest_memory_entries: 'Suggestion mémoire projet',
+    search_tools: 'Recherche outils', get_tool_details: 'Détails outil', execute_tool: 'Exécution outil',
+    open_element: 'Ouverture', open_credentials: 'Identifiants', list_credentials: 'Identifiants',
+    compact_and_transfer: 'Transfert', activate_capsule: 'Activation outils',
+  };
+
+  toolLabel(name?: string): string {
+    if (!name) return '';
+    return (this.constructor as typeof AiCanvasAgentsComponent).TOOL_LABELS[name] || name;
   }
 
   statusColor(s: string): string {

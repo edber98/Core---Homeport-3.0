@@ -1,6 +1,9 @@
 import { Component, Input, Output, EventEmitter, inject, ChangeDetectorRef, HostListener, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
+import { NzBadgeModule } from 'ng-zorro-antd/badge';
+import { Router, ActivatedRoute } from '@angular/router';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzModalService } from 'ng-zorro-antd/modal';
@@ -40,6 +43,7 @@ const TOOL_LABELS: Record<string, string> = {
   enrich_context: 'Contexte', open_element: 'Ouverture', list_credentials: 'Lister les identifiants', open_credentials: 'Identifiants',
   save_project_memory: 'Mémoire projet', get_project_memory: 'Mémoire projet',
   set_project_knowledge: 'Mise à jour mémoire projet', get_project_knowledge: 'Mémoire projet',
+  suggest_memory_entries: 'Suggestion mémoire projet',
   compact_and_transfer: 'Transfert', activate_capsule: 'Activation outils',
   propose_plan: 'Plan d\'action', generate_diagram: 'Diagramme',
   read_file: 'Lecture fichier', search_manual: 'Manuel', get_manual_section: 'Manuel',
@@ -121,7 +125,7 @@ interface ProcessedSegment {
 @Component({
   selector: 'ai-message',
   standalone: true,
-  imports: [CommonModule, NzButtonModule, NzIconModule, NzTagModule, NodeExecResultDialogComponent, AiPermissionRequestCardComponent, AiCacheSyncRequestCardComponent, AiStructuredMessageComponent, AiPlanProposalCardComponent, AiDiagramRendererComponent, AiInlineImageComponent, AiWidgetActionsComponent, AiAgentReportCardComponent],
+  imports: [CommonModule, NzButtonModule, NzIconModule, NzTagModule, NzToolTipModule, NzBadgeModule, NodeExecResultDialogComponent, AiPermissionRequestCardComponent, AiCacheSyncRequestCardComponent, AiStructuredMessageComponent, AiPlanProposalCardComponent, AiDiagramRendererComponent, AiInlineImageComponent, AiWidgetActionsComponent, AiAgentReportCardComponent],
   template: `
     <div class="ai-msg" [class.user]="msg.role === 'user'" [class.assistant]="msg.role === 'assistant'" [class.compact]="compact">
       <div class="avatar" *ngIf="!compact">
@@ -191,16 +195,7 @@ interface ProcessedSegment {
           <div *ngSwitchCase="'agent_report'" class="widget-bubble widget-wrap">
             <ai-agent-report-card [report]="msg.metadata!.agentReport!"></ai-agent-report-card>
           </div>
-          <div *ngSwitchCase="'system_hint'" class="system-hint">
-            <span nz-icon nzType="bulb" nzTheme="outline" class="system-hint-icon"></span>
-            <div class="system-hint-content">
-              <div class="system-hint-text">{{ msg.content }}</div>
-              <button *ngIf="isMemoryPendingHint(msg)" nz-button nzType="link" nzSize="small" (click)="openKnowledgePending()">
-                Voir les suggestions
-                <span nz-icon nzType="arrow-right" nzTheme="outline"></span>
-              </button>
-            </div>
-          </div>
+          <div *ngSwitchCase="'system_hint'" class="system-hint-hidden"></div>
           <div *ngSwitchCase="'comment'" class="comment-msg">
             <nz-tag nzColor="purple">
               <span nz-icon nzType="comment" nzTheme="outline"></span> Commentaire
@@ -351,6 +346,22 @@ interface ProcessedSegment {
             <span nz-icon nzType="redo" nzTheme="outline"></span> Réessayer
           </button>
         </div>
+
+        <!-- Footer actions : icônes discrètes sous le message assistant (copy, memory, etc.) -->
+        <div class="msg-actions" *ngIf="msg.role === 'assistant' && !msg.cancelled && showActions()">
+          <button nz-button nzType="text" nzSize="small" class="msg-action-btn"
+                  (click)="copyContent()"
+                  nz-tooltip [nzTooltipTitle]="copied ? 'Copié !' : 'Copier'">
+            <span nz-icon [nzType]="copied ? 'check' : 'copy'" nzTheme="outline"></span>
+          </button>
+          <button *ngIf="showMemoryHint()" nz-button nzType="text" nzSize="small" class="msg-action-btn msg-action-bulb"
+                  (click)="openKnowledgePending()"
+                  nz-tooltip [nzTooltipTitle]="memoryTooltip()">
+            <nz-badge [nzCount]="ai.pendingKnowledgeCount()" [nzOverflowCount]="9" nzSize="small">
+              <span nz-icon nzType="bulb" nzTheme="outline"></span>
+            </nz-badge>
+          </button>
+        </div>
         </ng-container>
 
         <!-- Tool result dialog -->
@@ -442,6 +453,12 @@ interface ProcessedSegment {
     .answered-question { background: #fafafa; border: 1px solid #f0f0f0; border-radius: 8px; padding: 10px 12px; margin: 4px 0; max-width: 85%; }
     .aq-text { font-size: 12px; color: #666; margin-bottom: 6px; }
     .aq-options { display: flex; flex-wrap: wrap; gap: 4px; }
+    .msg-actions { display: flex; justify-content: flex-end; gap: 2px; margin-top: 4px; opacity: 0; transition: opacity .15s; }
+    .ai-msg:hover .msg-actions, .msg-actions:has(.msg-action-bulb) { opacity: 1; }
+    .msg-action-btn { color: #999; padding: 0 6px; height: 24px; min-width: 24px; }
+    .msg-action-btn:hover { color: #1890ff; background: rgba(24,144,255,0.08); }
+    .msg-action-bulb { color: #faad14; }
+    .msg-action-bulb:hover { color: #d48806; background: rgba(250,173,20,0.1); }
     .aq-chip { display: inline-flex; align-items: center; gap: 3px; font-size: 12px; padding: 2px 10px; border-radius: 12px; background: #f0f0f0; color: #999; }
     .aq-chip.selected { background: #e6f4ff; color: #e61982; border: 1px solid #91caff; font-weight: 500; }
     .aq-check { font-size: 10px; }
@@ -505,6 +522,7 @@ interface ProcessedSegment {
 export class AiMessageComponent {
   @Input() msg!: AiMessage;
   @Input() compact = false;
+  @Input() isLast = false;
   @Output() retryClick = new EventEmitter<void>();
   public ai = inject(AiService);
   private cdr = inject(ChangeDetectorRef);
@@ -512,6 +530,41 @@ export class AiMessageComponent {
   private modal = inject(NzModalService);
   private msgSvc = inject(NzMessageService);
   private widgetExp = inject(WidgetExportService);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+
+  copied = false;
+
+  showActions(): boolean {
+    // Pas d'actions sur les widgets (ils ont leur propre barre) ni sur les reports
+    const kind = (this.msg.metadata as any)?.kind;
+    if (kind && ['structured', 'plan_proposal', 'diagram', 'image_inline', 'agent_report', 'comment'].includes(kind)) {
+      return false;
+    }
+    return !!this.msg.content;
+  }
+
+  showMemoryHint(): boolean {
+    if (!this.isLast) return false;
+    if (this.ai.currentThread()?.mode !== 'project') return false;
+    return (this.ai.pendingKnowledgeCount() || 0) > 0;
+  }
+
+  memoryTooltip(): string {
+    const n = this.ai.pendingKnowledgeCount() || 0;
+    return `${n} info${n > 1 ? 's' : ''} à valider dans la mémoire projet`;
+  }
+
+  copyContent(): void {
+    const text = this.msg.content || '';
+    try {
+      navigator.clipboard.writeText(text).then(() => {
+        this.copied = true;
+        this.cdr.markForCheck?.();
+        setTimeout(() => { this.copied = false; this.cdr.markForCheck?.(); }, 1500);
+      }).catch(() => this.msgSvc.error('Copie échouée'));
+    } catch { this.msgSvc.error('Copie échouée'); }
+  }
 
   // Widget action presets (same list used inline + in the modal)
   readonly structuredActions: WidgetAction[] = [
@@ -543,6 +596,13 @@ export class AiMessageComponent {
   }
 
   openKnowledgePending(): void {
+    // Via URL queryParams — ai-fullpage écoute et ouvre settings + tab Connaissances.
+    // Réutilise aussi openKnowledgePending$ en fallback (si ai-settings déjà monté).
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { settings: 'knowledge', filter: 'pending' },
+      queryParamsHandling: 'merge',
+    });
     this.ai.openKnowledgePending$.next();
   }
 

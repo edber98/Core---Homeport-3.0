@@ -513,6 +513,9 @@ export class AiService {
     try {
       const data = await this.api.get<any>(`/api/ai/threads/${threadId}`, { workspaceId: this.wsId() }).toPromise();
       if (data?.messages) this.messages.set(data.messages);
+      // Refresh pending count (au cas où le memory_extractor a créé des entries
+      // sans que l'event memory.pending.update soit encore arrivé).
+      if (t.mode === 'project') this.refreshPendingKnowledgeCount(threadId);
     } catch {}
   }
 
@@ -815,6 +818,15 @@ export class AiService {
                 this.messages.update(msgs => [...msgs, assistantMsg]);
               }
               this.streaming.set(false);
+              // Mode project : le memory_extractor finit après le stream principal (30-60s).
+              // On re-fetch le pending count à +30s et +75s pour être sûr de capter l'update
+              // même si l'event memory.pending.update n'est pas reçu par le passive stream.
+              const curTh = this.currentThread();
+              if (curTh?.mode === 'project') {
+                const tidNow = curTh.id || curTh._id;
+                setTimeout(() => this.refreshPendingKnowledgeCount(tidNow), 30_000);
+                setTimeout(() => this.refreshPendingKnowledgeCount(tidNow), 75_000);
+              }
               subj.complete();
             }
           });

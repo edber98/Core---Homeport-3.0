@@ -171,41 +171,15 @@ async function _watchJobAndNotify(jobId, threadId, sourceMessageId) {
       try {
         const doc = await AiProjectKnowledge.findOne({ threadId }).lean();
         const pendingCount = (doc?.entries || []).filter(e => e.status === 'pending').length;
+        // Un seul event : met à jour le badge + expose sourceMessageId pour que
+        // le frontend attache l'icône bulb discrète au message concerné.
+        // Plus de création d'AiMessage `system_hint` — UI épurée.
         emitThreadEvent(String(threadId), {
           type: 'memory.pending.update',
           threadId: String(threadId),
           pendingCount,
           sourceMessageId: sourceMessageId ? String(sourceMessageId) : null,
         });
-
-        // Si au moins 1 entry pending a été créée PAR CE JOB → message hint discret
-        // (on vérifie s'il y a eu au moins 1 pending après le job).
-        if (pendingCount > 0) {
-          // On ne crée un system_hint que si la dernière entry pending a été
-          // créée récemment (moins de 2 min) ET qu'il n'y a pas déjà un hint
-          // récent dans le thread (évite spam).
-          const recentHint = await AiMessage.findOne({
-            threadId,
-            'metadata.kind': 'system_hint',
-            createdAt: { $gt: new Date(Date.now() - 5 * 60 * 1000) },
-          }).lean();
-          if (!recentHint) {
-            await AiMessage.create({
-              threadId,
-              role: 'system',
-              content: `J'ai détecté ${pendingCount} info${pendingCount > 1 ? 's' : ''} potentielle${pendingCount > 1 ? 's' : ''} à ajouter à la mémoire projet. Va dans Paramètres → Connaissances projet pour valider.`,
-              metadata: {
-                kind: 'system_hint',
-                extra: {
-                  hintType: 'memory_pending',
-                  pendingCount,
-                  action: { type: 'open_settings', tab: 'knowledge', filter: 'pending' },
-                },
-              },
-            });
-            emitThreadEvent(String(threadId), { type: 'ai.message.created', kind: 'system_hint' });
-          }
-        }
       } catch (e) {
         console.error('[memory-extractor-hook] notify failed:', e?.message);
       }

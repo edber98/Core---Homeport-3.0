@@ -1,7 +1,7 @@
 import { Component, ChangeDetectorRef, OnInit, OnDestroy, AfterViewInit, HostListener, ElementRef, ViewChild, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzSelectModule } from 'ng-zorro-antd/select';
@@ -893,7 +893,25 @@ export class AiFullpageComponent implements OnInit, OnDestroy, AfterViewInit {
   private readonly sidebarSwipeCloseThreshold = 56;
   private readonly sidebarSwipeMaxVerticalDelta = 44;
 
-  constructor(public ai: AiService, public audioService: AiAudioService, private cdr: ChangeDetectorRef, private router: Router, private nzMsg: NzMessageService, private apiClient: ApiClientService, private acl: AccessControlService) {
+  // Sync URL /ai/:threadId au changement de thread — déclaré ici car effect()
+  // doit être appelé en injection context (constructor).
+  private _lastUrlTid: string | null = null;
+
+  constructor(public ai: AiService, public audioService: AiAudioService, private cdr: ChangeDetectorRef, private router: Router, private route: ActivatedRoute, private nzMsg: NzMessageService, private apiClient: ApiClientService, private acl: AccessControlService) {
+    // Sync URL thread — effect local
+    effect(() => {
+      const t = this.ai.currentThread();
+      const tid = t?.id || t?._id || null;
+      if (tid === this._lastUrlTid) return;
+      this._lastUrlTid = tid;
+      const currentTid = this.route.snapshot.params['threadId'] || null;
+      if (tid && tid !== currentTid) {
+        this.router.navigate(['/ai', tid], { replaceUrl: !currentTid });
+      } else if (!tid && currentTid) {
+        this.router.navigate(['/ai'], { replaceUrl: true });
+      }
+    });
+
     // Charge le canvas une fois par thread (et uniquement si l'ID change)
     effect(() => {
       const cur = this.ai.currentThread();
@@ -972,15 +990,43 @@ export class AiFullpageComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnInit() {
     // Set page context
     this.ai.setPageContext({ page: 'other' });
-    // Always land on a fresh empty conversation when entering Assistant IA.
-    this.ai.currentThread.set(null);
-    this.ai.messages.set([]);
-    this.ai.pendingQuestion.set(null);
-    this.ai.streaming.set(false);
     this.updateThreadSettingsSelectMode();
     this.updateSidebarAgentSelectMode();
     this.updateAiInputPlaceholder();
     if (this.shouldAutoCloseSidebarNav()) this.sidebarCollapsed = true;
+
+    // Deep-link : lit le threadId de l'URL (/ai/:threadId) et ouvre directement
+    // ou démarre une nouvelle conversation vide si absent.
+    const initialThreadId = this.route.snapshot.params['threadId'] || null;
+    if (initialThreadId) {
+      this.ai.loadThread(initialThreadId).catch(() => {
+        // ID invalide / accès refusé → fallback nouvelle conversation
+        this.router.navigate(['/ai'], { replaceUrl: true });
+        this.ai.currentThread.set(null);
+        this.ai.messages.set([]);
+      });
+    } else {
+      this.ai.currentThread.set(null);
+      this.ai.messages.set([]);
+      this.ai.pendingQuestion.set(null);
+      this.ai.streaming.set(false);
+    }
+
+    // Subscribe aux query params pour réagir aux changements (ex: clic sur
+    // l'icône ampoule d'un message → ?settings=knowledge&filter=pending).
+    this.route.queryParamMap.subscribe(qp => {
+      const wantSettings = qp.get('settings') === 'knowledge';
+      if (wantSettings && !this.showSettings) {
+        this.showSettings = true;
+        this.cdr.detectChanges();
+      }
+      if (wantSettings) {
+        setTimeout(() => this.ai.openKnowledgePending$.next(), 100);
+      }
+    });
+
+    // Sync URL quand le thread change (signal effect-like via Subject)
+    this._syncUrlOnThreadChange();
 
     // Load threads and agents
     this.loadThreads();
@@ -1226,7 +1272,22 @@ export class AiFullpageComponent implements OnInit, OnDestroy, AfterViewInit {
 
   toggleSettingsFromSidebar() {
     this.showSettings = !this.showSettings;
+    this._syncUrlSettings();
     if (this.shouldAutoCloseSidebarNav()) this.closeSidebarPanel();
+  }
+
+  /** No-op : le sync URL se fait via un effect déclaré dans le constructor. */
+  private _syncUrlOnThreadChange() { /* moved to constructor */ }
+
+  /** Sync URL quand settings overlay ouvre/ferme. */
+  private _syncUrlSettings() {
+    const qp: any = this.showSettings ? { settings: 'knowledge' } : {};
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: qp,
+      queryParamsHandling: 'merge',
+      replaceUrl: true,
+    });
   }
 
   /**

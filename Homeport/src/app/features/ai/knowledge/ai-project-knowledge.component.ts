@@ -75,84 +75,71 @@ type FilterTab = 'all' | 'approved' | 'pending' | 'rejected';
         </div>
       </div>
 
-      <nz-table *ngIf="filtered().length; else emptyTpl"
-                #tbl [nzData]="filtered()" nzSize="small" [nzShowPagination]="false" [nzBordered]="false">
-        <thead>
-          <tr>
-            <th style="width:40px;"></th>
-            <th>Clé</th>
-            <th>Valeur</th>
-            <th style="width:90px;">Type</th>
-            <th>Description</th>
-            <th style="width:110px;">Statut</th>
-            <th style="width:140px;">Tags</th>
-            <th style="width:200px;">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let e of tbl.data" [class.pinned]="e.pinned" [class.row-pending]="getStatus(e) === 'pending'" [class.row-rejected]="getStatus(e) === 'rejected'">
-            <td>
-              <button nz-button nzType="text" nzSize="small"
-                      (click)="togglePin(e)"
-                      [nz-tooltip]="e.pinned ? 'Détacher' : 'Épingler'">
-                <span nz-icon [nzType]="'pushpin'" [nzTheme]="e.pinned ? 'fill' : 'outline'"
-                      [class.pinned-icon]="e.pinned"></span>
+      <div class="kb-grid" *ngIf="filtered().length; else emptyTpl">
+        <div class="kb-card"
+             *ngFor="let e of filtered()"
+             [class.card-pending]="getStatus(e) === 'pending'"
+             [class.card-rejected]="getStatus(e) === 'rejected'"
+             [class.card-pinned]="e.pinned">
+          <div class="card-head">
+            <nz-tag [nzColor]="typeColor(e.type)" class="card-type">{{ typeLabel(e.type) }}</nz-tag>
+            <span class="card-status" *ngIf="getStatus(e) === 'pending'">
+              <span nz-icon nzType="clock-circle" nzTheme="outline"></span> En attente
+            </span>
+            <span class="card-status card-status-approved" *ngIf="getStatus(e) === 'approved'">
+              <span nz-icon nzType="check-circle" nzTheme="fill"></span>
+            </span>
+            <span class="card-status card-status-rejected" *ngIf="getStatus(e) === 'rejected'">
+              <span nz-icon nzType="close-circle" nzTheme="fill"></span> Rejeté
+            </span>
+            <span class="card-spacer"></span>
+            <button nz-button nzType="text" nzSize="small" class="pin-btn"
+                    (click)="togglePin(e)"
+                    [nz-tooltip]="e.pinned ? 'Détacher' : 'Épingler'">
+              <span nz-icon nzType="pushpin" [nzTheme]="e.pinned ? 'fill' : 'outline'"
+                    [class.pinned-icon]="e.pinned"></span>
+            </button>
+          </div>
+          <code class="card-key">{{ e.key }}</code>
+          <div class="card-value" [innerHTML]="renderValue(e)"></div>
+          <div *ngIf="e.description" class="card-desc">{{ e.description }}</div>
+          <div *ngIf="getStatus(e) === 'pending' && e.suggestionWhy" class="card-why"
+               [nz-tooltip]="e.suggestionWhy">
+            <span nz-icon nzType="message" nzTheme="outline"></span>
+            <span>{{ e.suggestionWhy }}</span>
+          </div>
+          <div class="card-tags" *ngIf="e.tags?.length">
+            <nz-tag *ngFor="let t of e.tags" nzColor="default">{{ t }}</nz-tag>
+          </div>
+          <div class="card-actions">
+            <ng-container *ngIf="getStatus(e) === 'pending'">
+              <button nz-button nzType="primary" nzSize="small" class="kb-btn-approve" (click)="approve(e)">
+                <span nz-icon nzType="check"></span> Approuver
               </button>
-            </td>
-            <td><code class="kb-key">{{ e.key }}</code></td>
-            <td>
-              <span class="kb-value" [innerHTML]="renderValue(e)"></span>
-              <div *ngIf="getStatus(e) === 'pending' && e.suggestionWhy" class="kb-why" [nz-tooltip]="e.suggestionWhy">
-                <span nz-icon nzType="message" nzTheme="outline"></span> {{ e.suggestionWhy | slice:0:80 }}{{ (e.suggestionWhy.length || 0) > 80 ? '…' : '' }}
-              </div>
-            </td>
-            <td><nz-tag [nzColor]="typeColor(e.type)">{{ typeLabel(e.type) }}</nz-tag></td>
-            <td class="kb-desc">{{ e.description || '—' }}</td>
-            <td>
-              <nz-tag *ngIf="getStatus(e) === 'approved'" nzColor="green">
-                <span nz-icon nzType="check"></span> Approuvé
-              </nz-tag>
-              <nz-tag *ngIf="getStatus(e) === 'pending'" nzColor="gold">
-                <span nz-icon nzType="clock-circle"></span> En attente
-              </nz-tag>
-              <nz-tag *ngIf="getStatus(e) === 'rejected'" nzColor="red">
-                <span nz-icon nzType="close"></span> Rejeté
-              </nz-tag>
-            </td>
-            <td>
-              <nz-tag *ngFor="let t of e.tags" nzColor="default">{{ t }}</nz-tag>
-            </td>
-            <td class="kb-row-actions">
-              <!-- Actions pending : Approuver / Rejeter / Modifier avant approbation -->
-              <ng-container *ngIf="getStatus(e) === 'pending'">
-                <button nz-button nzType="primary" nzSize="small" class="kb-btn-approve" (click)="approve(e)"
-                        nz-tooltip nzTooltipTitle="Approuver">
-                  <span nz-icon nzType="check"></span>
-                </button>
-                <button nz-button nzType="default" nzSize="small" (click)="openEntryDialog(e, true)"
-                        nz-tooltip nzTooltipTitle="Modifier avant d'approuver">
-                  <span nz-icon nzType="edit"></span>
-                </button>
-                <button nz-button nzType="default" nzSize="small" nzDanger (click)="reject(e)"
-                        nz-tooltip nzTooltipTitle="Rejeter">
-                  <span nz-icon nzType="close"></span>
-                </button>
-              </ng-container>
-              <!-- Actions normales : modifier / supprimer -->
-              <ng-container *ngIf="getStatus(e) !== 'pending'">
-                <button nz-button nzType="text" nzSize="small" (click)="openEntryDialog(e)" nz-tooltip nzTooltipTitle="Modifier">
-                  <span nz-icon nzType="edit"></span>
-                </button>
-                <button nz-button nzType="text" nzSize="small" nzDanger
-                        nz-popconfirm nzPopconfirmTitle="Supprimer cette entrée ?"
-                        (nzOnConfirm)="removeEntry(e)" nz-tooltip nzTooltipTitle="Supprimer">
-                  <span nz-icon nzType="delete"></span>
-                </button>
-              </ng-container>
-            </td>
-          </tr>
-        </tbody>
-      </nz-table>
+              <button nz-button nzSize="small" (click)="openEntryDialog(e, true)"
+                      nz-tooltip nzTooltipTitle="Modifier avant d'approuver">
+                <span nz-icon nzType="edit"></span>
+              </button>
+              <button nz-button nzSize="small" nzDanger (click)="reject(e)"
+                      nz-tooltip nzTooltipTitle="Rejeter">
+                <span nz-icon nzType="close"></span>
+              </button>
+            </ng-container>
+            <ng-container *ngIf="getStatus(e) !== 'pending'">
+              <button nz-button nzType="text" nzSize="small" (click)="openEntryDialog(e)"
+                      nz-tooltip nzTooltipTitle="Modifier">
+                <span nz-icon nzType="edit"></span>
+              </button>
+              <button nz-button nzType="text" nzSize="small" nzDanger
+                      nz-popconfirm nzPopconfirmTitle="Supprimer cette entrée ?"
+                      (nzOnConfirm)="removeEntry(e)"
+                      nz-tooltip nzTooltipTitle="Supprimer">
+                <span nz-icon nzType="delete"></span>
+              </button>
+            </ng-container>
+          </div>
+        </div>
+      </div>
       <ng-template #emptyTpl>
         <nz-empty [nzNotFoundContent]="emptyMessage()"></nz-empty>
       </ng-template>
@@ -187,6 +174,50 @@ type FilterTab = 'all' | 'approved' | 'pending' | 'rejected';
     .pinned-icon { color: #faad14; }
     .kb-btn-approve { background: #52c41a !important; border-color: #52c41a !important; }
     .kb-btn-approve:hover { background: #73d13d !important; border-color: #73d13d !important; }
+
+    /* ── Card grid ── */
+    .kb-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+    .kb-card {
+      background: #fff; border: 1px solid #f0f0f0; border-radius: 10px; padding: 12px 14px;
+      display: flex; flex-direction: column; gap: 8px;
+      transition: border-color .15s, box-shadow .15s, transform .15s;
+      position: relative;
+    }
+    .kb-card:hover { border-color: #d9d9d9; box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
+    .kb-card.card-pending { background: #fffbe6; border-color: #ffe58f; border-left: 3px solid #faad14; }
+    .kb-card.card-rejected { background: #fafafa; opacity: 0.75; border-left: 3px solid #bfbfbf; }
+    .kb-card.card-pinned { background: #fffbe6; border-color: #ffe58f; }
+
+    .card-head { display: flex; align-items: center; gap: 6px; }
+    .card-spacer { flex: 1; }
+    .card-type { margin: 0; font-size: 11px; font-weight: 500; }
+    .card-status { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 500; color: #faad14; }
+    .card-status-approved { color: #52c41a; }
+    .card-status-rejected { color: #ff4d4f; }
+    .pin-btn { color: #bfbfbf; padding: 0 4px; height: 22px; }
+    .pin-btn:hover { color: #faad14; }
+    .pin-btn .pinned-icon { color: #faad14; }
+
+    .card-key { font-family: Menlo, Monaco, 'Courier New', monospace; font-size: 11px;
+                background: #f5f5f5; padding: 3px 8px; border-radius: 4px; color: #1677ff;
+                align-self: flex-start; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .card-value { font-size: 13px; color: #262626; font-weight: 500; word-break: break-word; line-height: 1.45; }
+    .card-value a { color: #1677ff; }
+    .card-value .list-chip { display: inline-block; background: #e6f7ff; color: #1677ff; padding: 1px 8px; border-radius: 10px; font-size: 11px; margin: 2px 4px 2px 0; }
+    .card-desc { font-size: 12px; color: #8c8c8c; line-height: 1.4; }
+    .card-why { display: flex; gap: 6px; font-size: 11px; color: #595959; font-style: italic;
+                background: rgba(250,173,20,0.08); padding: 6px 8px; border-radius: 6px;
+                border-left: 2px solid #faad14;
+                overflow: hidden; }
+    .card-why > span:last-child { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
+                                  overflow: hidden; line-height: 1.4; }
+    .card-tags { display: flex; flex-wrap: wrap; gap: 4px; }
+    .card-actions { display: flex; gap: 6px; margin-top: auto; padding-top: 4px; border-top: 1px dashed #f0f0f0; }
+    .card-actions .kb-btn-approve { flex: 1; }
+
+    @media (max-width: 640px) {
+      .kb-grid { grid-template-columns: 1fr; }
+    }
   `],
 })
 export class AiProjectKnowledgeComponent implements OnInit, OnChanges {
@@ -199,15 +230,20 @@ export class AiProjectKnowledgeComponent implements OnInit, OnChanges {
   private cdr = inject(ChangeDetectorRef);
 
   doc: AiProjectKnowledge | null = null;
-  entries: AiProjectKnowledgeEntry[] = [];
+  // Signal pour que les computed() (counts, filtered, tags) se re-évaluent
+  // dès que la liste change. Une propriété array ne déclenche pas de re-compute.
+  entriesSig = signal<AiProjectKnowledgeEntry[]>([]);
+  get entries(): AiProjectKnowledgeEntry[] { return this.entriesSig(); }
+  set entries(v: AiProjectKnowledgeEntry[]) { this.entriesSig.set(v || []); }
   searchQuery = '';
   selectedTag: string | null = null;
   filterTab = signal<FilterTab>('all');
 
   counts = computed(() => {
-    const total = this.entries.length;
+    const list = this.entriesSig();
+    const total = list.length;
     let approved = 0, pending = 0, rejected = 0;
-    for (const e of this.entries) {
+    for (const e of list) {
       const s = this.getStatus(e);
       if (s === 'approved') approved++;
       else if (s === 'pending') pending++;
@@ -221,7 +257,13 @@ export class AiProjectKnowledgeComponent implements OnInit, OnChanges {
     if (this.threadId) this.load();
   }
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['threadId'] && !changes['threadId'].firstChange) this.load();
+    // Load dès que threadId passe de null/undefined à une vraie valeur
+    // (cas où ai-settings fournit le currentThreadId après loadContext).
+    if (changes['threadId']) {
+      const prev = changes['threadId'].previousValue;
+      const cur = changes['threadId'].currentValue;
+      if (cur && cur !== prev) this.load();
+    }
     if (changes['initialFilter'] && changes['initialFilter'].currentValue) {
       this.filterTab.set(changes['initialFilter'].currentValue);
     }
