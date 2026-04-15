@@ -496,7 +496,8 @@ interface ProcessedSegment {
     .widget-bubble { max-width: min(720px, 85%); min-width: 0; display: block; margin: 4px 0; }
     @media (max-width: 640px) { .widget-bubble { max-width: 100%; } }
     .widget-bubble :host ::ng-deep > * { max-width: 100%; }
-    .diagram-bubble { background: #fff; border: 1px solid #f0f0f0; border-left: 3px solid #e61982; border-radius: 0 8px 8px 0; padding: 8px 10px; }
+    /* Diagrammes : bubble plus large (pleine largeur dispo) pour que le mermaid respire */
+    .diagram-bubble { background: #fff; border: 1px solid #f0f0f0; border-left: 3px solid #e61982; border-radius: 0 8px 8px 0; padding: 8px 10px; max-width: min(1100px, 100%); width: 100%; }
     .diagram-bubble-head { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
     .diagram-bubble-icon { color: #e61982; font-size: 16px; }
     .diagram-bubble-title { font-weight: 600; font-size: 13px; color: #262626; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding-right: 32px; }

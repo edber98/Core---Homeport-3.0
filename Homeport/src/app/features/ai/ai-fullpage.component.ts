@@ -520,8 +520,10 @@ import { NzAvatarModule } from 'ng-zorro-antd/avatar';
         </ng-container>
       </div>
 
-      <!-- V2: Canvas panel (desktop split) -->
-      <div class="fp-canvas" *ngIf="ai.canvasOpen() && !isMobileSidebar() && ai.currentThread()">
+      <!-- V2: Canvas panel (desktop split) — animation width + slide out quand fermé -->
+      <div class="fp-canvas"
+           *ngIf="!isMobileSidebar() && ai.currentThread()"
+           [class.collapsed]="!ai.canvasOpen()">
         <ai-canvas-panel [threadId]="currentThreadId()"></ai-canvas-panel>
       </div>
 
@@ -632,7 +634,30 @@ import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 
     /* ── Main ── */
     .fp-main { flex: 1; display: flex; flex-direction: column; min-width: 0; position: relative; background: #f8f8f8; border-radius: 18px 0 0 18px; }
-    .fp-canvas { width: 480px; min-width: 360px; max-width: 50vw; flex-shrink: 0; border-left: 1px solid #e5e5e5; background: #fff; display: flex; flex-direction: column; overflow: hidden; }
+    /* Panel canvas droit : animation de slide inspirée du flow-builder right-panel.
+       - Container : width 480 ↔ 0 + opacity, transition 220ms
+       - Contenu interne : width fixe 480 + translateX(100%) quand fermé → slide out
+       Pointer-events coupés quand fermé pour ne pas intercepter clics. */
+    .fp-canvas {
+      width: 480px; min-width: 480px; max-width: 50vw;
+      flex-shrink: 0;
+      border-left: 1px solid #e5e5e5;
+      background: #fff;
+      display: flex; flex-direction: column;
+      overflow: hidden;
+      transition: width 220ms ease, min-width 220ms ease, opacity 220ms ease;
+      will-change: width, opacity;
+    }
+    .fp-canvas.collapsed {
+      width: 0; min-width: 0; opacity: 0; border-left-width: 0;
+      pointer-events: none;
+    }
+    .fp-canvas > * {
+      width: 480px; min-width: 480px;
+      flex-shrink: 0;
+      transition: transform 220ms ease;
+    }
+    .fp-canvas.collapsed > * { transform: translateX(100%); }
     .fp-layout.canvas-collapsed .fp-canvas { width: 0; }
     .sidebar-new-v2 { display: flex; gap: 6px; align-items: center; }
     .sidebar-new-v2 .new-thread-btn { flex: 1; }
@@ -918,24 +943,35 @@ export class AiFullpageComponent implements OnInit, OnDestroy, AfterViewInit {
       const tid = cur?._id || cur?.id;
       if (!tid || tid === this._lastLoadedCanvasThreadId) return;
       this._lastLoadedCanvasThreadId = tid;
+      // Reset le flag "fermé par l'user" à chaque switch → la nouvelle thread
+      // peut à nouveau ouvrir automatiquement selon ses règles.
+      this._userClosedCanvas = false;
       this.ai.loadCanvas(tid);
-      // Ferme le canvas à chaque switch de thread (sauf mode projet ou si on est sur mobile
-      // — l'utilisateur contrôle manuellement sur mobile).
       if (cur?.mode !== 'project' && !this.isMobileSidebar() && this.ai.canvasOpen()) {
         this.ai.closeCanvas();
       }
     });
 
-    // Auto-open au refresh : si le DERNIER message du thread est un widget canvas
-    // (research/diagram/structured/plan/document), ouvre automatiquement le panel.
-    // Si d'autres messages user/assistant existent APRÈS, n'ouvre pas.
-    // DÉSACTIVÉ sur mobile : ne pas perturber le champ visuel.
+    // Détecte une fermeture manuelle (via bouton X du panel ou toggle header)
+    // et bloque l'auto-open jusqu'au prochain thread switch.
+    effect(() => {
+      const open = this.ai.canvasOpen();
+      if (this._lastCanvasOpenSeen === true && open === false) {
+        this._userClosedCanvas = true;
+      } else if (open === true) {
+        this._userClosedCanvas = false;
+      }
+      this._lastCanvasOpenSeen = open;
+    });
+
+    // Auto-open au refresh si le DERNIER message est un widget canvas.
     effect(() => {
       const msgs = this.ai.messages();
       const cur = this.ai.currentThread();
       if (!cur || !msgs || !msgs.length) return;
-      if (cur.mode === 'project') return; // projet déjà géré
-      if (this.isMobileSidebar()) return;  // mobile : ouverture manuelle uniquement
+      if (cur.mode === 'project') return;
+      if (this.isMobileSidebar()) return;
+      if (this._userClosedCanvas) return; // respect l'action user
       const last = msgs[msgs.length - 1];
       const kind = last?.metadata?.kind;
       const isCanvasWidget = ['structured', 'diagram', 'plan_proposal'].includes(kind as string);
@@ -946,15 +982,12 @@ export class AiFullpageComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     });
 
-    // Ouverture auto du canvas
-    // DÉSACTIVÉ sur mobile : ouverture manuelle uniquement via le bouton header.
-    // Project (desktop) → ouvre toujours à l'arrivée
-    // Chat classique (desktop) → ouvre dès qu'une activité apparaît (task, research, document).
-    // NE FERME JAMAIS automatiquement : c'est à l'utilisateur de fermer via le bouton.
+    // Ouverture auto selon mode / activité (respecte _userClosedCanvas).
     effect(() => {
       const cur = this.ai.currentThread();
       if (!cur) return;
-      if (this.isMobileSidebar()) return; // mobile : pas d'auto-open, pas d'auto-close
+      if (this.isMobileSidebar()) return;
+      if (this._userClosedCanvas) return; // l'user a fermé explicitement
       const state = this.ai.canvasState();
       const hasActivity = !!(
         state?.tasks?.length ||
@@ -1666,9 +1699,19 @@ export class AiFullpageComponent implements OnInit, OnDestroy, AfterViewInit {
     return agentId;
   }
 
+  // Flag : quand l'user ferme manuellement le canvas, on bloque l'auto-open
+  // jusqu'au prochain thread switch. Évite le "ça se réouvre tout seul".
+  private _userClosedCanvas = false;
+  private _lastCanvasOpenSeen: boolean | undefined = undefined;
+
   toggleCanvasPanel() {
-    if (this.ai.canvasOpen()) this.ai.closeCanvas();
-    else this.ai.openCanvas();
+    if (this.ai.canvasOpen()) {
+      this._userClosedCanvas = true;
+      this.ai.closeCanvas();
+    } else {
+      this._userClosedCanvas = false;
+      this.ai.openCanvas();
+    }
   }
 
   regenerateTitle() {

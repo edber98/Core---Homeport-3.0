@@ -66,11 +66,12 @@ async function ensureMermaid(): Promise<any> {
     }
     .diagram-title { font-weight: 600; font-size: 13px; color: #333; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .diagram-actions { display: flex; gap: 6px; flex-shrink: 0; }
-    .diagram-body { flex: 1; overflow: auto; padding: 12px; display: flex; justify-content: center; }
-    .diagram-host { max-width: 100%; }
-    .diagram-host ::ng-deep svg { max-width: 100%; height: auto; }
-    .compact .diagram-body { padding: 6px; max-height: 140px; overflow: hidden; }
-    .compact .diagram-host ::ng-deep svg { max-height: 120px; }
+    .diagram-body { flex: 1; overflow: auto; padding: 12px; display: flex; justify-content: center; align-items: center; }
+    .diagram-host { max-width: 100%; width: 100%; display: flex; justify-content: center; }
+    .diagram-host ::ng-deep svg { max-width: 100%; width: 100%; height: auto; }
+    /* Mode compact (inline chat) : diagramme généreux — pleine largeur, hauteur étendue */
+    .compact .diagram-body { padding: 8px; max-height: 520px; overflow: auto; }
+    .compact .diagram-host ::ng-deep svg { max-height: 500px; width: 100%; }
     .diagram-body { position: relative; }
     .diagram-adjusting-badge {
       position: absolute; bottom: 8px; right: 8px;
