@@ -376,21 +376,24 @@ interface StreamTool {
         </div>
       </div>
 
-      <!-- Pending question -->
-      <div class="question-msg" *ngIf="ai.pendingQuestion()">
-        <div class="avatar"><span nz-icon nzType="robot" nzTheme="outline"></span></div>
-        <div class="question-body">
-          <ai-question
-            [question]="ai.pendingQuestion()!"
-            (answered)="onAnswer($event)">
-          </ai-question>
-        </div>
+    </div>
+
+    <!-- Pending question — ANCRÉ AU-DESSUS DE L'INPUT (sticky bas) -->
+    <div class="pending-question-pinned" *ngIf="ai.pendingQuestion()">
+      <div class="pq-head">
+        <span nz-icon nzType="question-circle" nzTheme="outline" class="pq-ico"></span>
+        <span class="pq-title">Une réponse est attendue</span>
       </div>
+      <ai-question
+        [question]="ai.pendingQuestion()!"
+        (answered)="onAnswer($event)">
+      </ai-question>
     </div>
 
     <!-- Input -->
     <div class="input-bar" (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)" (drop)="onDrop($event)"
-         [class.drag-over]="isDragOver">
+         [class.drag-over]="isDragOver"
+         [class.input-disabled]="!!ai.pendingQuestion()">
       <!-- Attachment previews -->
       <div class="att-previews" *ngIf="pendingAttachments.length">
         <div class="att-chip" *ngFor="let att of pendingAttachments; let i = index"
@@ -642,9 +645,47 @@ interface StreamTool {
     .system-label { font-weight: 500; }
     .system-content { margin-top: 6px; font-size: 12px; color: #666; line-height: 1.5; }
     .system-content ::ng-deep p { margin: 0 0 4px; }
-    .question-msg { display: flex; gap: 10px; padding: 8px 0; }
-    .question-msg .avatar { width: 32px; height: 32px; border-radius: 50%; background: #e6f4ff; color: #e61982; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 16px; }
-    .question-msg .question-body { flex: 1; min-width: 0; max-width: 85%; }
+    /* Question ancrée au-dessus de l'input : empêche l'user d'écrire
+       librement tant qu'une réponse est attendue. Animation slide-up. */
+    .pending-question-pinned {
+      position: relative;
+      margin: 0 16px;
+      background: #fff;
+      border: 1px solid #ffd6e7;
+      border-radius: 12px 12px 8px 8px;
+      padding: 10px 14px 12px;
+      box-shadow: 0 -4px 20px rgba(230, 25, 130, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+      animation: pqSlideIn 240ms cubic-bezier(.2,.8,.2,1);
+      border-bottom: 0;
+    }
+    @keyframes pqSlideIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .pq-head {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 11px; font-weight: 600;
+      color: #e61982;
+      text-transform: uppercase; letter-spacing: .5px;
+      margin-bottom: 8px;
+    }
+    .pq-ico { font-size: 13px; }
+    .pq-title { }
+
+    /* Input grisé quand une question bloque */
+    .input-bar.input-disabled {
+      opacity: 0.55;
+      pointer-events: none;
+      position: relative;
+    }
+    .input-bar.input-disabled::after {
+      content: "Réponds d'abord à la question ci-dessus";
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; color: #8c8c8c;
+      background: linear-gradient(180deg, rgba(255,255,255,0), rgba(255,255,255,0.4));
+      pointer-events: none;
+    }
     .interrupted-tag { padding: 4px 0; }
     .drag-over { border-color: #e61982 !important; background: rgba(230, 25, 130, 0.04); }
     .att-previews { display: flex; flex-wrap: wrap; gap: 6px; padding: 0px 24px 2px; }

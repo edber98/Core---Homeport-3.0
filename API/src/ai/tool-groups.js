@@ -15,7 +15,7 @@ const { createWebExecutor } = require('./tools/web-tools');
 
 // ── Primitive groups (always available in orchestrator) ──
 const PRIMITIVE_GROUPS = {
-  core:            ['ask_user', 'save_memory', 'get_memory', 'enrich_context', 'render_structured', 'propose_plan', 'generate_diagram', 'display_image', 'render_interactive_canvas', 'install_package'],
+  core:            ['ask_user', 'save_memory', 'get_memory', 'enrich_context', 'render_structured', 'propose_plan', 'generate_diagram', 'display_image', 'display_file', 'render_interactive_canvas', 'install_package', 'send_message_to_agent'],
   navigation:      ['open_element', 'open_credentials'],
   execution:       ['search_tools', 'get_tool_details', 'execute_tool', 'list_providers', 'list_credentials'],
   workflow_search:  ['search_workflows', 'run_workflow', 'deploy_flow', 'undeploy_flow', 'get_deployment_status', 'list_runs', 'get_run_stats'],

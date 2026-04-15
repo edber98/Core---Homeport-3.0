@@ -272,6 +272,39 @@ factuel des livrables créés avec leurs IDs/paths. Pas de phrase de conclusion 
     console.log(`[harness] loop ${loopCount}/${maxLoops}, tools=${toolSet.definitions.length}`);
     yield { type: 'thinking', iteration: loopCount };
 
+    // ── Mailbox drain : si des messages ont été empilés dans le job pendant
+    // qu'il tournait (par l'user, le parent, un autre agent), on les injecte
+    // comme messages system AVANT d'appeler le LLM pour qu'il en tienne
+    // compte dans son prochain tour. Pattern claude-code / SendMessageTool.
+    if (jobContext?.jobId) {
+      try {
+        const AiJob = require('../db/models/ai-job.model');
+        const j = await AiJob.findOne({ id: jobContext.jobId }, 'pendingMessages').lean();
+        const pending = (j?.pendingMessages || []).filter(m => m && !m.delivered);
+        if (pending.length) {
+          console.log(`[harness] mailbox drain: ${pending.length} message(s) pour job=${jobContext.jobId}`);
+          const blocks = pending.map(m => {
+            const who = m.fromName || m.from || 'user';
+            const when = m.createdAt ? new Date(m.createdAt).toISOString() : '';
+            return `<incoming-message from="${who}"${when ? ` at="${when}"` : ''}>\n${m.message}\n</incoming-message>`;
+          }).join('\n\n');
+          conversation.push({
+            role: 'user',
+            content: `[MESSAGES REÇUS PENDANT TON EXÉCUTION — tiens-en compte]\n\n${blocks}\n\n(Fin des messages. Continue ta tâche en intégrant ces instructions si pertinent. Si une question attend une réponse, réponds-y clairement avant de continuer.)`,
+          });
+          // Marque les messages comme delivered pour ne pas les réinjecter.
+          await AiJob.updateOne(
+            { id: jobContext.jobId },
+            { $set: { 'pendingMessages.$[elem].delivered': true } },
+            { arrayFilters: [{ 'elem.delivered': { $ne: true } }] }
+          ).catch(() => {});
+          yield { type: 'mailbox.delivered', count: pending.length };
+        }
+      } catch (e) {
+        console.warn('[harness] mailbox drain failed:', e?.message);
+      }
+    }
+
     let stream;
     try {
       stream = llm.stream(conversation, toolSet.definitions);

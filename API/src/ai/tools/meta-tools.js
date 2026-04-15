@@ -31,6 +31,39 @@ function _notifyInlineMessage(threadId, kind) {
     console.warn('[meta-tools] notifyInlineMessage failed:', e?.message);
   }
 }
+
+function _notifyInlineUpdate(threadId, messageId, kind) {
+  if (!threadId) return;
+  try {
+    const { emitThreadEvent } = require('../jobs/job-events');
+    emitThreadEvent(String(threadId), {
+      type: 'ai.message.updated',
+      messageId: String(messageId || ''),
+      kind: kind || 'inline',
+    });
+  } catch (e) {
+    console.warn('[meta-tools] notifyInlineUpdate failed:', e?.message);
+  }
+}
+
+/**
+ * Cherche un AiMessage existant dans le thread portant le widgetId demandé
+ * dans ses metadata. Utilisé par les tools qui acceptent `widgetId` pour
+ * UPDATE plutôt que CREATE → pattern widget éditable (l'utilisateur voit la
+ * card se mettre à jour in-place au lieu de voir une nouvelle card apparaître
+ * à chaque modification).
+ */
+async function _findWidgetByWidgetId(threadId, widgetId) {
+  if (!threadId || !widgetId) return null;
+  try {
+    return await AiMessage.findOne({
+      threadId,
+      'metadata.widgetId': String(widgetId),
+    }).sort({ createdAt: -1 });
+  } catch {
+    return null;
+  }
+}
 const AiProjectMemory = require('../../db/models/ai-project-memory.model');
 const AiProjectKnowledge = require('../../db/models/ai-project-knowledge.model');
 const Run = require('../../db/models/run.model');
@@ -418,6 +451,28 @@ const META_TOOL_DEFINITIONS = [
     },
   },
   {
+    name: 'send_message_to_agent',
+    description: `Envoie un message à un sous-agent en cours d'exécution (background ou waiting_dependency). Le message est empilé dans sa mailbox et délivré au DÉBUT de son prochain tour LLM comme un message système. Utile pour :
+- Envoyer une précision ou correction en cours de route ("Marie, regarde aussi la colonne TVA")
+- Répondre à une demande d'info d'un autre agent ("Tim, utilise ces 3 URLs prioritaires : ...")
+- Rediriger une tâche ("Isaac, annule l'étape 3, fais plutôt X")
+
+Le destinataire peut être :
+- un jobId (ex: "aij_mo0x...")
+- un nom de rôle (ex: "Marie", "Tim", "Denis") → résolu au subagent actif avec ce nom dans le même thread.
+
+Le tool retourne {delivered:true} si le message a été empilé, ou une erreur si le job est terminé/introuvable.`,
+    parameters: {
+      type: 'object',
+      properties: {
+        to: { type: 'string', description: 'jobId du subagent OU son nom humain (Tim, Ada, Denis, Alan, René, Claude, Hedy, Graham, Marie, Florence, Isaac, Kurt, Marvin, Donald, Van, Hypatie)' },
+        message: { type: 'string', description: 'Texte du message à délivrer. Soyez précis et concis.' },
+        summary: { type: 'string', description: 'Résumé 5-10 mots affiché dans l\'UI (facultatif)' },
+      },
+      required: ['to', 'message'],
+    },
+  },
+  {
     name: 'spawn_subagent',
     description: [
       "Lance un sous-agent spécialisé pour une tâche autonome. Types : research (web), file_analyzer (fichiers), doc_writer (livrables markdown), general (polyvalent).",
@@ -496,7 +551,16 @@ const META_TOOL_DEFINITIONS = [
     parameters: {
       type: 'object',
       properties: {
-        subagent_type: { type: 'string', enum: ['research', 'file_analyzer', 'doc_writer', 'general'] },
+        subagent_type: {
+          type: 'string',
+          enum: [
+            'research', 'file_analyzer', 'doc_writer', 'general',
+            'code_runner', 'logician', 'security_auditor', 'vision_analyst',
+            'voice_handler', 'data_scientist', 'dataviz', 'automation_architect',
+            'math_proof', 'expert_system',
+          ],
+          description: "Type de subagent (= personnage du roster). Tim=research, Ada=file_analyzer, Donald=doc_writer, Denis=general, Alan=code_runner, René=logician, Claude=security_auditor, Hedy=vision_analyst, Graham=voice_handler, Marie=data_scientist, Florence=dataviz, Isaac=automation_architect, Kurt=math_proof, Marvin=expert_system.",
+        },
         prompt: { type: 'string', description: 'Instruction détaillée à donner au sous-agent.' },
         toolsAllowed: {
           type: 'array',
@@ -579,6 +643,10 @@ const META_TOOL_DEFINITIONS = [
         data: {
           type: 'object',
           description: 'Structure dépendant du layout. Voir description du tool pour le schéma précis.',
+        },
+        widgetId: {
+          type: 'string',
+          description: "Identifiant stable du widget (ex: 'market-comparison'). Si fourni ET qu'un widget avec ce même id existe déjà dans le thread → MISE À JOUR IN-PLACE de la card existante (pas de nouvelle bulle en bas). Utilise-le dès que tu modifies un widget que tu as déjà affiché.",
         },
       },
       required: ['layout', 'data'],
@@ -680,6 +748,7 @@ Fournis uniquement le fileId retourné par files.upload / project_write. Pas bes
       properties: {
         fileId: { type: 'string', description: 'ID du fichier docx/xlsx/pptx/pdf à afficher' },
         caption: { type: 'string', description: 'Légende optionnelle affichée au-dessus du viewer (ex: "Facture modèle v1")' },
+        widgetId: { type: 'string', description: "Identifiant stable du widget (ex: 'invoice-template'). Si fourni ET widget existant dans le thread → remplace son fileId et rafraîchit le viewer in-place, sans créer de nouvelle card. Indispensable quand tu régénères un document après modification." },
       },
       required: ['fileId'],
     },
@@ -717,6 +786,7 @@ Fournis uniquement le fileId retourné par files.upload / project_write. Pas bes
         description: { type: 'string', description: 'Courte description du principe illustré' },
         height: { type: 'number', description: 'Hauteur du canvas en px (défaut 420, max 900)' },
         type: { type: 'string', enum: ['2d', '3d', 'animation', 'demo'], description: 'Type de rendu pour l\'icône badge' },
+        widgetId: { type: 'string', description: "Identifiant stable du canvas (ex: 'three-demo'). Si fourni ET canvas existant avec ce widgetId → MISE À JOUR IN-PLACE (l'utilisateur voit le rendu se rafraîchir dans la même iframe, pas une nouvelle card). Utilise-le pour toute itération sur un canvas déjà affiché." },
       },
       required: ['html'],
     },
@@ -1262,6 +1332,72 @@ async function executeMetaTool(name, input, ctx) {
       return section;
     }
 
+    case 'send_message_to_agent': {
+      const { to, message, summary } = input || {};
+      if (!to || !message) return { ok: false, error: 'to + message requis' };
+      try {
+        const AiJob = require('../../db/models/ai-job.model');
+        const { ROSTER } = require('../subagent/roster');
+        // Résolution : si `to` est un nom humain, on cherche le subagent
+        // actif avec ce nom dans le thread courant.
+        let targetJob = await AiJob.findOne({ id: to });
+        if (!targetJob) {
+          // Chercher par nom humain (insensible casse)
+          const type = Object.entries(ROSTER).find(([, a]) => a.name.toLowerCase() === String(to).toLowerCase())?.[0];
+          if (type && ctx.threadId) {
+            targetJob = await AiJob.findOne({
+              threadId: ctx.threadId,
+              type: 'subagent',
+              subagentType: type,
+              status: { $in: ['running', 'waiting_dependency', 'waiting_permission', 'paused', 'queued'] },
+            }).sort({ createdAt: -1 });
+          }
+        }
+        if (!targetJob) return { ok: false, error: `Aucun subagent actif "${to}" trouvé dans ce thread.` };
+        if (['completed', 'error', 'cancelled'].includes(targetJob.status)) {
+          return { ok: false, error: `Le subagent ${targetJob.id} (${targetJob.status}) est terminé — impossible de lui envoyer un message.` };
+        }
+        const fromJobId = ctx?._jobContext?.jobId;
+        const fromIsParent = fromJobId && String(targetJob.parentJobId) === String(fromJobId);
+        const fromName = fromIsParent
+          ? (ROSTER[ctx?._jobContext?.subagentType]?.name || 'parent')
+          : (ctx.userId ? 'user' : 'system');
+        await AiJob.updateOne(
+          { id: targetJob.id },
+          { $push: { pendingMessages: {
+              from: fromJobId ? `agent:${fromJobId}` : 'user',
+              fromName,
+              message: String(message).slice(0, 8000),
+              createdAt: new Date(),
+              delivered: false,
+            } } }
+        );
+        // Émet un event live pour que le canvas Agents affiche l'envoi
+        try {
+          const { emitJobEvent, emitThreadEvent } = require('../jobs/job-events');
+          const ev = {
+            type: 'subagent.message.received',
+            targetJobId: targetJob.id,
+            targetName: ROSTER[targetJob.subagentType]?.name || targetJob.subagentType,
+            fromName,
+            summary: summary || String(message).slice(0, 80),
+            at: new Date().toISOString(),
+          };
+          emitJobEvent(targetJob.id, ev);
+          if (ctx.threadId) emitThreadEvent(String(ctx.threadId), ev);
+        } catch { /* non-fatal */ }
+        return {
+          ok: true,
+          delivered: true,
+          targetJobId: targetJob.id,
+          targetName: ROSTER[targetJob.subagentType]?.name || targetJob.subagentType,
+          hint: `Message empilé. Sera délivré à ${ROSTER[targetJob.subagentType]?.name || targetJob.subagentType} au début de son prochain tour LLM.`,
+        };
+      } catch (e) {
+        return { ok: false, error: e?.message || String(e) };
+      }
+    }
+
     case 'spawn_subagent': {
       try {
         const { spawnSubagent } = require('../subagent/sub-runner');
@@ -1431,19 +1567,41 @@ async function executeMetaTool(name, input, ctx) {
       if (shapeErr) return { ok: false, error: shapeErr };
       if (!ctx.threadId) return { ok: false, error: 'threadId manquant (render_structured doit être utilisé dans un thread actif).' };
       try {
-        const doc = await AiMessage.create({
+        const widgetId = input.widgetId ? String(input.widgetId).slice(0, 60) : null;
+        const structuredPayload = {
+          layout: input.layout,
+          title: input.title || '',
+          data: input.data,
+          renderedAt: new Date(),
+        };
+        let doc;
+        if (widgetId) {
+          const existing = await _findWidgetByWidgetId(ctx.threadId, widgetId);
+          if (existing) {
+            existing.content = input.title || '';
+            existing.metadata = {
+              ...(existing.metadata?.toObject?.() || existing.metadata || {}),
+              kind: 'structured',
+              structured: structuredPayload,
+              widgetId,
+              widgetUpdatedAt: new Date(),
+            };
+            await existing.save();
+            doc = existing;
+            _notifyInlineUpdate(ctx.threadId, String(doc._id), 'structured');
+            return { ok: true, _silent: true, layout: input.layout, widgetId, updated: true, messageId: String(doc._id),
+              hint: "Widget mis à jour in-place. L'utilisateur voit la card existante se rafraîchir." };
+          }
+        }
+        doc = await AiMessage.create({
           threadId: ctx.threadId,
           workspaceId: ctx.workspaceId,
           role: 'assistant',
           content: input.title || '',
           metadata: {
             kind: 'structured',
-            structured: {
-              layout: input.layout,
-              title: input.title || '',
-              data: input.data,
-              renderedAt: new Date(),
-            },
+            structured: structuredPayload,
+            ...(widgetId ? { widgetId, widgetUpdatedAt: new Date() } : {}),
           },
         });
         _notifyInlineMessage(ctx.threadId, 'structured');
@@ -1715,6 +1873,32 @@ async function executeMetaTool(name, input, ctx) {
         if (kind === 'other') {
           return { ok: false, error: `Type non supporté pour display_file (${mime || ext}). Utilise display_image pour les images.` };
         }
+        const widgetId = input.widgetId ? String(input.widgetId).slice(0, 60) : null;
+        const filePayload = {
+          fileId: file.id,
+          name: file.name,
+          mimeType: file.mimeType,
+          size: file.size,
+          caption: caption || null,
+          kind,
+        };
+        if (widgetId) {
+          const existing = await _findWidgetByWidgetId(ctx.threadId, widgetId);
+          if (existing) {
+            existing.content = caption || file.name || '';
+            existing.metadata = {
+              ...(existing.metadata?.toObject?.() || existing.metadata || {}),
+              kind: 'file_inline',
+              fileInline: filePayload,
+              widgetId,
+              widgetUpdatedAt: new Date(),
+            };
+            await existing.save();
+            _notifyInlineUpdate(ctx.threadId, String(existing._id), 'file_inline');
+            return { ok: true, _silent: true, widgetId, updated: true, messageId: String(existing._id),
+              hint: `Fichier ${kind} mis à jour in-place dans le viewer existant.` };
+          }
+        }
         await AiMessage.create({
           threadId: ctx.threadId,
           workspaceId: ctx.workspaceId,
@@ -1722,14 +1906,8 @@ async function executeMetaTool(name, input, ctx) {
           content: caption || file.name || '',
           metadata: {
             kind: 'file_inline',
-            fileInline: {
-              fileId: file.id,
-              name: file.name,
-              mimeType: file.mimeType,
-              size: file.size,
-              caption: caption || null,
-              kind,
-            },
+            fileInline: filePayload,
+            ...(widgetId ? { widgetId, widgetUpdatedAt: new Date() } : {}),
           },
         });
         _notifyInlineMessage(ctx.threadId, 'file_inline');
@@ -1751,6 +1929,31 @@ async function executeMetaTool(name, input, ctx) {
       if (html.length > 400_000) return { ok: false, error: 'html trop volumineux (>400KB). Minimise le code ou charge via CDN.' };
       const safeHeight = Math.max(200, Math.min(900, Number(height) || 420));
       try {
+        const widgetId = input.widgetId ? String(input.widgetId).slice(0, 60) : null;
+        const canvasPayload = {
+          html,
+          title: title || null,
+          description: description || null,
+          height: safeHeight,
+          type: ['2d', '3d', 'animation', 'demo'].includes(type) ? type : 'demo',
+        };
+        if (widgetId) {
+          const existing = await _findWidgetByWidgetId(ctx.threadId, widgetId);
+          if (existing) {
+            existing.content = title || '';
+            existing.metadata = {
+              ...(existing.metadata?.toObject?.() || existing.metadata || {}),
+              kind: 'canvas_html',
+              canvasHtml: canvasPayload,
+              widgetId,
+              widgetUpdatedAt: new Date(),
+            };
+            await existing.save();
+            _notifyInlineUpdate(ctx.threadId, String(existing._id), 'canvas_html');
+            return { ok: true, _silent: true, widgetId, updated: true, messageId: String(existing._id),
+              hint: "Canvas HTML mis à jour in-place dans le widget existant." };
+          }
+        }
         await AiMessage.create({
           threadId: ctx.threadId,
           workspaceId: ctx.workspaceId,
@@ -1758,13 +1961,8 @@ async function executeMetaTool(name, input, ctx) {
           content: title || '',
           metadata: {
             kind: 'canvas_html',
-            canvasHtml: {
-              html,
-              title: title || null,
-              description: description || null,
-              height: safeHeight,
-              type: ['2d', '3d', 'animation', 'demo'].includes(type) ? type : 'demo',
-            },
+            canvasHtml: canvasPayload,
+            ...(widgetId ? { widgetId, widgetUpdatedAt: new Date() } : {}),
           },
         });
         _notifyInlineMessage(ctx.threadId, 'canvas_html');

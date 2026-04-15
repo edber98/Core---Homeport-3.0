@@ -6,6 +6,7 @@ import { NzTagModule } from 'ng-zorro-antd/tag';
 import { marked } from 'marked';
 import DOMPurify from 'dompurify';
 import { AgentReport, AiService } from '../ai.service';
+import { AiAgentBadgeComponent } from '../agents/ai-agent-badge.component';
 
 /**
  * Carte affichée dans le chat quand un subagent async (ou long job) termine.
@@ -16,7 +17,7 @@ import { AgentReport, AiService } from '../ai.service';
   selector: 'ai-agent-report-card',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, NzButtonModule, NzIconModule, NzTagModule],
+  imports: [CommonModule, NzButtonModule, NzIconModule, NzTagModule, AiAgentBadgeComponent],
   template: `
     <div class="report-card" [class.error]="isError()" [class.expanded]="expanded">
       <button type="button" class="report-head" (click)="toggleExpanded($event)">
@@ -29,8 +30,19 @@ import { AgentReport, AiService } from '../ai.service';
         </span>
         <div class="report-head-text">
           <div class="report-title">
-            {{ isError() ? 'Tâche échouée' : 'Tâche terminée' }}
-            <span *ngIf="report.subagentType" class="subtype">· {{ report.subagentType }}</span>
+            <ai-agent-badge
+              *ngIf="report.subagentType || report.agentName"
+              [agent]="{
+                subagentType: report.subagentType || undefined,
+                agentName: report.agentName,
+                agentEmoji: report.agentEmoji,
+                agentColor: report.agentColor,
+                agentTagline: report.agentTagline,
+                agentFigure: report.agentFigure
+              }"
+              [compact]="true">
+            </ai-agent-badge>
+            <span class="task-label">{{ isError() ? 'a échoué' : 'a terminé' }}</span>
           </div>
           <div class="report-meta">
             <span class="meta-item" *ngIf="report.duration != null">
@@ -118,8 +130,11 @@ import { AgentReport, AiService } from '../ai.service';
     .report-icon { font-size: 18px; color: #e61982; flex: 0 0 auto; }
     .report-icon.icon-error { color: #ff4d4f; }
     .report-head-text { flex: 1; min-width: 0; }
-    .report-title { font-weight: 600; font-size: 13px; color: #262626; line-height: 1.3; }
-    .subtype { font-weight: 500; color: #8c8c8c; font-size: 12px; margin-left: 4px; }
+    .report-title {
+      font-weight: 600; font-size: 13px; color: #262626; line-height: 1.3;
+      display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+    }
+    .task-label { font-weight: 500; color: #8c8c8c; font-size: 12px; }
     .report-meta {
       display: flex; flex-wrap: wrap; gap: 10px;
       margin-top: 3px; font-size: 11px; color: #8c8c8c;

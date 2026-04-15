@@ -18,7 +18,11 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { FormsModule } from '@angular/forms';
+import { NzInputModule } from 'ng-zorro-antd/input';
 import { AiService } from '../ai.service';
+import { AiAgentBadgeComponent } from '../agents/ai-agent-badge.component';
+import { resolveAgentProfile } from '../agents/ai-roster';
 
 interface AgentNode {
   id: string;
@@ -26,6 +30,12 @@ interface AgentNode {
   subject: string;
   description?: string;
   subagentType?: string;
+  // Roster (optionnel, enrichi par le backend)
+  agentName?: string;
+  agentEmoji?: string;
+  agentColor?: string;
+  agentTagline?: string;
+  agentFigure?: string;
   status: string;
   parentTaskId?: string;
   startedAt?: string;
@@ -50,7 +60,7 @@ interface AgentNode {
   selector: 'ai-canvas-agents',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, NzIconModule, NzTagModule, NzEmptyModule, NzToolTipModule, NzButtonModule, NzPopconfirmModule],
+  imports: [CommonModule, FormsModule, NzIconModule, NzTagModule, NzEmptyModule, NzToolTipModule, NzButtonModule, NzPopconfirmModule, NzInputModule, AiAgentBadgeComponent],
   template: `
     <div class="agents-wrap" *ngIf="tree().length; else empty">
       <div class="agents-header">
@@ -70,16 +80,35 @@ interface AgentNode {
                   [nzType]="expanded().has(node.id) ? 'down' : 'right'"
                   nzTheme="outline"></span>
             <span class="agent-chev" *ngIf="!node.children.length && !node.toolCalls?.length"></span>
-            <span class="agent-icon">{{ iconFor(node.subagentType) }}</span>
             <div class="agent-body">
               <div class="agent-top">
+                <ai-agent-badge
+                  *ngIf="node.subagentType || node.agentName"
+                  [agent]="{
+                    subagentType: node.subagentType,
+                    agentName: node.agentName,
+                    agentEmoji: node.agentEmoji,
+                    agentColor: node.agentColor,
+                    agentTagline: node.agentTagline,
+                    agentFigure: node.agentFigure
+                  }"
+                  [compact]="true">
+                </ai-agent-badge>
                 <span class="agent-subject" [nz-tooltip]="node.description || node.subject">
-                  {{ truncate(node.subject, 120) }}
+                  {{ truncate(node.subject, 100) }}
                 </span>
-                <nz-tag [nzColor]="statusColor(node.status)" class="agent-status">
+                <span class="agent-status-inline" [class]="'sz-' + node.status">
                   <span *ngIf="node.status === 'running'" class="status-dot pulse"></span>
                   {{ statusLabel(node.status) }}
-                </nz-tag>
+                </span>
+                <button *ngIf="canMessage(node.status)"
+                        nz-button nzType="text" nzSize="small"
+                        class="agent-chat-open"
+                        [class.active]="chatOpen() === node.jobId"
+                        (click)="toggleChat($event, node)"
+                        nz-tooltip nzTooltipTitle="Envoyer un message à ce sous-agent">
+                  <span nz-icon nzType="message" nzTheme="outline"></span>
+                </button>
                 <button *ngIf="isCancellable(node.status)"
                         nz-button nzType="text" nzSize="small"
                         class="agent-stop"
@@ -93,19 +122,38 @@ interface AgentNode {
                 </button>
               </div>
               <div class="agent-meta">
-                <span class="meta-type" *ngIf="node.subagentType">{{ node.subagentType }}</span>
                 <span class="meta-dur" *ngIf="durationText(node) as d">{{ d }}</span>
                 <span class="meta-tools" *ngIf="node.toolCalls?.length">
                   <span nz-icon nzType="tool" nzTheme="outline"></span>
-                  {{ node.toolCalls!.length }} outil(s)
+                  {{ node.toolCalls!.length }} outil{{ node.toolCalls!.length > 1 ? 's' : '' }}
                 </span>
                 <span class="meta-waiting" *ngIf="node.status === 'waiting_dependency'">
-                  ⏳ Attend une dépendance
+                  <span nz-icon nzType="hourglass" nzTheme="outline"></span> Attend une dépendance
                 </span>
                 <a class="meta-permission" *ngIf="node.status === 'waiting_permission'"
                    (click)="goPermission($event, node)">
-                  🔒 Permission demandée
+                  <span nz-icon nzType="lock" nzTheme="outline"></span> Permission demandée
                 </a>
+              </div>
+              <!-- Mini-chat inline : message au subagent en cours -->
+              <div class="agent-chat" *ngIf="chatOpen() === node.jobId" (click)="$event.stopPropagation()">
+                <textarea
+                  nz-input
+                  [(ngModel)]="chatDraft"
+                  [nzAutosize]="{ minRows: 1, maxRows: 3 }"
+                  [placeholder]="chatPlaceholder(node)"
+                  (keydown.enter)="$event.preventDefault(); sendChat(node)"
+                  class="agent-chat-input"
+                ></textarea>
+                <div class="agent-chat-actions">
+                  <span class="chat-hint">Délivré au prochain tour du sous-agent</span>
+                  <button nz-button nzType="primary" nzSize="small"
+                          (click)="sendChat(node)"
+                          [disabled]="!chatDraft.trim() || sending()">
+                    <span nz-icon nzType="send" nzTheme="outline"></span>
+                    Envoyer
+                  </button>
+                </div>
               </div>
               <div class="agent-error" *ngIf="node.error">{{ node.error }}</div>
             </div>
@@ -150,17 +198,53 @@ interface AgentNode {
     .agent-row { display: flex; align-items: flex-start; gap: 8px; padding: 7px 8px; border-radius: 6px; cursor: pointer; transition: background .15s; }
     .agent-row:hover { background: #fafafa; }
     .agent-chev { width: 12px; font-size: 10px; color: #999; padding-top: 3px; flex-shrink: 0; }
-    .agent-icon { font-size: 15px; width: 20px; text-align: center; flex-shrink: 0; padding-top: 1px; }
-    .agent-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
-    .agent-top { display: flex; align-items: center; gap: 6px; }
-    .agent-subject { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #333; font-size: 13px; font-weight: 500; }
-    .agent-status { margin: 0; font-size: 10px; display: inline-flex; align-items: center; gap: 4px; }
-    .agent-meta { display: flex; align-items: center; gap: 10px; font-size: 11px; color: #999; flex-wrap: wrap; }
-    .meta-type { color: #666; background: #f5f5f5; border-radius: 4px; padding: 1px 6px; font-size: 10px; }
-    .meta-dur { color: #888; }
-    .meta-tools { display: inline-flex; align-items: center; gap: 3px; color: #1677ff; }
-    .meta-waiting { color: #faad14; }
-    .meta-permission { color: #faad14; cursor: pointer; text-decoration: underline; }
+    .agent-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 5px; }
+    .agent-top { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .agent-subject { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #595959; font-size: 12px; }
+    .agent-status-inline {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 10px; font-weight: 600;
+      padding: 2px 7px; border-radius: 10px;
+      text-transform: uppercase; letter-spacing: .3px;
+    }
+    .agent-status-inline.sz-running { color: #e61982; background: #fff5fa; }
+    .agent-status-inline.sz-waiting_dependency { color: #d48806; background: #fff7e6; }
+    .agent-status-inline.sz-waiting_permission { color: #d48806; background: #fff7e6; }
+    .agent-status-inline.sz-queued { color: #8c8c8c; background: #fafafa; }
+    .agent-status-inline.sz-completed, .agent-status-inline.sz-done { color: #52c41a; background: #f6ffed; }
+    .agent-status-inline.sz-error { color: #cf1322; background: #fff2f0; }
+    .agent-status-inline.sz-cancelled { color: #8c8c8c; background: #fafafa; }
+
+    .agent-chat-open { flex-shrink: 0; padding: 0 6px; height: 22px; color: #bfbfbf; border-radius: 10px; }
+    .agent-chat-open:hover, .agent-chat-open.active { color: #e61982; background: #fff5fa; }
+
+    .agent-meta { display: flex; align-items: center; gap: 12px; font-size: 11px; color: #8c8c8c; flex-wrap: wrap; }
+    .meta-dur { color: #8c8c8c; font-variant-numeric: tabular-nums; }
+    .meta-tools { display: inline-flex; align-items: center; gap: 3px; color: #8c8c8c; }
+    .meta-waiting { color: #d48806; display: inline-flex; align-items: center; gap: 3px; }
+    .meta-permission { color: #d48806; cursor: pointer; text-decoration: underline; display: inline-flex; align-items: center; gap: 3px; }
+
+    /* Mini-chat inline pour envoyer un message au subagent en cours */
+    .agent-chat {
+      margin-top: 8px;
+      background: #fff;
+      border: 1px solid #ffd6e7;
+      border-radius: 8px;
+      padding: 8px 10px;
+      animation: chatIn 180ms ease-out;
+    }
+    @keyframes chatIn {
+      from { opacity: 0; transform: translateY(-4px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .agent-chat-input { font-size: 12px; border: 0 !important; box-shadow: none !important; padding: 2px 0 !important; resize: none; }
+    .agent-chat-input:focus { box-shadow: none !important; }
+    .agent-chat-actions {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-top: 4px; padding-top: 4px;
+      border-top: 1px dashed #f5e7f0;
+    }
+    .chat-hint { font-size: 10px; color: #bfbfbf; font-style: italic; }
     .agent-error { color: #ff4d4f; font-size: 11px; margin-top: 2px; }
     .status-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; display: inline-block; }
     .status-dot.pulse { animation: pulse 1.1s infinite; }
@@ -184,6 +268,9 @@ export class AiCanvasAgentsComponent implements OnInit, OnDestroy {
 
   public ai = inject(AiService);
   expanded = signal<Set<string>>(new Set<string>());
+  chatOpen = signal<string | null>(null); // jobId du subagent dont le mini-chat est ouvert
+  chatDraft = '';
+  sending = signal(false);
 
   // Tick signal bumped every second so durations of running agents refresh live.
   private _tick = signal(0);
@@ -228,6 +315,50 @@ export class AiCanvasAgentsComponent implements OnInit, OnDestroy {
 
   isCancellable(status: string): boolean {
     return status === 'running' || status === 'queued' || status === 'waiting_dependency' || status === 'waiting_permission' || status === 'paused';
+  }
+
+  /** Peut-on envoyer un message à ce subagent ? (le job doit être vivant) */
+  canMessage(status: string): boolean {
+    return status === 'running' || status === 'queued' || status === 'waiting_dependency' || status === 'paused';
+  }
+
+  toggleChat(ev: Event, node: AgentNode): void {
+    ev.stopPropagation();
+    this.chatOpen.set(this.chatOpen() === node.jobId ? null : node.jobId);
+    this.chatDraft = '';
+    if (this.chatOpen()) {
+      // Focus le textarea au prochain tick
+      setTimeout(() => {
+        const ta = document.querySelector('ai-canvas-agents .agent-chat-input textarea') as HTMLTextAreaElement | null;
+        ta?.focus();
+      }, 50);
+    }
+  }
+
+  chatPlaceholder(node: AgentNode): string {
+    const name = node.agentName
+      || resolveAgentProfile({ subagentType: node.subagentType })?.name
+      || node.subagentType
+      || 'cet agent';
+    return `Message à ${name}…`;
+  }
+
+  sendChat(node: AgentNode): void {
+    const msg = this.chatDraft.trim();
+    if (!msg || !node.jobId || this.sending()) return;
+    this.sending.set(true);
+    this.ai.sendMessageToAgent(node.jobId, msg, msg.slice(0, 60)).subscribe({
+      next: () => {
+        this.nzMsg.success(`Message délivré à ${node.agentName || node.subagentType}`);
+        this.chatDraft = '';
+        this.chatOpen.set(null);
+        this.sending.set(false);
+      },
+      error: (e: any) => {
+        this.nzMsg.error(e?.error?.message || 'Envoi impossible (job terminé ?)');
+        this.sending.set(false);
+      },
+    });
   }
 
   cancelTask(node: AgentNode): void {

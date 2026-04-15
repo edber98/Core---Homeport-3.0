@@ -1904,6 +1904,51 @@ ${toolLines.join('\n')}
     res.apiOk(jobs);
   });
 
+  // ── Envoi d'un message user à un subagent en cours (mailbox) ──
+  // Permet à l'utilisateur de piquer un subagent background : "Marie, ajoute
+  // aussi la colonne TVA". Empile le message dans pendingMessages du job.
+  r.post('/ai/jobs/:jobId/message', async (req, res) => {
+    try {
+      const { message, summary } = req.body || {};
+      if (!message || typeof message !== 'string') {
+        return res.apiError(400, 'missing_message', 'message (string) requis');
+      }
+      const AiJob = require('../../db/models/ai-job.model');
+      const job = await AiJob.findOne({ id: req.params.jobId });
+      if (!job) return res.apiError(404, 'job_not_found', 'Job introuvable');
+      if (['completed', 'error', 'cancelled'].includes(job.status)) {
+        return res.apiError(409, 'job_terminated', `Le job est ${job.status} — impossible d'envoyer un message.`);
+      }
+      await AiJob.updateOne(
+        { id: job.id },
+        { $push: { pendingMessages: {
+            from: 'user',
+            fromName: 'vous',
+            message: String(message).slice(0, 8000),
+            createdAt: new Date(),
+            delivered: false,
+          } } }
+      );
+      try {
+        const { ROSTER } = require('../../ai/subagent/roster');
+        const { emitJobEvent, emitThreadEvent } = require('../../ai/jobs/job-events');
+        const ev = {
+          type: 'subagent.message.received',
+          targetJobId: job.id,
+          targetName: ROSTER[job.subagentType]?.name || job.subagentType,
+          fromName: 'vous',
+          summary: summary || String(message).slice(0, 80),
+          at: new Date().toISOString(),
+        };
+        emitJobEvent(job.id, ev);
+        if (job.threadId) emitThreadEvent(String(job.threadId), ev);
+      } catch { /* non-fatal */ }
+      res.apiOk({ ok: true, jobId: job.id });
+    } catch (e) {
+      res.apiError(500, 'send_failed', e?.message || 'Erreur');
+    }
+  });
+
   // ── Réponse user à une question escaladée d'un sous-agent ──
   // Le frontend POST avec {requestId, parentJobId, answer}. On émet l'event
   // subagent.ask_user.answered sur le PARENT pour débloquer le subagent.

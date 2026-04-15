@@ -130,6 +130,8 @@ async function _spawnOne(opts) {
   // immédiatement le nouveau sous-agent.
   const threadKey = parent.threadId ? String(parent.threadId) : null;
   const parentKey = parent.id || String(parent._id);
+  const { getAgent } = require('./roster');
+  const agentInfo = getAgent(subagentType);
   const taskCreate = {
     type: 'canvas.task.create',
     task: {
@@ -143,6 +145,14 @@ async function _spawnOne(opts) {
       prompt: (prompt || '').slice(0, 500),
       depth,
       ...(hasDeps ? { dependsOn: depends_on } : {}),
+      // Enrichissement roster (nom humain, emoji, couleur, figure historique)
+      ...(agentInfo ? {
+        agentName: agentInfo.name,
+        agentEmoji: agentInfo.emoji,
+        agentColor: agentInfo.color,
+        agentTagline: agentInfo.tagline,
+        agentFigure: agentInfo.figure,
+      } : {}),
     },
     _jobId: job.id,
     _parentJobId: parentKey,

@@ -70,6 +70,7 @@ const TOOL_RISK = {
   install_package: 'elevated',
   display_image:   'safe',
   display_file:    'safe',
+  send_message_to_agent: 'safe',
 };
 
 /**

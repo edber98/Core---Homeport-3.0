@@ -501,6 +501,23 @@ async function _maybeCreateAgentReport(job, { opts, toolCalls, finishedAt, error
     ? `Tâche échouée : ${String(errorMessage).slice(0, 240)}`
     : `Tâche terminée : ${summary.slice(0, 200)}`;
 
+  // Enrichit le rapport avec le roster (Tim/Ada/Denis/...) pour que la card
+  // affiche le nom et l'avatar au lieu de "research".
+  let agentFields = {};
+  try {
+    const { getAgent } = require('../subagent/roster');
+    const info = getAgent(job.subagentType);
+    if (info) {
+      agentFields = {
+        agentName: info.name,
+        agentEmoji: info.emoji,
+        agentColor: info.color,
+        agentTagline: info.tagline,
+        agentFigure: info.figure,
+      };
+    }
+  } catch { /* roster optionnel */ }
+
   try {
     await AiMessage.create({
       threadId: job.threadId,
@@ -521,6 +538,7 @@ async function _maybeCreateAgentReport(job, { opts, toolCalls, finishedAt, error
           toolCount: Array.isArray(fresh.transcript)
             ? fresh.transcript.filter(e => Array.isArray(e?.tool_calls) && e.tool_calls.length).length
             : (Array.isArray(toolCalls) ? toolCalls.length : 0),
+          ...agentFields,
           ...(errorMessage ? { error: String(errorMessage).slice(0, 400) } : {}),
         },
       },

@@ -287,6 +287,12 @@ export interface AgentReport {
   status?: 'completed' | 'error' | 'cancelled';
   toolCount?: number;
   error?: string;
+  // Roster (Tim, Ada, Denis, …)
+  agentName?: string;
+  agentEmoji?: string;
+  agentColor?: string;
+  agentTagline?: string;
+  agentFigure?: string;
 }
 
 /** Inline image payload (tool display_image) */
@@ -1626,6 +1632,14 @@ export class AiService {
       this.reloadThreadMessages().catch?.(() => {});
       return;
     }
+    if (evType === 'ai.message.updated') {
+      // Widget éditable : un tool (render_structured / display_file / canvas_html)
+      // a été rappelé avec le même widgetId → le backend a UPDATE la card au lieu
+      // de créer une nouvelle bulle. On reload pour récupérer la nouvelle metadata.
+      this.sideEvents$.next(ev);
+      this.reloadThreadMessages().catch?.(() => {});
+      return;
+    }
     if (evType === 'memory.pending.update') {
       const cnt = ev.pendingCount;
       if (typeof cnt === 'number') this.pendingKnowledgeCount.set(cnt);
@@ -1692,6 +1706,15 @@ export class AiService {
 
   cancelJob(jobId: string): Observable<any> {
     return this.api.post<any>(`/api/ai/jobs/${jobId}/cancel`, {}, { workspaceId: this.wsId() });
+  }
+
+  /** Envoie un message à un subagent en cours (mailbox, délivré au prochain loop) */
+  sendMessageToAgent(jobId: string, message: string, summary?: string): Observable<any> {
+    return this.api.post<any>(
+      `/api/ai/jobs/${jobId}/message`,
+      { message, summary },
+      { workspaceId: this.wsId() },
+    );
   }
 
   /** Respond to a plan proposal (approve / reject / modify) */

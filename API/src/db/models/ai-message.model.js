@@ -134,6 +134,12 @@ const AgentReportSchema = new Schema({
   status: { type: String, enum: ['completed', 'error', 'cancelled'] },
   toolCount: { type: Number },
   error: { type: String },
+  // Roster (Tim, Ada, Denis, ...) — cosmétique UI
+  agentName: { type: String },
+  agentEmoji: { type: String },
+  agentColor: { type: String },
+  agentTagline: { type: String },
+  agentFigure: { type: String },
 }, { _id: false });
 
 // ── Diagram metadata ──
@@ -181,6 +187,10 @@ const MessageMetadataSchema = new Schema({
   canvasHtml: { type: CanvasHtmlSchema, default: undefined },
   fileInline: { type: FileInlineSchema, default: undefined },
   agentReport: { type: AgentReportSchema, default: undefined },
+  // ID stable du widget, permet la mise à jour in-place (tools peuvent
+  // repasser `widgetId` pour éditer au lieu de recréer une card en dessous).
+  widgetId: { type: String },
+  widgetUpdatedAt: { type: Date },
   // Comment author (for shared threads)
   commentBy: { type: Types.ObjectId, ref: 'User' },
   // Free extensions

@@ -340,6 +340,36 @@ EXEMPLE BUG À ÉVITER :
   ✅ User: "oui je veux un excel bien mis en forme"
   ✅ Toi: tool_call(execute_code) avec le code Python qui produit le xlsx.
 
+## 🔁 WIDGETS ÉDITABLES — widgetId (CRITIQUE)
+
+Les 4 tools qui créent des cards inline (\`render_structured\`, \`display_file\`, \`render_interactive_canvas\`, \`generate_diagram\`) acceptent un paramètre \`widgetId\`. C'EST LA CLÉ pour éviter la pollution du chat par 10 cards empilées à chaque modification.
+
+### Règle d'or
+- **1ère création** : choisis un \`widgetId\` stable et mémorable (kebab-case, ex: \`"invoice-template"\`, \`"market-comparison"\`, \`"facture-joly-v1"\`).
+- **Modifications suivantes** : **RÉUTILISE EXACTEMENT le même \`widgetId\`** → la card existante est mise à jour in-place, l'utilisateur voit le même cadre se rafraîchir (pas une nouvelle bulle).
+
+### Exemples corrects
+\`\`\`
+1. User: "Fais-moi un modèle de facture"
+   Toi: display_file({ fileId:"fx_abc", widgetId:"invoice-v1" })
+
+2. User: "Mets le logo à gauche"
+   Toi: [régénère le docx] → display_file({ fileId:"fx_def", widgetId:"invoice-v1" })
+   → même card, nouveau contenu. PAS de 2e bulle facture.
+
+3. User: "Change le tableau en 10 lignes"
+   Toi: [régénère] → display_file({ fileId:"fx_ghi", widgetId:"invoice-v1" })
+\`\`\`
+
+### Anti-patterns
+- ❌ Ne PAS générer un nouveau widgetId à chaque itération ("invoice-v1", puis "invoice-v2", puis "invoice-v3") — l'utilisateur veut une card qui évolue, pas un historique.
+- ❌ Ne PAS oublier le widgetId pour la 1re création : tu ne pourras plus updater après.
+- ✅ 1 widget logique = 1 widgetId qui vit jusqu'à ce que l'utilisateur en crée explicitement un nouveau.
+
+### Règle pour comparison_table / chart / dashboard
+- Si l'utilisateur dit "ajoute une colonne" / "change cette donnée" / "met-à-jour" → MÊME widgetId.
+- Si l'utilisateur dit "fais-moi un NOUVEAU tableau sur X" → nouveau widgetId.
+
 ## APERÇU VISUEL OBLIGATOIRE après création document
 
 Homeport a un viewer inline natif pour .docx / .xlsx / .pptx / .pdf — tu n'as PAS besoin de convertir en PDF+PNG. Appelle simplement le tool **display_file** après chaque création/modification :
