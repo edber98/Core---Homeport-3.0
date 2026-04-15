@@ -894,10 +894,15 @@ async function executeMetaTool(name, input, ctx) {
     }
 
     case 'suggest_memory_entries': {
+      const _t0 = Date.now();
+      console.log('[suggest_memory_entries] ENTER', { entries_count: Array.isArray(input?.entries) ? input.entries.length : 'n/a' });
       const tid = ctx._metadata?.threadId || ctx.threadId;
-      if (!tid) return { ok: false, error: 'threadId manquant' };
+      if (!tid) { console.log('[suggest_memory_entries] EXIT: threadId manquant'); return { ok: false, error: 'threadId manquant' }; }
       const entries = Array.isArray(input?.entries) ? input.entries : [];
-      if (!entries.length) return { ok: true, created: 0, skipped: 0, message: 'Aucune suggestion' };
+      if (!entries.length) {
+        console.log('[suggest_memory_entries] EXIT: empty entries (' + (Date.now() - _t0) + 'ms)');
+        return { ok: true, created: 0, skipped: 0, message: 'Aucune suggestion' };
+      }
 
       // Cap à 3 suggestions max par appel (garde-fou)
       const capped = entries.slice(0, 3);
@@ -905,8 +910,10 @@ async function executeMetaTool(name, input, ctx) {
       const ALLOWED_TYPES = ['text', 'number', 'date', 'email', 'url', 'list'];
 
       // Load current entries pour dédup
+      console.log('[suggest_memory_entries] loading existing entries…');
       const existing = await AiProjectKnowledge.findOne({ threadId: tid }).lean();
       const existingEntries = existing?.entries || [];
+      console.log('[suggest_memory_entries] existing=' + existingEntries.length);
 
       let created = 0;
       let skipped = 0;
@@ -917,42 +924,41 @@ async function executeMetaTool(name, input, ctx) {
           const lastAsst = await AiMessage.findOne({ threadId: tid, role: 'assistant' })
             .sort({ createdAt: -1 }).select('_id').lean();
           if (lastAsst?._id) sourceMessageId = lastAsst._id;
-        } catch { /* non-fatal */ }
+        } catch (e) { console.error('[suggest_memory_entries] lastAsst lookup failed:', e?.message); }
       }
 
-      for (const e of capped) {
+      for (let i = 0; i < capped.length; i++) {
+        const e = capped[i];
         const key = typeof e?.key === 'string' ? e.key.trim() : '';
-        if (!key || !KEY_REGEX.test(key)) { skipped++; continue; }
-        if (e?.value === undefined || e?.value === null || e?.value === '') { skipped++; continue; }
+        console.log(`[suggest_memory_entries] entry ${i + 1}/${capped.length}: key="${key}"`);
+        if (!key || !KEY_REGEX.test(key)) { console.log('  → skip: invalid key'); skipped++; continue; }
+        if (e?.value === undefined || e?.value === null || e?.value === '') { console.log('  → skip: empty value'); skipped++; continue; }
 
         // Dédup : si clé existe déjà avec status approved ou pending ET même valeur → skip
         const prior = existingEntries.find(x => x.key === key);
         if (prior && (prior.status === 'approved' || !prior.status || prior.status === 'pending')) {
           const sameVal = String(prior.value ?? '') === String(e.value ?? '');
-          if (sameVal) { skipped++; continue; }
+          if (sameVal) { console.log('  → skip: same value exists'); skipped++; continue; }
         }
 
         const type = ALLOWED_TYPES.includes(e.type) ? e.type : 'text';
         const description = e.description ? String(e.description).slice(0, 500) : '';
         const why = e.why ? String(e.why).slice(0, 500) : '';
 
-        // Upsert : doc créé si absent, puis pull de la clé existante (remplace),
-        // puis push de l'entry pending.
+        console.log('  → upsert doc');
         await AiProjectKnowledge.updateOne(
           { threadId: tid },
           { $setOnInsert: { threadId: tid, workspaceId: ctx.workspaceId, entries: [] } },
           { upsert: true }
         );
-        // Pull existing only if NOT already approved (conserve approved telles quelles)
         if (prior && prior.status !== 'approved' && prior.status !== undefined && prior.status !== null) {
+          console.log('  → pull previous pending/rejected');
           await AiProjectKnowledge.updateOne(
             { threadId: tid },
             { $pull: { entries: { key, status: { $in: ['pending', 'rejected'] } } } }
           );
-        } else if (!prior) {
-          // no-op (pas d'entry existante)
-        } else {
-          // prior approved : on ne touche pas — skip
+        } else if (prior) {
+          console.log('  → skip: prior is approved');
           skipped++;
           continue;
         }
@@ -971,6 +977,7 @@ async function executeMetaTool(name, input, ctx) {
             }
           } catch { /* ignore */ }
         }
+        console.log('  → push new entry');
         await AiProjectKnowledge.updateOne(
           { threadId: tid },
           { $push: { entries: entry } }
@@ -978,6 +985,7 @@ async function executeMetaTool(name, input, ctx) {
         created++;
       }
 
+      console.log(`[suggest_memory_entries] DONE created=${created} skipped=${skipped} total=${capped.length} (${Date.now() - _t0}ms)`);
       return { ok: true, created, skipped, total: capped.length };
     }
 

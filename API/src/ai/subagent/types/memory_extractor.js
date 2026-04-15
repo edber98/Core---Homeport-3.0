@@ -53,4 +53,7 @@ Si rien à extraire : appelle suggest_memory_entries({entries: []}) puis STOP.`,
     'generate_diagram', 'generate_document', 'research_deep',
   ],
   forcedAutonomy: 'prudent',
+  // Timeout dur global : si le subagent dépasse cette durée, il est killé proprement
+  // (certains modèles reasoning prennent 30-60s par call, on laisse 2 min de marge).
+  maxRuntimeMs: 120_000,
 };

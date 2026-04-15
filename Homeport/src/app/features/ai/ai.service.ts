@@ -489,10 +489,19 @@ export class AiService {
     if (metadata) Object.assign(body, metadata);
     const aid = agentId || this.selectedAgentId();
     if (aid && aid !== 'general') body.agentId = aid;
+    // Idem loadThread : on stoppe un éventuel send en cours sur un autre thread.
+    if (this._activeSendAbort) {
+      try { this._activeSendAbort.abort(); } catch {}
+      this._activeSendAbort = undefined;
+      this._activeSendThreadId = undefined;
+      this.streaming.set(false);
+    }
     const thread = await this.api.post<AiThread>('/api/ai/threads', body, { workspaceId: this.wsId() }).toPromise();
     this.currentThread.set(thread!);
     this.messages.set([]);
     this.pendingQuestion.set(null);
+    // Ouvre le stream live pour recevoir les events subagents en temps réel
+    this.openThreadLiveStream(thread?.id || thread?._id || '');
     return thread!;
   }
 
@@ -508,6 +517,15 @@ export class AiService {
   }
 
   async loadThread(threadId: string) {
+    // Si un send POST est en cours sur un autre thread, on l'abort côté client pour
+    // stopper la réception d'events (le backend peut continuer pour persister).
+    const newIdStr = String(threadId);
+    if (this._activeSendAbort && this._activeSendThreadId && this._activeSendThreadId !== newIdStr) {
+      try { this._activeSendAbort.abort(); } catch {}
+      this._activeSendAbort = undefined;
+      this._activeSendThreadId = undefined;
+      this.streaming.set(false);
+    }
     const data = await this.api.get<any>(`/api/ai/threads/${threadId}`, { workspaceId: this.wsId() }).toPromise();
     this.currentThread.set(data.thread);
     const msgs = data.messages || [];
@@ -552,9 +570,16 @@ export class AiService {
   }
 
   // ── Send message + SSE stream ──
+  // Track active send stream pour pouvoir l'aborter au changement de thread
+  private _activeSendAbort?: AbortController;
+  private _activeSendThreadId?: string;
+
   sendMessage(content: string, answer?: any, attachments?: any[]): { events$: Observable<AiStreamEvent>; stop: () => void } {
     const thread = this.currentThread();
     if (!thread) throw new Error('No active thread');
+    // Si un send précédent tourne encore (pour un autre thread ou le même),
+    // on l'abort pour éviter le leak d'events sur la nouvelle conversation.
+    try { this._activeSendAbort?.abort(); } catch {}
 
     this.streaming.set(true);
     this.pendingQuestion.set(null);
@@ -578,10 +603,13 @@ export class AiService {
     const tok = this.auth.token || '';
 
     // Use fetch for SSE POST (EventSource only supports GET)
-    const url = this.buildFetchUrl(`/api/ai/threads/${thread.id || thread._id}/messages?workspaceId=${encodeURIComponent(wsId)}`);
+    const capturedThreadId = String(thread.id || thread._id || '');
+    const url = this.buildFetchUrl(`/api/ai/threads/${capturedThreadId}/messages?workspaceId=${encodeURIComponent(wsId)}`);
     const abortController = new AbortController();
+    this._activeSendAbort = abortController;
+    this._activeSendThreadId = capturedThreadId;
 
-    this.streamPost(url, body, tok, abortController.signal, subj);
+    this.streamPost(url, body, tok, abortController.signal, subj, capturedThreadId);
 
     const threadId = thread.id || thread._id;
     const stop = () => {
@@ -597,7 +625,7 @@ export class AiService {
     return { events$: subj.asObservable(), stop };
   }
 
-  private async streamPost(url: string, body: any, token: string, signal: AbortSignal, subj: Subject<AiStreamEvent>) {
+  private async streamPost(url: string, body: any, token: string, signal: AbortSignal, subj: Subject<AiStreamEvent>, capturedThreadId?: string) {
     let assistantText = '';
     const toolCalls: AiToolCall[] = [];
     const segments: AiMessageSegment[] = [];
@@ -650,7 +678,14 @@ export class AiService {
 
           this.zone.run(() => {
             if (finished) return;
+            // Guard : si le thread courant a changé depuis le lancement de ce stream,
+            // on drop les events pour éviter qu'ils pollent la nouvelle conversation.
+            const curTid = String(this.currentThread()?.id || this.currentThread()?._id || '');
+            const stillActive = !capturedThreadId || !curTid || curTid === capturedThreadId;
+            if (!stillActive) return;
             const event = data as AiStreamEvent;
+            // Tag l'event pour que les handlers en aval puissent filtrer aussi
+            if (capturedThreadId) (event as any)._threadId = capturedThreadId;
             subj.next(event);
 
             if (event.type === 'message') {

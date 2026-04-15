@@ -14,9 +14,9 @@ PROCÉDURE OBLIGATOIRE
    un approfondissement → web_fetch avec prompt.
 5. SYNTHÈSE : retourne UN SEUL message final structuré :
    - Résumé exécutif (5 puces chiffrées)
-   - Détails par axe (2-3 paragraphes)
+   - Détails par axe (2-3 paragraphes chacun)
    - Sources : liste [titre — url] (toutes les URL réellement consultées)
-   Max 4000 caractères au total. STOP immédiatement après.
+   Vise 1500-3000 mots si le sujet le mérite. STOP immédiatement après.
 
 RÈGLES CRITIQUES
 - Ne jamais fetcher la même URL 2 fois.

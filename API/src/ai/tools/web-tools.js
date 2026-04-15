@@ -271,6 +271,14 @@ async function runSearch(opts) {
 // Fetch: HTTP (undici) + Browser (Playwright)
 // ─────────────────────────────────────────────────────────────────────────────
 
+// Destroy un ReadableStream sans crasher le process si personne n'écoute 'error'.
+// L'AbortError émis par undici sur body.destroy() est swallow ici.
+function _safeDestroyBody(body) {
+  if (!body) return;
+  try { body.on('error', () => {}); } catch {}
+  try { body.destroy(); } catch {}
+}
+
 async function httpFetch(url) {
   await validateUrl(url);
   const { request } = loadUndici();
@@ -294,7 +302,7 @@ async function httpFetch(url) {
         const next = new URL(String(res.headers.location), currentUrl).toString();
         await validateUrl(next);
         currentUrl = next;
-        try { res.body.destroy(); } catch {}
+        _safeDestroyBody(res.body);
         continue;
       }
       break;
@@ -302,20 +310,25 @@ async function httpFetch(url) {
     const ct = String(res.headers['content-type'] || '');
     const allowed = ALLOWED_CT.some(re => re.test(ct));
     if (!allowed) {
-      // Drain & abort
-      try { res.body.destroy(); } catch {}
+      _safeDestroyBody(res.body);
       throw new Error(`unsupported_content_type:${ct}`);
     }
-    // Read with byte cap
+    // Read with byte cap — swallow error event on abort pour éviter crash
+    try { res.body.on('error', () => {}); } catch {}
     const chunks = [];
     let total = 0;
-    for await (const chunk of res.body) {
-      total += chunk.length;
-      if (total > MAX_BYTES) {
-        try { res.body.destroy(); } catch {}
-        break;
+    try {
+      for await (const chunk of res.body) {
+        total += chunk.length;
+        if (total > MAX_BYTES) {
+          _safeDestroyBody(res.body);
+          break;
+        }
+        chunks.push(chunk);
       }
-      chunks.push(chunk);
+    } catch (e) {
+      // Swallow AbortError / premature close
+      if (e?.code !== 'UND_ERR_ABORTED' && e?.name !== 'AbortError') throw e;
     }
     const buf = Buffer.concat(chunks);
     return {
@@ -570,9 +583,37 @@ function createWebExecutor(metadata, emit) {
     try { safeEmit({ type: 'ui.preview.update', patch }); } catch {}
   }
 
+  // Nettoie un extrait pour affichage preview : supprime HTML résiduel,
+  // compacte whitespace, coupe sur un espace proche du max.
+  function _cleanPreview(raw, maxLen) {
+    if (!raw) return '';
+    let s = String(raw);
+    // Strip HTML tags
+    s = s.replace(/<[^>]+>/g, ' ');
+    // Compact whitespace (line breaks multiples, espaces répétés)
+    s = s.replace(/[\r\t ]+/g, ' ');
+    s = s.replace(/\n{2,}/g, '\n').replace(/ *\n */g, '\n').trim();
+    if (s.length <= maxLen) return s;
+    // Coupe sur l'espace le plus proche pour éviter un mot coupé
+    const slice = s.slice(0, maxLen);
+    const lastSpace = slice.lastIndexOf(' ');
+    return (lastSpace > maxLen * 0.6 ? slice.slice(0, lastSpace) : slice) + '…';
+  }
+
+  // Coerce n'importe quel input.query (string / array / objet) en string simple
+  function _coerceQuery(raw) {
+    if (raw == null) return '';
+    if (typeof raw === 'string') return raw.trim();
+    if (Array.isArray(raw)) {
+      return raw.map(q => (typeof q === 'string' ? q : (q?.q || q?.query || q?.text || ''))).filter(Boolean).join(' ').trim();
+    }
+    if (typeof raw === 'object') return String(raw.q || raw.query || raw.text || '').trim();
+    return String(raw).trim();
+  }
+
   // ── web_search
   async function tool_web_search(input) {
-    const query = String(input.query || '').trim();
+    const query = _coerceQuery(input.query);
     if (!query) return { error: 'query requis' };
     const limit = Math.min(Math.max(parseInt(input.limit || 10, 10) || 10, 1), 25);
     const locale = input.locale || 'fr';
@@ -582,8 +623,11 @@ function createWebExecutor(metadata, emit) {
     const searchId = emitStep({ stepType: 'search', query, status: 'running', title: `Recherche : ${query}` });
     try {
       const { engine, results } = await runSearch({ query, limit, locale, safeSearch, site });
-      const preview = results.slice(0, 3).map(r => ({ title: r.title, url: r.url }));
-      emitStep({ id: searchId, stepType: 'search', query, status: 'done', engine, count: results.length, resultPreview: preview, title: `Recherche : ${query}` });
+      // resultPreview : string lisible au lieu d'un array d'objets (évite [object Object] côté UI)
+      const previewStr = results.slice(0, 3)
+        .map(r => `• ${String(r.title || '').slice(0, 120)}${r.url ? ' — ' + r.url : ''}`)
+        .join('\n');
+      emitStep({ id: searchId, stepType: 'search', query, status: 'done', engine, count: results.length, resultPreview: previewStr, snippet: `${results.length} résultat(s)`, title: `Recherche : ${query}` });
       return { engine, query, results };
     } catch (e) {
       emitStep({ id: searchId, stepType: 'search', query, status: 'error', error: e.message, title: `Recherche : ${query}` });
@@ -696,8 +740,10 @@ function createWebExecutor(metadata, emit) {
         }
       }
 
-      const previewSrc = out.extracted || out.text || out.markdown || out.html || '';
-      emitStep({ id: fetchId, stepType: 'fetch', url, status: 'done', statusCode: out.statusCode, wasJsRendered, title: out.title || url, resultPreview: previewSrc.slice(0, 400) });
+      const previewSrcRaw = out.extracted || out.text || out.excerpt || out.markdown || '';
+      // Clean preview : whitespace compact, pas de HTML brut, coupe sur limite de mots
+      const previewSrc = _cleanPreview(previewSrcRaw, 400);
+      emitStep({ id: fetchId, stepType: 'fetch', url, status: 'done', statusCode: out.statusCode, wasJsRendered, title: out.title || url, resultPreview: previewSrc });
       return out;
     } catch (e) {
       emitStep({ id: fetchId, stepType: 'fetch', url, status: 'error', error: e.message, title: url });

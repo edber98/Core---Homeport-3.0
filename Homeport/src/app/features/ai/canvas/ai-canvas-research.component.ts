@@ -34,8 +34,8 @@ import { AiService } from '../ai.service';
                 <span nz-icon nzType="copy" nzTheme="outline"></span>
               </button>
             </a>
-            <div class="step-snippet" *ngIf="step.snippet">{{ step.snippet }}</div>
-            <pre class="step-preview" *ngIf="step.resultPreview">{{ step.resultPreview }}</pre>
+            <div class="step-snippet" *ngIf="step.snippet">{{ asText(step.snippet) }}</div>
+            <pre class="step-preview" *ngIf="step.resultPreview">{{ asText(step.resultPreview) }}</pre>
           </div>
         </div>
       </div>
@@ -90,6 +90,28 @@ export class AiCanvasResearchComponent {
   stepTypeLabel(type: string) {
     const map: Record<string, string> = { search: 'Recherche', fetch: 'Téléchargement', synth: 'Synthèse' };
     return map[type] || type;
+  }
+
+  /** Rend proprement un snippet/preview qui peut être string OU array d'objets (events legacy). */
+  asText(v: any): string {
+    if (v == null) return '';
+    if (typeof v === 'string') return v;
+    if (Array.isArray(v)) {
+      return v.map(item => {
+        if (item == null) return '';
+        if (typeof item === 'string') return `• ${item}`;
+        if (typeof item === 'object') {
+          const title = item.title || item.label || item.name || '';
+          const url = item.url || item.href || '';
+          return `• ${title}${url ? ' — ' + url : ''}`.trim();
+        }
+        return `• ${String(item)}`;
+      }).filter(Boolean).join('\n');
+    }
+    if (typeof v === 'object') {
+      try { return JSON.stringify(v, null, 2); } catch { return String(v); }
+    }
+    return String(v);
   }
 
   copyUrl(e: Event, url: string) {

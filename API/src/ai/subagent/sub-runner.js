@@ -300,8 +300,18 @@ async function _runSubagentJob({
   } catch { /* non-fatal */ }
   emitUpdate('running');
 
-  // 4. Exécute le job avec le prompt enrichi
+  // 4. Exécute le job avec le prompt enrichi (+ optionnel timeout dur par type)
   let runError = null;
+  const runtimeLimit = typeDef.maxRuntimeMs || null;
+  const runAc = new AbortController();
+  let hardTimer = null;
+  if (runtimeLimit) {
+    hardTimer = setTimeout(() => {
+      console.warn(`[sub-runner] HARD TIMEOUT (${runtimeLimit}ms) for ${subagentType} job ${job.id} → abort`);
+      try { runAc.abort(); } catch {}
+    }, runtimeLimit);
+  }
+  console.log(`[sub-runner] RUN START ${subagentType} job=${job.id} maxLoops=${job.maxLoops} timeout=${runtimeLimit || 'none'}`);
   try {
     const { runJob } = require('../jobs/job-runner');
     await runJob(job.id, {
@@ -312,12 +322,22 @@ async function _runSubagentJob({
       forcedAutonomy: typeDef.forcedAutonomy || null,
       prompt: enrichedPrompt,
       contextSlice,
+      signal: runAc.signal,
     });
+    console.log(`[sub-runner] RUN END ${subagentType} job=${job.id} duration=${Date.now() - startedAt}ms aborted=${runAc.signal.aborted}`);
+    if (runAc.signal.aborted) {
+      runError = `subagent_runtime_exceeded (${runtimeLimit}ms)`;
+    }
   } catch (e) {
-    runError = e?.message || String(e);
+    runError = runAc.signal.aborted
+      ? `subagent_runtime_exceeded (${runtimeLimit}ms)`
+      : (e?.message || String(e));
+    console.error(`[sub-runner] RUN ERROR ${subagentType} job=${job.id}: ${runError}`);
     await AiJob.updateOne({ id: job.id }, {
       $set: { status: 'error', error: runError, finishedAt: new Date() },
     }).catch(() => {});
+  } finally {
+    if (hardTimer) clearTimeout(hardTimer);
   }
 
   const duration = Date.now() - startedAt;

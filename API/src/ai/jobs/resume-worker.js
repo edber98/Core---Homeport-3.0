@@ -7,6 +7,8 @@ const AiJob = require('../../db/models/ai-job.model');
 
 const DEFAULT_INTERVAL_MS = 30_000;
 const HEARTBEAT_STALE_MS = 60_000;
+const MAX_RESUMES = 3; // Au-delà : on kill le job au lieu de boucler
+const NO_RESUME_SUBAGENTS = new Set(['memory_extractor']); // short-lived, pas de retry auto
 
 let _timer = null;
 
@@ -18,19 +20,40 @@ async function _pass() {
       { heartbeatAt: { $lt: threshold } },
       { heartbeatAt: null },
     ],
-  }, '_id id').limit(10).lean();
+  }, '_id id subagentType resumeCount').limit(10).lean();
 
   if (!stale.length) return;
 
   for (const s of stale) {
     try {
-      // Flip to queued
+      const resumeCount = Number(s.resumeCount || 0);
+      const isShortLived = s.subagentType && NO_RESUME_SUBAGENTS.has(s.subagentType);
+
+      // Si subagent short-lived OU trop de retries → kill
+      if (isShortLived || resumeCount >= MAX_RESUMES) {
+        await AiJob.updateOne(
+          { id: s.id, status: 'running' },
+          {
+            $set: {
+              status: 'error',
+              finishedAt: new Date(),
+              error: isShortLived
+                ? 'short_lived_subagent_stalled'
+                : `resume_limit_exceeded (${MAX_RESUMES})`,
+            },
+          }
+        );
+        console.warn(`[resume-worker] killing stalled job ${s.id} (${isShortLived ? 'short-lived' : `${resumeCount} resumes`})`);
+        continue;
+      }
+
+      // Flip to queued + increment counter
       const res = await AiJob.updateOne(
         { id: s.id, status: 'running' },
-        { $set: { status: 'queued' } }
+        { $set: { status: 'queued' }, $inc: { resumeCount: 1 } }
       );
       if (!res.modifiedCount) continue;
-      console.log(`[resume-worker] resuming stalled job ${s.id}`);
+      console.log(`[resume-worker] resuming stalled job ${s.id} (retry ${resumeCount + 1}/${MAX_RESUMES})`);
       // Async — don't block the pass
       const { resumeJob } = require('./job-runner');
       setImmediate(() => {

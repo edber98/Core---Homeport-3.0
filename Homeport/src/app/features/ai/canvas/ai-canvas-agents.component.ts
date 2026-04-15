@@ -15,6 +15,9 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzEmptyModule } from 'ng-zorro-antd/empty';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
+import { NzMessageService } from 'ng-zorro-antd/message';
 import { AiService } from '../ai.service';
 
 interface AgentNode {
@@ -47,7 +50,7 @@ interface AgentNode {
   selector: 'ai-canvas-agents',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, NzIconModule, NzTagModule, NzEmptyModule, NzToolTipModule],
+  imports: [CommonModule, NzIconModule, NzTagModule, NzEmptyModule, NzToolTipModule, NzButtonModule, NzPopconfirmModule],
   template: `
     <div class="agents-wrap" *ngIf="tree().length; else empty">
       <div class="agents-header">
@@ -77,6 +80,17 @@ interface AgentNode {
                   <span *ngIf="node.status === 'running'" class="status-dot pulse"></span>
                   {{ statusLabel(node.status) }}
                 </nz-tag>
+                <button *ngIf="isCancellable(node.status)"
+                        nz-button nzType="text" nzSize="small"
+                        class="agent-stop"
+                        nz-popconfirm
+                        [nzPopconfirmTitle]="'Arrêter cette tâche ? Les sous-tâches dépendantes seront aussi annulées.'"
+                        nzOkText="Arrêter" nzCancelText="Non" nzOkDanger
+                        (click)="$event.stopPropagation()"
+                        (nzOnConfirm)="cancelTask(node)"
+                        nz-tooltip nzTooltipTitle="Arrêter la tâche (cascade)">
+                  <span nz-icon nzType="stop" nzTheme="outline"></span>
+                </button>
               </div>
               <div class="agent-meta">
                 <span class="meta-type" *ngIf="node.subagentType">{{ node.subagentType }}</span>
@@ -130,6 +144,8 @@ interface AgentNode {
     .agents-title { display: flex; align-items: center; gap: 6px; font-weight: 600; color: #333; font-size: 13px; }
     .agents-count { font-size: 11px; color: #999; }
     .agent-node { margin: 2px 0; }
+    .agent-stop { flex-shrink: 0; padding: 0 6px; height: 24px; color: #999; }
+    .agent-stop:hover { color: #ff4d4f; background: #fff1f0; }
     .agent-row { display: flex; align-items: flex-start; gap: 8px; padding: 7px 8px; border-radius: 6px; cursor: pointer; transition: background .15s; }
     .agent-row:hover { background: #fafafa; }
     .agent-chev { width: 12px; font-size: 10px; color: #999; padding-top: 3px; flex-shrink: 0; }
@@ -206,6 +222,24 @@ export class AiCanvasAgentsComponent implements OnInit, OnDestroy {
 
   trackById(_: number, n: AgentNode) { return n.id; }
   trackByTc(_: number, tc: any) { return tc.id || tc.at || tc.name; }
+
+  private nzMsg = inject(NzMessageService);
+
+  isCancellable(status: string): boolean {
+    return status === 'running' || status === 'queued' || status === 'waiting_dependency' || status === 'waiting_permission' || status === 'paused';
+  }
+
+  cancelTask(node: AgentNode): void {
+    const id = node.jobId || node.id;
+    if (!id) return;
+    this.ai.cancelJob(id).subscribe({
+      next: (r: any) => {
+        const n = r?.cancelledCount ?? 1;
+        this.nzMsg.success(n > 1 ? `Tâche arrêtée (+${n - 1} cascade)` : 'Tâche arrêtée');
+      },
+      error: () => this.nzMsg.error('Échec de l\'arrêt'),
+    });
+  }
 
   iconFor(type?: string): string {
     switch (type) {

@@ -146,22 +146,49 @@ function _buildJobContext(job, ac) {
     const threadId = job.threadId;
     if (!threadId) return;
     if (event.type === 'canvas.research.step') {
-      await AiCanvasState.updateOne(
-        { threadId },
-        { $push: { 'research.steps': { $each: [{
-          id: event.id || `${jobId}_${Date.now()}`,
-          type: event.stepType || event.kind || 'step',
-          status: event.status || 'running',
-          title: event.title || '',
-          url: event.url || null,
-          snippet: event.snippet || event.resultPreview || null,
-          resultPreview: event.resultPreview || null,
-          startedAt: new Date(),
-          _jobId: event._jobId,
-          _agentLabel: event._agentLabel,
-        }], $slice: -200 } } },
-        { upsert: true }
-      );
+      const stepId = event.id || `${jobId}_${Date.now()}`;
+      // Upsert-style : si la step existe déjà (mêmes id), $set le patch ;
+      // sinon $push une nouvelle entry. Évite les doublons running/done.
+      const existing = await AiCanvasState.findOne(
+        { threadId, 'research.steps.id': stepId },
+        { _id: 1 }
+      ).lean();
+      if (existing) {
+        const set = {};
+        if (event.status) set['research.steps.$.status'] = event.status;
+        if (event.title) set['research.steps.$.title'] = event.title;
+        if (event.url) set['research.steps.$.url'] = event.url;
+        if (event.snippet || event.resultPreview) {
+          set['research.steps.$.snippet'] = event.snippet || event.resultPreview;
+        }
+        if (event.resultPreview) set['research.steps.$.resultPreview'] = event.resultPreview;
+        if (event.status === 'done' || event.status === 'error') {
+          set['research.steps.$.finishedAt'] = new Date();
+        }
+        if (Object.keys(set).length) {
+          await AiCanvasState.updateOne(
+            { threadId, 'research.steps.id': stepId },
+            { $set: set }
+          );
+        }
+      } else {
+        await AiCanvasState.updateOne(
+          { threadId },
+          { $push: { 'research.steps': { $each: [{
+            id: stepId,
+            type: event.stepType || event.kind || 'step',
+            status: event.status || 'running',
+            title: event.title || '',
+            url: event.url || null,
+            snippet: event.snippet || event.resultPreview || null,
+            resultPreview: event.resultPreview || null,
+            startedAt: new Date(),
+            _jobId: event._jobId,
+            _agentLabel: event._agentLabel,
+          }], $slice: -200 } } },
+          { upsert: true }
+        );
+      }
     } else if (event.type === 'canvas.task.create' && event.task) {
       const taskId = event.task.id;
       if (!taskId) return;
@@ -356,7 +383,7 @@ async function runJob(jobId, opts = {}) {
         finishedAt,
         usage: totalUsage,
         result: {
-          summary: finalText.slice(0, 4000),
+          summary: finalText.slice(0, 20_000),
           artifacts: toolCalls.slice(-20),
         },
       },
@@ -414,13 +441,16 @@ async function _maybeCreateAgentReport(job, { opts, toolCalls, finishedAt, error
   const longEnough = duration > 30_000;
   if (!wasAsync && !longEnough) return;
   if (job.type !== 'subagent' && job.type !== 'long_task') return;
+  // Memory_extractor : tâche background silencieuse → pas de card agent_report
+  // dans le chat. L'utilisateur voit les entries pending via le badge bulb.
+  if (job.subagentType === 'memory_extractor') return;
 
   // Relit le job final pour résultat frais
   const fresh = await AiJob.findOne({ id: job.id }).lean();
   if (!fresh) return;
 
   const status = errorMessage ? 'error' : (fresh.status === 'cancelled' ? 'cancelled' : 'completed');
-  const summary = (fresh.result?.summary || '').slice(0, 4000);
+  const summary = (fresh.result?.summary || '').slice(0, 20_000);
   const rawArtifacts = Array.isArray(fresh.result?.artifacts) ? fresh.result.artifacts : [];
 
   const artifacts = [];
@@ -499,10 +529,64 @@ async function pauseJob(jobId) {
 }
 
 async function cancelJob(jobId) {
-  await AiJob.updateOne({ id: jobId }, {
-    $set: { status: 'cancelled', finishedAt: new Date() },
-  });
-  emitJobEvent(jobId, { type: 'job.status', status: 'cancelled' });
+  const visited = new Set();
+  const queue = [jobId];
+  const cancelled = [];
+  const NON_TERMINAL = new Set(['queued', 'running', 'waiting_dependency', 'waiting_permission', 'paused']);
+
+  while (queue.length) {
+    const id = queue.shift();
+    if (!id || visited.has(id)) continue;
+    visited.add(id);
+
+    const job = await AiJob.findOne({ id }, 'id status threadId').lean();
+    if (!job) continue;
+    if (!NON_TERMINAL.has(job.status)) continue;
+
+    await AiJob.updateOne(
+      { id },
+      { $set: { status: 'cancelled', finishedAt: new Date(), error: 'cancelled_by_user' } }
+    );
+    cancelled.push({ id, threadId: job.threadId });
+    emitJobEvent(id, { type: 'job.status', status: 'cancelled' });
+
+    // Cascade : tous les jobs children (parentJobId) OU qui dépendent de celui-ci
+    const children = await AiJob.find({
+      $or: [
+        { parentJobId: id },
+        { dependsOn: id },
+      ],
+      status: { $in: ['queued', 'running', 'waiting_dependency', 'waiting_permission', 'paused'] },
+    }, 'id').lean();
+    for (const c of children) queue.push(c.id);
+  }
+
+  // Met à jour les tasks du canvas pour chaque job annulé
+  try {
+    const AiCanvasState = require('../../db/models/ai-canvas-state.model');
+    for (const { id, threadId } of cancelled) {
+      if (!threadId) continue;
+      await AiCanvasState.updateOne(
+        { threadId, 'tasks.jobId': id },
+        { $set: { 'tasks.$.status': 'cancelled', 'tasks.$.finishedAt': new Date() } }
+      );
+      await AiCanvasState.updateOne(
+        { threadId, 'tasks.id': id },
+        { $set: { 'tasks.$.status': 'cancelled', 'tasks.$.finishedAt': new Date() } }
+      );
+      // Emet event live pour que le canvas UI actualise
+      emitThreadEvent(String(threadId), {
+        type: 'canvas.task.update',
+        taskId: id,
+        status: 'cancelled',
+        finishedAt: new Date().toISOString(),
+      });
+    }
+  } catch (e) {
+    console.error('[job-runner] cancelJob canvas update failed:', e?.message);
+  }
+
+  return { cancelledCount: cancelled.length, cancelledIds: cancelled.map(c => c.id) };
 }
 
 /**

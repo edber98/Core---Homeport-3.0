@@ -542,19 +542,48 @@ function createProjectFsExecutor(metadata = {}, emit = () => {}) {
       const rawPaths = Array.isArray(input?.paths) ? input.paths : [];
       const paths = rawPaths.map(p => _stripConnectorPrefix(root.connectorType, p));
       const maxTotal = Math.max(1, Math.min(input?.maxTotalBytes || 2 * 1024 * 1024, 10 * 1024 * 1024));
+      const multimodalLimit = Math.max(1, Math.min(input?.maxMultimodalFiles || 5, 20));
       const results = [];
+      const _contentBlocks = [];
       let used = 0;
+      let multimodalCount = 0;
       for (const p of paths) {
-        if (used >= maxTotal) { results.push({ path: p, skipped: 'budget_exceeded' }); continue; }
+        if (used >= maxTotal && multimodalCount >= multimodalLimit) {
+          results.push({ path: p, ok: false, skipped: 'budget_exceeded' });
+          continue;
+        }
         const r = await tools.project_read_file({ path: p });
-        if (r?.ok && r.content) {
+        if (!r?.ok) {
+          results.push({ path: p, ok: false, error: r?.error || 'read_failed' });
+          continue;
+        }
+        // Cas multimodal : PDF / image / audio — on renvoie les _contentBlocks
+        // au LLM agrégés avec le batch pour qu'il puisse les lire en vision.
+        if (Array.isArray(r._contentBlocks) && r._contentBlocks.length) {
+          if (multimodalCount >= multimodalLimit) {
+            results.push({ path: p, ok: false, skipped: `multimodal_limit (${multimodalLimit})` });
+            continue;
+          }
+          _contentBlocks.push(...r._contentBlocks);
+          multimodalCount += 1;
+          used += r.size || 0;
+          results.push({
+            path: p, ok: true, mimeType: r.mimeType, size: r.size,
+            multimodalAttached: true, message: r.message,
+          });
+          continue;
+        }
+        // Cas texte classique
+        if (r.content != null) {
           used += (r.size || r.content.length || 0);
           results.push(r);
         } else {
-          results.push({ path: p, ok: false, error: r?.error });
+          results.push({ path: p, ok: false, error: 'no_content' });
         }
       }
-      return { ok: true, results, totalBytes: used };
+      const out = { ok: true, results, totalBytes: used, multimodalCount };
+      if (_contentBlocks.length) out._contentBlocks = _contentBlocks;
+      return out;
     },
 
     async project_grep(input) {

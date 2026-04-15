@@ -698,9 +698,11 @@ Tu es un sous-agent (parentJobId présent). Tu ne communiques PAS directement av
       try { await jobContext.persistCheckpoint(loopCount, conversation); } catch { /* non-fatal */ }
       try { await jobContext.heartbeat(); } catch { /* non-fatal */ }
     }
+    console.log(`[harness] end of loop ${loopCount}/${maxLoops} — will ${loopCount < maxLoops ? 'continue' : 'STOP (maxLoops reached)'}`);
   }
 
   // Max loops reached
+  console.log(`[harness] maxLoops=${maxLoops} reached → cleanup + done`);
   await toolSet.cleanup();
   yield { type: 'message', text: '\n\n*Limite de boucles atteinte. Reformule ta demande si nécessaire.*' };
   yield { type: 'done', usage: totalUsage };

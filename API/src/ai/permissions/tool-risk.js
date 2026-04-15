@@ -27,6 +27,11 @@ const TOOL_RISK = {
   get_tool_details:     'safe',
   render_html_preview:  'safe',
   get_project_knowledge: 'safe',
+  // suggest_memory_entries = écrit juste des entries 'pending' (validées par l'user
+  // avant de devenir effectives) → classé safe pour ne PAS déclencher la gate de
+  // permission (le memory_extractor tourne en autonomy 'prudent' avec parent
+  // éphémère qui ne peut pas répondre à une demande de permission → deadlock 5 min).
+  suggest_memory_entries: 'safe',
 
   // ── writes (create / edit / sync) ──
   project_write_file:    'write',

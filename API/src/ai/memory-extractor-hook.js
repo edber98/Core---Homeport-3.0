@@ -23,17 +23,26 @@ const AiProjectKnowledge = require('../db/models/ai-project-knowledge.model');
  * @param {object} args.user   - req.user
  * @param {string} [args.lastAssistantMessageId] - _id du dernier message assistant créé
  */
+// Regex rapides pour détecter les échanges triviaux (pas de matière à mémoriser)
+const TRIVIAL_USER_PATTERNS = /^(ok|oui|non|merci|bonjour|salut|hello|hi|bye|ciao|ça va|ca va|yes|no|cool|super|ptn|hmm|\?|\!)[\s\!\?\.]*$/i;
+const HAS_FACT_HINTS = /\b(\d{1,4}[\/\-\.]\d{1,2}|\d+\s*(€|euros?|k€|k|eur|\$|%)|mail|email|@|http|url|deadline|\d{2,}\s*(jan|fev|mar|avr|mai|juin|juil|aou|sep|oct|nov|dec)|client|projet|budget|contact|nom|compte|siret|iban|tel|tél)/i;
+
 async function triggerMemoryExtractor({ thread, user, lastAssistantMessageId }) {
+  const _t0 = Date.now();
   try {
-    if (process.env.AI_DISABLE_MEMORY_EXTRACTOR === '1') return;
-    if (!thread || thread.mode !== 'project') return;
+    if (process.env.AI_DISABLE_MEMORY_EXTRACTOR === '1') {
+      console.log('[memory-extractor] disabled via AI_DISABLE_MEMORY_EXTRACTOR');
+      return;
+    }
+    if (!thread || thread.mode !== 'project') {
+      console.log('[memory-extractor] skip: not project mode (mode=' + thread?.mode + ')');
+      return;
+    }
+    console.log('[memory-extractor] trigger START thread=' + thread._id);
 
     const threadId = thread._id;
 
     // ── Debounce : 1 extractor actif max par thread ──
-    // Stale guard : un job resté en 'running' sans heartbeat depuis >2min
-    // n'est plus considéré comme bloquant (évite un deadlock si le worker
-    // avait crashé).
     const existing = await AiJob.findOne({
       threadId,
       subagentType: 'memory_extractor',
@@ -55,6 +64,32 @@ async function triggerMemoryExtractor({ thread, user, lastAssistantMessageId }) 
 
     // Si uniquement 1 message user sans réponse, rien à analyser
     if (!recent.length || !recent.some(m => m.role === 'assistant')) return;
+
+    // ── Skip triviaux : évite de déclencher sur "ça va", "ok", "merci"… ──
+    const lastUser = [...recent].reverse().find(m => m.role === 'user');
+    const lastAsst = [...recent].reverse().find(m => m.role === 'assistant');
+    const userText = (lastUser?.content || '').trim();
+    const asstText = (lastAsst?.content || '').trim();
+    // 1. User message trop court ou purement social → skip
+    if (userText.length < 40 && !HAS_FACT_HINTS.test(userText)) {
+      console.log('[memory-extractor] skip: user trivial (' + userText.length + ' chars)');
+      return;
+    }
+    if (TRIVIAL_USER_PATTERNS.test(userText)) {
+      console.log('[memory-extractor] skip: user message social');
+      return;
+    }
+    // 2. Pas de matière factuelle dans le dernier échange → skip
+    const combined = userText + '\n' + asstText;
+    if (!HAS_FACT_HINTS.test(combined)) {
+      console.log('[memory-extractor] skip: no fact hints detected');
+      return;
+    }
+    // 3. Réponse assistant trop courte → probablement une clarification, pas un résultat
+    if (asstText.length < 120) {
+      console.log('[memory-extractor] skip: assistant answer short (' + asstText.length + ' chars)');
+      return;
+    }
 
     const existingDoc = await AiProjectKnowledge.findOne({ threadId }).lean();
     const existingEntries = existingDoc?.entries || [];
@@ -98,21 +133,25 @@ Rappel : appelle UNE SEULE FOIS suggest_memory_entries puis STOP.`;
     });
 
     // Spawn async (setImmediate dans sub-runner)
+    // maxLoops=1 : UN SEUL tour LLM (qui appelle suggest_memory_entries), pas de
+    // tour supplémentaire parasite. Après le tool, la loop se termine d'elle-même.
+    console.log('[memory-extractor] spawning subagent (parentJob=' + parentJob.id + ')');
     const { spawnSubagent } = require('./subagent/sub-runner');
     const res = await spawnSubagent({
       parentJobId: parentJob.id,
       subagentType: 'memory_extractor',
       async: true,
       prompt,
-      maxLoops: 3,
+      maxLoops: 1,
     });
+    console.log('[memory-extractor] spawned jobId=' + res?.jobId + ' (elapsed=' + (Date.now() - _t0) + 'ms)');
 
     // Hook après fin du job pour émettre un event thread-level
     if (res?.jobId) {
       _watchJobAndNotify(res.jobId, threadId, lastAssistantMessageId).catch(() => {});
     }
   } catch (e) {
-    console.error('[memory-extractor-hook] failed:', e?.message);
+    console.error('[memory-extractor] FAILED after ' + (Date.now() - _t0) + 'ms:', e?.message, e?.stack);
   }
 }
 

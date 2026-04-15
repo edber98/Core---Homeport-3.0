@@ -55,6 +55,8 @@ const AiJobSchema = new Schema({
   startedAt: { type: Date },
   finishedAt: { type: Date },
   heartbeatAt: { type: Date, index: true },
+  // Compteur de reprises par le resume-worker (stalled → queued). Borné par MAX_RESUMES.
+  resumeCount: { type: Number, default: 0 },
 }, { timestamps: true });
 
 AiJobSchema.pre('save', function (next) {

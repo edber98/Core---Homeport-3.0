@@ -2201,6 +2201,31 @@ ${toolLines.join('\n')}
 
   r.get('/ai/threads/:threadId/canvas', requireThreadAccess('view'), async (req, res) => {
     const doc = await AiCanvasState.findOne({ threadId: req.aiThread._id }).lean();
+    // Dédoublonnage research.steps : d'anciens events ont pu créer 2 entries
+    // (running + done) pour la même step id → garde celle avec le status le plus
+    // avancé. Plus de spinner infini après reload.
+    if (doc?.research?.steps?.length) {
+      const rank = { queued: 0, running: 1, error: 2, done: 3 };
+      const byId = new Map();
+      for (const s of doc.research.steps) {
+        if (!s?.id) { byId.set(Symbol(), s); continue; }
+        const prev = byId.get(s.id);
+        if (!prev) { byId.set(s.id, s); continue; }
+        const a = rank[s.status] ?? 0;
+        const b = rank[prev.status] ?? 0;
+        byId.set(s.id, a >= b ? s : prev);
+      }
+      const deduped = [...byId.values()];
+      if (deduped.length !== doc.research.steps.length) {
+        doc.research.steps = deduped;
+        try {
+          await AiCanvasState.updateOne(
+            { threadId: req.aiThread._id },
+            { $set: { 'research.steps': deduped } }
+          );
+        } catch { /* non-fatal */ }
+      }
+    }
     // Réconciliation : si des tasks sont encore en 'running'/'queued' mais que
     // leur AiJob réel est completed/error, on patch le status avant de répondre
     // (évite le spinner infini si le dernier event canvas.task.update a été perdu).
@@ -2210,16 +2235,37 @@ ${toolLines.join('\n')}
         .map(t => t.jobId || t.id)
         .filter(Boolean);
       if (stuckIds.length) {
-        const jobs = await AiJob.find({ id: { $in: stuckIds } }).select('id status finishedAt error').lean();
+        const jobs = await AiJob.find({ id: { $in: stuckIds } }).select('id status finishedAt error heartbeatAt startedAt').lean();
         const jobMap = new Map(jobs.map(j => [j.id, j]));
+        const STALE_MS = 5 * 60 * 1000; // 5 min sans heartbeat → stalled
+        const now = Date.now();
         let patched = false;
         for (const t of doc.tasks) {
           const j = jobMap.get(t.jobId || t.id);
           if (!j) continue;
+          // Cas 1 : job terminé côté DB mais task encore running
           if ((j.status === 'completed' || j.status === 'error' || j.status === 'cancelled') && j.status !== t.status) {
             t.status = j.status;
             if (j.finishedAt) t.finishedAt = j.finishedAt;
             if (j.error) t.error = j.error;
+            patched = true;
+            continue;
+          }
+          // Cas 2 : job running côté DB mais heartbeat périmé → on considère mort
+          const hb = j.heartbeatAt ? new Date(j.heartbeatAt).getTime() : null;
+          const started = j.startedAt ? new Date(j.startedAt).getTime() : null;
+          const ref = hb || started || 0;
+          if ((j.status === 'running' || j.status === 'queued') && ref && (now - ref) > STALE_MS) {
+            // Force l'état terminal pour éviter le spinner infini
+            try {
+              await AiJob.updateOne(
+                { id: j.id },
+                { $set: { status: 'error', error: 'stalled_timeout', finishedAt: new Date() } }
+              );
+            } catch { /* non-fatal */ }
+            t.status = 'error';
+            t.error = 'stalled_timeout';
+            t.finishedAt = new Date();
             patched = true;
           }
         }
