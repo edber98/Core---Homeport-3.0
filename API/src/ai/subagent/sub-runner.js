@@ -321,6 +321,17 @@ async function _runSubagentJob({
       } else if (typeof effectiveInputFrom === 'string') {
         sourceIds = [effectiveInputFrom];
       }
+
+      // Fallback : si l'une des formes sémantiques ('all_above'/'all_siblings')
+      // retourne vide (ex: spawn depuis un chat sans jobContext → chaque appel
+      // crée un ephemeralParent différent, donc pas de siblings communs), on
+      // bascule sur depends_on explicite comme source. Ça sauve les cas où le
+      // LLM a bien fait les deps mais choisi 'all_above' pour plus de souplesse.
+      if (sourceIds.length === 0 && hasDeps) {
+        console.warn(`[sub-runner] ${subagentType} job=${job.id} : '${effectiveInputFrom}' a retourné 0 siblings (parentJobId différent entre spawns ?). Fallback → depends_on=[${depends_on.join(',')}]`);
+        sourceIds = depends_on.slice();
+      }
+
       console.log(`[sub-runner] enrich for ${subagentType} job=${job.id} : sourceIds=[${sourceIds.join(',')}]`);
       if (sourceIds.length) {
         const sources = await AiJob.find(

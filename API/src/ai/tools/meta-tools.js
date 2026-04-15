@@ -14,6 +14,23 @@ const Flow = require('../../db/models/flow.model');
 const AiUserContext = require('../../db/models/ai-user-context.model');
 const AiThread = require('../../db/models/ai-thread.model');
 const AiMessage = require('../../db/models/ai-message.model');
+
+/**
+ * Notifie le stream live du thread qu'un nouveau message inline vient d'être
+ * créé par un tool (render_structured / display_image / display_file /
+ * render_interactive_canvas / generate_diagram / etc.). Le frontend réagit
+ * via `ai.message.created` → reloadThreadMessages → le widget apparaît live.
+ * Sans ça, l'utilisateur doit refresh pour voir le tableau/image/pdf.
+ */
+function _notifyInlineMessage(threadId, kind) {
+  if (!threadId) return;
+  try {
+    const { emitThreadEvent } = require('../jobs/job-events');
+    emitThreadEvent(String(threadId), { type: 'ai.message.created', kind: kind || 'inline' });
+  } catch (e) {
+    console.warn('[meta-tools] notifyInlineMessage failed:', e?.message);
+  }
+}
 const AiProjectMemory = require('../../db/models/ai-project-memory.model');
 const AiProjectKnowledge = require('../../db/models/ai-project-knowledge.model');
 const Run = require('../../db/models/run.model');
@@ -449,6 +466,13 @@ const META_TOOL_DEFINITIONS = [
       "flèche de dépendance sur le canvas, et tu évites les race conditions subtiles",
       "(si un frère finit JUSTE avant que le consolidator démarre, l'auto-wait ne se",
       "déclenche pas).",
+      "",
+      "🔓 AUTO-ASYNC QUAND depends_on : si tu passes `depends_on` SANS `async:true`,",
+      "le backend force automatiquement async=true. Sinon le parent agent_run bloque",
+      "pendant toute la chaîne dep → chat verrouillé plusieurs minutes. Avec async:true",
+      "forcé, le parent retourne immédiatement {jobId, status:'waiting_dependency'},",
+      "le chat se libère, et _maybeResumeParent reprend quand toute la chaîne finit.",
+      "RÈGLE : un subagent avec depends_on = TOUJOURS async. Pas de compromis.",
       "",
       "🚫 INTERDICTION ABSOLUE : un subagent de consolidation NE DOIT JAMAIS",
       "demander à l'user de 'coller les résultats' si son contexte est vide.",
@@ -1273,21 +1297,34 @@ async function executeMetaTool(name, input, ctx) {
             return { ok: false, error: `Impossible de créer un job parent éphémère: ${e?.message}` };
           }
         }
+        // Force async=true quand depends_on est présent : un subagent qui
+        // attend une dépendance DOIT être async, sinon le parent bloque
+        // l'agent_run (donc le chat) pendant toute la chaîne. Le LLM oublie
+        // souvent de passer async:true → on compense côté backend.
+        const hasExplicitDeps = Array.isArray(input.depends_on) && input.depends_on.length > 0;
+        const forceAsync = hasExplicitDeps && input.async !== true;
+        if (forceAsync) {
+          console.warn(`[spawn_subagent] depends_on présent sans async=true → on force async=true pour libérer le chat parent`);
+        }
         const res = await spawnSubagent({
           parentJobId,
           subagentType: input.subagent_type || 'general',
           prompt: input.prompt || '',
           maxLoops: input.max_loops,
           contextSlice: input.context_slice || null,
-          parallel: Array.isArray(input.parallel) ? input.parallel.map(p => ({
-            subagentType: p.subagent_type,
-            prompt: p.prompt,
-            async: p.async === true,
-            depends_on: Array.isArray(p.depends_on) ? p.depends_on : undefined,
-            input_from: p.input_from,
-          })) : null,
+          parallel: Array.isArray(input.parallel) ? input.parallel.map(p => {
+            const pHasDeps = Array.isArray(p.depends_on) && p.depends_on.length > 0;
+            return {
+              subagentType: p.subagent_type,
+              prompt: p.prompt,
+              // Auto-async quand dep : pareil que le cas principal
+              async: p.async === true || pHasDeps,
+              depends_on: Array.isArray(p.depends_on) ? p.depends_on : undefined,
+              input_from: p.input_from,
+            };
+          }) : null,
           depth,
-          async: input.async === true,
+          async: input.async === true || forceAsync,
           depends_on: Array.isArray(input.depends_on) ? input.depends_on : undefined,
           input_from: input.input_from,
           parentBroadcast: jc?.broadcast,
@@ -1409,6 +1446,7 @@ async function executeMetaTool(name, input, ctx) {
             },
           },
         });
+        _notifyInlineMessage(ctx.threadId, 'structured');
         // Retour minimal/silencieux : le widget est DÉJÀ visible dans le chat via le message inline.
         return {
           ok: true,
@@ -1540,6 +1578,7 @@ async function executeMetaTool(name, input, ctx) {
             diagram: { type: input.type, title, mermaid: code },
           },
         });
+        _notifyInlineMessage(ctx.threadId, 'diagram');
       } catch (e) {
         // non-fatal — the canvas update still goes through
         console.warn('[generate_diagram] AiMessage persist error:', e?.message);
@@ -1647,6 +1686,7 @@ async function executeMetaTool(name, input, ctx) {
             },
           },
         });
+        _notifyInlineMessage(ctx.threadId, 'image_inline');
         return {
           ok: true,
           _silent: true,
@@ -1692,6 +1732,7 @@ async function executeMetaTool(name, input, ctx) {
             },
           },
         });
+        _notifyInlineMessage(ctx.threadId, 'file_inline');
         return {
           ok: true,
           _silent: true,
@@ -1726,6 +1767,7 @@ async function executeMetaTool(name, input, ctx) {
             },
           },
         });
+        _notifyInlineMessage(ctx.threadId, 'canvas_html');
         return {
           ok: true,
           _silent: true,

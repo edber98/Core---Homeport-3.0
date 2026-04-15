@@ -96,10 +96,25 @@ function _buildJobContext(job, ac) {
       ).catch(() => {});
     }
     emitJobEvent(jobId, enriched);
-    // Forward vers le thread bus pour que les SSE actifs du thread reçoivent
-    // les events des subagents (canvas.*, ai.permission.*, etc.)
+    // Forward vers le thread bus UNIQUEMENT les events UI-only (canvas,
+    // permissions, job.status, thread.*). NE PAS forwarder les events bruts
+    // du LLM (message, tool.end, tool.meta, done) d'un subagent vers le
+    // thread stream : sinon le frontend les append au message STREAMING du
+    // parent et on voit des tool calls du subagent polluer la bulle du parent.
+    // Les events LLM du subagent sont accessibles via emitJobEvent (canvas
+    // Agents s'abonne par jobId).
     if (job.threadId) {
-      emitThreadEvent(String(job.threadId), enriched);
+      const t = enriched.type || '';
+      const isUIEvent = t.startsWith('canvas.')
+        || t.startsWith('ai.')
+        || t.startsWith('subagent.')
+        || t.startsWith('thread.')
+        || t === 'job.status'
+        || t === 'plan.resolved'
+        || t === 'memory.pending.update';
+      if (isUIEvent) {
+        emitThreadEvent(String(job.threadId), enriched);
+      }
     }
     // Persist canvas.* events dans AiCanvasState pour l'UI après reload
     if (enriched.type.startsWith('canvas.')) {
