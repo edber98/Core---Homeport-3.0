@@ -53,7 +53,7 @@ import { AiService, AiInlineFilePayload } from '../ai.service';
           (load)="onLoad()"
           (error)="onError()"
           [title]="data.name || 'preview'"
-          [attr.sandbox]="'allow-scripts allow-same-origin allow-popups allow-downloads'"
+          sandbox="allow-scripts allow-same-origin allow-popups allow-downloads"
           loading="lazy"
         ></iframe>
       </div>
