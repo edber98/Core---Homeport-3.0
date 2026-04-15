@@ -2201,6 +2201,38 @@ ${toolLines.join('\n')}
 
   r.get('/ai/threads/:threadId/canvas', requireThreadAccess('view'), async (req, res) => {
     const doc = await AiCanvasState.findOne({ threadId: req.aiThread._id }).lean();
+    // Réconciliation : si des tasks sont encore en 'running'/'queued' mais que
+    // leur AiJob réel est completed/error, on patch le status avant de répondre
+    // (évite le spinner infini si le dernier event canvas.task.update a été perdu).
+    if (doc?.tasks?.length) {
+      const stuckIds = doc.tasks
+        .filter(t => t.status === 'running' || t.status === 'queued' || t.status === 'waiting_dependency')
+        .map(t => t.jobId || t.id)
+        .filter(Boolean);
+      if (stuckIds.length) {
+        const jobs = await AiJob.find({ id: { $in: stuckIds } }).select('id status finishedAt error').lean();
+        const jobMap = new Map(jobs.map(j => [j.id, j]));
+        let patched = false;
+        for (const t of doc.tasks) {
+          const j = jobMap.get(t.jobId || t.id);
+          if (!j) continue;
+          if ((j.status === 'completed' || j.status === 'error' || j.status === 'cancelled') && j.status !== t.status) {
+            t.status = j.status;
+            if (j.finishedAt) t.finishedAt = j.finishedAt;
+            if (j.error) t.error = j.error;
+            patched = true;
+          }
+        }
+        if (patched) {
+          try {
+            await AiCanvasState.updateOne(
+              { threadId: req.aiThread._id },
+              { $set: { tasks: doc.tasks } }
+            );
+          } catch { /* non-fatal */ }
+        }
+      }
+    }
     res.apiOk(doc || { threadId: req.aiThread._id, activeTab: 'none' });
   });
 

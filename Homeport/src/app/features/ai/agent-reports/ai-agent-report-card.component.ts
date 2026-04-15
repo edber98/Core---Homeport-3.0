@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzTagModule } from 'ng-zorro-antd/tag';
+import { marked } from 'marked';
+import DOMPurify from 'dompurify';
 import { AgentReport, AiService } from '../ai.service';
 
 /**
@@ -44,7 +46,17 @@ import { AgentReport, AiService } from '../ai.service';
         </div>
       </div>
 
-      <div class="report-summary" *ngIf="report.summary">{{ report.summary }}</div>
+      <div class="report-summary-wrap" *ngIf="report.summary">
+        <div class="report-summary markdown"
+             [class.collapsed]="!expanded && isLong()"
+             [innerHTML]="renderedSummary()"></div>
+        <button *ngIf="isLong()"
+                nz-button nzType="link" nzSize="small"
+                class="toggle-expand"
+                (click)="expanded = !expanded">
+          {{ expanded ? 'Réduire' : 'Voir plus' }}
+        </button>
+      </div>
       <div class="report-error" *ngIf="isError() && report.error">{{ report.error }}</div>
 
       <div class="report-artifacts" *ngIf="report.artifacts?.length">
@@ -110,11 +122,25 @@ import { AgentReport, AiService } from '../ai.service';
     .report-meta { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
     .meta-tag { margin: 0; font-size: 11px; display: inline-flex; align-items: center; gap: 3px; }
 
+    .report-summary-wrap { margin-bottom: 8px; }
     .report-summary {
-      font-size: 13px; color: #333; line-height: 1.5;
-      white-space: pre-wrap; word-break: break-word;
-      margin-bottom: 8px;
+      font-size: 13px; color: #333; line-height: 1.55;
+      word-break: break-word;
     }
+    .report-summary.markdown :is(h1,h2,h3,h4) { font-size: 14px; font-weight: 600; margin: 10px 0 6px; color: #262626; }
+    .report-summary.markdown p { margin: 6px 0; }
+    .report-summary.markdown ul, .report-summary.markdown ol { margin: 6px 0; padding-left: 20px; }
+    .report-summary.markdown li { margin: 2px 0; }
+    .report-summary.markdown code { background: #fff; padding: 1px 5px; border-radius: 4px; font-size: 12px; }
+    .report-summary.markdown pre { background: #fff; padding: 8px 10px; border-radius: 6px; overflow-x: auto; font-size: 12px; }
+    .report-summary.markdown a { color: #1890ff; text-decoration: none; }
+    .report-summary.markdown a:hover { text-decoration: underline; }
+    .report-summary.collapsed {
+      max-height: 180px; overflow: hidden; position: relative;
+      mask-image: linear-gradient(180deg, #000 70%, transparent);
+      -webkit-mask-image: linear-gradient(180deg, #000 70%, transparent);
+    }
+    .toggle-expand { margin-top: 2px; padding: 0; height: auto; }
     .report-error {
       font-size: 12px; color: #a8071a; background: #fff1f0;
       border: 1px solid #ffa39e; border-radius: 6px; padding: 6px 10px;
@@ -144,9 +170,26 @@ export class AiAgentReportCardComponent {
   @Input() report!: AgentReport;
 
   readonly ai = inject(AiService);
+  expanded = false;
 
   isError(): boolean {
     return this.report?.status === 'error' || this.report?.status === 'cancelled';
+  }
+
+  isLong(): boolean {
+    return !!this.report?.summary && this.report.summary.length > 400;
+  }
+
+  renderedSummary(): string {
+    const src = this.report?.summary || '';
+    if (!src) return '';
+    try {
+      const html = marked.parse(src, { breaks: true, gfm: true }) as string;
+      return DOMPurify.sanitize(html, {
+        ALLOWED_TAGS: ['div','p','strong','em','code','pre','a','ul','ol','li','br','span','b','i','h1','h2','h3','h4','table','thead','tbody','tr','th','td','blockquote','hr'],
+        ALLOWED_ATTR: ['href','target','rel','class'],
+      });
+    } catch { return src; }
   }
 
   formatDuration(ms?: number): string {

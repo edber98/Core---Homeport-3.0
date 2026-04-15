@@ -25,12 +25,12 @@ import { AiService } from '../ai.service';
           <div class="step-line" *ngIf="i < (research()?.steps?.length || 0) - 1"></div>
           <div class="step-body">
             <div class="step-title">
-              <span>{{ step.title || stepTypeLabel(step.type) }}</span>
+              <span class="step-title-text" [nz-tooltip]="step.title || ''">{{ step.title || stepTypeLabel(step.type) }}</span>
               <span class="step-type">{{ stepTypeLabel(step.type) }}</span>
             </div>
-            <a *ngIf="step.url" [href]="step.url" target="_blank" class="step-url">
-              {{ step.url }}
-              <button nz-button nzType="text" nzSize="small" (click)="copyUrl($event, step.url!)">
+            <a *ngIf="step.url" [href]="step.url" target="_blank" class="step-url" [nz-tooltip]="step.url">
+              <span class="step-url-text">{{ step.url }}</span>
+              <button nz-button nzType="text" nzSize="small" class="copy-btn" (click)="copyUrl($event, step.url!)">
                 <span nz-icon nzType="copy" nzTheme="outline"></span>
               </button>
             </a>
@@ -58,11 +58,15 @@ import { AiService } from '../ai.service';
     .step.status-error .step-dot { background: #fff2f0; color: #ff4d4f; }
     @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
     .step-line { position: absolute; left: 13px; top: 28px; bottom: -4px; width: 2px; background: #f0f0f0; }
-    .step-body { grid-column: 2; min-width: 0; padding-top: 2px; }
-    .step-title { display: flex; align-items: baseline; gap: 8px; font-size: 13px; font-weight: 500; color: #333; }
-    .step-type { font-size: 10px; color: #999; background: #f5f5f5; padding: 1px 6px; border-radius: 3px; text-transform: uppercase; }
-    .step-url { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; color: #1677ff; word-break: break-all; margin: 3px 0; }
-    .step-snippet { font-size: 12px; color: #666; margin-top: 3px; line-height: 1.5; }
+    .step-body { grid-column: 2; min-width: 0; padding-top: 2px; overflow: hidden; }
+    .step-title { display: flex; align-items: baseline; gap: 8px; font-size: 13px; font-weight: 500; color: #333; min-width: 0; }
+    .step-title-text { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .step-type { font-size: 10px; color: #999; background: #f5f5f5; padding: 1px 6px; border-radius: 3px; text-transform: uppercase; flex-shrink: 0; }
+    .step-url { display: flex; align-items: center; gap: 4px; font-size: 12px; color: #1677ff; margin: 3px 0; max-width: 100%; min-width: 0; text-decoration: none; }
+    .step-url-text { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .step-url:hover .step-url-text { text-decoration: underline; }
+    .step-url .copy-btn { flex-shrink: 0; padding: 0 4px; height: 20px; line-height: 20px; }
+    .step-snippet { font-size: 12px; color: #666; margin-top: 3px; line-height: 1.5; overflow-wrap: anywhere; }
     .step-preview { font-size: 11px; color: #555; background: #fafafa; border: 1px solid #f0f0f0; border-radius: 4px; padding: 6px 8px; margin-top: 4px; max-height: 160px; overflow: auto; }
     .res-empty { display: flex; align-items: center; justify-content: center; height: 100%; padding: 20px; }
   `],

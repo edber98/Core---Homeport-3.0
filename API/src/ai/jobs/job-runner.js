@@ -362,17 +362,10 @@ async function runJob(jobId, opts = {}) {
       },
     });
 
-    // If subagent, write a summary message to thread for visibility
-    if (job.type === 'subagent') {
-      try {
-        await AiMessage.create({
-          threadId: job.threadId,
-          role: 'system',
-          content: `[Subagent ${job.subagentType || ''} terminé]\n${finalText.slice(0, 1500)}`,
-          metadata: { kind: 'system_note', extra: { jobId, subagent: true } },
-        });
-      } catch { /* non-fatal */ }
-    }
+    // NB : l'ancien message role='system' "[Subagent ... terminé]" a été retiré
+    // (doublon avec _maybeCreateAgentReport qui crée une vraie card agent_report
+    // avec rendu markdown + artefacts + bouton). Supprimer le legacy évite le
+    // "Contexte transféré" moche + bouton Voir à côté de la card.
 
     emitJobEvent(jobId, { type: 'job.status', status: 'completed', usage: totalUsage });
 
