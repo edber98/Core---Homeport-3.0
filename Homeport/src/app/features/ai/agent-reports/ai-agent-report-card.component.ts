@@ -18,8 +18,8 @@ import { AgentReport, AiService } from '../ai.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, NzButtonModule, NzIconModule, NzTagModule],
   template: `
-    <div class="report-card" [class.error]="isError()">
-      <div class="report-head">
+    <div class="report-card" [class.error]="isError()" [class.expanded]="expanded">
+      <button type="button" class="report-head" (click)="toggleExpanded($event)">
         <span
           nz-icon
           [nzType]="isError() ? 'warning' : 'check-circle'"
@@ -30,99 +30,115 @@ import { AgentReport, AiService } from '../ai.service';
         <div class="report-head-text">
           <div class="report-title">
             {{ isError() ? 'Tâche échouée' : 'Tâche terminée' }}
+            <span *ngIf="report.subagentType" class="subtype">· {{ report.subagentType }}</span>
           </div>
           <div class="report-meta">
-            <nz-tag *ngIf="report.subagentType" nzColor="geekblue" class="meta-tag">
-              {{ report.subagentType }}
-            </nz-tag>
-            <nz-tag nzColor="default" class="meta-tag" *ngIf="report.duration != null">
+            <span class="meta-item" *ngIf="report.duration != null">
               <span nz-icon nzType="clock-circle" nzTheme="outline"></span>
               {{ formatDuration(report.duration) }}
-            </nz-tag>
-            <nz-tag nzColor="purple" class="meta-tag" *ngIf="report.toolCount != null && report.toolCount > 0">
+            </span>
+            <span class="meta-item" *ngIf="report.toolCount != null && report.toolCount > 0">
+              <span nz-icon nzType="tool" nzTheme="outline"></span>
               {{ report.toolCount }} outil{{ report.toolCount > 1 ? 's' : '' }}
-            </nz-tag>
+            </span>
+            <span class="meta-item" *ngIf="report.artifacts?.length">
+              <span nz-icon nzType="paper-clip" nzTheme="outline"></span>
+              {{ report.artifacts!.length }} livrable{{ report.artifacts!.length > 1 ? 's' : '' }}
+            </span>
           </div>
         </div>
-      </div>
+        <span nz-icon
+              [nzType]="expanded ? 'up' : 'down'"
+              nzTheme="outline"
+              class="chevron">
+        </span>
+      </button>
 
-      <div class="report-summary-wrap" *ngIf="report.summary">
+      <div class="report-body" *ngIf="expanded">
         <div class="report-summary markdown"
-             [class.collapsed]="!expanded && isLong()"
-             [innerHTML]="renderedSummary()"></div>
-        <button *ngIf="isLong()"
-                nz-button nzType="link" nzSize="small"
-                class="toggle-expand"
-                (click)="expanded = !expanded">
-          {{ expanded ? 'Réduire' : 'Voir plus' }}
-        </button>
-      </div>
-      <div class="report-error" *ngIf="isError() && report.error">{{ report.error }}</div>
-
-      <div class="report-artifacts" *ngIf="report.artifacts?.length">
-        <div class="artifacts-label">
-          <span nz-icon nzType="paper-clip" nzTheme="outline"></span>
-          Livrables ({{ report.artifacts!.length }})
+             *ngIf="report.summary"
+             [innerHTML]="renderedSummary()">
         </div>
-        <div class="artifact-list">
-          <ng-container *ngFor="let a of report.artifacts">
-            <a
-              *ngIf="a.fileId"
-              [href]="ai.fileUrl(a.fileId)"
-              target="_blank"
-              class="artifact-chip">
-              <span nz-icon nzType="download" nzTheme="outline"></span>
-              {{ a.label || a.fileId }}
-            </a>
-            <a
-              *ngIf="!a.fileId && a.url"
-              [href]="a.url"
-              target="_blank"
-              class="artifact-chip">
-              <span nz-icon nzType="link" nzTheme="outline"></span>
-              {{ a.label || a.url }}
-            </a>
-            <span
-              *ngIf="!a.fileId && !a.url && a.label"
-              class="artifact-chip artifact-chip-plain">
-              {{ a.label }}
-            </span>
-          </ng-container>
-        </div>
-      </div>
+        <div class="report-error" *ngIf="isError() && report.error">{{ report.error }}</div>
 
-      <div class="report-actions" *ngIf="report.jobId">
-        <button nz-button nzSize="small" nzType="link" (click)="openAgentsCanvas()">
-          <span nz-icon nzType="fullscreen" nzTheme="outline"></span>
-          Voir le rapport complet
-        </button>
+        <div class="report-artifacts" *ngIf="report.artifacts?.length">
+          <div class="artifact-list">
+            <ng-container *ngFor="let a of report.artifacts">
+              <a *ngIf="a.fileId" [href]="ai.fileUrl(a.fileId)" target="_blank" class="artifact-chip">
+                <span nz-icon nzType="download" nzTheme="outline"></span>
+                {{ a.label || a.fileId }}
+              </a>
+              <a *ngIf="!a.fileId && a.url" [href]="a.url" target="_blank" class="artifact-chip">
+                <span nz-icon nzType="link" nzTheme="outline"></span>
+                {{ a.label || a.url }}
+              </a>
+              <span *ngIf="!a.fileId && !a.url && a.label" class="artifact-chip artifact-chip-plain">
+                {{ a.label }}
+              </span>
+            </ng-container>
+          </div>
+        </div>
+
+        <div class="report-actions" *ngIf="report.jobId">
+          <button nz-button nzSize="small" nzType="link" (click)="openAgentsCanvas()">
+            <span nz-icon nzType="fullscreen" nzTheme="outline"></span>
+            Voir le rapport complet
+          </button>
+        </div>
       </div>
     </div>
   `,
   styles: [`
     .report-card {
-      background: #f6ffed;
-      border: 1px solid #d9f7be;
-      border-left: 3px solid #52c41a;
+      background: #fff;
+      border: 1px solid #e8e8e8;
+      border-left: 3px solid #e61982;
       border-radius: 10px;
-      padding: 14px 16px;
       margin: 6px 0;
+      overflow: hidden;
+      transition: box-shadow .15s, border-color .15s;
     }
-    .report-card.error {
-      background: #fff2f0;
-      border-color: #ffccc7;
-      border-left-color: #ff4d4f;
-    }
+    .report-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,.05); }
+    .report-card.expanded { box-shadow: 0 2px 10px rgba(230,25,130,.08); }
+    .report-card.error { border-left-color: #ff4d4f; }
 
-    .report-head { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; }
-    .report-icon { font-size: 20px; color: #52c41a; margin-top: 2px; }
+    .report-head {
+      display: flex; align-items: center; gap: 12px;
+      width: 100%;
+      padding: 12px 14px;
+      background: transparent;
+      border: 0;
+      cursor: pointer;
+      text-align: left;
+      transition: background .12s;
+    }
+    .report-head:hover { background: #fafafa; }
+    .report-card.expanded .report-head { border-bottom: 1px solid #f0f0f0; }
+
+    .report-icon { font-size: 18px; color: #e61982; flex: 0 0 auto; }
     .report-icon.icon-error { color: #ff4d4f; }
     .report-head-text { flex: 1; min-width: 0; }
-    .report-title { font-weight: 600; font-size: 14px; color: #262626; }
-    .report-meta { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
-    .meta-tag { margin: 0; font-size: 11px; display: inline-flex; align-items: center; gap: 3px; }
+    .report-title { font-weight: 600; font-size: 13px; color: #262626; line-height: 1.3; }
+    .subtype { font-weight: 500; color: #8c8c8c; font-size: 12px; margin-left: 4px; }
+    .report-meta {
+      display: flex; flex-wrap: wrap; gap: 10px;
+      margin-top: 3px; font-size: 11px; color: #8c8c8c;
+    }
+    .meta-item { display: inline-flex; align-items: center; gap: 3px; }
+    .meta-item [nz-icon] { font-size: 11px; }
+    .chevron { color: #bfbfbf; font-size: 12px; flex: 0 0 auto; transition: color .15s; }
+    .report-head:hover .chevron { color: #e61982; }
 
-    .report-summary-wrap { margin-bottom: 8px; }
+    .report-body {
+      padding: 12px 14px 14px;
+      background: #fafafa;
+      animation: reportExpand 180ms ease-out;
+    }
+    @keyframes reportExpand {
+      from { opacity: 0; transform: translateY(-4px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
     .report-summary {
       font-size: 13px; color: #333; line-height: 1.55;
       word-break: break-word;
@@ -132,52 +148,48 @@ import { AgentReport, AiService } from '../ai.service';
     .report-summary.markdown ul, .report-summary.markdown ol { margin: 6px 0; padding-left: 20px; }
     .report-summary.markdown li { margin: 2px 0; }
     .report-summary.markdown code { background: #fff; padding: 1px 5px; border-radius: 4px; font-size: 12px; }
-    .report-summary.markdown pre { background: #fff; padding: 8px 10px; border-radius: 6px; overflow-x: auto; font-size: 12px; }
-    .report-summary.markdown a { color: #1890ff; text-decoration: none; }
+    .report-summary.markdown pre { background: #fff; padding: 8px 10px; border-radius: 6px; overflow-x: auto; font-size: 12px; border: 1px solid #f0f0f0; }
+    .report-summary.markdown a { color: #e61982; text-decoration: none; }
     .report-summary.markdown a:hover { text-decoration: underline; }
-    .report-summary.collapsed {
-      max-height: 180px; overflow: hidden; position: relative;
-      mask-image: linear-gradient(180deg, #000 70%, transparent);
-      -webkit-mask-image: linear-gradient(180deg, #000 70%, transparent);
-    }
-    .toggle-expand { margin-top: 2px; padding: 0; height: auto; }
+    .report-summary.markdown table { border-collapse: collapse; margin: 8px 0; font-size: 12px; }
+    .report-summary.markdown th { background: #e61982; color: #fff; padding: 6px 10px; text-align: left; }
+    .report-summary.markdown td { padding: 5px 10px; border-bottom: 1px solid #e8e8e8; }
+
     .report-error {
       font-size: 12px; color: #a8071a; background: #fff1f0;
       border: 1px solid #ffa39e; border-radius: 6px; padding: 6px 10px;
-      margin-bottom: 8px;
+      margin-top: 8px;
     }
 
-    .report-artifacts { margin-top: 8px; }
-    .artifacts-label {
-      font-size: 11px; font-weight: 600; color: #555;
-      display: inline-flex; align-items: center; gap: 4px; margin-bottom: 6px;
-    }
+    .report-artifacts { margin-top: 10px; }
     .artifact-list { display: flex; flex-wrap: wrap; gap: 6px; }
     .artifact-chip {
       display: inline-flex; align-items: center; gap: 4px;
       background: #fff; border: 1px solid #e8e8e8; border-radius: 14px;
-      padding: 3px 10px; font-size: 12px; color: #1890ff;
-      text-decoration: none; transition: border-color .15s, background .15s;
+      padding: 3px 10px; font-size: 12px; color: #e61982;
+      text-decoration: none; transition: all .15s;
     }
-    .artifact-chip:hover { border-color: #1890ff; background: #e6f7ff; }
+    .artifact-chip:hover { border-color: #e61982; background: #fff5fa; }
     .artifact-chip-plain { color: #666; cursor: default; }
     .artifact-chip-plain:hover { border-color: #e8e8e8; background: #fff; }
 
     .report-actions { margin-top: 8px; }
+    .report-actions button { color: #e61982 !important; padding: 0 !important; }
   `],
 })
 export class AiAgentReportCardComponent {
   @Input() report!: AgentReport;
 
   readonly ai = inject(AiService);
-  expanded = false;
+  expanded = false; // Collapse par défaut — le texte du subagent n'envahit pas le chat
+
+  toggleExpanded(event: Event) {
+    event.stopPropagation();
+    this.expanded = !this.expanded;
+  }
 
   isError(): boolean {
     return this.report?.status === 'error' || this.report?.status === 'cancelled';
-  }
-
-  isLong(): boolean {
-    return !!this.report?.summary && this.report.summary.length > 400;
   }
 
   renderedSummary(): string {
