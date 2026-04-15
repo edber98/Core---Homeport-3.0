@@ -200,6 +200,18 @@ NE JAMAIS utiliser content pour des binaires — ça corrompt le fichier (tu obt
     description: 'Synchronise les modifications locales (scratch) vers le distant.',
     parameters: { type: 'object', properties: {} },
   },
+  {
+    name: 'project_stage_for_sandbox',
+    description: "Télécharge un fichier du projet distant et le stocke comme FileRecord. Retourne {fileId, name, size, mimeType}. UTILISE ce tool AVANT execute_code quand tu dois parser un xlsx/csv/pdf/zip stocké dans le projet : tu passes ensuite {path: 'nom.xlsx', fileId} dans execute_code({files: [...]}). C'est le pont entre le filesystem projet et la sandbox d'exécution.",
+    parameters: {
+      type: 'object',
+      properties: {
+        path: { type: 'string', description: 'Chemin du fichier dans le projet (ex: /PREVISIONNEL_KINN.xlsx)' },
+        stageName: { type: 'string', description: 'Nom de fichier dans la sandbox (défaut = basename du path)' },
+      },
+      required: ['path'],
+    },
+  },
 ];
 
 // ── Helpers ────────────────────────────────────────────────────────────────
@@ -788,6 +800,74 @@ function createProjectFsExecutor(metadata = {}, emit = () => {}) {
 
       emit({ type: 'canvas.files.tree', reason: 'refresh' });
       return { ok: true, totalCount: allEntries.length, entries: allEntries, truncated };
+    },
+
+    /**
+     * Stage un fichier du projet vers FileRecord, retourne {fileId} utilisable
+     * directement dans execute_code({files: [{path, fileId}]}). Pont entre le
+     * filesystem projet distant et la sandbox d'exécution.
+     */
+    async project_stage_for_sandbox(input) {
+      const { root } = await _ctx();
+      const p = _stripConnectorPrefix(root.connectorType, input?.path);
+      if (!p) return { ok: false, error: 'path requis' };
+      const g = _guardSensitive(p); if (g) return g;
+      const gr = _guardInsideRoot(root, p); if (gr) return gr;
+      const name = path.basename(p);
+      const stageName = input?.stageName || name;
+      try {
+        // Télécharge via le connecteur en mémoire
+        const res = await _callConnector(root, 'read', { path: _resolveRelToRoot(root, p) }, metadata);
+        if (!res || res.ok === false) {
+          return { ok: false, error: `Lecture échouée : ${res?.error || 'unknown'}` };
+        }
+        const { createFilesHelper } = require('../../services/file-storage');
+        const files = createFilesHelper({ workspaceId });
+
+        // 1. fileRef retourné directement par le connecteur → réutilise
+        const fileRef = res.file || res.fileRef || (typeof res.fileId === 'string' ? { fileId: res.fileId } : null);
+        if (fileRef?.fileId || typeof fileRef === 'string') {
+          const fid = typeof fileRef === 'string' ? fileRef : fileRef.fileId;
+          return { ok: true, fileId: fid, name: stageName, size: res.size, mimeType: res.contentType };
+        }
+
+        // 2. Sinon, charge en buffer et upload dans FileRecord
+        let buf;
+        const rawPayload = res.content ?? res.data ?? res.body ?? res.buffer ?? res.base64;
+        if (Buffer.isBuffer(rawPayload)) buf = rawPayload;
+        else if (rawPayload && typeof rawPayload === 'object' && rawPayload.type === 'Buffer' && Array.isArray(rawPayload.data)) {
+          buf = Buffer.from(rawPayload.data);
+        } else if (typeof rawPayload === 'string') {
+          const looksBase64 = /^[A-Za-z0-9+/=\r\n]+$/.test(rawPayload.slice(0, 200));
+          buf = looksBase64 ? Buffer.from(rawPayload, 'base64') : Buffer.from(rawPayload, 'utf8');
+        }
+        if (!buf) return { ok: false, error: 'payload non reconnu depuis le connecteur' };
+
+        const mimeMap = {
+          xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+          xls: 'application/vnd.ms-excel',
+          csv: 'text/csv',
+          json: 'application/json',
+          pdf: 'application/pdf',
+          txt: 'text/plain',
+          docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        };
+        const ext = (name.split('.').pop() || '').toLowerCase();
+        const mime = res.contentType || mimeMap[ext] || 'application/octet-stream';
+
+        const ref = await files.store(buf, { name: stageName, mimeType: mime, lifecycle: 'execution' });
+        const fid = ref?.fileId || ref?.id;
+        return {
+          ok: true,
+          fileId: fid,
+          name: stageName,
+          size: buf.length,
+          mimeType: mime,
+          message: `Fichier stagé. Utilise dans execute_code({files: [{path: "${stageName}", fileId: "${fid}"}]}).`,
+        };
+      } catch (e) {
+        return { ok: false, error: e?.message || String(e) };
+      }
     },
 
     async project_sync_remote() {

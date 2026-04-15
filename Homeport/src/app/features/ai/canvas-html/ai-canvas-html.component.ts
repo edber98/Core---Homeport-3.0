@@ -99,11 +99,40 @@ export class AiCanvasHtmlComponent implements OnChanges, AfterViewInit {
   ngOnChanges(_changes: SimpleChanges): void { this.applyHtml(); }
   ngAfterViewInit(): void { this.applyHtml(); }
 
+  /**
+   * Injecte un préambule CSS reset dans le <head> du HTML : supprime la marge
+   * par défaut du body (qui cause une scrollbar même pour du contenu qui tient
+   * pile dans l'iframe) + stylise la scrollbar pour qu'elle soit discrète
+   * QUAND elle apparaît réellement (contenu > viewport). L'auto-scroll reste
+   * fonctionnel quand nécessaire.
+   */
+  private injectPreamble(html: string): string {
+    if (!html) return html;
+    const preamble = `<style id="__hp_preamble__">
+      html,body{margin:0;padding:0}
+      html,body{box-sizing:border-box}
+      *,*::before,*::after{box-sizing:inherit}
+      /* Scrollbar fine et discrète (WebKit + Firefox) */
+      *{scrollbar-width:thin;scrollbar-color:rgba(0,0,0,0.18) transparent}
+      *::-webkit-scrollbar{width:8px;height:8px}
+      *::-webkit-scrollbar-track{background:transparent}
+      *::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.18);border-radius:4px}
+      *::-webkit-scrollbar-thumb:hover{background:rgba(0,0,0,0.3)}
+      /* Image/media responsive par défaut */
+      img,video,canvas,svg{max-width:100%;height:auto}
+    </style>`;
+    // Insère juste après <head> (ou avant </head> si head existe)
+    if (/<head[^>]*>/i.test(html)) {
+      return html.replace(/<head([^>]*)>/i, `<head$1>${preamble}`);
+    }
+    if (/<html[^>]*>/i.test(html)) {
+      return html.replace(/<html([^>]*)>/i, `<html$1><head>${preamble}</head>`);
+    }
+    return preamble + html;
+  }
+
   private _applyScheduled = false;
   private applyHtml() {
-    // Attend que l'iframe ait ses dimensions layoutées avant d'injecter le srcdoc.
-    // Sans ça, un Three.js WebGLRenderer init à 0x0 → canvas invalide → erreur
-    // "drawImage on CanvasRenderingContext2D: width or height of 0".
     if (this._applyScheduled) return;
     this._applyScheduled = true;
     const run = () => {
@@ -112,16 +141,14 @@ export class AiCanvasHtmlComponent implements OnChanges, AfterViewInit {
       if (!iframe) return;
       const rect = iframe.getBoundingClientRect();
       if (rect.width < 4 || rect.height < 4) {
-        // Pas encore layouté — retente au prochain frame
         requestAnimationFrame(() => this.applyHtml());
         return;
       }
-      const html = this.data?.html
+      const rawHtml = this.data?.html
         || '<!DOCTYPE html><html><body style="display:flex;align-items:center;justify-content:center;height:100%;color:#bbb;font-family:sans-serif">(aucun contenu)</body></html>';
+      const html = this.injectPreamble(rawHtml);
       try { iframe.setAttribute('srcdoc', html); } catch {}
     };
-    // Double RAF : laisse le browser faire son layout complet (nécessaire après
-    // *ngIf ou animation de slide du panel canvas).
     requestAnimationFrame(() => requestAnimationFrame(run));
   }
 

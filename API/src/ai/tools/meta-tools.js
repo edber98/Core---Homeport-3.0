@@ -586,15 +586,29 @@ const META_TOOL_DEFINITIONS = [
   },
   {
     name: 'render_interactive_canvas',
-    description: `Affiche un canvas HTML interactif inline dans le chat (animations 2D canvas/SVG, scènes 3D Three.js, démos WebGL, visualisations live…). Le HTML est rendu dans un iframe sandboxé isolé (allow-scripts uniquement, pas de DOM parent ni de cookies). Idéal pour : expliquer un principe avec une animation, montrer un objet 3D qui tourne, illustrer un concept physique, appliquer un logo sur un cube, etc.
+    description: `Affiche un canvas HTML interactif inline dans le chat (animations 2D canvas/SVG, scènes 3D Three.js, démos WebGL, visualisations live, dashboards charts).
 
-Le paramètre \`html\` doit contenir un document HTML complet, self-contained (doctype + html + head + body). Tu peux :
-- Utiliser Three.js via CDN : <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}</script>
-- Dessiner sur un <canvas> 2D avec requestAnimationFrame
-- Animer du SVG avec CSS / JS
-- Charger des images depuis des URLs publiques
+🎨 CHARTE GRAPHIQUE HOMEPORT (à appliquer par DÉFAUT — impératif sauf contexte contraire)
+- **Thème TOUJOURS clair** : fond \`#ffffff\` ou \`#fafafa\`. JAMAIS de fond noir/sombre par défaut.
+- **Couleur signature** : rose magenta \`#e61982\` (primary Homeport) pour le 1er dataset / élément principal.
+- **Palette harmonique** dans cet ordre pour multi-datasets :
+  1. \`#e61982\` rose, 2. \`#ff70a6\` rose clair, 3. \`#722ed1\` violet, 4. \`#13c2c2\` turquoise, 5. \`#1890ff\` bleu, 6. \`#fa541c\` corail, 7. \`#faad14\` ambre.
+- **Dégradés signatures OK** : \`linear-gradient(135deg,#e61982,#722ed1)\` ou \`linear-gradient(135deg,#ff70a6,#13c2c2)\`. Bienvenue pour barres, cards, fonds de titres.
+- **Texte** : principal \`#262626\`, secondaire \`#8c8c8c\`.
+- **Bordures** : \`#f0f0f0\` (léger) ou \`#d9d9d9\` (visible).
+- **Font** : \`-apple-system, "Segoe UI", Roboto, sans-serif\`. Tailles 11-14 px body, 16-20 px titres.
+- **Border-radius** : 8-10 px. **Box-shadow** subtile : \`0 2px 8px rgba(0,0,0,0.06)\`.
 
-RÈGLE : tout le code JS doit être inline dans <script>, pas de fetch vers ton backend. Les imports CDN (three, d3, p5…) sont OK.`,
+🚫 EXCEPTION au thème clair : UNIQUEMENT si le contexte l'impose (système solaire/espace → fond sombre espace, horreur/nuit, drapeau national → couleurs nationales, logo client fourni → couleurs du logo, brief explicite de l'utilisateur). Dans TOUS les autres cas (tri à bulles, graphique, dashboard, démo générique, animation physique abstraite, chart…) → **thème clair obligatoire**.
+
+📱 RESPONSIVE OBLIGATOIRE
+- Largeur flexible (\`width:100%;max-width:...\`), pas de pixel fixe.
+- Grid/flex avec \`auto-fit minmax\` pour multi-cols.
+- Chart.js : \`responsive:true, maintainAspectRatio:false\`.
+- Three.js : \`ResizeObserver\` sur body + camera.aspect + renderer.setSize.
+- SVG : \`viewBox\` au lieu de width/height absolus.
+
+📝 Le paramètre \`html\` doit contenir un document HTML complet self-contained (doctype + html + head + body). Three.js via importmap, Chart.js/D3/ECharts via script CDN. Tout JS inline, pas de fetch vers ton backend.`,
     parameters: {
       type: 'object',
       properties: {

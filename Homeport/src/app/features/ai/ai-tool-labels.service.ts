@@ -22,6 +22,7 @@ export class AiToolLabelsService {
     project_delete: 'Suppression',
     project_move: 'Déplacement',
     project_refresh_tree: 'Actualisation arbo',
+    project_stage_for_sandbox: 'Préparation fichier sandbox',
     project_sync_remote: 'Synchronisation',
 
     // Code / sandboxes

@@ -264,6 +264,7 @@ export class AiCanvasAgentsComponent implements OnInit, OnDestroy {
     project_write_file: 'Écriture fichier', project_create_folder: 'Création dossier',
     project_delete: 'Suppression', project_move: 'Déplacement',
     project_refresh_tree: 'Actualisation arbo',
+    project_stage_for_sandbox: 'Préparation fichier sandbox',
     execute_code: 'Exécution code', install_package: 'Installation package',
     generate_document: 'Génération document', edit_document: 'Édition document',
     render_html_preview: 'Aperçu HTML', build_website: 'Site web',

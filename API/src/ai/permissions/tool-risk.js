@@ -16,6 +16,7 @@ const TOOL_RISK = {
   project_grep:         'safe',
   project_search:       'safe',
   project_refresh_tree: 'safe',
+  project_stage_for_sandbox: 'safe',
 
   // ── web / generic reads ──
   web_search:           'safe',

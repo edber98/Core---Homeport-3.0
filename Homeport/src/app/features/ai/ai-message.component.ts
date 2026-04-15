@@ -36,6 +36,7 @@ const TOOL_LABELS: Record<string, string> = {
   project_write_file: 'Écriture fichier', project_create_folder: 'Création dossier',
   project_delete: 'Suppression fichier', project_move: 'Déplacement fichier',
   project_refresh_tree: 'Actualisation arbo', project_sync_remote: 'Synchronisation distant',
+  project_stage_for_sandbox: 'Préparation fichier sandbox',
   web_search: 'Recherche web', web_fetch: 'Lecture page web', research_deep: 'Recherche approfondie', web_download: 'Téléchargement web',
   execute_code: 'Exécution code', prepare_code_environment: 'Préparation environnement',
   spawn_subagent: 'Sous-agent',
