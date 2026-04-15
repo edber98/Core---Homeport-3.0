@@ -221,8 +221,14 @@ async function _runSubagentJob({
   if (hasDeps) {
     try {
       const { waitForJobCompletion } = require('../jobs/job-runner');
+      // Timeout 60 min par dep : un research profond + multiples web_fetch +
+      // research_deep peut prendre 15-20 min. Pour 4 axes en // qui finissent
+      // tous, la dernière dep peut être à 25-30 min. 60 min = marge confortable.
+      // Override via env SUBAGENT_DEPS_TIMEOUT_MS (en millisecondes).
+      const depTimeout = parseInt(process.env.SUBAGENT_DEPS_TIMEOUT_MS || String(60 * 60_000), 10);
+      console.log(`[sub-runner] ${subagentType} job=${job.id} attend ${depends_on.length} dep(s) avec timeout=${depTimeout}ms`);
       const deps = await Promise.all(
-        depends_on.map(id => waitForJobCompletion(id, 600_000))
+        depends_on.map(id => waitForJobCompletion(id, depTimeout))
       );
       const failed = deps.find(d => d.status === 'error' || d.status === 'cancelled');
       if (failed) {
@@ -253,35 +259,52 @@ async function _runSubagentJob({
   }
 
   // 2. Construit le prompt enrichi à partir de input_from
+  // Fallback : si depends_on présent mais input_from oublié → on injecte
+  // automatiquement les summaries des dépendances (le LLM oublie souvent).
+  let effectiveInputFrom = input_from;
+  if (!effectiveInputFrom && hasDeps) {
+    effectiveInputFrom = depends_on;
+    console.log(`[sub-runner] auto-injection input_from depuis depends_on (${depends_on.length} jobs) pour ${subagentType}`);
+  }
   let enrichedPrompt = prompt;
-  if (input_from) {
+  if (effectiveInputFrom) {
     try {
       let sourceIds = [];
-      if (input_from === 'all_siblings' || input_from === 'all_above') {
+      if (effectiveInputFrom === 'all_siblings' || effectiveInputFrom === 'all_above') {
         const siblingQuery = { parentJobId: job.parentJobId };
-        if (input_from === 'all_above') {
+        if (effectiveInputFrom === 'all_above') {
           siblingQuery.createdAt = { $lt: job.createdAt };
         } else {
           siblingQuery._id = { $ne: job._id };
         }
         const siblings = await AiJob.find(siblingQuery, 'id').sort({ createdAt: 1 }).lean();
         sourceIds = siblings.map(s => s.id);
-      } else if (Array.isArray(input_from)) {
-        sourceIds = input_from.filter(Boolean);
-      } else if (typeof input_from === 'string') {
-        sourceIds = [input_from];
+      } else if (Array.isArray(effectiveInputFrom)) {
+        sourceIds = effectiveInputFrom.filter(Boolean);
+      } else if (typeof effectiveInputFrom === 'string') {
+        sourceIds = [effectiveInputFrom];
       }
+      console.log(`[sub-runner] enrich for ${subagentType} job=${job.id} : sourceIds=[${sourceIds.join(',')}]`);
       if (sourceIds.length) {
         const sources = await AiJob.find(
           { id: { $in: sourceIds } },
           'id subagentType result status error'
         ).lean();
+        console.log(`[sub-runner] found ${sources.length}/${sourceIds.length} sources, summaries lengths: [${sources.map(s => (s.result?.summary || '').length).join(',')}]`);
+        // Budget par source : pour ne pas dépasser le contexte LLM, on tronque
+        // chaque résumé selon le nombre de sources (plus de sources = moins de
+        // place chacune). Cible globale ~20k tokens (~70k chars).
+        const TOTAL_CHAR_BUDGET = 70_000;
+        const perSource = Math.floor(TOTAL_CHAR_BUDGET / Math.max(1, sourceIds.length));
         const contextBlocks = sourceIds.map(sid => {
           const s = sources.find(x => x.id === sid);
           if (!s) return `=== Résultat ${sid} (introuvable) ===\n[vide]`;
-          const summary = s.status === 'error'
+          let summary = s.status === 'error'
             ? `[erreur: ${s.error || 'unknown'}]`
             : (s.result?.summary || '[vide]');
+          if (summary.length > perSource) {
+            summary = summary.slice(0, perSource) + `\n…[tronqué, ${summary.length - perSource} chars omis]`;
+          }
           return `=== Résultat ${s.subagentType || 'job'} (${s.id}) ===\n${summary}`;
         }).join('\n\n');
         enrichedPrompt = `CONTEXTE (résultats des étapes précédentes) :\n\n${contextBlocks}\n\n===\n\n${prompt}`;

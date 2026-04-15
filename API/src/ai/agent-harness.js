@@ -485,11 +485,14 @@ Tu es un sous-agent (parentJobId présent). Tu ne communiques PAS directement av
         } else {
           const requestId = crypto.randomUUID();
           const argsPreview = _summarizeArgs(tc.input);
-          // Subagent ? → escalade au parent au lieu d'écrire à l'user.
+          // Subagent ? → escalade au parent ET à l'user en parallèle.
+          // Le premier qui répond gagne. Évite le cas "parent silencieux" (cascade
+          // async où l'agent principal n'écoute plus) qui aboutissait au timeout 5min.
           const parentJobId = jobContext.parentJobId ? String(jobContext.parentJobId) : null;
           if (parentJobId) {
-            const { emitJobEvent, waitForPermissionFromParent } = require('./jobs/job-events');
-            // Notifie le parent : c'est à lui de décider (auto-répondre ou relayer à l'user).
+            const { emitJobEvent, emitThreadEvent, waitForPermissionFromParent, waitForPermission } = require('./jobs/job-events');
+            const threadId = modeMetadata.threadId || context._threadId;
+            // 1. Notifie le parent (il peut auto-répondre via subagent.permission.granted)
             emitJobEvent(parentJobId, {
               type: 'subagent.permission.request',
               requestId,
@@ -498,15 +501,81 @@ Tu es un sous-agent (parentJobId présent). Tu ne communiques PAS directement av
               argsPreview,
               risk: permCheck.risk,
             });
-            // Broadcast interne (debug / UI canvas) mais PAS d'ai.permission.request direct.
             jobContext.broadcast && jobContext.broadcast({
               type: 'subagent.permission.request',
               requestId, toolName: tc.name, risk: permCheck.risk,
               argsPreview, childJobId: jobContext.jobId, parentJobId,
             });
-            const resolved = await waitForPermissionFromParent(parentJobId, requestId, 5 * 60_000);
+            // 2. Promotion à l'user via thread stream + AiMessage permission card,
+            //    pour qu'il puisse répondre directement sans passer par le parent LLM.
+            if (threadId) {
+              try {
+                const AiMessage = require('../db/models/ai-message.model');
+                await AiMessage.create({
+                  threadId,
+                  // role 'assistant' : le ngSwitch frontend rend la card permission
+                  // (le role 'system' est affiché comme "Contexte transféré").
+                  role: 'assistant',
+                  content: `Permission demandée par sous-agent : ${tc.name}`,
+                  metadata: {
+                    kind: 'permission_request',
+                    permissionRequest: {
+                      requestId,
+                      toolName: tc.name,
+                      argsPreview,
+                      risk: permCheck.risk,
+                      childJobId: jobContext.jobId,
+                      parentJobId,
+                      escalatedFromSubagent: true,
+                    },
+                  },
+                });
+                emitThreadEvent(String(threadId), {
+                  type: 'ai.permission.request',
+                  requestId, toolName: tc.name, risk: permCheck.risk,
+                  argsPreview, childJobId: jobContext.jobId, parentJobId,
+                  escalatedFromSubagent: true,
+                });
+                emitThreadEvent(String(threadId), { type: 'ai.message.created', kind: 'permission_request' });
+              } catch (e) {
+                console.error('[harness] subagent permission UI promote failed:', e?.message);
+              }
+            }
+            // 3. Marque le subagent en waiting_permission (UI canvas + DB pour reload)
+            try {
+              const AiJob = require('../db/models/ai-job.model');
+              await AiJob.updateOne({ id: jobContext.jobId }, { $set: { status: 'waiting_permission' } });
+              if (threadId) {
+                emitThreadEvent(String(threadId), {
+                  type: 'canvas.task.update',
+                  taskId: jobContext.jobId,
+                  status: 'waiting_permission',
+                  pendingPermission: { requestId, toolName: tc.name, risk: permCheck.risk },
+                });
+              }
+            } catch { /* non-fatal */ }
+
+            // 4. Race : le parent peut répondre (subagent.permission.granted) OU
+            //    l'user peut répondre directement (permission.resolved sur le job).
+            const fromParent = waitForPermissionFromParent(parentJobId, requestId, 10 * 60_000);
+            const fromUser = waitForPermission(jobContext.jobId, requestId, 10 * 60_000);
+            const resolved = await Promise.race([fromParent, fromUser]);
+
+            // 5. Repasse en running (avant le tool exec ou le deny)
+            try {
+              const AiJob = require('../db/models/ai-job.model');
+              await AiJob.updateOne({ id: jobContext.jobId }, { $set: { status: 'running' } });
+              if (threadId) {
+                emitThreadEvent(String(threadId), {
+                  type: 'canvas.task.update',
+                  taskId: jobContext.jobId,
+                  status: 'running',
+                });
+              }
+            } catch { /* non-fatal */ }
+
             if (resolved !== 'allow') {
-              const denyResult = { ok: false, error: 'permission_denied', reason: 'parent_denied', risk: permCheck.risk };
+              const denyResult = { ok: false, error: 'permission_denied', reason: 'denied', risk: permCheck.risk };
               toolResults.push({ id: tc.id, name: tc.name, content: JSON.stringify(denyResult), status: 'error', duration: 0 });
               yield { type: 'tool.end', id: tc.id, name: tc.name, args: tc.input, result: denyResult, status: 'error', duration: 0 };
               continue;
@@ -612,9 +681,10 @@ Tu es un sous-agent (parentJobId présent). Tu ne communiques PAS directement av
       const parentJobId = jobContext?.parentJobId ? String(jobContext.parentJobId) : null;
 
       if (parentJobId && askResult?.result) {
-        // ── SUBAGENT : escalade la question au parent, attend sa réponse ───
-        const { emitJobEvent, waitForAskUserFromParent } = require('./jobs/job-events');
+        // ── SUBAGENT : escalade la question au parent + visibilité user ───
+        const { emitJobEvent, emitThreadEvent, waitForAskUserFromParent } = require('./jobs/job-events');
         const requestId = crypto.randomUUID();
+        const threadId = modeMetadata.threadId || context._threadId;
         emitJobEvent(parentJobId, {
           type: 'subagent.ask_user.request',
           requestId,
@@ -629,7 +699,51 @@ Tu es un sous-agent (parentJobId présent). Tu ne communiques PAS directement av
           requestId, childJobId: jobContext.jobId, parentJobId,
           question: askResult.result.text || '',
         });
+        // Promotion à l'user : crée un AiMessage visible dans le chat avec la
+        // question. L'user peut répondre via le mécanisme question normal.
+        if (threadId) {
+          try {
+            const AiMessage = require('../db/models/ai-message.model');
+            await AiMessage.create({
+              threadId,
+              role: 'assistant',
+              content: askResult.result.text || 'Question du sous-agent',
+              question: {
+                text: askResult.result.text || '',
+                questionType: askResult.result.questionType || 'text',
+                options: askResult.result.options || [],
+                questions: askResult.result.questions || null,
+              },
+              metadata: {
+                extra: {
+                  subagentQuestion: true,
+                  requestId, parentJobId, childJobId: jobContext.jobId,
+                },
+              },
+            });
+            emitThreadEvent(String(threadId), { type: 'ai.message.created', kind: 'subagent_question' });
+            // Marque le subagent comme attente question (différent de waiting_permission)
+            const AiJob = require('../db/models/ai-job.model');
+            await AiJob.updateOne({ id: jobContext.jobId }, { $set: { status: 'waiting_permission' } });
+            emitThreadEvent(String(threadId), {
+              type: 'canvas.task.update',
+              taskId: jobContext.jobId,
+              status: 'waiting_permission',
+              pendingPermission: { requestId, toolName: 'ask_user', risk: 'safe' },
+            });
+          } catch (e) { console.error('[harness] subagent ask_user UI promote failed:', e?.message); }
+        }
         const { answer, source } = await waitForAskUserFromParent(parentJobId, requestId, 10 * 60_000);
+        // Restore running status après réponse
+        if (threadId) {
+          try {
+            const AiJob = require('../db/models/ai-job.model');
+            await AiJob.updateOne({ id: jobContext.jobId }, { $set: { status: 'running' } });
+            emitThreadEvent(String(threadId), {
+              type: 'canvas.task.update', taskId: jobContext.jobId, status: 'running',
+            });
+          } catch {}
+        }
         // Réinjecte la réponse comme tool_result pour que le subagent poursuive sa boucle.
         const answerPayload = {
           ok: true,

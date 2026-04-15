@@ -141,16 +141,18 @@ interface ProcessedSegment {
       <div class="body" [attr.data-kind]="msg.metadata?.kind || null" [attr.data-job-id]="msg.metadata?.jobId || null">
         <!-- V2 special message kinds -->
         <ng-container [ngSwitch]="msg.metadata?.kind">
-          <ai-permission-request-card
-            *ngSwitchCase="'permission_request'"
-            [request]="msg.metadata!.permissionRequest!"
-            (answered)="onPermissionAnswer($event)">
-          </ai-permission-request-card>
-          <ai-cache-sync-request-card
-            *ngSwitchCase="'cache_sync_request'"
-            [request]="msg.metadata!.cacheSyncRequest!"
-            (answered)="onCacheSyncAnswer($event)">
-          </ai-cache-sync-request-card>
+          <div *ngSwitchCase="'permission_request'" class="widget-bubble perm-request-bubble">
+            <ai-permission-request-card
+              [request]="msg.metadata!.permissionRequest!"
+              (answered)="onPermissionAnswer($event)">
+            </ai-permission-request-card>
+          </div>
+          <div *ngSwitchCase="'cache_sync_request'" class="widget-bubble">
+            <ai-cache-sync-request-card
+              [request]="msg.metadata!.cacheSyncRequest!"
+              (answered)="onCacheSyncAnswer($event)">
+            </ai-cache-sync-request-card>
+          </div>
           <div *ngSwitchCase="'structured'" class="widget-bubble widget-wrap">
             <ai-structured-message [data]="msg.metadata!.structured!"></ai-structured-message>
             <div class="widget-overlay">
@@ -529,6 +531,11 @@ interface ProcessedSegment {
     .tool-file-link { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; color: #e61982; }
     /* Wrapper unifié pour TOUS les widgets assistant — même max-width que les messages texte */
     .widget-bubble { max-width: min(720px, 85%); min-width: 0; display: block; margin: 4px 0; }
+    .perm-request-bubble { max-width: min(560px, 85%); animation: perm-pulse 2s ease-in-out 2; }
+    @keyframes perm-pulse {
+      0%, 100% { box-shadow: 0 0 0 rgba(114, 46, 209, 0); }
+      50% { box-shadow: 0 0 0 6px rgba(114, 46, 209, 0.18); border-radius: 10px; }
+    }
     @media (max-width: 640px) { .widget-bubble { max-width: 100%; } }
     .widget-bubble :host ::ng-deep > * { max-width: 100%; }
     /* Diagrammes : bubble plus large (pleine largeur dispo) pour que le mermaid respire */
@@ -800,9 +807,10 @@ export class AiMessageComponent {
   /** V2 — handle permission card response */
   onPermissionAnswer(evt: { decision: string; pathPattern?: string }) {
     const req = this.msg.metadata?.permissionRequest;
-    const jobId = (this.msg.metadata as any)?.jobId;
+    // Cas escalation subagent → utilise childJobId. Sinon job classique → metadata.jobId.
+    const jobId = (req as any)?.childJobId || (this.msg.metadata as any)?.jobId;
     if (!req || !jobId) return;
-    this.ai.respondToPermission(jobId, req.requestId, evt.decision, evt.pathPattern).subscribe({
+    this.ai.respondToPermission(jobId, req.requestId, evt.decision, evt.pathPattern, req.toolName, req.risk).subscribe({
       next: () => {
         // Optimistic local update
         if (this.msg.metadata?.permissionRequest) {

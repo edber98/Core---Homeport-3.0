@@ -403,6 +403,14 @@ async function runJob(jobId, opts = {}) {
       console.error('[job-runner] agent_report hook failed:', e?.message);
     }
 
+    // Hook : si tous les subagents async d'une cascade sont terminés et que
+    // l'agent principal a laissé une tâche inachevée → resume automatique.
+    try {
+      await _maybeResumeParent(job);
+    } catch (e) {
+      console.error('[job-runner] resume parent hook failed:', e?.message);
+    }
+
     return { ok: true, jobId, usage: totalUsage, summary: finalText };
   } catch (e) {
     const finishedAt = new Date();
@@ -510,6 +518,158 @@ async function _maybeCreateAgentReport(job, { opts, toolCalls, finishedAt, error
 }
 
 /**
+ * Auto-resume parent : quand TOUS les subagents async d'une cascade sont terminés,
+ * et que l'agent principal a laissé une tâche inachevée (le dernier message du
+ * thread est assistant avec spawn_subagent dans ses tool_calls, et aucun livrable
+ * final type canvas/document n'a été produit depuis), on relance automatiquement
+ * l'agent principal avec un message système qui résume les résultats.
+ *
+ * Style Claude Code : si le pipeline est complet, l'agent termine. Sinon il continue.
+ */
+async function _maybeResumeParent(job) {
+  if (!job?.threadId) return;
+  // Skip si pas un subagent (les agent_run principaux ne triggent pas)
+  if (job.type !== 'subagent') return;
+  // Skip subagents background silencieux
+  if (['memory_extractor', 'project_doc_writer'].includes(job.subagentType)) return;
+
+  const threadId = job.threadId;
+
+  // 1. Vérifier qu'aucun autre job VRAIMENT actif sur ce thread.
+  // Un job en 'running' SANS heartbeat récent (>2 min) est considéré stalled
+  // donc ignoré pour ne pas bloquer le resume éternellement.
+  const STALE_HB_MS = 2 * 60_000;
+  const staleThreshold = new Date(Date.now() - STALE_HB_MS);
+  const reallyActive = await AiJob.countDocuments({
+    threadId,
+    status: { $in: ['queued', 'running', 'waiting_dependency', 'waiting_permission', 'paused'] },
+    $or: [
+      { status: { $in: ['queued', 'waiting_dependency', 'waiting_permission', 'paused'] } },
+      { status: 'running', heartbeatAt: { $gte: staleThreshold } },
+    ],
+  });
+  if (reallyActive > 0) {
+    console.log(`[resume-parent] skip job=${job.id} : ${reallyActive} jobs encore actifs`);
+    return;
+  }
+
+  // 2. Récupérer les derniers messages pour vérifier le state
+  const lastMessages = await AiMessage.find({ threadId })
+    .sort({ createdAt: -1 }).limit(8).lean();
+  if (!lastMessages.length) return;
+
+  // 3. Le dernier message significatif (non agent_report) doit être assistant
+  //    avec des spawn_subagent dans ses tool_calls.
+  const significant = lastMessages.find(m => m.metadata?.kind !== 'agent_report' && m.role === 'assistant');
+  if (!significant) return;
+  const hasSpawnedSubagents = Array.isArray(significant.toolCalls) &&
+    significant.toolCalls.some(tc => tc.name === 'spawn_subagent');
+  if (!hasSpawnedSubagents) return;
+
+  // 4. Si un livrable final a déjà été produit APRÈS le spawn, skip (pipeline ok)
+  const idxSig = lastMessages.findIndex(m => m._id?.toString() === significant._id?.toString());
+  const FINAL_KINDS = new Set(['canvas_html', 'structured', 'diagram', 'image_inline', 'plan_proposal']);
+  const sinceSpawn = lastMessages.slice(0, idxSig);
+  if (sinceSpawn.some(m => FINAL_KINDS.has(m.metadata?.kind))) {
+    console.log(`[resume-parent] skip thread=${threadId} : livrable final déjà présent`);
+    return;
+  }
+
+  // 5. Récupérer les résumés des jobs récents de la cascade (max 6)
+  const recentJobs = await AiJob.find({
+    threadId,
+    type: 'subagent',
+    status: { $in: ['completed', 'error'] },
+    finishedAt: { $gte: new Date(Date.now() - 30 * 60_000) },
+  }).sort({ finishedAt: -1 }).limit(6).lean();
+
+  if (!recentJobs.length) return;
+
+  const summaries = recentJobs.reverse().map((j, i) => {
+    const subj = j.subagentInstructions ? j.subagentInstructions.slice(0, 120) : '(sans description)';
+    const status = j.status === 'error' ? `❌ ${j.error || 'error'}` : '✅ terminé';
+    const summary = (j.result?.summary || '').slice(0, 1500);
+    return `### Job ${i + 1} — ${j.subagentType || 'subagent'} (${status})\n**Tâche :** ${subj}\n**Résultat :**\n${summary || '(vide)'}`;
+  }).join('\n\n---\n\n');
+
+  // Anti-boucle : ne pas resume plus de 2 fois sur un même thread dans la fenêtre
+  const recentResumes = await AiMessage.countDocuments({
+    threadId,
+    role: 'system',
+    'metadata.extra.kind': 'pipeline_resume',
+    createdAt: { $gte: new Date(Date.now() - 5 * 60_000) },
+  });
+  if (recentResumes >= 2) {
+    console.log(`[resume-parent] skip thread=${threadId} : trop de resumes récents (${recentResumes})`);
+    return;
+  }
+
+  console.log(`[resume-parent] thread=${threadId} : ${recentJobs.length} subagents terminés, déclenchement du resume`);
+
+  const resumePrompt = `Tous les sous-agents lancés sont terminés. Voici leurs résultats consolidés :
+
+${summaries}
+
+🎯 TÂCHE : finalise la livraison. INTERDICTIONS strictes :
+- ❌ NE FAIS PAS de propose_plan (la planification est déjà passée, on est en finalisation)
+- ❌ NE RELANCE PAS de spawn_subagent (les résultats sont déjà là)
+- ❌ NE PARAPHRASE PAS les résumés ci-dessus
+
+✅ Action attendue : APPELLE DIRECTEMENT le ou les tools de production qui livrent le résultat final. Choisis selon la demande initiale de l'utilisateur :
+- Tableau comparatif → render_structured(layout='comparison_table', data={columns:[...], rows:[...]})
+- Document Excel/PDF → generate_document puis project_write_file
+- Visualisation 3D/dashboard → render_interactive_canvas
+- Diagramme → generate_diagram
+- Conclusion simple → écris 2-3 phrases en texte brut, c'est tout
+
+Si tout est déjà livré (tu vois un widget canvas/structured/diagram dans le thread récent), conclus en 1-2 phrases. Sinon, produis le livrable IMMÉDIATEMENT à partir des données des résumés ci-dessus.`;
+
+  try {
+    // Crée un message system de tracking (anti-boucle + traçabilité)
+    await AiMessage.create({
+      threadId,
+      role: 'system',
+      content: '[Pipeline complete] resume auto déclenché',
+      metadata: { kind: 'system_note', extra: { kind: 'pipeline_resume', jobIds: recentJobs.map(j => j.id) } },
+    });
+
+    // Crée un nouveau job agent_run qui reprend le thread avec le prompt resume
+    const { newId } = require('../../utils/ids');
+    const resumeJob = await AiJob.create({
+      id: newId('aij_'),
+      threadId,
+      workspaceId: job.workspaceId,
+      userId: job.userId,
+      companyId: job.companyId,
+      type: 'agent_run',
+      status: 'queued',
+      mode: job.mode || 'project',
+      maxLoops: 20,
+    });
+
+    emitThreadEvent(String(threadId), {
+      type: 'ai.resume.started',
+      jobId: resumeJob.id,
+      reason: 'pipeline_complete',
+      childCount: recentJobs.length,
+    });
+
+    // Lance asynchrone (setImmediate) — pas await pour ne pas bloquer ce hook
+    setImmediate(() => {
+      const { runJob } = module.exports;
+      runJob(resumeJob.id, {
+        prompt: resumePrompt,
+        // Bloque les tools de planification/spawn : on est en mode finalisation,
+        // pas en mode "réfléchir et lancer encore plus de sous-tâches".
+        toolsDenied: ['propose_plan', 'spawn_subagent', 'compact_and_transfer', 'research_deep'],
+      }).catch(e => console.error(`[resume-parent] runJob failed:`, e?.message));
+    });
+  } catch (e) {
+    console.error('[resume-parent] failed:', e?.message);
+  }
+}
+
+/**
  * Resume a stalled job. Rebuilds conversation from job.transcript and calls
  * runJob — which will pick up with the remaining loops.
  */
@@ -601,7 +761,8 @@ async function cancelJob(jobId) {
  * @param {number} [timeoutMs=600000]
  * @returns {Promise<{id:string, status:string, result?:any, error?:string}>}
  */
-async function waitForJobCompletion(jobId, timeoutMs = 600_000) {
+async function waitForJobCompletion(jobId, timeoutMs = 60 * 60_000) {
+  console.log(`[wait-job] start job=${jobId} timeout=${timeoutMs}ms`);
   if (!jobId) return { id: jobId, status: 'error', error: 'missing_jobId' };
   const TERMINAL = new Set(['completed', 'error', 'cancelled']);
   const deadline = Date.now() + Math.max(1000, timeoutMs);
@@ -617,6 +778,7 @@ async function waitForJobCompletion(jobId, timeoutMs = 600_000) {
     }
     await new Promise(r => setTimeout(r, 1000));
   }
+  console.warn(`[wait-job] TIMEOUT job=${jobId} après ${timeoutMs}ms`);
   return { id: jobId, status: 'error', error: 'timeout' };
 }
 

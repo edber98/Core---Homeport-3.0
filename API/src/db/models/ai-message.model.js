@@ -52,6 +52,11 @@ const PermissionRequestSchema = new Schema({
   answer: { type: String },
   answeredAt: { type: Date },
   answeredBy: { type: Types.ObjectId, ref: 'User' },
+  // Cas d'une escalation depuis un sous-agent : le frontend doit POST sur le
+  // childJobId pour résoudre la permission (pas sur le parent).
+  childJobId: { type: String },
+  parentJobId: { type: String },
+  escalatedFromSubagent: { type: Boolean },
 }, { _id: false });
 
 // ── Cache sync request metadata ──

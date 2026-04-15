@@ -28,12 +28,25 @@ const TOOL_RISK = {
   get_tool_details:     'safe',
   render_html_preview:  'safe',
   get_project_knowledge: 'safe',
+  // Lectures de mémoire (user et projet) : aucun effet de bord, juste lecture
+  get_memory: 'safe',
+  get_project_memory: 'safe',
   // suggest_memory_entries = écrit juste des entries 'pending' (validées par l'user
   // avant de devenir effectives) → classé safe pour ne PAS déclencher la gate de
   // permission (le memory_extractor tourne en autonomy 'prudent' avec parent
   // éphémère qui ne peut pas répondre à une demande de permission → deadlock 5 min).
   suggest_memory_entries: 'safe',
   render_interactive_canvas: 'safe',
+  // Tools de display / planning / orchestration : pas d'action sur des fichiers
+  // ou systèmes externes, juste de l'affichage UI inline. Doivent rester safe
+  // pour ne pas bloquer les subagents en autonomy 'prudent'.
+  propose_plan: 'safe',
+  render_structured: 'safe',
+  generate_diagram: 'safe',
+  ask_user: 'safe',
+  enrich_context: 'safe',
+  // activate_capsule = juste élargir le toolset disponible (pas d'action externe)
+  activate_capsule: 'safe',
 
   // ── writes (create / edit / sync) ──
   project_write_file:    'write',

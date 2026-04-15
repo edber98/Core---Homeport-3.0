@@ -426,6 +426,8 @@ export class AiService {
   messages = signal<AiMessage[]>([]);
   streaming = signal(false);
   pendingQuestion = signal<AiQuestion | null>(null);
+  /** Si la question vient d'un subagent → bridge la réponse vers son parent. */
+  private _pendingSubagentBridge: { requestId: string; parentJobId: string } | null = null;
   pageContext = signal<AiPageContext>({ page: 'other' });
   availableAgents = signal<AiAvailableAgent[]>([]);
   selectedAgentId = signal<string>('general');
@@ -547,15 +549,22 @@ export class AiService {
     if (msgs.length) {
       for (let i = msgs.length - 1; i >= 0; i--) {
         const m = msgs[i];
-        if (m.role === 'user') break; // User answered → no pending question
-        if (m.role === 'assistant' && m.question) {
+        if (m.role === 'user') break;
+        if (m.role === 'assistant' && m.question && !m.question.answered) {
           this.pendingQuestion.set(m.question);
+          // Si question d'un sous-agent → mémorise pour bridger la réponse
+          const sq = (m.metadata as any)?.extra;
+          if (sq?.subagentQuestion && sq?.requestId && sq?.parentJobId && !sq?.answer) {
+            this._pendingSubagentBridge = { requestId: sq.requestId, parentJobId: sq.parentJobId };
+          } else {
+            this._pendingSubagentBridge = null;
+          }
           restored = true;
           break;
         }
       }
     }
-    if (!restored) this.pendingQuestion.set(null);
+    if (!restored) { this.pendingQuestion.set(null); this._pendingSubagentBridge = null; }
 
     // Refresh badge pending si thread projet
     this.refreshPendingKnowledgeCount(data.thread?.id || data.thread?._id);
@@ -883,6 +892,25 @@ export class AiService {
     else if (value.values) content = value.values.join(', ');
     else if (value.batchAnswers) content = Object.values(value.batchAnswers).join(', ');
     else if (value.value) content = String(value.value);
+    // Bridge subagent : si la question venait d'un sous-agent, on émet la réponse
+    // directement à son parent au lieu de relancer l'agent principal.
+    if (this._pendingSubagentBridge) {
+      const bridge = this._pendingSubagentBridge;
+      this._pendingSubagentBridge = null;
+      const tid = this.currentThread()?.id || this.currentThread()?._id;
+      if (tid) {
+        this.api.post<any>(
+          `/api/ai/threads/${tid}/subagent-answer`,
+          { requestId: bridge.requestId, parentJobId: bridge.parentJobId, answer: content || value },
+          { workspaceId: this.wsId() },
+        ).subscribe({
+          next: () => { this.reloadThreadMessages().catch?.(() => {}); },
+          error: (e) => console.error('[ai] subagent answer failed:', e?.message),
+        });
+      }
+      // Pas de fake observable — on retourne juste rien, le subagent reprend
+      return null as any;
+    }
     return this.sendMessage(content, { questionText: q.text, value });
   }
 
@@ -1641,10 +1669,10 @@ export class AiService {
     );
   }
 
-  respondToPermission(jobId: string, requestId: string, decision: string, pathPattern?: string): Observable<any> {
+  respondToPermission(jobId: string, requestId: string, decision: string, pathPattern?: string, toolName?: string, risk?: string): Observable<any> {
     return this.api.post<any>(
-      `/api/ai/jobs/${jobId}/permission/${requestId}`,
-      { decision, pathPattern },
+      `/api/ai/jobs/${jobId}/permissions`,
+      { requestId, decision, pathPattern, toolName, risk },
       { workspaceId: this.wsId() },
     );
   }

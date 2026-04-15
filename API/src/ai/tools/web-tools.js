@@ -36,10 +36,10 @@ const BROWSER_TIMEOUT_MS = parseInt(process.env.WEB_BROWSER_TIMEOUT_MS || '30000
 const HTTP_TIMEOUT_MS = parseInt(process.env.WEB_HTTP_TIMEOUT_MS || '30000', 10);
 const MAX_BYTES = parseInt(process.env.WEB_FETCH_MAX_BYTES || String(5 * 1024 * 1024), 10);
 const MAX_RAW_CHARS = parseInt(process.env.WEB_FETCH_MAX_RAW_CHARS || String(80_000), 10);
-// DDG Lite en HTTP pur par défaut : c'est ce que `duck-duck-scrape` / `ddg-search`
-// utilisent — layout ultra stable, rapide (~200ms), résiste aux captchas navigateur.
-const PRIMARY_ENGINE = process.env.WEB_SEARCH_ENGINE || 'ddg_lite';
-const FALLBACK_ENGINES = (process.env.WEB_SEARCH_FALLBACK || 'bing,brave,startpage').split(',').map(s => s.trim()).filter(Boolean);
+// Bing par défaut : DDG (HTTP et navigateur) est instable selon réseau / IP.
+// Bing scrape stable + Brave en fallback. DDG seulement en dernier recours.
+const PRIMARY_ENGINE = process.env.WEB_SEARCH_ENGINE || 'bing';
+const FALLBACK_ENGINES = (process.env.WEB_SEARCH_FALLBACK || 'brave,startpage').split(',').map(s => s.trim()).filter(Boolean);
 
 const DEFAULT_UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
 const ALLOWED_CT = [/^text\//, /^application\/xhtml\+xml/, /^application\/json/, /^application\/pdf/, /^application\/xml/];

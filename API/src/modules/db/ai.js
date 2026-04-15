@@ -1767,7 +1767,36 @@ ${toolLines.join('\n')}
     }
     // Notify the running job via pub/sub
     const normalized = String(decision).startsWith('allow') ? 'allow' : 'deny';
+    console.log(`[perm-resolve] job=${job.id} requestId=${requestId} decision=${decision} (normalized=${normalized})`);
     emitJobEvent(job.id, { type: 'permission.resolved', requestId, decision: normalized });
+    // Émet AUSSI sur le parent en tant que subagent.permission.granted pour que
+    // le subagent (qui écoute potentiellement via waitForPermissionFromParent) débloque.
+    if (job.parentJobId) {
+      console.log(`[perm-resolve] also emit subagent.permission.granted on parent=${job.parentJobId}`);
+      emitJobEvent(String(job.parentJobId), {
+        type: 'subagent.permission.granted',
+        requestId,
+        childJobId: job.id,
+        decision: normalized,
+      });
+    }
+
+    // Persiste la réponse sur l'AiMessage (card permission_request) pour que le
+    // refresh de page conserve l'état "Toujours autorisé / Refusé".
+    try {
+      await AiMessage.updateOne(
+        { threadId: job.threadId, 'metadata.permissionRequest.requestId': requestId },
+        {
+          $set: {
+            'metadata.permissionRequest.answer': decision,
+            'metadata.permissionRequest.answeredAt': new Date(),
+            'metadata.permissionRequest.answeredBy': req.user.id || req.user._id,
+          },
+        }
+      );
+    } catch (e) {
+      console.error('[permissions] persist message answer failed:', e?.message);
+    }
     res.apiOk({ ok: true });
   });
 
@@ -1873,6 +1902,33 @@ ${toolLines.join('\n')}
     const jobs = await AiJob.find({ threadId: thread._id })
       .sort({ createdAt: -1 }).limit(50).lean();
     res.apiOk(jobs);
+  });
+
+  // ── Réponse user à une question escaladée d'un sous-agent ──
+  // Le frontend POST avec {requestId, parentJobId, answer}. On émet l'event
+  // subagent.ask_user.answered sur le PARENT pour débloquer le subagent.
+  r.post('/ai/threads/:threadId/subagent-answer', requireThreadAccess('comment'), async (req, res) => {
+    const { requestId, parentJobId, answer } = req.body || {};
+    if (!requestId || !parentJobId) return res.apiError(400, 'missing_fields', 'requestId + parentJobId required');
+    try {
+      const { emitJobEvent } = require('../../ai/jobs/job-events');
+      emitJobEvent(parentJobId, {
+        type: 'subagent.ask_user.answered',
+        requestId,
+        answer,
+        source: 'user_via_thread',
+      });
+      // Persiste la réponse sur le AiMessage question
+      try {
+        await AiMessage.updateOne(
+          { threadId: req.aiThread._id, 'metadata.extra.requestId': requestId },
+          { $set: { 'question.answered': true, 'metadata.extra.answer': answer, 'metadata.extra.answeredAt': new Date() } }
+        );
+      } catch { /* non-fatal */ }
+      res.apiOk({ ok: true });
+    } catch (e) {
+      res.apiError(500, 'answer_failed', e?.message || 'Erreur');
+    }
   });
 
   // ── Delete un message user et tous les messages suivants (pour inline edit) ──
@@ -2015,6 +2071,48 @@ ${toolLines.join('\n')}
         modifiedSteps: Array.isArray(modifiedSteps) ? modifiedSteps : null,
         missingInfoAnswers: normalizedAnswers || {},
       });
+    } else if (decision === 'approve') {
+      // Pas de job actif : l'agent principal POST /messages a déjà rendu son
+      // SSE et le tool propose_plan a retourné {pending:true} sans attendre.
+      // On crée un nouveau agent_run qui reprend le thread pour exécuter le plan.
+      try {
+        const { newId } = require('../../utils/ids');
+        const { runJob } = require('../../ai/jobs/job-runner');
+        const stepsList = (msg.metadata.planProposal.steps || [])
+          .map((s, i) => `${i + 1}. ${s.title}${s.description ? ' — ' + s.description : ''}${Array.isArray(s.tools) && s.tools.length ? ' (tools: ' + s.tools.join(', ') + ')' : ''}`)
+          .join('\n');
+        const answersBlock = normalizedAnswers
+          ? '\n\nRéponses aux infos manquantes :\n' + Object.entries(normalizedAnswers).map(([k, v]) => `- ${k}: ${v}`).join('\n')
+          : '';
+        const resumePrompt = `Le plan que tu as proposé vient d'être APPROUVÉ par l'utilisateur.
+
+Plan approuvé :
+${stepsList}${answersBlock}
+
+🎯 Exécute MAINTENANT les étapes du plan sans repasser par propose_plan. Va directement aux tools (spawn_subagent / render_structured / execute_code / project_write_file / etc.) selon ce que le plan demande. Ne pose pas de question, agis.`;
+        const job = await AiJob.create({
+          id: newId('aij_'),
+          threadId: thread._id,
+          workspaceId: thread.workspaceId,
+          userId: req.user._id || req.user.id,
+          companyId: req.user.companyId,
+          type: 'agent_run',
+          status: 'queued',
+          mode: thread.mode || 'chat',
+          maxLoops: 30,
+        });
+        setImmediate(() => {
+          runJob(job.id, {
+            prompt: resumePrompt,
+            // Empêche un nouveau propose_plan en boucle
+            toolsDenied: ['propose_plan'],
+          }).catch(e => console.error('[plan-response] auto-resume failed:', e?.message));
+        });
+        const { emitThreadEvent } = require('../../ai/jobs/job-events');
+        emitThreadEvent(String(thread._id), { type: 'ai.resume.started', jobId: job.id, reason: 'plan_approved' });
+      } catch (e) {
+        console.error('[plan-response] auto-resume create job failed:', e?.message);
+      }
     }
     const updated = await AiMessage.findById(msg._id).lean();
     res.apiOk({ ok: true, message: updated });
