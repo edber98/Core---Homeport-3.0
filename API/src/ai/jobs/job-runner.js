@@ -49,7 +49,7 @@ async function createJob(opts) {
     initiatorMessageId: initiatorMessageId || undefined,
     parentJobId: parentJobId || undefined,
     depth: depth || 0,
-    maxLoops: maxLoops || 40,
+    maxLoops: maxLoops || 100,
     agentId: agentId || thread.agentId || undefined,
     ...(metadata ? { metadata } : {}),
   });
@@ -328,6 +328,8 @@ async function runJob(jobId, opts = {}) {
       flowId: thread.flowId || undefined,
       formId: thread.metadata?.formId || undefined,
       workspaceId: String(job.workspaceId),
+      companyId: String(job.companyId),
+      userId: String(job.userId),
       threadId: String(job.threadId),
     };
 
@@ -347,7 +349,7 @@ async function runJob(jobId, opts = {}) {
     const mode = job.mode || thread.mode || 'chat';
     const agentOverrides = {
       blockedTools: opts.toolsDenied || null,
-      maxToolLoops: job.maxLoops || 40,
+      maxToolLoops: job.maxLoops || 100,
       systemPrompt: opts.systemPromptOverride || null,
       allowedTools: opts.toolsAllowed || null,
     };

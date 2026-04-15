@@ -25,7 +25,10 @@ function _summarizeArgs(args, maxChars = 300) {
   } catch { return String(args || ''); }
 }
 
-const DEFAULT_MAX_LOOPS = 40;
+// 100 tours par défaut (était 40). Pour les pipelines avec spawn_subagent +
+// dépendances + consolidation + ask_user + multiples retries, 40 saute vite
+// et coupe l'agent en plein milieu avec "Limite de boucles atteinte".
+const DEFAULT_MAX_LOOPS = parseInt(process.env.AI_DEFAULT_MAX_LOOPS || '100', 10);
 const STREAM_TIMEOUT_MS = 120_000; // 120s per-event timeout
 
 /**
@@ -440,8 +443,27 @@ Tu es un sous-agent (parentJobId présent). Tu ne communiques PAS directement av
       return;
     }
 
-    // No tool calls → agent is done
+    // No tool calls → soit l'agent a fini, soit promesse vide à corriger.
     if (pendingToolCalls.length === 0) {
+      // Détection promesse vide : message qui annonce une action SANS tool.
+      // On laisse au LLM 1 chance de se corriger via un nudge système.
+      const EMPTY_PROMISE_PATTERNS = /\b(je\s+(?:lance|exécute|execute|vais|m['e ]occupe|fais|corrige|génère|genere|produis|crée|cree|envoie|extrais|construis|bascule|relance|reprends|continue))\b|\bj['e ]exécute\b|maintenant\s*[.!]?$|j['e ]exécute la correction maintenant/i;
+      const looksLikePromise = assistantText && EMPTY_PROMISE_PATTERNS.test(assistantText);
+      const _emptyRetries = (jobContext?._emptyPromiseRetries || 0);
+      if (looksLikePromise && _emptyRetries < 1) {
+        console.warn(`[harness] empty promise detected (no tool, text="${assistantText.slice(0, 120)}…"), nudging LLM to actually execute`);
+        if (jobContext) jobContext._emptyPromiseRetries = _emptyRetries + 1;
+        // Push assistant message + nudge système
+        conversation.push({ role: 'assistant', content: assistantText });
+        conversation.push({
+          role: 'user',
+          content: '[SYSTÈME] Tu viens d\'annoncer une action mais n\'as appelé AUCUN tool. C\'est interdit. Appelle MAINTENANT le tool qui exécute ce que tu as annoncé. Si tu manques d\'info, utilise ask_user pour poser UNE question courte. Sinon, exécute directement.',
+        });
+        if (jobContext) {
+          try { await jobContext.persistCheckpoint(loopCount, conversation); } catch {}
+        }
+        continue; // relance la boucle LLM
+      }
       await toolSet.cleanup();
       yield { type: 'done', usage: totalUsage };
       return;

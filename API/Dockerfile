@@ -21,11 +21,19 @@ RUN apk add --no-cache \
       # Playwright / headless Chromium runtime deps (Alpine equivalents)
       nss freetype harfbuzz ttf-freefont font-noto-emoji \
       chromium \
+      # LibreOffice headless : recalcule les formules xlsx (skill xlsx officielle
+      # Anthropic utilise soffice). Plus fiable que xlcalculator (qui force un
+      # downgrade numpy 2.x → 1.x cassant pyannote/whisperx/ortools).
+      libreoffice \
+      # poppler-utils : nécessaire pour pdf2image (skill pdf officielle)
+      poppler-utils \
  && pip3 install --no-cache-dir --break-system-packages \
       python-docx python-pptx openpyxl pandas python-dateutil \
       requests beautifulsoup4 lxml Pillow pypdf readability-lxml \
       matplotlib seaborn numpy \
       reportlab qrcode[pil] pdfplumber markdown \
+      xlrd xlwt \
+      defusedxml pdf2image \
  && rm -rf /var/cache/apk/*
 
 # Librairies Node.js pré-installées globalement (utilisables depuis la sandbox

@@ -1136,9 +1136,14 @@ function createWebExecutor(metadata, emit) {
         const ext = (mimeType.split('/').pop() || 'bin').replace(/[^a-z0-9]/gi, '');
         name = `download.${ext}`;
       }
-      // Store via createFilesHelper
+      // Store via createFilesHelper — passe workspaceId + companyId (FileRecord
+      // exige les deux). Sans companyId → "companyId required" lors du save.
       const { createFilesHelper } = require('../../services/file-storage');
-      const files = createFilesHelper({ workspaceId: metadata?.workspaceId });
+      const files = createFilesHelper({
+        workspaceId: metadata?.workspaceId,
+        companyId: metadata?.companyId,
+        uploadedBy: metadata?.userId,
+      });
       const stored = await files.store(buf, { name, mimeType, lifecycle: 'execution' });
 
       emitStep({ id: randomUUID(), type: 'fetch', status: 'done', url, title: name, resultPreview: `${(buf.length / 1024).toFixed(1)} Ko` });

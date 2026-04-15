@@ -2057,11 +2057,21 @@ ${toolLines.join('\n')}
     if (normalizedAnswers) patch['metadata.planProposal.missingInfoAnswers'] = normalizedAnswers;
     await AiMessage.updateOne({ _id: msg._id }, { $set: patch });
 
-    // Find the most recent running job on this thread to resume it
+    // Find the most recent ACTIVELY running job on this thread to resume it.
+    // Important : on filtre sur heartbeat récent (< 90s) pour exclure les jobs
+    // zombies (memory_extractor, doc_writer terminés mais pas marqués completed
+    // par bug, etc.) — sinon on emit plan.resolved dans le vide et le pipeline
+    // d'auto-resume parent ne se déclenche jamais.
+    const aliveThreshold = new Date(Date.now() - 90_000);
     const runningJob = await AiJob.findOne({
       threadId: thread._id,
       status: { $in: ['running', 'queued', 'paused'] },
+      $or: [
+        { status: { $in: ['queued', 'paused'] } },
+        { status: 'running', heartbeatAt: { $gte: aliveThreshold } },
+      ],
     }).sort({ createdAt: -1 }).lean();
+    console.log(`[plan-response] thread=${thread._id} decision=${decision} runningJob=${runningJob?.id || 'none'}`);
     if (runningJob) {
       emitJobEvent(runningJob.id, {
         type: 'plan.resolved',
@@ -2072,6 +2082,7 @@ ${toolLines.join('\n')}
         missingInfoAnswers: normalizedAnswers || {},
       });
     } else if (decision === 'approve') {
+      console.log(`[plan-response] no active job → spawn auto-resume for thread=${thread._id}`);
       // Pas de job actif : l'agent principal POST /messages a déjà rendu son
       // SSE et le tool propose_plan a retourné {pending:true} sans attendre.
       // On crée un nouveau agent_run qui reprend le thread pour exécuter le plan.

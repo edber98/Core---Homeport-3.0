@@ -1,77 +1,42 @@
 ---
-name: frontend-html
-description: Génère une page (ou un mini site multi-pages) HTML autonome avec Tailwind et thème configurable.
-runtime: node
-entrypoint: /app/skills-bundle/frontend-design/build.mjs
-version: 1.0.0
-license: MIT
-mimeType: text/html
-outputExt: html
-tools: [skill_execute]
-tags: [html, tailwind, landing, artifact]
-timeoutMs: 30000
+name: frontend-design
+description: Create distinctive, production-grade frontend interfaces with high design quality. Use this skill when the user asks to build web components, pages, artifacts, posters, or applications (examples include websites, landing pages, dashboards, React components, HTML/CSS layouts, or when styling/beautifying any web UI). Generates creative, polished code and UI design that avoids generic AI aesthetics.
+license: Complete terms in LICENSE.txt
 ---
 
-# frontend-html — Page HTML autonome
+This skill guides creation of distinctive, production-grade frontend interfaces that avoid generic "AI slop" aesthetics. Implement real working code with exceptional attention to aesthetic details and creative choices.
 
-## Quand utiliser
-Quand l'utilisateur demande :
-- une **landing page**, un **artifact** visuel unique,
-- un **mini site** de quelques pages navigables entre elles (utiliser `pages:`),
-- un rendu rapide sans backend.
+The user provides frontend requirements: a component, page, application, or interface to build. They may include context about the purpose, audience, or technical constraints.
 
-Pour un vrai bundle multi-page zipé (avec assets, framework, shared JS/CSS), utilise plutôt `webapp-bundle`.
+## Design Thinking
 
-## Schéma d'entrée
+Before coding, understand the context and commit to a BOLD aesthetic direction:
+- **Purpose**: What problem does this interface solve? Who uses it?
+- **Tone**: Pick an extreme: brutally minimal, maximalist chaos, retro-futuristic, organic/natural, luxury/refined, playful/toy-like, editorial/magazine, brutalist/raw, art deco/geometric, soft/pastel, industrial/utilitarian, etc. There are so many flavors to choose from. Use these for inspiration but design one that is true to the aesthetic direction.
+- **Constraints**: Technical requirements (framework, performance, accessibility).
+- **Differentiation**: What makes this UNFORGETTABLE? What's the one thing someone will remember?
 
-### Single page
-```json
-{
-  "title": "Landing",
-  "theme": "light",
-  "html": "<section class='p-8'><h1 class='text-3xl font-bold'>Hello</h1></section>",
-  "css":  ".accent { color: var(--hp-primary); }",
-  "js":   "console.log('ready');"
-}
-```
+**CRITICAL**: Choose a clear conceptual direction and execute it with precision. Bold maximalism and refined minimalism both work - the key is intentionality, not intensity.
 
-### Multi-page
-```json
-{
-  "title": "Site",
-  "theme": "dark",
-  "pages": [
-    {"path": "index.html", "title": "Accueil", "label": "Accueil", "html": "<h1>Accueil</h1>"},
-    {"path": "about.html", "title": "À propos", "label": "À propos", "html": "<p>Équipe</p>"}
-  ]
-}
-```
+Then implement working code (HTML/CSS/JS, React, Vue, etc.) that is:
+- Production-grade and functional
+- Visually striking and memorable
+- Cohesive with a clear aesthetic point-of-view
+- Meticulously refined in every detail
 
-## Thèmes
-`light` | `dark` | `brand`.
+## Frontend Aesthetics Guidelines
 
-Variables CSS exposées : `--hp-bg`, `--hp-text`, `--hp-primary`, `--hp-secondary`.
+Focus on:
+- **Typography**: Choose fonts that are beautiful, unique, and interesting. Avoid generic fonts like Arial and Inter; opt instead for distinctive choices that elevate the frontend's aesthetics; unexpected, characterful font choices. Pair a distinctive display font with a refined body font.
+- **Color & Theme**: Commit to a cohesive aesthetic. Use CSS variables for consistency. Dominant colors with sharp accents outperform timid, evenly-distributed palettes.
+- **Motion**: Use animations for effects and micro-interactions. Prioritize CSS-only solutions for HTML. Use Motion library for React when available. Focus on high-impact moments: one well-orchestrated page load with staggered reveals (animation-delay) creates more delight than scattered micro-interactions. Use scroll-triggering and hover states that surprise.
+- **Spatial Composition**: Unexpected layouts. Asymmetry. Overlap. Diagonal flow. Grid-breaking elements. Generous negative space OR controlled density.
+- **Backgrounds & Visual Details**: Create atmosphere and depth rather than defaulting to solid colors. Add contextual effects and textures that match the overall aesthetic. Apply creative forms like gradient meshes, noise textures, geometric patterns, layered transparencies, dramatic shadows, decorative borders, custom cursors, and grain overlays.
 
-## Sorties
-- Single page → `out/<slug>.html`
-- Multi-page  → `out/<slug>/index.html` (+ sous-pages et navigation auto).
+NEVER use generic AI-generated aesthetics like overused font families (Inter, Roboto, Arial, system fonts), cliched color schemes (particularly purple gradients on white backgrounds), predictable layouts and component patterns, and cookie-cutter design that lacks context-specific character.
 
-## Exemples
+Interpret creatively and make unexpected choices that feel genuinely designed for the context. No design should be the same. Vary between light and dark themes, different fonts, different aesthetics. NEVER converge on common choices (Space Grotesk, for example) across generations.
 
-### Landing produit
-```json
-{
-  "title": "Homeport",
-  "theme": "brand",
-  "html": "<main class='min-h-screen flex items-center justify-center p-8'><div class='max-w-2xl text-center'><h1 class='text-5xl font-black mb-4'>Homeport</h1><p class='text-xl opacity-80'>La plateforme no-code pour équipes produit.</p><a href='#' class='mt-8 inline-block px-6 py-3 bg-[var(--hp-primary)] text-white rounded-xl'>Démarrer</a></div></main>"
-}
-```
+**IMPORTANT**: Match implementation complexity to the aesthetic vision. Maximalist designs need elaborate code with extensive animations and effects. Minimalist or refined designs need restraint, precision, and careful attention to spacing, typography, and subtle details. Elegance comes from executing the vision well.
 
-## Limitations
-- Tailwind est injecté via CDN — pas de purge, pas de plugins custom.
-- Le JS est exécuté en inline `<script>` : pas d'imports ESM sophistiqués (pour ça, utiliser `webapp-bundle` avec `framework: react-cdn`).
-- Taille plafonnée à 50 MB.
-
-## Troubleshooting
-- `invalid_page_path` → les `path` doivent rester relatifs et sans `..`.
-- `theme_unknown` → se limiter aux presets ou fournir `theme: {primary, bg, text}`.
+Remember: Claude is capable of extraordinary creative work. Don't hold back, show what can truly be created when thinking outside the box and committing fully to a distinctive vision.

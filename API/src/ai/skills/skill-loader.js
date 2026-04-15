@@ -54,7 +54,7 @@ async function _walk(dir, predicate) {
     throw e;
   }
   for (const ent of entries) {
-    if (ent.name.startsWith('.') || ent.name === 'node_modules' || ent.name === '__pycache__') continue;
+    if (ent.name.startsWith('.') || ent.name === 'node_modules' || ent.name === '__pycache__' || ent.name === '_legacy') continue;
     const abs = path.join(dir, ent.name);
     if (ent.isDirectory()) {
       const sub = await _walk(abs, predicate);
@@ -193,7 +193,7 @@ function _autoloadSync() {
       let ents;
       try { ents = fs.readdirSync(cur, { withFileTypes: true }); } catch { continue; }
       for (const ent of ents) {
-        if (ent.name.startsWith('.') || ent.name === 'node_modules' || ent.name === '__pycache__') continue;
+        if (ent.name.startsWith('.') || ent.name === 'node_modules' || ent.name === '__pycache__' || ent.name === '_legacy') continue;
         const abs = path.join(cur, ent.name);
         if (ent.isDirectory()) stack.push(abs);
         else if (ent.isFile() && (/(^|\/)SKILL\.md$/i.test(abs) || /\.SKILL\.md$/i.test(abs))) files.push(abs);
