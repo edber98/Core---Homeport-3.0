@@ -836,6 +836,93 @@ ${toolLines.join('\n')}
             break;
           }
 
+          // ── Canvas task events (sous-agents live) — upsert tasks[] ──
+          case 'canvas.task.create': {
+            try {
+              const AiCanvasState = require('../../db/models/ai-canvas-state.model');
+              const threadId = thread._id;
+              const task = event.task || {};
+              if (task.id) {
+                await AiCanvasState.updateOne(
+                  { threadId },
+                  { $pull: { tasks: { id: task.id } }, $setOnInsert: { threadId } },
+                  { upsert: true }
+                );
+                await AiCanvasState.updateOne(
+                  { threadId },
+                  {
+                    $push: {
+                      tasks: {
+                        $each: [{
+                          id: task.id,
+                          jobId: task.jobId || task.id,
+                          subject: task.subject || '',
+                          description: task.prompt || task.description || '',
+                          subagentType: task.subagentType,
+                          status: task.status || 'queued',
+                          parentTaskId: task.parentJobId || task.parentTaskId,
+                          startedAt: task.startedAt ? new Date(task.startedAt) : new Date(),
+                          toolCalls: [],
+                        }],
+                        $slice: -200,
+                      },
+                    },
+                  }
+                );
+              }
+            } catch (e) { console.error('[ai-sse] canvas.task.create:', e?.message); }
+            send(event);
+            break;
+          }
+          case 'canvas.task.update': {
+            try {
+              const AiCanvasState = require('../../db/models/ai-canvas-state.model');
+              const threadId = thread._id;
+              const taskId = event.taskId;
+              if (taskId) {
+                const set = {};
+                if (event.status) set['tasks.$.status'] = event.status;
+                if (event.duration != null) set['tasks.$.duration'] = event.duration;
+                if (event.error) set['tasks.$.error'] = event.error;
+                if (event.status === 'completed' || event.status === 'error' || event.status === 'done') {
+                  set['tasks.$.finishedAt'] = new Date();
+                }
+                if (Object.keys(set).length) {
+                  await AiCanvasState.updateOne(
+                    { threadId, 'tasks.id': taskId },
+                    { $set: set }
+                  );
+                }
+              }
+            } catch (e) { console.error('[ai-sse] canvas.task.update:', e?.message); }
+            send(event);
+            break;
+          }
+          case 'canvas.task.toolcall': {
+            try {
+              const AiCanvasState = require('../../db/models/ai-canvas-state.model');
+              const threadId = thread._id;
+              const taskId = event.taskId;
+              if (taskId) {
+                const entry = {
+                  id: `${taskId}_${Date.now()}`,
+                  name: event.toolName || 'tool',
+                  status: event.status || 'success',
+                  duration: event.duration,
+                  argsSummary: event.argsSummary,
+                  resultSummary: event.resultSummary,
+                  at: event.at ? new Date(event.at) : new Date(),
+                };
+                await AiCanvasState.updateOne(
+                  { threadId, 'tasks.id': taskId },
+                  { $push: { 'tasks.$.toolCalls': { $each: [entry], $slice: -100 } } }
+                );
+              }
+            } catch (e) { console.error('[ai-sse] canvas.task.toolcall:', e?.message); }
+            send(event);
+            break;
+          }
+
           // ── Canvas updates — persist to AiCanvasState ──
           case 'canvas.document':
           case 'canvas.research':
@@ -889,12 +976,13 @@ ${toolLines.join('\n')}
       }
 
       // Save assistant message with interleaved segments
+      let savedAssistantMessage = null;
       if (fullText || toolCalls.length) {
         // Clean empty segments
         const cleanSegments = segments.filter(s =>
           (s.type === 'text' && s.content?.trim()) || (s.type === 'tools' && s.toolCalls?.length)
         );
-        await AiMessage.create({
+        savedAssistantMessage = await AiMessage.create({
           threadId: thread._id,
           role: 'assistant',
           content: fullText,
@@ -904,6 +992,24 @@ ${toolLines.join('\n')}
           cancelled: ac.signal.aborted || undefined,
           usage: usageData && (usageData.input || usageData.output) ? usageData : undefined,
         });
+      }
+
+      // ── Hook: détection auto de mémoire projet (subagent async) ──
+      // N'est actif que pour les threads mode='project'. Le hook gère son
+      // propre debounce et ne throw jamais.
+      if (thread.mode === 'project' && savedAssistantMessage) {
+        try {
+          const { triggerMemoryExtractor } = require('../../ai/memory-extractor-hook');
+          setImmediate(() => {
+            triggerMemoryExtractor({
+              thread,
+              user: req.user,
+              lastAssistantMessageId: savedAssistantMessage._id,
+            }).catch((e) => console.error('[ai] memory extractor trigger failed:', e?.message));
+          });
+        } catch (e) {
+          console.error('[ai] memory extractor hook require failed:', e?.message);
+        }
       }
 
       // Auto-generate thread title from first user message
@@ -1754,12 +1860,43 @@ ${toolLines.join('\n')}
     res.apiOk(jobs);
   });
 
+  // ── Stream SSE passif : reçoit en live les events du thread (subagents async,
+  // memory_extractor, agent_report, canvas.*) même en dehors d'un POST /messages.
+  // Permet à la page chat ouverte de voir la progression des jobs background.
+  r.get('/ai/threads/:threadId/stream', requireThreadAccess('view'), async (req, res) => {
+    const thread = req.aiThread;
+    const threadKey = String(thread._id);
+
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+    res.setHeader('X-Accel-Buffering', 'no');
+    if (res.socket) res.socket.setNoDelay(true);
+    res.flushHeaders();
+
+    const send = (obj) => {
+      try { res.write(`data: ${JSON.stringify(obj)}\n\n`); if (typeof res.flush === 'function') res.flush(); } catch {}
+    };
+    send({ type: 'stream.ready', threadId: threadKey });
+
+    const { onThreadEvent } = require('../../ai/jobs/job-events');
+    const off = onThreadEvent(threadKey, (ev) => { send(ev); });
+    const heartbeat = setInterval(() => { try { res.write(':keepalive\n\n'); } catch {} }, 15000);
+    const cleanup = () => {
+      clearInterval(heartbeat);
+      try { off(); } catch {}
+      try { res.end(); } catch {}
+    };
+    req.on('close', cleanup);
+    res.on('close', cleanup);
+  });
+
   // ── Plan proposal response ──
   // POST /ai/threads/:threadId/plan-response
-  // Body: { requestId, decision:'approve'|'reject'|'modify', approvedSteps?, modifiedSteps? }
+  // Body: { requestId, decision:'approve'|'reject'|'modify', approvedSteps?, modifiedSteps?, missingInfoAnswers? }
   r.post('/ai/threads/:threadId/plan-response', requireThreadAccess('comment'), async (req, res) => {
     const thread = req.aiThread;
-    const { requestId, decision, approvedSteps, modifiedSteps } = req.body || {};
+    const { requestId, decision, approvedSteps, modifiedSteps, missingInfoAnswers } = req.body || {};
     if (!requestId || !decision) {
       return res.apiError(400, 'missing_fields', 'requestId + decision required');
     }
@@ -1776,6 +1913,25 @@ ${toolLines.join('\n')}
     if (msg.metadata?.planProposal?.answer) {
       return res.apiError(409, 'already_answered', 'Plan already answered');
     }
+    // Validation missingInfo : si plan a des missingInfo et decision=approve,
+    // toutes les clés doivent avoir une réponse non-vide.
+    const missingInfo = msg.metadata?.planProposal?.missingInfo || [];
+    let normalizedAnswers = null;
+    if (missingInfo.length && decision === 'approve') {
+      if (!missingInfoAnswers || typeof missingInfoAnswers !== 'object') {
+        return res.apiError(400, 'missing_info_required', 'missingInfoAnswers required when plan has missingInfo');
+      }
+      normalizedAnswers = {};
+      for (const mi of missingInfo) {
+        const v = missingInfoAnswers[mi.key];
+        if (v === undefined || v === null || String(v).trim() === '') {
+          return res.apiError(400, 'missing_info_incomplete', `Missing answer for key: ${mi.key}`);
+        }
+        normalizedAnswers[mi.key] = v;
+      }
+    } else if (missingInfoAnswers && typeof missingInfoAnswers === 'object') {
+      normalizedAnswers = { ...missingInfoAnswers };
+    }
     // Patch the message
     const patch = {
       'metadata.planProposal.answer': decision,
@@ -1784,6 +1940,7 @@ ${toolLines.join('\n')}
     };
     if (Array.isArray(approvedSteps)) patch['metadata.planProposal.approvedSteps'] = approvedSteps;
     if (Array.isArray(modifiedSteps)) patch['metadata.planProposal.modifiedSteps'] = modifiedSteps;
+    if (normalizedAnswers) patch['metadata.planProposal.missingInfoAnswers'] = normalizedAnswers;
     await AiMessage.updateOne({ _id: msg._id }, { $set: patch });
 
     // Find the most recent running job on this thread to resume it
@@ -1798,6 +1955,7 @@ ${toolLines.join('\n')}
         decision,
         approvedSteps: Array.isArray(approvedSteps) ? approvedSteps : [],
         modifiedSteps: Array.isArray(modifiedSteps) ? modifiedSteps : null,
+        missingInfoAnswers: normalizedAnswers || {},
       });
     }
     const updated = await AiMessage.findById(msg._id).lean();
@@ -2267,15 +2425,70 @@ ${toolLines.join('\n')}
       source: ['manual', 'extracted', 'ai'].includes(entry.source) ? entry.source : 'manual',
       pinned: !!entry.pinned,
       tags: Array.isArray(entry.tags) ? entry.tags.filter(t => typeof t === 'string').map(t => t.slice(0, 40)) : [],
+      // Les entries créées manuellement via ces routes sont toujours 'approved'.
+      // Seul le subagent memory_extractor crée des 'pending' (via tool direct).
+      status: ['pending', 'approved', 'rejected'].includes(entry.status) ? entry.status : 'approved',
       updatedAt: new Date(),
       updatedBy: userId || undefined,
     };
   }
 
-  // GET — full knowledge doc
+  // GET — full knowledge doc (avec filtre ?status=pending|approved|rejected|all)
   r.get('/ai/threads/:threadId/knowledge', requireThreadAccess('view'), async (req, res) => {
     const doc = await AiProjectKnowledge.findOne({ threadId: req.aiThread._id }).lean();
-    res.apiOk(doc || { threadId: req.aiThread._id, workspaceId: req.aiThread.workspaceId, entries: [] });
+    const base = doc || { threadId: req.aiThread._id, workspaceId: req.aiThread.workspaceId, entries: [] };
+    const statusFilter = typeof req.query?.status === 'string' ? req.query.status : null;
+    if (statusFilter && statusFilter !== 'all') {
+      // Les entries sans `status` (legacy) sont traitées comme 'approved'.
+      const entries = (base.entries || []).filter(e => {
+        const st = e.status || 'approved';
+        return st === statusFilter;
+      });
+      return res.apiOk({ ...base, entries });
+    }
+    res.apiOk(base);
+  });
+
+  // GET pending-count — badge UI (rapide, pas de payload entries)
+  r.get('/ai/threads/:threadId/knowledge/pending-count', requireThreadAccess('view'), async (req, res) => {
+    const doc = await AiProjectKnowledge.findOne({ threadId: req.aiThread._id }, 'entries.status').lean();
+    const count = (doc?.entries || []).filter(e => e.status === 'pending').length;
+    res.apiOk({ count });
+  });
+
+  // POST approve — passe une entry 'pending' → 'approved'
+  r.post('/ai/threads/:threadId/knowledge/entries/:entryId/approve', requireThreadAccess('edit'), async (req, res) => {
+    const doc = await AiProjectKnowledge.findOne({ threadId: req.aiThread._id });
+    if (!doc) return res.apiError(404, 'knowledge_not_found', 'No knowledge doc');
+    const entry = doc.entries.id(req.params.entryId);
+    if (!entry) return res.apiError(404, 'entry_not_found', 'Entry not found');
+
+    // Optionnel : patch de la valeur avant approbation (modifier avant d'approuver)
+    const patch = req.body || {};
+    const ALLOWED = ['key', 'value', 'type', 'description', 'tags'];
+    for (const k of ALLOWED) {
+      if (k in patch) entry[k] = patch[k];
+    }
+    entry.status = 'approved';
+    entry.reviewedAt = new Date();
+    entry.reviewedBy = req.user.id;
+    entry.updatedAt = new Date();
+    entry.updatedBy = req.user.id;
+    await doc.save();
+    res.apiOk(entry);
+  });
+
+  // POST reject — passe une entry 'pending' → 'rejected'
+  r.post('/ai/threads/:threadId/knowledge/entries/:entryId/reject', requireThreadAccess('edit'), async (req, res) => {
+    const doc = await AiProjectKnowledge.findOne({ threadId: req.aiThread._id });
+    if (!doc) return res.apiError(404, 'knowledge_not_found', 'No knowledge doc');
+    const entry = doc.entries.id(req.params.entryId);
+    if (!entry) return res.apiError(404, 'entry_not_found', 'Entry not found');
+    entry.status = 'rejected';
+    entry.reviewedAt = new Date();
+    entry.reviewedBy = req.user.id;
+    await doc.save();
+    res.apiOk(entry);
   });
 
   // PUT — replace all entries
@@ -2434,9 +2647,12 @@ ${toolLines.join('\n')}
     }
 
     // Apply patch manually (only allowed fields)
-    const allowed = ['key', 'value', 'type', 'description', 'pinned', 'tags', 'source'];
+    const allowed = ['key', 'value', 'type', 'description', 'pinned', 'tags', 'source', 'status'];
     for (const k of allowed) {
-      if (k in patch) entry[k] = patch[k];
+      if (k in patch) {
+        if (k === 'status' && !['pending', 'approved', 'rejected'].includes(patch.status)) continue;
+        entry[k] = patch[k];
+      }
     }
     entry.updatedAt = new Date();
     entry.updatedBy = req.user.id;

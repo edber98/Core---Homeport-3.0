@@ -355,6 +355,16 @@ import { NzAvatarModule } from 'ng-zorro-antd/avatar';
                 </span>
               </div>
               <div class="chat-actions">
+                <!-- Badge détection auto mémoire (projet uniquement) -->
+                <button *ngIf="ai.currentThread()?.mode === 'project' && ai.pendingKnowledgeCount() > 0"
+                  nz-button nzType="text" nzSize="small" class="chat-action-btn knowledge-pending-btn"
+                  (click)="openKnowledgePending()"
+                  nz-tooltip [nzTooltipTitle]="'Voir les ' + ai.pendingKnowledgeCount() + ' suggestion(s) en attente'"
+                  nzTooltipOverlayClassName="chat-action-tooltip">
+                  <nz-badge [nzCount]="ai.pendingKnowledgeCount()" [nzOverflowCount]="9" nzSize="small">
+                    <span nz-icon nzType="bulb" nzTheme="outline" style="font-size: 16px; color: #faad14;"></span>
+                  </nz-badge>
+                </button>
                 <button nz-button nzType="text" nzSize="small" class="chat-action-btn" (click)="regenerateTitle()"
                   nz-tooltip nzTooltipTitle="Régénérer le titre" nzTooltipOverlayClassName="chat-action-tooltip" [nzLoading]="regeneratingTitle">
                   <span nz-icon nzType="reload" nzTheme="outline"></span>
@@ -1216,6 +1226,17 @@ export class AiFullpageComponent implements OnInit, OnDestroy, AfterViewInit {
 
   toggleSettingsFromSidebar() {
     this.showSettings = !this.showSettings;
+    if (this.shouldAutoCloseSidebarNav()) this.closeSidebarPanel();
+  }
+
+  /**
+   * Ouvre la page paramètres sur l'onglet "Connaissances projet" avec filtre
+   * "En attente". Déclenché par le badge pending dans le header chat.
+   */
+  openKnowledgePending() {
+    this.showSettings = true;
+    // Emit pour que le composant ai-settings sache quel tab + filtre activer
+    this.ai.openKnowledgePending$.next();
     if (this.shouldAutoCloseSidebarNav()) this.closeSidebarPanel();
   }
 

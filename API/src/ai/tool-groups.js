@@ -24,7 +24,14 @@ const PRIMITIVE_GROUPS = {
   thread:          ['compact_and_transfer'],
   manual:          ['search_manual', 'get_manual_section'],
   subagent:        ['spawn_subagent', 'research_deep'],
+  // Outils internes réservés aux subagents (jamais exposés au LLM principal).
+  // Filtrés en sortie : seuls les subagents avec allowedTools:[...] les voient.
+  subagent_internal: ['suggest_memory_entries'],
 };
+
+// Tools réservés aux subagents — cachés au LLM principal SAUF si allowedTools
+// contient explicitement leur nom (ex: memory_extractor.toolsAllowed).
+const SUBAGENT_INTERNAL_TOOLS = new Set(['suggest_memory_entries']);
 
 // All primitive tool names (flat)
 const ALL_PRIMITIVE_NAMES = new Set(Object.values(PRIMITIVE_GROUPS).flat());
@@ -105,15 +112,33 @@ const ACTIVATE_CAPSULE_DEFINITION = {
  * @returns {object} Mutable tool set with activateCapsule() method
  */
 function buildOrchestratorToolSet(opts) {
-  const { context, metadata, emit = () => {}, activeCapsules, blockedTools = [], mcpTools = [] } = opts;
+  const { context, metadata, emit = () => {}, activeCapsules, blockedTools = [], allowedTools = null, mcpTools = [] } = opts;
   const blocked = new Set(blockedTools);
+  // Whitelist mode : si allowedTools est un array (même vide), seuls ces outils
+  // sont exposés au LLM. Sert aux subagents très contraints (ex: memory_extractor
+  // qui ne doit appeler que `suggest_memory_entries`).
+  const allowList = Array.isArray(allowedTools) && allowedTools.length ? new Set(allowedTools) : null;
+  // Overlay : allowList restreint encore plus que blocked.
+  const isToolAllowed = (name) => {
+    if (blocked.has(name)) return false;
+    if (allowList && !allowList.has(name)) return false;
+    return true;
+  };
 
-  // 1. Primitive meta-tools (always available)
-  const metaDefs = META_TOOL_DEFINITIONS.filter(t => ALL_PRIMITIVE_NAMES.has(t.name) && !blocked.has(t.name));
+  // 1. Primitive meta-tools (always available sauf blocked / hors allowList).
+  // Les outils `SUBAGENT_INTERNAL_TOOLS` ne sont exposés QUE si allowList les
+  // contient explicitement (cas memory_extractor).
+  const metaDefs = META_TOOL_DEFINITIONS.filter(t => {
+    if (!ALL_PRIMITIVE_NAMES.has(t.name)) return false;
+    if (SUBAGENT_INTERNAL_TOOLS.has(t.name)) {
+      return !!(allowList && allowList.has(t.name));
+    }
+    return isToolAllowed(t.name);
+  });
   const metaNames = new Set(metaDefs.map(t => t.name));
 
-  // 2. activate_capsule tool (always available)
-  const capsuleDef = blocked.has('activate_capsule') ? null : ACTIVATE_CAPSULE_DEFINITION;
+  // 2. activate_capsule tool (always available — sauf blocked / allowList)
+  const capsuleDef = isToolAllowed('activate_capsule') ? ACTIVATE_CAPSULE_DEFINITION : null;
 
   // Mutable state for dynamic capsule management
   const executors = [];
@@ -142,7 +167,7 @@ function buildOrchestratorToolSet(opts) {
     const newDefs = [];
     if (exec.definitions) {
       for (const t of exec.definitions) {
-        if (!blocked.has(t.name) && !seen.has(t.name)) {
+        if (isToolAllowed(t.name) && !seen.has(t.name)) {
           seen.add(t.name);
           definitions.push(t);
           newDefs.push(t);
@@ -169,7 +194,7 @@ function buildOrchestratorToolSet(opts) {
   if (mcpTools.length) {
     for (const t of mcpTools) {
       const prefixedName = `mcp_${t.serverPrefix}_${t.name}`;
-      if (blocked.has(prefixedName) || seen.has(prefixedName)) continue;
+      if (!isToolAllowed(prefixedName) || seen.has(prefixedName)) continue;
       seen.add(prefixedName);
       definitions.push({
         name: prefixedName,
@@ -203,6 +228,11 @@ function buildOrchestratorToolSet(opts) {
 
     async execute(name, input, callCtx) {
       if (blocked.has(name)) return { error: `Tool '${name}' is blocked for this agent.` };
+      // Hors allowList (quand whitelist active) → refus. Seuls les outils
+      // internes (suggest_memory_entries) sont strictement limités par allowList.
+      if (allowList && !allowList.has(name) && SUBAGENT_INTERNAL_TOOLS.has(name)) {
+        return { error: `Tool '${name}' est réservé aux subagents autorisés.` };
+      }
 
       // activate_capsule — return marker for harness
       if (name === 'activate_capsule') {

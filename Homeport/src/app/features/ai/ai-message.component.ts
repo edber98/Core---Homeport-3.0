@@ -15,6 +15,7 @@ import { AiPlanProposalCardComponent } from './plan/ai-plan-proposal-card.compon
 import { AiDiagramRendererComponent } from './diagram/ai-diagram-renderer.component';
 import { AiStructuredMessageComponent } from './structured/ai-structured-message.component';
 import { AiInlineImageComponent } from './images/ai-inline-image.component';
+import { AiAgentReportCardComponent } from './agent-reports/ai-agent-report-card.component';
 import { AiWidgetActionsComponent, WidgetAction, WidgetActionId } from './widgets/ai-widget-actions.component';
 import { AiWidgetModalComponent, WidgetType, WidgetModalData } from './widgets/ai-widget-modal.component';
 import { WidgetExportService } from './widgets/widget-export.service';
@@ -120,7 +121,7 @@ interface ProcessedSegment {
 @Component({
   selector: 'ai-message',
   standalone: true,
-  imports: [CommonModule, NzButtonModule, NzIconModule, NzTagModule, NodeExecResultDialogComponent, AiPermissionRequestCardComponent, AiCacheSyncRequestCardComponent, AiStructuredMessageComponent, AiPlanProposalCardComponent, AiDiagramRendererComponent, AiInlineImageComponent, AiWidgetActionsComponent],
+  imports: [CommonModule, NzButtonModule, NzIconModule, NzTagModule, NodeExecResultDialogComponent, AiPermissionRequestCardComponent, AiCacheSyncRequestCardComponent, AiStructuredMessageComponent, AiPlanProposalCardComponent, AiDiagramRendererComponent, AiInlineImageComponent, AiWidgetActionsComponent, AiAgentReportCardComponent],
   template: `
     <div class="ai-msg" [class.user]="msg.role === 'user'" [class.assistant]="msg.role === 'assistant'" [class.compact]="compact">
       <div class="avatar" *ngIf="!compact">
@@ -186,6 +187,19 @@ interface ProcessedSegment {
           </div>
           <div *ngSwitchCase="'image_inline'" class="widget-bubble image-inline-wrap">
             <ai-inline-image [data]="msg.metadata!.imageInline!"></ai-inline-image>
+          </div>
+          <div *ngSwitchCase="'agent_report'" class="widget-bubble widget-wrap">
+            <ai-agent-report-card [report]="msg.metadata!.agentReport!"></ai-agent-report-card>
+          </div>
+          <div *ngSwitchCase="'system_hint'" class="system-hint">
+            <span nz-icon nzType="bulb" nzTheme="outline" class="system-hint-icon"></span>
+            <div class="system-hint-content">
+              <div class="system-hint-text">{{ msg.content }}</div>
+              <button *ngIf="isMemoryPendingHint(msg)" nz-button nzType="link" nzSize="small" (click)="openKnowledgePending()">
+                Voir les suggestions
+                <span nz-icon nzType="arrow-right" nzTheme="outline"></span>
+              </button>
+            </div>
           </div>
           <div *ngSwitchCase="'comment'" class="comment-msg">
             <nz-tag nzColor="purple">
@@ -447,6 +461,17 @@ interface ProcessedSegment {
     .comment-msg { background: #faf5ff; border-left: 3px solid #722ed1; border-radius: 0 8px 8px 0; padding: 8px 12px; margin: 4px 0; max-width: 85%; }
     .comment-msg .comment-content { margin-top: 4px; font-size: 13px; color: #333; line-height: 1.5; }
     .comment-msg nz-tag { margin-bottom: 4px; }
+    .system-hint {
+      display: flex; align-items: flex-start; gap: 10px;
+      background: #fffbe6; border: 1px solid #ffe58f; border-radius: 10px;
+      padding: 10px 14px; margin: 6px 0; max-width: 90%;
+      font-size: 13px; color: #614700;
+    }
+    .system-hint-icon { color: #faad14; font-size: 18px; flex-shrink: 0; margin-top: 2px; }
+    .system-hint-content { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+    .system-hint-text { line-height: 1.5; }
+    .system-hint .ant-btn-link { padding: 0; height: auto; font-size: 12px; color: #d48806; align-self: flex-start; }
+    .system-hint .ant-btn-link:hover { color: #faad14; }
     .tool-files { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
     .tool-file-img { max-width: 200px; max-height: 150px; border-radius: 6px; object-fit: cover; border: 1px solid #e8e8e8; }
     .tool-file-link { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; color: #e61982; }
@@ -510,6 +535,16 @@ export class AiMessageComponent {
     { id: 'export:png', label: 'Télécharger PNG', icon: 'picture' },
     { id: 'export:pdf', label: 'Télécharger PDF', icon: 'file-pdf' },
   ];
+
+  // ── System hint helpers (ex: memory_pending) ──
+  isMemoryPendingHint(msg: AiMessage): boolean {
+    return msg?.metadata?.['kind'] === 'system_hint'
+      && msg?.metadata?.['extra']?.hintType === 'memory_pending';
+  }
+
+  openKnowledgePending(): void {
+    this.ai.openKnowledgePending$.next();
+  }
 
   async onWidgetAction(id: WidgetActionId, widgetType: WidgetType, widgetData: any): Promise<void> {
     if (!widgetData) return;
@@ -657,17 +692,25 @@ export class AiMessageComponent {
   }
 
   /** V2 — handle plan proposal card response */
-  onPlanAnswer(evt: { decision: 'approve' | 'reject' | 'modify'; approvedSteps?: string[]; modifiedSteps?: any[] }) {
+  onPlanAnswer(evt: { decision: 'approve' | 'reject' | 'modify'; approvedSteps?: string[]; modifiedSteps?: any[]; missingInfoAnswers?: Record<string, string> }) {
     const prop = this.msg.metadata?.planProposal;
     const threadId = this.msg.threadId;
     if (!prop || !threadId) return;
-    this.ai.respondToPlan(threadId, prop.requestId, evt.decision, evt.approvedSteps, evt.modifiedSteps as any).subscribe({
+    this.ai.respondToPlan(
+      threadId,
+      prop.requestId,
+      evt.decision,
+      evt.approvedSteps,
+      evt.modifiedSteps as any,
+      evt.missingInfoAnswers,
+    ).subscribe({
       next: () => {
         if (this.msg.metadata?.planProposal) {
           this.msg.metadata.planProposal.answer = evt.decision;
           this.msg.metadata.planProposal.answeredAt = new Date().toISOString();
           if (evt.approvedSteps) this.msg.metadata.planProposal.approvedSteps = evt.approvedSteps;
           if (evt.modifiedSteps) this.msg.metadata.planProposal.modifiedSteps = evt.modifiedSteps as any;
+          if (evt.missingInfoAnswers) this.msg.metadata.planProposal.missingInfoAnswers = evt.missingInfoAnswers;
         }
         this.cdr.markForCheck();
       },

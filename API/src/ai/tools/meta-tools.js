@@ -276,6 +276,31 @@ const META_TOOL_DEFINITIONS = [
     },
   },
   {
+    name: 'suggest_memory_entries',
+    description: "USAGE INTERNE (subagent memory_extractor uniquement). Crée des entries 'pending' dans la mémoire projet, en attente de validation par l'utilisateur. Passer entries=[] si rien à suggérer.",
+    parameters: {
+      type: 'object',
+      properties: {
+        entries: {
+          type: 'array',
+          description: 'Liste des entries candidates (max 3).',
+          items: {
+            type: 'object',
+            properties: {
+              key: { type: 'string', description: 'Clé courte format "namespace.sous_cle" (ex: "deadline.projet", "client.contact_principal")' },
+              value: { description: 'Valeur (string, number ou boolean)' },
+              type: { type: 'string', enum: ['text', 'number', 'date', 'email', 'url', 'list'], description: 'Type sémantique (défaut: text)' },
+              description: { type: 'string', description: 'Contexte court expliquant pourquoi c\'est à retenir (max 500 car.)' },
+              why: { type: 'string', description: 'Extrait précis de la conversation justifiant cette suggestion (max 500 car.)' },
+            },
+            required: ['key', 'value'],
+          },
+        },
+      },
+      required: ['entries'],
+    },
+  },
+  {
     name: 'compact_and_transfer',
     description: 'Compacte la conversation actuelle en un résumé et crée un nouveau thread avec ce contexte. Utilise quand l\'utilisateur veut travailler sur un NOUVEL élément (workflow/formulaire) depuis une conversation liée à un autre élément. Le résumé sera le premier message du nouveau thread. IMPORTANT : si le nouveau thread concerne un élément existant (workflow/formulaire), passe le flowId ou formId pour maintenir le lien.',
     parameters: {
@@ -377,7 +402,22 @@ const META_TOOL_DEFINITIONS = [
   },
   {
     name: 'spawn_subagent',
-    description: "Lance un sous-agent spécialisé pour une tâche autonome. Utilise pour paralléliser des explorations ou déléguer une recherche/analyse/rédaction. Types : research (web), file_analyzer (fichiers), doc_writer (livrables), general (polyvalent).",
+    description: [
+      "Lance un sous-agent spécialisé pour une tâche autonome. Types : research (web), file_analyzer (fichiers), doc_writer (livrables), general (polyvalent).",
+      "",
+      "Modes :",
+      "- Par défaut (sync) : bloque jusqu'à la fin du sous-agent, retourne son summary.",
+      "- async:true : retourne immédiatement {jobId, status} sans attendre. À utiliser pour composer un pipeline avec depends_on / input_from.",
+      "",
+      "Orchestration :",
+      "- depends_on: string[] — liste d'IDs (jobId) à attendre en état terminal avant de démarrer. Si une dépendance échoue, ce sous-agent est abandonné avec status:error.",
+      "- input_from: string | string[] | 'all_above' | 'all_siblings' — injecte les summaries des jobs cités en tête du prompt comme contexte. 'all_above' = tous les siblings créés avant ce job sous le même parent.",
+      "",
+      "Exemple pipeline séquentiel (3 sous-agents async chaînés) :",
+      "  step1 = spawn_subagent({async:true, subagent_type:'research', prompt:'Cherche X'})",
+      "  step2 = spawn_subagent({async:true, subagent_type:'doc_writer', depends_on:[step1.jobId], input_from:step1.jobId, prompt:'Rédige basé sur la recherche'})",
+      "  step3 = spawn_subagent({async:true, subagent_type:'general', depends_on:[step2.jobId], input_from:[step1.jobId, step2.jobId], prompt:'Envoie email avec le doc'})",
+    ].join('\n'),
     parameters: {
       type: 'object',
       properties: {
@@ -385,9 +425,18 @@ const META_TOOL_DEFINITIONS = [
         prompt: { type: 'string', description: 'Instruction détaillée à donner au sous-agent.' },
         max_loops: { type: 'number', description: 'Itérations max (défaut: 20).' },
         context_slice: { type: 'object', description: 'Contexte additionnel à transmettre.' },
+        async: { type: 'boolean', description: 'Si true, fire-and-forget : retourne immédiatement {jobId, status} sans attendre. Indispensable pour pipelines avec depends_on.' },
+        depends_on: {
+          type: 'array',
+          items: { type: 'string' },
+          description: "IDs de jobs à attendre avant de démarrer. Ce subagent ne tourne que lorsque tous ses 'depends_on' sont completed (ou abandonné si l'un échoue).",
+        },
+        input_from: {
+          description: "Injecte les summaries des jobs cités dans le prompt comme contexte. Peut être un jobId, une liste d'IDs, 'all_above' (tous les siblings créés avant), ou 'all_siblings'.",
+        },
         parallel: {
           type: 'array',
-          description: 'Pour lancer plusieurs sous-agents en parallèle.',
+          description: 'Pour lancer plusieurs sous-agents en parallèle (tous sync).',
           items: {
             type: 'object',
             properties: {
@@ -477,6 +526,19 @@ const META_TOOL_DEFINITIONS = [
           },
         },
         risks: { type: 'array', items: { type: 'string' }, description: 'Risques ou incertitudes' },
+        missing_info: {
+          type: 'array',
+          description: "Infos CRITIQUES manquantes qui bloquent l'exécution (destinataire email, chemin exact, seuil, règle métier…). Si non vides, la carte de plan affiche des champs de saisie — l'utilisateur doit les renseigner AVANT de pouvoir approuver. PRIVILÉGIE toujours missing_info plutôt que ask_user pour des infos critiques qui conditionnent un plan.",
+          items: {
+            type: 'object',
+            properties: {
+              key: { type: 'string', description: 'Nom court (ex: "email_destinataire", "seuil_min")' },
+              question: { type: 'string', description: 'Question à poser à l\'utilisateur' },
+              why: { type: 'string', description: 'Pourquoi cette info est critique pour exécuter le plan' },
+            },
+            required: ['key', 'question'],
+          },
+        },
       },
       required: ['summary', 'steps'],
     },
@@ -831,6 +893,94 @@ async function executeMetaTool(name, input, ctx) {
       return { ok: true, key, message: `Mémoire projet mise à jour : ${key}` };
     }
 
+    case 'suggest_memory_entries': {
+      const tid = ctx._metadata?.threadId || ctx.threadId;
+      if (!tid) return { ok: false, error: 'threadId manquant' };
+      const entries = Array.isArray(input?.entries) ? input.entries : [];
+      if (!entries.length) return { ok: true, created: 0, skipped: 0, message: 'Aucune suggestion' };
+
+      // Cap à 3 suggestions max par appel (garde-fou)
+      const capped = entries.slice(0, 3);
+      const KEY_REGEX = /^[a-zA-Z0-9][a-zA-Z0-9._-]{0,99}$/;
+      const ALLOWED_TYPES = ['text', 'number', 'date', 'email', 'url', 'list'];
+
+      // Load current entries pour dédup
+      const existing = await AiProjectKnowledge.findOne({ threadId: tid }).lean();
+      const existingEntries = existing?.entries || [];
+
+      let created = 0;
+      let skipped = 0;
+      // Cherche l'_id du dernier AiMessage assistant du thread (pour traçabilité)
+      let sourceMessageId = ctx._sourceMessageId || ctx._lastMessageId || null;
+      if (!sourceMessageId) {
+        try {
+          const lastAsst = await AiMessage.findOne({ threadId: tid, role: 'assistant' })
+            .sort({ createdAt: -1 }).select('_id').lean();
+          if (lastAsst?._id) sourceMessageId = lastAsst._id;
+        } catch { /* non-fatal */ }
+      }
+
+      for (const e of capped) {
+        const key = typeof e?.key === 'string' ? e.key.trim() : '';
+        if (!key || !KEY_REGEX.test(key)) { skipped++; continue; }
+        if (e?.value === undefined || e?.value === null || e?.value === '') { skipped++; continue; }
+
+        // Dédup : si clé existe déjà avec status approved ou pending ET même valeur → skip
+        const prior = existingEntries.find(x => x.key === key);
+        if (prior && (prior.status === 'approved' || !prior.status || prior.status === 'pending')) {
+          const sameVal = String(prior.value ?? '') === String(e.value ?? '');
+          if (sameVal) { skipped++; continue; }
+        }
+
+        const type = ALLOWED_TYPES.includes(e.type) ? e.type : 'text';
+        const description = e.description ? String(e.description).slice(0, 500) : '';
+        const why = e.why ? String(e.why).slice(0, 500) : '';
+
+        // Upsert : doc créé si absent, puis pull de la clé existante (remplace),
+        // puis push de l'entry pending.
+        await AiProjectKnowledge.updateOne(
+          { threadId: tid },
+          { $setOnInsert: { threadId: tid, workspaceId: ctx.workspaceId, entries: [] } },
+          { upsert: true }
+        );
+        // Pull existing only if NOT already approved (conserve approved telles quelles)
+        if (prior && prior.status !== 'approved' && prior.status !== undefined && prior.status !== null) {
+          await AiProjectKnowledge.updateOne(
+            { threadId: tid },
+            { $pull: { entries: { key, status: { $in: ['pending', 'rejected'] } } } }
+          );
+        } else if (!prior) {
+          // no-op (pas d'entry existante)
+        } else {
+          // prior approved : on ne touche pas — skip
+          skipped++;
+          continue;
+        }
+
+        const entry = {
+          key, value: e.value, type, description,
+          source: 'ai', updatedAt: new Date(), updatedBy: ctx.userId,
+          pinned: false, tags: [],
+          status: 'pending',
+          suggestionWhy: why,
+        };
+        if (sourceMessageId) {
+          try {
+            if (Types.ObjectId.isValid(String(sourceMessageId))) {
+              entry.sourceMessageId = new Types.ObjectId(String(sourceMessageId));
+            }
+          } catch { /* ignore */ }
+        }
+        await AiProjectKnowledge.updateOne(
+          { threadId: tid },
+          { $push: { entries: entry } }
+        );
+        created++;
+      }
+
+      return { ok: true, created, skipped, total: capped.length };
+    }
+
     case 'compact_and_transfer': {
       const { summary, newMode, newTitle, agentId, flowId, formId } = input;
       // Create new thread with the summary as system context
@@ -1011,8 +1161,15 @@ async function executeMetaTool(name, input, ctx) {
           parallel: Array.isArray(input.parallel) ? input.parallel.map(p => ({
             subagentType: p.subagent_type,
             prompt: p.prompt,
+            async: p.async === true,
+            depends_on: Array.isArray(p.depends_on) ? p.depends_on : undefined,
+            input_from: p.input_from,
           })) : null,
           depth,
+          async: input.async === true,
+          depends_on: Array.isArray(input.depends_on) ? input.depends_on : undefined,
+          input_from: input.input_from,
+          parentBroadcast: jc?.broadcast,
         });
         try {
           ctx?._emit?.({
@@ -1154,6 +1311,11 @@ async function executeMetaTool(name, input, ctx) {
       }
       const { randomUUID } = require('crypto');
       const requestId = randomUUID();
+      const missingInfo = Array.isArray(input.missing_info)
+        ? input.missing_info
+            .filter(m => m && typeof m === 'object' && typeof m.key === 'string' && typeof m.question === 'string')
+            .map(m => ({ key: m.key, question: m.question, why: m.why || '' }))
+        : [];
       try {
         await AiMessage.create({
           threadId: ctx.threadId,
@@ -1167,6 +1329,7 @@ async function executeMetaTool(name, input, ctx) {
               summary: input.summary,
               steps: input.steps,
               risks: Array.isArray(input.risks) ? input.risks : [],
+              ...(missingInfo.length ? { missingInfo } : {}),
             },
           },
         });
@@ -1181,6 +1344,7 @@ async function executeMetaTool(name, input, ctx) {
           requestId,
           summary: input.summary,
           stepCount: input.steps.length,
+          missingInfoCount: missingInfo.length,
         });
       }
       // Pause agent loop when running inside a job
@@ -1192,6 +1356,7 @@ async function executeMetaTool(name, input, ctx) {
           decision: decision.decision,
           approvedSteps: decision.approvedSteps || [],
           modifiedSteps: decision.modifiedSteps || null,
+          missingInfoAnswers: decision.missingInfoAnswers || {},
         };
       }
       return {

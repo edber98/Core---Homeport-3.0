@@ -30,7 +30,7 @@ import { AiProjectKnowledgeComponent } from './knowledge/ai-project-knowledge.co
   imports: [CommonModule, FormsModule, NzSelectModule, NzInputModule, NzButtonModule, NzIconModule, NzEmptyModule, NzPopconfirmModule, NzToolTipModule, NzSpinModule, NzDividerModule, NzTagModule, NzAvatarModule, NzTabsModule, NzCheckboxModule, NzInputNumberModule, AiUserPreferencesComponent, AiActivePermissionsComponent, AiProjectKnowledgeComponent],
   template: `
     <div class="settings-container" *ngIf="!loading; else loadingTpl">
-      <nz-tabset nzSize="small" nzType="card">
+      <nz-tabset nzSize="small" nzType="card" [nzSelectedIndex]="selectedTabIndex" (nzSelectedIndexChange)="onTabIndexChange($event)">
         <!-- Tab 1: Agents -->
         <nz-tab nzTitle="Agents">
           <div class="tab-content">
@@ -306,7 +306,7 @@ import { AiProjectKnowledgeComponent } from './knowledge/ai-project-knowledge.co
                 Infos durables sur le projet (client, budget, contacts, URLs, identifiants…).
                 Auto-injectées dans le contexte de l'agent pour qu'il puisse s'y référer.
               </div>
-              <ai-project-knowledge [threadId]="currentThreadId"></ai-project-knowledge>
+              <ai-project-knowledge [threadId]="currentThreadId" [initialFilter]="knowledgeInitialFilter"></ai-project-knowledge>
             </div>
           </div>
         </nz-tab>
@@ -747,6 +747,10 @@ export class AiSettingsComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   private instructions$ = new Subject<string>();
 
+  // ── Tab control (pour ouvrir directement l'onglet Connaissances) ──
+  selectedTabIndex = 0;
+  knowledgeInitialFilter: 'all' | 'pending' | 'approved' | 'rejected' = 'all';
+
   constructor(private ai: AiService, private cdr: ChangeDetectorRef, private acl: AccessControlService, private apiClient: ApiClientService) {}
 
   ngOnInit() {
@@ -763,7 +767,22 @@ export class AiSettingsComponent implements OnInit, OnDestroy {
       });
     });
 
+    // ── Ouvre l'onglet "Connaissances projet" sur filtre "pending" quand le
+    // badge du header chat est cliqué. L'onglet n'est visible qu'en mode
+    // project (index 2 = Agents 0 + Mémoire 1 + Connaissances 2).
+    this.ai.openKnowledgePending$.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      if (this.currentThreadMode === 'project' && this.currentThreadId) {
+        this.knowledgeInitialFilter = 'pending';
+        this.selectedTabIndex = 2;
+        this.cdr.detectChanges();
+      }
+    });
+
     this.loadAll();
+  }
+
+  onTabIndexChange(idx: number) {
+    this.selectedTabIndex = idx;
   }
 
   @HostListener('window:resize')

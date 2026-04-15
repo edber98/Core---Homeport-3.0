@@ -171,6 +171,7 @@ async function* runHarness({ mode, messages, context, metadata, agentOverrides, 
     emit,
     activeCapsules,
     blockedTools: agentOverrides?.blockedTools || [],
+    allowedTools: agentOverrides?.allowedTools || null,
     mcpTools,
   });
 
@@ -179,6 +180,27 @@ async function* runHarness({ mode, messages, context, metadata, agentOverrides, 
   // Add capsule instructions for chat mode
   if (mode === 'chat') {
     systemPrompt += buildCapsuleInstructions(activeCapsules);
+  }
+  // Optional custom system prompt from agent override (sub-agent type system prompt, etc.)
+  if (agentOverrides?.systemPrompt) {
+    systemPrompt += '\n\n## Instructions personnalisées\n' + agentOverrides.systemPrompt;
+  }
+  // Règle spéciale pour les sous-agents : escalade toutes les questions / permissions
+  // à leur parent (jamais directement à l'utilisateur).
+  if (jobContext?.parentJobId) {
+    systemPrompt += `
+
+## RÈGLE ABSOLUE POUR SUBAGENTS
+Tu es un sous-agent (parentJobId présent). Tu ne communiques PAS directement avec l'utilisateur :
+- NE JAMAIS supposer que l'user te répondra — ta question via ask_user sera AUTOMATIQUEMENT
+  remontée à ton agent parent qui décidera (soit en te répondant lui-même, soit en
+  consultant l'user de son côté).
+- NE JAMAIS demander une permission destructive sans justifier précisément — ton parent
+  peut la refuser au nom de l'utilisateur.
+- Si tu ne peux pas progresser sans info → émets ask_user avec UNE question courte et
+  claire. Le parent te répondra (source: 'parent_auto' ou 'user_via_parent').
+- Tu ne vois PAS les réponses de l'user directement — uniquement via ton parent.
+- Privilégie l'autonomie : tente 2-3 approches avant de remonter une question.`;
   }
 
   // LLM client (with agent overrides)
@@ -462,24 +484,54 @@ async function* runHarness({ mode, messages, context, metadata, agentOverrides, 
           console.warn(`[harness] permission pending for ${tc.name} but no jobContext — auto-allowing (legacy)`);
         } else {
           const requestId = crypto.randomUUID();
-          yield {
-            type: 'ai.permission.request',
-            requestId,
-            toolName: tc.name,
-            argsPreview: _summarizeArgs(tc.input),
-            risk: permCheck.risk,
-          };
-          jobContext.broadcast && jobContext.broadcast({
-            type: 'ai.permission.request',
-            requestId, toolName: tc.name, risk: permCheck.risk,
-            argsPreview: _summarizeArgs(tc.input),
-          });
-          const resolved = await jobContext.waitForPermission(requestId, 5 * 60_000);
-          if (resolved !== 'allow') {
-            const denyResult = { ok: false, error: 'permission_denied', reason: 'user_denied', risk: permCheck.risk };
-            toolResults.push({ id: tc.id, name: tc.name, content: JSON.stringify(denyResult), status: 'error', duration: 0 });
-            yield { type: 'tool.end', id: tc.id, name: tc.name, args: tc.input, result: denyResult, status: 'error', duration: 0 };
-            continue;
+          const argsPreview = _summarizeArgs(tc.input);
+          // Subagent ? → escalade au parent au lieu d'écrire à l'user.
+          const parentJobId = jobContext.parentJobId ? String(jobContext.parentJobId) : null;
+          if (parentJobId) {
+            const { emitJobEvent, waitForPermissionFromParent } = require('./jobs/job-events');
+            // Notifie le parent : c'est à lui de décider (auto-répondre ou relayer à l'user).
+            emitJobEvent(parentJobId, {
+              type: 'subagent.permission.request',
+              requestId,
+              childJobId: jobContext.jobId,
+              toolName: tc.name,
+              argsPreview,
+              risk: permCheck.risk,
+            });
+            // Broadcast interne (debug / UI canvas) mais PAS d'ai.permission.request direct.
+            jobContext.broadcast && jobContext.broadcast({
+              type: 'subagent.permission.request',
+              requestId, toolName: tc.name, risk: permCheck.risk,
+              argsPreview, childJobId: jobContext.jobId, parentJobId,
+            });
+            const resolved = await waitForPermissionFromParent(parentJobId, requestId, 5 * 60_000);
+            if (resolved !== 'allow') {
+              const denyResult = { ok: false, error: 'permission_denied', reason: 'parent_denied', risk: permCheck.risk };
+              toolResults.push({ id: tc.id, name: tc.name, content: JSON.stringify(denyResult), status: 'error', duration: 0 });
+              yield { type: 'tool.end', id: tc.id, name: tc.name, args: tc.input, result: denyResult, status: 'error', duration: 0 };
+              continue;
+            }
+          } else {
+            // Agent principal : flow classique → demande à l'user via SSE.
+            yield {
+              type: 'ai.permission.request',
+              requestId,
+              toolName: tc.name,
+              argsPreview,
+              risk: permCheck.risk,
+            };
+            jobContext.broadcast && jobContext.broadcast({
+              type: 'ai.permission.request',
+              requestId, toolName: tc.name, risk: permCheck.risk,
+              argsPreview,
+            });
+            const resolved = await jobContext.waitForPermission(requestId, 5 * 60_000);
+            if (resolved !== 'allow') {
+              const denyResult = { ok: false, error: 'permission_denied', reason: 'user_denied', risk: permCheck.risk };
+              toolResults.push({ id: tc.id, name: tc.name, content: JSON.stringify(denyResult), status: 'error', duration: 0 });
+              yield { type: 'tool.end', id: tc.id, name: tc.name, args: tc.input, result: denyResult, status: 'error', duration: 0 };
+              continue;
+            }
           }
         }
       }
@@ -553,11 +605,60 @@ async function* runHarness({ mode, messages, context, metadata, agentOverrides, 
       }
     }
 
-    // Check for ask_user — pause for user response
+    // Check for ask_user — subagent escalates to parent, main agent pauses for user
     const askUserCall = pendingToolCalls.find(tc => tc.name === 'ask_user');
     if (askUserCall) {
-      await toolSet.cleanup();
       const askResult = toolResults.find(r => r.id === askUserCall.id);
+      const parentJobId = jobContext?.parentJobId ? String(jobContext.parentJobId) : null;
+
+      if (parentJobId && askResult?.result) {
+        // ── SUBAGENT : escalade la question au parent, attend sa réponse ───
+        const { emitJobEvent, waitForAskUserFromParent } = require('./jobs/job-events');
+        const requestId = crypto.randomUUID();
+        emitJobEvent(parentJobId, {
+          type: 'subagent.ask_user.request',
+          requestId,
+          childJobId: jobContext.jobId,
+          question: askResult.result.text || '',
+          options: askResult.result.options || [],
+          questionType: askResult.result.questionType || 'text',
+          questions: askResult.result.questions || null,
+        });
+        jobContext.broadcast && jobContext.broadcast({
+          type: 'subagent.ask_user.request',
+          requestId, childJobId: jobContext.jobId, parentJobId,
+          question: askResult.result.text || '',
+        });
+        const { answer, source } = await waitForAskUserFromParent(parentJobId, requestId, 10 * 60_000);
+        // Réinjecte la réponse comme tool_result pour que le subagent poursuive sa boucle.
+        const answerPayload = {
+          ok: true,
+          answer: answer == null ? '(pas de réponse — timeout ou non-bloquant)' : answer,
+          source: source || 'parent_auto',
+        };
+        conversation.push({
+          role: 'assistant',
+          content: assistantText || null,
+          tool_calls: pendingToolCalls.map(tc => ({ id: tc.id, name: tc.name, input: tc.input })),
+        });
+        // Tous les autres tool_results déjà calculés + la réponse injectée pour ask_user
+        for (const tr of toolResults) {
+          if (tr.id === askUserCall.id) continue;
+          conversation.push({ role: 'tool', tool_call_id: tr.id, content: tr.content });
+        }
+        conversation.push({
+          role: 'tool',
+          tool_call_id: askUserCall.id,
+          content: JSON.stringify(answerPayload),
+        });
+        if (jobContext) {
+          try { await jobContext.persistCheckpoint(loopCount, conversation); } catch {}
+        }
+        continue; // relance la boucle LLM avec la réponse
+      }
+
+      // ── AGENT PRINCIPAL : flow classique, pause et yield la question à l'user ───
+      await toolSet.cleanup();
       if (askResult?.result) {
         const qEvent = { type: 'question', ...askResult.result };
         if (askResult.result.questions) qEvent.questions = askResult.result.questions;

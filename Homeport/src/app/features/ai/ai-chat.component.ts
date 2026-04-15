@@ -172,8 +172,8 @@ interface StreamTool {
       </ng-container>
 
       <ng-container *ngFor="let msg of ai.messages(); let i = index">
-        <!-- System context message (transferred context) -->
-        <div class="system-msg" *ngIf="msg.role === 'system'">
+        <!-- System context message (transferred context) — sauf hint qui passe par ai-message -->
+        <div class="system-msg" *ngIf="msg.role === 'system' && msg.metadata?.kind !== 'system_hint'">
           <div class="system-context">
             <span nz-icon nzType="info-circle" nzTheme="outline"></span>
             <span class="system-label">Contexte transféré</span>
@@ -183,8 +183,8 @@ interface StreamTool {
           </div>
           <div class="system-content" *ngIf="expandedMsgs.has(msg)" [innerHTML]="renderMd(msg.content)"></div>
         </div>
-        <!-- Regular message (with contiguous assistant grouping) -->
-        <div *ngIf="msg.role !== 'system'"
+        <!-- Regular message (with contiguous assistant grouping) OU system_hint -->
+        <div *ngIf="msg.role !== 'system' || msg.metadata?.kind === 'system_hint'"
              class="msg-wrap"
              [class.grouped]="isGroupedWithPrevious(msg, ai.messages()[i-1] || null)">
           <ai-message
@@ -996,6 +996,24 @@ export class AiChatComponent implements AfterViewInit {
 
   /** Process a single stream event — fully immutable segment updates */
   private processStreamEvent(ev: AiStreamEvent) {
+    // Filtre : les events `tool.*` et `message` issus d'un SOUS-AGENT (tag
+    // `_subagentEvent: true` + `_parentJobId` par le backend) ne doivent PAS
+    // apparaître dans le chat principal — ils sont affichés dans le canvas
+    // « Agents » uniquement. Seuls les events de l'agent principal (et l'appel
+    // à spawn_subagent lui-même) s'affichent ici.
+    const evAny = ev as any;
+    const isSubagentEvent = evAny?._subagentEvent === true || !!evAny?._parentJobId;
+    const evType = (ev as any).type as string;
+    if (isSubagentEvent && (
+      evType === 'tool.start' ||
+      evType === 'tool.end' ||
+      evType === 'tool.input_delta' ||
+      evType === 'tool.meta' ||
+      evType === 'tool.building_done' ||
+      evType === 'message'
+    )) {
+      return;
+    }
     switch (ev.type) {
       case 'message': {
         this.resetRotator(); // Text streaming → collapse tools immediately

@@ -23,6 +23,16 @@ const EntrySchema = new Schema({
   updatedBy: { type: Types.ObjectId, ref: 'User' },
   pinned: { type: Boolean, default: false },
   tags: [{ type: String, maxlength: 40 }],
+  // ── Auto-detection workflow (pending → approved/rejected) ──
+  // Entries created manually OU via set_project_knowledge restent 'approved' (rétrocompat).
+  // Le subagent memory_extractor crée des entries 'pending' en attente de validation.
+  status: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'approved' },
+  // Contexte justifiant la suggestion auto (extrait de conversation)
+  suggestionWhy: { type: String, maxlength: 500 },
+  // Trace de l'origine (pour pouvoir re-contextualiser plus tard)
+  sourceMessageId: { type: Types.ObjectId, ref: 'AiMessage' },
+  reviewedAt: { type: Date },
+  reviewedBy: { type: Types.ObjectId, ref: 'User' },
 }, { _id: true });
 
 const AiProjectKnowledgeSchema = new Schema({

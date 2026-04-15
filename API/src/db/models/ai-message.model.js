@@ -90,16 +90,45 @@ const PlanStepSchema = new Schema({
   dependsOn: { type: [String], default: undefined },
 }, { _id: false });
 
+const PlanMissingInfoSchema = new Schema({
+  key: { type: String },
+  question: { type: String },
+  why: { type: String },
+}, { _id: false });
+
 const PlanProposalSchema = new Schema({
   requestId: { type: String },
   summary: { type: String },
   steps: { type: [PlanStepSchema], default: undefined },
   risks: { type: [String], default: undefined },
+  missingInfo: { type: [PlanMissingInfoSchema], default: undefined },
+  missingInfoAnswers: { type: Schema.Types.Mixed },
   answer: { type: String, enum: ['approve', 'reject', 'modify'] },
   answeredAt: { type: Date },
   answeredBy: { type: Types.ObjectId, ref: 'User' },
   approvedSteps: { type: [String], default: undefined },
   modifiedSteps: { type: [PlanStepSchema], default: undefined },
+}, { _id: false });
+
+// ── Agent report metadata (async subagent completion) ──
+const AgentReportArtifactSchema = new Schema({
+  fileId: { type: String },
+  url: { type: String },
+  label: { type: String },
+}, { _id: false });
+
+const AgentReportSchema = new Schema({
+  jobId: { type: String },
+  subagentType: { type: String },
+  parentJobId: { type: String },
+  startedAt: { type: Date },
+  finishedAt: { type: Date },
+  duration: { type: Number },
+  summary: { type: String },
+  artifacts: { type: [AgentReportArtifactSchema], default: undefined },
+  status: { type: String, enum: ['completed', 'error', 'cancelled'] },
+  toolCount: { type: Number },
+  error: { type: String },
 }, { _id: false });
 
 // ── Diagram metadata ──
@@ -118,13 +147,14 @@ const ImageInlineSchema = new Schema({
 }, { _id: false });
 
 const MessageMetadataSchema = new Schema({
-  kind: { type: String, enum: ['permission_request', 'cache_sync_request', 'comment', 'system_note', 'structured', 'plan_proposal', 'diagram', 'image_inline'] },
+  kind: { type: String, enum: ['permission_request', 'cache_sync_request', 'comment', 'system_note', 'system_hint', 'structured', 'plan_proposal', 'diagram', 'image_inline', 'agent_report'] },
   permissionRequest: { type: PermissionRequestSchema, default: undefined },
   cacheSyncRequest: { type: CacheSyncRequestSchema, default: undefined },
   structured: { type: StructuredPayloadSchema, default: undefined },
   planProposal: { type: PlanProposalSchema, default: undefined },
   diagram: { type: DiagramSchema, default: undefined },
   imageInline: { type: ImageInlineSchema, default: undefined },
+  agentReport: { type: AgentReportSchema, default: undefined },
   // Comment author (for shared threads)
   commentBy: { type: Types.ObjectId, ref: 'User' },
   // Free extensions

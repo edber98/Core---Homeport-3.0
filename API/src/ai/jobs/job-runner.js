@@ -81,11 +81,13 @@ function _buildJobContext(job, ac) {
   function broadcast(event) {
     if (!event?.type) return;
     // Enrichit avec identifiants pour UI (tag subagent / job)
+    const isSubagent = !!job.parentJobId;
     const enriched = {
       ...event,
       _jobId: jobId,
       _subagentType: job.subagentType || null,
       _agentLabel: job.subagentType ? `Sous-agent ${job.subagentType}` : 'Agent principal',
+      ...(isSubagent ? { _subagentEvent: true, _parentJobId: String(job.parentJobId) } : {}),
     };
     if (!enriched.type.startsWith('heartbeat')) {
       AiJob.updateOne(
@@ -103,13 +105,46 @@ function _buildJobContext(job, ac) {
     if (enriched.type.startsWith('canvas.')) {
       persistCanvasEvent(enriched).catch(() => {});
     }
+    // Si c'est un subagent et un tool.end survient, émet un event canvas.task.toolcall
+    // pour le canvas « Agents » (visibilité live des appels d'outils du sous-agent).
+    if (isSubagent && event.type === 'tool.end') {
+      try {
+        const argsSummary = _safeSummary(event.args);
+        const resultSummary = _safeSummary(event.result);
+        const toolcallEvent = {
+          type: 'canvas.task.toolcall',
+          taskId: jobId,
+          toolName: event.name,
+          status: event.status || 'success',
+          duration: event.duration,
+          argsSummary,
+          resultSummary,
+          at: new Date().toISOString(),
+          _jobId: jobId,
+          _parentJobId: String(job.parentJobId),
+          _subagentEvent: true,
+        };
+        emitJobEvent(jobId, toolcallEvent);
+        if (job.threadId) {
+          emitThreadEvent(String(job.threadId), toolcallEvent);
+        }
+        persistCanvasEvent(toolcallEvent).catch(() => {});
+      } catch { /* non-fatal */ }
+    }
+  }
+
+  function _safeSummary(v) {
+    try {
+      if (v == null) return '';
+      const s = typeof v === 'string' ? v : JSON.stringify(v);
+      return s.length > 200 ? s.slice(0, 200) + '…' : s;
+    } catch { return ''; }
   }
 
   async function persistCanvasEvent(event) {
     const AiCanvasState = require('../../db/models/ai-canvas-state.model');
     const threadId = job.threadId;
     if (!threadId) return;
-    const update = { $set: {}, $setOnInsert: { threadId } };
     if (event.type === 'canvas.research.step') {
       await AiCanvasState.updateOne(
         { threadId },
@@ -127,8 +162,67 @@ function _buildJobContext(job, ac) {
         }], $slice: -200 } } },
         { upsert: true }
       );
-    } else if (event.type === 'canvas.task.create' || event.type === 'canvas.task.update') {
-      // géré côté SSE handler si besoin
+    } else if (event.type === 'canvas.task.create' && event.task) {
+      const taskId = event.task.id;
+      if (!taskId) return;
+      // Pull any existing entry with same id, then push new
+      await AiCanvasState.updateOne(
+        { threadId },
+        { $pull: { tasks: { id: taskId } }, $setOnInsert: { threadId } },
+        { upsert: true }
+      );
+      await AiCanvasState.updateOne(
+        { threadId },
+        {
+          $push: {
+            tasks: {
+              $each: [{
+                id: taskId,
+                jobId: event.task.jobId || taskId,
+                subject: event.task.subject || '',
+                description: event.task.description || '',
+                status: event.task.status || 'queued',
+                parentTaskId: event.task.parentJobId || event.task.parentTaskId,
+                startedAt: event.task.startedAt ? new Date(event.task.startedAt) : new Date(),
+                toolCalls: [],
+              }],
+              $slice: -200,
+            },
+          },
+        }
+      );
+    } else if (event.type === 'canvas.task.update') {
+      const taskId = event.taskId;
+      if (!taskId) return;
+      const set = {};
+      if (event.status) set['tasks.$.status'] = event.status;
+      if (event.duration != null) set['tasks.$.duration'] = event.duration;
+      if (event.error) set['tasks.$.error'] = event.error;
+      if (event.status === 'completed' || event.status === 'error') {
+        set['tasks.$.finishedAt'] = new Date();
+      }
+      if (Object.keys(set).length) {
+        await AiCanvasState.updateOne(
+          { threadId, 'tasks.id': taskId },
+          { $set: set }
+        );
+      }
+    } else if (event.type === 'canvas.task.toolcall') {
+      const taskId = event.taskId;
+      if (!taskId) return;
+      const entry = {
+        id: `${taskId}_${Date.now()}`,
+        name: event.toolName || 'tool',
+        status: event.status || 'success',
+        duration: event.duration,
+        argsSummary: event.argsSummary,
+        resultSummary: event.resultSummary,
+        at: event.at ? new Date(event.at) : new Date(),
+      };
+      await AiCanvasState.updateOne(
+        { threadId, 'tasks.id': taskId },
+        { $push: { 'tasks.$.toolCalls': { $each: [entry], $slice: -100 } } }
+      );
     }
   }
 
@@ -255,10 +349,11 @@ async function runJob(jobId, opts = {}) {
     }
 
     // Final state
+    const finishedAt = new Date();
     await AiJob.updateOne({ id: jobId }, {
       $set: {
         status: 'completed',
-        finishedAt: new Date(),
+        finishedAt,
         usage: totalUsage,
         result: {
           summary: finalText.slice(0, 4000),
@@ -280,20 +375,112 @@ async function runJob(jobId, opts = {}) {
     }
 
     emitJobEvent(jobId, { type: 'job.status', status: 'completed', usage: totalUsage });
+
+    // Hook fin de job : crée un AiMessage agent_report si job async ou > 30s.
+    try {
+      await _maybeCreateAgentReport(job, { opts, toolCalls, finishedAt });
+    } catch (e) {
+      console.error('[job-runner] agent_report hook failed:', e?.message);
+    }
+
     return { ok: true, jobId, usage: totalUsage, summary: finalText };
   } catch (e) {
+    const finishedAt = new Date();
     await AiJob.updateOne({ id: jobId }, {
       $set: {
         status: 'error',
-        finishedAt: new Date(),
+        finishedAt,
         error: e?.message || String(e),
       },
     });
     emitJobEvent(jobId, { type: 'job.status', status: 'error', error: e?.message });
+    // Report d'erreur aussi (pour async jobs)
+    try {
+      await _maybeCreateAgentReport(job, {
+        opts, toolCalls, finishedAt,
+        errorMessage: e?.message || String(e),
+      });
+    } catch { /* non-fatal */ }
     throw e;
   } finally {
     clearInterval(heartbeatTimer);
   }
+}
+
+/**
+ * Si ce job tournait en async OU a duré plus de 30s, crée un AiMessage
+ * kind='agent_report' dans le thread pour que l'utilisateur voie le rapport
+ * apparaître dans le chat. Applique uniquement aux subagents (les jobs racine
+ * agent_run ont déjà leur message assistant envoyé via le stream SSE).
+ */
+async function _maybeCreateAgentReport(job, { opts, toolCalls, finishedAt, errorMessage }) {
+  if (!job || !job.threadId) return;
+  const wasAsync = opts?.async === true || job.type === 'long_task';
+  const startedAt = job.startedAt || finishedAt;
+  const duration = (finishedAt?.getTime() || Date.now()) - (startedAt?.getTime() || Date.now());
+  const longEnough = duration > 30_000;
+  if (!wasAsync && !longEnough) return;
+  if (job.type !== 'subagent' && job.type !== 'long_task') return;
+
+  // Relit le job final pour résultat frais
+  const fresh = await AiJob.findOne({ id: job.id }).lean();
+  if (!fresh) return;
+
+  const status = errorMessage ? 'error' : (fresh.status === 'cancelled' ? 'cancelled' : 'completed');
+  const summary = (fresh.result?.summary || '').slice(0, 4000);
+  const rawArtifacts = Array.isArray(fresh.result?.artifacts) ? fresh.result.artifacts : [];
+
+  const artifacts = [];
+  for (const a of rawArtifacts) {
+    if (!a) continue;
+    if (typeof a === 'string') { artifacts.push({ label: a.slice(0, 120) }); continue; }
+    if (a.fileId) artifacts.push({ fileId: a.fileId, label: a.label || a.name || a.fileId });
+    else if (a.url) artifacts.push({ url: a.url, label: a.label || a.url });
+    else if (a.name) artifacts.push({ label: a.name });
+    if (artifacts.length >= 10) break;
+  }
+
+  const content = errorMessage
+    ? `Tâche échouée : ${String(errorMessage).slice(0, 240)}`
+    : `Tâche terminée : ${summary.slice(0, 200)}`;
+
+  try {
+    await AiMessage.create({
+      threadId: job.threadId,
+      role: 'assistant',
+      content,
+      metadata: {
+        kind: 'agent_report',
+        agentReport: {
+          jobId: job.id,
+          subagentType: job.subagentType || null,
+          parentJobId: job.parentJobId || null,
+          startedAt: startedAt || null,
+          finishedAt: finishedAt || null,
+          duration,
+          summary,
+          artifacts,
+          status,
+          toolCount: Array.isArray(fresh.transcript)
+            ? fresh.transcript.filter(e => Array.isArray(e?.tool_calls) && e.tool_calls.length).length
+            : (Array.isArray(toolCalls) ? toolCalls.length : 0),
+          ...(errorMessage ? { error: String(errorMessage).slice(0, 400) } : {}),
+        },
+      },
+    });
+  } catch (e) {
+    console.error('[job-runner] AiMessage.create(agent_report) failed:', e?.message);
+    return;
+  }
+
+  try {
+    emitThreadEvent(String(job.threadId), {
+      type: 'ai.message.created',
+      kind: 'agent_report',
+      jobId: job.id,
+      status,
+    });
+  } catch { /* non-fatal */ }
 }
 
 /**
@@ -325,11 +512,40 @@ async function cancelJob(jobId) {
   emitJobEvent(jobId, { type: 'job.status', status: 'cancelled' });
 }
 
+/**
+ * Poll a job until it reaches a terminal state (completed/error/cancelled).
+ * Used by subagent dependency orchestration. Debounced at 1Hz to avoid DB
+ * hammering; timeout defaults to 10 min.
+ *
+ * @param {string} jobId - AiJob.id (short ID)
+ * @param {number} [timeoutMs=600000]
+ * @returns {Promise<{id:string, status:string, result?:any, error?:string}>}
+ */
+async function waitForJobCompletion(jobId, timeoutMs = 600_000) {
+  if (!jobId) return { id: jobId, status: 'error', error: 'missing_jobId' };
+  const TERMINAL = new Set(['completed', 'error', 'cancelled']);
+  const deadline = Date.now() + Math.max(1000, timeoutMs);
+  while (Date.now() < deadline) {
+    try {
+      const job = await AiJob.findOne({ id: jobId }, 'id status result error').lean();
+      if (!job) return { id: jobId, status: 'error', error: 'not_found' };
+      if (TERMINAL.has(job.status)) {
+        return { id: jobId, status: job.status, result: job.result || null, error: job.error || null };
+      }
+    } catch (e) {
+      console.error('[job-runner] waitForJobCompletion lookup error:', e?.message);
+    }
+    await new Promise(r => setTimeout(r, 1000));
+  }
+  return { id: jobId, status: 'error', error: 'timeout' };
+}
+
 module.exports = {
   createJob,
   runJob,
   resumeJob,
   pauseJob,
   cancelJob,
+  waitForJobCompletion,
   onJobEvent,
 };

@@ -7,7 +7,7 @@ import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
-import { AiPlanProposal, AiPlanStep } from '../ai.service';
+import { AiPlanProposal, AiPlanStep, AiPlanMissingInfo } from '../ai.service';
 
 interface EditableStep extends AiPlanStep {
   _selected?: boolean;
@@ -95,8 +95,40 @@ interface EditableStep extends AiPlanStep {
         </ul>
       </div>
 
+      <div class="missing-info-block" *ngIf="missingInfo.length && !proposal.answer">
+        <div class="missing-info-header">
+          <span nz-icon nzType="info-circle" nzTheme="outline"></span>
+          Informations requises
+        </div>
+        <div class="missing-info-desc">
+          L'agent a besoin de ces informations avant d'exécuter le plan :
+        </div>
+        <div class="missing-info-list">
+          <div class="missing-info-item" *ngFor="let mi of missingInfo">
+            <label class="mi-label" [attr.for]="'mi-' + mi.key">
+              {{ mi.question }}
+              <span class="mi-required">*</span>
+            </label>
+            <input
+              nz-input
+              nzSize="small"
+              [id]="'mi-' + mi.key"
+              [(ngModel)]="missingInfoAnswers[mi.key]"
+              [placeholder]="mi.why || 'Votre réponse...'"
+            />
+            <div class="mi-why" *ngIf="mi.why">{{ mi.why }}</div>
+          </div>
+        </div>
+      </div>
+
       <div class="plan-actions" *ngIf="!proposal.answer && !editing">
-        <button nz-button nzType="primary" nzSize="small" (click)="approve()">
+        <button
+          nz-button
+          nzType="primary"
+          nzSize="small"
+          (click)="approve()"
+          [disabled]="!canApprove()"
+          [nz-tooltip]="!canApprove() ? 'Remplis toutes les informations requises ci-dessus' : ''">
           <span nz-icon nzType="check-circle" nzTheme="outline"></span>
           Approuver {{ selectedCount() !== steps.length ? '(' + selectedCount() + '/' + steps.length + ')' : '' }}
         </button>
@@ -176,6 +208,21 @@ interface EditableStep extends AiPlanStep {
     .risks-list { margin: 4px 0 0 18px; padding: 0; font-size: 12px; color: #7a5a15; }
     .risks-list li { line-height: 1.4; }
 
+    .missing-info-block {
+      background: #e6f4ff; border: 1px solid #91caff; border-radius: 6px;
+      padding: 10px 12px; margin-bottom: 10px;
+    }
+    .missing-info-header {
+      font-size: 12px; font-weight: 600; color: #0958d9;
+      display: inline-flex; align-items: center; gap: 4px; margin-bottom: 4px;
+    }
+    .missing-info-desc { font-size: 11px; color: #4a6684; margin-bottom: 8px; }
+    .missing-info-list { display: flex; flex-direction: column; gap: 10px; }
+    .missing-info-item { display: flex; flex-direction: column; gap: 3px; }
+    .mi-label { font-size: 12px; font-weight: 500; color: #333; }
+    .mi-required { color: #ff4d4f; margin-left: 2px; }
+    .mi-why { font-size: 11px; color: #999; font-style: italic; }
+
     .plan-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
 
     .answered-badge { margin-top: 10px; }
@@ -188,9 +235,12 @@ export class AiPlanProposalCardComponent {
     decision: 'approve' | 'reject' | 'modify';
     approvedSteps?: string[];
     modifiedSteps?: AiPlanStep[];
+    missingInfoAnswers?: Record<string, string>;
   }>();
 
   editing = false;
+  /** Réponses aux `missing_info` — `{ [key]: value }` — éditables via l'UI */
+  missingInfoAnswers: Record<string, string> = {};
 
   get steps(): EditableStep[] {
     const arr = (this.proposal?.steps || []) as EditableStep[];
@@ -201,14 +251,33 @@ export class AiPlanProposalCardComponent {
     return arr;
   }
 
+  get missingInfo(): AiPlanMissingInfo[] {
+    return this.proposal?.missingInfo || [];
+  }
+
   selectedCount(): number {
     return this.steps.filter(s => s._selected).length;
   }
 
+  /** Empêche l'approbation tant que toutes les `missing_info` ne sont pas remplies. */
+  canApprove(): boolean {
+    for (const mi of this.missingInfo) {
+      const v = this.missingInfoAnswers[mi.key];
+      if (!v || !String(v).trim()) return false;
+    }
+    return true;
+  }
+
   approve() {
     if (this.proposal?.answer) return;
+    if (!this.canApprove()) return;
     const approvedSteps = this.steps.filter(s => s._selected).map(s => s.id);
-    this.answered.emit({ decision: 'approve', approvedSteps });
+    const hasMissing = this.missingInfo.length > 0;
+    this.answered.emit({
+      decision: 'approve',
+      approvedSteps,
+      ...(hasMissing ? { missingInfoAnswers: { ...this.missingInfoAnswers } } : {}),
+    });
   }
 
   reject() {

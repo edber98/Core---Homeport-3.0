@@ -35,7 +35,7 @@ const SEARCH_TIMEOUT_MS = parseInt(process.env.WEB_SEARCH_TIMEOUT_MS || '20000',
 const BROWSER_TIMEOUT_MS = parseInt(process.env.WEB_BROWSER_TIMEOUT_MS || '30000', 10);
 const HTTP_TIMEOUT_MS = parseInt(process.env.WEB_HTTP_TIMEOUT_MS || '30000', 10);
 const MAX_BYTES = parseInt(process.env.WEB_FETCH_MAX_BYTES || String(5 * 1024 * 1024), 10);
-const MAX_RAW_CHARS = parseInt(process.env.WEB_FETCH_MAX_RAW_CHARS || String(500_000), 10);
+const MAX_RAW_CHARS = parseInt(process.env.WEB_FETCH_MAX_RAW_CHARS || String(80_000), 10);
 const PRIMARY_ENGINE = process.env.WEB_SEARCH_ENGINE || 'duckduckgo';
 const FALLBACK_ENGINES = (process.env.WEB_SEARCH_FALLBACK || 'brave,startpage').split(',').map(s => s.trim()).filter(Boolean);
 
@@ -639,10 +639,23 @@ function createWebExecutor(metadata, emit) {
         wasJsRendered,
       };
 
-      // Non-HTML payloads — return as text directly
+      // PDF : binary content non exploitable → message explicite, pas de body
+      if (resp.contentType && /^application\/pdf/.test(resp.contentType)) {
+        out.error = 'pdf_binary';
+        out.hint = "Contenu PDF binaire : utilise project_read_file (multimodal) pour lire un PDF, ou web_download pour l'enregistrer avant lecture.";
+        emitStep({ id: fetchId, stepType: 'fetch', url, status: 'done', statusCode: out.statusCode, wasJsRendered, title: out.title || url, resultPreview: '(PDF binaire — voir web_download)' });
+        return out;
+      }
+      // Autres binaires non textuels
+      if (resp.contentType && !/html|xml|json|text/.test(resp.contentType)) {
+        out.error = 'binary_content';
+        out.hint = "Contenu binaire non textuel : utilise web_download pour l'enregistrer.";
+        emitStep({ id: fetchId, stepType: 'fetch', url, status: 'done', statusCode: out.statusCode, wasJsRendered, title: out.title || url, resultPreview: `(binaire ${resp.contentType})` });
+        return out;
+      }
+
+      // Textual payloads
       if (resp.contentType && /^application\/json/.test(resp.contentType)) {
-        out.text = (html || '').slice(0, MAX_RAW_CHARS);
-      } else if (resp.contentType && !/html|xml/.test(resp.contentType)) {
         out.text = (html || '').slice(0, MAX_RAW_CHARS);
       } else {
         if (extractMode === 'raw') {
@@ -653,8 +666,8 @@ function createWebExecutor(metadata, emit) {
           const art = extractReadability(html, url);
           if (art) {
             out.title = out.title || art.title;
+            // Ne retourne QUE text (pas html) pour éviter double payload dans la conversation LLM
             out.text = (art.textContent || '').slice(0, MAX_RAW_CHARS);
-            out.html = (art.content || '').slice(0, MAX_RAW_CHARS);
             out.excerpt = art.excerpt || '';
             out.byline = art.byline || '';
           } else {
@@ -665,15 +678,22 @@ function createWebExecutor(metadata, emit) {
         }
       }
 
-      // Optional LLM extraction
+      // Optional LLM extraction — si prompt fourni, on REMPLACE text/html/markdown par
+      // le résumé LLM seul pour réduire drastiquement la taille du tool result.
       if (prompt) {
-        const baseText = out.text || extractText(html).slice(0, 60_000);
+        const baseText = out.text || out.markdown || out.html || extractText(html).slice(0, 60_000);
         const llmOut = await callMiniLlm({
           system: "Tu es un extracteur d'informations web. Réponds UNIQUEMENT avec l'information demandée par l'utilisateur, basée sur le texte fourni. Si l'info n'est pas présente, réponds 'Non trouvé'. Sois bref et factuel.",
           userText: `Source: ${url}\nTitre: ${title}\n\n=== Demande ===\n${prompt}\n\n=== Texte de la page ===\n${baseText.slice(0, 60_000)}`,
           maxTokens: 2000,
         });
-        if (llmOut) out.extracted = llmOut;
+        if (llmOut) {
+          out.extracted = llmOut;
+          // Libère text/html/markdown pour ne garder que le résumé (évite context overflow).
+          delete out.text;
+          delete out.html;
+          delete out.markdown;
+        }
       }
 
       const previewSrc = out.extracted || out.text || out.markdown || out.html || '';

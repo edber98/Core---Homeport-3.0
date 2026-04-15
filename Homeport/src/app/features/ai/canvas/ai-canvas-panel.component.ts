@@ -11,6 +11,7 @@ import { AiService } from '../ai.service';
 import { AiCanvasDocumentComponent } from './ai-canvas-document.component';
 import { AiCanvasResearchComponent } from './ai-canvas-research.component';
 import { AiCanvasTasksComponent } from './ai-canvas-tasks.component';
+import { AiCanvasAgentsComponent } from './ai-canvas-agents.component';
 import { AiCanvasFilesComponent } from './ai-canvas-files.component';
 
 @Component({
@@ -18,7 +19,7 @@ import { AiCanvasFilesComponent } from './ai-canvas-files.component';
   standalone: true,
   imports: [
     CommonModule, FormsModule, NzTabsModule, NzButtonModule, NzIconModule, NzToolTipModule, NzBadgeModule,
-    AiCanvasDocumentComponent, AiCanvasResearchComponent, AiCanvasTasksComponent, AiCanvasFilesComponent,
+    AiCanvasDocumentComponent, AiCanvasResearchComponent, AiCanvasTasksComponent, AiCanvasAgentsComponent, AiCanvasFilesComponent,
   ],
   template: `
     <div class="canvas-panel">
@@ -33,6 +34,11 @@ import { AiCanvasFilesComponent } from './ai-canvas-files.component';
               <span nz-icon nzType="search" nzTheme="outline"></span>
               <span>Recherche</span>
               <nz-badge *ngIf="researchCount()" [nzCount]="researchCount()" [nzOverflowCount]="9" nzSize="small"></nz-badge>
+            </button>
+            <button *ngIf="showAgentsTab()" class="ctab" [class.active]="activeTab === 'agents'" (click)="setTab('agents')">
+              <span nz-icon nzType="deployment-unit" nzTheme="outline"></span>
+              <span>Agents</span>
+              <nz-badge *ngIf="agentsCount()" [nzCount]="agentsCount()" [nzOverflowCount]="9" nzSize="small"></nz-badge>
             </button>
             <button *ngIf="showTasksTab()" class="ctab" [class.active]="activeTab === 'tasks'" (click)="setTab('tasks')">
               <span nz-icon nzType="ordered-list" nzTheme="outline"></span>
@@ -58,6 +64,7 @@ import { AiCanvasFilesComponent } from './ai-canvas-files.component';
       <div class="canvas-body">
         <ai-canvas-document *ngIf="activeTab === 'document'" [threadId]="threadId"></ai-canvas-document>
         <ai-canvas-research *ngIf="activeTab === 'research'" [threadId]="threadId"></ai-canvas-research>
+        <ai-canvas-agents *ngIf="activeTab === 'agents'" [threadId]="threadId" (answerPermission)="onAnswerPermission($event)"></ai-canvas-agents>
         <ai-canvas-tasks *ngIf="activeTab === 'tasks'" [threadId]="threadId" (answerPermission)="onAnswerPermission($event)"></ai-canvas-tasks>
         <ai-canvas-files *ngIf="activeTab === 'files'" [threadId]="threadId"></ai-canvas-files>
       </div>
@@ -85,11 +92,16 @@ export class AiCanvasPanelComponent implements OnInit, OnDestroy {
   @Input() threadId!: string;
   public ai = inject(AiService);
 
-  activeTab: 'document' | 'research' | 'tasks' | 'files' = 'document';
+  activeTab: 'document' | 'research' | 'agents' | 'tasks' | 'files' = 'document';
   private sub?: Subscription;
 
   researchCount = computed(() => this.ai.canvasState()?.research?.steps?.length || 0);
   tasksCount = computed(() => this.ai.canvasState()?.tasks?.length || 0);
+  // Agents = tasks liées à des sous-agents (subagentType défini) OU issues de spawn_subagent
+  agentsCount = computed(() => {
+    const tasks = this.ai.canvasState()?.tasks || [];
+    return tasks.filter(t => (t as any).subagentType || t.jobId).length;
+  });
 
   // Visibilité des onglets selon le mode du thread + activité
   // - Mode projet : tous les onglets
@@ -101,6 +113,10 @@ export class AiCanvasPanelComponent implements OnInit, OnDestroy {
   showResearchTab = computed(() => {
     if (this.isProject()) return true;
     return (this.ai.canvasState()?.research?.steps?.length || 0) > 0;
+  });
+  showAgentsTab = computed(() => {
+    if (this.isProject()) return true;
+    return this.agentsCount() > 0;
   });
   showTasksTab = computed(() => {
     if (this.isProject()) return true;
@@ -115,14 +131,14 @@ export class AiCanvasPanelComponent implements OnInit, OnDestroy {
 
   constructor() {
     // Effect unifié : sélectionne l'onglet actif selon state serveur + onglets visibles.
-    // Priorité : research (si steps) > document (si preview) > tasks > files.
+    // Priorité : research > agents > document > tasks > files.
     // L'état serveur activeTab est respecté UNIQUEMENT si l'onglet est encore visible.
     effect(() => {
       const state = this.ai.canvasState();
       const visible = this.visibleTabs();
       if (!visible.length) return;
 
-      const serverTab = state?.activeTab as ('document' | 'research' | 'tasks' | 'files' | undefined);
+      const serverTab = state?.activeTab as ('document' | 'research' | 'agents' | 'tasks' | 'files' | undefined);
       const currentIsVisible = visible.includes(this.activeTab);
       const serverTabVisible = serverTab && visible.includes(serverTab);
 
@@ -133,18 +149,19 @@ export class AiCanvasPanelComponent implements OnInit, OnDestroy {
       }
       // 2. Si l'actuel est toujours visible → on reste
       if (currentIsVisible) return;
-      // 3. Sinon, choisir par priorité
-      const priority: Array<'research' | 'document' | 'tasks' | 'files'> = ['research', 'document', 'tasks', 'files'];
+      // 3. Sinon, choisir par priorité (research > agents > document > tasks > files)
+      const priority: Array<'research' | 'agents' | 'document' | 'tasks' | 'files'> = ['research', 'agents', 'document', 'tasks', 'files'];
       const next = priority.find(t => visible.includes(t)) || visible[0];
       this.activeTab = next;
       this.ai.setCanvasTab(next);
     });
   }
 
-  private visibleTabs(): Array<'document' | 'research' | 'tasks' | 'files'> {
-    const tabs: Array<'document' | 'research' | 'tasks' | 'files'> = [];
+  private visibleTabs(): Array<'document' | 'research' | 'agents' | 'tasks' | 'files'> {
+    const tabs: Array<'document' | 'research' | 'agents' | 'tasks' | 'files'> = [];
     if (this.showDocumentTab()) tabs.push('document');
     if (this.showResearchTab()) tabs.push('research');
+    if (this.showAgentsTab()) tabs.push('agents');
     if (this.showTasksTab()) tabs.push('tasks');
     if (this.showFilesTab()) tabs.push('files');
     return tabs;
@@ -157,9 +174,9 @@ export class AiCanvasPanelComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() { this.sub?.unsubscribe(); }
 
-  setTab(tab: 'document' | 'research' | 'tasks' | 'files') {
+  setTab(tab: 'document' | 'research' | 'agents' | 'tasks' | 'files') {
     this.activeTab = tab;
-    this.ai.setCanvasTab(tab);
+    this.ai.setCanvasTab(tab as any);
   }
 
   togglePin() { this.ai.togglePinCanvas(); }

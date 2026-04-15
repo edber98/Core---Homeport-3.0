@@ -39,6 +39,8 @@ export interface AiThread {
 
 export type AiProjectKnowledgeType = 'text' | 'number' | 'date' | 'url' | 'email' | 'file' | 'list' | 'boolean' | 'json';
 
+export type AiProjectKnowledgeStatus = 'pending' | 'approved' | 'rejected';
+
 export interface AiProjectKnowledgeEntry {
   _id?: string;
   key: string;
@@ -50,6 +52,11 @@ export interface AiProjectKnowledgeEntry {
   tags?: string[];
   updatedAt?: string;
   updatedBy?: string;
+  status?: AiProjectKnowledgeStatus;
+  suggestionWhy?: string;
+  sourceMessageId?: string;
+  reviewedAt?: string;
+  reviewedBy?: string;
 }
 
 export interface AiProjectKnowledge {
@@ -73,7 +80,7 @@ export interface AiProjectRoot {
 
 export interface AiCanvasState {
   threadId: string;
-  activeTab: 'document' | 'research' | 'tasks' | 'files';
+  activeTab: 'document' | 'research' | 'agents' | 'tasks' | 'files';
   document?: {
     format?: 'docx' | 'pptx' | 'xlsx' | 'html' | 'md' | 'mermaid';
     title?: string;
@@ -99,10 +106,13 @@ export interface AiCanvasState {
     jobId: string;
     subject: string;
     description?: string;
+    subagentType?: string;
     status: string;
     parentTaskId?: string;
     startedAt?: string;
     finishedAt?: string;
+    duration?: number;
+    error?: string;
     toolCalls?: any[];
   }>;
   files?: {
@@ -244,16 +254,37 @@ export interface AiMessage {
   cancelled?: boolean;
   createdAt?: string;
   metadata?: {
-    kind?: 'permission_request' | 'cache_sync_request' | 'comment' | 'structured' | 'plan_proposal' | 'diagram' | 'image_inline';
+    kind?: 'permission_request' | 'cache_sync_request' | 'comment' | 'system_hint' | 'structured' | 'plan_proposal' | 'diagram' | 'image_inline' | 'agent_report';
     permissionRequest?: AiPermissionRequest;
     cacheSyncRequest?: AiCacheSyncRequest;
     structured?: AiStructuredPayload;
     planProposal?: AiPlanProposal;
     diagram?: AiDiagramPayload;
     imageInline?: AiInlineImagePayload;
+    agentReport?: AgentReport;
     jobId?: string;
     [k: string]: any;
   };
+}
+
+/** Agent report payload (async subagent completion, rendered inline) */
+export interface AgentReportArtifact {
+  fileId?: string;
+  url?: string;
+  label?: string;
+}
+export interface AgentReport {
+  jobId?: string;
+  subagentType?: string | null;
+  parentJobId?: string | null;
+  startedAt?: string;
+  finishedAt?: string;
+  duration?: number;
+  summary?: string;
+  artifacts?: AgentReportArtifact[];
+  status?: 'completed' | 'error' | 'cancelled';
+  toolCount?: number;
+  error?: string;
 }
 
 /** Inline image payload (tool display_image) */
@@ -274,11 +305,19 @@ export interface AiPlanStep {
   dependsOn?: string[];
 }
 
+export interface AiPlanMissingInfo {
+  key: string;
+  question: string;
+  why?: string;
+}
+
 export interface AiPlanProposal {
   requestId: string;
   summary: string;
   steps: AiPlanStep[];
   risks?: string[];
+  missingInfo?: AiPlanMissingInfo[];
+  missingInfoAnswers?: Record<string, string>;
   answer?: 'approve' | 'reject' | 'modify';
   answeredAt?: string;
   answeredBy?: string;
@@ -397,6 +436,12 @@ export class AiService {
   preferences = signal<AiUserPreferences | null>(null);
   presence = signal<Array<{ userId: string; name?: string; avatar?: string }>>([]);
 
+  // Détection auto de mémoire projet — compteur d'entries pending (badge chat)
+  pendingKnowledgeCount = signal<number>(0);
+  // Event de redirection UI : quand le hint est cliqué, on ouvre les settings
+  // sur l'onglet connaissance avec filtre 'pending'.
+  openKnowledgePending$ = new Subject<void>();
+
   // Action requests — the panel subscribes and opens appropriate modals
   actionRequests$ = new Subject<AiAction>();
 
@@ -468,6 +513,9 @@ export class AiService {
     const msgs = data.messages || [];
     this.messages.set(msgs);
 
+    // Ouvre / switch le stream live passif sur ce thread
+    this.openThreadLiveStream(data.thread?.id || data.thread?._id || threadId);
+
     // Restore pending question if last assistant message has an unanswered question
     let restored = false;
     if (msgs.length) {
@@ -482,6 +530,9 @@ export class AiService {
       }
     }
     if (!restored) this.pendingQuestion.set(null);
+
+    // Refresh badge pending si thread projet
+    this.refreshPendingKnowledgeCount(data.thread?.id || data.thread?._id);
   }
 
   deleteThread(threadId: string): Observable<any> {
@@ -687,11 +738,25 @@ export class AiService {
                 setTimeout(() => { this.loadThread(tid).catch?.(() => {}); }, 150);
               }
             }
+            if (evType === 'ai.message.created') {
+              // Un AiMessage (ex: agent_report) a été créé côté back — recharge
+              // silencieusement les messages du thread courant pour l'afficher.
+              this.sideEvents$.next(event as any);
+              this.reloadThreadMessages().catch?.(() => {});
+            }
             if (evType === 'thread.presence') {
               try {
                 const list = (event as any).users || [];
                 this.presence.set(list);
               } catch {}
+            }
+            if ((event as any).type === 'memory.pending.update') {
+              // Événement émis par le hook memory-extractor (fin du subagent) :
+              // rafraîchit immédiatement le badge pending dans le header chat.
+              const cnt = (event as any).pendingCount;
+              if (typeof cnt === 'number') this.pendingKnowledgeCount.set(cnt);
+              // Recharge aussi les messages pour afficher le system_hint si créé
+              this.reloadThreadMessages().catch?.(() => {});
             }
             if ((event as any).type === 'thread.transfer') {
               // Auto-switch to new thread after stream completes
@@ -840,6 +905,40 @@ export class AiService {
 
   importKnowledge(threadId: string, format: 'csv' | 'json', data: string | object, mode: 'merge' | 'replace' = 'merge'): Observable<any> {
     return this.api.post<any>(`/api/ai/threads/${threadId}/knowledge/import`, { format, data, mode }, { workspaceId: this.wsId() });
+  }
+
+  // ── Pending workflow (auto-detection) ──
+  getProjectKnowledgeFiltered(threadId: string, status: 'all' | AiProjectKnowledgeStatus): Observable<AiProjectKnowledge> {
+    return this.api.get<AiProjectKnowledge>(`/api/ai/threads/${threadId}/knowledge`, { workspaceId: this.wsId(), status });
+  }
+
+  getPendingKnowledgeCount(threadId: string): Observable<{ count: number }> {
+    return this.api.get<{ count: number }>(`/api/ai/threads/${threadId}/knowledge/pending-count`, { workspaceId: this.wsId() });
+  }
+
+  approveKnowledgeEntry(threadId: string, entryId: string, patch?: Partial<AiProjectKnowledgeEntry>): Observable<AiProjectKnowledgeEntry> {
+    return this.api.post<AiProjectKnowledgeEntry>(`/api/ai/threads/${threadId}/knowledge/entries/${entryId}/approve`, patch || {}, { workspaceId: this.wsId() });
+  }
+
+  rejectKnowledgeEntry(threadId: string, entryId: string): Observable<AiProjectKnowledgeEntry> {
+    return this.api.post<AiProjectKnowledgeEntry>(`/api/ai/threads/${threadId}/knowledge/entries/${entryId}/reject`, {}, { workspaceId: this.wsId() });
+  }
+
+  /** Refresh le compteur de pending entries (badge chat). No-op si pas de thread ou mode != project. */
+  refreshPendingKnowledgeCount(threadId?: string): void {
+    const t = this.currentThread();
+    const tid = threadId || t?.id || t?._id;
+    if (!tid || !t || t.mode !== 'project') {
+      this.pendingKnowledgeCount.set(0);
+      return;
+    }
+    this.getPendingKnowledgeCount(tid).subscribe({
+      next: (res: any) => {
+        const count = (res?.data?.count ?? res?.count ?? 0) as number;
+        this.pendingKnowledgeCount.set(count);
+      },
+      error: () => this.pendingKnowledgeCount.set(0),
+    });
   }
 
   async exportKnowledge(threadId: string, format: 'csv' | 'json' = 'json'): Promise<Blob> {
@@ -1032,30 +1131,62 @@ export class AiService {
       }
       case 'canvas.task.create': {
         const tasks = cur.tasks ? [...cur.tasks] : [];
-        tasks.push({
-          id: event.id,
-          jobId: event.jobId,
-          subject: event.subject || event.title || 'Tâche',
-          description: event.description,
-          status: event.status || 'running',
-          parentTaskId: event.parentTaskId,
-          startedAt: new Date().toISOString(),
+        // Support both shapes: { task: {...} } (new subagent live) and flat
+        const src = event.task || event;
+        const taskId = src.id;
+        if (!taskId) break;
+        // Upsert by id
+        const existingIdx = tasks.findIndex(t => t.id === taskId);
+        const newTask: any = {
+          id: taskId,
+          jobId: src.jobId || taskId,
+          subject: src.subject || src.title || src.prompt || 'Sous-agent',
+          description: src.description || src.prompt || '',
+          subagentType: src.subagentType,
+          status: src.status || 'queued',
+          parentTaskId: src.parentJobId || src.parentTaskId,
+          startedAt: src.startedAt || new Date().toISOString(),
           toolCalls: [],
-        });
+        };
+        if (existingIdx >= 0) tasks[existingIdx] = { ...tasks[existingIdx], ...newTask };
+        else tasks.push(newTask);
         this.canvasState.set({ ...cur, tasks });
         break;
       }
       case 'canvas.task.update': {
         const tasks = cur.tasks ? [...cur.tasks] : [];
-        const idx = tasks.findIndex(t => t.id === event.id || t.jobId === event.jobId);
+        const targetId = event.taskId || event.id;
+        const idx = tasks.findIndex(t => t.id === targetId || t.jobId === targetId);
         if (idx >= 0) {
           tasks[idx] = {
             ...tasks[idx],
             status: event.status || tasks[idx].status,
             description: event.description || tasks[idx].description,
-            finishedAt: event.finishedAt || tasks[idx].finishedAt,
+            finishedAt: event.finishedAt || ((event.status === 'completed' || event.status === 'error') ? new Date().toISOString() : tasks[idx].finishedAt),
+            ...(event.duration != null ? { duration: event.duration } : {}),
+            ...(event.error ? { error: event.error } : {}),
             toolCalls: event.toolCalls || tasks[idx].toolCalls,
-          };
+          } as any;
+          this.canvasState.set({ ...cur, tasks });
+        }
+        break;
+      }
+      case 'canvas.task.toolcall': {
+        const tasks = cur.tasks ? [...cur.tasks] : [];
+        const targetId = event.taskId;
+        const idx = tasks.findIndex(t => t.id === targetId || t.jobId === targetId);
+        if (idx >= 0) {
+          const calls = Array.isArray(tasks[idx].toolCalls) ? [...tasks[idx].toolCalls!] : [];
+          calls.push({
+            id: `${targetId}_${Date.now()}_${calls.length}`,
+            name: event.toolName || 'tool',
+            status: event.status || 'success',
+            duration: event.duration,
+            argsSummary: event.argsSummary,
+            resultSummary: event.resultSummary,
+            at: event.at || new Date().toISOString(),
+          });
+          tasks[idx] = { ...tasks[idx], toolCalls: calls };
           this.canvasState.set({ ...cur, tasks });
         }
         break;
@@ -1094,7 +1225,7 @@ export class AiService {
   closeCanvas() { this.canvasOpen.set(false); }
   toggleCanvas() { this.canvasOpen.set(!this.canvasOpen()); }
   togglePinCanvas() { this.canvasPinned.set(!this.canvasPinned()); }
-  setCanvasTab(tab: 'document' | 'research' | 'tasks' | 'files') {
+  setCanvasTab(tab: 'document' | 'research' | 'agents' | 'tasks' | 'files') {
     const cur = this.canvasState();
     if (cur) this.canvasState.set({ ...cur, activeTab: tab });
   }
@@ -1215,6 +1346,104 @@ export class AiService {
     return this.api.get<AiJob>(`/api/ai/jobs/${jobId}`, { workspaceId: this.wsId() });
   }
 
+  // ── Stream live passif du thread ──
+  // Ouvre un SSE GET qui reçoit les events subagents en background (canvas.*,
+  // ai.message.created, memory.pending.update, agent_report…) même quand aucun
+  // POST /messages n'est actif. Permet à la page de voir la progression des
+  // jobs async sans avoir à reload.
+  private _threadStreamCtrl?: AbortController;
+  private _threadStreamId?: string;
+
+  private openThreadLiveStream(threadId: string) {
+    if (!threadId) return;
+    if (this._threadStreamId === threadId && this._threadStreamCtrl) return; // déjà ouvert
+    // Ferme l'ancien
+    try { this._threadStreamCtrl?.abort(); } catch {}
+    this._threadStreamCtrl = undefined;
+    this._threadStreamId = threadId;
+
+    const ctrl = new AbortController();
+    this._threadStreamCtrl = ctrl;
+    const url = this.buildFetchUrl(`/api/ai/threads/${threadId}/stream?workspaceId=${encodeURIComponent(this.wsId())}`);
+    (async () => {
+      try {
+        const res = await fetch(url, {
+          headers: { Authorization: `Bearer ${this.auth.token || ''}` },
+          signal: ctrl.signal,
+        });
+        if (!res.ok || !res.body) return;
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = '';
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split('\n');
+          buffer = lines.pop() || '';
+          for (const line of lines) {
+            const t = line.trim();
+            if (!t.startsWith('data:')) continue;
+            try {
+              const ev = JSON.parse(t.slice(5).trim());
+              this.zone.run(() => this.dispatchLiveThreadEvent(ev));
+            } catch {}
+          }
+        }
+      } catch { /* aborted or network error — silent */ }
+    })();
+  }
+
+  /** Dispatch un event reçu du stream passif — ne dédoublonne pas avec POST /messages
+   * (doublons supportés par les handlers idempotents). */
+  private dispatchLiveThreadEvent(ev: any) {
+    if (!ev || !ev.type) return;
+    const cur = this.currentThread();
+    // Skip si pas le thread courant (rare, course condition pendant switch)
+    if (ev.threadId && cur?._id && String(ev.threadId) !== String(cur._id) && String(ev.threadId) !== String((cur as any).id)) {
+      return;
+    }
+    const evType = ev.type as string;
+    if (evType.startsWith('canvas.')) {
+      this.handleCanvasEvent(ev);
+      this.sideEvents$.next(ev);
+      return;
+    }
+    if (evType === 'ai.permission.request' || evType === 'ai.permission.granted' || evType === 'ai.permission.denied') {
+      this.sideEvents$.next(ev);
+      return;
+    }
+    if (evType === 'ai.plan.request' || evType === 'plan.resolved') {
+      this.sideEvents$.next(ev);
+      const tid = cur?.id || cur?._id;
+      if (tid) setTimeout(() => { this.loadThread(tid).catch?.(() => {}); }, 150);
+      return;
+    }
+    if (evType === 'ai.message.created') {
+      this.sideEvents$.next(ev);
+      this.reloadThreadMessages().catch?.(() => {});
+      return;
+    }
+    if (evType === 'memory.pending.update') {
+      const cnt = ev.pendingCount;
+      if (typeof cnt === 'number') this.pendingKnowledgeCount.set(cnt);
+      this.reloadThreadMessages().catch?.(() => {});
+      return;
+    }
+    // subagent.* events → forward to sideEvents pour visibilité canvas Agents
+    if (evType.startsWith('subagent.') || evType === 'job.status') {
+      this.sideEvents$.next(ev);
+      return;
+    }
+  }
+
+  /** Ferme le stream live (à appeler quand on quitte le thread / déconnexion). */
+  closeThreadLiveStream() {
+    try { this._threadStreamCtrl?.abort(); } catch {}
+    this._threadStreamCtrl = undefined;
+    this._threadStreamId = undefined;
+  }
+
   streamJob(jobId: string): Observable<any> {
     const subj = new Subject<any>();
     const url = this.buildFetchUrl(`/api/ai/jobs/${jobId}/stream?workspaceId=${encodeURIComponent(this.wsId())}`);
@@ -1270,10 +1499,12 @@ export class AiService {
     decision: 'approve' | 'reject' | 'modify',
     approvedSteps?: string[],
     modifiedSteps?: AiPlanStep[],
+    missingInfoAnswers?: Record<string, string>,
   ): Observable<any> {
     const body: any = { requestId, decision };
     if (approvedSteps) body.approvedSteps = approvedSteps;
     if (modifiedSteps) body.modifiedSteps = modifiedSteps;
+    if (missingInfoAnswers) body.missingInfoAnswers = missingInfoAnswers;
     return this.api.post<any>(
       `/api/ai/threads/${threadId}/plan-response`,
       body,

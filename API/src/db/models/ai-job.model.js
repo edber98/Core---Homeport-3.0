@@ -16,7 +16,7 @@ const AiJobSchema = new Schema({
   },
   status: {
     type: String,
-    enum: ['queued', 'running', 'paused', 'waiting_permission', 'completed', 'error', 'cancelled'],
+    enum: ['queued', 'running', 'paused', 'waiting_permission', 'waiting_dependency', 'waiting_parent', 'completed', 'error', 'cancelled'],
     default: 'queued',
     index: true,
   },
@@ -25,10 +25,12 @@ const AiJobSchema = new Schema({
   // Hierarchy (subagent chain)
   parentJobId: { type: String, index: true },
   depth: { type: Number, default: 0 },
+  // IDs (AiJob.id) des jobs dont ce job attend la complétion avant de démarrer.
+  dependsOn: { type: [String], default: undefined },
 
   initiatorMessageId: { type: Types.ObjectId, ref: 'AiMessage' },
   agentId: { type: String },
-  subagentType: { type: String, enum: ['research', 'file_analyzer', 'doc_writer', 'general'] },
+  subagentType: { type: String, enum: ['research', 'file_analyzer', 'doc_writer', 'general', 'memory_extractor'] },
   subagentInstructions: { type: String },
 
   maxLoops: { type: Number, default: 40 },

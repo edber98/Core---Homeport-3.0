@@ -89,13 +89,87 @@ function waitForPlanApproval(jobId, requestId, timeoutMs = 600000) {
       off();
       clearTimeout(timer);
       const dec = ev.decision === 'approve' || ev.decision === 'modify' ? ev.decision : 'reject';
-      resolve({ decision: dec, approvedSteps: ev.approvedSteps || [], modifiedSteps: ev.modifiedSteps || null });
+      resolve({
+        decision: dec,
+        approvedSteps: ev.approvedSteps || [],
+        modifiedSteps: ev.modifiedSteps || null,
+        missingInfoAnswers: ev.missingInfoAnswers || {},
+      });
     });
     const timer = setTimeout(() => {
       if (settled) return;
       settled = true;
       off();
-      resolve({ decision: 'reject', approvedSteps: [], modifiedSteps: null });
+      resolve({ decision: 'reject', approvedSteps: [], modifiedSteps: null, missingInfoAnswers: {} });
+    }, timeoutMs);
+  });
+}
+
+/**
+ * Wait for a subagent permission request to be resolved by the parent job.
+ *
+ * The parent receives a `subagent.permission.request` event (emitted via
+ * emitJobEvent on parentJobId). It can resolve it two ways :
+ *  1. Directly : emit `subagent.permission.granted` { requestId, decision }
+ *     → the child is unblocked with that decision.
+ *  2. Escalate : relay to the user via its own ask_user / permission flow.
+ *     When the user answers, the parent emits `subagent.permission.granted`.
+ *
+ * This helper never emits `ai.permission.request` to the thread SSE directly —
+ * it's the parent's responsibility if it chooses to escalate.
+ *
+ * @param {string} parentJobId
+ * @param {string} requestId
+ * @param {number} [timeoutMs=300000]
+ * @returns {Promise<'allow'|'deny'>}
+ */
+function waitForPermissionFromParent(parentJobId, requestId, timeoutMs = 300000) {
+  return new Promise((resolve) => {
+    let settled = false;
+    const off = onJobEvent(parentJobId, (ev) => {
+      if (ev?.type !== 'subagent.permission.granted') return;
+      if (ev.requestId !== requestId) return;
+      if (settled) return;
+      settled = true;
+      off();
+      clearTimeout(timer);
+      resolve(ev.decision === 'allow' ? 'allow' : 'deny');
+    });
+    const timer = setTimeout(() => {
+      if (settled) return;
+      settled = true;
+      off();
+      resolve('deny'); // timeout → deny (conservative)
+    }, timeoutMs);
+  });
+}
+
+/**
+ * Wait for a subagent ask_user request to be answered by the parent job.
+ * Parent emits `subagent.ask_user.answered` { requestId, answer, source }.
+ *
+ * @param {string} parentJobId
+ * @param {string} requestId
+ * @param {number} [timeoutMs=300000]
+ * @returns {Promise<{answer:any, source:'parent_auto'|'user_via_parent'|'timeout'}>}
+ */
+function waitForAskUserFromParent(parentJobId, requestId, timeoutMs = 300000) {
+  return new Promise((resolve) => {
+    let settled = false;
+    const off = onJobEvent(parentJobId, (ev) => {
+      if (ev?.type !== 'subagent.ask_user.answered') return;
+      if (ev.requestId !== requestId) return;
+      if (settled) return;
+      settled = true;
+      off();
+      clearTimeout(timer);
+      resolve({ answer: ev.answer, source: ev.source || 'parent_auto' });
+    });
+    const timer = setTimeout(() => {
+      if (settled) return;
+      settled = true;
+      off();
+      resolve({ answer: null, source: 'timeout' });
     }, timeoutMs);
   });
 }
@@ -107,4 +181,6 @@ module.exports = {
   onThreadEvent,
   waitForPermission,
   waitForPlanApproval,
+  waitForPermissionFromParent,
+  waitForAskUserFromParent,
 };

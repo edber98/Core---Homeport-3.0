@@ -36,8 +36,12 @@ const TaskToolCallSchema = new Schema({
   name: { type: String },
   args: { type: Schema.Types.Mixed },
   status: { type: String },
+  duration: { type: Number },
+  argsSummary: { type: String },
+  resultSummary: { type: String },
   startedAt: { type: Date },
   finishedAt: { type: Date },
+  at: { type: Date },
 }, { _id: false });
 
 const CanvasTaskSchema = new Schema({
@@ -45,10 +49,17 @@ const CanvasTaskSchema = new Schema({
   jobId: { type: String },
   subject: { type: String, default: '' },
   description: { type: String, default: '' },
-  status: { type: String, enum: ['pending', 'running', 'completed', 'error', 'cancelled'], default: 'pending' },
+  subagentType: { type: String },
+  status: {
+    type: String,
+    enum: ['pending', 'queued', 'running', 'completed', 'done', 'error', 'cancelled', 'waiting_permission', 'waiting_dependency'],
+    default: 'pending',
+  },
   parentTaskId: { type: String },
   startedAt: { type: Date },
   finishedAt: { type: Date },
+  duration: { type: Number },
+  error: { type: String },
   toolCalls: { type: [TaskToolCallSchema], default: [] },
 }, { _id: false });
 
@@ -62,7 +73,7 @@ const AiCanvasStateSchema = new Schema({
   threadId: { type: Types.ObjectId, ref: 'AiThread', required: true, unique: true, index: true },
   activeTab: {
     type: String,
-    enum: ['document', 'research', 'tasks', 'files', 'none'],
+    enum: ['document', 'research', 'agents', 'tasks', 'files', 'none'],
     default: 'none',
   },
   document: { type: DocumentSchema, default: () => ({}) },
