@@ -215,7 +215,44 @@ async function _runSubagentJob({
   emitUpdate, parentBroadcast,
 }) {
   const startedAt = Date.now();
-  const hasDeps = Array.isArray(depends_on) && depends_on.length > 0;
+  let hasDeps = Array.isArray(depends_on) && depends_on.length > 0;
+
+  // 0. Auto-détection : si aucun depends_on explicite mais des siblings sont
+  // encore en cours (running/queued/waiting_dependency) à l'instant où CE
+  // subagent démarre → le parent a probablement oublié `depends_on`.
+  // On attend automatiquement les siblings actifs pour éviter qu'un
+  // consolidateur parte avec un contexte vide et demande à l'user de coller
+  // les résultats manuellement.
+  if (!hasDeps && job.parentJobId) {
+    try {
+      const activeSiblings = await AiJob.find({
+        parentJobId: job.parentJobId,
+        _id: { $ne: job._id },
+        createdAt: { $lt: job.createdAt }, // uniquement ceux créés AVANT
+        status: { $in: ['running', 'queued', 'waiting_dependency', 'paused'] },
+      }, 'id subagentType status').lean();
+
+      if (activeSiblings.length > 0) {
+        console.warn(`[sub-runner] ${subagentType} job=${job.id} : auto-wait ${activeSiblings.length} sibling(s) actif(s) (depends_on oublié par le parent) : ${activeSiblings.map(s => `${s.subagentType}:${s.id}`).join(', ')}`);
+        depends_on = activeSiblings.map(s => s.id);
+        hasDeps = true;
+        // Persiste dependsOn sur le job pour cohérence UI + auto-injection input_from
+        await AiJob.updateOne({ id: job.id }, {
+          $set: {
+            dependsOn: depends_on,
+            status: 'waiting_dependency',
+            autoWaitReason: 'sibling_jobs_active',
+          },
+        }).catch(() => {});
+        emitUpdate('waiting_dependency', {
+          reason: 'auto_wait_siblings',
+          dependsOn: depends_on,
+        });
+      }
+    } catch (e) {
+      console.warn('[sub-runner] auto-wait siblings check failed:', e?.message);
+    }
+  }
 
   // 1. Attente des dépendances (si présentes)
   if (hasDeps) {
@@ -296,18 +333,28 @@ async function _runSubagentJob({
         // place chacune). Cible globale ~20k tokens (~70k chars).
         const TOTAL_CHAR_BUDGET = 70_000;
         const perSource = Math.floor(TOTAL_CHAR_BUDGET / Math.max(1, sourceIds.length));
+        let emptyCount = 0;
         const contextBlocks = sourceIds.map(sid => {
           const s = sources.find(x => x.id === sid);
-          if (!s) return `=== Résultat ${sid} (introuvable) ===\n[vide]`;
+          if (!s) { emptyCount++; return `=== Résultat ${sid} (introuvable) ===\n[vide]`; }
           let summary = s.status === 'error'
             ? `[erreur: ${s.error || 'unknown'}]`
             : (s.result?.summary || '[vide]');
+          if (!summary || summary === '[vide]' || /^\[erreur/.test(summary)) emptyCount++;
           if (summary.length > perSource) {
             summary = summary.slice(0, perSource) + `\n…[tronqué, ${summary.length - perSource} chars omis]`;
           }
           return `=== Résultat ${s.subagentType || 'job'} (${s.id}) ===\n${summary}`;
         }).join('\n\n');
-        enrichedPrompt = `CONTEXTE (résultats des étapes précédentes) :\n\n${contextBlocks}\n\n===\n\n${prompt}`;
+
+        // Si toutes les sources sont vides/en erreur, on avertit fortement le
+        // subagent pour qu'il échoue proprement au lieu de demander à l'user
+        // de coller des données manquantes.
+        const allEmpty = sourceIds.length > 0 && emptyCount === sourceIds.length;
+        const preamble = allEmpty
+          ? `⚠️ ATTENTION : TOUS les résultats upstream sont vides ou en erreur (${emptyCount}/${sourceIds.length}). C'est un bug d'orchestration amont. TU NE DOIS PAS demander à l'utilisateur de coller des données. À la place, renvoie un summary court du type "inputs upstream manquants, impossible de consolider" et termine en erreur via le tool dont tu disposes (ou simplement sans tool output complexe).`
+          : `⚠️ INSTRUCTION CRITIQUE : Les blocs CONTEXTE ci-dessus sont TES inputs réels — tu les as déjà reçus. NE DEMANDE PAS à l'utilisateur de coller quoi que ce soit. Si un bloc est incomplet, fais avec ce que tu as. Ta sortie doit consommer DIRECTEMENT le contenu des blocs CONTEXTE.`;
+        enrichedPrompt = `CONTEXTE (résultats des étapes précédentes) :\n\n${contextBlocks}\n\n===\n\n${preamble}\n\n===\n\n${prompt}`;
       }
     } catch (e) {
       console.error('[sub-runner] input_from enrichment failed:', e?.message);
@@ -315,10 +362,16 @@ async function _runSubagentJob({
     }
   }
 
-  // 3. Transition → running
+  // 3. Transition → running + persiste l'enrichedPrompt pour que resumeJob()
+  // puisse le réutiliser en cas de stall/retry (sinon le subagent relancé
+  // perd les blocs CONTEXTE et tombe sur l'historique du thread parent).
   try {
     await AiJob.updateOne({ id: job.id }, {
-      $set: { status: 'running', startedAt: new Date() },
+      $set: {
+        status: 'running',
+        startedAt: new Date(),
+        subagentInstructions: enrichedPrompt,
+      },
     });
   } catch { /* non-fatal */ }
   emitUpdate('running');

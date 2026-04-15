@@ -537,7 +537,34 @@ export class AiService {
     const threadId = t.id || t._id;
     try {
       const data = await this.api.get<any>(`/api/ai/threads/${threadId}`, { workspaceId: this.wsId() }).toPromise();
-      if (data?.messages) this.messages.set(data.messages);
+      const msgs = data?.messages || [];
+      if (data?.messages) this.messages.set(msgs);
+
+      // Restaure la pendingQuestion en live : sinon quand un sous-agent crée
+      // une question via AiMessage, le formulaire de réponse n'apparaît pas
+      // tant que l'user ne refresh pas la page. Même logique que loadThread.
+      let restored = false;
+      for (let i = msgs.length - 1; i >= 0; i--) {
+        const m = msgs[i];
+        if (m.role === 'user') break;
+        if (m.role === 'assistant' && m.question && !m.question.answered) {
+          this.pendingQuestion.set(m.question);
+          const sq = (m.metadata as any)?.extra;
+          if (sq?.subagentQuestion && sq?.requestId && sq?.parentJobId && !sq?.answer) {
+            this._pendingSubagentBridge = { requestId: sq.requestId, parentJobId: sq.parentJobId };
+          } else {
+            this._pendingSubagentBridge = null;
+          }
+          restored = true;
+          break;
+        }
+      }
+      if (!restored && this.pendingQuestion()) {
+        // La dernière question a été répondue / le subagent a repris → clear
+        this.pendingQuestion.set(null);
+        this._pendingSubagentBridge = null;
+      }
+
       // Refresh pending count (au cas où le memory_extractor a créé des entries
       // sans que l'event memory.pending.update soit encore arrivé).
       if (t.mode === 'project') this.refreshPendingKnowledgeCount(threadId);

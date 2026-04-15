@@ -339,6 +339,12 @@ async function runJob(jobId, opts = {}) {
       messages = job.transcript;
     } else if (opts.prompt) {
       messages = [{ role: 'user', content: opts.prompt }];
+    } else if (job.type === 'subagent' && job.subagentInstructions) {
+      // Subagent resumé (resumeJob sans opts) : utilise l'enrichedPrompt
+      // persisté par sub-runner (contient les blocs CONTEXTE des deps).
+      // Sinon on tombait sur l'historique du thread parent et le subagent
+      // disait "je n'ai pas les résultats upstream".
+      messages = [{ role: 'user', content: job.subagentInstructions }];
     } else {
       // Default: load thread history
       const history = await AiMessage.find({ threadId: job.threadId })
@@ -685,7 +691,31 @@ async function resumeJob(jobId) {
   await job.save();
   emitJobEvent(jobId, { type: 'job.status', status: 'queued', reason: 'resumed' });
 
-  return runJob(jobId);
+  // Pour un subagent, on rebuild les opts (tools/autonomy/systemPrompt) depuis
+  // sa définition typeDef — sinon le subagent relancé perd ses tools et tombe
+  // sur un set par défaut incompatible avec son rôle.
+  let opts = {};
+  if (job.type === 'subagent' && job.subagentType) {
+    try {
+      const { getSubagentType } = require('../subagent/types');
+      const typeDef = getSubagentType(job.subagentType);
+      if (typeDef) {
+        opts = {
+          subagentType: job.subagentType,
+          systemPromptOverride: typeDef.systemPrompt,
+          toolsAllowed: typeDef.toolsAllowed,
+          toolsDenied: typeDef.toolsDenied || null,
+          forcedAutonomy: typeDef.forcedAutonomy || null,
+          // prompt omis volontairement : runJob utilisera job.subagentInstructions
+          // (contient l'enrichedPrompt avec blocs CONTEXTE si persisté).
+        };
+      }
+    } catch (e) {
+      console.warn(`[job-runner] resumeJob: typeDef rebuild failed for ${job.subagentType}:`, e?.message);
+    }
+  }
+
+  return runJob(jobId, opts);
 }
 
 async function pauseJob(jobId) {
