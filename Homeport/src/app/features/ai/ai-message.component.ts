@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { NzBadgeModule } from 'ng-zorro-antd/badge';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzTagModule } from 'ng-zorro-antd/tag';
@@ -126,7 +128,7 @@ interface ProcessedSegment {
 @Component({
   selector: 'ai-message',
   standalone: true,
-  imports: [CommonModule, NzButtonModule, NzIconModule, NzTagModule, NzToolTipModule, NzBadgeModule, NodeExecResultDialogComponent, AiPermissionRequestCardComponent, AiCacheSyncRequestCardComponent, AiStructuredMessageComponent, AiPlanProposalCardComponent, AiDiagramRendererComponent, AiInlineImageComponent, AiCanvasHtmlComponent, AiWidgetActionsComponent, AiAgentReportCardComponent],
+  imports: [CommonModule, FormsModule, NzButtonModule, NzIconModule, NzTagModule, NzToolTipModule, NzBadgeModule, NzInputModule, NodeExecResultDialogComponent, AiPermissionRequestCardComponent, AiCacheSyncRequestCardComponent, AiStructuredMessageComponent, AiPlanProposalCardComponent, AiDiagramRendererComponent, AiInlineImageComponent, AiCanvasHtmlComponent, AiWidgetActionsComponent, AiAgentReportCardComponent],
   template: `
     <div class="ai-msg" [class.user]="msg.role === 'user'" [class.assistant]="msg.role === 'assistant'" [class.compact]="compact">
       <div class="avatar" *ngIf="!compact">
@@ -209,7 +211,7 @@ interface ProcessedSegment {
         </ng-container>
 
         <!-- User message attachments -->
-        <div class="msg-attachments" *ngIf="msg.role === 'user' && msg.attachments?.length && !msg.metadata?.kind">
+        <div class="msg-attachments" *ngIf="msg.role === 'user' && msg.attachments?.length && !msg.metadata?.kind && !editing">
           <div class="msg-att-chip" *ngFor="let att of msg.attachments">
             <img *ngIf="isImage(att.mimeType) && att.fileId" [src]="ai.fileUrl(att.fileId)" class="msg-att-img"
                  loading="lazy" (click)="openImagePreview(att)" />
@@ -220,6 +222,26 @@ interface ProcessedSegment {
             </a>
           </div>
         </div>
+
+        <!-- Inline edit (user messages) -->
+        <div class="edit-wrap" *ngIf="msg.role === 'user' && editing">
+          <textarea nz-input [(ngModel)]="editedText" [nzAutosize]="{ minRows: 2, maxRows: 10 }" class="edit-ta"></textarea>
+          <div class="edit-actions">
+            <button nz-button nzType="default" nzSize="small" (click)="cancelEdit()">Annuler</button>
+            <button nz-button nzType="primary" nzSize="small" (click)="saveEdit()" [disabled]="!editedText.trim() || editedText.trim() === msg.content?.trim()">
+              <span nz-icon nzType="send" nzTheme="outline"></span> Renvoyer
+            </button>
+          </div>
+          <div class="edit-hint">Les réponses ultérieures seront supprimées et recalculées.</div>
+        </div>
+
+        <!-- Edit button (user message, hover) -->
+        <button *ngIf="msg.role === 'user' && !editing && !msg.metadata?.kind && msg._id"
+                nz-button nzType="text" nzSize="small" class="user-edit-btn"
+                (click)="startEdit()"
+                nz-tooltip nzTooltipTitle="Modifier et re-générer à partir d'ici">
+          <span nz-icon nzType="edit" nzTheme="outline"></span>
+        </button>
 
         <!-- Standard rendering (skipped for special metadata kinds) -->
         <ng-container *ngIf="!msg.metadata?.kind">
@@ -455,6 +477,14 @@ interface ProcessedSegment {
     .args-expand-toggle { display: inline-block; font-size: 10px; color: #e61982; cursor: pointer; margin-top: 1px; }
     .args-expand-toggle:hover { text-decoration: underline; }
     .answered-question { background: #fafafa; border: 1px solid #f0f0f0; border-radius: 8px; padding: 10px 12px; margin: 4px 0; max-width: 85%; }
+    .user-edit-btn { position: absolute; top: 4px; right: 4px; color: #bfbfbf; opacity: 0; transition: opacity .15s; }
+    .ai-msg:hover .user-edit-btn { opacity: 1; }
+    .user-edit-btn:hover { color: #1890ff; background: rgba(24,144,255,0.08); }
+    .ai-msg.user { position: relative; }
+    .edit-wrap { display: flex; flex-direction: column; gap: 6px; background: #f8f9fa; border: 1px solid #d9d9d9; border-radius: 8px; padding: 8px; min-width: 280px; max-width: 85%; }
+    .edit-ta { font-size: 13px; font-family: inherit; }
+    .edit-actions { display: flex; justify-content: flex-end; gap: 6px; }
+    .edit-hint { font-size: 11px; color: #8c8c8c; font-style: italic; }
     .aq-text { font-size: 12px; color: #666; margin-bottom: 6px; }
     .aq-options { display: flex; flex-wrap: wrap; gap: 4px; }
     .msg-actions { display: flex; justify-content: flex-end; gap: 2px; margin-top: 4px; opacity: 0; transition: opacity .15s; }
@@ -539,6 +569,33 @@ export class AiMessageComponent {
   private route = inject(ActivatedRoute);
 
   copied = false;
+  editing = false;
+  editedText = '';
+
+  startEdit() {
+    this.editedText = this.msg.content || '';
+    this.editing = true;
+    this.cdr.markForCheck?.();
+  }
+
+  cancelEdit() {
+    this.editing = false;
+    this.editedText = '';
+    this.cdr.markForCheck?.();
+  }
+
+  async saveEdit() {
+    const newText = (this.editedText || '').trim();
+    if (!newText || !this.msg._id) return;
+    const id = this.msg._id;
+    this.editing = false;
+    try {
+      await this.ai.editAndResendUserMessage(id, newText);
+    } catch (e: any) {
+      this.msgSvc.error(e?.message || 'Édition échouée');
+    }
+    this.cdr.markForCheck?.();
+  }
 
   showActions(): boolean {
     // Pas d'actions sur les widgets (ils ont leur propre barre) ni sur les reports

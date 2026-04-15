@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ElementRef, Input, OnChanges, SimpleChanges, ViewChild, inject } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, Input, OnChanges, SimpleChanges, ViewChild, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
@@ -60,8 +60,6 @@ export interface CanvasHtmlData {
           class="ch-iframe"
           sandbox="allow-scripts"
           referrerpolicy="no-referrer"
-          loading="lazy"
-          [srcdoc]="safeSrcdoc"
           title="Canvas interactif"></iframe>
       </div>
     </div>
@@ -87,7 +85,7 @@ export interface CanvasHtmlData {
     .ch-iframe { width: 100%; height: 100%; border: none; background: #fff; display: block; }
   `],
 })
-export class AiCanvasHtmlComponent implements OnChanges {
+export class AiCanvasHtmlComponent implements OnChanges, AfterViewInit {
   @Input() data!: CanvasHtmlData;
   /** Si true : indique que le HTML est en cours de streaming (on repaint à chaque update). */
   @Input() streaming = false;
@@ -95,14 +93,36 @@ export class AiCanvasHtmlComponent implements OnChanges {
   @ViewChild('frame', { static: true }) frame!: ElementRef<HTMLIFrameElement>;
   private nzMsg = inject(NzMessageService);
 
-  safeSrcdoc: string = '';
   fullscreen = false;
   copied = false;
 
-  ngOnChanges(_changes: SimpleChanges): void {
-    // À chaque update du html (y compris les tool_input_delta), on refresh l'iframe.
-    // `srcdoc` binding provoque un nouveau chargement à chaque changement de string.
-    this.safeSrcdoc = this.data?.html || '<!DOCTYPE html><html><body style="display:flex;align-items:center;justify-content:center;height:100%;color:#bbb;font-family:sans-serif">(aucun contenu)</body></html>';
+  ngOnChanges(_changes: SimpleChanges): void { this.applyHtml(); }
+  ngAfterViewInit(): void { this.applyHtml(); }
+
+  private _applyScheduled = false;
+  private applyHtml() {
+    // Attend que l'iframe ait ses dimensions layoutées avant d'injecter le srcdoc.
+    // Sans ça, un Three.js WebGLRenderer init à 0x0 → canvas invalide → erreur
+    // "drawImage on CanvasRenderingContext2D: width or height of 0".
+    if (this._applyScheduled) return;
+    this._applyScheduled = true;
+    const run = () => {
+      this._applyScheduled = false;
+      const iframe = this.frame?.nativeElement;
+      if (!iframe) return;
+      const rect = iframe.getBoundingClientRect();
+      if (rect.width < 4 || rect.height < 4) {
+        // Pas encore layouté — retente au prochain frame
+        requestAnimationFrame(() => this.applyHtml());
+        return;
+      }
+      const html = this.data?.html
+        || '<!DOCTYPE html><html><body style="display:flex;align-items:center;justify-content:center;height:100%;color:#bbb;font-family:sans-serif">(aucun contenu)</body></html>';
+      try { iframe.setAttribute('srcdoc', html); } catch {}
+    };
+    // Double RAF : laisse le browser faire son layout complet (nécessaire après
+    // *ngIf ou animation de slide du panel canvas).
+    requestAnimationFrame(() => requestAnimationFrame(run));
   }
 
   iconFor(t?: string): string {
@@ -116,10 +136,14 @@ export class AiCanvasHtmlComponent implements OnChanges {
   }
 
   reload() {
-    // Force un re-render en re-assignant le srcdoc.
-    const html = this.data?.html || '';
-    this.safeSrcdoc = '';
-    requestAnimationFrame(() => { this.safeSrcdoc = html; });
+    // Force un re-render en vidant puis réappliquant srcdoc.
+    try {
+      const iframe = this.frame?.nativeElement;
+      if (iframe) {
+        iframe.setAttribute('srcdoc', '<!DOCTYPE html><html><body></body></html>');
+        requestAnimationFrame(() => this.applyHtml());
+      }
+    } catch {}
   }
 
   copyHtml() {

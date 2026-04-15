@@ -8,7 +8,7 @@ const AiJob = require('../../db/models/ai-job.model');
 const DEFAULT_INTERVAL_MS = 30_000;
 const HEARTBEAT_STALE_MS = 60_000;
 const MAX_RESUMES = 3; // Au-delà : on kill le job au lieu de boucler
-const NO_RESUME_SUBAGENTS = new Set(['memory_extractor']); // short-lived, pas de retry auto
+const NO_RESUME_SUBAGENTS = new Set(['memory_extractor', 'project_doc_writer']); // short-lived, pas de retry auto
 
 let _timer = null;
 

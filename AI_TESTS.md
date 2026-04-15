@@ -479,3 +479,94 @@ Cherche "OpenAI Responses API" documentation.
 
 ### WS-03 Fallback automatique
 Si Brave renvoie 0 → log `[web-search] engine "brave" → 0 résultat, tentative fallback` → essai startpage puis duckduckgo.
+
+---
+
+## ⚡ Série finale — 9 nouvelles features
+
+### JC Jauge contexte max
+
+- **JC-01 Affichage pill header.** Ouvre une conversation. Dans les chat-actions du header, une pill colorée affiche `X%`. Hover → tooltip `12.4k / 400k tokens — gpt-5.2`.
+- **JC-02 Couleurs seuils.** Envoie plusieurs messages jusqu'à dépasser 70% → pill devient **ambrée**. Dépasse 90% → **rouge pulsant**.
+- **JC-03 Popover détail.** Clic sur la pill → popover avec tokens, modèle, nb messages, barre de progression colorée, bouton « Compacter et continuer » (visible seulement si ≥70%).
+- **JC-04 Compact action.** Clic « Compacter et continuer » → envoie automatiquement un message qui déclenche `compact_and_transfer` → nouvelle thread avec résumé.
+- **JC-05 Route backend.** Dans DevTools Network : à chaque nouveau message ou load de thread, un `GET /api/ai/threads/{id}/usage` renvoie `{tokens, limit, percent, model, messageCount}`.
+
+### AR Artifacts side-panel
+
+- **AR-01 Onglet apparaît.** Fais générer un diagramme / canvas / image / plan. Un onglet « Artefacts » apparaît dans le canvas droit avec un badge count.
+- **AR-02 Liste et clic.** Clique l'onglet → liste chronologique descendante (plus récent en haut). Chaque card : icône par type (🧊🎨📊🖼️📋📝), titre, date, snippet. Clic → scroll vers le message correspondant + flash d'accent.
+- **AR-03 Auto-bascule sur canvas_html.** Demande `affiche-moi un cube 3D` → le canvas s'ouvre ET bascule sur l'onglet « Artefacts ».
+- **AR-04 Respect fermeture manuelle.** Ferme le canvas. Génère un nouveau canvas HTML → le canvas NE doit PAS se rouvrir automatiquement (respecte `_userClosedCanvas`). Change de thread → le reset, auto-open repart.
+
+### AT Attachments intelligents
+
+- **AT-01 Upload image → suggestions visuelles.** Drag-drop une image, laisse l'input vide. Sous les chips attachment, une barre « Suggestions : » affiche chips cliquables `Décrire` + `Extraire le texte`.
+- **AT-02 Upload PDF.** Drag-drop PDF → chips `Résumer` + `Extraire données`.
+- **AT-03 Upload Excel/CSV.** → chip `Analyser`. Audio → `Transcrire`. Vidéo → `Analyser`.
+- **AT-04 Mixte.** Upload 1 image + 1 PDF ensemble → suggestions union des deux types, limitées à 3.
+- **AT-05 Application d'une suggestion.** Clic sur chip → l'input se remplit avec le prompt, curseur positionné en fin de texte, prêt à envoyer.
+- **AT-06 Disparition si user tape.** Dès que l'user commence à taper dans l'input, les suggestions disparaissent (elles reviennent si il efface tout).
+
+### IE Inline edit message user
+
+- **IE-01 Bouton edit hover.** Hover sur n'importe quel message user → icône `edit` apparaît en haut à droite.
+- **IE-02 Passage en édition.** Clic edit → textarea préremplie avec le contenu, boutons `Annuler` + `Renvoyer`, hint « Les réponses ultérieures seront supprimées ».
+- **IE-03 Renvoyer.** Modifie le texte, clic `Renvoyer` → les messages après (y compris la réponse assistant) sont supprimés, le nouveau message est envoyé, l'assistant re-génère.
+- **IE-04 Annuler.** Clic `Annuler` → revient à l'affichage normal, rien changé.
+- **IE-05 Désactivé si identique.** Si le texte édité = texte original, bouton `Renvoyer` désactivé.
+- **IE-06 Backend cascade.** DevTools Network : `DELETE /api/ai/threads/{tid}/messages/{mid}` renvoie `{deleted: N}` (tous les messages à partir de cet id inclus).
+
+### AD Auto-documentation projet
+
+- **AD-01 Déclenchement.** En mode projet, fais 3-4 échanges avec activité significative (lecture fichiers, recherche, génération doc). Attends 5 min (debounce). Logs backend : `[project-doc-writer-hook] trigger START` puis `[sub-runner] RUN START project_doc_writer`.
+- **AD-02 Card doc.overview.** Ouvre Settings → Connaissances projet. Tout en haut, une card pleine largeur « 📄 Documentation projet » s'affiche avec markdown rendu (sections Objectif / Fichiers / Décisions / TODO).
+- **AD-03 Pas de spam.** Envoie 2 messages courts à la suite → debounce bloque le 2ᵉ trigger (< 5 min).
+- **AD-04 Skip si pas d'activité.** Conversation purement conversationnelle (pas de tool call « significatif ») → le hook skip.
+- **AD-05 Silence chat.** Le subagent `project_doc_writer` ne crée PAS d'agent_report visible dans le chat (comme memory_extractor).
+- **AD-06 Kill stale.** Force le kill du process pendant le run → le resume-worker détecte, passe à `error: short_lived_subagent_stalled` sans retry infini.
+
+### PT Prompt templates
+
+- **PT-01 Création.** Settings → onglet « Prompts » → bouton `Nouveau template` → remplis nom/description/prompt/catégorie/tags → Enregistrer. Apparaît en card dans la grille.
+- **PT-02 Search + filter.** Tape une partie du nom dans la barre search → filtre en live. Sélectionne une catégorie → filtre. Change le tri (Plus utilisés / Récents / Alphabétique).
+- **PT-03 Partagé vs privé.** Crée un template avec switch `Partager` OFF → autre user du workspace ne le voit PAS. Avec switch ON → il le voit avec un cadenas si c'était privé.
+- **PT-04 Utiliser.** Clic sur `Utiliser` d'une card → toast « inséré dans le chat » + l'input du chat se remplit avec le prompt complet.
+- **PT-05 Compteur usage.** Après utilisation, le badge 🔥 increment de 1. Tri « Plus utilisés » met ce template en haut.
+- **PT-06 Edit / delete.** Edit → modal préremplie → enregistrer. Delete → popconfirm → disparition.
+- **PT-07 Seul le créateur.** Essaie d'éditer/supprimer un template d'un collègue → backend renvoie 403 `not_owner`.
+
+### MG Memory graph visuel
+
+- **MG-01 Toggle vue.** Settings → Connaissances projet → toolbar haut droite : 2 boutons radio `📱` (cards) / `🌐` (graphe). Par défaut cards. Bascule sur graphe.
+- **MG-02 Rendu initial.** Les entries approuvées apparaissent comme nœuds colorés par type (texte=gris, number=bleu, date=violet, email=cyan, url=indigo, list=orange). Label sous chaque nœud = sous-partie de la clé.
+- **MG-03 Relations auto.** Deux entries avec même namespace (ex: `client.nom` et `client.email`) → arête entre les deux. Tags communs → arête. Référence cross (value de A mentionne key de B) → arête plus épaisse.
+- **MG-04 Force-directed animation.** À l'ouverture, les nœuds s'organisent via simulation physique (200 itérations), se stabilisent.
+- **MG-05 Drag.** Drag un nœud → il suit la souris, la sim continue autour.
+- **MG-06 Hover.** Hover sur nœud → agrandit + popup avec key/value/description.
+- **MG-07 Clic.** Clic sur nœud → ouvre la modale d'édition de l'entry.
+- **MG-08 Zoom/pan.** Molette → zoom. Drag fond → pan. Bouton `Réinitialiser` / `+` / `−`.
+
+### CC Canvas collaboratif live
+
+- **CC-01 Badges présence.** Partage une thread avec 2 autres users. Ouvre-la chez chacun en parallèle. Dans le header chat, 2 avatars colorés apparaissent (initiales) avec point vert de présence. Tooltip → noms des users en ligne.
+- **CC-02 Notif join.** User 2 ouvre la thread → toast bleu chez user 1 : `👋 Alice a rejoint la conversation`.
+- **CC-03 Limite 3 affichés.** 5 users connectés → 3 avatars visibles + pastille `+2` à la fin.
+- **CC-04 Isolation.** Switche vers une autre thread (non partagée) → les badges disparaissent chez tous.
+- **CC-05 Live events.** User 1 envoie un message → user 2 le voit apparaître en stream en temps réel sans refresh.
+
+### SM Skill marketplace
+
+- **SM-01 Création skill.** Settings → onglet « Skills » → `Nouveau skill` → remplis nom/description/langage/code/tags → Enregistrer. Card apparaît avec code en bloc sombre.
+- **SM-02 Filter par langage.** Sélect `Tous langages` → liste tout. Sélectionne `Python` → filtre.
+- **SM-03 Copier.** Clic `Copier` sur une card → le code est dans le presse-papier (colle dans un éditeur pour vérifier).
+- **SM-04 Fork.** Clic icône `🌿 fork` → crée une copie `<name> (fork)` dans TON espace, shared=false par défaut. Badge `fork` dans la card originale s'incrémente.
+- **SM-05 Partage workspace.** Switch `Partager` OFF à la création → autre user ne voit pas. ON → il voit mais ne peut pas éditer (bouton 403).
+- **SM-06 Tri populaire.** Compteur 🔥 `useCount` s'incrémente à chaque `Copier`. Tri `Plus utilisés` place en haut.
+- **SM-07 Cadenas si privé.** Card d'un skill privé du user courant → icône 🔒 dans le head.
+
+---
+
+## Rapport par test
+
+Pour chaque KO : numéro test (ex: IE-03) + ce qui s'affiche vs attendu + console navigateur (erreurs fetch) + logs backend (ligne `[route ...]` correspondante).

@@ -30,7 +30,7 @@ const AiJobSchema = new Schema({
 
   initiatorMessageId: { type: Types.ObjectId, ref: 'AiMessage' },
   agentId: { type: String },
-  subagentType: { type: String, enum: ['research', 'file_analyzer', 'doc_writer', 'general', 'memory_extractor'] },
+  subagentType: { type: String, enum: ['research', 'file_analyzer', 'doc_writer', 'general', 'memory_extractor', 'project_doc_writer'] },
   subagentInstructions: { type: String },
 
   maxLoops: { type: Number, default: 40 },

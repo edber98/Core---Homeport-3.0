@@ -14,8 +14,14 @@ import { NzBadgeModule } from 'ng-zorro-antd/badge';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzUploadModule, NzUploadFile } from 'ng-zorro-antd/upload';
+import { marked } from 'marked';
+import DOMPurify from 'dompurify';
 import { AiService, AiProjectKnowledge, AiProjectKnowledgeEntry, AiProjectKnowledgeType, AiProjectKnowledgeStatus } from '../ai.service';
 import { AiKnowledgeEntryDialogComponent, AiKnowledgeDialogData } from './ai-knowledge-entry-dialog.component';
+import { AiKnowledgeGraphComponent } from './ai-knowledge-graph.component';
+import { NzRadioModule } from 'ng-zorro-antd/radio';
+
+const DOC_OVERVIEW_KEY = 'doc.overview';
 
 type FilterTab = 'all' | 'approved' | 'pending' | 'rejected';
 
@@ -25,6 +31,7 @@ type FilterTab = 'all' | 'approved' | 'pending' | 'rejected';
   imports: [
     CommonModule, FormsModule, NzTableModule, NzButtonModule, NzIconModule, NzTagModule,
     NzInputModule, NzSelectModule, NzPopconfirmModule, NzToolTipModule, NzEmptyModule, NzUploadModule, NzBadgeModule,
+    NzRadioModule, AiKnowledgeGraphComponent,
   ],
   template: `
     <div class="kb-root">
@@ -58,6 +65,14 @@ type FilterTab = 'all' | 'approved' | 'pending' | 'rejected';
           </nz-select>
         </div>
         <div class="kb-actions">
+          <nz-radio-group [(ngModel)]="viewMode" nzButtonStyle="solid" nzSize="small">
+            <label nz-radio-button nzValue="cards" nz-tooltip nzTooltipTitle="Vue cartes">
+              <span nz-icon nzType="appstore" nzTheme="outline"></span>
+            </label>
+            <label nz-radio-button nzValue="graph" nz-tooltip nzTooltipTitle="Vue graphe">
+              <span nz-icon nzType="deployment-unit" nzTheme="outline"></span>
+            </label>
+          </nz-radio-group>
           <button nz-button nzType="primary" (click)="openEntryDialog()">
             <span nz-icon nzType="plus"></span> Ajouter une entrée
           </button>
@@ -75,7 +90,38 @@ type FilterTab = 'all' | 'approved' | 'pending' | 'rejected';
         </div>
       </div>
 
-      <div class="kb-grid" *ngIf="filtered().length; else emptyTpl">
+      <!-- Doc projet auto-générée (card pleine largeur en haut) -->
+      <div class="kb-doc-overview" *ngIf="overviewEntry() as ov">
+        <div class="doc-head">
+          <span class="doc-icon" nz-icon nzType="file-text" nzTheme="outline"></span>
+          <div class="doc-titles">
+            <div class="doc-title">Documentation projet</div>
+            <div class="doc-sub">Générée automatiquement — mise à jour en arrière-plan</div>
+          </div>
+          <span class="doc-spacer"></span>
+          <button nz-button nzType="text" nzSize="small"
+                  (click)="openEntryDialog(ov)"
+                  nz-tooltip nzTooltipTitle="Modifier">
+            <span nz-icon nzType="edit"></span>
+          </button>
+          <button nz-button nzType="text" nzSize="small" nzDanger
+                  nz-popconfirm nzPopconfirmTitle="Supprimer la documentation auto-générée ?"
+                  (nzOnConfirm)="removeEntry(ov)"
+                  nz-tooltip nzTooltipTitle="Supprimer">
+            <span nz-icon nzType="delete"></span>
+          </button>
+        </div>
+        <div class="doc-markdown" [innerHTML]="renderMarkdown(ov)"></div>
+      </div>
+
+      <!-- Graph view -->
+      <ai-knowledge-graph *ngIf="viewMode === 'graph' && filtered().length"
+                          [entries]="filtered()"
+                          (selectEntry)="onGraphNodeClick($event)">
+      </ai-knowledge-graph>
+
+      <!-- Cards view -->
+      <div class="kb-grid" *ngIf="viewMode === 'cards' && filtered().length; else emptyTpl">
         <div class="kb-card"
              *ngFor="let e of filtered()"
              [class.card-pending]="getStatus(e) === 'pending'"
@@ -218,6 +264,63 @@ type FilterTab = 'all' | 'approved' | 'pending' | 'rejected';
     @media (max-width: 640px) {
       .kb-grid { grid-template-columns: 1fr; }
     }
+
+    /* ── Doc.overview special card (full width markdown) ── */
+    .kb-doc-overview {
+      background: linear-gradient(180deg, #f6f9ff 0%, #ffffff 100%);
+      border: 1px solid #d6e4ff;
+      border-left: 3px solid #1677ff;
+      border-radius: 10px;
+      padding: 14px 18px 16px;
+      margin-bottom: 4px;
+      box-shadow: 0 2px 8px rgba(22, 119, 255, 0.05);
+    }
+    .kb-doc-overview .doc-head {
+      display: flex; align-items: center; gap: 10px;
+      padding-bottom: 10px; margin-bottom: 10px;
+      border-bottom: 1px dashed #e6efff;
+    }
+    .kb-doc-overview .doc-icon { color: #1677ff; font-size: 18px; }
+    .kb-doc-overview .doc-titles { display: flex; flex-direction: column; gap: 2px; }
+    .kb-doc-overview .doc-title { font-size: 14px; font-weight: 600; color: #1677ff; }
+    .kb-doc-overview .doc-sub { font-size: 11px; color: #8c8c8c; }
+    .kb-doc-overview .doc-spacer { flex: 1; }
+    .kb-doc-overview .doc-markdown {
+      font-size: 13px; line-height: 1.55; color: #262626;
+    }
+    .kb-doc-overview .doc-markdown h1 {
+      font-size: 16px; margin: 14px 0 6px; color: #1677ff; font-weight: 600;
+      border-bottom: 1px solid #f0f5ff; padding-bottom: 4px;
+    }
+    .kb-doc-overview .doc-markdown h1:first-child { margin-top: 0; }
+    .kb-doc-overview .doc-markdown h2 { font-size: 14px; margin: 12px 0 4px; font-weight: 600; }
+    .kb-doc-overview .doc-markdown h3 { font-size: 13px; margin: 10px 0 4px; font-weight: 600; }
+    .kb-doc-overview .doc-markdown p { margin: 4px 0 8px; }
+    .kb-doc-overview .doc-markdown ul,
+    .kb-doc-overview .doc-markdown ol { margin: 4px 0 8px; padding-left: 22px; }
+    .kb-doc-overview .doc-markdown li { margin: 2px 0; }
+    .kb-doc-overview .doc-markdown code {
+      background: #f5f5f5; padding: 1px 5px; border-radius: 3px; font-size: 12px;
+      font-family: Menlo, Monaco, 'Courier New', monospace;
+    }
+    .kb-doc-overview .doc-markdown pre {
+      background: #fafafa; padding: 10px 12px; border-radius: 6px; overflow-x: auto;
+      border: 1px solid #f0f0f0;
+    }
+    .kb-doc-overview .doc-markdown pre code { background: transparent; padding: 0; }
+    .kb-doc-overview .doc-markdown a { color: #1677ff; }
+    .kb-doc-overview .doc-markdown blockquote {
+      border-left: 3px solid #d6e4ff; padding: 2px 12px; margin: 8px 0;
+      color: #595959; background: #fafbff;
+    }
+    .kb-doc-overview .doc-markdown table {
+      border-collapse: collapse; margin: 8px 0; font-size: 12px;
+    }
+    .kb-doc-overview .doc-markdown th,
+    .kb-doc-overview .doc-markdown td {
+      border: 1px solid #f0f0f0; padding: 4px 8px;
+    }
+    .kb-doc-overview .doc-markdown th { background: #fafafa; font-weight: 600; }
   `],
 })
 export class AiProjectKnowledgeComponent implements OnInit, OnChanges {
@@ -238,6 +341,13 @@ export class AiProjectKnowledgeComponent implements OnInit, OnChanges {
   searchQuery = '';
   selectedTag: string | null = null;
   filterTab = signal<FilterTab>('all');
+  viewMode: 'cards' | 'graph' = 'cards';
+
+  /** Ouvre la modale d'édition pour l'entry cliquée depuis le graphe. */
+  onGraphNodeClick(nodeId: string) {
+    const e = this.entriesSig().find(x => (x._id || x.key) === nodeId);
+    if (e) this.openEntryDialog(e);
+  }
 
   counts = computed(() => {
     const list = this.entriesSig();
@@ -250,6 +360,13 @@ export class AiProjectKnowledgeComponent implements OnInit, OnChanges {
       else if (s === 'rejected') rejected++;
     }
     return { total, approved, pending, rejected };
+  });
+
+  /** Entrée spéciale `doc.overview` affichée en haut en card pleine largeur markdown. */
+  overviewEntry = computed<AiProjectKnowledgeEntry | null>(() => {
+    const list = this.entriesSig();
+    const found = list.find(e => e.key === DOC_OVERVIEW_KEY);
+    return found || null;
   });
 
   ngOnInit() {
@@ -295,7 +412,9 @@ export class AiProjectKnowledgeComponent implements OnInit, OnChanges {
 
   filtered(): AiProjectKnowledgeEntry[] {
     const q = this.searchQuery.trim().toLowerCase();
-    let list = this.entries;
+    // Exclut l'entrée spéciale doc.overview : elle est rendue à part en haut
+    // dans une card pleine largeur avec markdown.
+    let list = this.entries.filter(e => e.key !== DOC_OVERVIEW_KEY);
 
     // Filtre par statut (onglet)
     const tab = this.filterTab();
@@ -439,6 +558,19 @@ export class AiProjectKnowledgeComponent implements OnInit, OnChanges {
     } catch (e: any) {
       this.msg.error(e?.message || 'Erreur export');
     }
+  }
+
+  /** Rend la valeur markdown de l'entrée `doc.overview` en HTML sanitisé. */
+  renderMarkdown(e: AiProjectKnowledgeEntry): string {
+    const src = typeof e?.value === 'string' ? e.value : String(e?.value ?? '');
+    if (!src) return '<em style="color:#bfbfbf">(vide)</em>';
+    try {
+      const html = marked.parse(src, { breaks: true, gfm: true }) as string;
+      return DOMPurify.sanitize(html, {
+        ALLOWED_TAGS: ['div','p','strong','em','code','pre','a','ul','ol','li','br','span','b','i','h1','h2','h3','h4','table','thead','tbody','tr','th','td','blockquote','hr'],
+        ALLOWED_ATTR: ['href','target','rel','class'],
+      });
+    } catch { return this.escape(src); }
   }
 
   // ── Rendering helpers ──

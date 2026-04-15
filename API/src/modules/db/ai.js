@@ -1010,6 +1010,21 @@ ${toolLines.join('\n')}
         } catch (e) {
           console.error('[ai] memory extractor hook require failed:', e?.message);
         }
+
+        // ── Hook: auto-documentation projet (subagent async, debounce 5 min) ──
+        // Maintient l'entrée spéciale `doc.overview` dans la mémoire projet.
+        try {
+          const { triggerProjectDocWriter } = require('../../ai/project-doc-writer-hook');
+          setImmediate(() => {
+            triggerProjectDocWriter({
+              thread,
+              user: req.user,
+              lastAssistantMessageId: savedAssistantMessage._id,
+            }).catch((e) => console.error('[ai] project doc writer trigger failed:', e?.message));
+          });
+        } catch (e) {
+          console.error('[ai] project doc writer hook require failed:', e?.message);
+        }
       }
 
       // Auto-generate thread title from first user message
@@ -1858,6 +1873,49 @@ ${toolLines.join('\n')}
     const jobs = await AiJob.find({ threadId: thread._id })
       .sort({ createdAt: -1 }).limit(50).lean();
     res.apiOk(jobs);
+  });
+
+  // ── Delete un message user et tous les messages suivants (pour inline edit) ──
+  r.delete('/ai/threads/:threadId/messages/:messageId', requireThreadAccess('edit'), async (req, res) => {
+    const thread = req.aiThread;
+    const { messageId } = req.params;
+    try {
+      const target = await AiMessage.findOne({ _id: messageId, threadId: thread._id }).lean();
+      if (!target) return res.apiError(404, 'message_not_found', 'Message introuvable');
+      if (target.role !== 'user') return res.apiError(400, 'not_user_message', 'Seuls les messages user peuvent être édités');
+      const result = await AiMessage.deleteMany({
+        threadId: thread._id,
+        createdAt: { $gte: target.createdAt },
+      });
+      res.apiOk({ deleted: result.deletedCount || 0, fromMessageId: messageId });
+    } catch (e) {
+      console.error('[ai] delete messages failed:', e?.message);
+      res.apiError(500, 'delete_failed', e?.message || 'Erreur suppression');
+    }
+  });
+
+  // ── Usage tokens : jauge de contexte pour l'UI ──
+  r.get('/ai/threads/:threadId/usage', requireThreadAccess('view'), async (req, res) => {
+    const thread = req.aiThread;
+    try {
+      const { countThreadTokens, resolveLimit } = require('../../ai/context/token-counter');
+      const { tokens, messageCount } = await countThreadTokens(thread._id);
+      // Résolution modèle : override agent > env AI_MODEL > fallback gpt-5.2
+      let model = process.env.AI_MODEL || 'gpt-5.2';
+      if (thread.agentId) {
+        try {
+          const AiAgent = require('../../db/models/ai-agent.model');
+          const agent = await AiAgent.findOne({ id: thread.agentId }).lean();
+          if (agent?.llmModel) model = agent.llmModel;
+        } catch {}
+      }
+      const limit = resolveLimit(model);
+      const percent = limit > 0 ? Math.min(100, Math.round((tokens / limit) * 100)) : 0;
+      res.apiOk({ tokens, limit, percent, model, messageCount });
+    } catch (e) {
+      console.error('[ai] usage endpoint failed:', e?.message);
+      res.apiOk({ tokens: 0, limit: 128_000, percent: 0, model: 'unknown', messageCount: 0 });
+    }
   });
 
   // ── Stream SSE passif : reçoit en live les events du thread (subagents async,
@@ -2757,6 +2815,171 @@ ${toolLines.join('\n')}
     }
     return AiThread.findOne({ id });
   }
+
+  // ── Prompt templates (library réutilisable partagée au workspace) ──
+  const AiPromptTemplate = require('../../db/models/ai-prompt-template.model');
+
+  r.get('/ai/prompt-templates', async (req, res) => {
+    const ws = await ensureWorkspaceAccess(req, res); if (!ws) return;
+    const q = (req.query.q || '').toString().trim();
+    const category = req.query.category;
+    const sort = req.query.sort || 'popular';
+    const filter = { workspaceId: ws._id, companyId: req.user.companyId };
+    // Filtre shared : un user voit SES propres templates privés + tous les shared du workspace
+    filter.$or = [{ shared: true }, { createdBy: req.user._id || req.user.id }];
+    if (category) filter.category = category;
+    if (q) filter.$and = [{ $or: [
+      { name: new RegExp(q, 'i') },
+      { description: new RegExp(q, 'i') },
+      { tags: new RegExp(q, 'i') },
+    ] }];
+    const sortSpec = sort === 'recent' ? { lastUsedAt: -1, updatedAt: -1 }
+      : sort === 'alpha' ? { name: 1 }
+      : { useCount: -1, updatedAt: -1 };
+    const list = await AiPromptTemplate.find(filter).sort(sortSpec).limit(200).lean();
+    res.apiOk(list);
+  });
+
+  r.post('/ai/prompt-templates', async (req, res) => {
+    const ws = await ensureWorkspaceAccess(req, res); if (!ws) return;
+    const { name, description, prompt, category, tags, shared } = req.body || {};
+    if (!name || !prompt) return res.apiError(400, 'missing_fields', 'name et prompt requis');
+    const doc = await AiPromptTemplate.create({
+      workspaceId: ws._id, companyId: req.user.companyId,
+      createdBy: req.user._id || req.user.id,
+      name: String(name).slice(0, 120),
+      description: String(description || '').slice(0, 500),
+      prompt: String(prompt).slice(0, 20_000),
+      category: category || 'général',
+      tags: Array.isArray(tags) ? tags.slice(0, 10).map(t => String(t).slice(0, 40)) : [],
+      shared: shared !== false,
+    });
+    res.apiOk(doc);
+  });
+
+  r.put('/ai/prompt-templates/:id', async (req, res) => {
+    const tpl = await AiPromptTemplate.findOne({ id: req.params.id, companyId: req.user.companyId });
+    if (!tpl) return res.apiError(404, 'not_found', 'Template introuvable');
+    if (String(tpl.createdBy) !== String(req.user._id || req.user.id)) {
+      return res.apiError(403, 'not_owner', 'Seul le créateur peut modifier');
+    }
+    const allowed = ['name', 'description', 'prompt', 'category', 'tags', 'shared'];
+    for (const k of allowed) if (req.body[k] !== undefined) tpl[k] = req.body[k];
+    await tpl.save();
+    res.apiOk(tpl);
+  });
+
+  r.delete('/ai/prompt-templates/:id', async (req, res) => {
+    const tpl = await AiPromptTemplate.findOne({ id: req.params.id, companyId: req.user.companyId });
+    if (!tpl) return res.apiError(404, 'not_found', 'Template introuvable');
+    if (String(tpl.createdBy) !== String(req.user._id || req.user.id)) {
+      return res.apiError(403, 'not_owner', 'Seul le créateur peut supprimer');
+    }
+    await AiPromptTemplate.deleteOne({ _id: tpl._id });
+    res.apiOk({ deleted: true });
+  });
+
+  r.post('/ai/prompt-templates/:id/use', async (req, res) => {
+    const tpl = await AiPromptTemplate.findOneAndUpdate(
+      { id: req.params.id, companyId: req.user.companyId },
+      { $inc: { useCount: 1 }, $set: { lastUsedAt: new Date() } },
+      { new: true }
+    );
+    if (!tpl) return res.apiError(404, 'not_found', 'Template introuvable');
+    res.apiOk({ prompt: tpl.prompt, name: tpl.name });
+  });
+
+  // ── User skills (marketplace interne : code snippets partagés) ──
+  const AiUserSkill = require('../../db/models/ai-user-skill.model');
+
+  r.get('/ai/user-skills', async (req, res) => {
+    const ws = await ensureWorkspaceAccess(req, res); if (!ws) return;
+    const q = (req.query.q || '').toString().trim();
+    const language = req.query.language;
+    const sort = req.query.sort || 'popular';
+    const filter = { workspaceId: ws._id, companyId: req.user.companyId };
+    filter.$or = [{ shared: true }, { createdBy: req.user._id || req.user.id }];
+    if (language) filter.language = language;
+    if (q) filter.$and = [{ $or: [
+      { name: new RegExp(q, 'i') },
+      { description: new RegExp(q, 'i') },
+      { tags: new RegExp(q, 'i') },
+    ] }];
+    const sortSpec = sort === 'recent' ? { updatedAt: -1 }
+      : sort === 'alpha' ? { name: 1 }
+      : { useCount: -1, updatedAt: -1 };
+    const list = await AiUserSkill.find(filter).sort(sortSpec).limit(200).lean();
+    res.apiOk(list);
+  });
+
+  r.post('/ai/user-skills', async (req, res) => {
+    const ws = await ensureWorkspaceAccess(req, res); if (!ws) return;
+    const { name, description, language, code, tags, shared } = req.body || {};
+    if (!name || !code) return res.apiError(400, 'missing_fields', 'name et code requis');
+    const doc = await AiUserSkill.create({
+      workspaceId: ws._id, companyId: req.user.companyId,
+      createdBy: req.user._id || req.user.id,
+      name: String(name).slice(0, 120),
+      description: String(description || '').slice(0, 500),
+      language: language || 'python',
+      code: String(code).slice(0, 50_000),
+      tags: Array.isArray(tags) ? tags.slice(0, 10) : [],
+      shared: shared !== false,
+    });
+    res.apiOk(doc);
+  });
+
+  r.put('/ai/user-skills/:id', async (req, res) => {
+    const sk = await AiUserSkill.findOne({ id: req.params.id, companyId: req.user.companyId });
+    if (!sk) return res.apiError(404, 'not_found', 'Skill introuvable');
+    if (String(sk.createdBy) !== String(req.user._id || req.user.id)) {
+      return res.apiError(403, 'not_owner', 'Seul le créateur peut modifier');
+    }
+    for (const k of ['name', 'description', 'language', 'code', 'tags', 'shared']) {
+      if (req.body[k] !== undefined) sk[k] = req.body[k];
+    }
+    await sk.save();
+    res.apiOk(sk);
+  });
+
+  r.delete('/ai/user-skills/:id', async (req, res) => {
+    const sk = await AiUserSkill.findOne({ id: req.params.id, companyId: req.user.companyId });
+    if (!sk) return res.apiError(404, 'not_found', 'Skill introuvable');
+    if (String(sk.createdBy) !== String(req.user._id || req.user.id)) {
+      return res.apiError(403, 'not_owner', 'Seul le créateur peut supprimer');
+    }
+    await AiUserSkill.deleteOne({ _id: sk._id });
+    res.apiOk({ deleted: true });
+  });
+
+  // Fork : duplique un skill existant dans mon propre espace
+  r.post('/ai/user-skills/:id/fork', async (req, res) => {
+    const src = await AiUserSkill.findOne({ id: req.params.id, companyId: req.user.companyId });
+    if (!src) return res.apiError(404, 'not_found', 'Skill introuvable');
+    const fork = await AiUserSkill.create({
+      workspaceId: src.workspaceId, companyId: src.companyId,
+      createdBy: req.user._id || req.user.id,
+      name: `${src.name} (fork)`,
+      description: src.description,
+      language: src.language,
+      code: src.code,
+      tags: src.tags,
+      shared: false, // fork privé par défaut
+      forkedFrom: src.id,
+    });
+    await AiUserSkill.updateOne({ _id: src._id }, { $inc: { forkCount: 1 } });
+    res.apiOk(fork);
+  });
+
+  r.post('/ai/user-skills/:id/use', async (req, res) => {
+    const sk = await AiUserSkill.findOneAndUpdate(
+      { id: req.params.id, companyId: req.user.companyId },
+      { $inc: { useCount: 1 }, $set: { lastUsedAt: new Date() } },
+      { new: true }
+    );
+    if (!sk) return res.apiError(404, 'not_found', 'Skill introuvable');
+    res.apiOk({ code: sk.code, name: sk.name, language: sk.language });
+  });
 
   return r;
 };

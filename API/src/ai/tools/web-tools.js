@@ -36,10 +36,10 @@ const BROWSER_TIMEOUT_MS = parseInt(process.env.WEB_BROWSER_TIMEOUT_MS || '30000
 const HTTP_TIMEOUT_MS = parseInt(process.env.WEB_HTTP_TIMEOUT_MS || '30000', 10);
 const MAX_BYTES = parseInt(process.env.WEB_FETCH_MAX_BYTES || String(5 * 1024 * 1024), 10);
 const MAX_RAW_CHARS = parseInt(process.env.WEB_FETCH_MAX_RAW_CHARS || String(80_000), 10);
-// Bing par défaut : le plus stable en scraping HTML, peu de captchas / 403.
-// Brave / DDG / Startpage restent en fallback automatique.
-const PRIMARY_ENGINE = process.env.WEB_SEARCH_ENGINE || 'bing';
-const FALLBACK_ENGINES = (process.env.WEB_SEARCH_FALLBACK || 'brave,startpage,duckduckgo').split(',').map(s => s.trim()).filter(Boolean);
+// DDG Lite en HTTP pur par défaut : c'est ce que `duck-duck-scrape` / `ddg-search`
+// utilisent — layout ultra stable, rapide (~200ms), résiste aux captchas navigateur.
+const PRIMARY_ENGINE = process.env.WEB_SEARCH_ENGINE || 'ddg_lite';
+const FALLBACK_ENGINES = (process.env.WEB_SEARCH_FALLBACK || 'bing,brave,startpage').split(',').map(s => s.trim()).filter(Boolean);
 
 const DEFAULT_UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
 const ALLOWED_CT = [/^text\//, /^application\/xhtml\+xml/, /^application\/json/, /^application\/pdf/, /^application\/xml/];
@@ -193,6 +193,71 @@ async function searchDuckDuckGo({ query, limit, locale, safeSearch, site }) {
   });
 }
 
+/**
+ * DuckDuckGo Lite via HTTP pur (pas de Playwright) — version la plus stable
+ * que les libs duck-duck-scrape / ddg-search utilisent. Plus rapide (~200ms)
+ * et moins bloquée que html.duckduckgo.com (qui sert des soft-captchas).
+ */
+async function searchDdgLite({ query, limit, locale, site }) {
+  const cheerio = loadCheerio();
+  const { request } = loadUndici();
+  const fullQuery = site ? `${query} site:${site}` : query;
+  const params = new URLSearchParams({ q: fullQuery });
+  if (locale) params.set('kl', locale);
+  const url = `https://lite.duckduckgo.com/lite/?${params.toString()}`;
+
+  const res = await request(url, {
+    method: 'POST',
+    headers: {
+      'user-agent': DEFAULT_UA,
+      'accept': 'text/html,application/xhtml+xml',
+      'accept-language': 'fr-FR,fr;q=0.9,en;q=0.8',
+      'content-type': 'application/x-www-form-urlencoded',
+      'referer': 'https://lite.duckduckgo.com/',
+    },
+    body: params.toString(),
+    bodyTimeout: 15000,
+    headersTimeout: 15000,
+  });
+  const html = await res.body.text();
+
+  const $ = cheerio.load(html);
+  const results = [];
+  const seen = new Set();
+
+  // Lite DDG : chaque résultat est une série de <tr> avec un <a.result-link>
+  $('a.result-link').each((_, el) => {
+    if (results.length >= limit) return false;
+    const $a = $(el);
+    const url = $a.attr('href') || '';
+    const title = $a.text().trim();
+    if (!url || !title || !/^https?:/.test(url) || seen.has(url)) return;
+    // Snippet : prochain td.result-snippet
+    const $row = $a.closest('tr');
+    const $next = $row.next('tr');
+    const snippet = $next.find('.result-snippet').text().trim();
+    seen.add(url);
+    results.push({ title, url, snippet, rank: results.length + 1 });
+  });
+
+  // Fallback générique si le layout change
+  if (results.length === 0) {
+    $('a[href^="http"]').each((_, el) => {
+      if (results.length >= limit) return false;
+      const $a = $(el);
+      const url = $a.attr('href') || '';
+      const title = $a.text().trim();
+      if (!url || !title || title.length < 3 || seen.has(url)) return;
+      if (/duckduckgo\.com|\.onion/.test(url)) return;
+      seen.add(url);
+      results.push({ title, url, snippet: '', rank: results.length + 1 });
+    });
+  }
+
+  console.log(`[web-tool:ddg_lite] query="${fullQuery}" → ${results.length} résultats (status=${res.statusCode}, htmlLen=${html.length})`);
+  return results;
+}
+
 async function searchBing({ query, limit, locale, site }) {
   const cheerio = loadCheerio();
   const fullQuery = site ? `${query} site:${site}` : query;
@@ -313,34 +378,80 @@ async function searchStartpage({ query, limit, site }) {
 }
 
 const SEARCH_ENGINES = {
+  ddg_lite: searchDdgLite,        // HTTP pur, rapide, stable
   duckduckgo: searchDuckDuckGo,
   brave: searchBrave,
   bing: searchBing,
   startpage: searchStartpage,
 };
 
+/**
+ * Multi-engine search : lance PRIMARY_ENGINE + ENGINES_PARALLEL en parallèle,
+ * dédoublonne par URL, re-rank avec heuristiques (match query dans title/url →
+ * boost). Couvre beaucoup mieux les noms propres / requêtes ambiguës.
+ */
 async function runSearch(opts) {
-  const order = [PRIMARY_ENGINE, ...FALLBACK_ENGINES].filter((v, i, a) => a.indexOf(v) === i);
-  let lastErr = null;
-  let emptyEngines = [];
-  for (const engine of order) {
-    const fn = SEARCH_ENGINES[engine];
-    if (!fn) continue;
-    try {
-      const results = await rateLimitedSearch(() => fn(opts));
-      if (results && results.length) {
-        if (emptyEngines.length) console.warn(`[web-search] engine "${engine}" a retourné ${results.length} résultats après ${emptyEngines.join(',')} vides`);
-        return { engine, results };
+  const engines = [PRIMARY_ENGINE, ...FALLBACK_ENGINES].filter((v, i, a) => a.indexOf(v) === i);
+  const t0 = Date.now();
+  const settled = await Promise.allSettled(
+    engines.map(async name => {
+      const fn = SEARCH_ENGINES[name];
+      if (!fn) return { engine: name, results: [] };
+      try {
+        const results = await rateLimitedSearch(() => fn(opts));
+        return { engine: name, results: Array.isArray(results) ? results : [] };
+      } catch (e) {
+        console.warn(`[web-search] engine "${name}" ERREUR: ${e?.message?.slice(0, 200)}`);
+        return { engine: name, results: [] };
       }
-      emptyEngines.push(engine);
-      console.warn(`[web-search] engine "${engine}" → 0 résultat, tentative fallback`);
-    } catch (e) {
-      lastErr = e;
-      console.warn(`[web-search] engine "${engine}" ERREUR: ${e?.message?.slice(0, 200)}`);
+    })
+  );
+
+  const byUrl = new Map();
+  const queryTokens = String(opts.query || '').toLowerCase().split(/\s+/).filter(w => w.length >= 3);
+  const sources = [];
+
+  for (const s of settled) {
+    if (s.status !== 'fulfilled') continue;
+    const { engine, results } = s.value;
+    sources.push(`${engine}:${results.length}`);
+    for (const r of results) {
+      const key = (r.url || '').replace(/\/$/, '').toLowerCase();
+      if (!key) continue;
+      if (!byUrl.has(key)) {
+        byUrl.set(key, { ...r, _engines: [engine], _score: 0 });
+      } else {
+        byUrl.get(key)._engines.push(engine);
+      }
     }
   }
-  if (lastErr && !emptyEngines.length) throw lastErr;
-  return { engine: order[0], results: [] };
+
+  // Re-rank heuristique
+  for (const r of byUrl.values()) {
+    const hay = `${r.title} ${r.url} ${r.snippet || ''}`.toLowerCase();
+    let score = 0;
+    score += r._engines.length * 5;                 // bonus si retrouvé sur plusieurs engines
+    for (const tok of queryTokens) {
+      if (r.url.toLowerCase().includes(tok)) score += 10; // domaine contient le terme
+      if (r.title.toLowerCase().includes(tok)) score += 3;
+      if ((r.snippet || '').toLowerCase().includes(tok)) score += 1;
+    }
+    // Petit malus pour les URL "support" / "help" peu spécifiques
+    if (/support\.google\.com|help\./.test(r.url)) score -= 3;
+    r._score = score;
+  }
+
+  const merged = [...byUrl.values()]
+    .sort((a, b) => b._score - a._score)
+    .slice(0, opts.limit || 10)
+    .map((r, i) => ({
+      title: r.title, url: r.url, snippet: r.snippet,
+      rank: i + 1, engines: r._engines,
+    }));
+
+  const ms = Date.now() - t0;
+  console.log(`[web-search] query="${opts.query}" → ${merged.length} unique/${[...byUrl.keys()].length} total in ${ms}ms (${sources.join(' ')})`);
+  return { engine: 'multi', results: merged };
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

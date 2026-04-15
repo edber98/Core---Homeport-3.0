@@ -23,11 +23,13 @@ import { ApiClientService } from '../../services/api-client.service';
 import { AiUserPreferencesComponent } from './settings/ai-user-preferences.component';
 import { AiActivePermissionsComponent } from './settings/ai-active-permissions.component';
 import { AiProjectKnowledgeComponent } from './knowledge/ai-project-knowledge.component';
+import { AiPromptTemplatesComponent } from './prompt-templates/ai-prompt-templates.component';
+import { AiUserSkillsComponent } from './user-skills/ai-user-skills.component';
 
 @Component({
   selector: 'ai-settings',
   standalone: true,
-  imports: [CommonModule, FormsModule, NzSelectModule, NzInputModule, NzButtonModule, NzIconModule, NzEmptyModule, NzPopconfirmModule, NzToolTipModule, NzSpinModule, NzDividerModule, NzTagModule, NzAvatarModule, NzTabsModule, NzCheckboxModule, NzInputNumberModule, AiUserPreferencesComponent, AiActivePermissionsComponent, AiProjectKnowledgeComponent],
+  imports: [CommonModule, FormsModule, NzSelectModule, NzInputModule, NzButtonModule, NzIconModule, NzEmptyModule, NzPopconfirmModule, NzToolTipModule, NzSpinModule, NzDividerModule, NzTagModule, NzAvatarModule, NzTabsModule, NzCheckboxModule, NzInputNumberModule, AiUserPreferencesComponent, AiActivePermissionsComponent, AiProjectKnowledgeComponent, AiPromptTemplatesComponent, AiUserSkillsComponent],
   template: `
     <div class="settings-container" *ngIf="!loading; else loadingTpl">
       <nz-tabset nzSize="small" nzType="card" [nzSelectedIndex]="selectedTabIndex" (nzSelectedIndexChange)="onTabIndexChange($event)">
@@ -307,6 +309,38 @@ import { AiProjectKnowledgeComponent } from './knowledge/ai-project-knowledge.co
                 Auto-injectées dans le contexte de l'agent pour qu'il puisse s'y référer.
               </div>
               <ai-project-knowledge [threadId]="currentThreadId()!" [initialFilter]="knowledgeInitialFilter"></ai-project-knowledge>
+            </div>
+          </div>
+        </nz-tab>
+
+        <!-- Tab: Skills partagés (marketplace interne) -->
+        <nz-tab nzTitle="Skills">
+          <div class="tab-content">
+            <div class="settings-section">
+              <div class="section-title">
+                <span nz-icon nzType="code" nzTheme="outline"></span>
+                Skills du workspace
+              </div>
+              <div class="section-desc">
+                Bibliothèque de snippets code partagés (Python, JS, SQL, Bash…). Dupliques (fork) pour personnaliser.
+              </div>
+              <ai-user-skills></ai-user-skills>
+            </div>
+          </div>
+        </nz-tab>
+
+        <!-- Tab: Prompt templates (bibliothèque workspace) -->
+        <nz-tab nzTitle="Prompts">
+          <div class="tab-content">
+            <div class="settings-section">
+              <div class="section-title">
+                <span nz-icon nzType="book" nzTheme="outline"></span>
+                Bibliothèque de prompts
+              </div>
+              <div class="section-desc">
+                Sauvegarde tes prompts récurrents et partage-les avec ton workspace. Clic « Utiliser » pour insérer dans le chat.
+              </div>
+              <ai-prompt-templates></ai-prompt-templates>
             </div>
           </div>
         </nz-tab>

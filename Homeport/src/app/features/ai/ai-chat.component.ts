@@ -406,6 +406,15 @@ interface StreamTool {
           </button>
         </div>
       </div>
+      <!-- Suggestions auto selon type de fichier : affichées uniquement si input vide -->
+      <div class="att-suggestions" *ngIf="pendingAttachments.length && !inputText.trim() && !ai.streaming()">
+        <span class="sug-hint">Suggestions :</span>
+        <button *ngFor="let s of attachmentSuggestions()"
+                nz-button nzType="default" nzSize="small" class="sug-chip"
+                (click)="applySuggestion(s.prompt)">
+          <span nz-icon [nzType]="s.icon" nzTheme="outline"></span> {{ s.label }}
+        </button>
+      </div>
       <!-- Normal text input -->
       <div class="input-row" *ngIf="!audio.recording()">
         <div class="input-prefix">
@@ -639,6 +648,10 @@ interface StreamTool {
     .interrupted-tag { padding: 4px 0; }
     .drag-over { border-color: #e61982 !important; background: rgba(230, 25, 130, 0.04); }
     .att-previews { display: flex; flex-wrap: wrap; gap: 6px; padding: 0px 24px 2px; }
+    .att-suggestions { display: flex; flex-wrap: wrap; gap: 6px; padding: 4px 24px 4px; align-items: center; }
+    .att-suggestions .sug-hint { font-size: 11px; color: #8c8c8c; font-weight: 500; }
+    .att-suggestions .sug-chip { font-size: 12px; height: 26px; padding: 0 10px; border-radius: 14px; color: #e61982; border-color: rgba(230,25,130,0.3); }
+    .att-suggestions .sug-chip:hover { background: rgba(230,25,130,0.08); border-color: #e61982; }
     .att-chip { display: inline-flex; align-items: center; gap: 4px; background: #f5f5f5; border: 1px solid #e8e8e8; border-radius: 6px; padding: 3px 6px; font-size: 12px; max-width: 200px; }
     .att-chip.att-uploading { opacity: 0.7; }
     .att-chip.att-error { border-color: #ff4d4f; background: #fff2f0; }
@@ -704,6 +717,18 @@ export class AiChatComponent implements AfterViewInit {
   private _previewSubs = new Map<string, { unsub: () => void }>();
 
   constructor(public ai: AiService, public audio: AiAudioService, private cdr: ChangeDetectorRef) {
+    // Prompt templates : insertion dans input chat
+    this.ai.promptTemplateApply$.subscribe((prompt: string) => {
+      if (!prompt) return;
+      this.inputText = prompt;
+      this.cdr.detectChanges();
+      setTimeout(() => {
+        try {
+          const ta = document.querySelector('ai-chat textarea') as HTMLTextAreaElement | null;
+          if (ta) { ta.focus(); ta.setSelectionRange?.(prompt.length, prompt.length); }
+        } catch {}
+      }, 30);
+    });
     // Reset auto-scroll when switching threads
     effect(() => {
       this.ai.currentThread();
@@ -885,6 +910,55 @@ export class AiChatComponent implements AfterViewInit {
       });
     }
     this.cdr.detectChanges();
+  }
+
+  /** Suggestions de prompt selon les types de fichiers attachés. */
+  attachmentSuggestions(): Array<{ label: string; prompt: string; icon: string }> {
+    const out: Array<{ label: string; prompt: string; icon: string }> = [];
+    const mimes = this.pendingAttachments.filter(a => !a.uploading && !a.error).map(a => a.mimeType || '');
+    if (!mimes.length) return out;
+    const hasImage = mimes.some(m => m.startsWith('image/'));
+    const hasPdf = mimes.some(m => m === 'application/pdf');
+    const hasXlsx = mimes.some(m => /spreadsheet|excel|csv/i.test(m));
+    const hasDocx = mimes.some(m => /wordprocessing|msword/i.test(m));
+    const hasAudio = mimes.some(m => m.startsWith('audio/'));
+    const hasVideo = mimes.some(m => m.startsWith('video/'));
+    const hasCode = mimes.some(m => /javascript|typescript|json|xml|yaml/i.test(m));
+    if (hasImage) {
+      out.push({ label: 'Décrire', prompt: 'Décris précisément ce que tu vois sur cette image.', icon: 'eye' });
+      out.push({ label: 'Extraire le texte', prompt: "Extrais tout le texte visible sur cette image (OCR).", icon: 'scan' });
+    }
+    if (hasPdf) {
+      out.push({ label: 'Résumer', prompt: 'Lis ce PDF et fais-moi un résumé structuré des points clés.', icon: 'file-text' });
+      out.push({ label: 'Extraire données', prompt: 'Extrais les données structurées de ce PDF (dates, montants, noms, tableaux).', icon: 'table' });
+    }
+    if (hasXlsx) {
+      out.push({ label: 'Analyser', prompt: 'Analyse ce tableau et donne-moi les insights principaux avec éventuellement un graphique.', icon: 'bar-chart' });
+    }
+    if (hasDocx) {
+      out.push({ label: 'Résumer', prompt: 'Lis ce document et fais-moi un résumé.', icon: 'file-text' });
+    }
+    if (hasAudio) {
+      out.push({ label: 'Transcrire', prompt: 'Transcris cet enregistrement audio en texte.', icon: 'audio' });
+    }
+    if (hasVideo) {
+      out.push({ label: 'Analyser', prompt: 'Analyse cette vidéo et décris ce qui s\'y passe.', icon: 'video-camera' });
+    }
+    if (hasCode) {
+      out.push({ label: 'Expliquer', prompt: 'Explique ce que fait ce code et suggère des améliorations.', icon: 'code' });
+    }
+    return out.slice(0, 3);
+  }
+
+  applySuggestion(prompt: string) {
+    this.inputText = prompt;
+    this.cdr.detectChanges();
+    setTimeout(() => {
+      try {
+        const textarea = document.querySelector('ai-chat textarea') as HTMLTextAreaElement | null;
+        if (textarea) { textarea.focus(); textarea.setSelectionRange?.(prompt.length, prompt.length); }
+      } catch {}
+    }, 30);
   }
 
   removeAttachment(index: number) {

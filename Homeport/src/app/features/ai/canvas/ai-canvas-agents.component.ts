@@ -248,6 +248,7 @@ export class AiCanvasAgentsComponent implements OnInit, OnDestroy {
       case 'doc_writer': return '📄';
       case 'file_analyzer': return '📊';
       case 'memory_extractor': return '🧠';
+      case 'project_doc_writer': return '📘';
       case 'general': return '🤖';
       default: return '🤖';
     }

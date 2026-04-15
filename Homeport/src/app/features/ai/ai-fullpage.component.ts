@@ -355,6 +355,50 @@ import { NzAvatarModule } from 'ng-zorro-antd/avatar';
                 </span>
               </div>
               <div class="chat-actions">
+                <!-- Badges présence (utilisateurs actifs sur la conversation) -->
+                <div class="presence-badges" *ngIf="(ai.presence()?.length || 0) > 1"
+                     nz-tooltip [nzTooltipTitle]="presenceTooltip()">
+                  <ng-container *ngIf="ai.presence() as plist">
+                    <div *ngFor="let p of plist.slice(0, 3); trackBy: trackPresence"
+                         class="presence-avatar"
+                         [style.background]="avatarColor(p.userId)">
+                      {{ initials(p.name || p.userId) }}
+                    </div>
+                    <div *ngIf="plist.length > 3" class="presence-more">+{{ plist.length - 3 }}</div>
+                  </ng-container>
+                </div>
+                <!-- Jauge contexte tokens -->
+                <button *ngIf="ai.contextUsage() as u"
+                  nz-button nzType="text" nzSize="small"
+                  class="chat-action-btn context-gauge"
+                  [class.gauge-warn]="u.percent >= 70 && u.percent < 90"
+                  [class.gauge-alert]="u.percent >= 90"
+                  nz-popover [nzPopoverContent]="gaugePopover" nzPopoverTrigger="click" nzPopoverPlacement="bottomRight"
+                  nz-tooltip [nzTooltipTitle]="(u.tokens/1000 | number:'1.1-1') + 'k / ' + (u.limit/1000 | number:'1.0-0') + 'k tokens — ' + u.model"
+                  nzTooltipOverlayClassName="chat-action-tooltip">
+                  {{ u.percent }}%
+                </button>
+                <ng-template #gaugePopover>
+                  <div style="min-width: 220px; padding: 4px 0;" *ngIf="ai.contextUsage() as u">
+                    <div style="font-weight: 600; margin-bottom: 6px;">Contexte de la conversation</div>
+                    <div style="font-size: 12px; color: #595959;">
+                      <div>{{ (u.tokens / 1000 | number:'1.1-1') }}k tokens sur {{ (u.limit / 1000 | number:'1.0-0') }}k</div>
+                      <div>Modèle : <code>{{ u.model }}</code></div>
+                      <div>{{ u.messageCount }} messages</div>
+                    </div>
+                    <div style="height: 6px; background: #f0f0f0; border-radius: 3px; margin: 10px 0;">
+                      <div [style.width.%]="u.percent"
+                           [style.background]="u.percent >= 90 ? '#ff4d4f' : u.percent >= 70 ? '#faad14' : '#52c41a'"
+                           style="height: 100%; border-radius: 3px; transition: width .3s;"></div>
+                    </div>
+                    <button *ngIf="u.percent >= 70"
+                      nz-button nzSize="small" nzBlock (click)="askCompact()"
+                      style="margin-top: 4px;">
+                      <span nz-icon nzType="compress" nzTheme="outline"></span>
+                      Compacter et continuer
+                    </button>
+                  </div>
+                </ng-template>
                 <!-- Badge détection auto mémoire (projet uniquement) -->
                 <button *ngIf="ai.currentThread()?.mode === 'project' && ai.pendingKnowledgeCount() > 0"
                   nz-button nzType="text" nzSize="small" class="chat-action-btn knowledge-pending-btn"
@@ -755,7 +799,33 @@ import { NzAvatarModule } from 'ng-zorro-antd/avatar';
     .agent-badge { font-size: 11px; color: #e61982; background: #fdf2f8; padding: 2px 8px; border-radius: 10px; font-weight: 500; }
     .linked-link { display: flex; align-items: center; gap: 3px; font-size: 11px; color: #e61982; cursor: pointer; padding: 2px 6px; border-radius: 6px; text-decoration: none; white-space: nowrap; }
     .linked-link:hover { background: #fdf2f8; }
-    .chat-actions { margin-left: auto; display: flex; gap: 2px; }
+    .chat-actions { margin-left: auto; display: flex; gap: 2px; align-items: center; }
+    .presence-badges { display: inline-flex; align-items: center; margin-right: 8px; }
+    .presence-avatar {
+      width: 24px; height: 24px; border-radius: 50%;
+      color: #fff; font-size: 10px; font-weight: 600;
+      display: flex; align-items: center; justify-content: center;
+      border: 2px solid #fff; margin-left: -6px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      position: relative;
+    }
+    .presence-avatar::after {
+      content: ''; position: absolute; bottom: -1px; right: -1px;
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #52c41a; border: 1.5px solid #fff;
+    }
+    .presence-more {
+      width: 24px; height: 24px; border-radius: 50%;
+      background: #f0f0f0; color: #595959; font-size: 10px; font-weight: 600;
+      display: flex; align-items: center; justify-content: center;
+      border: 2px solid #fff; margin-left: -6px;
+    }
+    .context-gauge { font-size: 11px; font-weight: 600; min-width: 42px; padding: 0 8px !important; border-radius: 10px !important; color: #52c41a; background: rgba(82,196,26,0.08); }
+    .context-gauge:hover { background: rgba(82,196,26,0.16) !important; }
+    .context-gauge.gauge-warn { color: #faad14; background: rgba(250,173,20,0.1); }
+    .context-gauge.gauge-warn:hover { background: rgba(250,173,20,0.18) !important; }
+    .context-gauge.gauge-alert { color: #ff4d4f; background: rgba(255,77,79,0.1); animation: gauge-pulse 1.5s ease-in-out infinite; }
+    @keyframes gauge-pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.7; } }
     :host ::ng-deep .chat-action-tooltip .ant-tooltip-inner { font-size: 10px; line-height: 1.15; padding: 4px 6px; }
 
     /* ── Settings popover ── */
@@ -921,8 +991,23 @@ export class AiFullpageComponent implements OnInit, OnDestroy, AfterViewInit {
   // Sync URL /ai/:threadId au changement de thread — déclaré ici car effect()
   // doit être appelé en injection context (constructor).
   private _lastUrlTid: string | null = null;
+  private _lastPresenceIds: Set<string> = new Set();
 
   constructor(public ai: AiService, public audioService: AiAudioService, private cdr: ChangeDetectorRef, private router: Router, private route: ActivatedRoute, private nzMsg: NzMessageService, private apiClient: ApiClientService, private acl: AccessControlService) {
+    // Notif toast quand un user rejoint la conversation partagée.
+    effect(() => {
+      const list = this.ai.presence() || [];
+      const currentIds = new Set(list.map(p => p.userId));
+      if (this._lastPresenceIds.size > 0) {
+        for (const p of list) {
+          if (!this._lastPresenceIds.has(p.userId)) {
+            this.nzMsg.info(`👋 ${p.name || 'Un collaborateur'} a rejoint la conversation`, { nzDuration: 3000 });
+          }
+        }
+      }
+      this._lastPresenceIds = currentIds;
+    });
+
     // Sync URL thread — effect local
     effect(() => {
       const t = this.ai.currentThread();
@@ -965,20 +1050,22 @@ export class AiFullpageComponent implements OnInit, OnDestroy, AfterViewInit {
     });
 
     // Auto-open au refresh si le DERNIER message est un widget canvas.
+    // Ajout canvas_html : bascule automatiquement sur l'onglet Artefacts.
     effect(() => {
       const msgs = this.ai.messages();
       const cur = this.ai.currentThread();
       if (!cur || !msgs || !msgs.length) return;
       if (cur.mode === 'project') return;
       if (this.isMobileSidebar()) return;
-      if (this._userClosedCanvas) return; // respect l'action user
+      if (this._userClosedCanvas) return;
       const last = msgs[msgs.length - 1];
       const kind = last?.metadata?.kind;
-      const isCanvasWidget = ['structured', 'diagram', 'plan_proposal'].includes(kind as string);
+      const isCanvasWidget = ['structured', 'diagram', 'plan_proposal', 'canvas_html'].includes(kind as string);
       const state = this.ai.canvasState();
       const hasResearch = (state?.research?.steps?.length || 0) > 0;
       if ((isCanvasWidget || (hasResearch && last?.role === 'assistant')) && !this.ai.canvasOpen()) {
         this.ai.openCanvas();
+        if (kind === 'canvas_html') this.ai.setCanvasTab('artifacts');
       }
     });
 
@@ -1712,6 +1799,31 @@ export class AiFullpageComponent implements OnInit, OnDestroy, AfterViewInit {
       this._userClosedCanvas = false;
       this.ai.openCanvas();
     }
+  }
+
+  /** Helpers présence — badges avatars des users actifs sur le thread. */
+  trackPresence(_: number, p: any) { return p.userId; }
+  initials(s: string): string {
+    if (!s) return '?';
+    const parts = s.trim().split(/\s+/);
+    return parts.length >= 2 ? (parts[0][0] + parts[1][0]).toUpperCase() : s.slice(0, 2).toUpperCase();
+  }
+  avatarColor(userId: string): string {
+    // Couleur déterministe à partir de l'id
+    let h = 0;
+    for (let i = 0; i < (userId || '').length; i++) h = (h * 31 + userId.charCodeAt(i)) >>> 0;
+    const palette = ['#e61982', '#1890ff', '#52c41a', '#faad14', '#722ed1', '#13c2c2', '#fa541c'];
+    return palette[h % palette.length];
+  }
+  presenceTooltip(): string {
+    const names = (this.ai.presence() || []).map(p => p.name || p.userId.slice(0, 6));
+    return names.length <= 1 ? '' : names.join(', ') + ' en ligne sur cette conversation';
+  }
+
+  /** Envoie un message pour compacter la conversation courante. */
+  askCompact() {
+    const input = "Cette conversation devient longue. Utilise compact_and_transfer pour résumer l'essentiel et démarrer un nouveau thread. Garde les points clés et les décisions prises.";
+    this.ai.quickSend(input).catch((e) => console.error('[fullpage] compact ask failed:', e?.message));
   }
 
   regenerateTitle() {

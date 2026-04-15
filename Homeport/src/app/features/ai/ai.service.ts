@@ -80,7 +80,7 @@ export interface AiProjectRoot {
 
 export interface AiCanvasState {
   threadId: string;
-  activeTab: 'document' | 'research' | 'agents' | 'tasks' | 'files';
+  activeTab: 'document' | 'research' | 'agents' | 'tasks' | 'artifacts' | 'files';
   document?: {
     format?: 'docx' | 'pptx' | 'xlsx' | 'html' | 'md' | 'mermaid';
     title?: string;
@@ -254,7 +254,8 @@ export interface AiMessage {
   cancelled?: boolean;
   createdAt?: string;
   metadata?: {
-    kind?: 'permission_request' | 'cache_sync_request' | 'comment' | 'system_hint' | 'structured' | 'plan_proposal' | 'diagram' | 'image_inline' | 'agent_report';
+    kind?: 'permission_request' | 'cache_sync_request' | 'comment' | 'system_hint' | 'structured' | 'plan_proposal' | 'diagram' | 'image_inline' | 'agent_report' | 'canvas_html';
+    canvasHtml?: { html: string; title?: string | null; description?: string | null; height?: number; type?: '2d' | '3d' | 'animation' | 'demo' };
     permissionRequest?: AiPermissionRequest;
     cacheSyncRequest?: AiCacheSyncRequest;
     structured?: AiStructuredPayload;
@@ -438,9 +439,13 @@ export class AiService {
 
   // Détection auto de mémoire projet — compteur d'entries pending (badge chat)
   pendingKnowledgeCount = signal<number>(0);
+  // Jauge contexte : tokens consommés / limite modèle pour le thread courant.
+  contextUsage = signal<{ tokens: number; limit: number; percent: number; model: string; messageCount: number } | null>(null);
   // Event de redirection UI : quand le hint est cliqué, on ouvre les settings
   // sur l'onglet connaissance avec filtre 'pending'.
   openKnowledgePending$ = new Subject<void>();
+  /** Pipe : prompt template appliqué → chat l'insère dans l'input. */
+  promptTemplateApply$ = new Subject<string>();
 
   // Action requests — the panel subscribes and opens appropriate modals
   actionRequests$ = new Subject<AiAction>();
@@ -554,6 +559,8 @@ export class AiService {
 
     // Refresh badge pending si thread projet
     this.refreshPendingKnowledgeCount(data.thread?.id || data.thread?._id);
+    // Refresh jauge tokens
+    this.refreshContextUsage(data.thread?.id || data.thread?._id);
   }
 
   deleteThread(threadId: string): Observable<any> {
@@ -818,12 +825,12 @@ export class AiService {
                 this.messages.update(msgs => [...msgs, assistantMsg]);
               }
               this.streaming.set(false);
-              // Mode project : le memory_extractor finit après le stream principal (30-60s).
-              // On re-fetch le pending count à +30s et +75s pour être sûr de capter l'update
-              // même si l'event memory.pending.update n'est pas reçu par le passive stream.
+              // Refresh jauge tokens dès la fin du stream
               const curTh = this.currentThread();
+              const tidNow = curTh?.id || curTh?._id;
+              if (tidNow) this.refreshContextUsage(tidNow);
+              // Mode project : le memory_extractor finit après le stream principal (30-60s).
               if (curTh?.mode === 'project') {
-                const tidNow = curTh.id || curTh._id;
                 setTimeout(() => this.refreshPendingKnowledgeCount(tidNow), 30_000);
                 setTimeout(() => this.refreshPendingKnowledgeCount(tidNow), 75_000);
               }
@@ -969,6 +976,81 @@ export class AiService {
 
   rejectKnowledgeEntry(threadId: string, entryId: string): Observable<AiProjectKnowledgeEntry> {
     return this.api.post<AiProjectKnowledgeEntry>(`/api/ai/threads/${threadId}/knowledge/entries/${entryId}/reject`, {}, { workspaceId: this.wsId() });
+  }
+
+  /**
+   * Supprime un message user + tous les messages suivants du thread, puis
+   * renvoie le nouveau content comme s'il venait d'être envoyé par l'user.
+   * Utilisé pour l'inline edit : corrige une question → régénère la réponse.
+   */
+  // ── Prompt templates ──
+  listPromptTemplates(opts: { q?: string; category?: string; sort?: 'popular' | 'recent' | 'alpha' } = {}): Observable<any> {
+    const params: any = { workspaceId: this.wsId() };
+    if (opts.q) params.q = opts.q;
+    if (opts.category) params.category = opts.category;
+    if (opts.sort) params.sort = opts.sort;
+    return this.api.get<any>(`/api/ai/prompt-templates`, params);
+  }
+  createPromptTemplate(data: any): Observable<any> {
+    return this.api.post<any>(`/api/ai/prompt-templates`, data, { workspaceId: this.wsId() });
+  }
+  updatePromptTemplate(id: string, data: any): Observable<any> {
+    return this.api.put<any>(`/api/ai/prompt-templates/${id}`, data, { workspaceId: this.wsId() });
+  }
+  deletePromptTemplate(id: string): Observable<any> {
+    return this.api.delete<any>(`/api/ai/prompt-templates/${id}`, { workspaceId: this.wsId() });
+  }
+  usePromptTemplate(id: string): Observable<any> {
+    return this.api.post<any>(`/api/ai/prompt-templates/${id}/use`, {}, { workspaceId: this.wsId() });
+  }
+
+  // ── User skills (marketplace) ──
+  listUserSkills(opts: { q?: string; language?: string; sort?: 'popular' | 'recent' | 'alpha' } = {}): Observable<any> {
+    const params: any = { workspaceId: this.wsId() };
+    if (opts.q) params.q = opts.q;
+    if (opts.language) params.language = opts.language;
+    if (opts.sort) params.sort = opts.sort;
+    return this.api.get<any>(`/api/ai/user-skills`, params);
+  }
+  createUserSkill(data: any): Observable<any> {
+    return this.api.post<any>(`/api/ai/user-skills`, data, { workspaceId: this.wsId() });
+  }
+  updateUserSkill(id: string, data: any): Observable<any> {
+    return this.api.put<any>(`/api/ai/user-skills/${id}`, data, { workspaceId: this.wsId() });
+  }
+  deleteUserSkill(id: string): Observable<any> {
+    return this.api.delete<any>(`/api/ai/user-skills/${id}`, { workspaceId: this.wsId() });
+  }
+  forkUserSkill(id: string): Observable<any> {
+    return this.api.post<any>(`/api/ai/user-skills/${id}/fork`, {}, { workspaceId: this.wsId() });
+  }
+  useUserSkill(id: string): Observable<any> {
+    return this.api.post<any>(`/api/ai/user-skills/${id}/use`, {}, { workspaceId: this.wsId() });
+  }
+
+  async editAndResendUserMessage(messageId: string, newContent: string) {
+    const t = this.currentThread();
+    const tid = t?.id || t?._id;
+    if (!tid) throw new Error('No active thread');
+    // Delete cascade depuis ce message
+    await this.api.delete(`/api/ai/threads/${tid}/messages/${messageId}`, { workspaceId: this.wsId() }).toPromise();
+    // Reload pour refléter la suppression
+    await this.reloadThreadMessages();
+    // Re-send le contenu édité
+    return this.sendMessage(newContent);
+  }
+
+  /** Refresh la jauge tokens de la conversation courante. */
+  refreshContextUsage(threadId?: string): void {
+    const tid = threadId || this.currentThread()?.id || this.currentThread()?._id;
+    if (!tid) { this.contextUsage.set(null); return; }
+    this.api.get<any>(`/api/ai/threads/${tid}/usage`, { workspaceId: this.wsId() }).subscribe({
+      next: (res: any) => {
+        const data = res?.data || res;
+        if (data && typeof data.tokens === 'number') this.contextUsage.set(data);
+      },
+      error: () => { /* silencieux */ },
+    });
   }
 
   /** Refresh le compteur de pending entries (badge chat). No-op si pas de thread ou mode != project. */
@@ -1272,7 +1354,7 @@ export class AiService {
   closeCanvas() { this.canvasOpen.set(false); }
   toggleCanvas() { this.canvasOpen.set(!this.canvasOpen()); }
   togglePinCanvas() { this.canvasPinned.set(!this.canvasPinned()); }
-  setCanvasTab(tab: 'document' | 'research' | 'agents' | 'tasks' | 'files') {
+  setCanvasTab(tab: 'document' | 'research' | 'agents' | 'tasks' | 'artifacts' | 'files') {
     const cur = this.canvasState();
     if (cur) this.canvasState.set({ ...cur, activeTab: tab });
   }

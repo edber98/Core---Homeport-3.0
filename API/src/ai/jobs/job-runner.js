@@ -444,6 +444,9 @@ async function _maybeCreateAgentReport(job, { opts, toolCalls, finishedAt, error
   // Memory_extractor : tâche background silencieuse → pas de card agent_report
   // dans le chat. L'utilisateur voit les entries pending via le badge bulb.
   if (job.subagentType === 'memory_extractor') return;
+  // Project_doc_writer : même logique silencieuse — l'utilisateur voit la doc
+  // actualisée dans l'onglet Connaissances projet via la card `doc.overview`.
+  if (job.subagentType === 'project_doc_writer') return;
 
   // Relit le job final pour résultat frais
   const fresh = await AiJob.findOne({ id: job.id }).lean();
