@@ -586,7 +586,12 @@ async function _maybeResumeParent(job) {
   const BACKGROUND_TYPES = ['memory_extractor', 'project_doc_writer'];
   const reallyActive = await AiJob.countDocuments({
     threadId,
+    // Exclut : hooks background (memory_extractor, doc_writer) + agent_run parent
+    // (qui a fini son tour mais peut rester en 'running' quelques secondes) +
+    // le job courant lui-même (qui vient de finir).
     subagentType: { $nin: BACKGROUND_TYPES },
+    type: 'subagent',        // ne compte QUE les subagents, pas les agent_run parents
+    _id: { $ne: job._id },  // exclut le job qui vient de finir
     status: { $in: ['queued', 'running', 'waiting_dependency', 'waiting_permission', 'paused'] },
     $or: [
       { status: { $in: ['queued', 'waiting_dependency', 'waiting_permission', 'paused'] } },
@@ -594,7 +599,7 @@ async function _maybeResumeParent(job) {
     ],
   });
   if (reallyActive > 0) {
-    console.log(`[resume-parent] skip job=${job.id} : ${reallyActive} jobs encore actifs (excl. background)`);
+    console.log(`[resume-parent] skip job=${job.id} : ${reallyActive} subagents encore actifs`);
     return;
   }
 
