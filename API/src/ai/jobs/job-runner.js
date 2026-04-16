@@ -577,12 +577,16 @@ async function _maybeResumeParent(job) {
   const threadId = job.threadId;
 
   // 1. Vérifier qu'aucun autre job VRAIMENT actif sur ce thread.
-  // Un job en 'running' SANS heartbeat récent (>2 min) est considéré stalled
-  // donc ignoré pour ne pas bloquer le resume éternellement.
+  // On EXCLUT memory_extractor + project_doc_writer : ce sont des hooks
+  // background silencieux qui tournent après chaque complétion de subagent.
+  // Sans cette exclusion, ils bloqueraient le resume éternellement car chaque
+  // complétion spawn un nouvel extracteur → le compteur ne descend jamais à 0.
   const STALE_HB_MS = 2 * 60_000;
   const staleThreshold = new Date(Date.now() - STALE_HB_MS);
+  const BACKGROUND_TYPES = ['memory_extractor', 'project_doc_writer'];
   const reallyActive = await AiJob.countDocuments({
     threadId,
+    subagentType: { $nin: BACKGROUND_TYPES },
     status: { $in: ['queued', 'running', 'waiting_dependency', 'waiting_permission', 'paused'] },
     $or: [
       { status: { $in: ['queued', 'waiting_dependency', 'waiting_permission', 'paused'] } },
@@ -590,7 +594,7 @@ async function _maybeResumeParent(job) {
     ],
   });
   if (reallyActive > 0) {
-    console.log(`[resume-parent] skip job=${job.id} : ${reallyActive} jobs encore actifs`);
+    console.log(`[resume-parent] skip job=${job.id} : ${reallyActive} jobs encore actifs (excl. background)`);
     return;
   }
 
@@ -607,11 +611,49 @@ async function _maybeResumeParent(job) {
     significant.toolCalls.some(tc => tc.name === 'spawn_subagent');
   if (!hasSpawnedSubagents) return;
 
-  // 4. Si un livrable final a déjà été produit APRÈS le spawn, skip (pipeline ok)
+  // 4. Si un livrable final a déjà été produit APRÈS le spawn, skip le
+  // resume LLM complet, MAIS auto-clôture la todo-list si elle existe et
+  // contient encore des items in_progress (sinon elle reste bloquée en
+  // loading alors que la tâche est visuellement terminée).
   const idxSig = lastMessages.findIndex(m => m._id?.toString() === significant._id?.toString());
-  const FINAL_KINDS = new Set(['canvas_html', 'structured', 'diagram', 'image_inline', 'plan_proposal']);
+  const FINAL_KINDS = new Set(['canvas_html', 'structured', 'diagram', 'image_inline', 'plan_proposal', 'file_inline']);
   const sinceSpawn = lastMessages.slice(0, idxSig);
   if (sinceSpawn.some(m => FINAL_KINDS.has(m.metadata?.kind))) {
+    // Cherche un session-todos avec des items non terminés
+    try {
+      const todoMsg = await AiMessage.findOne({
+        threadId,
+        'metadata.kind': 'todo_list',
+        'metadata.widgetId': 'session-todos',
+      }).sort({ createdAt: -1 });
+      if (todoMsg) {
+        const todos = todoMsg.metadata?.todoList?.todos || [];
+        const hasOpen = todos.some(t => t.status === 'in_progress' || t.status === 'pending');
+        if (hasOpen) {
+          // Auto-close tout ce qui n'est pas déjà completed/cancelled
+          const updated = todos.map(t => ({
+            ...t.toObject?.() || t,
+            status: (t.status === 'completed' || t.status === 'cancelled') ? t.status : 'completed',
+          }));
+          todoMsg.metadata = {
+            ...(todoMsg.metadata?.toObject?.() || todoMsg.metadata),
+            todoList: {
+              ...(todoMsg.metadata?.todoList?.toObject?.() || todoMsg.metadata?.todoList),
+              todos: updated,
+              updatedAt: new Date(),
+            },
+            widgetUpdatedAt: new Date(),
+          };
+          await todoMsg.save();
+          console.log(`[resume-parent] todo auto-close : ${todos.filter(t => t.status !== 'completed' && t.status !== 'cancelled').length} items → completed (livrable déjà présent)`);
+          emitThreadEvent(String(threadId), {
+            type: 'ai.message.updated',
+            messageId: String(todoMsg._id),
+            kind: 'todo_list',
+          });
+        }
+      }
+    } catch (e) { console.warn('[resume-parent] todo auto-close failed:', e?.message); }
     console.log(`[resume-parent] skip thread=${threadId} : livrable final déjà présent`);
     return;
   }
@@ -651,19 +693,35 @@ async function _maybeResumeParent(job) {
 
 ${summaries}
 
-🎯 TÂCHE : finalise la livraison. INTERDICTIONS strictes :
-- ❌ NE FAIS PAS de propose_plan (la planification est déjà passée, on est en finalisation)
-- ❌ NE RELANCE PAS de spawn_subagent (les résultats sont déjà là)
-- ❌ NE PARAPHRASE PAS les résumés ci-dessus
+🎯 TÂCHE : finalise la livraison en 2 étapes STRICTES dans cet ordre :
 
-✅ Action attendue : APPELLE DIRECTEMENT le ou les tools de production qui livrent le résultat final. Choisis selon la demande initiale de l'utilisateur :
-- Tableau comparatif → render_structured(layout='comparison_table', data={columns:[...], rows:[...]})
-- Document Excel/PDF → generate_document puis project_write_file
-- Visualisation 3D/dashboard → render_interactive_canvas
-- Diagramme → generate_diagram
-- Conclusion simple → écris 2-3 phrases en texte brut, c'est tout
+1. **MISE À JOUR OBLIGATOIRE DE LA CHECKLIST** (si une existe — widget 'session-todos')
+   Appelle \`todo_write\` EN PREMIER avec la checklist mise à jour :
+   - Marque \`completed\` les items qui correspondent aux subagents terminés ci-dessus
+   - Marque \`in_progress\` le prochain item qui va consommer ces résultats (ex: "Consolider en tableau", "Afficher le résultat")
+   - Les items déjà livrés via d'autres outils (render_structured, display_file) marque-les aussi \`completed\`
+   - Si c'est la dernière étape, marque tout en \`completed\`
 
-Si tout est déjà livré (tu vois un widget canvas/structured/diagram dans le thread récent), conclus en 1-2 phrases. Sinon, produis le livrable IMMÉDIATEMENT à partir des données des résumés ci-dessus.`;
+2. **LIVRE LE RÉSULTAT FINAL**
+   Appelle directement le tool de production adapté :
+   - Tableau comparatif → render_structured(layout='comparison_table', data={columns, rows})
+   - Document Excel/PDF → generate_document + display_file
+   - Visualisation / dashboard → render_interactive_canvas
+   - Diagramme → generate_diagram
+   - Conclusion simple → texte brut court (2-3 phrases)
+   Puis un dernier \`todo_write\` pour marquer la dernière étape \`completed\`.
+
+🚫 INTERDICTIONS
+- ❌ NE FAIS PAS de \`propose_plan\` (la planification est passée, on finalise)
+- ❌ NE RELANCE PAS de \`spawn_subagent\` (tous les résultats sont déjà dans les résumés ci-dessus)
+- ❌ NE PARAPHRASE PAS les résumés (l'utilisateur les verra dans les cards agent_report)
+
+🧠 PLAN vs TODOS — clarification importante :
+- \`propose_plan\` = carte INITIALE pour demander la validation d'une approche AVANT d'exécuter. Une seule fois, en début de tâche.
+- \`todo_write\` = checklist VIVANTE qui suit l'exécution en temps réel. Mise à jour à chaque transition d'étape. C'est ÇA qu'on utilise maintenant.
+Il ne faut JAMAIS confondre les deux ni rappeler propose_plan une fois l'exécution lancée.
+
+Si tout est déjà livré visuellement (widget structured/canvas/file dans le thread) mais la checklist n'est pas close, mets juste à jour la checklist (todo_write avec tout en completed) + une phrase de conclusion. C'est fini.`;
 
   try {
     // Crée un message system de tracking (anti-boucle + traçabilité)

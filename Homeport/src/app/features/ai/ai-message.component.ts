@@ -21,6 +21,9 @@ import { AiDiagramRendererComponent } from './diagram/ai-diagram-renderer.compon
 import { AiStructuredMessageComponent } from './structured/ai-structured-message.component';
 import { AiInlineImageComponent } from './images/ai-inline-image.component';
 import { AiInlineFileComponent } from './files/ai-inline-file.component';
+import { AiTodoListComponent } from './todo-list/ai-todo-list.component';
+import { AiAgentBadgeComponent } from './agents/ai-agent-badge.component';
+import { resolveAgentProfile } from './agents/ai-roster';
 import { AiCanvasHtmlComponent } from './canvas-html/ai-canvas-html.component';
 import { AiAgentReportCardComponent } from './agent-reports/ai-agent-report-card.component';
 import { AiWidgetActionsComponent, WidgetAction, WidgetActionId } from './widgets/ai-widget-actions.component';
@@ -130,7 +133,7 @@ interface ProcessedSegment {
 @Component({
   selector: 'ai-message',
   standalone: true,
-  imports: [CommonModule, FormsModule, NzButtonModule, NzIconModule, NzTagModule, NzToolTipModule, NzBadgeModule, NzInputModule, NodeExecResultDialogComponent, AiPermissionRequestCardComponent, AiCacheSyncRequestCardComponent, AiStructuredMessageComponent, AiPlanProposalCardComponent, AiDiagramRendererComponent, AiInlineImageComponent, AiInlineFileComponent, AiCanvasHtmlComponent, AiWidgetActionsComponent, AiAgentReportCardComponent],
+  imports: [CommonModule, FormsModule, NzButtonModule, NzIconModule, NzTagModule, NzToolTipModule, NzBadgeModule, NzInputModule, NodeExecResultDialogComponent, AiPermissionRequestCardComponent, AiCacheSyncRequestCardComponent, AiStructuredMessageComponent, AiPlanProposalCardComponent, AiDiagramRendererComponent, AiInlineImageComponent, AiInlineFileComponent, AiTodoListComponent, AiCanvasHtmlComponent, AiWidgetActionsComponent, AiAgentReportCardComponent, AiAgentBadgeComponent],
   template: `
     <div class="ai-msg" [class.user]="msg.role === 'user'" [class.assistant]="msg.role === 'assistant'" [class.compact]="compact">
       <div class="avatar" *ngIf="!compact">
@@ -202,17 +205,29 @@ interface ProcessedSegment {
           <div *ngSwitchCase="'file_inline'" class="widget-bubble widget-wrap">
             <ai-inline-file [data]="msg.metadata!.fileInline!"></ai-inline-file>
           </div>
+          <div *ngSwitchCase="'todo_list'" class="widget-bubble widget-wrap">
+            <ai-todo-list [data]="msg.metadata!['todoList']!"></ai-todo-list>
+          </div>
           <div *ngSwitchCase="'canvas_html'" class="canvas-html-bubble widget-bubble widget-wrap">
             <ai-canvas-html [data]="msg.metadata!['canvasHtml']!"></ai-canvas-html>
           </div>
-          <div *ngSwitchCase="'agent_report'" class="widget-bubble widget-wrap">
-            <ai-agent-report-card [report]="msg.metadata!.agentReport!"></ai-agent-report-card>
+          <!-- agent_report masqué s'il est déjà référencé par un todo_list du thread
+               (évite le doublon : une fois dans la todo, une fois en bas du chat) -->
+          <div *ngSwitchCase="'agent_report'" class="widget-bubble widget-wrap"
+               [class.report-absorbed]="isReportAbsorbedByTodo(msg)">
+            <ai-agent-report-card *ngIf="!isReportAbsorbedByTodo(msg)" [report]="msg.metadata!.agentReport!"></ai-agent-report-card>
           </div>
           <div *ngSwitchCase="'system_hint'" class="system-hint-hidden"></div>
-          <div *ngSwitchCase="'comment'" class="comment-msg">
-            <nz-tag nzColor="purple">
-              <span nz-icon nzType="comment" nzTheme="outline"></span> Commentaire
-            </nz-tag>
+          <div *ngSwitchCase="'comment'" class="comment-msg" [class.subagent-ping]="isSubagentComment(msg)">
+            <div class="comment-head" *ngIf="isSubagentComment(msg); else regularComment">
+              <ai-agent-badge [agent]="subagentCommentAgent(msg)" [compact]="true"></ai-agent-badge>
+              <span class="comment-label">a un message pour toi</span>
+            </div>
+            <ng-template #regularComment>
+              <nz-tag nzColor="purple">
+                <span nz-icon nzType="comment" nzTheme="outline"></span> Commentaire
+              </nz-tag>
+            </ng-template>
             <div class="comment-content" [innerHTML]="renderMarkdown(msg.content)"></div>
           </div>
         </ng-container>
@@ -260,16 +275,37 @@ interface ProcessedSegment {
                  [innerHTML]="renderMarkdown(ps.content)"></div>
             <!-- Reasoning block: optional text + collapsible tool summary -->
             <div class="reasoning-block" *ngIf="ps.type === 'reasoning'">
-              <div class="reasoning-header" *ngIf="ps.reasoningText">
+              <div class="reasoning-header" *ngIf="ps.reasoningText"
+                   (click)="toggleReasoningExpand(ps)"
+                   [class.clickable]="true">
                 <span nz-icon nzType="bulb" nzTheme="outline"></span>
                 <span>Raisonnement</span>
-              </div>
-              <div class="reasoning-text" *ngIf="ps.reasoningText" [innerHTML]="renderMarkdown(ps.reasoningText)"></div>
-              <div class="tool-summary" *ngIf="ps.toolCalls?.length">
-                <span class="summary-toggle" (click)="toggleToolExpand(ps)">
-                  <span nz-icon [nzType]="expandedTools.has(ps) ? 'down' : 'right'" nzTheme="outline"></span>
-                  {{ ps.toolCalls!.length }} outil{{ ps.toolCalls!.length > 1 ? 's' : '' }} exécuté{{ ps.toolCalls!.length > 1 ? 's' : '' }}
+                <span class="reasoning-preview" *ngIf="!isReasoningExpanded(ps)">— {{ reasoningPreview(ps) }}</span>
+                <span class="reasoning-chev">
+                  <span nz-icon [nzType]="isReasoningExpanded(ps) ? 'up' : 'down'" nzTheme="outline"></span>
                 </span>
+              </div>
+              <div class="reasoning-text"
+                   *ngIf="ps.reasoningText && isReasoningExpanded(ps)"
+                   [innerHTML]="renderMarkdown(ps.reasoningText)"></div>
+              <div class="tool-summary" *ngIf="ps.toolCalls?.length">
+                <!-- Summary textuel affiché quand 2+ groupes OU quand expanded (pour re-close) -->
+                <span class="summary-toggle"
+                      *ngIf="groupedToolCalls(ps.toolCalls!).length > 1 || expandedTools.has(ps)"
+                      (click)="toggleToolExpand(ps)">
+                  <span nz-icon [nzType]="expandedTools.has(ps) ? 'down' : 'right'" nzTheme="outline"></span>
+                  {{ toolGroupSummary(ps.toolCalls!) }}
+                </span>
+                <!-- Pills visibles UNIQUEMENT quand collapsed (quand expand, on voit le détail en dessous) -->
+                <div class="tool-groups" *ngIf="!expandedTools.has(ps)">
+                  <span class="tool-group-pill" *ngFor="let g of groupedToolCalls(ps.toolCalls!); trackBy: trackToolGroup"
+                        [class.group-err]="g.hasError"
+                        (click)="toggleToolExpand(ps)">
+                    <span nz-icon [nzType]="g.icon" nzTheme="outline"></span>
+                    <span *ngIf="g.count > 1" class="group-count">×{{ g.count }}</span>
+                    <span class="group-label">{{ g.label }}</span>
+                  </span>
+                </div>
                 <div class="tool-list" *ngIf="expandedTools.has(ps)">
                   <div *ngFor="let tc of ps.toolCalls" class="tool-item-wrap">
                     <div class="tool-list-item"
@@ -308,10 +344,21 @@ interface ProcessedSegment {
           <div class="content" *ngIf="msg.content" [innerHTML]="renderMarkdown(msg.content)"></div>
           <div class="reasoning-block" *ngIf="msg.toolCalls?.length">
             <div class="tool-summary">
-              <span class="summary-toggle" (click)="toggleToolExpand(msg)">
+              <span class="summary-toggle"
+                    *ngIf="groupedToolCalls(msg.toolCalls!).length > 1 || expandedTools.has(msg)"
+                    (click)="toggleToolExpand(msg)">
                 <span nz-icon [nzType]="expandedTools.has(msg) ? 'down' : 'right'" nzTheme="outline"></span>
-                {{ msg.toolCalls!.length }} outil{{ msg.toolCalls!.length > 1 ? 's' : '' }} exécuté{{ msg.toolCalls!.length > 1 ? 's' : '' }}
+                {{ toolGroupSummary(msg.toolCalls!) }}
               </span>
+              <div class="tool-groups" *ngIf="!expandedTools.has(msg)">
+                <span class="tool-group-pill" *ngFor="let g of groupedToolCalls(msg.toolCalls!); trackBy: trackToolGroup"
+                      [class.group-err]="g.hasError"
+                      (click)="toggleToolExpand(msg)">
+                  <span nz-icon [nzType]="g.icon" nzTheme="outline"></span>
+                  <span *ngIf="g.count > 1" class="group-count">×{{ g.count }}</span>
+                  <span class="group-label">{{ g.label }}</span>
+                </span>
+              </div>
               <div class="tool-list" *ngIf="expandedTools.has(msg)">
                 <div *ngFor="let tc of msg.toolCalls" class="tool-item-wrap">
                   <div class="tool-list-item"
@@ -443,6 +490,40 @@ interface ProcessedSegment {
     .content ::ng-deep tr:nth-child(even) { background: #fafafa; }
     .reasoning-block { border-left: 3px solid #d9d9d9; padding: 6px 12px; margin: 4px 0; border-radius: 0 8px 8px 0; opacity: 0.85; max-width: 85%; min-width: 0; overflow: hidden; }
     .reasoning-header { display: flex; align-items: center; gap: 4px; font-size: 11px; color: #999; margin-bottom: 4px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.3px; }
+    .reasoning-header.clickable { cursor: pointer; user-select: none; transition: color .12s; }
+    .reasoning-header.clickable:hover { color: #e61982; }
+    .reasoning-preview { text-transform: none; letter-spacing: 0; font-weight: 400; color: #8c8c8c; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; max-width: 480px; }
+    .reasoning-chev { margin-left: auto; font-size: 10px; color: #bfbfbf; }
+    .reasoning-header.clickable:hover .reasoning-chev { color: #e61982; }
+
+    /* Groupes de tools consécutifs (style Claude Code : pills horizontales) */
+    .tool-groups {
+      display: flex; flex-wrap: wrap; gap: 4px;
+      margin-top: 4px;
+    }
+    .tool-group-pill {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 2px 8px;
+      background: #fafafa; border: 1px solid #f0f0f0;
+      border-radius: 10px;
+      font-size: 11px; color: #595959;
+      cursor: pointer;
+      transition: all .15s;
+      line-height: 1.5;
+    }
+    .tool-group-pill:hover {
+      background: #fff5fa; border-color: #ffd6e7; color: #e61982;
+    }
+    .tool-group-pill.active { background: #fff5fa; border-color: #e61982; color: #e61982; }
+    .tool-group-pill.active [nz-icon] { color: #e61982; }
+    .tool-group-pill.active .group-count { color: #e61982; }
+    .tool-group-pill.group-err { background: #fff2f0; border-color: #ffccc7; color: #cf1322; }
+    .tool-group-pill [nz-icon] { font-size: 11px; color: #8c8c8c; }
+    .tool-group-pill:hover [nz-icon] { color: #e61982; }
+    .tool-group-pill.group-err [nz-icon] { color: #cf1322; }
+    .tool-group-pill .group-count { font-weight: 700; color: #262626; font-variant-numeric: tabular-nums; }
+    .tool-group-pill.group-err .group-count { color: #cf1322; }
+    .tool-group-pill .group-label { opacity: 0.85; }
     .reasoning-text { font-size: 12px; color: #666; line-height: 1.6; margin-bottom: 6px; word-break: break-word; overflow: hidden; }
     .reasoning-text ::ng-deep p { margin: 0 0 4px; }
     .reasoning-text ::ng-deep p:last-child { margin: 0; }
@@ -494,12 +575,44 @@ interface ProcessedSegment {
     .edit-hint { font-size: 11px; color: #8c8c8c; font-style: italic; }
     .aq-text { font-size: 12px; color: #666; margin-bottom: 6px; }
     .aq-options { display: flex; flex-wrap: wrap; gap: 4px; }
-    .msg-actions { display: flex; justify-content: flex-end; gap: 2px; margin-top: 4px; opacity: 0; transition: opacity .15s; }
-    .ai-msg:hover .msg-actions, .msg-actions:has(.msg-action-bulb) { opacity: 1; }
-    .msg-action-btn { color: #999; padding: 0 6px; height: 24px; min-width: 24px; }
-    .msg-action-btn:hover { color: #1890ff; background: rgba(24,144,255,0.08); }
+    /* Actions à DROITE du message (pas en-dessous) : absolute alignée verticalement
+       sur le haut du message, visible au hover. Ne prend plus de hauteur verticale. */
+    :host { position: relative; }
+    .msg-actions {
+      position: absolute;
+      top: 4px;
+      right: -4px;
+      transform: translateX(100%);
+      display: flex; flex-direction: column; gap: 2px;
+      opacity: 0;
+      transition: opacity .15s;
+      z-index: 5;
+      pointer-events: none;
+    }
+    :host(:hover) .msg-actions,
+    .msg-actions:has(.msg-action-bulb) {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .msg-action-btn {
+      color: #bfbfbf;
+      width: 26px; height: 26px; padding: 0 !important;
+      border-radius: 6px !important;
+      background: transparent;
+    }
+    .msg-action-btn:hover { color: #e61982; background: rgba(230,25,130,0.08) !important; }
     .msg-action-bulb { color: #faad14; }
-    .msg-action-bulb:hover { color: #d48806; background: rgba(250,173,20,0.1); }
+    .msg-action-bulb:hover { color: #d48806; background: rgba(250,173,20,0.1) !important; }
+    /* Sur petit écran : repasse en row sous le msg pour éviter overflow horizontal */
+    @media (max-width: 720px) {
+      .msg-actions {
+        position: static;
+        transform: none;
+        flex-direction: row;
+        justify-content: flex-end;
+        margin-top: 4px;
+      }
+    }
     .aq-chip { display: inline-flex; align-items: center; gap: 3px; font-size: 12px; padding: 2px 10px; border-radius: 12px; background: #f0f0f0; color: #999; }
     .aq-chip.selected { background: #e6f4ff; color: #e61982; border: 1px solid #91caff; font-weight: 500; }
     .aq-check { font-size: 10px; }
@@ -519,6 +632,25 @@ interface ProcessedSegment {
     .comment-msg { background: #faf5ff; border-left: 3px solid #722ed1; border-radius: 0 8px 8px 0; padding: 8px 12px; margin: 4px 0; max-width: 85%; }
     .comment-msg .comment-content { margin-top: 4px; font-size: 13px; color: #333; line-height: 1.5; }
     .comment-msg nz-tag { margin-bottom: 4px; }
+    /* Message venant d'un subagent → charte rose + animation d'arrivée */
+    .comment-msg.subagent-ping {
+      background: #fff5fa;
+      border-left-color: #e61982;
+      border-radius: 10px;
+      animation: pingIn 300ms cubic-bezier(.2,.8,.2,1);
+    }
+    @keyframes pingIn {
+      from { opacity: 0; transform: translateY(6px) scale(.98); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .comment-msg.subagent-ping .comment-head {
+      display: flex; align-items: center; gap: 6px;
+      margin-bottom: 6px;
+      font-size: 11px;
+    }
+    .comment-msg.subagent-ping .comment-label { color: #8c8c8c; font-weight: 500; }
+    /* Bubble absorbée par une todo : pas de place visuelle dans le chat */
+    .widget-bubble.report-absorbed { display: none; }
     .system-hint {
       display: flex; align-items: flex-start; gap: 10px;
       background: #fffbe6; border: 1px solid #ffe58f; border-radius: 10px;
@@ -612,7 +744,7 @@ export class AiMessageComponent {
   showActions(): boolean {
     // Pas d'actions sur les widgets (ils ont leur propre barre) ni sur les reports
     const kind = (this.msg.metadata as any)?.kind;
-    if (kind && ['structured', 'plan_proposal', 'diagram', 'image_inline', 'file_inline', 'canvas_html', 'agent_report', 'comment'].includes(kind)) {
+    if (kind && ['structured', 'plan_proposal', 'diagram', 'image_inline', 'file_inline', 'todo_list', 'canvas_html', 'agent_report', 'comment'].includes(kind)) {
       return false;
     }
     return !!this.msg.content;
@@ -945,6 +1077,117 @@ export class AiMessageComponent {
     return result;
   }
 
+  /** Détecte si un message 'comment' vient d'un subagent (via send_message_to_agent to:'user') */
+  isSubagentComment(msg: any): boolean {
+    const extra = msg?.metadata?.['extra'];
+    return !!(extra?.fromSubagent);
+  }
+
+  /** Le rapport subagent est-il déjà référencé par un session-todos du thread ?
+   *  Si oui, on le masque de la chat principale (il est rendu DANS la todo). */
+  isReportAbsorbedByTodo(msg: any): boolean {
+    const jobId = msg?.metadata?.agentReport?.jobId;
+    if (!jobId) return false;
+    const allMessages = this.ai.messages();
+    for (const m of allMessages) {
+      if (m.metadata?.kind !== 'todo_list') continue;
+      const todos = (m.metadata as any)?.todoList?.todos || [];
+      for (const item of todos) {
+        const tcs = item?.toolCalls || [];
+        if (tcs.some((tc: any) => tc?.spawnedJobId === jobId)) return true;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Groupe les tool calls consécutifs de même nom en pills compactes.
+   * Ex: [web_search, web_search, web_search, web_fetch] → [{name:web_search, count:3}, {name:web_fetch, count:1}]
+   */
+  groupedToolCalls(tools: AiToolCall[]): Array<{name: string; count: number; label: string; icon: string; hasError: boolean}> {
+    if (!tools?.length) return [];
+    const groups: Array<{name: string; count: number; label: string; icon: string; hasError: boolean}> = [];
+    let current: any = null;
+    for (const tc of tools) {
+      const name = tc.name;
+      if (current && current.name === name) {
+        current.count++;
+        if (tc.status === 'error') current.hasError = true;
+      } else {
+        current = {
+          name,
+          count: 1,
+          label: this.toolLabel(name),
+          icon: this.iconForTool(name),
+          hasError: tc.status === 'error',
+        };
+        groups.push(current);
+      }
+    }
+    return groups;
+  }
+
+  trackToolGroup(i: number, g: any): string { return g.name + ':' + i; }
+
+  toolGroupSummary(tools: AiToolCall[]): string {
+    const groups = this.groupedToolCalls(tools);
+    if (!groups.length) return '0 outil';
+    if (groups.length === 1) {
+      const g = groups[0];
+      return g.count > 1 ? `${g.count} × ${g.label}` : g.label;
+    }
+    return `${tools.length} actions · ${groups.length} outils différents`;
+  }
+
+  iconForTool(name: string): string {
+    const map: Record<string, string> = {
+      web_search: 'search', web_fetch: 'global', research_deep: 'experiment', web_download: 'cloud-download',
+      execute_code: 'code', install_package: 'appstore-add',
+      project_read_file: 'file-text', project_read_batch: 'file-text', project_write_file: 'edit',
+      project_list_dir: 'folder', project_tree: 'apartment', project_grep: 'file-search',
+      project_search: 'search', project_delete: 'delete', project_move: 'drag',
+      project_create_folder: 'folder-add', project_stage_for_sandbox: 'container',
+      spawn_subagent: 'team', send_message_to_agent: 'message',
+      display_image: 'picture', display_file: 'file-done',
+      render_interactive_canvas: 'layout', render_structured: 'table',
+      generate_diagram: 'partition', generate_document: 'file-word',
+      ask_user: 'question-circle', propose_plan: 'compass',
+      todo_write: 'unordered-list',
+      save_memory: 'save', get_memory: 'database',
+      set_project_knowledge: 'book', get_project_knowledge: 'book',
+      skill_list: 'appstore', skill_get: 'appstore', skill_execute: 'thunderbolt',
+      execute_tool: 'play-circle', search_tools: 'search',
+    };
+    return map[name] || 'api';
+  }
+
+  /** Reasoning collapse : collapsed par défaut, click pour expand */
+  expandedReasonings = new WeakSet<object>();
+  isReasoningExpanded(ps: any): boolean {
+    return this.expandedReasonings.has(ps);
+  }
+  toggleReasoningExpand(ps: any): void {
+    if (this.expandedReasonings.has(ps)) this.expandedReasonings.delete(ps);
+    else this.expandedReasonings.add(ps);
+  }
+  /** 80 premiers chars du reasoning en preview dans le header collapsed */
+  reasoningPreview(ps: any): string {
+    const txt = String(ps?.reasoningText || '').replace(/\s+/g, ' ').trim();
+    return txt.length > 90 ? txt.slice(0, 90) + '…' : txt;
+  }
+
+  /** Extrait les infos roster pour afficher le badge d'un comment venu d'un subagent */
+  subagentCommentAgent(msg: any) {
+    const extra = msg?.metadata?.['extra'] || {};
+    return {
+      subagentType: extra.subagentType,
+      agentName: extra.agentName,
+      agentEmoji: extra.agentEmoji,
+      agentColor: extra.agentColor,
+      agentFigure: extra.agentFigure,
+    };
+  }
+
   renderMarkdown(src: string): string {
     try {
       const html = marked.parse(String(src || ''), { breaks: true, gfm: true }) as string;
@@ -965,6 +1208,21 @@ export class AiMessageComponent {
   toolDisplayName(tc: AiToolCall): string {
     if (tc.displayTitle) return tc.displayTitle;
     if (tc.name === 'execute_tool' && tc.args?.key) return tc.args.key;
+    // spawn_subagent → affiche le prénom du roster au lieu de "Sous-agent" générique
+    if (tc.name === 'spawn_subagent' && tc.args?.subagent_type) {
+      const profile = resolveAgentProfile({ subagentType: tc.args.subagent_type });
+      if (profile) return `Lance ${profile.emoji} ${profile.name}`;
+    }
+    if (tc.name === 'send_message_to_agent') {
+      const to = tc.args?.to;
+      if (to === 'user') return '💬 Message à l\'utilisateur';
+      if (to === 'parent') return '💬 Message au parent';
+      if (to) {
+        const p = resolveAgentProfile({ subagentType: typeof to === 'string' ? to.toLowerCase() : undefined });
+        if (p) return `💬 Message à ${p.emoji} ${p.name}`;
+        return `💬 Message à ${to}`;
+      }
+    }
     const label = this.toolLabel(tc.name);
     const extra = this.toolExtra(tc);
     return extra ? `${label} — ${extra}` : label;

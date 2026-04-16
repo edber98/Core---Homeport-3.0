@@ -13,8 +13,51 @@ const { runSkill, SKILL_BUNDLE } = require('../skills/skill-runner');
 const DOCUMENT_TOOL_DEFINITIONS = [
   {
     name: 'generate_document',
-    description:
-      "Génère un document (.docx, .pptx, .xlsx ou .html) à partir d'un spec JSON structuré et l'enregistre dans le file-storage. Retourne le fileId et une preview sommaire.",
+    description: `Génère un document .docx/.pptx/.xlsx/.html depuis un spec JSON. Le paramètre **spec est OBLIGATOIRE** — sans lui, erreur \`missing_spec\`.
+
+🔴 IMPORTANT : pour les documents complexes (mise en page, styles custom, charte graphique), PRÉFÈRE \`execute_code\` avec python-docx/openpyxl/pptxgenjs — bien plus souple que ce tool. Ce tool est surtout utile pour des livrables simples et rapides.
+
+📋 FORMAT DU SPEC (obligatoire)
+\`\`\`
+// docx
+spec: {
+  paragraphs: [
+    { heading: 1, text: "Titre principal" },
+    { heading: 2, text: "Sous-titre" },
+    { text: "Paragraphe normal avec contenu." },
+    { text: "Texte en gras", bold: true },
+    { bullets: ["point 1", "point 2"] },
+    { table: {
+        headers: ["Col1", "Col2"],
+        rows: [["a1","b1"], ["a2","b2"]]
+    }}
+  ]
+}
+
+// xlsx
+spec: {
+  sheets: [
+    { name: "Data", headers: ["Nom","Site"], rows: [["n8n","https://n8n.io"],...] }
+  ]
+}
+
+// pptx
+spec: {
+  slides: [
+    { title: "Slide 1", bullets: ["point a","point b"] },
+    { title: "Image", image: { fileId: "fx_xxx" } }
+  ]
+}
+
+// html
+spec: {
+  pages: [
+    { name: "index.html", title: "Accueil", content: "<h1>...</h1>" }
+  ]
+}
+\`\`\`
+
+🚫 NE JAMAIS appeler ce tool sans fournir spec complet. Si tu n'as pas la structure, utilise plutôt execute_code.`,
     parameters: {
       type: 'object',
       properties: {
@@ -30,7 +73,7 @@ const DOCUMENT_TOOL_DEFINITIONS = [
         spec: {
           type: 'object',
           description:
-            "Spec JSON structuré (voir skills-bundle/README.md pour le format par format : paragraphs/headings/tables pour docx, slides pour pptx, sheets pour xlsx, html/pages pour html).",
+            "OBLIGATOIRE. Structure JSON du document. Voir description du tool pour les schémas par format (paragraphs pour docx, sheets pour xlsx, slides pour pptx, pages pour html). Ne JAMAIS omettre ce paramètre.",
         },
         inputFiles: {
           type: 'array',
@@ -256,7 +299,19 @@ function createDocumentExecutor(metadata = {}, emit) {
       return { success: false, error: 'missing_title' };
     }
     if (!spec || typeof spec !== 'object') {
-      return { success: false, error: 'missing_spec' };
+      return {
+        success: false,
+        error: 'missing_spec',
+        message: `Le paramètre 'spec' est OBLIGATOIRE pour generate_document. Exemple minimal pour ${format} :\n` +
+          (format === 'docx'
+            ? `spec: { paragraphs: [{ heading: 1, text: "Titre" }, { text: "Paragraphe..." }] }`
+            : format === 'xlsx'
+              ? `spec: { sheets: [{ name: "Data", headers: ["Col1","Col2"], rows: [["a","b"]] }] }`
+              : format === 'pptx'
+                ? `spec: { slides: [{ title: "Slide 1", bullets: ["a","b"] }] }`
+                : `spec: { pages: [{ name: "index.html", title: "Accueil", content: "<h1>...</h1>" }] }`) +
+          `\n\n💡 ALTERNATIVE : pour plus de contrôle (mise en page, charte graphique), utilise execute_code avec ${format === 'docx' ? 'python-docx' : format === 'xlsx' ? 'openpyxl' : format === 'pptx' ? 'pptxgenjs' : 'HTML/CSS custom'} directement.`,
+      };
     }
 
     const skillKey = FORMAT_TO_SKILL[format];

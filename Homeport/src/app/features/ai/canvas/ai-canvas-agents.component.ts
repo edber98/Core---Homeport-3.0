@@ -346,10 +346,14 @@ export class AiCanvasAgentsComponent implements OnInit, OnDestroy {
   sendChat(node: AgentNode): void {
     const msg = this.chatDraft.trim();
     if (!msg || !node.jobId || this.sending()) return;
+    const displayName = node.agentName
+      || resolveAgentProfile({ subagentType: node.subagentType })?.name
+      || node.subagentType
+      || 'ce sous-agent';
     this.sending.set(true);
     this.ai.sendMessageToAgent(node.jobId, msg, msg.slice(0, 60)).subscribe({
       next: () => {
-        this.nzMsg.success(`Message délivré à ${node.agentName || node.subagentType}`);
+        this.nzMsg.success(`Message délivré à ${displayName}`);
         this.chatDraft = '';
         this.chatOpen.set(null);
         this.sending.set(false);

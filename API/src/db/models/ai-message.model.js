@@ -176,8 +176,38 @@ const FileInlineSchema = new Schema({
   kind: { type: String, enum: ['docx', 'xlsx', 'pptx', 'pdf', 'other'] },
 }, { _id: false });
 
+// ── Todo list (tool todo_write — inspiré de claude-code TodoWriteTool) ──
+const TodoToolCallSchema = new Schema({
+  name: { type: String, required: true },
+  status: { type: String, enum: ['success', 'error', 'running'], default: 'success' },
+  duration: { type: Number },
+  argsSummary: { type: String },     // 1 ligne résumant les args (query, path, etc.)
+  // Pour spawn_subagent : infos agent pour afficher le badge
+  agentName: { type: String },
+  agentEmoji: { type: String },
+  agentColor: { type: String },
+  subagentType: { type: String },
+  spawnedJobId: { type: String },     // jobId retourné par spawn_subagent (lie au rapport agent_report)
+  at: { type: Date, default: Date.now },
+}, { _id: false });
+
+const TodoItemSchema = new Schema({
+  id: { type: String, required: true },
+  content: { type: String, required: true },      // description complète
+  activeForm: { type: String },                    // forme active ("Analyzing…")
+  status: { type: String, enum: ['pending', 'in_progress', 'completed', 'cancelled'], default: 'pending' },
+  toolCalls: { type: [TodoToolCallSchema], default: undefined },
+}, { _id: false });
+
+const TodoListSchema = new Schema({
+  todos: { type: [TodoItemSchema], default: [] },
+  title: { type: String },
+  updatedAt: { type: Date, default: Date.now },
+}, { _id: false });
+
 const MessageMetadataSchema = new Schema({
-  kind: { type: String, enum: ['permission_request', 'cache_sync_request', 'comment', 'system_note', 'system_hint', 'structured', 'plan_proposal', 'diagram', 'image_inline', 'agent_report', 'canvas_html', 'file_inline'] },
+  kind: { type: String, enum: ['permission_request', 'cache_sync_request', 'comment', 'system_note', 'system_hint', 'structured', 'plan_proposal', 'diagram', 'image_inline', 'agent_report', 'canvas_html', 'file_inline', 'todo_list'] },
+  todoList: { type: TodoListSchema, default: undefined },
   permissionRequest: { type: PermissionRequestSchema, default: undefined },
   cacheSyncRequest: { type: CacheSyncRequestSchema, default: undefined },
   structured: { type: StructuredPayloadSchema, default: undefined },

@@ -254,7 +254,7 @@ export interface AiMessage {
   cancelled?: boolean;
   createdAt?: string;
   metadata?: {
-    kind?: 'permission_request' | 'cache_sync_request' | 'comment' | 'system_hint' | 'structured' | 'plan_proposal' | 'diagram' | 'image_inline' | 'agent_report' | 'canvas_html' | 'file_inline';
+    kind?: 'permission_request' | 'cache_sync_request' | 'comment' | 'system_hint' | 'structured' | 'plan_proposal' | 'diagram' | 'image_inline' | 'agent_report' | 'canvas_html' | 'file_inline' | 'todo_list';
     canvasHtml?: { html: string; title?: string | null; description?: string | null; height?: number; type?: '2d' | '3d' | 'animation' | 'demo' };
     permissionRequest?: AiPermissionRequest;
     cacheSyncRequest?: AiCacheSyncRequest;
@@ -263,7 +263,10 @@ export interface AiMessage {
     diagram?: AiDiagramPayload;
     imageInline?: AiInlineImagePayload;
     fileInline?: AiInlineFilePayload;
+    todoList?: { todos: Array<{ id: string; content: string; activeForm?: string; status: 'pending' | 'in_progress' | 'completed' | 'cancelled' }>; title?: string; updatedAt?: string | Date };
     agentReport?: AgentReport;
+    widgetId?: string;
+    widgetUpdatedAt?: string | Date;
     jobId?: string;
     [k: string]: any;
   };
@@ -443,6 +446,8 @@ export class AiService {
   messages = signal<AiMessage[]>([]);
   streaming = signal(false);
   pendingQuestion = signal<AiQuestion | null>(null);
+  /** Texte assistant qui précède la question (contexte affiché au-dessus de la question pinnée). */
+  pendingQuestionContext = signal<string | null>(null);
   /** Si la question vient d'un subagent → bridge la réponse vers son parent. */
   private _pendingSubagentBridge: { requestId: string; parentJobId: string } | null = null;
   pageContext = signal<AiPageContext>({ page: 'other' });
@@ -453,6 +458,11 @@ export class AiService {
   canvasState = signal<AiCanvasState | null>(null);
   canvasOpen = signal<boolean>(false);
   canvasPinned = signal<boolean>(false);
+  /** Subagents actifs (running / waiting_*) — pour indicator live dans le chat */
+  activeSubagents = computed(() => {
+    const tasks = (this.canvasState()?.tasks || []) as any[];
+    return tasks.filter(t => t.jobId && ['running', 'queued', 'waiting_dependency', 'waiting_permission', 'paused'].includes(t.status));
+  });
   preferences = signal<AiUserPreferences | null>(null);
   presence = signal<Array<{ userId: string; name?: string; avatar?: string }>>([]);
 
@@ -530,7 +540,7 @@ export class AiService {
     const thread = await this.api.post<AiThread>('/api/ai/threads', body, { workspaceId: this.wsId() }).toPromise();
     this.currentThread.set(thread!);
     this.messages.set([]);
-    this.pendingQuestion.set(null);
+    this.pendingQuestion.set(null); this.pendingQuestionContext.set(null);
     // Ouvre le stream live pour recevoir les events subagents en temps réel
     this.openThreadLiveStream(thread?.id || thread?._id || '');
     return thread!;
@@ -539,11 +549,18 @@ export class AiService {
   /** Recharge silencieusement les messages du thread courant (utilisé après render_structured etc.) */
   async reloadThreadMessages() {
     const t = this.currentThread();
-    if (!t?.id && !t?._id) return;
+    console.log('[reload] entry, currentThread=', t?.id || t?._id || 'NULL');
+    if (!t?.id && !t?._id) { console.warn('[reload] SKIP — no current thread'); return; }
     const threadId = t.id || t._id;
     try {
+      console.log(`[reload] fetching /api/ai/threads/${threadId}...`);
       const data = await this.api.get<any>(`/api/ai/threads/${threadId}`, { workspaceId: this.wsId() }).toPromise();
       const msgs = data?.messages || [];
+      const kinds = msgs.map((m: any) => m.metadata?.kind).filter(Boolean);
+      console.log(`[reload] ✓ thread ${threadId} : ${msgs.length} messages, kinds=[${kinds.join(',')}]`);
+      const todoMsg = msgs.find((m: any) => m.metadata?.kind === 'todo_list');
+      if (todoMsg) console.log('[reload] ✓ todo_list found:', todoMsg.metadata?.todoList);
+      else console.warn('[reload] ✗ no todo_list in reloaded messages');
       if (data?.messages) this.messages.set(msgs);
 
       // Restaure la pendingQuestion en live : sinon quand un sous-agent crée
@@ -567,14 +584,16 @@ export class AiService {
       }
       if (!restored && this.pendingQuestion()) {
         // La dernière question a été répondue / le subagent a repris → clear
-        this.pendingQuestion.set(null);
+        this.pendingQuestion.set(null); this.pendingQuestionContext.set(null);
         this._pendingSubagentBridge = null;
       }
 
       // Refresh pending count (au cas où le memory_extractor a créé des entries
       // sans que l'event memory.pending.update soit encore arrivé).
       if (t.mode === 'project') this.refreshPendingKnowledgeCount(threadId);
-    } catch {}
+    } catch (e: any) {
+      console.error('[reload] FETCH ERROR:', e?.message || e, e?.status);
+    }
   }
 
   async loadThread(threadId: string) {
@@ -652,7 +671,7 @@ export class AiService {
     try { this._activeSendAbort?.abort(); } catch {}
 
     this.streaming.set(true);
-    this.pendingQuestion.set(null);
+    this.pendingQuestion.set(null); this.pendingQuestionContext.set(null);
 
     // Add user message to local state immediately
     const userMsg: AiMessage = { threadId: thread._id, role: 'user', content, attachments, answer };
@@ -802,6 +821,10 @@ export class AiService {
                 options: (event as any).options,
                 questions: (event as any).questions,
               });
+              // Stocke le texte assistant accumulé avant la question pour
+              // l'afficher au-dessus de la card question pinnée (contexte user).
+              const ctx = (assistantText || '').trim();
+              this.pendingQuestionContext.set(ctx || null);
             }
             if ((event as any).type === 'thread.title') {
               const cur = this.currentThread();
@@ -844,8 +867,12 @@ export class AiService {
               }
             }
             if (evType === 'ai.message.created') {
-              // Un AiMessage (ex: agent_report) a été créé côté back — recharge
-              // silencieusement les messages du thread courant pour l'afficher.
+              console.log('[ai-stream] ai.message.created received', (event as any).kind);
+              this.sideEvents$.next(event as any);
+              this.reloadThreadMessages().catch?.(() => {});
+            }
+            if (evType === 'ai.message.updated') {
+              console.log('[ai-stream] ai.message.updated received', (event as any).kind);
               this.sideEvents$.next(event as any);
               this.reloadThreadMessages().catch?.(() => {});
             }
@@ -935,7 +962,7 @@ export class AiService {
   answerQuestion(value: any) {
     const q = this.pendingQuestion();
     if (!q) return;
-    this.pendingQuestion.set(null);
+    this.pendingQuestion.set(null); this.pendingQuestionContext.set(null);
     // Build visible content from answer
     let content = '';
     if (value.text) content = value.text;
@@ -967,7 +994,7 @@ export class AiService {
 
   // ── Action answer (e.g. credential created) ──
   answerAction(actionType: string, result: any) {
-    this.pendingQuestion.set(null);
+    this.pendingQuestion.set(null); this.pendingQuestionContext.set(null);
     return this.sendMessage('', { actionType, result });
   }
 
@@ -1263,7 +1290,7 @@ export class AiService {
     // No linked thread found or preference is 'never' — open fresh
     this.currentThread.set(null);
     this.messages.set([]);
-    this.pendingQuestion.set(null);
+    this.pendingQuestion.set(null); this.pendingQuestionContext.set(null);
     this.drawerOpen.set(true);
   }
 
@@ -1570,16 +1597,23 @@ export class AiService {
     this._threadStreamCtrl = undefined;
     this._threadStreamId = threadId;
 
-    const ctrl = new AbortController();
-    this._threadStreamCtrl = ctrl;
-    const url = this.buildFetchUrl(`/api/ai/threads/${threadId}/stream?workspaceId=${encodeURIComponent(this.wsId())}`);
-    (async () => {
+    // Boucle de reconnexion : si le serveur ferme la connexion (timeout,
+    // redémarrage, etc.) sans que l'user ait explicitement quitté le thread,
+    // on reconnecte automatiquement avec backoff. Sans ça, les events live
+    // (todo_write, ai.message.updated) ne remontent plus et il faut refresh
+    // la page pour les voir.
+    const attemptConnect = async (retryDelay: number): Promise<void> => {
+      // Abandonné si user a changé de thread entretemps
+      if (this._threadStreamId !== threadId) return;
+      const ctrl = new AbortController();
+      this._threadStreamCtrl = ctrl;
+      const url = this.buildFetchUrl(`/api/ai/threads/${threadId}/stream?workspaceId=${encodeURIComponent(this.wsId())}`);
       try {
         const res = await fetch(url, {
           headers: { Authorization: `Bearer ${this.auth.token || ''}` },
           signal: ctrl.signal,
         });
-        if (!res.ok || !res.body) return;
+        if (!res.ok || !res.body) throw new Error(`stream HTTP ${res.status}`);
         const reader = res.body.getReader();
         const decoder = new TextDecoder();
         let buffer = '';
@@ -1598,8 +1632,21 @@ export class AiService {
             } catch {}
           }
         }
-      } catch { /* aborted or network error — silent */ }
-    })();
+        // Le serveur a fermé proprement (done=true) → on reconnecte rapidement
+        if (this._threadStreamId === threadId && !ctrl.signal.aborted) {
+          setTimeout(() => attemptConnect(1000), 500);
+        }
+      } catch (e: any) {
+        // AbortError = user a changé de thread/quitté → on arrête
+        if (ctrl.signal.aborted || e?.name === 'AbortError') return;
+        // Erreur réseau / HTTP → backoff exponentiel (1s → 2s → 4s → max 10s)
+        const next = Math.min(retryDelay * 2, 10_000);
+        if (this._threadStreamId === threadId) {
+          setTimeout(() => attemptConnect(next), retryDelay);
+        }
+      }
+    };
+    attemptConnect(1000);
   }
 
   /** Dispatch un event reçu du stream passif — ne dédoublonne pas avec POST /messages
@@ -1628,14 +1675,13 @@ export class AiService {
       return;
     }
     if (evType === 'ai.message.created') {
+      console.log('[passive-stream] ai.message.created received', ev.kind);
       this.sideEvents$.next(ev);
       this.reloadThreadMessages().catch?.(() => {});
       return;
     }
     if (evType === 'ai.message.updated') {
-      // Widget éditable : un tool (render_structured / display_file / canvas_html)
-      // a été rappelé avec le même widgetId → le backend a UPDATE la card au lieu
-      // de créer une nouvelle bulle. On reload pour récupérer la nouvelle metadata.
+      console.log('[passive-stream] ai.message.updated received', ev.kind);
       this.sideEvents$.next(ev);
       this.reloadThreadMessages().catch?.(() => {});
       return;

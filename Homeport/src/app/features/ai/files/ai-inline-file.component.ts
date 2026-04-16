@@ -1,10 +1,11 @@
-import { Component, Input, ChangeDetectionStrategy, inject, signal, computed, ElementRef, ViewChild, AfterViewInit, OnChanges, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy, inject, signal, computed, ElementRef, ViewChild, AfterViewInit, OnChanges, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { AiService, AiInlineFilePayload } from '../ai.service';
+import { AuthTokenService } from '../../../services/auth-token.service';
 
 @Component({
   selector: 'ai-inline-file',
@@ -46,14 +47,14 @@ import { AiService, AiInlineFilePayload } from '../ai.service';
           <span>Aperçu indisponible</span>
           <a [href]="downloadUrl()" target="_blank" download>Télécharger le fichier</a>
         </div>
+        <!-- Unique iframe blob URL pour TOUS les formats (docx/xlsx/pptx/pdf).
+             Le blob hérite de l'origine de la page, pas d'about:srcdoc →
+             plus de SecurityError Angular Router. -->
         <iframe
-          #frame
-          *ngIf="!errored()"
-          [src]="safeSrc()"
+          *ngIf="!errored() && safeSrcSig() as src"
+          [src]="src"
           (load)="onLoad()"
-          (error)="onError()"
           [title]="data.name || 'preview'"
-          sandbox="allow-scripts allow-same-origin allow-popups allow-downloads"
           loading="lazy"
         ></iframe>
       </div>
@@ -142,11 +143,12 @@ import { AiService, AiInlineFilePayload } from '../ai.service';
     }
   `],
 })
-export class AiInlineFileComponent implements AfterViewInit, OnChanges {
+export class AiInlineFileComponent implements AfterViewInit, OnChanges, OnDestroy {
   @Input() data!: AiInlineFilePayload;
   @ViewChild('frame') frameEl?: ElementRef<HTMLIFrameElement>;
 
   private ai = inject(AiService);
+  private tokens = inject(AuthTokenService);
   private msg = inject(NzMessageService);
   private cdr = inject(ChangeDetectorRef);
   private sanitizer = inject(DomSanitizer);
@@ -157,9 +159,59 @@ export class AiInlineFileComponent implements AfterViewInit, OnChanges {
 
   previewUrl = computed(() => this.data ? this.ai.filePreviewUrl(this.data.fileId) : '');
 
-  safeSrc(): SafeResourceUrl {
-    // Angular bloque les iframe [src] par défaut → bypass pour notre endpoint same-origin.
-    return this.sanitizer.bypassSecurityTrustResourceUrl(this.previewUrl());
+  // Blob URL unique (text/html OU application/pdf selon le backend).
+  // Pas de srcdoc → pas d'origin 'null' → pas de SecurityError Angular Router.
+  safeSrcSig = signal<SafeResourceUrl | null>(null);
+
+  private _cachedFileId = '';
+  private _cachedBlobUrl: string | null = null;
+  private _fetchInFlight = false;
+
+  private async _fetchBlob(): Promise<void> {
+    if (this._fetchInFlight) return;
+    if (!this.data?.fileId) return;
+    if (this.data.fileId === this._cachedFileId && this.safeSrcSig()) return;
+
+    this._fetchInFlight = true;
+    this._cachedFileId = this.data.fileId;
+    if (this._cachedBlobUrl) {
+      try { URL.revokeObjectURL(this._cachedBlobUrl); } catch {}
+      this._cachedBlobUrl = null;
+    }
+    this.safeSrcSig.set(null);
+
+    try {
+      const url = this.previewUrl();
+      if (!url) return;
+      const res = await fetch(url, {
+        headers: { Authorization: `Bearer ${this.tokens.token || ''}` },
+        credentials: 'include',
+      });
+      if (!res.ok) throw new Error(`preview HTTP ${res.status}`);
+
+      const contentType = (res.headers.get('content-type') || '').toLowerCase();
+
+      let blob: Blob;
+      if (contentType.includes('text/html')) {
+        // docx/xlsx : on récupère le texte puis on recrée un Blob avec MIME
+        // explicite "text/html; charset=utf-8" pour garantir le rendering.
+        const html = await res.text();
+        blob = new Blob([html], { type: 'text/html; charset=utf-8' });
+      } else {
+        // pdf/pptx : blob brut tel que retourné par le serveur
+        blob = await res.blob();
+      }
+      const blobUrl = URL.createObjectURL(blob);
+      this._cachedBlobUrl = blobUrl;
+      this.safeSrcSig.set(this.sanitizer.bypassSecurityTrustResourceUrl(blobUrl));
+      this.cdr.markForCheck();
+    } catch (e) {
+      console.error('[ai-inline-file] fetch preview failed:', e);
+      this.errored.set(true);
+      this.cdr.markForCheck();
+    } finally {
+      this._fetchInFlight = false;
+    }
   }
 
   downloadUrl(): string {
@@ -210,10 +262,23 @@ export class AiInlineFileComponent implements AfterViewInit, OnChanges {
   }
   private _onEsc: ((e: KeyboardEvent) => void) | null = null;
 
-  ngAfterViewInit(): void {}
+  ngAfterViewInit(): void {
+    if (this.data?.fileId) this._fetchBlob();
+  }
 
   ngOnChanges(): void {
-    this.loaded.set(false);
-    this.errored.set(false);
+    if (this.data?.fileId && this.data.fileId !== this._cachedFileId) {
+      this.loaded.set(false);
+      this.errored.set(false);
+      this._fetchBlob();
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this._cachedBlobUrl) {
+      try { URL.revokeObjectURL(this._cachedBlobUrl); } catch {}
+    }
+    if (this._onEsc) document.removeEventListener('keydown', this._onEsc);
+    document.body.style.overflow = '';
   }
 }

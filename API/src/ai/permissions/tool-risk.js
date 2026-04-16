@@ -71,6 +71,7 @@ const TOOL_RISK = {
   display_image:   'safe',
   display_file:    'safe',
   send_message_to_agent: 'safe',
+  todo_write: 'safe',
 };
 
 /**

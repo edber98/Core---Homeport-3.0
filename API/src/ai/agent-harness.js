@@ -29,6 +29,21 @@ function _summarizeArgs(args, maxChars = 300) {
 // dépendances + consolidation + ask_user + multiples retries, 40 saute vite
 // et coupe l'agent en plein milieu avec "Limite de boucles atteinte".
 const DEFAULT_MAX_LOOPS = parseInt(process.env.AI_DEFAULT_MAX_LOOPS || '100', 10);
+
+/** Résumé 1-ligne des args d'un tool pour affichage UI (hint context). */
+function _summarizeToolArgs(name, args) {
+  if (!args || typeof args !== 'object') return '';
+  if (args.query) return `"${String(args.query).slice(0, 80)}"`;
+  if (args.url) return String(args.url).replace(/^https?:\/\//, '').slice(0, 80);
+  if (args.path) return String(args.path).slice(0, 80);
+  if (args.fileId) return String(args.fileId);
+  if (args.key) return String(args.key);
+  if (args.prompt) return `"${String(args.prompt).slice(0, 80)}"`;
+  if (args.subagent_type) return String(args.subagent_type);
+  if (args.to) return String(args.to);
+  if (args.language) return `${args.language}${args.code ? ` (${String(args.code).length}c)` : ''}`;
+  return '';
+}
 const STREAM_TIMEOUT_MS = 120_000; // 120s per-event timeout
 
 /**
@@ -259,6 +274,33 @@ factuel des livrables créés avec leurs IDs/paths. Pas de phrase de conclusion 
     { role: 'system', content: systemPrompt },
     ...messages,
   ];
+
+  // ── Pré-flight todo_write : si le DERNIER message user a des marqueurs de
+  // tâche multi-étapes ET qu'on n'est PAS dans un auto-resume (le resume
+  // prompt gère déjà la todo), on injecte un system message FORT avant le
+  // 1er call LLM pour l'inciter à appeler todo_write
+  // en premier. Beaucoup plus fiable que d'attendre un nudge post-hoc.
+  try {
+    const lastUserMsg = [...conversation].reverse().find(m => m.role === 'user');
+    const text = String(lastUserMsg?.content || '').toLowerCase();
+    // Skip si auto-resume (le resume prompt gère déjà la todo et on ne veut
+    // pas créer un 2e widget todo dupliqué).
+    const isAutoResume = text.includes('Tous les sous-agents lancés sont terminés') || text.includes('[Pipeline complete]');
+    if (text.length > 30 && (mode === 'chat' || mode === 'project') && !isAutoResume) {
+      const MULTI_STEP_MARKERS = /\b(puis|ensuite|apr[eè]s|et\s+(?:ensuite|apr[eè]s|afficher?|g[eé]n[eé]rer?|cr[eé]er?|envoyer?|d[eé]poser?)|analyse[rz]?\b|[eé]tude|consolide[rz]?|chercher? et|g[eé]n[eé]r(?:e[rz]?|ation)|cr[eé]er? (?:un|le|la)|construir?e|faire? (?:un|le|la)|lance[rz]?|spawn)/i;
+      const verbCount = (text.match(/\b(cherche|analyse|trouve|g[eé]n[eé]re|cr[eé]e|affiche|envoie|t[eé]l[eé]charge|lance|fais|fait|d[eé]pose|extrais?|rassemble|compare|consolide)\b/gi) || []).length;
+      const hasMulti = MULTI_STEP_MARKERS.test(text) || verbCount >= 2;
+      if (hasMulti) {
+        conversation.splice(1, 0, {
+          role: 'system',
+          content: `[PROTOCOLE HOMEPORT] La demande utilisateur est multi-étapes. TA PREMIÈRE ACTION DOIT ÊTRE un appel \`todo_write\` avec 3-6 items couvrant le plan complet. Items au statut "pending" pour toute la suite, le premier que tu vas exécuter à "in_progress". SANS cet appel initial, l'utilisateur ne verra aucune checklist et ce sera une violation du protocole. Appelle todo_write IMMÉDIATEMENT, avant tout autre tool.`,
+        });
+        console.log('[harness] pré-flight todo_write : user request détectée comme multi-étapes, injection du reminder');
+      }
+    }
+  } catch (e) {
+    console.warn('[harness] pré-flight todo check failed:', e?.message);
+  }
 
   const maxLoops = agentOverrides?.maxToolLoops || DEFAULT_MAX_LOOPS;
   let loopCount = 0;
@@ -534,6 +576,45 @@ factuel des livrables créés avec leurs IDs/paths. Pas de phrase de conclusion 
       return;
     }
 
+    // ── Nudge todo_write : si le LLM lance 2+ tools lourds (spawn_subagent,
+    // research_deep, execute_code, web_search/fetch) sans avoir encore appelé
+    // todo_write, on pousse une instruction système pour qu'il le fasse au
+    // prochain tour. Une seule fois par job.
+    const HEAVY_TOOLS = new Set(['spawn_subagent', 'research_deep', 'execute_code', 'web_search', 'web_fetch']);
+    const heavyCount = pendingToolCalls.filter(tc => HEAVY_TOOLS.has(tc.name)).length;
+    const hasTodo = pendingToolCalls.some(tc => tc.name === 'todo_write');
+    if (hasTodo && jobContext) jobContext._seenTodoWrite = true;
+    const shouldNudgeTodo = heavyCount >= 2
+      && !hasTodo
+      && !(jobContext?._seenTodoWrite)
+      && !(jobContext?._todoNudged)
+      && jobContext;
+    if (shouldNudgeTodo) {
+      console.log(`[harness] todo_write nudge : ${heavyCount} tools lourds sans checklist — push system reminder`);
+      jobContext._todoNudged = true;
+    }
+
+    // ── GARDE ANTI-HALLUCINATION : si ce tour contient spawn_subagent async
+    // + un tool finalizer (render_structured, display_file, etc.), on bloque
+    // le finalizer. Raison : le LLM a délégué la production à un subagent →
+    // il ne doit PAS produire le livrable lui-même (sinon il hallucine les
+    // données que le subagent n'a pas encore fournies).
+    const FINALIZER_TOOLS = new Set([
+      'render_structured', 'display_file', 'display_image',
+      'render_interactive_canvas', 'generate_diagram', 'generate_document',
+    ]);
+    const hasAsyncSpawn = pendingToolCalls.some(tc =>
+      tc.name === 'spawn_subagent' && (tc.input?.async === true || (Array.isArray(tc.input?.depends_on) && tc.input.depends_on.length > 0))
+    );
+    const finalizersInTurn = pendingToolCalls.filter(tc => FINALIZER_TOOLS.has(tc.name));
+    const blockedFinalizerIds = new Set();
+    if (hasAsyncSpawn && finalizersInTurn.length > 0) {
+      for (const fin of finalizersInTurn) {
+        console.warn(`[harness] ANTI-HALLUCINATION : blocage ${fin.name} (id=${fin.id}) car spawn_subagent async est dans le même tour → le subagent doit produire le livrable, pas le parent`);
+        blockedFinalizerIds.add(fin.id);
+      }
+    }
+
     // Execute tools
     const toolResults = [];
     for (const tc of pendingToolCalls) {
@@ -556,6 +637,19 @@ factuel des livrables créés avec leurs IDs/paths. Pas de phrase de conclusion 
       } catch (permErr) {
         // If the gate itself errors, we default to allow to keep legacy behavior.
         console.error('[harness] permission check error:', permErr?.message);
+      }
+
+      // ── Anti-hallucination : si le finalizer est bloqué (spawn_subagent
+      // async dans le même tour), on refuse et renvoie un message clair au LLM.
+      if (blockedFinalizerIds.has(tc.id)) {
+        const blockResult = {
+          ok: false,
+          error: 'finalizer_blocked_by_async_spawn',
+          message: `Tu as appelé ${tc.name} DANS LE MÊME TOUR que spawn_subagent(async). Le subagent que tu viens de lancer est responsable du livrable. TU NE DOIS PAS produire ${tc.name} toi-même maintenant — tu hallucinerais des données que le subagent n'a pas encore fournies. CONDUITE : termine ce tour avec 1-2 phrases narratives ("Subagents lancés, je reviens avec les résultats") puis STOP. L'auto-resume te réveillera quand les subagents auront fini, avec leurs vraies données.`,
+        };
+        toolResults.push({ id: tc.id, name: tc.name, content: JSON.stringify(blockResult), status: 'error', duration: 0 });
+        yield { type: 'tool.end', id: tc.id, name: tc.name, args: tc.input, result: blockResult, status: 'error', duration: 0 };
+        continue;
       }
 
       if (permCheck.decision === 'deny') {
@@ -734,6 +828,38 @@ factuel des livrables créés avec leurs IDs/paths. Pas de phrase de conclusion 
         toolResults.push({ id: tc.id, name: tc.name, content: JSON.stringify(result), status: toolStatus, duration, result });
         yield { type: 'tool.end', id: tc.id, name: tc.name, args: tc.input, result, status: toolStatus, duration, displayTitle };
 
+        // ── Tracking todo_write : si un item est in_progress, on accumule les
+        // tools pour les attacher à l'item au prochain todo_write.
+        if (jobContext && tc.name !== 'todo_write') {
+          if (!jobContext._todoPendingTools) jobContext._todoPendingTools = [];
+          const argsSummary = _summarizeToolArgs(tc.name, tc.input);
+          const entry = {
+            name: tc.name,
+            status: toolStatus,
+            duration,
+            argsSummary,
+            at: new Date(),
+          };
+          // Enrichit avec roster si spawn_subagent
+          if (tc.name === 'spawn_subagent' && tc.input?.subagent_type) {
+            try {
+              const { getAgent } = require('./subagent/roster');
+              const info = getAgent(tc.input.subagent_type);
+              if (info) {
+                entry.agentName = info.name;
+                entry.agentEmoji = info.emoji;
+                entry.agentColor = info.color;
+                entry.subagentType = tc.input.subagent_type;
+              }
+            } catch {}
+            // Mémorise le jobId du subagent spawné pour que le frontend puisse
+            // lier le todo item au rapport agent_report quand il arrivera.
+            if (result?.result?.jobId) entry.spawnedJobId = result.result.jobId;
+            else if (result?.jobId) entry.spawnedJobId = result.jobId;
+          }
+          jobContext._todoPendingTools.push(entry);
+        }
+
         // Action events (open_credentials, etc.)
         if (result?._action) {
           yield { type: 'action', action: result.action, providerKey: result.providerKey, providerName: result.providerName };
@@ -892,6 +1018,43 @@ factuel des livrables créés avec leurs IDs/paths. Pas de phrase de conclusion 
       } else {
         conversation.push({ role: 'tool', tool_call_id: tr.id, content: tr.content });
       }
+    }
+
+    // ── Détecteur de boucle infinie : si les 3 derniers tours ont appelé
+    // EXACTEMENT le même tool avec les mêmes args et tous ont échoué, on
+    // force l'arrêt. Pattern observé : LLM qui appelle execute_tool({key:"noop"})
+    // en boucle pour "ne rien faire", ou qui retry un tool inexistant.
+    if (jobContext && toolResults.length) {
+      const signature = toolResults
+        .map(r => `${r.name}:${r.status}:${(r.content || '').slice(0, 100)}`)
+        .join('|');
+      jobContext._recentToolSigs = (jobContext._recentToolSigs || []).concat(signature).slice(-3);
+      const sigs = jobContext._recentToolSigs;
+      const allSame = sigs.length === 3 && sigs.every(s => s === sigs[0]);
+      const allFailed = sigs.length === 3 && toolResults.every(r => r.status === 'error');
+      if (allSame && allFailed) {
+        console.warn(`[harness] BOUCLE INFINIE DÉTECTÉE : même tool+erreur 3x consécutifs (${toolResults[0]?.name}). Force stop.`);
+        // Inject un message user pour que le LLM comprenne au prochain restart,
+        // PUIS on yield done pour sortir de la boucle courante.
+        conversation.push({
+          role: 'user',
+          content: `[SYSTÈME] Tu as appelé le même tool "${toolResults[0]?.name}" 3 fois de suite avec le même résultat d'erreur. C'est une boucle. STOP. Si tu n'as plus rien à faire, réponds juste par du texte (1-2 phrases) pour clore la tâche. Ne rappelle PAS ce tool.`,
+        });
+        if (jobContext) {
+          try { await jobContext.persistCheckpoint(loopCount, conversation); } catch {}
+        }
+        await toolSet.cleanup();
+        yield { type: 'done', usage: totalUsage };
+        return;
+      }
+    }
+
+    // Injection du nudge todo_write si détecté (après exécution des tools)
+    if (shouldNudgeTodo) {
+      conversation.push({
+        role: 'user',
+        content: `[SYSTÈME — IMPORTANT] Tu viens d'exécuter ${heavyCount} tools lourds sans avoir créé de checklist via todo_write. C'est une VIOLATION du protocole. Au prochain tour LLM, ta TOUTE PREMIÈRE action DOIT être \`todo_write\` avec 3-6 items couvrant la tâche en cours et à venir, pour que l'utilisateur voie la progression. Les items déjà faits = status "completed", l'étape en cours = "in_progress", les prochaines = "pending". Ensuite continue ton travail normalement.`,
+      });
     }
 
     // Checkpoint + heartbeat (no-op without jobContext)

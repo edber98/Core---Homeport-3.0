@@ -26,6 +26,7 @@ function _notifyInlineMessage(threadId, kind) {
   if (!threadId) return;
   try {
     const { emitThreadEvent } = require('../jobs/job-events');
+    console.log(`[meta-tools] emit ai.message.created kind=${kind} threadId=${threadId}`);
     emitThreadEvent(String(threadId), { type: 'ai.message.created', kind: kind || 'inline' });
   } catch (e) {
     console.warn('[meta-tools] notifyInlineMessage failed:', e?.message);
@@ -36,6 +37,7 @@ function _notifyInlineUpdate(threadId, messageId, kind) {
   if (!threadId) return;
   try {
     const { emitThreadEvent } = require('../jobs/job-events');
+    console.log(`[meta-tools] emit ai.message.updated kind=${kind} messageId=${messageId} threadId=${threadId}`);
     emitThreadEvent(String(threadId), {
       type: 'ai.message.updated',
       messageId: String(messageId || ''),
@@ -451,22 +453,89 @@ const META_TOOL_DEFINITIONS = [
     },
   },
   {
-    name: 'send_message_to_agent',
-    description: `Envoie un message à un sous-agent en cours d'exécution (background ou waiting_dependency). Le message est empilé dans sa mailbox et délivré au DÉBUT de son prochain tour LLM comme un message système. Utile pour :
-- Envoyer une précision ou correction en cours de route ("Marie, regarde aussi la colonne TVA")
-- Répondre à une demande d'info d'un autre agent ("Tim, utilise ces 3 URLs prioritaires : ...")
-- Rediriger une tâche ("Isaac, annule l'étape 3, fais plutôt X")
+    name: 'todo_write',
+    description: `Crée ou met à jour une checklist visible dans le chat pour suivre les étapes d'une tâche multi-étapes. C'EST LA COLONNE VERTÉBRALE de toute tâche complexe — inspiré de la TodoWriteTool de Claude Code.
 
-Le destinataire peut être :
-- un jobId (ex: "aij_mo0x...")
-- un nom de rôle (ex: "Marie", "Tim", "Denis") → résolu au subagent actif avec ce nom dans le même thread.
+🎯 QUAND L'UTILISER (obligatoire)
+- Tâche à 3+ étapes distinctes.
+- Tâche non-triviale nécessitant planification.
+- L'utilisateur donne plusieurs demandes en une.
+- Quand tu démarres une étape, marque-la in_progress AVANT de commencer.
+- Après avoir fini une étape, marque-la completed + écris UN COURT message narratif pour l'utilisateur avant de passer à la suivante.
 
-Le tool retourne {delivered:true} si le message a été empilé, ou une erreur si le job est terminé/introuvable.`,
+🚫 QUAND NE PAS L'UTILISER
+- Tâche simple en 1-2 étapes triviales.
+- Demande purement conversationnelle ou informationnelle.
+
+📋 FORMAT
+- 1 seul item en in_progress à la fois (ou zéro).
+- content = description claire courte ("Générer le modèle docx")
+- activeForm = forme active affichée pendant l'exécution ("Génération du modèle docx…")
+- status : pending / in_progress / completed / cancelled
+
+🔁 MISE À JOUR
+Appelle ce tool à CHAQUE transition d'état. Le LLM est responsable de maintenir la checklist à jour. Le widget éditable (widgetId="session-todos") met à jour la MÊME card à chaque appel — pas de multiples checklists empilées.
+
+EXEMPLE
+\`\`\`
+1. todo_write({todos: [
+     {id:"t1", content:"Chercher les 3 iPaaS EU", activeForm:"Recherche des iPaaS EU…", status:"in_progress"},
+     {id:"t2", content:"Consolider en tableau", activeForm:"Consolidation…", status:"pending"},
+     {id:"t3", content:"Générer xlsx + aperçu", activeForm:"Génération xlsx…", status:"pending"},
+   ]})
+2. [tool research → résultats]
+3. "Trouvé 3 plateformes : Frends, n8n, Make. Je consolide."  (narration courte)
+4. todo_write({todos: [...t1 completed, t2 in_progress, t3 pending]})
+5. [tool render_structured]
+6. "Tableau prêt. Je passe au xlsx."
+7. todo_write({...t2 completed, t3 in_progress})
+8. [execute_code + display_file]
+9. todo_write({...t3 completed}) → tous done, la card se collapse toute seule.
+\`\`\``,
     parameters: {
       type: 'object',
       properties: {
-        to: { type: 'string', description: 'jobId du subagent OU son nom humain (Tim, Ada, Denis, Alan, René, Claude, Hedy, Graham, Marie, Florence, Isaac, Kurt, Marvin, Donald, Van, Hypatie)' },
-        message: { type: 'string', description: 'Texte du message à délivrer. Soyez précis et concis.' },
+        todos: {
+          type: 'array',
+          description: 'Liste complète des items (pas un diff). À chaque appel tu passes TOUTE la liste avec les statuts à jour.',
+          items: {
+            type: 'object',
+            properties: {
+              id: { type: 'string', description: 'ID stable (ex: "t1", "t2")' },
+              content: { type: 'string', description: 'Description courte de la tâche' },
+              activeForm: { type: 'string', description: 'Forme active ("Analyse en cours…")' },
+              status: { type: 'string', enum: ['pending', 'in_progress', 'completed', 'cancelled'] },
+            },
+            required: ['id', 'content', 'status'],
+          },
+        },
+        title: { type: 'string', description: 'Titre optionnel de la checklist (ex: "Étude de marché iPaaS")' },
+      },
+      required: ['todos'],
+    },
+  },
+  {
+    name: 'send_message_to_agent',
+    description: `Communication bidirectionnelle façon Claude Code / teammate-mailbox. Le message est empilé dans la mailbox du destinataire et délivré au DÉBUT de son prochain tour LLM. Le sender peut être l'agent principal, un subagent, ou l'utilisateur (via UI).
+
+🎯 DESTINATAIRES POSSIBLES (\`to\`)
+- **\`'user'\`** → parle directement à l'utilisateur humain. Le message apparaît IMMÉDIATEMENT dans le chat avec ton badge (ex: "💬 Marie : Peux-tu me confirmer si tu veux les 3 axes ?"). **À UTILISER** quand tu es un subagent qui a besoin d'une info/confirmation pendant que tu bosses, sans attendre la fin.
+- **\`'parent'\`** → parle à ton agent parent (si tu es un subagent). Message délivré à son prochain tour. Utile pour lui demander une info ou lui remonter un résultat intermédiaire.
+- **\`'Tim'\`, \`'Marie'\`, \`'Denis'\`, ...** → parle à un subagent actif du roster par son prénom. Résolu au subagent le plus récent portant ce nom dans le thread.
+- **\`'aij_xxx'\`** → jobId explicite (unique, non ambigu).
+
+🔄 PATTERNS D'USAGE
+1. **Subagent demande info à l'user** : \`send_message_to_agent({ to: 'user', message: "J'ai trouvé 10 concurrents, tu veux que je garde les EU only ou large mix ?" })\`
+2. **Parent pique un subagent** : \`send_message_to_agent({ to: 'Marie', message: "Ajoute aussi la colonne TVA intra." })\`
+3. **Subagent → subagent** : \`send_message_to_agent({ to: 'Tim', message: "Envoie-moi les 3 URLs officielles de tes sources EU" })\`
+4. **Subagent remonte au parent** : \`send_message_to_agent({ to: 'parent', message: "J'ai découvert un acteur EU non listé (Alumio), je l'ajoute ?" })\`
+
+⚡ NON-BLOQUANT : le tool retourne immédiatement \`{delivered:true}\`. Continue ta tâche sans attendre de réponse — si le destinataire répond, son message arrivera dans ta propre mailbox au tour suivant.`,
+    parameters: {
+      type: 'object',
+      properties: {
+        to: { type: 'string', description: "'user' / 'parent' / prénom du roster (Tim, Ada, Denis, Van, Hypatie, Donald, Alan, René, Claude, Hedy, Graham, Marie, Florence, Isaac, Kurt, Marvin) / jobId" },
+        message: { type: 'string', description: 'Texte du message. Sois précis et concis (1-3 phrases).' },
         summary: { type: 'string', description: 'Résumé 5-10 mots affiché dans l\'UI (facultatif)' },
       },
       required: ['to', 'message'],
@@ -1332,18 +1401,183 @@ async function executeMetaTool(name, input, ctx) {
       return section;
     }
 
+    case 'todo_write': {
+      if (!ctx.threadId) return { ok: false, error: 'threadId manquant' };
+      const todos = Array.isArray(input?.todos) ? input.todos : [];
+      if (!todos.length) return { ok: false, error: 'todos[] vide' };
+      for (const t of todos) {
+        if (!t || !t.id || !t.content) return { ok: false, error: 'chaque todo nécessite id + content + status' };
+        if (!['pending', 'in_progress', 'completed', 'cancelled'].includes(t.status || 'pending')) {
+          return { ok: false, error: `status invalide: ${t.status}` };
+        }
+      }
+      const inProgressCount = todos.filter(t => t.status === 'in_progress').length;
+      if (inProgressCount > 1) {
+        return { ok: false, error: `Un seul item peut être in_progress à la fois (trouvé ${inProgressCount}). Termine ou repasse en pending.` };
+      }
+      try {
+        // Widget éditable stable : toujours le même AiMessage par thread.
+        const widgetId = 'session-todos';
+        // Drain les tools accumulés depuis le dernier todo_write et attribue-les
+        // à l'item qui vient de passer in_progress → completed (ou à l'item
+        // actuellement in_progress qui a progressé).
+        const pendingTools = (ctx?._jobContext?._todoPendingTools) || [];
+        // Récupère l'état précédent pour voir quel item était in_progress
+        const prevExisting = await _findWidgetByWidgetId(ctx.threadId, widgetId);
+        const prevTodos = (prevExisting?.metadata?.todoList?.todos || []);
+        const prevInProgress = prevTodos.find(t => t.status === 'in_progress');
+
+        const todoPayload = {
+          todos: todos.map(t => {
+            const prev = prevTodos.find(p => p.id === t.id);
+            // Le set accumulé de tools pour cet item = ceux déjà stockés + les nouveaux
+            // si cet item était in_progress précédemment.
+            const prevItemTools = (prev?.toolCalls || []);
+            const newTools = (prev?.id && prevInProgress && prev.id === prevInProgress.id) ? pendingTools : [];
+            const mergedTools = [...prevItemTools, ...newTools];
+            return {
+              id: String(t.id),
+              content: String(t.content).slice(0, 400),
+              activeForm: t.activeForm ? String(t.activeForm).slice(0, 200) : undefined,
+              status: t.status || 'pending',
+              toolCalls: mergedTools.length ? mergedTools : undefined,
+            };
+          }),
+          title: input.title ? String(input.title).slice(0, 200) : undefined,
+          updatedAt: new Date(),
+        };
+
+        // Reset le buffer de tools après drain
+        if (ctx?._jobContext) ctx._jobContext._todoPendingTools = [];
+
+        const existing = prevExisting;
+        if (existing) {
+          existing.content = input.title || '';
+          existing.metadata = {
+            ...(existing.metadata?.toObject?.() || existing.metadata || {}),
+            kind: 'todo_list',
+            todoList: todoPayload,
+            widgetId,
+            widgetUpdatedAt: new Date(),
+          };
+          await existing.save();
+          _notifyInlineUpdate(ctx.threadId, String(existing._id), 'todo_list');
+        } else {
+          await AiMessage.create({
+            threadId: ctx.threadId,
+            workspaceId: ctx.workspaceId,
+            role: 'assistant',
+            content: input.title || '',
+            metadata: {
+              kind: 'todo_list',
+              todoList: todoPayload,
+              widgetId,
+              widgetUpdatedAt: new Date(),
+            },
+          });
+          _notifyInlineMessage(ctx.threadId, 'todo_list');
+        }
+        const inProgress = todos.find(t => t.status === 'in_progress');
+        const completedCount = todos.filter(t => t.status === 'completed').length;
+        return {
+          ok: true,
+          _silent: true,
+          stats: { total: todos.length, completed: completedCount, inProgress: inProgressCount, remaining: todos.length - completedCount - inProgressCount },
+          currentTask: inProgress ? inProgress.content : null,
+          hint: inProgress
+            ? `Étape courante : "${inProgress.content}". Exécute-la puis appelle à nouveau todo_write pour la marquer completed et passer à la suivante. Entre les étapes, écris UNE courte phrase de narration pour l'utilisateur.`
+            : (completedCount === todos.length
+                ? "Toutes les étapes sont terminées. Écris un résumé final court."
+                : "Passe la prochaine étape en in_progress puis exécute-la."),
+        };
+      } catch (e) {
+        return { ok: false, error: e?.message || String(e) };
+      }
+    }
+
     case 'send_message_to_agent': {
       const { to, message, summary } = input || {};
       if (!to || !message) return { ok: false, error: 'to + message requis' };
       try {
         const AiJob = require('../../db/models/ai-job.model');
         const { ROSTER } = require('../subagent/roster');
-        // Résolution : si `to` est un nom humain, on cherche le subagent
-        // actif avec ce nom dans le thread courant.
+        const fromJobId = ctx?._jobContext?.jobId;
+        const fromSubagentType = ctx?._jobContext?.subagentType;
+        const fromAgent = fromSubagentType ? ROSTER[fromSubagentType] : null;
+        const fromName = fromAgent?.name || (ctx.userId ? 'vous' : 'system');
+        const toLower = String(to).toLowerCase().trim();
+
+        // ── DESTINATAIRE = 'user' ou 'utilisateur' ──
+        // Le subagent veut parler directement à l'utilisateur humain (pas
+        // attendre la fin de sa tâche pour que le résultat soit vu). On crée
+        // un AiMessage visible immédiatement dans le chat avec un badge
+        // agent pour que l'user sache qui parle.
+        if (toLower === 'user' || toLower === 'utilisateur') {
+          if (!ctx.threadId) return { ok: false, error: 'threadId manquant pour message à user' };
+          if (!fromAgent) return { ok: false, error: "Ce tool ne peut être utilisé que par un subagent pour parler à l'utilisateur." };
+          await AiMessage.create({
+            threadId: ctx.threadId,
+            workspaceId: ctx.workspaceId,
+            role: 'assistant',
+            content: String(message).slice(0, 4000),
+            metadata: {
+              kind: 'comment',
+              extra: {
+                fromSubagent: true,
+                subagentJobId: fromJobId,
+                subagentType: fromSubagentType,
+                agentName: fromAgent.name,
+                agentEmoji: fromAgent.emoji,
+                agentColor: fromAgent.color,
+                agentFigure: fromAgent.figure,
+                summary: summary || String(message).slice(0, 80),
+              },
+            },
+          });
+          _notifyInlineMessage(ctx.threadId, 'subagent_message');
+          return {
+            ok: true,
+            delivered: true,
+            target: 'user',
+            hint: "Message visible dans le chat. Continue ta tâche.",
+          };
+        }
+
+        // ── DESTINATAIRE = 'parent' ──
+        if (toLower === 'parent') {
+          const parentId = ctx?._jobContext?.parentJobId;
+          if (!parentId) return { ok: false, error: "Pas de job parent (tu es l'agent principal)." };
+          await AiJob.updateOne(
+            { id: parentId },
+            { $push: { pendingMessages: {
+                from: `agent:${fromJobId}`,
+                fromName,
+                message: String(message).slice(0, 8000),
+                createdAt: new Date(),
+                delivered: false,
+              } } }
+          );
+          try {
+            const { emitJobEvent, emitThreadEvent } = require('../jobs/job-events');
+            const ev = {
+              type: 'subagent.message.received',
+              targetJobId: parentId,
+              targetName: 'parent',
+              fromName,
+              fromSubagentType,
+              summary: summary || String(message).slice(0, 80),
+              at: new Date().toISOString(),
+            };
+            emitJobEvent(parentId, ev);
+            if (ctx.threadId) emitThreadEvent(String(ctx.threadId), ev);
+          } catch { /* non-fatal */ }
+          return { ok: true, delivered: true, target: 'parent', hint: "Message empilé pour ton parent. Continue ta tâche." };
+        }
+
+        // ── DESTINATAIRE = jobId OU nom humain d'un subagent ──
         let targetJob = await AiJob.findOne({ id: to });
         if (!targetJob) {
-          // Chercher par nom humain (insensible casse)
-          const type = Object.entries(ROSTER).find(([, a]) => a.name.toLowerCase() === String(to).toLowerCase())?.[0];
+          const type = Object.entries(ROSTER).find(([, a]) => a.name.toLowerCase() === toLower)?.[0];
           if (type && ctx.threadId) {
             targetJob = await AiJob.findOne({
               threadId: ctx.threadId,
@@ -1353,15 +1587,10 @@ async function executeMetaTool(name, input, ctx) {
             }).sort({ createdAt: -1 });
           }
         }
-        if (!targetJob) return { ok: false, error: `Aucun subagent actif "${to}" trouvé dans ce thread.` };
+        if (!targetJob) return { ok: false, error: `Aucun subagent actif "${to}" trouvé dans ce thread. Utilise 'user', 'parent', un jobId ou un nom du roster (Tim, Marie, ...).` };
         if (['completed', 'error', 'cancelled'].includes(targetJob.status)) {
           return { ok: false, error: `Le subagent ${targetJob.id} (${targetJob.status}) est terminé — impossible de lui envoyer un message.` };
         }
-        const fromJobId = ctx?._jobContext?.jobId;
-        const fromIsParent = fromJobId && String(targetJob.parentJobId) === String(fromJobId);
-        const fromName = fromIsParent
-          ? (ROSTER[ctx?._jobContext?.subagentType]?.name || 'parent')
-          : (ctx.userId ? 'user' : 'system');
         await AiJob.updateOne(
           { id: targetJob.id },
           { $push: { pendingMessages: {
@@ -1372,7 +1601,6 @@ async function executeMetaTool(name, input, ctx) {
               delivered: false,
             } } }
         );
-        // Émet un event live pour que le canvas Agents affiche l'envoi
         try {
           const { emitJobEvent, emitThreadEvent } = require('../jobs/job-events');
           const ev = {
@@ -1380,6 +1608,7 @@ async function executeMetaTool(name, input, ctx) {
             targetJobId: targetJob.id,
             targetName: ROSTER[targetJob.subagentType]?.name || targetJob.subagentType,
             fromName,
+            fromSubagentType,
             summary: summary || String(message).slice(0, 80),
             at: new Date().toISOString(),
           };
@@ -1471,7 +1700,14 @@ async function executeMetaTool(name, input, ctx) {
             patch: [{ op: 'replace', path: '/status', value: 'success' }],
           });
         } catch { /* non-fatal */ }
-        return { ok: true, result: res };
+        // Message d'ATTENTE explicite pour async — empêche le LLM d'essayer
+        // de finaliser la tâche lui-même en hallucinant les résultats.
+        const wasAsync = res?.async === true || res?.result?.async === true;
+        const extraHint = wasAsync ? {
+          _wait_for_subagent: true,
+          instruction: "🛑 SUBAGENT LANCÉ EN BACKGROUND. NE PAS produire toi-même le livrable final de ce subagent (render_structured, display_file, etc.) — tu n'as PAS encore ses résultats, tu hallucinerais. CONDUITE OBLIGATOIRE : continue uniquement avec d'autres spawn_subagent / todo_write, puis termine ce tour avec 1-2 phrases narratives courtes (\"Subagents lancés, je reviens avec les résultats\"). L'auto-resume te réveillera AVEC les vraies données quand les subagents auront fini.",
+        } : {};
+        return { ok: true, result: res, ...extraHint };
       } catch (e) {
         try {
           ctx?._emit?.({

@@ -212,8 +212,54 @@ function escapeHtml(s) {
   return String(s || '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
 
+/** Script défensif injecté dans les previews srcdoc — neutralise TOUT ce qui
+ *  pourrait déclencher SecurityError replaceState/pushState dans un document
+ *  à origin 'null' (about:srcdoc). Supprime aussi les hrefs qui pourraient
+ *  naviguer dans l'iframe. */
+const SRCDOC_DEFENSE_SCRIPT = `<script>
+(function(){
+  try {
+    // Neutralise toutes les tentatives d'interaction avec history
+    if (typeof history !== 'undefined') {
+      history.replaceState = function(){};
+      history.pushState = function(){};
+      history.back = function(){};
+      history.forward = function(){};
+      history.go = function(){};
+    }
+    // Bloque les clics sur <a> : convertit hrefs relatifs en "#" et ouvre les
+    // absolues en _blank
+    document.addEventListener('click', function(e){
+      var a = e.target && e.target.closest ? e.target.closest('a') : null;
+      if (!a) return;
+      var href = a.getAttribute('href') || '';
+      if (!href || href === '#' || href.startsWith('#') || href.startsWith('javascript:')) {
+        e.preventDefault();
+        e.stopPropagation();
+        return;
+      }
+      if (/^https?:/i.test(href) || /^mailto:/i.test(href)) {
+        a.setAttribute('target', '_blank');
+        a.setAttribute('rel', 'noopener noreferrer');
+        return;
+      }
+      // URL relative → on bloque (pas de navigation dans l'iframe)
+      e.preventDefault();
+      e.stopPropagation();
+    }, true);
+    // Strip les hrefs relatifs dès le load
+    document.querySelectorAll('a[href]').forEach(function(a){
+      var h = a.getAttribute('href') || '';
+      if (h && !/^https?:|^mailto:|^#/.test(h)) a.setAttribute('href', '#');
+    });
+    // Bloque soumission de formulaires
+    document.addEventListener('submit', function(e){ e.preventDefault(); }, true);
+  } catch(e) { /* silent */ }
+})();
+</script>`;
+
 function buildDocPreviewShell(bodyHtml, name) {
-  return `<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escapeHtml(name)}</title><style>
+  return `<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><base target="_blank"><title>${escapeHtml(name)}</title><style>
 *,*::before,*::after{box-sizing:border-box}
 html,body{margin:0;padding:0;background:#fafafa;font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:#262626;line-height:1.55}
 .page{background:#fff;max-width:820px;margin:20px auto;padding:56px 64px;border-radius:8px;box-shadow:0 2px 12px rgba(0,0,0,.08);min-height:calc(100vh - 40px)}
@@ -234,11 +280,11 @@ blockquote{margin:12px 0;padding:8px 16px;border-left:3px solid #e61982;backgrou
 code{background:#f5f5f5;padding:2px 5px;border-radius:3px;font-size:.9em;font-family:Menlo,Monaco,Consolas,monospace}
 @media (max-width:600px){.page{padding:24px 20px;margin:8px}}
 ::-webkit-scrollbar{width:8px;height:8px}::-webkit-scrollbar-thumb{background:#d9d9d9;border-radius:4px}
-</style></head><body><article class="page">${bodyHtml}</article></body></html>`;
+</style></head><body><article class="page">${bodyHtml}</article>${SRCDOC_DEFENSE_SCRIPT}</body></html>`;
 }
 
 function buildSheetPreviewShell(sheetsHtml, tabs, name) {
-  return `<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escapeHtml(name)}</title><style>
+  return `<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><base target="_blank"><title>${escapeHtml(name)}</title><style>
 *,*::before,*::after{box-sizing:border-box}
 html,body{margin:0;padding:0;background:#fafafa;font-family:-apple-system,"Segoe UI",Arial,sans-serif;color:#262626;font-size:13px}
 .tabs{display:flex;gap:4px;padding:8px 12px;background:#fff;border-bottom:1px solid #e5e5e5;overflow-x:auto;position:sticky;top:0;z-index:10}
@@ -264,6 +310,7 @@ document.querySelectorAll('.tab').forEach(btn=>{
   });
 });
 </script>
+${SRCDOC_DEFENSE_SCRIPT}
 </body></html>`;
 }
 

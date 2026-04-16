@@ -285,7 +285,7 @@ interface StreamTool {
                   <ng-container *ngIf="latestToolArray(seg.tools!).length">
                     <div *ngFor="let t of latestToolArray(seg.tools!); trackBy: trackToolRotate"
                          @toolRotate class="tool-viewer">
-                      <div class="tool-viewer-header"
+                      <div class="tool-viewer-header claude-style"
                            [class.tool-building]="t.status === 'building'"
                            [class.tool-running]="t.status === 'running'"
                            [class.tool-success]="t.status === 'success'"
@@ -294,8 +294,15 @@ interface StreamTool {
                            (click)="t.status === 'running' && hasVisibleArgs(t) && toggleRunningArgs(t.id)">
                         <span nz-icon
                           [nzType]="t.status === 'building' ? 'tool' : t.status === 'running' ? 'loading' : t.status === 'error' ? 'close-circle' : 'check-circle'"
-                          nzTheme="outline" [nzSpin]="t.status === 'running'"></span>
+                          nzTheme="outline" [nzSpin]="t.status === 'running'"
+                          class="viewer-ico"></span>
                         <span class="viewer-title">{{ toolDisplayName(t) }}</span>
+                        <!-- Signature inline (Claude Code style): args compact sur 1 ligne
+                             avec shimmer pendant streaming des arguments -->
+                        <span class="viewer-sig"
+                              *ngIf="toolInlineSignature(t) as sig"
+                              [class.shimmer]="t.status === 'building' || t.status === 'running'">{{ sig }}</span>
+                        <span class="viewer-dur" *ngIf="t.duration && t.status !== 'running' && t.status !== 'building'">{{ t.duration }}ms</span>
                         <span nz-icon *ngIf="t.status === 'running' && hasVisibleArgs(t)" class="item-chevron"
                               [nzType]="runningArgsExpanded.has(t.id) ? 'down' : 'right'" nzTheme="outline"></span>
                       </div>
@@ -378,11 +385,41 @@ interface StreamTool {
 
     </div>
 
+    <!-- Indicateur subagents en cours : petite card compacte, toujours visible
+         tant qu'au moins 1 subagent est actif. Click → ouvre le canvas Agents. -->
+    <div class="subagent-live-indicator" *ngIf="ai.activeSubagents().length && !ai.pendingQuestion()"
+         (click)="openAgentsCanvas()">
+      <span class="sli-pulse"></span>
+      <span class="sli-count">{{ ai.activeSubagents().length }}</span>
+      <span class="sli-label">
+        sous-agent{{ ai.activeSubagents().length > 1 ? 's' : '' }} en cours
+      </span>
+      <span class="sli-names">
+        <span *ngFor="let s of activeSubagentsPreview(); trackBy: trackSubagent" class="sli-mini"
+              [style.background]="s.agentColor || '#e61982'"
+              [title]="(s.agentName || s.subagentType) + ' — ' + s.status">
+          {{ s.agentEmoji || '🤖' }}
+        </span>
+      </span>
+      <span class="sli-arrow">
+        <span nz-icon nzType="arrow-right" nzTheme="outline"></span>
+      </span>
+    </div>
+
     <!-- Pending question — ANCRÉ AU-DESSUS DE L'INPUT (sticky bas) -->
     <div class="pending-question-pinned" *ngIf="ai.pendingQuestion()">
+      <!-- Contexte : texte assistant qui précédait la question -->
+      <div class="pq-context" *ngIf="ai.pendingQuestionContext() as ctx">
+        <div class="pq-context-body" [innerHTML]="renderPqContext(ctx)"></div>
+      </div>
       <div class="pq-head">
         <span nz-icon nzType="question-circle" nzTheme="outline" class="pq-ico"></span>
         <span class="pq-title">Une réponse est attendue</span>
+        <button nz-button nzType="text" nzSize="small" class="pq-close"
+                (click)="cancelQuestion()"
+                nz-tooltip nzTooltipTitle="Annuler — continue sans répondre">
+          <span nz-icon nzType="close" nzTheme="outline"></span>
+        </button>
       </div>
       <ai-question
         [question]="ai.pendingQuestion()!"
@@ -531,6 +568,60 @@ interface StreamTool {
     .tool-viewer { margin: 2px 0; }
     .tool-viewer-header { display: flex; align-items: center; gap: 6px; font-size: 12px; padding: 2px 0; }
     .viewer-title { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    /* Claude Code style : 1 ligne compacte, signature inline, shimmer streaming */
+    .tool-viewer-header.claude-style {
+      padding: 4px 10px;
+      background: transparent;
+      border-radius: 6px;
+      font-size: 12px;
+      gap: 7px;
+      min-width: 0;
+    }
+    .tool-viewer-header.claude-style.tool-building,
+    .tool-viewer-header.claude-style.tool-running { color: #e61982; font-weight: 500; }
+    .tool-viewer-header.claude-style.tool-success { color: #595959; }
+    .tool-viewer-header.claude-style.tool-error { color: #cf1322; background: #fff2f0; }
+    .tool-viewer-header.claude-style .viewer-ico { font-size: 12px; color: inherit; flex-shrink: 0; }
+    .tool-viewer-header.claude-style .viewer-title {
+      font-weight: 600;
+      color: #262626;
+      max-width: 220px;
+    }
+    .tool-viewer-header.claude-style.tool-building .viewer-title,
+    .tool-viewer-header.claude-style.tool-running .viewer-title { color: #e61982; }
+    .tool-viewer-header.claude-style.tool-error .viewer-title { color: #cf1322; }
+
+    /* Signature : monospace, color muted, shimmer quand en cours */
+    .viewer-sig {
+      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+      font-size: 11px;
+      color: #8c8c8c;
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      padding: 0 2px;
+    }
+    .viewer-sig.shimmer {
+      background: linear-gradient(90deg, #bfbfbf 0%, #e61982 50%, #bfbfbf 100%);
+      background-size: 200% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: sigShimmer 1.5s ease-in-out infinite;
+    }
+    @keyframes sigShimmer {
+      0%   { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+    .viewer-dur {
+      font-size: 10px;
+      color: #bfbfbf;
+      font-variant-numeric: tabular-nums;
+      flex-shrink: 0;
+    }
     .tool-building { color: #8c8c8c; }
     .tool-running { color: #e61982; }
     .tool-clickable { cursor: pointer; border-radius: 4px; padding: 2px 6px; margin: 0 -6px; transition: background 0.15s; }
@@ -670,7 +761,81 @@ interface StreamTool {
       margin-bottom: 8px;
     }
     .pq-ico { font-size: 13px; }
-    .pq-title { }
+    .pq-title { flex: 1; }
+    .pq-close {
+      margin-left: auto;
+      color: #bfbfbf !important;
+      padding: 0 6px !important;
+      height: 22px !important;
+      line-height: 1 !important;
+    }
+    .pq-close:hover { color: #e61982 !important; background: #fff5fa !important; }
+
+    /* Contexte assistant texte précédant la question */
+    .pq-context {
+      margin-bottom: 10px;
+      padding: 8px 10px;
+      background: #fafafa;
+      border-left: 2px solid #e8e8e8;
+      border-radius: 4px;
+      max-height: 96px;
+      overflow-y: auto;
+    }
+    .pq-context-body {
+      font-size: 12px; color: #595959; line-height: 1.5;
+    }
+    .pq-context-body ::ng-deep p { margin: 0 0 4px; }
+    .pq-context-body ::ng-deep p:last-child { margin: 0; }
+    .pq-context-body ::ng-deep code { background: #f0f0f0; padding: 0 3px; border-radius: 2px; font-size: 11px; }
+
+    /* Indicateur subagents en cours : compacte, 1 ligne, sticky */
+    .subagent-live-indicator {
+      display: flex; align-items: center; gap: 8px;
+      margin: 0 16px 6px;
+      padding: 8px 12px;
+      background: linear-gradient(90deg, #fff5fa 0%, #fff 100%);
+      border: 1px solid #ffd6e7;
+      border-radius: 10px;
+      font-size: 12px;
+      color: #595959;
+      cursor: pointer;
+      transition: background .15s, border-color .15s, transform .12s;
+      animation: sliSlideIn 220ms cubic-bezier(.2,.8,.2,1);
+    }
+    .subagent-live-indicator:hover {
+      background: linear-gradient(90deg, #ffe0ee 0%, #fff5fa 100%);
+      border-color: #e61982;
+      transform: translateY(-1px);
+    }
+    @keyframes sliSlideIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .sli-pulse {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #e61982;
+      box-shadow: 0 0 0 0 rgba(230,25,130,.4);
+      animation: sliPulse 1.4s ease-in-out infinite;
+      flex-shrink: 0;
+    }
+    @keyframes sliPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(230,25,130,.4); }
+      50%      { box-shadow: 0 0 0 6px rgba(230,25,130,0); }
+    }
+    .sli-count { font-weight: 700; color: #e61982; font-size: 13px; font-variant-numeric: tabular-nums; }
+    .sli-label { flex: 1; color: #595959; }
+    .sli-names { display: inline-flex; gap: 3px; }
+    .sli-mini {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 20px; height: 20px;
+      background: #e61982; color: #fff;
+      border-radius: 50%;
+      font-size: 11px;
+      line-height: 1;
+      border: 2px solid #fff;
+      box-shadow: 0 1px 3px rgba(0,0,0,.1);
+    }
+    .sli-arrow { color: #e61982; font-size: 11px; }
 
     /* Input grisé quand une question bloque */
     .input-bar.input-disabled {
@@ -1085,6 +1250,41 @@ export class AiChatComponent implements AfterViewInit {
     this.handleStream(events$);
   }
 
+  /** Annule la question pinned sans envoyer de réponse (l'agent reste en attente
+   *  côté backend mais le chat est débloqué côté user). */
+  cancelQuestion(): void {
+    this.ai.pendingQuestion.set(null);
+    this.ai.pendingQuestionContext.set(null);
+  }
+
+  /** Preview (max 4) des subagents actifs pour l'indicateur live */
+  activeSubagentsPreview(): any[] {
+    return this.ai.activeSubagents().slice(0, 4);
+  }
+
+  trackSubagent(_i: number, s: any): string {
+    return s.jobId || s.id || _i.toString();
+  }
+
+  /** Ouvre le canvas Agents quand l'utilisateur clique sur l'indicateur live */
+  openAgentsCanvas(): void {
+    try {
+      (this.ai as any).sideEvents$?.next({ type: 'canvas.agents.open' });
+      this.ai.canvasOpen.set(true);
+    } catch { /* non-fatal */ }
+  }
+
+  /** Render markdown-lite pour le contexte (clamp à ~2 lignes via CSS) */
+  renderPqContext(src: string): string {
+    try {
+      const html = marked.parse(String(src || ''), { breaks: true, gfm: true }) as string;
+      return DOMPurify.sanitize(html, {
+        ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'code', 'a', 'span'],
+        ALLOWED_ATTR: ['href', 'target', 'rel'],
+      });
+    } catch { return String(src || ''); }
+  }
+
   private handleStream(events$: any) {
     events$.subscribe({
       next: (ev: AiStreamEvent) => {
@@ -1488,6 +1688,51 @@ export class AiChatComponent implements AfterViewInit {
 
   trackToolRotate(_i: number, t: StreamTool): string { return t.id; }
   trackArgField(_i: number, f: { key: string }): string { return f.key; }
+
+  /**
+   * Signature inline style Claude Code : extrait l'arg le plus pertinent et
+   * le formate en 1 ligne compacte. Retourne '' si pas d'arg à montrer.
+   * Ex:
+   *   web_search({query:"iPaaS"}) → '"iPaaS"'
+   *   execute_code({language:"python", code:"..."}) → 'python (215c)'
+   *   spawn_subagent({subagent_type:"research"}) → 'research'
+   *   project_read_file({path:"/src/app.ts"}) → '/src/app.ts'
+   */
+  toolInlineSignature(t: StreamTool): string {
+    const a: any = t.args;
+    if (!a || typeof a !== 'object') {
+      // Pendant le streaming, on n'a que le JSON partiel
+      if (t.inputJson) {
+        const q = t.inputJson.match(/"(?:query|url|path|key|prompt|to|subagent_type)"\s*:\s*"([^"]{1,80})/);
+        if (q) return `"${q[1]}${q[1].length >= 60 ? '…' : ''}"`;
+      }
+      return '';
+    }
+    if (t.name === 'web_search' && a.query) return `"${String(a.query).slice(0, 70)}${String(a.query).length > 70 ? '…' : ''}"`;
+    if (t.name === 'web_fetch' && a.url) return String(a.url).replace(/^https?:\/\//, '').slice(0, 70);
+    if (t.name === 'web_download' && a.url) return String(a.url).replace(/^https?:\/\//, '').slice(0, 70);
+    if (t.name === 'execute_code') {
+      const lang = a.language || '';
+      const len = a.code ? String(a.code).length : 0;
+      return len ? `${lang} (${len}c)` : lang;
+    }
+    if (t.name === 'project_read_file' && a.path) return String(a.path);
+    if (t.name === 'project_write_file' && a.path) return String(a.path);
+    if (t.name === 'project_grep' && a.pattern) return `/${String(a.pattern).slice(0, 50)}/`;
+    if (t.name === 'spawn_subagent' && a.subagent_type) return String(a.subagent_type);
+    if (t.name === 'send_message_to_agent' && a.to) return `→ ${a.to}`;
+    if (t.name === 'todo_write' && Array.isArray(a.todos)) return `${a.todos.length} item${a.todos.length > 1 ? 's' : ''}`;
+    if (t.name === 'display_file' && a.fileId) return a.fileId;
+    if (t.name === 'display_image' && (a.fileId || a.url)) return a.fileId || String(a.url).replace(/^https?:\/\//, '').slice(0, 50);
+    if (t.name === 'render_structured' && a.layout) return String(a.layout);
+    if (t.name === 'generate_diagram' && a.type) return String(a.type);
+    if (t.name === 'render_interactive_canvas' && a.title) return `"${String(a.title).slice(0, 50)}"`;
+    // Fallback : première string significative
+    for (const k of ['query', 'url', 'path', 'key', 'prompt', 'to', 'title']) {
+      if (typeof a[k] === 'string' && a[k]) return String(a[k]).slice(0, 60);
+    }
+    return '';
+  }
 
   toolDisplayName(t: StreamTool): string {
     if (t.displayTitle) return t.displayTitle;
