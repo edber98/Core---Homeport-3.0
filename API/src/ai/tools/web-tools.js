@@ -50,11 +50,16 @@ const PRIVATE_NETS = [
   /^::1$/i, /^fc00:/i, /^fd[0-9a-f]{2}:/i, /^fe80:/i,
 ];
 
+// Env SSRF_ALLOW_PRIVATE=1 désactive la protection SSRF (dev local avec
+// sites sur réseau privé). JAMAIS en production.
+const SSRF_ALLOW_PRIVATE = process.env.SSRF_ALLOW_PRIVATE === '1' || process.env.SSRF_ALLOW_PRIVATE === 'true';
+if (SSRF_ALLOW_PRIVATE) console.warn('[web-tools] ⚠️  SSRF private net check DISABLED (SSRF_ALLOW_PRIVATE=1)');
+
 async function validateUrl(url) {
   let u;
   try { u = new URL(url); } catch { throw new Error('invalid_url'); }
   if (!['http:', 'https:'].includes(u.protocol)) throw new Error('invalid_protocol');
-  // Block raw IP usage in hostname that resolves to private (DNS rebinding mitigation)
+  if (SSRF_ALLOW_PRIVATE) return u; // skip private net check en dev
   let addrs;
   try { addrs = await dns.lookup(u.hostname, { all: true }); }
   catch { throw new Error(`dns_failed:${u.hostname}`); }

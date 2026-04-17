@@ -254,7 +254,7 @@ export interface AiMessage {
   cancelled?: boolean;
   createdAt?: string;
   metadata?: {
-    kind?: 'permission_request' | 'cache_sync_request' | 'comment' | 'system_hint' | 'structured' | 'plan_proposal' | 'diagram' | 'image_inline' | 'agent_report' | 'canvas_html' | 'file_inline' | 'todo_list';
+    kind?: 'permission_request' | 'cache_sync_request' | 'comment' | 'system_hint' | 'system_note' | 'structured' | 'plan_proposal' | 'diagram' | 'image_inline' | 'agent_report' | 'canvas_html' | 'file_inline' | 'todo_list';
     canvasHtml?: { html: string; title?: string | null; description?: string | null; height?: number; type?: '2d' | '3d' | 'animation' | 'demo' };
     permissionRequest?: AiPermissionRequest;
     cacheSyncRequest?: AiCacheSyncRequest;

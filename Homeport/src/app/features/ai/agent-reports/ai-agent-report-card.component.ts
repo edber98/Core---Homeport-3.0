@@ -101,33 +101,35 @@ import { AiAgentBadgeComponent } from '../agents/ai-agent-badge.component';
     </div>
   `,
   styles: [`
+    /* Style compact reasoning-block (comme les blocs raisonnement inline,
+       pas de full-width card qui cache les boutons copy sous le scroll) */
     .report-card {
-      background: #fff;
-      border: 1px solid #e8e8e8;
-      border-left: 3px solid #e61982;
-      border-radius: 10px;
-      margin: 6px 0;
+      background: transparent;
+      border-left: 3px solid #d9d9d9;
+      border-radius: 0 8px 8px 0;
+      padding: 0;
+      margin: 4px 0;
+      max-width: 85%;
+      opacity: 0.85;
       overflow: hidden;
-      transition: box-shadow .15s, border-color .15s;
     }
-    .report-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,.05); }
-    .report-card.expanded { box-shadow: 0 2px 10px rgba(230,25,130,.08); }
+    .report-card:hover { opacity: 1; }
+    .report-card.expanded { opacity: 1; }
     .report-card.error { border-left-color: #ff4d4f; }
 
     .report-head {
-      display: flex; align-items: center; gap: 12px;
+      display: flex; align-items: center; gap: 10px;
       width: 100%;
-      padding: 12px 14px;
+      padding: 6px 12px;
       background: transparent;
       border: 0;
       cursor: pointer;
       text-align: left;
-      transition: background .12s;
+      font-size: 12px;
     }
-    .report-head:hover { background: #fafafa; }
-    .report-card.expanded .report-head { border-bottom: 1px solid #f0f0f0; }
+    .report-head:hover { color: #e61982; }
 
-    .report-icon { font-size: 18px; color: #e61982; flex: 0 0 auto; }
+    .report-icon { font-size: 14px; color: #999; flex: 0 0 auto; }
     .report-icon.icon-error { color: #ff4d4f; }
     .report-head-text { flex: 1; min-width: 0; }
     .report-title {
@@ -145,8 +147,8 @@ import { AiAgentBadgeComponent } from '../agents/ai-agent-badge.component';
     .report-head:hover .chevron { color: #e61982; }
 
     .report-body {
-      padding: 12px 14px 14px;
-      background: #fafafa;
+      padding: 6px 12px 10px;
+      background: transparent;
       animation: reportExpand 180ms ease-out;
     }
     @keyframes reportExpand {

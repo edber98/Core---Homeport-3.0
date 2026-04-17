@@ -177,7 +177,7 @@ interface StreamTool {
 
       <ng-container *ngFor="let msg of ai.messages(); let i = index">
         <!-- System context message (transferred context) — sauf hint qui passe par ai-message -->
-        <div class="system-msg" *ngIf="msg.role === 'system' && msg.metadata?.kind !== 'system_hint'">
+        <div class="system-msg" *ngIf="msg.role === 'system' && msg.metadata?.kind !== 'system_hint' && msg.metadata?.kind !== 'system_note'">
           <div class="system-context">
             <span nz-icon nzType="info-circle" nzTheme="outline"></span>
             <span class="system-label">Contexte transféré</span>
@@ -188,7 +188,7 @@ interface StreamTool {
           <div class="system-content" *ngIf="expandedMsgs.has(msg)" [innerHTML]="renderMd(msg.content)"></div>
         </div>
         <!-- Regular message (with contiguous assistant grouping) OU system_hint -->
-        <div *ngIf="msg.role !== 'system' || msg.metadata?.kind === 'system_hint'"
+        <div *ngIf="msg.role !== 'system' || msg.metadata?.kind === 'system_hint' || msg.metadata?.kind === 'system_note'"
              class="msg-wrap"
              [class.grouped]="isGroupedWithPrevious(msg, ai.messages()[i-1] || null)">
           <ai-message
