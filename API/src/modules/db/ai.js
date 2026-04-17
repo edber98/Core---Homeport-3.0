@@ -704,7 +704,7 @@ ${toolLines.join('\n')}
           }
 
           case 'tool.input_delta':
-            console.log(`[ai-sse] tool.input_delta → ${event.name} +${(event.text || '').length}chars (id=${event.id})`);
+            if (process.env.AI_DEBUG) console.log(`[ai-sse] tool.input_delta → ${event.name} +${(event.text || '').length}chars (id=${event.id})`);
             send(event);
             break;
 

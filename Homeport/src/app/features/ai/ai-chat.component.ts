@@ -72,6 +72,9 @@ const TOOL_LABELS: Record<string, string> = {
   // Structured interactive messages
   render_structured: 'Affichage structuré',
   render_interactive_canvas: 'Canvas interactif',
+  todo_write: 'Checklist',
+  send_message_to_agent: 'Message agent',
+  display_file: 'Aperçu fichier',
 };
 
 /** Human-readable labels for meta-tool arguments (non-execute_tool tools) */

@@ -380,6 +380,7 @@ function createDocumentExecutor(metadata = {}, emit) {
         error: err?.message || String(err),
         stderr: err?.stderr || null,
         skillKey,
+        fallback_hint: `Le skill "${skillKey}" a échoué. ALTERNATIVE RECOMMANDÉE : utilise execute_code avec ${format === 'docx' ? 'python-docx (pip: python-docx)' : format === 'xlsx' ? 'openpyxl' : format === 'pptx' ? 'pptxgenjs (Node.js)' : 'HTML inline'}. Génère le fichier dans le code, puis appelle display_file pour l'afficher.`,
       };
     }
   }

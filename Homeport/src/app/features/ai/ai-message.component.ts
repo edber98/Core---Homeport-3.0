@@ -78,6 +78,8 @@ const TOOL_LABELS: Record<string, string> = {
   get_deployment_status: 'Statut déploiement', start_run: 'Lancement exécution',
   list_runs: 'Historique exécutions', get_run_stats: 'Statistiques',
   render_structured: 'Affichage structuré',
+  todo_write: 'Checklist', send_message_to_agent: 'Message agent',
+  display_file: 'Aperçu fichier', render_interactive_canvas: 'Canvas interactif',
 };
 
 /** Human-readable labels for meta-tool arguments (non-execute_tool tools) */
@@ -218,6 +220,7 @@ interface ProcessedSegment {
             <ai-agent-report-card *ngIf="!isReportAbsorbedByTodo(msg)" [report]="msg.metadata!.agentReport!"></ai-agent-report-card>
           </div>
           <div *ngSwitchCase="'system_hint'" class="system-hint-hidden"></div>
+          <div *ngSwitchCase="'system_note'" class="system-hint-hidden"></div>
           <div *ngSwitchCase="'comment'" class="comment-msg" [class.subagent-ping]="isSubagentComment(msg)">
             <div class="comment-head" *ngIf="isSubagentComment(msg); else regularComment">
               <ai-agent-badge [agent]="subagentCommentAgent(msg)" [compact]="true"></ai-agent-badge>

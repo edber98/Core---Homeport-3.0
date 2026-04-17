@@ -419,6 +419,28 @@ async function runJob(jobId, opts = {}) {
 
     emitJobEvent(jobId, { type: 'job.status', status: 'completed', usage: totalUsage });
 
+    // Sauvegarde le texte final comme AiMessage si c'est un job background
+    // (resume, subagent) qui a produit du texte mais pas via POST /messages.
+    // Sans ça, le texte de conclusion du resume est invisible côté frontend
+    // tant que l'utilisateur ne refresh pas.
+    if (finalText.trim() && job.type === 'agent_run' && !opts._fromPostMessages) {
+      try {
+        await AiMessage.create({
+          threadId: job.threadId,
+          role: 'assistant',
+          content: finalText.trim(),
+          toolCalls: toolCalls.length ? toolCalls.map(tc => ({
+            id: tc.id, name: tc.name, args: tc.args,
+            result: tc.result, duration: tc.duration, status: tc.status,
+            displayTitle: tc.displayTitle,
+          })) : undefined,
+        });
+        emitThreadEvent(String(job.threadId), { type: 'ai.message.created', kind: 'resume_final' });
+      } catch (e) {
+        console.warn('[job-runner] resume final message persist failed:', e?.message);
+      }
+    }
+
     // Hook fin de job : crée un AiMessage agent_report si job async ou > 30s.
     try {
       await _maybeCreateAgentReport(job, { opts, toolCalls, finishedAt });
@@ -612,9 +634,20 @@ async function _maybeResumeParent(job) {
   //    avec des spawn_subagent dans ses tool_calls.
   const significant = lastMessages.find(m => m.metadata?.kind !== 'agent_report' && m.role === 'assistant');
   if (!significant) return;
-  const hasSpawnedSubagents = Array.isArray(significant.toolCalls) &&
-    significant.toolCalls.some(tc => tc.name === 'spawn_subagent');
-  if (!hasSpawnedSubagents) return;
+  // Cherche spawn_subagent à la fois dans toolCalls top-level ET dans
+  // segments[].toolCalls (le format peut varier selon le path de sauvegarde).
+  const allToolCalls = [];
+  if (Array.isArray(significant.toolCalls)) allToolCalls.push(...significant.toolCalls);
+  if (Array.isArray(significant.segments)) {
+    for (const seg of significant.segments) {
+      if (Array.isArray(seg?.toolCalls)) allToolCalls.push(...seg.toolCalls);
+    }
+  }
+  const hasSpawnedSubagents = allToolCalls.some(tc => tc?.name === 'spawn_subagent');
+  if (!hasSpawnedSubagents) {
+    console.log(`[resume-parent] skip thread=${threadId} : pas de spawn_subagent détecté dans le dernier msg assistant (toolCalls=${allToolCalls.length})`);
+    return;
+  }
 
   // 4. Si un livrable final a déjà été produit APRÈS le spawn, skip le
   // resume LLM complet, MAIS auto-clôture la todo-list si elle existe et
@@ -629,7 +662,7 @@ async function _maybeResumeParent(job) {
       const todoMsg = await AiMessage.findOne({
         threadId,
         'metadata.kind': 'todo_list',
-        'metadata.widgetId': 'session-todos',
+        'metadata.widgetId': { $regex: '^session-todos' },
       }).sort({ createdAt: -1 });
       if (todoMsg) {
         const todos = todoMsg.metadata?.todoList?.todos || [];

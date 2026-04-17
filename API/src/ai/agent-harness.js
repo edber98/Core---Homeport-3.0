@@ -401,7 +401,8 @@ factuel des livrables créés avec leurs IDs/paths. Pas de phrase de conclusion 
             let buf = toolInputBuffers.get(event.id) || '';
             buf += event.text;
             toolInputBuffers.set(event.id, buf);
-            console.log(`[harness] stream: tool_input_delta → ${event.name} +${event.text.length}chars (id=${event.id}), buf=${buf.length}chars`);
+            // Log seulement si AI_DEBUG=1 (trop verbeux sur les gros args)
+            if (process.env.AI_DEBUG) console.log(`[harness] stream: tool_input_delta → ${event.name} +${event.text.length}chars (id=${event.id}), buf=${buf.length}chars`);
 
             yield { type: 'tool.input_delta', id: event.id, name: event.name, text: event.text };
 

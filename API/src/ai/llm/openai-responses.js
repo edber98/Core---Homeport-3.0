@@ -104,7 +104,11 @@ async function* streamOpenAIResponses(messages, tools, config) {
       // Responses API event types
       const type = data.type;
       if (type?.includes('function_call') || type?.includes('output_item')) {
-        console.log(`[llm-openai-responses] SSE event: ${type}`, type.includes('delta') ? `delta=${(data.delta || '').length}chars` : '');
+        // Les events `delta` sont très verbeux (1 log par chunk d'arg). Silencieux
+        // par défaut, activables via AI_DEBUG=1.
+        if (!type.includes('delta') || process.env.AI_DEBUG) {
+          console.log(`[llm-openai-responses] SSE event: ${type}`, type.includes('delta') ? `delta=${(data.delta || '').length}chars` : '');
+        }
       }
 
       switch (type) {

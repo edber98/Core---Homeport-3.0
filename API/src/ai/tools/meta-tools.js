@@ -1416,8 +1416,17 @@ async function executeMetaTool(name, input, ctx) {
         return { ok: false, error: `Un seul item peut être in_progress à la fois (trouvé ${inProgressCount}). Termine ou repasse en pending.` };
       }
       try {
-        // Widget éditable stable : toujours le même AiMessage par thread.
-        const widgetId = 'session-todos';
+        // Widget éditable scopé au DERNIER message user. Une nouvelle demande
+        // user → nouveau widgetId → nouvelle card todo. Évite de polluer la
+        // checklist d'une demande précédente déjà terminée.
+        let widgetId = 'session-todos';
+        try {
+          const lastUserMsg = await AiMessage.findOne({
+            threadId: ctx.threadId,
+            role: 'user',
+          }).sort({ createdAt: -1 }).select('_id').lean();
+          if (lastUserMsg?._id) widgetId = `session-todos-${String(lastUserMsg._id).slice(-12)}`;
+        } catch { /* fallback to default */ }
         // Drain les tools accumulés depuis le dernier todo_write et attribue-les
         // à l'item qui vient de passer in_progress → completed (ou à l'item
         // actuellement in_progress qui a progressé).
