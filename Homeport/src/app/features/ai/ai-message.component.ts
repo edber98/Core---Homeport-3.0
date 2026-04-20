@@ -467,6 +467,8 @@ interface ProcessedSegment {
     .avatar { width: 32px; height: 32px; border-radius: 50%; background: #f0f0f0; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 16px; }
     .ai-msg.assistant .avatar { background: #fdf2f8; color: #e61982; }
     .body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+    /* Body vide (widget-only sans texte ni actions) : pas de place perdue */
+    .body:empty, .body:has(> .system-hint-hidden:only-child) { display: none; }
     .content { max-width: 85%; min-width: 0; overflow: hidden; word-break: break-word; line-height: 1.5; }
     .content :host ::ng-deep p { margin: 0 0 4px; }
     .content :host ::ng-deep p:last-child { margin: 0; }
@@ -669,7 +671,18 @@ interface ProcessedSegment {
     .tool-file-img { max-width: 200px; max-height: 150px; border-radius: 6px; object-fit: cover; border: 1px solid #e8e8e8; }
     .tool-file-link { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; color: #e61982; }
     /* Wrapper unifié pour TOUS les widgets assistant — même max-width que les messages texte */
-    .widget-bubble { max-width: min(720px, 85%); min-width: 0; display: block; margin: 4px 0; }
+    /* Widgets inline : même largeur que le texte (85%), pas de card séparée.
+       Visuellement intégrés dans le flux du message comme dans Claude.ai. */
+    .widget-bubble {
+      max-width: 85%;
+      min-width: 0;
+      display: block;
+      margin: 8px 0;
+      background: transparent;
+      border: 0;
+      box-shadow: none;
+    }
+    @media (max-width: 640px) { .widget-bubble { max-width: 100%; } }
     .perm-request-bubble { max-width: min(560px, 85%); animation: perm-pulse 2s ease-in-out 2; }
     @keyframes perm-pulse {
       0%, 100% { box-shadow: 0 0 0 rgba(114, 46, 209, 0); }

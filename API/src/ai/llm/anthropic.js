@@ -16,12 +16,15 @@ async function* streamAnthropic(messages, tools, config) {
     }
   }
 
+  const modelId = config.model || 'claude-sonnet-4-5-20250929';
+  // Claude Opus 4.7+ et certains modèles récents ne supportent pas `temperature`.
+  const supportsTemperature = !modelId.includes('opus-4-7') && !modelId.includes('opus-4-6');
   const body = {
-    model: config.model || 'claude-sonnet-4-5-20250929',  // Latest Claude Sonnet
+    model: modelId,
     max_tokens: config.maxTokens || 4096,
     messages: formatMessages(filtered),
     stream: true,
-    temperature: config.temperature ?? 0.7,
+    ...(supportsTemperature ? { temperature: config.temperature ?? 0.7 } : {}),
   };
   if (system) body.system = system;
   if (tools && tools.length) body.tools = formatTools(tools);

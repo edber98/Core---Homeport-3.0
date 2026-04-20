@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild, ChangeDetectorRef, effect, inject, AfterViewInit } from '@angular/core';
+import { Component, ElementRef, ViewChild, ChangeDetectorRef, effect, inject, AfterViewInit, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { trigger, transition, style, animate } from '@angular/animations';
@@ -169,34 +169,42 @@ interface StreamTool {
   template: `
     <!-- Messages -->
     <div class="messages" #scrollContainer (scroll)="onScroll()">
-      <ng-container *ngIf="ai.messages().length === 0 && !ai.streaming()">
+      <ng-container *ngIf="messageGroups().length === 0 && !ai.streaming()">
         <div class="empty">
           <nz-empty nzNotFoundContent="Commencez une conversation"></nz-empty>
         </div>
       </ng-container>
 
-      <ng-container *ngFor="let msg of ai.messages(); let i = index">
-        <!-- System context message (transferred context) — sauf hint qui passe par ai-message -->
-        <div class="system-msg" *ngIf="msg.role === 'system' && msg.metadata?.kind !== 'system_hint' && msg.metadata?.kind !== 'system_note'">
+      <ng-container *ngFor="let group of messageGroups(); let gi = index; trackBy: trackGroup">
+        <!-- System context messages -->
+        <div class="system-msg" *ngIf="group.isSystem">
           <div class="system-context">
             <span nz-icon nzType="info-circle" nzTheme="outline"></span>
             <span class="system-label">Contexte transféré</span>
-            <button nz-button nzType="text" nzSize="small" (click)="toggleExpanded(msg)">
-              {{ expandedMsgs.has(msg) ? 'Masquer' : 'Voir' }}
+            <button nz-button nzType="text" nzSize="small" (click)="toggleExpanded(group.messages[0])">
+              {{ expandedMsgs.has(group.messages[0]) ? 'Masquer' : 'Voir' }}
             </button>
           </div>
-          <div class="system-content" *ngIf="expandedMsgs.has(msg)" [innerHTML]="renderMd(msg.content)"></div>
+          <div class="system-content" *ngIf="expandedMsgs.has(group.messages[0])" [innerHTML]="renderMd(group.messages[0].content)"></div>
         </div>
-        <!-- Regular message (with contiguous assistant grouping) OU system_hint -->
-        <div *ngIf="msg.role !== 'system' || msg.metadata?.kind === 'system_hint' || msg.metadata?.kind === 'system_note'"
-             class="msg-wrap"
-             [class.grouped]="isGroupedWithPrevious(msg, ai.messages()[i-1] || null)">
-          <ai-message
-            [msg]="msg"
-            [compact]="isGroupedWithPrevious(msg, ai.messages()[i-1] || null)"
-            [isLast]="i === ai.messages().length - 1"
-            (retryClick)="retry()">
-          </ai-message>
+
+        <!-- User message (toujours seul) -->
+        <div *ngIf="group.role === 'user'" class="msg-wrap">
+          <ai-message [msg]="group.messages[0]" [compact]="false"
+                      [isLast]="gi === messageGroups().length - 1"
+                      (retryClick)="retry()"></ai-message>
+        </div>
+
+        <!-- GROUPE assistant fusionné : 1 avatar + N messages en flux continu -->
+        <div *ngIf="group.role === 'assistant' && !group.isSystem" class="msg-wrap assistant-group">
+          <ng-container *ngFor="let msg of group.messages; let mi = index">
+            <ai-message
+              [msg]="msg"
+              [compact]="mi > 0"
+              [isLast]="gi === messageGroups().length - 1 && mi === group.messages.length - 1"
+              (retryClick)="retry()">
+            </ai-message>
+          </ng-container>
         </div>
       </ng-container>
 
@@ -516,9 +524,30 @@ interface StreamTool {
     .empty { flex: 1; display: flex; align-items: center; justify-content: center; }
     /* Grouped assistant messages — collapse space between stacked bubbles */
     .msg-wrap { display: block; }
-    .msg-wrap.grouped { margin-top: -6px; }
-    .msg-wrap.grouped ::ng-deep .ai-msg { padding-top: 0 !important; padding-bottom: 2px !important; }
-    .msg-wrap.grouped ::ng-deep .ai-msg .avatar-spacer { background: transparent !important; }
+    /* Groupe assistant fusionné : 1 avatar + N messages en flux continu.
+       Les sub-messages après le premier n'ont pas d'avatar (compact mode),
+       et les widgets s'intercalent naturellement sans card séparée. */
+    .assistant-group ::ng-deep ai-message + ai-message .ai-msg {
+      padding-top: 0 !important;
+      padding-bottom: 2px !important;
+    }
+    .assistant-group ::ng-deep ai-message + ai-message .ai-msg .avatar,
+    .assistant-group ::ng-deep ai-message + ai-message .ai-msg .avatar-spacer {
+      visibility: hidden;
+      height: 0;
+      overflow: hidden;
+    }
+    /* Widgets dans le groupe : inline, pas de card surélevée */
+    .assistant-group ::ng-deep ai-message + ai-message .widget-bubble {
+      margin: 4px 0;
+      border: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+    .assistant-group ::ng-deep .report-card {
+      margin: 2px 0;
+      border-left-color: #e8e8e8;
+    }
     .streaming-msg .ai-msg { display: flex; gap: 10px; padding: 8px 0; }
     .streaming-msg .avatar { width: 32px; height: 32px; border-radius: 50%; background: #e6f4ff; color: #e61982; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 16px; }
     .streaming-msg .body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
@@ -924,6 +953,52 @@ export class AiChatComponent implements AfterViewInit {
   private previewParser = inject(PreviewParserService);
   // Souscriptions worker par toolId (pour cleanup)
   private _previewSubs = new Map<string, { unsub: () => void }>();
+
+  /**
+   * Fusionne les messages consécutifs du même rôle assistant en "groupes".
+   * Chaque groupe partage un seul avatar et un seul conteneur visuel →
+   * texte + widgets s'intercalent naturellement (approche A).
+   */
+  messageGroups = computed(() => {
+    const msgs = this.ai.messages();
+    const groups: Array<{ role: string; messages: any[]; isSystem: boolean }> = [];
+    let current: { role: string; messages: any[]; isSystem: boolean } | null = null;
+
+    for (const m of msgs) {
+      const kind = m.metadata?.kind;
+      // System messages sauf hint/note → leur propre groupe
+      if (m.role === 'system' && kind !== 'system_hint' && kind !== 'system_note') {
+        if (current) { groups.push(current); current = null; }
+        groups.push({ role: 'system', messages: [m], isSystem: true });
+        continue;
+      }
+      // Hidden (system_hint, system_note) → skip
+      if (m.role === 'system' && (kind === 'system_hint' || kind === 'system_note')) {
+        continue;
+      }
+      // User message → propre groupe
+      if (m.role === 'user') {
+        if (current) { groups.push(current); current = null; }
+        groups.push({ role: 'user', messages: [m], isSystem: false });
+        continue;
+      }
+      // Assistant → fusion avec le groupe courant si assistant aussi
+      if (m.role === 'assistant') {
+        if (current && current.role === 'assistant') {
+          current.messages.push(m);
+        } else {
+          if (current) groups.push(current);
+          current = { role: 'assistant', messages: [m], isSystem: false };
+        }
+        continue;
+      }
+      // Fallback
+      if (current) { groups.push(current); current = null; }
+      groups.push({ role: m.role || 'unknown', messages: [m], isSystem: false });
+    }
+    if (current) groups.push(current);
+    return groups;
+  });
 
   constructor(public ai: AiService, public audio: AiAudioService, private cdr: ChangeDetectorRef) {
     // Prompt templates : insertion dans input chat
@@ -1609,14 +1684,7 @@ export class AiChatComponent implements AfterViewInit {
    * Returns true if `msg` should be visually grouped with `prev` (same author, close in time).
    * Used to collapse consecutive assistant messages into a single bubble stack with one avatar.
    */
-  isGroupedWithPrevious(msg: any, prev: any): boolean {
-    if (!prev || !msg) return false;
-    if (msg.role !== 'assistant' || prev.role !== 'assistant') return false;
-    const t1 = new Date(msg.createdAt || 0).getTime();
-    const t2 = new Date(prev.createdAt || 0).getTime();
-    if (!t1 || !t2) return false;
-    return Math.abs(t1 - t2) < 10_000; // 10s window
-  }
+  trackGroup(i: number, g: any) { return g.messages[0]?._id || `g:${i}`; }
 
   toolLabel(name: string): string {
     return TOOL_LABELS[name] || name;

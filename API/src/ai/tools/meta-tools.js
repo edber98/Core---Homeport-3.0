@@ -468,7 +468,7 @@ const META_TOOL_DEFINITIONS = [
 - Demande purement conversationnelle ou informationnelle.
 
 📋 FORMAT
-- 1 seul item en in_progress à la fois (ou zéro).
+- Plusieurs items peuvent être in_progress simultanément (ex: sous-agents parallèles).
 - content = description claire courte ("Générer le modèle docx")
 - activeForm = forme active affichée pendant l'exécution ("Génération du modèle docx…")
 - status : pending / in_progress / completed / cancelled
@@ -1412,9 +1412,7 @@ async function executeMetaTool(name, input, ctx) {
         }
       }
       const inProgressCount = todos.filter(t => t.status === 'in_progress').length;
-      if (inProgressCount > 1) {
-        return { ok: false, error: `Un seul item peut être in_progress à la fois (trouvé ${inProgressCount}). Termine ou repasse en pending.` };
-      }
+      // Plusieurs in_progress autorisés (sous-agents parallèles = plusieurs tâches en cours).
       try {
         // Widget éditable scopé au DERNIER message user. Une nouvelle demande
         // user → nouveau widgetId → nouvelle card todo. Évite de polluer la
@@ -1640,6 +1638,22 @@ async function executeMetaTool(name, input, ctx) {
       try {
         const { spawnSubagent } = require('../subagent/sub-runner');
         const jc = ctx?._jobContext;
+
+        // ── Anti-doublon : si le même type+prompt a déjà été spawné dans ce
+        // tour, on bloque pour éviter les duplications (LLM qui boucle et
+        // relance les mêmes subagents). On compare par type+prompt hash.
+        if (jc?._spawnedPromptHashes) {
+          const promptHash = `${input.subagent_type || 'general'}:${String(input.prompt || '').slice(0, 200)}`;
+          if (jc._spawnedPromptHashes.has(promptHash)) {
+            console.warn(`[spawn_subagent] DÉDUP : subagent ${input.subagent_type} déjà lancé avec ce prompt, blocage du doublon`);
+            return {
+              ok: false,
+              error: 'spawn_duplicate_blocked',
+              message: `Ce subagent (${input.subagent_type}) a déjà été lancé avec ce prompt. Ne re-spawn PAS les mêmes subagents. Termine ce tour avec 1-2 phrases de narration, l'auto-resume te réveillera quand ils auront fini.`,
+            };
+          }
+        }
+
         // Live preview: emit subagent status
         try {
           ctx?._emit?.({
@@ -1709,6 +1723,11 @@ async function executeMetaTool(name, input, ctx) {
             patch: [{ op: 'replace', path: '/status', value: 'success' }],
           });
         } catch { /* non-fatal */ }
+        // Mémorise le prompt hash pour anti-doublon
+        if (ctx?._jobContext) {
+          if (!ctx._jobContext._spawnedPromptHashes) ctx._jobContext._spawnedPromptHashes = new Set();
+          ctx._jobContext._spawnedPromptHashes.add(`${input.subagent_type || 'general'}:${String(input.prompt || '').slice(0, 200)}`);
+        }
         // Message d'ATTENTE explicite pour async — empêche le LLM d'essayer
         // de finaliser la tâche lui-même en hallucinant les résultats.
         const wasAsync = res?.async === true || res?.result?.async === true;

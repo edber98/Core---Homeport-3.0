@@ -630,10 +630,25 @@ async function _maybeResumeParent(job) {
     .sort({ createdAt: -1 }).limit(8).lean();
   if (!lastMessages.length) return;
 
-  // 3. Le dernier message significatif (non agent_report) doit être assistant
-  //    avec des spawn_subagent dans ses tool_calls.
-  const significant = lastMessages.find(m => m.metadata?.kind !== 'agent_report' && m.role === 'assistant');
-  if (!significant) return;
+  // 3. Le message assistant QUI A LANCÉ les subagents. On skip tous les messages
+  //    widget (agent_report, structured, todo_list, diagram, file_inline, etc.)
+  //    car ils n'ont pas de toolCalls — on cherche le vrai message parent.
+  const WIDGET_KINDS = new Set([
+    'agent_report', 'structured', 'todo_list', 'diagram',
+    'image_inline', 'file_inline', 'canvas_html', 'comment',
+    'system_note', 'system_hint',
+    'permission_request', 'cache_sync_request',
+  ]);
+  const significant = lastMessages.find(m =>
+    m.role === 'assistant' && !WIDGET_KINDS.has(m.metadata?.kind)
+  );
+  if (!significant) {
+    // Debug : log tous les messages récents pour comprendre pourquoi aucun n'est significatif
+    const dbg = lastMessages.map(m => `${m.role}:${m.metadata?.kind || 'none'}:tc=${(m.toolCalls||[]).length}:seg=${(m.segments||[]).length}`);
+    console.log(`[resume-parent] skip thread=${threadId} : aucun msg assistant non-widget. Messages: [${dbg.join(', ')}]`);
+    return;
+  }
+  console.log(`[resume-parent] significant msg: _id=${significant._id}, kind=${significant.metadata?.kind || 'none'}, toolCalls=${(significant.toolCalls||[]).length}, segments=${(significant.segments||[]).length}`);
   // Cherche spawn_subagent à la fois dans toolCalls top-level ET dans
   // segments[].toolCalls (le format peut varier selon le path de sauvegarde).
   const allToolCalls = [];
@@ -727,7 +742,19 @@ async function _maybeResumeParent(job) {
 
   console.log(`[resume-parent] thread=${threadId} : ${recentJobs.length} subagents terminés, déclenchement du resume`);
 
+  // Récupère le dernier message user pour rappeler la demande originale
+  let userRequest = '';
+  try {
+    const lastUser = await AiMessage.findOne({ threadId, role: 'user' }).sort({ createdAt: -1 }).lean();
+    if (lastUser?.content) userRequest = String(lastUser.content).slice(0, 1000);
+  } catch {}
+
   const resumePrompt = `Tous les sous-agents lancés sont terminés. Voici leurs résultats consolidés :
+
+📋 RAPPEL DE LA DEMANDE ORIGINALE DE L'UTILISATEUR :
+${userRequest || '(non récupérée)'}
+
+=== RÉSULTATS DES SOUS-AGENTS ===
 
 ${summaries}
 
@@ -740,14 +767,18 @@ ${summaries}
    - Les items déjà livrés via d'autres outils (render_structured, display_file) marque-les aussi \`completed\`
    - Si c'est la dernière étape, marque tout en \`completed\`
 
-2. **LIVRE LE RÉSULTAT FINAL**
-   Appelle directement le tool de production adapté :
-   - Tableau comparatif → render_structured(layout='comparison_table', data={columns, rows})
-   - Document Excel/PDF → generate_document + display_file
-   - Visualisation / dashboard → render_interactive_canvas
-   - Diagramme → generate_diagram
-   - Conclusion simple → texte brut court (2-3 phrases)
+2. **EXÉCUTE TOUTES LES TÂCHES DEMANDÉES** (relis la demande originale ci-dessus !)
+   Compare la demande utilisateur avec ce qui a été produit par les subagents. Si il manque des livrables (ex: docx, xlsx, logo, fichier, canvas...) → produis-les MAINTENANT avec les tools appropriés :
+   - Document Word/docx → \`execute_code\` avec python-docx (la lib la plus fiable)
+   - Fichier Excel/xlsx → \`execute_code\` avec openpyxl
+   - Tableau visuel → render_structured
+   - Graphique/visualisation → render_interactive_canvas
+   - Fichier téléchargé → display_file ou display_image
+   - Conclusion → texte brut 2-3 phrases
+   CHAQUE livrable doit être suivi de son affichage (display_file, display_image, etc.).
    Puis un dernier \`todo_write\` pour marquer la dernière étape \`completed\`.
+
+   ⚠️ NE SKIP PAS de tâche. Si l'utilisateur a demandé un docx, GÉNÈRE-LE. Si il a demandé le logo, AFFICHE-LE. Vérifie item par item.
 
 🚫 INTERDICTIONS
 - ❌ NE FAIS PAS de \`propose_plan\` (la planification est passée, on finalise)

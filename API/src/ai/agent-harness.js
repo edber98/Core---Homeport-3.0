@@ -30,6 +30,66 @@ function _summarizeArgs(args, maxChars = 300) {
 // et coupe l'agent en plein milieu avec "Limite de boucles atteinte".
 const DEFAULT_MAX_LOOPS = parseInt(process.env.AI_DEFAULT_MAX_LOOPS || '100', 10);
 
+/**
+ * Quand le harness se termine (done, abort, maxLoops, question), on vérifie
+ * s'il reste des todos in_progress/pending. Si oui, on les marque comme
+ * "cancelled" ou "completed" selon le contexte, pour que le frontend ne reste
+ * pas en loading infini.
+ */
+async function _autoCloseStaleTodos(threadId) {
+  if (!threadId) return;
+  try {
+    // NE PAS fermer si des subagents sont encore actifs sur ce thread.
+    const AiJob = require('../db/models/ai-job.model');
+    const activeSubagents = await AiJob.countDocuments({
+      threadId,
+      type: 'subagent',
+      subagentType: { $nin: ['memory_extractor', 'project_doc_writer'] },
+      status: { $in: ['queued', 'running', 'waiting_dependency', 'waiting_permission', 'paused'] },
+    });
+    if (activeSubagents > 0) {
+      console.log(`[harness] skip auto-close todos: ${activeSubagents} subagents encore actifs`);
+      return;
+    }
+
+    const AiMessage = require('../db/models/ai-message.model');
+    const todoMsg = await AiMessage.findOne({
+      threadId,
+      'metadata.kind': 'todo_list',
+      'metadata.widgetId': { $regex: '^session-todos' },
+    }).sort({ createdAt: -1 });
+    if (!todoMsg) return;
+    const todos = todoMsg.metadata?.todoList?.todos || [];
+    const hasOpen = todos.some(t => t.status === 'in_progress' || t.status === 'pending');
+    if (!hasOpen) return;
+    const recentWidgets = await AiMessage.countDocuments({
+      threadId,
+      createdAt: { $gt: todoMsg.createdAt },
+      'metadata.kind': { $in: ['structured', 'file_inline', 'canvas_html', 'diagram', 'image_inline'] },
+    });
+    const targetStatus = recentWidgets > 0 ? 'completed' : 'cancelled';
+    const updated = todos.map(t => ({
+      ...(t.toObject?.() || t),
+      status: (t.status === 'completed' || t.status === 'cancelled') ? t.status : targetStatus,
+    }));
+    todoMsg.metadata = {
+      ...(todoMsg.metadata?.toObject?.() || todoMsg.metadata),
+      todoList: {
+        ...(todoMsg.metadata?.todoList?.toObject?.() || todoMsg.metadata?.todoList),
+        todos: updated,
+        updatedAt: new Date(),
+      },
+      widgetUpdatedAt: new Date(),
+    };
+    await todoMsg.save();
+    const { emitThreadEvent } = require('./jobs/job-events');
+    emitThreadEvent(String(threadId), { type: 'ai.message.updated', messageId: String(todoMsg._id), kind: 'todo_list' });
+    console.log(`[harness] auto-close stale todos: ${todos.filter(t => t.status !== 'completed' && t.status !== 'cancelled').length} items → ${targetStatus}`);
+  } catch (e) {
+    console.warn('[harness] auto-close stale todos failed:', e?.message);
+  }
+}
+
 /** Résumé 1-ligne des args d'un tool pour affichage UI (hint context). */
 function _summarizeToolArgs(name, args) {
   if (!args || typeof args !== 'object') return '';
@@ -573,6 +633,9 @@ factuel des livrables créés avec leurs IDs/paths. Pas de phrase de conclusion 
         continue; // relance la boucle LLM
       }
       await toolSet.cleanup();
+      // Ferme les todos in_progress/pending qui traînent (le LLM a fini sans les clore)
+      const tid = modeMetadata.threadId || context._threadId;
+      if (tid) await _autoCloseStaleTodos(String(tid));
       yield { type: 'done', usage: totalUsage };
       return;
     }
@@ -693,12 +756,20 @@ factuel des livrables créés avec leurs IDs/paths. Pas de phrase de conclusion 
             if (threadId) {
               try {
                 const AiMessage = require('../db/models/ai-message.model');
+                // Enrichit avec le roster pour afficher le nom de l'agent
+                let subAgentInfo = {};
+                try {
+                  const { getAgent } = require('./subagent/roster');
+                  const info = jobContext.subagentType ? getAgent(jobContext.subagentType) : null;
+                  if (info) subAgentInfo = { agentName: info.name, agentEmoji: info.emoji, agentColor: info.color, agentTagline: info.tagline };
+                } catch {}
+                const subLabel = subAgentInfo.agentName
+                  ? `${subAgentInfo.agentEmoji || '🤖'} ${subAgentInfo.agentName}`
+                  : 'Sous-agent';
                 await AiMessage.create({
                   threadId,
-                  // role 'assistant' : le ngSwitch frontend rend la card permission
-                  // (le role 'system' est affiché comme "Contexte transféré").
                   role: 'assistant',
-                  content: `Permission demandée par sous-agent : ${tc.name}`,
+                  content: `${subLabel} demande la permission d'exécuter ${tc.name}`,
                   metadata: {
                     kind: 'permission_request',
                     permissionRequest: {
@@ -709,7 +780,9 @@ factuel des livrables créés avec leurs IDs/paths. Pas de phrase de conclusion 
                       childJobId: jobContext.jobId,
                       parentJobId,
                       escalatedFromSubagent: true,
+                      ...subAgentInfo,
                     },
+                    extra: { ...subAgentInfo },
                   },
                 });
                 emitThreadEvent(String(threadId), {
@@ -763,7 +836,71 @@ factuel des livrables créés avec leurs IDs/paths. Pas de phrase de conclusion 
               continue;
             }
           } else {
-            // Agent principal : flow classique → demande à l'user via SSE.
+            // Agent principal (ou resume background). On crée TOUJOURS un
+            // AiMessage permission_request visible dans le chat + emit sur le
+            // thread stream, pour que le user puisse approuver même si le job
+            // tourne en background (resume auto, job relancé, etc.).
+            const threadId = modeMetadata.threadId || context._threadId;
+            if (threadId) {
+              try {
+                const AiMessage = require('../db/models/ai-message.model');
+                // Enrichit avec le roster pour que la card affiche le nom de l'agent
+                let agentInfo = {};
+                try {
+                  const { getAgent } = require('./subagent/roster');
+                  const subType = jobContext.subagentType;
+                  const info = subType ? getAgent(subType) : null;
+                  if (info) {
+                    agentInfo = {
+                      agentName: info.name,
+                      agentEmoji: info.emoji,
+                      agentColor: info.color,
+                      agentTagline: info.tagline,
+                    };
+                  }
+                } catch {}
+                // Récupère le sujet du job pour l'afficher
+                const AiJob = require('../db/models/ai-job.model');
+                let jobSubject = '';
+                try {
+                  const j = await AiJob.findOne({ id: jobContext.jobId }, 'subagentInstructions').lean();
+                  jobSubject = j?.subagentInstructions ? String(j.subagentInstructions).slice(0, 200) : '';
+                } catch {}
+                const agentLabel = agentInfo.agentName
+                  ? `${agentInfo.agentEmoji || '🤖'} ${agentInfo.agentName}`
+                  : 'Agent';
+                await AiMessage.create({
+                  threadId,
+                  role: 'assistant',
+                  content: `${agentLabel} demande la permission d'exécuter ${tc.name}`,
+                  metadata: {
+                    kind: 'permission_request',
+                    permissionRequest: {
+                      requestId,
+                      toolName: tc.name,
+                      argsPreview,
+                      risk: permCheck.risk,
+                      childJobId: jobContext.jobId,
+                      ...agentInfo,
+                    },
+                    jobId: jobContext.jobId,
+                    extra: {
+                      jobSubject: jobSubject || undefined,
+                      ...agentInfo,
+                    },
+                  },
+                });
+                const { emitThreadEvent } = require('./jobs/job-events');
+                emitThreadEvent(String(threadId), {
+                  type: 'ai.permission.request',
+                  requestId, toolName: tc.name, risk: permCheck.risk,
+                  argsPreview, jobId: jobContext.jobId,
+                });
+                emitThreadEvent(String(threadId), { type: 'ai.message.created', kind: 'permission_request' });
+              } catch (e) {
+                console.error('[harness] permission UI create failed:', e?.message);
+              }
+            }
             yield {
               type: 'ai.permission.request',
               requestId,
@@ -1058,6 +1195,25 @@ factuel des livrables créés avec leurs IDs/paths. Pas de phrase de conclusion 
       });
     }
 
+    // ── Tracking des spawns déjà lancés (anti-doublon) ────────────────
+    // Au lieu d'un FORCE STOP (qui coupe le texte de narration et empêche
+    // les spawns suivants), on mémorise les subagents déjà spawnés. Si le
+    // LLM tente de re-spawner le même type avec un prompt quasi-identique
+    // au prochain tour, le spawn sera bloqué au niveau du tool handler.
+    if (hasAsyncSpawn && jobContext) {
+      if (!jobContext._spawnedSubagentIds) jobContext._spawnedSubagentIds = new Set();
+      for (const tr of toolResults) {
+        if (tr.name === 'spawn_subagent' && tr.status !== 'error' && tr.result) {
+          try {
+            const parsed = typeof tr.result === 'string' ? JSON.parse(tr.result) : tr.result;
+            const jid = parsed?.result?.jobId || parsed?.jobId;
+            if (jid) jobContext._spawnedSubagentIds.add(jid);
+          } catch {}
+        }
+      }
+      console.log(`[harness] spawned subagents so far: ${jobContext._spawnedSubagentIds.size}`);
+    }
+
     // Checkpoint + heartbeat (no-op without jobContext)
     if (jobContext) {
       try { await jobContext.persistCheckpoint(loopCount, conversation); } catch { /* non-fatal */ }
@@ -1069,6 +1225,8 @@ factuel des livrables créés avec leurs IDs/paths. Pas de phrase de conclusion 
   // Max loops reached
   console.log(`[harness] maxLoops=${maxLoops} reached → cleanup + done`);
   await toolSet.cleanup();
+  const tidEnd = modeMetadata.threadId || context._threadId;
+  if (tidEnd) await _autoCloseStaleTodos(String(tidEnd));
   yield { type: 'message', text: '\n\n*Limite de boucles atteinte. Reformule ta demande si nécessaire.*' };
   yield { type: 'done', usage: totalUsage };
 }

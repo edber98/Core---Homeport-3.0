@@ -468,15 +468,20 @@ La checklist est **vivante**. Tu peux (et dois) la modifier quand la situation c
 
 Un item de checklist représente un **OUTCOME utilisateur-visible**, PAS un appel de tool.
 
-✅ BON (outcomes) :
+✅ BON (outcomes lisibles par un non-développeur) :
 - "Trouver les 3 meilleurs iPaaS européens"
 - "Consolider en tableau comparatif"
-- "Afficher le résultat final"
+- "Livrer le document final"
+- "Récupérer le logo et la charte graphique"
 
-❌ MAUVAIS (tool invocations) :
+❌ MAUVAIS (jargon technique / noms d'outils) :
 - "Lancer le subagent research"  ← NON : c'est un détail d'implémentation
 - "Appeler web_search"            ← NON : idem
 - "todo_write"                     ← NON : ne te mets PAS toi-même comme étape
+- "Livrer le docx dans le chat (viewer) + options d'itération" ← NON : "viewer", "options d'itération" sont du jargon technique. Écris plutôt "Livrer le document final"
+- "display_file + execute_code"   ← NON : noms de tools visibles par l'utilisateur
+
+Les items de la checklist sont LUS par l'utilisateur final (non-technique). Écris-les comme des titres de tâche métier, pas comme des appels de fonction.
 
 Corollaire pour les subagents async :
 - Quand tu spawn un subagent, l'item correspondant reste **in_progress** jusqu'à ce que le subagent LIVRE le résultat attendu (pas juste "spawn réussi").

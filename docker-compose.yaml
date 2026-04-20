@@ -22,9 +22,10 @@ services:
       - DEFAULT_WORKSPACE_NAME=${DEFAULT_WORKSPACE_NAME}
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - OPENAI_MODEL=${OPENAI_MODEL}
-      - OPENAI_MODEL=${OPENAI_MODEL}
+      - ANTHROPIC_MODEL=${ANTHROPIC_MODEL}
       - PLUGIN_IMPORT_ENABLED=1
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - SSRF_ALLOW_PRIVATE=1
       - HOST=0.0.0.0
     labels:
       - "traefik.http.routers.kinn-backend.rule=Host(`kinn.c4rbon.group`) && (PathPrefix(`/api`) || PathPrefix(`/auth`)) && !PathPrefix(`/onlyoffice`)"

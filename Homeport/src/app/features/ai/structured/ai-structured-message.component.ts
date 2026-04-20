@@ -63,21 +63,22 @@ import { AiStructuredCardGridComponent } from './ai-structured-card-grid.compone
     </div>
   `,
   styles: [`
+    /* Inline dans le flux texte, pas de card. Comme Claude.ai artifacts. */
     .structured {
-      background: #fff;
-      border: 1px solid #f0f0f0;
-      border-radius: 12px;
-      padding: 12px 14px;
-      margin: 4px 0;
+      background: transparent;
+      border: 0;
+      border-radius: 0;
+      padding: 0;
+      margin: 12px 0;
       max-width: 100%;
       min-width: 0;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+      box-shadow: none;
     }
     .structured-title {
-      font-size: 14px; font-weight: 600; color: #333;
+      font-size: 15px; font-weight: 700; color: #262626;
       margin-bottom: 10px;
       padding-bottom: 8px;
-      border-bottom: 1px solid #f5f5f5;
+      border-bottom: 1px solid #e8e8e8;
     }
     .fallback {
       padding: 8px; color: #ff4d4f; font-size: 12px;

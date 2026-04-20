@@ -259,7 +259,7 @@ async function searchDdgLite({ query, limit, locale, site }) {
     });
   }
 
-  console.log(`[web-tool:ddg_lite] query="${fullQuery}" → ${results.length} résultats (status=${res.statusCode}, htmlLen=${html.length})`);
+  if (process.env.AI_DEBUG) console.log(`[web-tool:ddg_lite] query="${fullQuery}" → ${results.length} résultats (status=${res.statusCode}, htmlLen=${html.length})`);
   return results;
 }
 
@@ -300,7 +300,7 @@ async function searchBing({ query, limit, locale, site }) {
         results.push({ title, url, snippet: '', rank: results.length + 1 });
       });
     }
-    console.log(`[web-tool:bing] query="${fullQuery}" → ${results.length} résultats (htmlLen=${html.length})`);
+    if (process.env.AI_DEBUG) console.log(`[web-tool:bing] query="${fullQuery}" → ${results.length} résultats (htmlLen=${html.length})`);
     return results;
   });
 }
@@ -351,7 +351,7 @@ async function searchBrave({ query, limit, locale, site }) {
         results.push({ title, url, snippet, rank: results.length + 1 });
       });
     }
-    console.log(`[web-tool:brave] query="${fullQuery}" → ${results.length} résultats (htmlLen=${html.length})`);
+    if (process.env.AI_DEBUG) console.log(`[web-tool:brave] query="${fullQuery}" → ${results.length} résultats (htmlLen=${html.length})`);
     return results;
   });
 }
@@ -455,7 +455,7 @@ async function runSearch(opts) {
     }));
 
   const ms = Date.now() - t0;
-  console.log(`[web-search] query="${opts.query}" → ${merged.length} unique/${[...byUrl.keys()].length} total in ${ms}ms (${sources.join(' ')})`);
+  if (process.env.AI_DEBUG) console.log(`[web-search] query="${opts.query}" → ${merged.length} unique/${[...byUrl.keys()].length} total in ${ms}ms (${sources.join(' ')})`);
   return { engine: 'multi', results: merged };
 }
 
@@ -635,14 +635,20 @@ function getDocTitle(html) {
 // ─────────────────────────────────────────────────────────────────────────────
 
 async function callMiniLlm({ system, userText, maxTokens = 2000 }) {
-  if (!env.ANTHROPIC_API_KEY) {
-    // No key → return a heuristic result instead of failing
+  // Provider + modèle configurables pour l'extraction web :
+  //   WEB_MINI_PROVIDER=openai|anthropic  (défaut: anthropic si ANTHROPIC_API_KEY, sinon openai)
+  //   WEB_MINI_MODEL=gpt-4o-mini|claude-haiku-4-5|...  (défaut selon provider)
+  const { createLlmClient } = require('../llm');
+  const miniProvider = (process.env.WEB_MINI_PROVIDER || '').toLowerCase()
+    || (env.ANTHROPIC_API_KEY ? 'anthropic' : 'openai');
+  const defaultModel = miniProvider === 'openai' ? 'gpt-4o-mini' : 'claude-haiku-4-5';
+  const model = process.env.WEB_MINI_MODEL || defaultModel;
+  const apiKey = miniProvider === 'openai' ? env.OPENAI_API_KEY : env.ANTHROPIC_API_KEY;
+  if (!apiKey) {
     return null;
   }
-  const { createLlmClient } = require('../llm');
-  const model = process.env.WEB_MINI_MODEL || 'claude-haiku-4-5' || 'claude-3-5-haiku-latest';
-  const client = createLlmClient('anthropic', {
-    apiKey: env.ANTHROPIC_API_KEY,
+  const client = createLlmClient(miniProvider, {
+    apiKey,
     model,
     maxTokens,
     temperature: 0.2,
@@ -657,9 +663,10 @@ async function callMiniLlm({ system, userText, maxTokens = 2000 }) {
       if (ev.type === 'done') break;
     }
   } catch (e) {
-    // Fallback to sonnet if haiku not available
+    // Fallback : essaie avec le modèle principal du provider configuré
     try {
-      const fb = createLlmClient('anthropic', { apiKey: env.ANTHROPIC_API_KEY, model: env.ANTHROPIC_MODEL, maxTokens, temperature: 0.2 });
+      const fbModel = miniProvider === 'openai' ? (env.OPENAI_MODEL || 'gpt-4o') : (env.ANTHROPIC_MODEL || 'claude-sonnet-4-5');
+      const fb = createLlmClient(miniProvider, { apiKey, model: fbModel, maxTokens, temperature: 0.2 });
       out = '';
       for await (const ev of fb.stream(messages, [])) {
         if (ev.type === 'text_delta') out += ev.text;
@@ -1186,11 +1193,13 @@ function createWebExecutor(metadata, emit) {
     async execute(name, input) {
       if (!(name in tools)) throw new Error(`Unknown web tool: ${name}`);
       const tag = `[web-tool:${name}]`;
-      console.log(`${tag} input:`, JSON.stringify(input || {}, null, 2).slice(0, 800));
+      if (process.env.AI_DEBUG) console.log(`${tag} input:`, JSON.stringify(input || {}, null, 2).slice(0, 800));
       try {
         const result = await tools[name](input || {});
-        const preview = JSON.stringify(result || {}).slice(0, 500);
-        console.log(`${tag} result preview: ${preview}`);
+        if (process.env.AI_DEBUG) {
+          const preview = JSON.stringify(result || {}).slice(0, 500);
+          console.log(`${tag} result preview: ${preview}`);
+        }
         return result;
       } catch (err) {
         console.error(`${tag} ERROR:`, err.message);

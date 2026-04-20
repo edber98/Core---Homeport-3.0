@@ -1766,7 +1766,11 @@ ${toolLines.join('\n')}
       }
     }
     // Notify the running job via pub/sub
-    const normalized = String(decision).startsWith('allow') ? 'allow' : 'deny';
+    // "always" sans préfixe = "allow_always" (le frontend envoie "always" au
+    // lieu de "allow_always" depuis le bouton "Toujours autorisé").
+    const rawDecision = String(decision);
+    const effectiveDecision = rawDecision === 'always' ? 'allow_always' : rawDecision;
+    const normalized = effectiveDecision.startsWith('allow') || effectiveDecision === 'always' ? 'allow' : 'deny';
     console.log(`[perm-resolve] job=${job.id} requestId=${requestId} decision=${decision} (normalized=${normalized})`);
     emitJobEvent(job.id, { type: 'permission.resolved', requestId, decision: normalized });
     // Émet AUSSI sur le parent en tant que subagent.permission.granted pour que
