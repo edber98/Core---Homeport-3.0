@@ -267,6 +267,8 @@ export interface AiMessage {
     agentReport?: AgentReport;
     widgetId?: string;
     widgetUpdatedAt?: string | Date;
+    collapse?: { collapsed?: boolean; collapseTitle?: string };
+    subagentJobId?: string;
     jobId?: string;
     [k: string]: any;
   };

@@ -162,7 +162,48 @@ Exemples qui NE DÉCLENCHENT PAS propose_plan :
   - FAQ, sections pliables, documentation → \`accordion\`
   - Évolution dans le temps, historique, roadmap → \`timeline\`
   - Choix multiples avec visuel, catalogue, cartes cliquables → \`card_grid\`
-- Cela améliore drastiquement l'UX : l'utilisateur peut naviguer interactivement au lieu de lire un gros bloc.`);
+- Cela améliore drastiquement l'UX : l'utilisateur peut naviguer interactivement au lieu de lire un gros bloc.
+
+## INLINE WIDGETS — mécanisme [[WIDGET:id]]
+
+Les outils \`render_structured\`, \`render_interactive_canvas\`, \`generate_diagram\`, \`display_file\`, \`display_image\` créent des widgets visuels. Pour qu'ils apparaissent **à l'endroit exact** de ton texte (pas séparément en bas), tu DOIS insérer un marqueur inline.
+
+**Règles impératives** :
+
+1. **widgetId obligatoire et unique** — à chaque appel d'outil widget, fournis un \`widgetId\` descriptif, stable et **unique dans la conversation**. Exemples : \`"comparison-ipaas-q1"\`, \`"diagram-archi-v2"\`, \`"canvas-landing-hero"\`. Si tu modifies un widget existant, réutilise le MÊME \`widgetId\` (mise à jour in-place). Si tu oublies, un widgetId aléatoire sera généré et le tool te le retournera — utilise-le pour le marqueur.
+
+2. **Marqueur inline [[WIDGET:widgetId]]** — dans ton texte de réponse, insère sur sa PROPRE LIGNE (sans texte autour, sans backticks, sans indentation) :
+\`\`\`
+[[WIDGET:widgetId]]
+\`\`\`
+Le frontend remplace ce marqueur par le rendu du widget correspondant.
+
+3. **Placement** — place le marqueur **APRÈS** la phrase d'intro qui le présente (pas avant, pas dans un bloc code, pas dans une liste).
+
+4. **Plusieurs widgets** — tu peux en placer plusieurs dans la même réponse. Chacun avec son widgetId unique.
+
+5. **Collapse** — tu choisis si le widget est affiché ouvert (\`collapsed: false\`, défaut) ou replié (\`collapsed: true\`, pour les gros widgets). Ajoute \`collapseTitle\` pour personnaliser le header du collapse.
+
+**Exemple complet** :
+
+Utilisateur : "Compare Pipedrive, HubSpot, Salesforce".
+
+1. Appel tool : \`render_structured({ layout: "comparison_table", widgetId: "crm-compare-2026", title: "Comparatif CRM", data: {...}, collapsed: false })\`
+2. Réponse :
+\`\`\`
+Voici la comparaison des 3 CRM leaders en 2026.
+
+[[WIDGET:crm-compare-2026]]
+
+En résumé : Pipedrive pour les petites équipes, Salesforce pour les gros.
+\`\`\`
+
+**INTERDIT** :
+- ❌ Recopier le contenu du widget dans ton texte (table markdown, liste des items, JSON). Le widget le fait déjà.
+- ❌ Oublier le marqueur → le widget apparaîtra à la fin du message, mal placé.
+- ❌ Utiliser le même widgetId pour 2 widgets différents dans la même conversation → l'un écrase l'autre.
+
+**Widgets produits par tes subagents** : quand un subagent produit un widget, tu peux le référencer dans ta synthèse finale via \`[[WIDGET:<son-widgetId>]]\`. Le summary du subagent te liste les widgetIds disponibles.`);
 
   // Autonomy level
   parts.push('\n' + buildAutonomyPrompt(ctx._autonomyLevel));

@@ -192,6 +192,7 @@ interface StreamTool {
         <div *ngIf="group.role === 'user'" class="msg-wrap">
           <ai-message [msg]="group.messages[0]" [compact]="false"
                       [isLast]="gi === messageGroups().length - 1"
+                      [widgetsById]="widgetsById()"
                       (retryClick)="retry()"></ai-message>
         </div>
 
@@ -202,6 +203,7 @@ interface StreamTool {
               [msg]="msg"
               [compact]="mi > 0"
               [isLast]="gi === messageGroups().length - 1 && mi === group.messages.length - 1"
+              [widgetsById]="widgetsById()"
               (retryClick)="retry()">
             </ai-message>
           </ng-container>
@@ -959,13 +961,63 @@ export class AiChatComponent implements AfterViewInit {
    * Chaque groupe partage un seul avatar et un seul conteneur visuel →
    * texte + widgets s'intercalent naturellement (approche A).
    */
+  /**
+   * Construit une Map widgetId → AiMessage à partir des messages du thread.
+   * Utilisée par ai-message pour résoudre les marqueurs [[WIDGET:id]] inline.
+   */
+  widgetsById = computed<Map<string, any>>(() => {
+    const map = new Map<string, any>();
+    const msgs = this.ai.messages();
+    for (const m of msgs) {
+      const wid = m?.metadata?.widgetId;
+      if (wid) map.set(String(wid), m);
+    }
+    return map;
+  });
+
+  /** Set des widgetIds référencés inline par [[WIDGET:id]] dans n'importe quel message assistant. */
+  private _inlineReferencedWidgetIds = computed<Set<string>>(() => {
+    const ref = new Set<string>();
+    const re = /\[\[WIDGET:([a-zA-Z0-9_\-.]{1,60})\]\]/g;
+    for (const m of this.ai.messages()) {
+      if (m.role !== 'assistant') continue;
+      const scan = (s: string) => {
+        if (!s || !s.includes('[[WIDGET:')) return;
+        let x: RegExpExecArray | null;
+        re.lastIndex = 0;
+        while ((x = re.exec(s)) !== null) ref.add(x[1]);
+      };
+      scan(m.content || '');
+      for (const seg of (m.segments || [])) {
+        if (seg.type === 'text' && seg.content) scan(seg.content);
+      }
+    }
+    return ref;
+  });
+
   messageGroups = computed(() => {
     const msgs = this.ai.messages();
+    const inlineRefs = this._inlineReferencedWidgetIds();
     const groups: Array<{ role: string; messages: any[]; isSystem: boolean }> = [];
     let current: { role: string; messages: any[]; isSystem: boolean } | null = null;
 
     for (const m of msgs) {
       const kind = m.metadata?.kind;
+      const wid = m?.metadata?.widgetId;
+      const isWidget = ['structured', 'canvas_html', 'diagram', 'image_inline', 'file_inline'].includes(kind || '');
+      // Cas 1 : widget référencé par [[WIDGET:id]] dans un message texte → masqué
+      // (il sera rendu inline à l'emplacement du marqueur, pas en bulle séparée).
+      if (isWidget && wid && inlineRefs.has(String(wid))) {
+        continue;
+      }
+      // Cas 2 : widget produit par un subagent (metadata.subagentJobId) → masqué
+      // de la timeline principale. Il apparaît UNIQUEMENT inline quand le parent
+      // fait sa synthèse avec [[WIDGET:id]]. Visible aussi dans l'agent_report card
+      // du subagent. Évite le double affichage + apparition prématurée avant
+      // que le parent ait intégré ses livrables.
+      if (isWidget && m?.metadata?.subagentJobId) {
+        continue;
+      }
       // System messages sauf hint/note → leur propre groupe
       if (m.role === 'system' && kind !== 'system_hint' && kind !== 'system_note') {
         if (current) { groups.push(current); current = null; }
@@ -1969,6 +2021,14 @@ export class AiChatComponent implements AfterViewInit {
   hasLivePreview(t: StreamTool): boolean {
     const lp = t.livePreview;
     if (!lp || !lp.type) return false;
+    // Les tools widget (render_structured, canvas_html, diagram, display_image/file)
+    // sont rendus INLINE via <ai-inline-widget-collapse> dans le flux du message,
+    // pas ici en haut des tools. On masque la preview top-of-tools pour eux.
+    const WIDGET_TOOL_NAMES = new Set([
+      'render_structured', 'render_interactive_canvas', 'generate_diagram',
+      'display_image', 'display_file',
+    ]);
+    if (WIDGET_TOOL_NAMES.has(t.name)) return false;
     const d = lp.data;
     if (d == null) return false;
     if (typeof d === 'object' && !Array.isArray(d) && Object.keys(d).length === 0) return false;

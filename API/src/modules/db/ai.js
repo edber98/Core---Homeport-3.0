@@ -416,7 +416,9 @@ ${toolLines.join('\n')}
     const { resolveAttachments, estimateAttachmentTokens } = require('../../ai/attachments');
     const wsId = String(ws._id);
 
-    // Build all messages first
+    // Build all messages first — on omet les messages à content VIDE (widgets
+    // purs, system_notes, etc.) pour éviter l'erreur Anthropic "text content
+    // blocks must be non-empty".
     const allMessages = [];
     for (const m of history) {
       if (m.role === 'user') {
@@ -436,30 +438,33 @@ ${toolLines.join('\n')}
             content = `Réponse à "${m.answer.questionText || 'la question'}": ${JSON.stringify(v)}`;
           }
         }
-        // Resolve file attachments into multimodal content blocks
+        const hasText = String(content).trim().length > 0;
         if (m.attachments?.length) {
           try {
             const attBlocks = await resolveAttachments(m.attachments, wsId);
             if (attBlocks.length) {
               const parts = [];
-              if (content) parts.push({ type: 'text', text: content });
+              if (hasText) parts.push({ type: 'text', text: content });
               parts.push(...attBlocks);
-              allMessages.push({ role: 'user', content: parts.length === 1 && parts[0].type === 'text' ? content : parts, _attTokens: estimateAttachmentTokens(attBlocks) });
-            } else {
+              if (parts.length) {
+                allMessages.push({ role: 'user', content: parts.length === 1 && parts[0].type === 'text' ? content : parts, _attTokens: estimateAttachmentTokens(attBlocks) });
+              }
+            } else if (hasText) {
               allMessages.push({ role: 'user', content });
             }
           } catch (e) {
             console.error('[ai] attachment resolve error:', e?.message);
-            allMessages.push({ role: 'user', content });
+            if (hasText) allMessages.push({ role: 'user', content });
           }
-        } else {
+        } else if (hasText) {
           allMessages.push({ role: 'user', content });
         }
       } else if (m.role === 'assistant') {
+        const hasText = String(m.content || '').trim().length > 0;
         if (m.toolCalls?.length) {
           allMessages.push({
             role: 'assistant',
-            content: m.content || null,
+            ...(hasText ? { content: m.content } : {}),
             tool_calls: m.toolCalls.map(tc => ({ id: tc.id, name: tc.name, input: tc.args || {} })),
           });
           for (const tc of m.toolCalls) {
@@ -469,11 +474,12 @@ ${toolLines.join('\n')}
             }
             allMessages.push({ role: 'tool', tool_call_id: tc.id, content: resultStr });
           }
-        } else {
-          allMessages.push({ role: 'assistant', content: m.content || '' });
+        } else if (hasText) {
+          allMessages.push({ role: 'assistant', content: m.content });
         }
-      } else {
-        allMessages.push({ role: m.role, content: m.content || '' });
+        // Assistant widget-only sans toolCalls → skip (pas de contenu utile pour LLM).
+      } else if (String(m.content || '').trim().length > 0) {
+        allMessages.push({ role: m.role, content: m.content });
       }
     }
 
@@ -1438,39 +1444,43 @@ ${toolLines.join('\n')}
     const history = await AiMessage.find({ threadId: thread._id }).sort({ createdAt: 1 }).limit(60).lean();
     const messages = [];
     for (const m of history) {
+      const hasContent = String(m.content || '').trim().length > 0;
       if (m.role === 'user') {
-        // Background agent: resolve attachments if present
         if (m.attachments?.length) {
           try {
             const { resolveAttachments } = require('../../ai/attachments');
             const attBlocks = await resolveAttachments(m.attachments, String(ws._id));
             if (attBlocks.length) {
               const parts = [];
-              if (m.content) parts.push({ type: 'text', text: m.content });
+              if (hasContent) parts.push({ type: 'text', text: m.content });
               parts.push(...attBlocks);
-              messages.push({ role: 'user', content: parts.length === 1 && parts[0].type === 'text' ? m.content : parts });
-            } else {
-              messages.push({ role: 'user', content: m.content || '' });
+              if (parts.length) messages.push({ role: 'user', content: parts });
+            } else if (hasContent) {
+              messages.push({ role: 'user', content: m.content });
             }
           } catch {
-            messages.push({ role: 'user', content: m.content || '' });
+            if (hasContent) messages.push({ role: 'user', content: m.content });
           }
-        } else {
-          messages.push({ role: 'user', content: m.content || '' });
+        } else if (hasContent) {
+          messages.push({ role: 'user', content: m.content });
         }
       } else if (m.role === 'assistant') {
         if (m.toolCalls?.length) {
+          // Assistant avec tool_calls : content peut être vide (widget-only).
+          // On envoie tout de même le message pour préserver la séquence tool_use/tool_result,
+          // mais on omet le champ content si vide (formatMessages gère les 2 cas).
           messages.push({
             role: 'assistant',
-            content: m.content || null,
+            ...(hasContent ? { content: m.content } : {}),
             tool_calls: m.toolCalls.map(tc => ({ id: tc.id, name: tc.name, input: tc.args || {} })),
           });
           for (const tc of m.toolCalls) {
             messages.push({ role: 'tool', tool_call_id: tc.id, content: JSON.stringify(tc.result || {}).slice(0, 3000) });
           }
-        } else {
-          messages.push({ role: 'assistant', content: m.content || '' });
+        } else if (hasContent) {
+          messages.push({ role: 'assistant', content: m.content });
         }
+        // Assistant sans content ni toolCalls (ex: message widget pur) → skip entièrement.
       }
     }
 

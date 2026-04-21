@@ -368,13 +368,34 @@ async function _runSubagentJob({
           return `=== Résultat ${s.subagentType || 'job'} (${s.id}) ===\n${summary}`;
         }).join('\n\n');
 
-        // Si toutes les sources sont vides/en erreur, on avertit fortement le
-        // subagent pour qu'il échoue proprement au lieu de demander à l'user
-        // de coller des données manquantes.
+        // Si toutes les sources sont vides/en erreur, on AVORTE le subagent
+        // au lieu de le laisser tourner sur du vide (gaspille tokens + produit
+        // du garbage). Le parent verra l'erreur propagée et pourra réagir.
         const allEmpty = sourceIds.length > 0 && emptyCount === sourceIds.length;
-        const preamble = allEmpty
-          ? `⚠️ ATTENTION : TOUS les résultats upstream sont vides ou en erreur (${emptyCount}/${sourceIds.length}). C'est un bug d'orchestration amont. TU NE DOIS PAS demander à l'utilisateur de coller des données. À la place, renvoie un summary court du type "inputs upstream manquants, impossible de consolider" et termine en erreur via le tool dont tu disposes (ou simplement sans tool output complexe).`
-          : `⚠️ INSTRUCTION CRITIQUE : Les blocs CONTEXTE ci-dessus sont TES inputs réels — tu les as déjà reçus. NE DEMANDE PAS à l'utilisateur de coller quoi que ce soit. Si un bloc est incomplet, fais avec ce que tu as. Ta sortie doit consommer DIRECTEMENT le contenu des blocs CONTEXTE.`;
+        if (allEmpty) {
+          const errMsg = `dependency_failed: all upstream sources empty/errored (${emptyCount}/${sourceIds.length})`;
+          console.warn(`[sub-runner] ABORT ${subagentType} job=${job.id} : ${errMsg}`);
+          await AiJob.updateOne({ id: job.id }, {
+            $set: {
+              status: 'error',
+              error: errMsg,
+              finishedAt: new Date(),
+              result: { summary: `Consolidation impossible : toutes les sources upstream sont vides ou en erreur (${emptyCount}/${sourceIds.length}). Sources : ${sourceIds.join(', ')}.` },
+            },
+          }).catch(() => {});
+          emitUpdate('error', { error: errMsg, duration: Date.now() - startedAt });
+          return {
+            ok: false,
+            jobId: job.id,
+            subagentType,
+            depth: job.depth,
+            status: 'error',
+            error: errMsg,
+            summary: null,
+            artifacts: [],
+          };
+        }
+        const preamble = `⚠️ INSTRUCTION CRITIQUE : Les blocs CONTEXTE ci-dessus sont TES inputs réels — tu les as déjà reçus. NE DEMANDE PAS à l'utilisateur de coller quoi que ce soit. Si un bloc est incomplet, fais avec ce que tu as. Ta sortie doit consommer DIRECTEMENT le contenu des blocs CONTEXTE.`;
         enrichedPrompt = `CONTEXTE (résultats des étapes précédentes) :\n\n${contextBlocks}\n\n===\n\n${preamble}\n\n===\n\n${prompt}`;
       }
     } catch (e) {
@@ -408,13 +429,25 @@ async function _runSubagentJob({
       try { runAc.abort(); } catch {}
     }, runtimeLimit);
   }
-  console.log(`[sub-runner] RUN START ${subagentType} job=${job.id} maxLoops=${job.maxLoops} timeout=${runtimeLimit || 'none'}`);
+  // Widget tools = moyen de livrer un résultat visuel → TOUJOURS dispo aux
+  // subagents, même si toolsAllowed ne les mentionne pas. Sinon le LLM tente
+  // d'appeler render_structured et reçoit "Outil inconnu".
+  // Exception : memory_extractor (strictement whitelisté sur suggest_memory_entries).
+  const WIDGET_TOOLS_ALWAYS_ALLOWED = ['render_structured', 'generate_diagram', 'render_interactive_canvas', 'display_image', 'display_file', 'todo_write', 'send_message_to_agent'];
+  let effectiveToolsAllowed = toolsAllowed || typeDef.toolsAllowed;
+  if (effectiveToolsAllowed && subagentType !== 'memory_extractor') {
+    const merged = new Set(effectiveToolsAllowed);
+    for (const t of WIDGET_TOOLS_ALWAYS_ALLOWED) merged.add(t);
+    effectiveToolsAllowed = Array.from(merged);
+  }
+
+  console.log(`[sub-runner] RUN START ${subagentType} job=${job.id} maxLoops=${job.maxLoops} timeout=${runtimeLimit || 'none'} tools=${effectiveToolsAllowed ? effectiveToolsAllowed.length : 'default'}`);
   try {
     const { runJob } = require('../jobs/job-runner');
     await runJob(job.id, {
       subagentType,
       systemPromptOverride: typeDef.systemPrompt,
-      toolsAllowed: toolsAllowed || typeDef.toolsAllowed,
+      toolsAllowed: effectiveToolsAllowed,
       toolsDenied: typeDef.toolsDenied || null,
       forcedAutonomy: typeDef.forcedAutonomy || null,
       prompt: enrichedPrompt,

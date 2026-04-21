@@ -226,7 +226,25 @@ function formatMessages(messages) {
       merged.push({ ...m });
     }
   }
-  return merged;
+  // Defense in depth : Anthropic rejette "text content blocks must be non-empty".
+  // Retire tout message dont le content est vide (ou tous ses text blocks vides).
+  const cleaned = merged
+    .map(m => {
+      if (typeof m.content === 'string') {
+        return m.content.trim() ? m : null;
+      }
+      if (Array.isArray(m.content)) {
+        const filtered = m.content.filter(b => {
+          if (b.type === 'text') return String(b.text || '').trim().length > 0;
+          return true; // image, tool_use, tool_result : on garde
+        });
+        if (filtered.length === 0) return null;
+        return { ...m, content: filtered };
+      }
+      return null;
+    })
+    .filter(Boolean);
+  return cleaned;
 }
 
 // Format tools for Anthropic API

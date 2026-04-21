@@ -8,18 +8,102 @@ Version : 2026-04-20 · Branche : `feature/ia-agentic`
 
 ---
 
-## 🔴 Bugs prioritaires (avant de lancer)
+## 🔴 Bugs & fixes (suivi)
 
 | # | Sévérité | Bug | État |
 |---|---|---|---|
 | B1 | P0 | Subagents appellent `todo_write` → "Outil inconnu" | À fixer |
-| B2 | P0 | Stream timeout 120s sur Opus 4.7 pendant long `execute_code` | À fixer |
+| B2 | P0 | Stream timeout 120s sur Opus 4.7 pendant long `execute_code` | À fixer (timeout + max_tokens) |
 | B3 | P1 | Nom du sous-agent absent dans panneau droit après fin | À fixer |
-| B4 | P1 | Checklist pas mise à jour quand agent termine | À vérifier après B1 |
+| B4 | P1 | Checklist pas mise à jour quand agent termine | ✅ Fix par prompt resume + widgets |
 | B5 | P2 | Pas de stream visible args tool avec Anthropic | Comportement API, pas un bug |
 | B6 | P1 | Markdown dans accordéon rendu brut | ✅ Fixé `ai-structured-accordion.component.ts` |
-| B7 | P0 | python-docx installé mais sandbox Python différent | À fixer infra |
-| B8 | P1 | Widgets (canvas/structured) pas inline dans le texte | Voir plan [[WIDGET:id]] |
+| B7 | P0 | python-docx installé mais sandbox Python différent | ✅ Fixé `install_package` via `python -m pip` |
+| B8 | P1 | Widgets (canvas/structured) pas inline dans le texte | ✅ Fixé mécanisme `[[WIDGET:id]]` |
+| B9 | P0 | Anti-hallucination bloque finalizers sans resume | ✅ Fixé (exception widgetId existant) |
+| B10 | P1 | Race permission parent vs user | ✅ Fixé (user-first 30s, parent fallback) |
+| B11 | P1 | Memory leak `nextWithTimeout` | ✅ Fixé (cleanup dans chemin timeout) |
+| B12 | P1 | Heartbeat stale → resume prématuré | ✅ Fixé (mark stalled avant count) |
+| B13 | P1 | `input_from` sans validation sources vides | ✅ Fixé (abort si toutes sources vides) |
+| B14 | P2 | Auto-wait siblings sans détection cycle | Non fixé (edge case rare) |
+| B15 | P2 | Resume parent perd transcript | ✅ Fixé (merge thread history au resume) |
+| B16 | P2 | Auto-close todos dupliqué | ✅ Clarifié (coordination documentée) |
+
+---
+
+## Suite 0 — Tools directs (SANS sous-agent)
+
+Ces tests vérifient que les outils de base fonctionnent directement, sans passer par spawn_subagent. Utile pour isoler les problèmes : si Suite 0 échoue, rien ne peut marcher.
+
+### S0.1 ⚡ Memory save/get
+**Prompt** :
+```
+Sauvegarde en mémoire : "Mon entreprise s'appelle ACME Corp, secteur logistique, 250 employés". Puis relis la mémoire pour me la confirmer.
+```
+**Attendu** : 2 appels `save_memory` puis `get_memory`. Réponse cite l'info exacte.
+
+### S0.2 ⚡ Todo directe sans subagent
+**Prompt** :
+```
+Crée une todo en 3 étapes : 1) lister les fichiers du projet, 2) lire le README, 3) résumer en 2 phrases. Exécute-les sans lancer de sous-agent.
+```
+**Attendu** : widget todo_list, transitions pending→in_progress→completed, réponse finale courte. Aucun `spawn_subagent` dans les logs.
+
+### S0.3 Render_structured direct
+**Prompt** :
+```
+Compare OpenAI, Anthropic et Mistral en un render_structured comparison_table, widgetId="llm-providers-2026", 4 colonnes (provider, modèle phare, prix input/output, spécialité), 3 lignes. Collapsed par défaut.
+```
+**Attendu** : widget créé, marqueur `[[WIDGET:llm-providers-2026]]` dans le texte, affiché replié avec header cliquable.
+
+### S0.4 Diagram mermaid direct
+**Prompt** :
+```
+Fais-moi un diagramme mermaid flowchart de l'architecture Kinn : Frontend → API → Agent Harness → LLM → Tools → MongoDB. widgetId="archi-kinn".
+```
+**Attendu** : mermaid rendu, marqueur `[[WIDGET:archi-kinn]]` présent.
+
+### S0.5 Canvas HTML direct
+**Prompt** :
+```
+Fais un canvas_html widgetId="demo-counter" : bouton qui incrémente un compteur affiché en gros, style Kinn (rose #e61982). Collapsed=true.
+```
+**Attendu** : canvas dans iframe, collapse fermé au début, ouvre au clic.
+
+### S0.6 Execute_code python
+**Prompt** :
+```
+Calcule le 42e nombre de Fibonacci avec execute_code python, puis display le résultat.
+```
+**Attendu** : capsule code_exec activée, execute_code Python, résultat = 267914296.
+
+### S0.7 Execute_code node
+**Prompt** :
+```
+En node execute_code, prends le tableau [5,2,8,1,9,3] et trie-le en reverse. Affiche le résultat.
+```
+**Attendu** : résultat [9,8,5,3,2,1].
+
+### S0.8 Web_fetch + extraction
+**Prompt** :
+```
+Va chercher la page https://www.anthropic.com et dis-moi le slogan principal.
+```
+**Attendu** : web_fetch appelé, extraction via haiku (voir logs), réponse avec slogan.
+
+### S0.9 Install_package python
+**Prompt** :
+```
+Installe le package python "python-docx" puis vérifie avec execute_code qu'il s'importe bien (import docx; print(docx.__version__)).
+```
+**Attendu** (après fix B7) : install OK via `python -m pip`, import OK, version affichée.
+
+### S0.10 Display_file inline
+**Prompt** :
+```
+Crée un xlsx "Contacts.xlsx" avec 3 lignes via openpyxl (execute_code), puis display_file avec widgetId="contacts-demo" collapsed=false.
+```
+**Attendu** : xlsx créé, viewer inline, marqueur `[[WIDGET:contacts-demo]]` dans le texte.
 
 ---
 
@@ -367,23 +451,60 @@ Fais un web_fetch sur http://192.168.1.1/admin.
 
 ---
 
-## 🆕 Plan proposé — Widgets inline `[[WIDGET:id]]`
+## Suite 11 — Widgets inline `[[WIDGET:id]]`
 
-**Pourquoi** : actuellement canvas/structured/diagram créent des messages séparés. Tu veux qu'ils soient **dans** le flux du markdown de la réponse assistant, à l'endroit exact.
+### S11.1 ⚡ Marqueur inline simple
+**Prompt** :
+```
+Fais-moi un render_structured comparison_table widgetId="ipaas-2026" comparant 3 iPaaS (Zapier, Make, n8n). Dans ta réponse, mets une phrase d'intro, puis [[WIDGET:ipaas-2026]] sur sa propre ligne, puis une phrase de conclusion.
+```
+**Attendu** : widget apparaît EXACTEMENT entre les 2 phrases (pas en bas), avec collapse ouvert.
 
-**Architecture proposée (inspirée de ton projet `[[FLOW:id]]`)** :
+### S11.2 Collapse fermé par défaut
+**Prompt** :
+```
+Fais un render_structured accordion widgetId="faq-v1" avec 5 questions FAQ, collapsed=true, collapseTitle="📚 FAQ détaillée (5 questions)". Intro courte + [[WIDGET:faq-v1]].
+```
+**Attendu** : widget apparaît replié, header "📚 FAQ détaillée...", ouvre au clic.
 
-1. **Marqueur dans le markdown** : le LLM insère `[[WIDGET:widgetId]]` sur sa propre ligne.
-2. **Prompt règle** : dans `base.js`, ajouter la règle "Quand tu appelles render_structured / canvas_html / generate_diagram, insère `[[WIDGET:<widgetId>]]` dans ton texte de réponse à l'endroit précis".
-3. **Backend** (`meta-tools.js`) : les tools widget exigent déjà un `widgetId` — on le garde.
-4. **Frontend** (`ai-message.component.ts`) : après `marked.parse(text)`, regex replace `[[WIDGET:id]]` par le composant Angular correspondant, en cherchant le widget dans `message.widgets` ou via lookup par ID.
-5. **Persistance** : stocker le lien widgetId ↔ message sur `ai.message` pour le render au reload.
+### S11.3 Plusieurs widgets même message
+**Prompt** :
+```
+Fais 2 widgets dans la même réponse : 1) diagram archi widgetId="archi" flowchart simple, 2) canvas_html widgetId="demo" avec un bouton. Mets leurs marqueurs inline dans l'ordre, séparés par du texte explicatif.
+```
+**Attendu** : 2 widgets distincts apparaissent inline, chacun à sa place.
 
-**Bénéfice** : l'accordéon apparaît **dans** ton texte entre 2 paragraphes, pas en dessous séparément. Identique pour canvas, diagramme, etc.
+### S11.4 Update widget existant (même widgetId)
+**Prompt 1** :
+```
+Fais un render_structured comparison_table widgetId="compare-v1" avec 3 lignes.
+```
+**Prompt 2** (même conversation) :
+```
+Ajoute une 4e ligne au tableau compare-v1. Utilise le MÊME widgetId.
+```
+**Attendu** : même widget mis à jour in-place (pas 2 widgets).
 
-**Risque** : si le LLM écrit le marqueur mais oublie d'appeler le tool (ou l'inverse), rendu silencieux du marqueur cassé. À gérer avec fallback "widget introuvable" silencieux.
+### S11.5 WidgetId manquant → auto-généré
+**Prompt** :
+```
+Fais un render_structured stepped_plan avec 3 étapes, SANS fournir de widgetId.
+```
+**Attendu** : le tool auto-génère `w_<hex>`, retourne `inlineMarker` avec ce widgetId. Réponse du LLM inclut ce marqueur.
 
-**Estimation** : ~ 2h (prompt + regex render + lookup). Je peux l'implémenter si tu valides.
+### S11.6 Widget subagent → parent inline
+**Prompt** :
+```
+Lance Tim (research) pour trouver 3 compétiteurs Salesforce. Demande-lui de rendre son résultat en render_structured widgetId="tim-compet" comparison_table. Une fois terminé, fais-moi une synthèse qui utilise [[WIDGET:tim-compet]] inline dans ta conclusion.
+```
+**Attendu** : Tim produit le widget, parent resume, sa synthèse contient le marqueur qui résout le widget produit par Tim.
+
+### S11.7 Marqueur cassé → silencieux
+**Prompt** :
+```
+Dans ta réponse, écris exactement : "Voici [[WIDGET:inexistant-xyz]] fin." sans appeler de tool.
+```
+**Attendu** : le marqueur est silencieusement retiré (pas d'erreur), texte propre.
 
 ---
 
@@ -392,7 +513,8 @@ Fais un web_fetch sur http://192.168.1.1/admin.
 1. Lancer API (`npm run dev`) + Homeport (`ng serve`), env `PLUGIN_IMPORT_ENABLED=1`, `AI_DEBUG=1`.
 2. Exécuter suite par suite. Chaque cas ≤ 5 min.
 3. Cocher dans ce doc. Ajouter ligne "Résultat" si divergence.
-4. Priorité de fix avant QA complet :
-   - **P0** : B1, B2, B7
-   - **P1** : B3, B4, B8 (widgets inline)
-   - **P2** : B5
+4. Priorité après ce round de fixes :
+   - Valider Suite 0 (tools directs) → fondation
+   - Valider Suite 11 (`[[WIDGET:id]]` inline)
+   - Valider Suite 3 (resume parent + widgets subagent)
+   - Le reste par itérations

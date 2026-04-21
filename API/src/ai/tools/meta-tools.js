@@ -55,6 +55,8 @@ function _notifyInlineUpdate(threadId, messageId, kind) {
  * card se mettre à jour in-place au lieu de voir une nouvelle card apparaître
  * à chaque modification).
  */
+const crypto = require('crypto');
+
 async function _findWidgetByWidgetId(threadId, widgetId) {
   if (!threadId || !widgetId) return null;
   try {
@@ -65,6 +67,18 @@ async function _findWidgetByWidgetId(threadId, widgetId) {
   } catch {
     return null;
   }
+}
+
+/**
+ * Normalise/valide un widgetId fourni par le LLM ou en génère un aléatoire.
+ * - Max 60 chars, alphanum + _-.
+ * - Si invalide ou absent → génère `w_<12 hex>` (unique dans la conversation).
+ * Garantit que CHAQUE widget a un ID pour le mécanisme inline [[WIDGET:id]].
+ */
+function _resolveWidgetId(raw) {
+  const cleaned = String(raw || '').replace(/[^a-zA-Z0-9_\-.]/g, '').slice(0, 60);
+  if (cleaned.length >= 3) return cleaned;
+  return `w_${crypto.randomBytes(6).toString('hex')}`;
 }
 const AiProjectMemory = require('../../db/models/ai-project-memory.model');
 const AiProjectKnowledge = require('../../db/models/ai-project-knowledge.model');
@@ -715,7 +729,15 @@ EXEMPLE
         },
         widgetId: {
           type: 'string',
-          description: "Identifiant stable du widget (ex: 'market-comparison'). Si fourni ET qu'un widget avec ce même id existe déjà dans le thread → MISE À JOUR IN-PLACE de la card existante (pas de nouvelle bulle en bas). Utilise-le dès que tu modifies un widget que tu as déjà affiché.",
+          description: "Identifiant stable du widget (ex: 'market-comparison'). OBLIGATOIRE pour le mode INLINE : réutilise le même widgetId dans le marqueur [[WIDGET:<widgetId>]] que tu insères dans ton texte. Si le widgetId existe déjà → MISE À JOUR IN-PLACE.",
+        },
+        collapsed: {
+          type: 'boolean',
+          description: 'Si true, le widget apparaît replié (header cliquable) par défaut. Défaut false = ouvert. Utilise true pour les widgets volumineux (gros tableau, long accordéon) afin de garder le flux de lecture fluide.',
+        },
+        collapseTitle: {
+          type: 'string',
+          description: 'Titre affiché dans le header du collapse (ex: "📊 Comparatif iPaaS"). Si omis, fallback sur le champ title.',
         },
       },
       required: ['layout', 'data'],
@@ -771,6 +793,18 @@ EXEMPLE
         title: { type: 'string' },
         mermaid: { type: 'string', description: 'Code source Mermaid valide (ex: flowchart TD\\n  A-->B\\n  B-->C)' },
         direction: { type: 'string', enum: ['TD', 'LR', 'BT', 'RL'], description: 'Pour flowchart' },
+        widgetId: {
+          type: 'string',
+          description: "Identifiant stable du diagramme (ex: 'archi-kinn'). OBLIGATOIRE pour le mode INLINE : réutilise le même widgetId dans [[WIDGET:<widgetId>]] dans ton texte.",
+        },
+        collapsed: {
+          type: 'boolean',
+          description: 'Si true, diagramme replié par défaut (header cliquable). Défaut false = ouvert.',
+        },
+        collapseTitle: {
+          type: 'string',
+          description: 'Titre du header collapse. Fallback sur title.',
+        },
       },
       required: ['type', 'mermaid'],
     },
@@ -799,6 +833,12 @@ EXEMPLE
         url: { type: 'string', description: 'URL publique d\'une image' },
         caption: { type: 'string', description: 'Légende optionnelle affichée sous l\'image' },
         alt: { type: 'string', description: 'Alt text accessibilité' },
+        widgetId: {
+          type: 'string',
+          description: "Identifiant stable du widget image. OBLIGATOIRE pour le mode INLINE : réutilise dans [[WIDGET:<widgetId>]].",
+        },
+        collapsed: { type: 'boolean', description: 'Replié par défaut si true. Défaut false.' },
+        collapseTitle: { type: 'string', description: 'Titre du header collapse. Fallback sur caption.' },
       },
     },
   },
@@ -817,7 +857,9 @@ Fournis uniquement le fileId retourné par files.upload / project_write. Pas bes
       properties: {
         fileId: { type: 'string', description: 'ID du fichier docx/xlsx/pptx/pdf à afficher' },
         caption: { type: 'string', description: 'Légende optionnelle affichée au-dessus du viewer (ex: "Facture modèle v1")' },
-        widgetId: { type: 'string', description: "Identifiant stable du widget (ex: 'invoice-template'). Si fourni ET widget existant dans le thread → remplace son fileId et rafraîchit le viewer in-place, sans créer de nouvelle card. Indispensable quand tu régénères un document après modification." },
+        widgetId: { type: 'string', description: "Identifiant stable du widget (ex: 'invoice-template'). OBLIGATOIRE pour le mode INLINE : réutilise dans [[WIDGET:<widgetId>]]. Si widgetId existant → remplace le fileId et rafraîchit le viewer in-place." },
+        collapsed: { type: 'boolean', description: 'Replié par défaut si true. Défaut false = viewer ouvert.' },
+        collapseTitle: { type: 'string', description: 'Titre du header collapse. Fallback sur caption ou nom du fichier.' },
       },
       required: ['fileId'],
     },
@@ -855,7 +897,9 @@ Fournis uniquement le fileId retourné par files.upload / project_write. Pas bes
         description: { type: 'string', description: 'Courte description du principe illustré' },
         height: { type: 'number', description: 'Hauteur du canvas en px (défaut 420, max 900)' },
         type: { type: 'string', enum: ['2d', '3d', 'animation', 'demo'], description: 'Type de rendu pour l\'icône badge' },
-        widgetId: { type: 'string', description: "Identifiant stable du canvas (ex: 'three-demo'). Si fourni ET canvas existant avec ce widgetId → MISE À JOUR IN-PLACE (l'utilisateur voit le rendu se rafraîchir dans la même iframe, pas une nouvelle card). Utilise-le pour toute itération sur un canvas déjà affiché." },
+        widgetId: { type: 'string', description: "Identifiant stable du canvas (ex: 'three-demo'). OBLIGATOIRE pour le mode INLINE : réutilise dans [[WIDGET:<widgetId>]]. Si widgetId existant → MISE À JOUR IN-PLACE (rendu rafraîchi dans la même iframe)." },
+        collapsed: { type: 'boolean', description: 'Canvas replié par défaut si true. Défaut false = ouvert.' },
+        collapseTitle: { type: 'string', description: 'Titre du header collapse. Fallback sur title.' },
       },
       required: ['html'],
     },
@@ -1831,31 +1875,34 @@ async function executeMetaTool(name, input, ctx) {
       if (shapeErr) return { ok: false, error: shapeErr };
       if (!ctx.threadId) return { ok: false, error: 'threadId manquant (render_structured doit être utilisé dans un thread actif).' };
       try {
-        const widgetId = input.widgetId ? String(input.widgetId).slice(0, 60) : null;
+        const widgetId = _resolveWidgetId(input.widgetId);
+        const collapsed = input.collapsed === true;
+        const collapseTitle = input.collapseTitle ? String(input.collapseTitle).slice(0, 200) : null;
         const structuredPayload = {
           layout: input.layout,
           title: input.title || '',
           data: input.data,
           renderedAt: new Date(),
         };
+        const collapseMeta = { collapsed, ...(collapseTitle ? { collapseTitle } : {}) };
         let doc;
-        if (widgetId) {
-          const existing = await _findWidgetByWidgetId(ctx.threadId, widgetId);
-          if (existing) {
-            existing.content = input.title || '';
-            existing.metadata = {
-              ...(existing.metadata?.toObject?.() || existing.metadata || {}),
-              kind: 'structured',
-              structured: structuredPayload,
-              widgetId,
-              widgetUpdatedAt: new Date(),
-            };
-            await existing.save();
-            doc = existing;
-            _notifyInlineUpdate(ctx.threadId, String(doc._id), 'structured');
-            return { ok: true, _silent: true, layout: input.layout, widgetId, updated: true, messageId: String(doc._id),
-              hint: "Widget mis à jour in-place. L'utilisateur voit la card existante se rafraîchir." };
-          }
+        const existing = await _findWidgetByWidgetId(ctx.threadId, widgetId);
+        if (existing) {
+          existing.content = input.title || '';
+          existing.metadata = {
+            ...(existing.metadata?.toObject?.() || existing.metadata || {}),
+            kind: 'structured',
+            structured: structuredPayload,
+            widgetId,
+            widgetUpdatedAt: new Date(),
+            collapse: collapseMeta,
+          };
+          await existing.save();
+          doc = existing;
+          _notifyInlineUpdate(ctx.threadId, String(doc._id), 'structured');
+          return { ok: true, _silent: true, layout: input.layout, widgetId, updated: true, messageId: String(doc._id),
+            inlineMarker: `[[WIDGET:${widgetId}]]`,
+            hint: `Widget mis à jour in-place. Insère [[WIDGET:${widgetId}]] dans ton texte à l'endroit où tu veux qu'il apparaisse.` };
         }
         doc = await AiMessage.create({
           threadId: ctx.threadId,
@@ -1865,16 +1912,21 @@ async function executeMetaTool(name, input, ctx) {
           metadata: {
             kind: 'structured',
             structured: structuredPayload,
-            ...(widgetId ? { widgetId, widgetUpdatedAt: new Date() } : {}),
+            collapse: collapseMeta,
+            widgetId,
+            widgetUpdatedAt: new Date(),
+            ...(ctx._jobContext?.jobId ? { subagentJobId: String(ctx._jobContext.jobId) } : {}),
           },
         });
         _notifyInlineMessage(ctx.threadId, 'structured');
-        // Retour minimal/silencieux : le widget est DÉJÀ visible dans le chat via le message inline.
         return {
           ok: true,
           _silent: true,
           layout: input.layout,
-          hint: "Widget affiché. RÈGLE STRICTE : ne recopie AUCUN contenu du widget dans ton texte (pas de JSON, pas de liste, pas de tableau markdown). Une courte phrase d'intro (≤1 ligne) si pertinent, puis silence. L'utilisateur voit déjà le widget.",
+          widgetId,
+          messageId: String(doc._id),
+          inlineMarker: `[[WIDGET:${widgetId}]]`,
+          hint: `Widget créé (widgetId=${widgetId}). Insère [[WIDGET:${widgetId}]] sur sa propre ligne dans ton texte à l'endroit exact où tu veux qu'il apparaisse. NE RECOPIE AUCUN contenu du widget dans ton texte.`,
         };
       } catch (e) {
         return { ok: false, error: e?.message || String(e) };
@@ -1989,20 +2041,46 @@ async function executeMetaTool(name, input, ctx) {
       if (typeof emitFn === 'function') emitFn(sideEvent);
       else if (Array.isArray(ctx._sideEvents)) ctx._sideEvents.push(sideEvent);
       // Persist a bubble in the chat
+      const widgetId = input.widgetId ? String(input.widgetId).slice(0, 60) : null;
+      const collapsed = input.collapsed === true;
+      const collapseTitle = input.collapseTitle ? String(input.collapseTitle).slice(0, 200) : null;
+      const collapseMeta = { collapsed, ...(collapseTitle ? { collapseTitle } : {}) };
+      let diagramDoc = null;
       try {
-        await AiMessage.create({
-          threadId: ctx.threadId,
-          workspaceId: ctx.workspaceId,
-          role: 'assistant',
-          content: title,
-          metadata: {
-            kind: 'diagram',
-            diagram: { type: input.type, title, mermaid: code },
-          },
-        });
-        _notifyInlineMessage(ctx.threadId, 'diagram');
+        if (widgetId) {
+          const existing = await _findWidgetByWidgetId(ctx.threadId, widgetId);
+          if (existing) {
+            existing.content = title;
+            existing.metadata = {
+              ...(existing.metadata?.toObject?.() || existing.metadata || {}),
+              kind: 'diagram',
+              diagram: { type: input.type, title, mermaid: code },
+              widgetId,
+              widgetUpdatedAt: new Date(),
+              collapse: collapseMeta,
+            };
+            await existing.save();
+            diagramDoc = existing;
+            _notifyInlineUpdate(ctx.threadId, String(existing._id), 'diagram');
+          }
+        }
+        if (!diagramDoc) {
+          diagramDoc = await AiMessage.create({
+            threadId: ctx.threadId,
+            workspaceId: ctx.workspaceId,
+            role: 'assistant',
+            content: title,
+            metadata: {
+              kind: 'diagram',
+              diagram: { type: input.type, title, mermaid: code },
+              collapse: collapseMeta,
+              ...(widgetId ? { widgetId, widgetUpdatedAt: new Date() } : {}),
+              ...(ctx._jobContext?.jobId ? { subagentJobId: String(ctx._jobContext.jobId) } : {}),
+            },
+          });
+          _notifyInlineMessage(ctx.threadId, 'diagram');
+        }
       } catch (e) {
-        // non-fatal — the canvas update still goes through
         console.warn('[generate_diagram] AiMessage persist error:', e?.message);
       }
       return {
@@ -2010,7 +2088,12 @@ async function executeMetaTool(name, input, ctx) {
         _silent: true,
         type: input.type,
         title,
-        hint: "Diagramme affiché. RÈGLE STRICTE : ne recopie PAS le code Mermaid dans ton texte, ne redécris pas les étapes en listes. Si tu veux commenter, 1 phrase d'intro max. L'utilisateur voit déjà le diagramme.",
+        widgetId: widgetId || (diagramDoc ? String(diagramDoc._id) : null),
+        messageId: diagramDoc ? String(diagramDoc._id) : null,
+        inlineMarker: widgetId ? `[[WIDGET:${widgetId}]]` : null,
+        hint: widgetId
+          ? `Diagramme affiché. Insère [[WIDGET:${widgetId}]] sur sa propre ligne dans ton texte. NE RECOPIE PAS le code Mermaid.`
+          : "Diagramme affiché. NE RECOPIE PAS le code Mermaid. Pour l'ancrer inline, rappelle avec widgetId.",
       };
     }
 
@@ -2047,10 +2130,16 @@ async function executeMetaTool(name, input, ctx) {
       if (ctr.count >= maxPerDay) return { ok: false, error: `Limite de ${maxPerDay} installs/jour atteinte.` };
 
       const { spawn } = require('child_process');
-      const pipBin = process.env.AI_SANDBOX_PIP || 'pip3';
+      // CRITIQUE : on utilise `python -m pip` avec le MÊME interpréteur que la sandbox
+      // (AI_SANDBOX_PYTHON). Sinon sur macOS, pip3 peut pointer vers brew python
+      // alors que python3 = Apple system → lib installée mais invisible à l'import.
+      const pythonBin = process.env.AI_SANDBOX_PYTHON || 'python3';
+      const pipOverride = process.env.AI_SANDBOX_PIP; // optionnel, bypass si vraiment nécessaire
       const npmBin = process.env.AI_SANDBOX_NPM || 'npm';
       const cmdArgs = language === 'python'
-        ? [pipBin, 'install', '--break-system-packages', '--no-input', '--quiet', version ? `${pkg}==${version}` : pkg]
+        ? (pipOverride
+            ? [pipOverride, 'install', '--break-system-packages', '--no-input', '--quiet', version ? `${pkg}==${version}` : pkg]
+            : [pythonBin, '-m', 'pip', 'install', '--break-system-packages', '--no-input', '--quiet', version ? `${pkg}==${version}` : pkg])
         : [npmBin, 'install', '-g', '--silent', version ? `${pkg}@${version}` : pkg];
 
       return new Promise((resolve) => {
@@ -2093,26 +2182,55 @@ async function executeMetaTool(name, input, ctx) {
       const { fileId, url, caption, alt } = input || {};
       if (!fileId && !url) return { ok: false, error: 'fileId ou url requis' };
       try {
-        await AiMessage.create({
-          threadId: ctx.threadId,
-          workspaceId: ctx.workspaceId,
-          role: 'assistant',
-          content: caption || '',
-          metadata: {
+        const widgetId = _resolveWidgetId(input.widgetId);
+        const collapsed = input.collapsed === true;
+        const collapseTitle = input.collapseTitle ? String(input.collapseTitle).slice(0, 200) : null;
+        const collapseMeta = { collapsed, ...(collapseTitle ? { collapseTitle } : {}) };
+        const imagePayload = {
+          fileId: fileId || null,
+          url: url || null,
+          caption: caption || null,
+          alt: alt || 'image',
+        };
+        let doc;
+        const existing = await _findWidgetByWidgetId(ctx.threadId, widgetId);
+        if (existing) {
+          existing.content = caption || '';
+          existing.metadata = {
+            ...(existing.metadata?.toObject?.() || existing.metadata || {}),
             kind: 'image_inline',
-            imageInline: {
-              fileId: fileId || null,
-              url: url || null,
-              caption: caption || null,
-              alt: alt || 'image',
+            imageInline: imagePayload,
+            widgetId,
+            widgetUpdatedAt: new Date(),
+            collapse: collapseMeta,
+          };
+          await existing.save();
+          doc = existing;
+          _notifyInlineUpdate(ctx.threadId, String(doc._id), 'image_inline');
+        } else {
+          doc = await AiMessage.create({
+            threadId: ctx.threadId,
+            workspaceId: ctx.workspaceId,
+            role: 'assistant',
+            content: caption || '',
+            metadata: {
+              kind: 'image_inline',
+              imageInline: imagePayload,
+              widgetId,
+              widgetUpdatedAt: new Date(),
+              collapse: collapseMeta,
+              ...(ctx._jobContext?.jobId ? { subagentJobId: String(ctx._jobContext.jobId) } : {}),
             },
-          },
-        });
-        _notifyInlineMessage(ctx.threadId, 'image_inline');
+          });
+          _notifyInlineMessage(ctx.threadId, 'image_inline');
+        }
         return {
           ok: true,
           _silent: true,
-          hint: "Image affichée inline. Pas de description redondante dans ton texte.",
+          widgetId,
+          messageId: String(doc._id),
+          inlineMarker: `[[WIDGET:${widgetId}]]`,
+          hint: `Image affichée. Insère [[WIDGET:${widgetId}]] sur sa propre ligne dans ton texte. Pas de description redondante.`,
         };
       } catch (e) {
         return { ok: false, error: e?.message };
@@ -2137,7 +2255,10 @@ async function executeMetaTool(name, input, ctx) {
         if (kind === 'other') {
           return { ok: false, error: `Type non supporté pour display_file (${mime || ext}). Utilise display_image pour les images.` };
         }
-        const widgetId = input.widgetId ? String(input.widgetId).slice(0, 60) : null;
+        const widgetId = _resolveWidgetId(input.widgetId);
+        const collapsed = input.collapsed === true;
+        const collapseTitle = input.collapseTitle ? String(input.collapseTitle).slice(0, 200) : null;
+        const collapseMeta = { collapsed, ...(collapseTitle ? { collapseTitle } : {}) };
         const filePayload = {
           fileId: file.id,
           name: file.name,
@@ -2146,39 +2267,45 @@ async function executeMetaTool(name, input, ctx) {
           caption: caption || null,
           kind,
         };
-        if (widgetId) {
-          const existing = await _findWidgetByWidgetId(ctx.threadId, widgetId);
-          if (existing) {
-            existing.content = caption || file.name || '';
-            existing.metadata = {
-              ...(existing.metadata?.toObject?.() || existing.metadata || {}),
+        let doc;
+        const existing = await _findWidgetByWidgetId(ctx.threadId, widgetId);
+        if (existing) {
+          existing.content = caption || file.name || '';
+          existing.metadata = {
+            ...(existing.metadata?.toObject?.() || existing.metadata || {}),
+            kind: 'file_inline',
+            fileInline: filePayload,
+            widgetId,
+            widgetUpdatedAt: new Date(),
+            collapse: collapseMeta,
+          };
+          await existing.save();
+          doc = existing;
+          _notifyInlineUpdate(ctx.threadId, String(doc._id), 'file_inline');
+        } else {
+          doc = await AiMessage.create({
+            threadId: ctx.threadId,
+            workspaceId: ctx.workspaceId,
+            role: 'assistant',
+            content: caption || file.name || '',
+            metadata: {
               kind: 'file_inline',
               fileInline: filePayload,
               widgetId,
               widgetUpdatedAt: new Date(),
-            };
-            await existing.save();
-            _notifyInlineUpdate(ctx.threadId, String(existing._id), 'file_inline');
-            return { ok: true, _silent: true, widgetId, updated: true, messageId: String(existing._id),
-              hint: `Fichier ${kind} mis à jour in-place dans le viewer existant.` };
-          }
+              collapse: collapseMeta,
+              ...(ctx._jobContext?.jobId ? { subagentJobId: String(ctx._jobContext.jobId) } : {}),
+            },
+          });
+          _notifyInlineMessage(ctx.threadId, 'file_inline');
         }
-        await AiMessage.create({
-          threadId: ctx.threadId,
-          workspaceId: ctx.workspaceId,
-          role: 'assistant',
-          content: caption || file.name || '',
-          metadata: {
-            kind: 'file_inline',
-            fileInline: filePayload,
-            ...(widgetId ? { widgetId, widgetUpdatedAt: new Date() } : {}),
-          },
-        });
-        _notifyInlineMessage(ctx.threadId, 'file_inline');
         return {
           ok: true,
           _silent: true,
-          hint: `Fichier ${kind} affiché inline dans le chat (viewer intégré). Pas besoin de décrire à nouveau son contenu.`,
+          widgetId,
+          messageId: String(doc._id),
+          inlineMarker: `[[WIDGET:${widgetId}]]`,
+          hint: `Fichier ${kind} affiché. Insère [[WIDGET:${widgetId}]] sur sa propre ligne dans ton texte.`,
         };
       } catch (e) {
         return { ok: false, error: e?.message };
@@ -2193,7 +2320,10 @@ async function executeMetaTool(name, input, ctx) {
       if (html.length > 400_000) return { ok: false, error: 'html trop volumineux (>400KB). Minimise le code ou charge via CDN.' };
       const safeHeight = Math.max(200, Math.min(900, Number(height) || 420));
       try {
-        const widgetId = input.widgetId ? String(input.widgetId).slice(0, 60) : null;
+        const widgetId = _resolveWidgetId(input.widgetId);
+        const collapsed = input.collapsed === true;
+        const collapseTitle = input.collapseTitle ? String(input.collapseTitle).slice(0, 200) : null;
+        const collapseMeta = { collapsed, ...(collapseTitle ? { collapseTitle } : {}) };
         const canvasPayload = {
           html,
           title: title || null,
@@ -2201,39 +2331,45 @@ async function executeMetaTool(name, input, ctx) {
           height: safeHeight,
           type: ['2d', '3d', 'animation', 'demo'].includes(type) ? type : 'demo',
         };
-        if (widgetId) {
-          const existing = await _findWidgetByWidgetId(ctx.threadId, widgetId);
-          if (existing) {
-            existing.content = title || '';
-            existing.metadata = {
-              ...(existing.metadata?.toObject?.() || existing.metadata || {}),
+        let doc;
+        const existing = await _findWidgetByWidgetId(ctx.threadId, widgetId);
+        if (existing) {
+          existing.content = title || '';
+          existing.metadata = {
+            ...(existing.metadata?.toObject?.() || existing.metadata || {}),
+            kind: 'canvas_html',
+            canvasHtml: canvasPayload,
+            widgetId,
+            widgetUpdatedAt: new Date(),
+            collapse: collapseMeta,
+          };
+          await existing.save();
+          doc = existing;
+          _notifyInlineUpdate(ctx.threadId, String(doc._id), 'canvas_html');
+        } else {
+          doc = await AiMessage.create({
+            threadId: ctx.threadId,
+            workspaceId: ctx.workspaceId,
+            role: 'assistant',
+            content: title || '',
+            metadata: {
               kind: 'canvas_html',
               canvasHtml: canvasPayload,
               widgetId,
               widgetUpdatedAt: new Date(),
-            };
-            await existing.save();
-            _notifyInlineUpdate(ctx.threadId, String(existing._id), 'canvas_html');
-            return { ok: true, _silent: true, widgetId, updated: true, messageId: String(existing._id),
-              hint: "Canvas HTML mis à jour in-place dans le widget existant." };
-          }
+              collapse: collapseMeta,
+              ...(ctx._jobContext?.jobId ? { subagentJobId: String(ctx._jobContext.jobId) } : {}),
+            },
+          });
+          _notifyInlineMessage(ctx.threadId, 'canvas_html');
         }
-        await AiMessage.create({
-          threadId: ctx.threadId,
-          workspaceId: ctx.workspaceId,
-          role: 'assistant',
-          content: title || '',
-          metadata: {
-            kind: 'canvas_html',
-            canvasHtml: canvasPayload,
-            ...(widgetId ? { widgetId, widgetUpdatedAt: new Date() } : {}),
-          },
-        });
-        _notifyInlineMessage(ctx.threadId, 'canvas_html');
         return {
           ok: true,
           _silent: true,
-          hint: "Canvas HTML affiché inline. Ne décris pas le contenu dans ton texte, l'utilisateur le voit.",
+          widgetId,
+          messageId: String(doc._id),
+          inlineMarker: `[[WIDGET:${widgetId}]]`,
+          hint: `Canvas affiché. Insère [[WIDGET:${widgetId}]] sur sa propre ligne dans ton texte. Ne décris pas le contenu, l'utilisateur le voit.`,
         };
       } catch (e) {
         return { ok: false, error: e?.message };

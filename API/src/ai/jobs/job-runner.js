@@ -352,19 +352,33 @@ async function runJob(jobId, opts = {}) {
     let messages;
     if (job.transcript?.length) {
       messages = job.transcript;
-    } else if (opts.prompt) {
-      messages = [{ role: 'user', content: opts.prompt }];
     } else if (job.type === 'subagent' && job.subagentInstructions) {
       // Subagent resumé (resumeJob sans opts) : utilise l'enrichedPrompt
       // persisté par sub-runner (contient les blocs CONTEXTE des deps).
       // Sinon on tombait sur l'historique du thread parent et le subagent
       // disait "je n'ai pas les résultats upstream".
       messages = [{ role: 'user', content: job.subagentInstructions }];
-    } else {
-      // Default: load thread history
+    } else if (opts.prompt && opts._skipThreadHistory) {
+      messages = [{ role: 'user', content: opts.prompt }];
+    } else if (opts.prompt) {
+      // Resume parent (ou nouveau agent_run avec prompt) : on charge l'historique
+      // du thread (jusqu'à 60 msgs) + on append le nouveau prompt. Sinon le LLM
+      // perd tout contexte de ce que le parent a déjà fait dans la conversation.
+      // IMPORTANT : on filtre les messages à content VIDE (widgets sans texte,
+      // system_notes, etc.). Anthropic rejette "text content blocks must be non-empty".
       const history = await AiMessage.find({ threadId: job.threadId })
         .sort({ createdAt: 1 }).limit(60).lean();
-      messages = history.map(m => ({ role: m.role, content: m.content || '' }));
+      messages = history
+        .filter(m => (m.role === 'user' || m.role === 'assistant') && String(m.content || '').trim().length > 0)
+        .map(m => ({ role: m.role, content: String(m.content).trim() }));
+      messages.push({ role: 'user', content: opts.prompt });
+    } else {
+      // Default: load thread history — même filtre anti-empty.
+      const history = await AiMessage.find({ threadId: job.threadId })
+        .sort({ createdAt: 1 }).limit(60).lean();
+      messages = history
+        .filter(m => String(m.content || '').trim().length > 0)
+        .map(m => ({ role: m.role, content: String(m.content).trim() }));
     }
 
     const mode = job.mode || thread.mode || 'chat';
@@ -400,6 +414,25 @@ async function runJob(jobId, opts = {}) {
 
     // Final state
     const finishedAt = new Date();
+
+    // Collecte les widgets produits PAR CE JOB (via metadata.subagentJobId)
+    // pour que le parent puisse les référencer via [[WIDGET:id]] dans sa synthèse.
+    let producedWidgets = [];
+    try {
+      const widgetDocs = await AiMessage.find({
+        threadId: job.threadId,
+        'metadata.subagentJobId': String(jobId),
+        'metadata.widgetId': { $exists: true, $ne: null },
+      }, { 'metadata.widgetId': 1, 'metadata.kind': 1, content: 1, createdAt: 1 }).sort({ createdAt: 1 }).lean();
+      producedWidgets = widgetDocs.map(d => ({
+        widgetId: d.metadata?.widgetId,
+        kind: d.metadata?.kind,
+        title: (d.content || '').slice(0, 120),
+      })).filter(w => w.widgetId);
+    } catch (e) {
+      console.warn('[job-runner] widget collection failed:', e?.message);
+    }
+
     await AiJob.updateOne({ id: jobId }, {
       $set: {
         status: 'completed',
@@ -408,6 +441,7 @@ async function runJob(jobId, opts = {}) {
         result: {
           summary: finalText.slice(0, 20_000),
           artifacts: toolCalls.slice(-20),
+          widgets: producedWidgets,
         },
       },
     });
@@ -606,14 +640,34 @@ async function _maybeResumeParent(job) {
   const STALE_HB_MS = 2 * 60_000;
   const staleThreshold = new Date(Date.now() - STALE_HB_MS);
   const BACKGROUND_TYPES = ['memory_extractor', 'project_doc_writer'];
+
+  // D2 : détecte et marque les subagents stalled (running sans heartbeat > 2min).
+  // Avant de compter les actifs, on flip ces fantômes en status=stalled pour
+  // qu'ils apparaissent comme tels dans l'UI et ne bloquent pas le resume.
+  try {
+    const stalled = await AiJob.updateMany(
+      {
+        threadId,
+        type: 'subagent',
+        _id: { $ne: job._id },
+        subagentType: { $nin: BACKGROUND_TYPES },
+        status: 'running',
+        heartbeatAt: { $lt: staleThreshold },
+      },
+      { $set: { status: 'stalled', error: `heartbeat_timeout (>${STALE_HB_MS/1000}s)`, finishedAt: new Date() } }
+    );
+    if (stalled.modifiedCount > 0) {
+      console.warn(`[resume-parent] marked ${stalled.modifiedCount} stalled subagent(s) on thread=${threadId}`);
+    }
+  } catch (e) {
+    console.warn('[resume-parent] stalled detection failed:', e?.message);
+  }
+
   const reallyActive = await AiJob.countDocuments({
     threadId,
-    // Exclut : hooks background (memory_extractor, doc_writer) + agent_run parent
-    // (qui a fini son tour mais peut rester en 'running' quelques secondes) +
-    // le job courant lui-même (qui vient de finir).
     subagentType: { $nin: BACKGROUND_TYPES },
-    type: 'subagent',        // ne compte QUE les subagents, pas les agent_run parents
-    _id: { $ne: job._id },  // exclut le job qui vient de finir
+    type: 'subagent',
+    _id: { $ne: job._id },
     status: { $in: ['queued', 'running', 'waiting_dependency', 'waiting_permission', 'paused'] },
     $or: [
       { status: { $in: ['queued', 'waiting_dependency', 'waiting_permission', 'paused'] } },
@@ -664,52 +718,12 @@ async function _maybeResumeParent(job) {
     return;
   }
 
-  // 4. Si un livrable final a déjà été produit APRÈS le spawn, skip le
-  // resume LLM complet, MAIS auto-clôture la todo-list si elle existe et
-  // contient encore des items in_progress (sinon elle reste bloquée en
-  // loading alors que la tâche est visuellement terminée).
-  const idxSig = lastMessages.findIndex(m => m._id?.toString() === significant._id?.toString());
-  const FINAL_KINDS = new Set(['canvas_html', 'structured', 'diagram', 'image_inline', 'plan_proposal', 'file_inline']);
-  const sinceSpawn = lastMessages.slice(0, idxSig);
-  if (sinceSpawn.some(m => FINAL_KINDS.has(m.metadata?.kind))) {
-    // Cherche un session-todos avec des items non terminés
-    try {
-      const todoMsg = await AiMessage.findOne({
-        threadId,
-        'metadata.kind': 'todo_list',
-        'metadata.widgetId': { $regex: '^session-todos' },
-      }).sort({ createdAt: -1 });
-      if (todoMsg) {
-        const todos = todoMsg.metadata?.todoList?.todos || [];
-        const hasOpen = todos.some(t => t.status === 'in_progress' || t.status === 'pending');
-        if (hasOpen) {
-          // Auto-close tout ce qui n'est pas déjà completed/cancelled
-          const updated = todos.map(t => ({
-            ...t.toObject?.() || t,
-            status: (t.status === 'completed' || t.status === 'cancelled') ? t.status : 'completed',
-          }));
-          todoMsg.metadata = {
-            ...(todoMsg.metadata?.toObject?.() || todoMsg.metadata),
-            todoList: {
-              ...(todoMsg.metadata?.todoList?.toObject?.() || todoMsg.metadata?.todoList),
-              todos: updated,
-              updatedAt: new Date(),
-            },
-            widgetUpdatedAt: new Date(),
-          };
-          await todoMsg.save();
-          console.log(`[resume-parent] todo auto-close : ${todos.filter(t => t.status !== 'completed' && t.status !== 'cancelled').length} items → completed (livrable déjà présent)`);
-          emitThreadEvent(String(threadId), {
-            type: 'ai.message.updated',
-            messageId: String(todoMsg._id),
-            kind: 'todo_list',
-          });
-        }
-      }
-    } catch (e) { console.warn('[resume-parent] todo auto-close failed:', e?.message); }
-    console.log(`[resume-parent] skip thread=${threadId} : livrable final déjà présent`);
-    return;
-  }
+  // 4. Avec le mécanisme [[WIDGET:id]], on NE skip PLUS le resume même si un
+  // livrable est déjà présent. Le parent DOIT produire un texte final qui
+  // intègre les widgets via leur marqueur inline. Sans cet appel LLM final,
+  // l'utilisateur ne voit que des bulles widgets sans synthèse textuelle.
+  // On laisse le resume LLM tourner → il appelle todo_write (close checklist)
+  // + rédige un texte avec [[WIDGET:id]] pour intégrer les livrables subagent.
 
   // 5. Récupérer les résumés des jobs récents de la cascade (max 6)
   const recentJobs = await AiJob.find({
@@ -725,8 +739,16 @@ async function _maybeResumeParent(job) {
     const subj = j.subagentInstructions ? j.subagentInstructions.slice(0, 120) : '(sans description)';
     const status = j.status === 'error' ? `❌ ${j.error || 'error'}` : '✅ terminé';
     const summary = (j.result?.summary || '').slice(0, 1500);
-    return `### Job ${i + 1} — ${j.subagentType || 'subagent'} (${status})\n**Tâche :** ${subj}\n**Résultat :**\n${summary || '(vide)'}`;
+    const widgets = Array.isArray(j.result?.widgets) ? j.result.widgets : [];
+    const widgetBlock = widgets.length
+      ? `\n**Widgets produits (utilise [[WIDGET:id]] pour les afficher inline) :**\n${widgets.map(w => `- [[WIDGET:${w.widgetId}]] — ${w.kind} : ${w.title || '(sans titre)'}`).join('\n')}`
+      : '';
+    return `### Job ${i + 1} — ${j.subagentType || 'subagent'} (${status})\n**Tâche :** ${subj}\n**Résultat :**\n${summary || '(vide)'}${widgetBlock}`;
   }).join('\n\n---\n\n');
+
+  // Agrège tous les widgetIds produits par l'ensemble des subagents (pour
+  // l'instruction finale au parent).
+  const allWidgetIds = recentJobs.flatMap(j => (j.result?.widgets || []).map(w => w.widgetId)).filter(Boolean);
 
   // Anti-boucle : ne pas resume plus de 2 fois sur un même thread dans la fenêtre
   const recentResumes = await AiMessage.countDocuments({
@@ -758,7 +780,7 @@ ${userRequest || '(non récupérée)'}
 
 ${summaries}
 
-🎯 TÂCHE : finalise la livraison en 2 étapes STRICTES dans cet ordre :
+${allWidgetIds.length ? `🧩 **INTÉGRATION OBLIGATOIRE DES WIDGETS SUBAGENT** — tes subagents ont produit les widgets suivants qui DOIVENT apparaître inline dans ta synthèse finale : ${allWidgetIds.map(w => `[[WIDGET:${w}]]`).join(', ')}. Insère chaque marqueur sur sa propre ligne à l'endroit pertinent dans ton texte. NE RECRÉE PAS ces widgets, NE PARAPHRASE PAS leur contenu — place juste le marqueur.\n\n` : ''}🎯 TÂCHE : finalise la livraison en 2 étapes STRICTES dans cet ordre :
 
 1. **MISE À JOUR OBLIGATOIRE DE LA CHECKLIST** (si une existe — widget 'session-todos')
    Appelle \`todo_write\` EN PREMIER avec la checklist mise à jour :

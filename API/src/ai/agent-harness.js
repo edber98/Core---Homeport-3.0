@@ -35,6 +35,12 @@ const DEFAULT_MAX_LOOPS = parseInt(process.env.AI_DEFAULT_MAX_LOOPS || '100', 10
  * s'il reste des todos in_progress/pending. Si oui, on les marque comme
  * "cancelled" ou "completed" selon le contexte, pour que le frontend ne reste
  * pas en loading infini.
+ *
+ * COORDINATION avec job-runner._maybeResumeParent :
+ * - Si des subagents sont encore actifs, on SKIP (resumeParent s'en occupera
+ *   quand ils finiront, via sa propre logique d'auto-close).
+ * - Si aucun subagent actif → ce harness est en fin de run simple, on ferme ici.
+ * - Les deux logiques ne peuvent donc pas race grâce au guard activeSubagents > 0.
  */
 async function _autoCloseStaleTodos(threadId) {
   if (!threadId) return;
@@ -114,11 +120,6 @@ function nextWithTimeout(iterator, timeoutMs, signal) {
   return new Promise((resolve, reject) => {
     if (signal?.aborted) return reject(new Error('Stream aborted'));
 
-    const timer = setTimeout(
-      () => reject(new Error(`LLM stream timeout: no event for ${timeoutMs / 1000}s`)),
-      timeoutMs,
-    );
-
     let settled = false;
     const cleanup = () => {
       clearTimeout(timer);
@@ -130,6 +131,15 @@ function nextWithTimeout(iterator, timeoutMs, signal) {
       cleanup();
       reject(new Error('Stream aborted'));
     };
+    // CRITIQUE : le timer DOIT aussi cleanup() sinon le listener onAbort reste
+    // attaché au signal après timeout → fuite mémoire progressive.
+    const timer = setTimeout(() => {
+      if (settled) return;
+      settled = true;
+      cleanup();
+      reject(new Error(`LLM stream timeout: no event for ${timeoutMs / 1000}s`));
+    }, timeoutMs);
+
     if (signal) signal.addEventListener('abort', onAbort, { once: true });
 
     iterator.next().then(
@@ -663,9 +673,14 @@ factuel des livrables créés avec leurs IDs/paths. Pas de phrase de conclusion 
     // le finalizer. Raison : le LLM a délégué la production à un subagent →
     // il ne doit PAS produire le livrable lui-même (sinon il hallucine les
     // données que le subagent n'a pas encore fournies).
+    //
+    // EXCEPTION : si le finalizer cible un widgetId qui EXISTE déjà dans le
+    // thread, c'est un UPDATE (pas une hallucination). Le LLM met à jour un
+    // widget que l'utilisateur voit déjà → on laisse passer.
     const FINALIZER_TOOLS = new Set([
       'render_structured', 'display_file', 'display_image',
       'render_interactive_canvas', 'generate_diagram', 'generate_document',
+      'canvas_html',
     ]);
     const hasAsyncSpawn = pendingToolCalls.some(tc =>
       tc.name === 'spawn_subagent' && (tc.input?.async === true || (Array.isArray(tc.input?.depends_on) && tc.input.depends_on.length > 0))
@@ -673,7 +688,27 @@ factuel des livrables créés avec leurs IDs/paths. Pas de phrase de conclusion 
     const finalizersInTurn = pendingToolCalls.filter(tc => FINALIZER_TOOLS.has(tc.name));
     const blockedFinalizerIds = new Set();
     if (hasAsyncSpawn && finalizersInTurn.length > 0) {
+      const threadId = modeMetadata.threadId || context._threadId;
       for (const fin of finalizersInTurn) {
+        const widgetId = fin.input?.widgetId ? String(fin.input.widgetId) : null;
+        let isExistingUpdate = false;
+        if (widgetId && threadId) {
+          try {
+            const AiMessage = require('../db/models/ai-message.model');
+            const existing = await AiMessage.findOne(
+              { threadId, 'metadata.widgetId': widgetId },
+              { _id: 1 }
+            ).lean();
+            if (existing) isExistingUpdate = true;
+          } catch (e) {
+            // DB lookup échoue → on reste en mode bloquant pour être safe
+            console.warn(`[harness] widget lookup failed for ${widgetId}: ${e?.message}`);
+          }
+        }
+        if (isExistingUpdate) {
+          console.log(`[harness] ${fin.name} AUTORISÉ (widgetId=${widgetId} existe déjà → update, pas hallucination)`);
+          continue;
+        }
         console.warn(`[harness] ANTI-HALLUCINATION : blocage ${fin.name} (id=${fin.id}) car spawn_subagent async est dans le même tour → le subagent doit produire le livrable, pas le parent`);
         blockedFinalizerIds.add(fin.id);
       }
@@ -810,11 +845,23 @@ factuel des livrables créés avec leurs IDs/paths. Pas de phrase de conclusion 
               }
             } catch { /* non-fatal */ }
 
-            // 4. Race : le parent peut répondre (subagent.permission.granted) OU
-            //    l'user peut répondre directement (permission.resolved sur le job).
-            const fromParent = waitForPermissionFromParent(parentJobId, requestId, 10 * 60_000);
-            const fromUser = waitForPermission(jobContext.jobId, requestId, 10 * 60_000);
-            const resolved = await Promise.race([fromParent, fromUser]);
+            // 4. Priorité : l'USER d'abord (30s), puis fallback parent.
+            // Avant : Promise.race → race condition où parent pouvait gagner
+            // sur une décision user attendue → escalade compromise.
+            const USER_FIRST_WINDOW_MS = 30_000;
+            let resolved;
+            try {
+              resolved = await Promise.race([
+                waitForPermission(jobContext.jobId, requestId, USER_FIRST_WINDOW_MS),
+                new Promise(r => setTimeout(() => r('__user_timeout__'), USER_FIRST_WINDOW_MS)),
+              ]);
+            } catch { resolved = '__user_timeout__'; }
+            if (resolved === '__user_timeout__') {
+              console.log(`[harness] permission: user didn't respond in ${USER_FIRST_WINDOW_MS}ms → fallback on parent agent + user (race)`);
+              const fromParent = waitForPermissionFromParent(parentJobId, requestId, 10 * 60_000);
+              const fromUser = waitForPermission(jobContext.jobId, requestId, 10 * 60_000);
+              resolved = await Promise.race([fromParent, fromUser]);
+            }
 
             // 5. Repasse en running (avant le tool exec ou le deny)
             try {

@@ -29,6 +29,17 @@ import { AiAgentReportCardComponent } from './agent-reports/ai-agent-report-card
 import { AiWidgetActionsComponent, WidgetAction, WidgetActionId } from './widgets/ai-widget-actions.component';
 import { AiWidgetModalComponent, WidgetType, WidgetModalData } from './widgets/ai-widget-modal.component';
 import { WidgetExportService } from './widgets/widget-export.service';
+import { AiInlineWidgetCollapseComponent } from './widgets/ai-inline-widget-collapse.component';
+
+/** Segment interne du rendu d'un message : texte markdown ou widget inline. */
+export interface ContentRenderSegment {
+  type: 'text' | 'widget';
+  html?: string;         // si type=text : HTML markdown rendu
+  widget?: AiMessage;    // si type=widget : message-widget référencé par [[WIDGET:id]]
+  widgetId?: string;     // si type=widget : id pour trackBy
+}
+
+const WIDGET_MARKER_REGEX = /\[\[WIDGET:([a-zA-Z0-9_\-.]{1,60})\]\]/g;
 
 const TOOL_LABELS: Record<string, string> = {
   search_tools: 'Recherche d\'outils', get_tool_details: 'Détails outil', execute_tool: 'Exécution',
@@ -135,7 +146,7 @@ interface ProcessedSegment {
 @Component({
   selector: 'ai-message',
   standalone: true,
-  imports: [CommonModule, FormsModule, NzButtonModule, NzIconModule, NzTagModule, NzToolTipModule, NzBadgeModule, NzInputModule, NodeExecResultDialogComponent, AiPermissionRequestCardComponent, AiCacheSyncRequestCardComponent, AiStructuredMessageComponent, AiPlanProposalCardComponent, AiDiagramRendererComponent, AiInlineImageComponent, AiInlineFileComponent, AiTodoListComponent, AiCanvasHtmlComponent, AiWidgetActionsComponent, AiAgentReportCardComponent, AiAgentBadgeComponent],
+  imports: [CommonModule, FormsModule, NzButtonModule, NzIconModule, NzTagModule, NzToolTipModule, NzBadgeModule, NzInputModule, NodeExecResultDialogComponent, AiPermissionRequestCardComponent, AiCacheSyncRequestCardComponent, AiStructuredMessageComponent, AiPlanProposalCardComponent, AiDiagramRendererComponent, AiInlineImageComponent, AiInlineFileComponent, AiTodoListComponent, AiCanvasHtmlComponent, AiWidgetActionsComponent, AiAgentReportCardComponent, AiAgentBadgeComponent, AiInlineWidgetCollapseComponent],
   template: `
     <div class="ai-msg" [class.user]="msg.role === 'user'" [class.assistant]="msg.role === 'assistant'" [class.compact]="compact">
       <div class="avatar" *ngIf="!compact">
@@ -273,11 +284,27 @@ interface ProcessedSegment {
         <!-- Segments mode: reasoning blocks with text + tools, final text at end -->
         <ng-container *ngIf="msg.segments?.length; else flatLayout">
           <ng-container *ngFor="let ps of getProcessedSegments()">
-            <!-- Final response text -->
-            <div class="content" *ngIf="ps.type === 'text' && ps.content"
-                 [innerHTML]="renderMarkdown(ps.content)"></div>
+            <!-- Final response text — découpé pour intégrer les widgets inline [[WIDGET:id]] -->
+            <ng-container *ngIf="ps.type === 'text' && ps.content">
+              <ng-container *ngFor="let seg of contentSegments(ps.content); trackBy: trackSegment">
+                <div class="content" *ngIf="seg.type === 'text'" [innerHTML]="seg.html"></div>
+                <ai-inline-widget-collapse
+                  *ngIf="seg.type === 'widget' && seg.widget"
+                  [widget]="seg.widget">
+                </ai-inline-widget-collapse>
+              </ng-container>
+            </ng-container>
             <!-- Reasoning block: optional text + collapsible tool summary -->
             <div class="reasoning-block" *ngIf="ps.type === 'reasoning'">
+              <!-- Live widgets en construction : affichés inline en tête du reasoning,
+                   dans l'ordre de création. Remplacent le rendu "top of tools" pour
+                   que le widget apparaisse à la place naturelle du flux. -->
+              <ng-container *ngFor="let bw of buildingWidgets(ps); trackBy: trackBuildingWidget">
+                <ai-inline-widget-collapse
+                  *ngIf="!widgetsById?.has(bw.widgetId)"
+                  [widget]="bw.placeholder">
+                </ai-inline-widget-collapse>
+              </ng-container>
               <div class="reasoning-header" *ngIf="ps.reasoningText"
                    (click)="toggleReasoningExpand(ps)"
                    [class.clickable]="true">
@@ -344,7 +371,15 @@ interface ProcessedSegment {
 
         <!-- Flat layout: content + tools (for DB-loaded messages without segments) -->
         <ng-template #flatLayout>
-          <div class="content" *ngIf="msg.content" [innerHTML]="renderMarkdown(msg.content)"></div>
+          <ng-container *ngIf="msg.content">
+            <ng-container *ngFor="let seg of contentSegments(msg.content); trackBy: trackSegment">
+              <div class="content" *ngIf="seg.type === 'text'" [innerHTML]="seg.html"></div>
+              <ai-inline-widget-collapse
+                *ngIf="seg.type === 'widget' && seg.widget"
+                [widget]="seg.widget">
+              </ai-inline-widget-collapse>
+            </ng-container>
+          </ng-container>
           <div class="reasoning-block" *ngIf="msg.toolCalls?.length">
             <div class="tool-summary">
               <span class="summary-toggle"
@@ -718,6 +753,8 @@ export class AiMessageComponent {
   @Input() msg!: AiMessage;
   @Input() compact = false;
   @Input() isLast = false;
+  /** Map widgetId → AiMessage pour le rendu inline [[WIDGET:id]]. Fourni par ai-chat. */
+  @Input() widgetsById: Map<string, AiMessage> | null = null;
   @Output() retryClick = new EventEmitter<void>();
   public ai = inject(AiService);
   private cdr = inject(ChangeDetectorRef);
@@ -1213,6 +1250,107 @@ export class AiMessageComponent {
         ALLOWED_ATTR: ['href', 'target', 'rel', 'class', 'src', 'alt', 'loading', 'width', 'height'],
       });
     } catch { return src; }
+  }
+
+  /**
+   * Extrait les widgets actuellement en construction (livePreview sur tool call
+   * avec widgetId dans les args). Rendu inline en tête du reasoning block pour
+   * que le widget apparaisse à sa position naturelle dans le flux de génération,
+   * plutôt qu'en haut des tools. Disparaît automatiquement dès que le widget
+   * est persisté (widgetsById contient son widgetId).
+   */
+  buildingWidgets(ps: ProcessedSegment): Array<{ widgetId: string; placeholder: AiMessage }> {
+    const tools = ps?.toolCalls || [];
+    if (!tools.length) return [];
+    const WIDGET_TOOL_NAMES = new Set([
+      'render_structured', 'render_interactive_canvas', 'generate_diagram',
+      'display_image', 'display_file',
+    ]);
+    const TOOL_TO_KIND: Record<string, string> = {
+      render_structured: 'structured',
+      render_interactive_canvas: 'canvas_html',
+      generate_diagram: 'diagram',
+      display_image: 'image_inline',
+      display_file: 'file_inline',
+    };
+    const KIND_PAYLOAD_KEY: Record<string, string> = {
+      structured: 'structured',
+      canvas_html: 'canvasHtml',
+      diagram: 'diagram',
+      image_inline: 'imageInline',
+      file_inline: 'fileInline',
+    };
+    const out: Array<{ widgetId: string; placeholder: AiMessage }> = [];
+    for (const tc of tools) {
+      if (!WIDGET_TOOL_NAMES.has(tc.name)) continue;
+      const widgetId = tc.args?.widgetId || (tc as any).livePreview?.data?.widgetId;
+      if (!widgetId) continue;
+      // tc.status peut être 'building' | 'running' (pendant stream) en plus de
+      // 'success' | 'error' (persistés). Cast string pour couvrir les 2 états stream.
+      const status = String(tc.status || '');
+      if (status !== 'building' && status !== 'running') continue;
+      const kind = TOOL_TO_KIND[tc.name];
+      const payloadKey = KIND_PAYLOAD_KEY[kind];
+      const livePreviewData = (tc as any).livePreview?.data || {};
+      const placeholder: AiMessage = {
+        threadId: this.msg.threadId,
+        role: 'assistant',
+        content: tc.args?.title || tc.args?.caption || 'Construction en cours…',
+        metadata: {
+          kind: kind as any,
+          widgetId,
+          [payloadKey]: { ...(tc.args || {}), ...livePreviewData },
+          collapse: {
+            collapsed: tc.args?.collapsed === true,
+            collapseTitle: tc.args?.collapseTitle,
+          },
+        },
+      };
+      out.push({ widgetId, placeholder });
+    }
+    return out;
+  }
+
+  trackBuildingWidget(_: number, bw: { widgetId: string }): string {
+    return bw.widgetId;
+  }
+
+  /**
+   * Découpe le contenu markdown en segments alternant texte et widgets inline.
+   * Cherche les marqueurs `[[WIDGET:id]]` et les résout via `widgetsById`.
+   * Si le widget n'est pas trouvé, le marqueur est silencieusement retiré.
+   */
+  contentSegments(src: string): ContentRenderSegment[] {
+    const text = String(src || '');
+    if (!text) return [];
+    if (!text.includes('[[WIDGET:')) {
+      return [{ type: 'text', html: this.renderMarkdown(text) }];
+    }
+    const segments: ContentRenderSegment[] = [];
+    let lastIdx = 0;
+    const re = new RegExp(WIDGET_MARKER_REGEX.source, 'g');
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+      const before = text.slice(lastIdx, match.index);
+      if (before.trim()) {
+        segments.push({ type: 'text', html: this.renderMarkdown(before) });
+      }
+      const widgetId = match[1];
+      const widget = this.widgetsById?.get(widgetId) || null;
+      if (widget) {
+        segments.push({ type: 'widget', widget, widgetId });
+      }
+      lastIdx = match.index + match[0].length;
+    }
+    const tail = text.slice(lastIdx);
+    if (tail.trim()) {
+      segments.push({ type: 'text', html: this.renderMarkdown(tail) });
+    }
+    return segments;
+  }
+
+  trackSegment(i: number, s: ContentRenderSegment): string {
+    return s.type === 'widget' ? `w:${s.widgetId}` : `t:${i}`;
   }
 
   private wrapTablesForScroll(html: string): string {
