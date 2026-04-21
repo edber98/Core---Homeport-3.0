@@ -491,6 +491,12 @@ export class AiCanvasWorkplanComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   openSubagent(sub: any): void {
+    // Sur mobile : le panneau Canvas est un drawer plein écran. Si on ouvre la
+    // fenêtre WM par-dessus, elle est cachée derrière. On ferme le drawer
+    // Canvas avant d'ouvrir la WM → user voit la fenêtre subagent en plein écran.
+    if (this.wm.isMobile()) {
+      try { (this.ai as any).closeCanvas?.(); } catch {}
+    }
     this.wm.open({
       id: `subagent-${sub.jobId}`,
       title: `${sub.agentEmoji} ${sub.agentName}`,

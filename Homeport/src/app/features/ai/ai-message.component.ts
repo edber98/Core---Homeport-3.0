@@ -391,16 +391,16 @@ interface ProcessedSegment {
               </ai-inline-widget-collapse>
             </ng-container>
           </ng-container>
-          <div class="reasoning-block" *ngIf="msg.toolCalls?.length">
+          <div class="reasoning-block" *ngIf="visibleToolCalls(msg.toolCalls).length">
             <div class="tool-summary">
               <span class="summary-toggle"
-                    *ngIf="groupedToolCalls(msg.toolCalls!).length > 1 || expandedTools.has(msg)"
+                    *ngIf="groupedToolCalls(visibleToolCalls(msg.toolCalls)).length > 1 || expandedTools.has(msg)"
                     (click)="toggleToolExpand(msg)">
                 <span nz-icon [nzType]="expandedTools.has(msg) ? 'down' : 'right'" nzTheme="outline"></span>
-                {{ toolGroupSummary(msg.toolCalls!) }}
+                {{ toolGroupSummary(visibleToolCalls(msg.toolCalls)) }}
               </span>
               <div class="tool-groups" *ngIf="!expandedTools.has(msg)">
-                <span class="tool-group-pill" *ngFor="let g of groupedToolCalls(msg.toolCalls!); trackBy: trackToolGroup"
+                <span class="tool-group-pill" *ngFor="let g of groupedToolCalls(visibleToolCalls(msg.toolCalls)); trackBy: trackToolGroup"
                       [class.group-err]="g.hasError"
                       (click)="toggleToolExpand(msg)">
                   <span nz-icon [nzType]="g.icon" nzTheme="outline"></span>
@@ -409,7 +409,7 @@ interface ProcessedSegment {
                 </span>
               </div>
               <div class="tool-list" *ngIf="expandedTools.has(msg)">
-                <div *ngFor="let tc of msg.toolCalls" class="tool-item-wrap">
+                <div *ngFor="let tc of visibleToolCalls(msg.toolCalls)" class="tool-item-wrap">
                   <div class="tool-list-item"
                        [class.item-success]="tc.status !== 'error'"
                        [class.item-error]="tc.status === 'error'"
@@ -1141,6 +1141,22 @@ export class AiMessageComponent {
   }
 
   /** Process raw segments: merge text-before-tools into reasoning blocks, keep only final text as content */
+  // Tools cachés de l'affichage dans les reasoning blocks / pills :
+  // - todo_write : son résultat est déjà visible via le widget plan-header /
+  //   checklist en haut. La pill "Checklist" dans le message est redondante
+  //   et visuellement lourde (surtout dans le resume final du parent).
+  private static readonly HIDDEN_TOOL_NAMES = new Set(['todo_write']);
+
+  private _filterHiddenTools(tools: AiToolCall[] | undefined): AiToolCall[] {
+    if (!tools?.length) return tools || [];
+    return tools.filter(tc => !AiMessageComponent.HIDDEN_TOOL_NAMES.has(tc.name));
+  }
+
+  /** Tool calls visibles dans le flat layout (après filtrage des tools cachés). */
+  visibleToolCalls(tools: AiToolCall[] | undefined): AiToolCall[] {
+    return this._filterHiddenTools(tools);
+  }
+
   getProcessedSegments(): ProcessedSegment[] {
     const segs = this.msg.segments;
     if (!segs?.length) return [];
@@ -1153,7 +1169,11 @@ export class AiMessageComponent {
         // Look back for preceding text segment → absorb as reasoning
         const prev = i > 0 ? segs[i - 1] : null;
         const reasoningText = (prev && prev.type === 'text') ? prev.content : undefined;
-        result.push({ type: 'reasoning', reasoningText: reasoningText || undefined, toolCalls: seg.toolCalls });
+        // Filtre les tools cachés (todo_write etc) → si le segment ne contient
+        // QUE ces tools, on skip le reasoning block entier.
+        const filteredTools = this._filterHiddenTools(seg.toolCalls);
+        if (filteredTools.length === 0 && !reasoningText) continue;
+        result.push({ type: 'reasoning', reasoningText: reasoningText || undefined, toolCalls: filteredTools });
       } else if (seg.type === 'text') {
         // Check if next is tools → skip, will be absorbed by next reasoning block
         const next = i < segs.length - 1 ? segs[i + 1] : null;

@@ -572,7 +572,7 @@ import { WindowHostComponent } from './window-manager/window-host.component';
         <ai-canvas-panel [threadId]="currentThreadId()"></ai-canvas-panel>
       </div>
 
-      <!-- V2: Canvas drawer (mobile) -->
+      <!-- V2: Canvas drawer (mobile) — body padding retiré pour maximiser l'espace du panel -->
       <nz-drawer
         *ngIf="ai.canvasOpen() && isMobileSidebar() && ai.currentThread()"
         [nzVisible]="ai.canvasOpen()"
@@ -580,6 +580,8 @@ import { WindowHostComponent } from './window-manager/window-host.component';
         [nzClosable]="true"
         [nzTitle]="'Canvas'"
         [nzWidth]="'100%'"
+        [nzBodyStyle]="{ padding: '0' }"
+        nzWrapClassName="canvas-drawer-wrap"
         (nzOnClose)="ai.closeCanvas()">
         <ng-container *nzDrawerContent>
           <ai-canvas-panel [threadId]="currentThreadId()"></ai-canvas-panel>
