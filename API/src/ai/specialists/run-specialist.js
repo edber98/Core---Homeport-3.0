@@ -4,6 +4,7 @@
 
 const { createLlmClient } = require('../llm');
 const { trackToolUsage } = require('../context/memory-manager');
+const { isDebug } = require('../util/debug');
 
 const DEFAULT_MAX_LOOPS = 40;
 
@@ -61,15 +62,15 @@ async function* runSpecialist(opts) {
           yield { type: 'message', text: event.text };
           break;
         case 'tool_use_start':
-          if (process.env.AI_DEBUG) console.log(`[specialist] >> tool.start: ${event.name}`);
+          if (isDebug()) console.log(`[specialist] >> tool.start: ${event.name}`);
           yield { type: 'tool.start', id: event.id, name: event.name };
           break;
         case 'tool_input_delta':
-          if (process.env.AI_DEBUG) console.log(`[specialist] >> tool.input_delta: ${event.name}`);
+          if (isDebug()) console.log(`[specialist] >> tool.input_delta: ${event.name}`);
           yield { type: 'tool.input_delta', id: event.id, name: event.name, text: event.text };
           break;
         case 'tool_use_end':
-          if (process.env.AI_DEBUG) console.log(`[specialist] >> tool_use_end: ${event.name}`);
+          if (isDebug()) console.log(`[specialist] >> tool_use_end: ${event.name}`);
           pendingToolCalls.push({ id: event.id, name: event.name, input: event.input });
           break;
         case 'done':

@@ -11,6 +11,7 @@ const AiAgent = require('../../db/models/ai-agent.model');
 const Workspace = require('../../db/models/workspace.model');
 const WorkspaceMembership = require('../../db/models/workspace-membership.model');
 const Flow = require('../../db/models/flow.model');
+const { isDebug } = require('../../ai/util/debug');
 const { buildContext } = require('../../ai/context/context-builder');
 const { runAgent } = require('../../ai/agent-runner');
 const { runHarness } = require('../../ai/agent-harness');
@@ -696,7 +697,7 @@ ${toolLines.join('\n')}
           }
 
           case 'tool.start': {
-            if (process.env.AI_DEBUG) console.log(`[ai-sse] tool.start → ${event.name} (id=${event.id})`);
+            if (isDebug()) console.log(`[ai-sse] tool.start → ${event.name} (id=${event.id})`);
             // Ensure we have a tools segment
             let lastSeg = segments[segments.length - 1];
             if (!lastSeg || lastSeg.type !== 'tools') {
@@ -710,7 +711,7 @@ ${toolLines.join('\n')}
           }
 
           case 'tool.input_delta':
-            if (process.env.AI_DEBUG) console.log(`[ai-sse] tool.input_delta → ${event.name} +${(event.text || '').length}chars (id=${event.id})`);
+            if (isDebug()) console.log(`[ai-sse] tool.input_delta → ${event.name} +${(event.text || '').length}chars (id=${event.id})`);
             send(event);
             break;
 
@@ -1811,6 +1812,76 @@ ${toolLines.join('\n')}
     } catch (e) {
       console.error('[permissions] persist message answer failed:', e?.message);
     }
+
+    // PROPAGATION : si la décision est non-"once" (allow_always / allow_session
+    // / deny_always / always), on résout AUSSI toutes les autres demandes de
+    // permission en attente dans ce thread pour le MÊME tool. Évite à l'user de
+    // devoir cliquer sur chaque card individuellement quand il a choisi
+    // "Toujours autoriser" sur la première.
+    const isBroadDecision = !['allow_once', 'deny_once'].includes(rawDecision);
+    if (isBroadDecision && toolName) {
+      try {
+        const pendingCards = await AiMessage.find({
+          threadId: job.threadId,
+          'metadata.kind': 'permission_request',
+          'metadata.permissionRequest.toolName': toolName,
+          'metadata.permissionRequest.requestId': { $ne: requestId },
+          $or: [
+            { 'metadata.permissionRequest.answer': { $exists: false } },
+            { 'metadata.permissionRequest.answer': null },
+          ],
+        }).lean();
+
+        let propagated = 0;
+        for (const card of pendingCards) {
+          const pendingRequestId = card?.metadata?.permissionRequest?.requestId;
+          const pendingJobId = card?.metadata?.permissionRequest?.jobId;
+          if (!pendingRequestId) continue;
+
+          // Trouve le job associé (stocké dans la card ou via recherche par requestId)
+          let targetJob = null;
+          if (pendingJobId) {
+            targetJob = await AiJob.findOne({ id: pendingJobId }, 'id parentJobId');
+          }
+          if (!targetJob) {
+            // Fallback : cherche tous les jobs du thread et prends le plus récent en waiting_permission
+            targetJob = await AiJob.findOne({
+              threadId: job.threadId,
+              status: 'waiting_permission',
+            }, 'id parentJobId');
+          }
+          if (!targetJob) continue;
+
+          emitJobEvent(targetJob.id, { type: 'permission.resolved', requestId: pendingRequestId, decision: normalized });
+          if (targetJob.parentJobId) {
+            emitJobEvent(String(targetJob.parentJobId), {
+              type: 'subagent.permission.granted',
+              requestId: pendingRequestId,
+              childJobId: targetJob.id,
+              decision: normalized,
+            });
+          }
+          await AiMessage.updateOne(
+            { _id: card._id },
+            {
+              $set: {
+                'metadata.permissionRequest.answer': decision,
+                'metadata.permissionRequest.answeredAt': new Date(),
+                'metadata.permissionRequest.answeredBy': req.user.id || req.user._id,
+                'metadata.permissionRequest.propagatedFrom': requestId,
+              },
+            }
+          );
+          propagated++;
+        }
+        if (propagated > 0) {
+          console.log(`[perm-resolve] propagated "${decision}" to ${propagated} other pending ${toolName} requests in thread ${job.threadId}`);
+        }
+      } catch (e) {
+        console.error('[permissions] propagation failed:', e?.message);
+      }
+    }
+
     res.apiOk({ ok: true });
   });
 
@@ -1966,6 +2037,50 @@ ${toolLines.join('\n')}
   // ── Réponse user à une question escaladée d'un sous-agent ──
   // Le frontend POST avec {requestId, parentJobId, answer}. On émet l'event
   // subagent.ask_user.answered sur le PARENT pour débloquer le subagent.
+  // Envoyer un message utilisateur directement à la mailbox d'un subagent.
+  // Le message sera délivré au début du prochain tour LLM du subagent.
+  r.post('/ai/threads/:threadId/subagent-poke', requireThreadAccess('comment'), async (req, res) => {
+    const { jobId, message } = req.body || {};
+    if (!jobId || !message) return res.apiError(400, 'missing_fields', 'jobId + message required');
+    try {
+      const AiJob = require('../../db/models/ai-job.model');
+      const { ROSTER } = require('../../ai/subagent/roster');
+      const target = await AiJob.findOne({ id: jobId, threadId: req.aiThread._id });
+      if (!target) return res.apiError(404, 'job_not_found', 'Subagent introuvable sur ce thread');
+      if (['completed', 'error', 'cancelled'].includes(target.status)) {
+        return res.apiError(400, 'subagent_terminated', `Le subagent ${target.status} ne peut plus recevoir de message`);
+      }
+      await AiJob.updateOne(
+        { id: target.id },
+        { $push: { pendingMessages: {
+            from: 'user',
+            fromName: 'Utilisateur',
+            message: String(message).slice(0, 8000),
+            createdAt: new Date(),
+            delivered: false,
+          } } }
+      );
+      const { emitJobEvent, emitThreadEvent } = require('../../ai/jobs/job-events');
+      const targetName = ROSTER[target.subagentType]?.name || target.subagentType;
+      const fullMessage = String(message);
+      const ev = {
+        type: 'subagent.message.received',
+        targetJobId: target.id,
+        targetName,
+        fromName: 'Utilisateur',
+        message: fullMessage.slice(0, 8000),
+        summary: fullMessage.slice(0, 120),
+        at: new Date().toISOString(),
+      };
+      emitJobEvent(target.id, ev);
+      emitThreadEvent(String(req.aiThread._id), ev);
+      res.apiOk({ ok: true, targetJobId: target.id, targetName });
+    } catch (e) {
+      console.error('[ai] subagent poke failed:', e?.message);
+      res.apiError(500, 'poke_failed', e?.message || 'Erreur');
+    }
+  });
+
   r.post('/ai/threads/:threadId/subagent-answer', requireThreadAccess('comment'), async (req, res) => {
     const { requestId, parentJobId, answer } = req.body || {};
     if (!requestId || !parentJobId) return res.apiError(400, 'missing_fields', 'requestId + parentJobId required');

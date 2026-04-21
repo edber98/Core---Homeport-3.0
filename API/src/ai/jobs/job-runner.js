@@ -56,8 +56,9 @@ async function createJob(opts) {
   return job;
 }
 
-function _buildJobContext(job, ac) {
+function _buildJobContext(job, ac, opts = {}) {
   const jobId = job.id;
+  const streamingMessageId = opts.streamingMessageId || null;
 
   async function persistCheckpoint(iteration, conversation) {
     try {
@@ -78,6 +79,46 @@ function _buildJobContext(job, ac) {
     } catch { /* non-fatal */ }
   }
 
+  // Agrégation des text deltas : on flush en 1 seul sideEvent par "paragraphe"
+  // (500ms d'inactivité). Évite 200+ DB writes concurrents par subagent qui
+  // saturent le pool MongoDB et bloquent tout le process Node.
+  let _textBuffer = '';
+  let _textBufferStart = null;
+  let _textFlushTimer = null;
+  const _flushTextBuffer = () => {
+    if (!_textBuffer) return;
+    const text = _textBuffer;
+    const at = _textBufferStart;
+    _textBuffer = '';
+    _textBufferStart = null;
+    if (_textFlushTimer) { clearTimeout(_textFlushTimer); _textFlushTimer = null; }
+    const isSubagent = !!job.parentJobId;
+    AiJob.updateOne(
+      { id: jobId },
+      { $push: { sideEvents: { $each: [{
+        type: 'message',
+        text,
+        at,
+        _jobId: jobId,
+        _subagentType: job.subagentType || null,
+        ...(isSubagent ? { _subagentEvent: true, _parentJobId: String(job.parentJobId) } : {}),
+      }], $slice: -200 } } },
+    ).catch(() => {});
+  };
+
+  // Events à NE PAS persister dans sideEvents : ce sont des deltas streaming
+  // ultra-fréquents (chaque char, chaque patch) qui n'apportent rien à la
+  // reconstruction d'historique. Ils restent émis en live via emitJobEvent
+  // pour le stream UI temps réel — juste pas stockés.
+  const SKIP_PERSIST_TYPES = new Set([
+    'tool.input_delta',
+    'ui.preview.delta',
+    'ui.preview.start',
+    'ui.preview.building_done',
+    'ui.preview.update',
+    'tool.meta',
+  ]);
+
   function broadcast(event) {
     if (!event?.type) return;
     // Enrichit avec identifiants pour UI (tag subagent / job)
@@ -89,7 +130,15 @@ function _buildJobContext(job, ac) {
       _agentLabel: job.subagentType ? `Sous-agent ${job.subagentType}` : 'Agent principal',
       ...(isSubagent ? { _subagentEvent: true, _parentJobId: String(job.parentJobId) } : {}),
     };
-    if (!enriched.type.startsWith('heartbeat')) {
+    // Text deltas (message.text) : agrégés + flush toutes les 500ms.
+    // Deltas streaming (tool.input_delta, ui.preview.*) : PAS persistés.
+    // Events significatifs (tool.start, tool.end, status, done) : persistés normalement.
+    if (enriched.type === 'message' && typeof enriched.text === 'string') {
+      if (!_textBuffer) _textBufferStart = new Date();
+      _textBuffer += enriched.text;
+      if (!_textFlushTimer) _textFlushTimer = setTimeout(_flushTextBuffer, 500);
+    } else if (!enriched.type.startsWith('heartbeat') && !SKIP_PERSIST_TYPES.has(enriched.type)) {
+      if (_textBuffer) _flushTextBuffer();
       AiJob.updateOne(
         { id: jobId },
         { $push: { sideEvents: { $each: [enriched], $slice: -200 } } },
@@ -112,8 +161,32 @@ function _buildJobContext(job, ac) {
         || t === 'job.status'
         || t === 'plan.resolved'
         || t === 'memory.pending.update';
-      if (isUIEvent) {
-        emitThreadEvent(String(job.threadId), enriched);
+      // Forward des events tool/message pour les agent_run NON-subagent. Deux cas :
+      //   (a) jobs avec streamingMessageId → forward TOUS les deltas (text, input_delta)
+      //       pour updater le placeholder en live côté frontend.
+      //   (b) jobs sans streaming → forward juste les snapshots tool.start/tool.end.
+      let isParentResumeStream = false;
+      if (!isSubagent && job.type === 'agent_run') {
+        if (streamingMessageId) {
+          // Mode streaming complet : tout sauf les events très verbeux internes harness
+          isParentResumeStream = (
+            t === 'message' ||
+            t === 'tool.start' || t === 'tool.end' || t === 'tool.input_delta' ||
+            t === 'tool.meta' || t === 'done'
+          );
+        } else {
+          isParentResumeStream = (
+            t === 'tool.start' || t === 'tool.end' || t === 'tool.meta' || t === 'done'
+          );
+        }
+      }
+      if (isUIEvent || isParentResumeStream) {
+        // Pour les events de streaming placeholder, on tag avec messageId
+        // pour que le frontend sache sur quel message append.
+        const payload = streamingMessageId && isParentResumeStream
+          ? { ...enriched, _streamingMessageId: streamingMessageId }
+          : enriched;
+        emitThreadEvent(String(job.threadId), payload);
       }
     }
     // Persist canvas.* events dans AiCanvasState pour l'UI après reload
@@ -282,6 +355,8 @@ function _buildJobContext(job, ac) {
     userId: job.userId,
     companyId: job.companyId,
     parentJobId: job.parentJobId,
+    subagentType: job.subagentType || null,
+    jobType: job.type || null,
     depth: job.depth || 0,
     persistCheckpoint,
     heartbeat,
@@ -310,7 +385,9 @@ async function runJob(jobId, opts = {}) {
   emitJobEvent(jobId, { type: 'job.status', status: 'running' });
 
   const ac = opts.signal ? { signal: opts.signal } : new AbortController();
-  const jobContext = _buildJobContext(job, ac);
+  const jobContext = _buildJobContext(job, ac, {
+    streamingMessageId: opts._streamingMessageId || null,
+  });
 
   const heartbeatTimer = setInterval(() => {
     jobContext.heartbeat().catch(() => {});
@@ -453,23 +530,43 @@ async function runJob(jobId, opts = {}) {
 
     emitJobEvent(jobId, { type: 'job.status', status: 'completed', usage: totalUsage });
 
-    // Sauvegarde le texte final comme AiMessage si c'est un job background
-    // (resume, subagent) qui a produit du texte mais pas via POST /messages.
-    // Sans ça, le texte de conclusion du resume est invisible côté frontend
-    // tant que l'utilisateur ne refresh pas.
+    // Sauvegarde le texte final comme AiMessage. Deux cas :
+    //  (a) streamingMessageId fourni : on UPDATE le placeholder créé au début
+    //      (plus de streaming → marque-le comme non-streaming, injecte le texte final).
+    //  (b) pas de placeholder : on CREATE un nouvel AiMessage (comportement legacy).
     if (finalText.trim() && job.type === 'agent_run' && !opts._fromPostMessages) {
       try {
-        await AiMessage.create({
-          threadId: job.threadId,
-          role: 'assistant',
-          content: finalText.trim(),
-          toolCalls: toolCalls.length ? toolCalls.map(tc => ({
-            id: tc.id, name: tc.name, args: tc.args,
-            result: tc.result, duration: tc.duration, status: tc.status,
-            displayTitle: tc.displayTitle,
-          })) : undefined,
-        });
-        emitThreadEvent(String(job.threadId), { type: 'ai.message.created', kind: 'resume_final' });
+        const finalToolCalls = toolCalls.length ? toolCalls.map(tc => ({
+          id: tc.id, name: tc.name, args: tc.args,
+          result: tc.result, duration: tc.duration, status: tc.status,
+          displayTitle: tc.displayTitle,
+        })) : undefined;
+        if (opts._streamingMessageId) {
+          await AiMessage.updateOne(
+            { _id: opts._streamingMessageId, threadId: job.threadId },
+            {
+              $set: {
+                content: finalText.trim(),
+                ...(finalToolCalls ? { toolCalls: finalToolCalls } : {}),
+                'metadata.streaming': false,
+                'metadata.finalizedAt': new Date(),
+              },
+            }
+          );
+          emitThreadEvent(String(job.threadId), {
+            type: 'ai.message.updated',
+            kind: null,
+            messageId: String(opts._streamingMessageId),
+          });
+        } else {
+          await AiMessage.create({
+            threadId: job.threadId,
+            role: 'assistant',
+            content: finalText.trim(),
+            toolCalls: finalToolCalls,
+          });
+          emitThreadEvent(String(job.threadId), { type: 'ai.message.created', kind: 'resume_final' });
+        }
       } catch (e) {
         console.warn('[job-runner] resume final message persist failed:', e?.message);
       }
@@ -522,12 +619,13 @@ async function runJob(jobId, opts = {}) {
  */
 async function _maybeCreateAgentReport(job, { opts, toolCalls, finishedAt, errorMessage }) {
   if (!job || !job.threadId) return;
-  const wasAsync = opts?.async === true || job.type === 'long_task';
+  // Politique : TOUT subagent produit un rapport dans le chat, quelle que soit
+  // la durée. L'utilisateur doit voir "Tim terminé / Marie terminée" dans la
+  // conversation, pas seulement dans le panneau canvas à droite.
+  // Les long_task aussi (agent_run étendu) génèrent un rapport.
+  if (job.type !== 'subagent' && job.type !== 'long_task') return;
   const startedAt = job.startedAt || finishedAt;
   const duration = (finishedAt?.getTime() || Date.now()) - (startedAt?.getTime() || Date.now());
-  const longEnough = duration > 30_000;
-  if (!wasAsync && !longEnough) return;
-  if (job.type !== 'subagent' && job.type !== 'long_task') return;
   // Memory_extractor : tâche background silencieuse → pas de card agent_report
   // dans le chat. L'utilisateur voit les entries pending via le badge bulb.
   if (job.subagentType === 'memory_extractor') return;
@@ -679,86 +777,83 @@ async function _maybeResumeParent(job) {
     return;
   }
 
-  // 2. Récupérer les derniers messages pour vérifier le state
-  const lastMessages = await AiMessage.find({ threadId })
-    .sort({ createdAt: -1 }).limit(8).lean();
-  if (!lastMessages.length) return;
+  // 2-4. On ne filtre PLUS par "significant message" ni par "hasSpawnedSubagents".
+  // Avec le flow actuel (widget inline, agent_report, todo, permission_requests),
+  // le dernier message parent "texte pur" peut être bien plus ancien que les 8
+  // derniers messages. Skip trop fréquent → pas de resume quand des subagents
+  // ont fini (ex: Tim timeout → user ne voit aucune synthèse finale).
+  // La présence de recentJobs > 0 (étape 5) suffit comme trigger.
 
-  // 3. Le message assistant QUI A LANCÉ les subagents. On skip tous les messages
-  //    widget (agent_report, structured, todo_list, diagram, file_inline, etc.)
-  //    car ils n'ont pas de toolCalls — on cherche le vrai message parent.
-  const WIDGET_KINDS = new Set([
-    'agent_report', 'structured', 'todo_list', 'diagram',
-    'image_inline', 'file_inline', 'canvas_html', 'comment',
-    'system_note', 'system_hint',
-    'permission_request', 'cache_sync_request',
-  ]);
-  const significant = lastMessages.find(m =>
-    m.role === 'assistant' && !WIDGET_KINDS.has(m.metadata?.kind)
-  );
-  if (!significant) {
-    // Debug : log tous les messages récents pour comprendre pourquoi aucun n'est significatif
-    const dbg = lastMessages.map(m => `${m.role}:${m.metadata?.kind || 'none'}:tc=${(m.toolCalls||[]).length}:seg=${(m.segments||[]).length}`);
-    console.log(`[resume-parent] skip thread=${threadId} : aucun msg assistant non-widget. Messages: [${dbg.join(', ')}]`);
-    return;
-  }
-  console.log(`[resume-parent] significant msg: _id=${significant._id}, kind=${significant.metadata?.kind || 'none'}, toolCalls=${(significant.toolCalls||[]).length}, segments=${(significant.segments||[]).length}`);
-  // Cherche spawn_subagent à la fois dans toolCalls top-level ET dans
-  // segments[].toolCalls (le format peut varier selon le path de sauvegarde).
-  const allToolCalls = [];
-  if (Array.isArray(significant.toolCalls)) allToolCalls.push(...significant.toolCalls);
-  if (Array.isArray(significant.segments)) {
-    for (const seg of significant.segments) {
-      if (Array.isArray(seg?.toolCalls)) allToolCalls.push(...seg.toolCalls);
-    }
-  }
-  const hasSpawnedSubagents = allToolCalls.some(tc => tc?.name === 'spawn_subagent');
-  if (!hasSpawnedSubagents) {
-    console.log(`[resume-parent] skip thread=${threadId} : pas de spawn_subagent détecté dans le dernier msg assistant (toolCalls=${allToolCalls.length})`);
-    return;
-  }
-
-  // 4. Avec le mécanisme [[WIDGET:id]], on NE skip PLUS le resume même si un
-  // livrable est déjà présent. Le parent DOIT produire un texte final qui
-  // intègre les widgets via leur marqueur inline. Sans cet appel LLM final,
-  // l'utilisateur ne voit que des bulles widgets sans synthèse textuelle.
-  // On laisse le resume LLM tourner → il appelle todo_write (close checklist)
-  // + rédige un texte avec [[WIDGET:id]] pour intégrer les livrables subagent.
-
-  // 5. Récupérer les résumés des jobs récents de la cascade (max 6)
+  // 5. Récupérer les résumés des jobs récents de la cascade.
+  // Stratégie robuste : on prend TOUT ce qui est dans la fenêtre 60min
+  // (threadId + type='subagent' + status completed/error/stalled).
+  // Le filtrage par parentJobId était trop strict (format ObjectId vs string
+  // custom → risque de rater des siblings si parentJobId mismatch).
+  const parentKey = job.parentJobId ? String(job.parentJobId) : null;
   const recentJobs = await AiJob.find({
     threadId,
     type: 'subagent',
-    status: { $in: ['completed', 'error'] },
-    finishedAt: { $gte: new Date(Date.now() - 30 * 60_000) },
-  }).sort({ finishedAt: -1 }).limit(6).lean();
+    status: { $in: ['completed', 'error', 'stalled'] },
+    finishedAt: { $gte: new Date(Date.now() - 60 * 60_000) },
+  }).sort({ finishedAt: -1 }).limit(10).lean();
 
-  if (!recentJobs.length) return;
+  if (!recentJobs.length) {
+    console.log(`[resume-parent] skip thread=${threadId} : aucun subagent récent trouvé (parentKey=${parentKey || 'n/a'})`);
+    return;
+  }
+  console.log(`[resume-parent] thread=${threadId} found ${recentJobs.length} recent subagents: [${recentJobs.map(j => `${j.subagentType}:${j.status}`).join(', ')}]`);
 
   const summaries = recentJobs.reverse().map((j, i) => {
     const subj = j.subagentInstructions ? j.subagentInstructions.slice(0, 120) : '(sans description)';
     const status = j.status === 'error' ? `❌ ${j.error || 'error'}` : '✅ terminé';
-    const summary = (j.result?.summary || '').slice(0, 1500);
+    const summary = (j.result?.summary || '').slice(0, 4000);
     const widgets = Array.isArray(j.result?.widgets) ? j.result.widgets : [];
     const widgetBlock = widgets.length
-      ? `\n**Widgets produits (utilise [[WIDGET:id]] pour les afficher inline) :**\n${widgets.map(w => `- [[WIDGET:${w.widgetId}]] — ${w.kind} : ${w.title || '(sans titre)'}`).join('\n')}`
+      ? `\n**Widgets inline produits (référence-les avec [[WIDGET:id]]) :**\n${widgets.map(w => `- [[WIDGET:${w.widgetId}]] — ${w.kind} : ${w.title || '(sans titre)'}`).join('\n')}`
       : '';
-    return `### Job ${i + 1} — ${j.subagentType || 'subagent'} (${status})\n**Tâche :** ${subj}\n**Résultat :**\n${summary || '(vide)'}${widgetBlock}`;
+    // Artefacts : fichiers produits (fileId/name/path), images, exports
+    const artifacts = Array.isArray(j.result?.artifacts) ? j.result.artifacts : [];
+    const fileArtifacts = [];
+    for (const a of artifacts) {
+      if (!a) continue;
+      const tcResult = a.result;
+      if (tcResult && typeof tcResult === 'object') {
+        const produced = tcResult.producedFiles || tcResult._files || [];
+        for (const f of produced) {
+          if (f?.fileId || f?.path) {
+            fileArtifacts.push({
+              fileId: f.fileId || null,
+              name: f.name || f.path || 'fichier',
+              path: f.path || null,
+              mimeType: f.mimeType || null,
+            });
+          }
+        }
+      }
+    }
+    const artifactBlock = fileArtifacts.length
+      ? `\n**Fichiers/artefacts produits (display_file avec fileId pour afficher) :**\n${fileArtifacts.slice(0, 10).map(f => `- ${f.name}${f.fileId ? ` (fileId=${f.fileId})` : ''}${f.mimeType ? ` · ${f.mimeType}` : ''}`).join('\n')}`
+      : '';
+    return `### Job ${i + 1} — ${j.subagentType || 'subagent'} (${status})\n**Tâche :** ${subj}\n**Résultat complet du subagent :**\n${summary || '(vide)'}${widgetBlock}${artifactBlock}`;
   }).join('\n\n---\n\n');
 
   // Agrège tous les widgetIds produits par l'ensemble des subagents (pour
   // l'instruction finale au parent).
   const allWidgetIds = recentJobs.flatMap(j => (j.result?.widgets || []).map(w => w.widgetId)).filter(Boolean);
 
-  // Anti-boucle : ne pas resume plus de 2 fois sur un même thread dans la fenêtre
-  const recentResumes = await AiMessage.countDocuments({
+  // Anti-boucle : ne pas resume plus de 3 fois sur un même thread dans la fenêtre.
+  // On compare avec le job PARENT (via parentJobId) plutôt que le thread entier
+  // pour ne pas bloquer une nouvelle demande utilisateur sur le même thread.
+  const antiLoopQuery = {
     threadId,
     role: 'system',
     'metadata.extra.kind': 'pipeline_resume',
     createdAt: { $gte: new Date(Date.now() - 5 * 60_000) },
-  });
-  if (recentResumes >= 2) {
-    console.log(`[resume-parent] skip thread=${threadId} : trop de resumes récents (${recentResumes})`);
+  };
+  const recentResumes = await AiMessage.countDocuments(antiLoopQuery);
+  console.log(`[resume-parent] thread=${threadId} recentResumes=${recentResumes}/3 recentJobs=${recentJobs.length} parentKey=${parentKey || 'n/a'}`);
+  if (recentResumes >= 3) {
+    console.warn(`[resume-parent] HIT ANTI-LOOP thread=${threadId} : ${recentResumes} resumes en 5min — checklist peut rester in_progress`);
     return;
   }
 
@@ -779,6 +874,34 @@ ${userRequest || '(non récupérée)'}
 === RÉSULTATS DES SOUS-AGENTS ===
 
 ${summaries}
+
+🧩 **CONSOLIDATION DES LIVRABLES** :
+Ne recopie JAMAIS le contenu brut (code, listes, tableaux) en markdown dans ton texte — c'est du bruit.
+
+**Sélection intelligente** : s'il y a beaucoup de livrables (ex: 10+ subagents), **ne place pas TOUS les widgets inline**. Choisis les plus pertinents pour la demande utilisateur : les livrables finaux directement utiles, la synthèse clé, le document final. Les autres restent accessibles via les cards agent_report (l'user peut ouvrir leur fenêtre s'il veut creuser). Recommande si pertinent "tu peux aussi consulter X via la fenêtre de Tim".
+
+**Placement naturel** : pour les widgets que tu affiches, place-les **à l'endroit naturel dans ton texte** (après la phrase qui les introduit), pas tous groupés en bloc à la fin. Rédige comme une réponse à l'utilisateur.
+
+Exemple attendu (2 subagents, tous les widgets pertinents) :
+  > Voici le module TypeScript que Tim a produit :
+  > [[WIDGET:tim-code]]
+  > Et la palette conçue par Marie :
+  > [[WIDGET:marie-palette]]
+  > J'ai également généré le docx final de synthèse.
+  > (appel display_file fileId=xxx)
+
+Exemple avec beaucoup de subagents (sélection) :
+  > Après l'analyse des 15 concurrents, voici le livrable principal :
+  > [[WIDGET:top3-comparison]]
+  > Les détails pour chaque concurrent sont dans les rapports individuels (Tim, Marie, Denis ci-dessus, clique pour ouvrir).
+
+Outils utilisables (uniquement si pas déjà produit par le subagent) :
+- Code source → render_structured accordion.
+- Palette/tableau/comparaison → render_structured (card_grid, comparison_table).
+- Document docx/xlsx/pptx/pdf → display_file avec fileId.
+- Image → display_image. Diagramme → generate_diagram.
+
+Si le subagent a déjà produit un widget (cf. "Widgets inline produits"), RÉFÉRENCE-LE via [[WIDGET:id]] plutôt que d'en créer un nouveau.
 
 ${allWidgetIds.length ? `🧩 **INTÉGRATION OBLIGATOIRE DES WIDGETS SUBAGENT** — tes subagents ont produit les widgets suivants qui DOIVENT apparaître inline dans ta synthèse finale : ${allWidgetIds.map(w => `[[WIDGET:${w}]]`).join(', ')}. Insère chaque marqueur sur sa propre ligne à l'endroit pertinent dans ton texte. NE RECRÉE PAS ces widgets, NE PARAPHRASE PAS leur contenu — place juste le marqueur.\n\n` : ''}🎯 TÂCHE : finalise la livraison en 2 étapes STRICTES dans cet ordre :
 
@@ -837,11 +960,28 @@ Si tout est déjà livré visuellement (widget structured/canvas/file dans le th
       maxLoops: 20,
     });
 
+    // PLACEHOLDER : message assistant vide créé à l'avance. PAS de metadata.kind
+    // (sinon ai-message.component.ts le route vers un rendu spécial). Juste les
+    // flags metadata.streaming + jobId pour tracer. Le frontend affiche la bulle
+    // comme un message normal et y accumule les deltas live.
+    const placeholder = await AiMessage.create({
+      threadId,
+      role: 'assistant',
+      content: '',
+      metadata: { streaming: true, resumeJobId: resumeJob.id },
+    });
+
     emitThreadEvent(String(threadId), {
       type: 'ai.resume.started',
       jobId: resumeJob.id,
       reason: 'pipeline_complete',
       childCount: recentJobs.length,
+      placeholderId: String(placeholder._id),
+    });
+    emitThreadEvent(String(threadId), {
+      type: 'ai.message.created',
+      kind: null,
+      messageId: String(placeholder._id),
     });
 
     // Lance asynchrone (setImmediate) — pas await pour ne pas bloquer ce hook
@@ -849,9 +989,8 @@ Si tout est déjà livré visuellement (widget structured/canvas/file dans le th
       const { runJob } = module.exports;
       runJob(resumeJob.id, {
         prompt: resumePrompt,
-        // Bloque les tools de planification/spawn : on est en mode finalisation,
-        // pas en mode "réfléchir et lancer encore plus de sous-tâches".
         toolsDenied: ['propose_plan', 'spawn_subagent', 'compact_and_transfer', 'research_deep'],
+        _streamingMessageId: String(placeholder._id),
       }).catch(e => console.error(`[resume-parent] runJob failed:`, e?.message));
     });
   } catch (e) {

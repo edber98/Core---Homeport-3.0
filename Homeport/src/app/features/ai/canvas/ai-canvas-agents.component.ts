@@ -23,6 +23,8 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { AiService } from '../ai.service';
 import { AiAgentBadgeComponent } from '../agents/ai-agent-badge.component';
 import { resolveAgentProfile } from '../agents/ai-roster';
+import { WindowManagerService } from '../window-manager/window-manager.service';
+import { AiSubagentWindowComponent } from '../subagent-window/ai-subagent-window.component';
 
 interface AgentNode {
   id: string;
@@ -101,12 +103,18 @@ interface AgentNode {
                   <span *ngIf="node.status === 'running'" class="status-dot pulse"></span>
                   {{ statusLabel(node.status) }}
                 </span>
+                <button nz-button nzType="text" nzSize="small"
+                        class="agent-chat-open"
+                        (click)="openWindow($event, node)"
+                        nz-tooltip nzTooltipTitle="Ouvrir une fenêtre d'interaction avec ce sous-agent">
+                  <span nz-icon nzType="expand" nzTheme="outline"></span>
+                </button>
                 <button *ngIf="canMessage(node.status)"
                         nz-button nzType="text" nzSize="small"
                         class="agent-chat-open"
                         [class.active]="chatOpen() === node.jobId"
                         (click)="toggleChat($event, node)"
-                        nz-tooltip nzTooltipTitle="Envoyer un message à ce sous-agent">
+                        nz-tooltip nzTooltipTitle="Message rapide inline">
                   <span nz-icon nzType="message" nzTheme="outline"></span>
                 </button>
                 <button *ngIf="isCancellable(node.status)"
@@ -322,12 +330,29 @@ export class AiCanvasAgentsComponent implements OnInit, OnDestroy {
     return status === 'running' || status === 'queued' || status === 'waiting_dependency' || status === 'paused';
   }
 
+  private wm = inject(WindowManagerService);
+
+  /** Ouvre une fenêtre WM pour interagir en direct avec ce sous-agent. */
+  openWindow(ev: Event, node: AgentNode): void {
+    ev.stopPropagation();
+    const profile = resolveAgentProfile({ subagentType: node.subagentType, agentName: node.agentName });
+    const emoji = node.agentEmoji || profile?.emoji || '🤖';
+    const name = node.agentName || profile?.name || node.subagentType || 'Sous-agent';
+    this.wm.open({
+      id: `subagent-${node.jobId}`,
+      title: `${emoji} ${name}`,
+      phaseChip: node.subagentType || 'Agent',
+      contentComponent: AiSubagentWindowComponent,
+      contentInputs: { jobId: node.jobId },
+      action: 'replace',
+    });
+  }
+
   toggleChat(ev: Event, node: AgentNode): void {
     ev.stopPropagation();
     this.chatOpen.set(this.chatOpen() === node.jobId ? null : node.jobId);
     this.chatDraft = '';
     if (this.chatOpen()) {
-      // Focus le textarea au prochain tick
       setTimeout(() => {
         const ta = document.querySelector('ai-canvas-agents .agent-chat-input textarea') as HTMLTextAreaElement | null;
         ta?.focus();

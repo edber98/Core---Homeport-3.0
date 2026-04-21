@@ -16,7 +16,11 @@ const XLSX_MIME = 'application/vnd.openxmlformats-officedocument.spreadsheetml.s
 
 const LEGACY_SKILL_BUNDLE = {
   'docx-create': {
-    cmd: ['python3', '/app/skills-bundle/docx/create.py'],
+    // Anthropic SKILL.md : création docx via docx-js (Node). Le wrapper create.mjs
+    // suit leur pattern : styles Heading1-4, bullets/numbering, tables dual-width,
+    // page size US Letter. docx npm installé via API/package.json, accessible via
+    // NODE_PATH enrichi par subprocess-sandbox.
+    cmd: ['node', '/app/skills-bundle/docx/create.mjs'],
     outputExt: 'docx',
     mimeType: DOCX_MIME,
     label: 'Créer un document Word',

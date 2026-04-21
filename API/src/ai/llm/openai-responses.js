@@ -1,6 +1,8 @@
 // OpenAI Responses API streaming client — /v1/responses (GPT-5.2, o-series)
 // Yields normalized events: text_delta, tool_use_start, tool_input_delta, tool_use_end, done
 
+const { isDebug } = require('../util/debug');
+
 /**
  * Stream from OpenAI's Responses API.
  * @param {Array} messages - Normalized messages [{role, content, tool_calls?}]
@@ -106,7 +108,7 @@ async function* streamOpenAIResponses(messages, tools, config) {
       if (type?.includes('function_call') || type?.includes('output_item')) {
         // Les events `delta` sont très verbeux (1 log par chunk d'arg). Silencieux
         // par défaut, activables via AI_DEBUG=1.
-        if (!type.includes('delta') || process.env.AI_DEBUG) {
+        if (!type.includes('delta') || isDebug()) {
           console.log(`[llm-openai-responses] SSE event: ${type}`, type.includes('delta') ? `delta=${(data.delta || '').length}chars` : '');
         }
       }
@@ -260,7 +262,7 @@ async function* streamOpenAIResponses(messages, tools, config) {
 
         // ── Unhandled events — log for debugging ──
         default: {
-          if (process.env.AI_DEBUG) {
+          if (isDebug()) {
             console.log(`[llm-openai-responses] unhandled event: ${type}`);
           }
           break;

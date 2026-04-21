@@ -14,6 +14,7 @@ const { checkPermission } = require('./permissions');
 const { createPreviewSession } = require('./live-preview/preview-parser');
 const { detectPreviewType } = require('./live-preview/preview-router');
 const crypto = require('crypto');
+const { isDebug } = require('./util/debug');
 
 // Fallback for onboarding mode
 const { runAgent } = require('./agent-runner');
@@ -110,7 +111,9 @@ function _summarizeToolArgs(name, args) {
   if (args.language) return `${args.language}${args.code ? ` (${String(args.code).length}c)` : ''}`;
   return '';
 }
-const STREAM_TIMEOUT_MS = 120_000; // 120s per-event timeout
+// 240s per-event timeout. Opus 4.7 peut pauser > 120s durant l'extended thinking
+// sur génération de code long (docx/xlsx). Override via env AI_STREAM_TIMEOUT_MS.
+const STREAM_TIMEOUT_MS = parseInt(process.env.AI_STREAM_TIMEOUT_MS || '240000', 10);
 
 /**
  * Read next value from async iterator with timeout + abort signal.
@@ -472,7 +475,7 @@ factuel des livrables créés avec leurs IDs/paths. Pas de phrase de conclusion 
             buf += event.text;
             toolInputBuffers.set(event.id, buf);
             // Log seulement si AI_DEBUG=1 (trop verbeux sur les gros args)
-            if (process.env.AI_DEBUG) console.log(`[harness] stream: tool_input_delta → ${event.name} +${event.text.length}chars (id=${event.id}), buf=${buf.length}chars`);
+            if (isDebug()) console.log(`[harness] stream: tool_input_delta → ${event.name} +${event.text.length}chars (id=${event.id}), buf=${buf.length}chars`);
 
             yield { type: 'tool.input_delta', id: event.id, name: event.name, text: event.text };
 

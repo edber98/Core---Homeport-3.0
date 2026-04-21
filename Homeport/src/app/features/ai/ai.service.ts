@@ -563,7 +563,23 @@ export class AiService {
       const todoMsg = msgs.find((m: any) => m.metadata?.kind === 'todo_list');
       if (todoMsg) console.log('[reload] ✓ todo_list found:', todoMsg.metadata?.todoList);
       else console.warn('[reload] ✗ no todo_list in reloaded messages');
-      if (data?.messages) this.messages.set(msgs);
+      if (data?.messages) {
+        // Préserve l'état en mémoire des messages actuellement streamés
+        // (placeholder resume parent). La version DB est vide ou partielle
+        // tant que le stream n'est pas fini — on garde les deltas accumulés.
+        if (this._streamingMessageIds.size > 0) {
+          const inMem = new Map<string, any>();
+          for (const m of this.messages()) {
+            const id = String(m._id || '');
+            if (id && this._streamingMessageIds.has(id)) inMem.set(id, m);
+          }
+          for (let i = 0; i < msgs.length; i++) {
+            const id = String(msgs[i]._id || '');
+            if (inMem.has(id)) msgs[i] = inMem.get(id);
+          }
+        }
+        this.messages.set(msgs);
+      }
 
       // Restaure la pendingQuestion en live : sinon quand un sous-agent crée
       // une question via AiMessage, le formulaire de réponse n'apparaît pas
@@ -1590,6 +1606,30 @@ export class AiService {
   // jobs async sans avoir à reload.
   private _threadStreamCtrl?: AbortController;
   private _threadStreamId?: string;
+  // Debounce reload messages : évite le storm de fetchs quand plusieurs widgets
+  // (todos, structured, canvas...) s'updatent en séquence rapide. Un seul reload
+  // par burst de 400ms, qui capte la dernière version de tous les events.
+  private _reloadMsgTimer?: any;
+  private _reloadMsgPending = false;
+  // IDs des messages actuellement en cours de streaming (placeholder resume parent).
+  // Quand un reload DB arrive, on NE remplace PAS ces messages par la version DB
+  // (qui serait vide pendant le stream) — on garde le contenu accumulé en mémoire.
+  private _streamingMessageIds = new Set<string>();
+
+  /**
+   * Programme un reloadThreadMessages debounced. Coalesce les rafales d'events
+   * (ex: 3 subagents qui émettent 20 widgets à la seconde) en 1 seul fetch.
+   */
+  scheduleReloadMessages(delayMs = 400): void {
+    this._reloadMsgPending = true;
+    if (this._reloadMsgTimer) return;
+    this._reloadMsgTimer = setTimeout(() => {
+      this._reloadMsgTimer = undefined;
+      if (!this._reloadMsgPending) return;
+      this._reloadMsgPending = false;
+      this.reloadThreadMessages().catch?.(() => {});
+    }, delayMs);
+  }
 
   private openThreadLiveStream(threadId: string) {
     if (!threadId) return;
@@ -1679,19 +1719,25 @@ export class AiService {
     if (evType === 'ai.message.created') {
       console.log('[passive-stream] ai.message.created received', ev.kind);
       this.sideEvents$.next(ev);
-      this.reloadThreadMessages().catch?.(() => {});
+      this.scheduleReloadMessages();
       return;
     }
     if (evType === 'ai.message.updated') {
       console.log('[passive-stream] ai.message.updated received', ev.kind);
+      // Si cet update finalise un placeholder streamé (backend vient d'écrire
+      // le contenu final en DB), on retire l'ID du set streaming → le prochain
+      // reload prendra la version DB (qui est désormais la version finale).
+      if (ev.messageId && this._streamingMessageIds.has(String(ev.messageId))) {
+        this._streamingMessageIds.delete(String(ev.messageId));
+      }
       this.sideEvents$.next(ev);
-      this.reloadThreadMessages().catch?.(() => {});
+      this.scheduleReloadMessages();
       return;
     }
     if (evType === 'memory.pending.update') {
       const cnt = ev.pendingCount;
       if (typeof cnt === 'number') this.pendingKnowledgeCount.set(cnt);
-      this.reloadThreadMessages().catch?.(() => {});
+      this.scheduleReloadMessages();
       return;
     }
     // subagent.* events → forward to sideEvents pour visibilité canvas Agents
@@ -1699,6 +1745,58 @@ export class AiService {
       this.sideEvents$.next(ev);
       return;
     }
+    // Live streaming du resume parent : events tagués avec _streamingMessageId
+    // (text deltas, tool.start/end, tool.input_delta). On append directement
+    // au placeholder en mémoire sans recharger tout le thread → UI fluide.
+    const streamingMsgId = ev._streamingMessageId;
+    if (streamingMsgId) {
+      this.applyStreamingDelta(streamingMsgId, evType, ev);
+      return;
+    }
+  }
+
+  /**
+   * Applique un delta stream (text, tool.start, tool.end, tool.input_delta)
+   * directement sur le message placeholder en mémoire. Pas de fetch DB.
+   * Le signal `messages` est mis à jour → Angular re-render uniquement la bulle.
+   */
+  private applyStreamingDelta(messageId: string, evType: string, ev: any): void {
+    // Marque ce message comme "en streaming" pour que reloadThreadMessages ne
+    // l'écrase pas avec la version DB (encore vide ou partielle).
+    this._streamingMessageIds.add(String(messageId));
+    const msgs = this.messages();
+    const idx = msgs.findIndex(m => String(m._id) === String(messageId));
+    if (idx < 0) return; // placeholder pas encore chargé (race rare)
+    const msg = { ...msgs[idx] } as any;
+    if (evType === 'message' && typeof ev.text === 'string') {
+      msg.content = String(msg.content || '') + ev.text;
+    } else if (evType === 'tool.start') {
+      const tools = Array.isArray(msg.toolCalls) ? [...msg.toolCalls] : [];
+      tools.push({ id: ev.id, name: ev.name, status: 'running' });
+      msg.toolCalls = tools;
+    } else if (evType === 'tool.input_delta') {
+      const tools = Array.isArray(msg.toolCalls) ? [...msg.toolCalls] : [];
+      const i = tools.findIndex((t: any) => t.id === ev.id);
+      if (i >= 0) {
+        tools[i] = { ...tools[i], _argsBuf: (tools[i]._argsBuf || '') + (ev.text || '') };
+        msg.toolCalls = tools;
+      }
+    } else if (evType === 'tool.end') {
+      const tools = Array.isArray(msg.toolCalls) ? [...msg.toolCalls] : [];
+      const i = tools.findIndex((t: any) => t.id === ev.id);
+      if (i >= 0) {
+        tools[i] = { ...tools[i], args: ev.args, result: ev.result, status: ev.status || 'success', duration: ev.duration };
+        msg.toolCalls = tools;
+      } else {
+        tools.push({ id: ev.id, name: ev.name, args: ev.args, result: ev.result, status: ev.status || 'success', duration: ev.duration });
+        msg.toolCalls = tools;
+      }
+    } else {
+      return;
+    }
+    const next = [...msgs];
+    next[idx] = msg;
+    this.messages.set(next);
   }
 
   /** Ferme le stream live (à appeler quand on quitte le thread / déconnexion). */

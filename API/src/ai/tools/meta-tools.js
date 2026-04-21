@@ -1458,17 +1458,28 @@ async function executeMetaTool(name, input, ctx) {
       const inProgressCount = todos.filter(t => t.status === 'in_progress').length;
       // Plusieurs in_progress autorisés (sous-agents parallèles = plusieurs tâches en cours).
       try {
-        // Widget éditable scopé au DERNIER message user. Une nouvelle demande
-        // user → nouveau widgetId → nouvelle card todo. Évite de polluer la
-        // checklist d'une demande précédente déjà terminée.
+        // Widget éditable. Deux scopes distincts :
+        // - Parent (pas de jobContext ou type agent_run sans parentJobId) : scopé au
+        //   dernier message user → `session-todos-<userMsgId>` (une checklist par demande).
+        // - Subagent (parentJobId OU subagentType OU jobType='subagent') : scopé au
+        //   jobId → `subagent-todos-<jobId>`. Visible uniquement dans la fenêtre
+        //   d'interaction de ce subagent, pas dans la checklist principale.
+        const jobContext = ctx?._jobContext;
+        const isSubagent = !!(jobContext?.parentJobId)
+          || !!(jobContext?.subagentType)
+          || jobContext?.jobType === 'subagent';
         let widgetId = 'session-todos';
-        try {
-          const lastUserMsg = await AiMessage.findOne({
-            threadId: ctx.threadId,
-            role: 'user',
-          }).sort({ createdAt: -1 }).select('_id').lean();
-          if (lastUserMsg?._id) widgetId = `session-todos-${String(lastUserMsg._id).slice(-12)}`;
-        } catch { /* fallback to default */ }
+        if (isSubagent) {
+          widgetId = `subagent-todos-${String(jobContext.jobId).slice(-12)}`;
+        } else {
+          try {
+            const lastUserMsg = await AiMessage.findOne({
+              threadId: ctx.threadId,
+              role: 'user',
+            }).sort({ createdAt: -1 }).select('_id').lean();
+            if (lastUserMsg?._id) widgetId = `session-todos-${String(lastUserMsg._id).slice(-12)}`;
+          } catch { /* fallback to default */ }
+        }
         // Drain les tools accumulés depuis le dernier todo_write et attribue-les
         // à l'item qui vient de passer in_progress → completed (ou à l'item
         // actuellement in_progress qui a progressé).
@@ -1510,6 +1521,7 @@ async function executeMetaTool(name, input, ctx) {
             todoList: todoPayload,
             widgetId,
             widgetUpdatedAt: new Date(),
+            ...(isSubagent ? { subagentJobId: String(jobContext.jobId) } : {}),
           };
           await existing.save();
           _notifyInlineUpdate(ctx.threadId, String(existing._id), 'todo_list');
@@ -1524,6 +1536,7 @@ async function executeMetaTool(name, input, ctx) {
               todoList: todoPayload,
               widgetId,
               widgetUpdatedAt: new Date(),
+              ...(isSubagent ? { subagentJobId: String(jobContext.jobId) } : {}),
             },
           });
           _notifyInlineMessage(ctx.threadId, 'todo_list');
@@ -2130,17 +2143,28 @@ async function executeMetaTool(name, input, ctx) {
       if (ctr.count >= maxPerDay) return { ok: false, error: `Limite de ${maxPerDay} installs/jour atteinte.` };
 
       const { spawn } = require('child_process');
+      const path = require('path');
+      const fs = require('fs');
+      const os = require('os');
       // CRITIQUE : on utilise `python -m pip` avec le MÊME interpréteur que la sandbox
-      // (AI_SANDBOX_PYTHON). Sinon sur macOS, pip3 peut pointer vers brew python
-      // alors que python3 = Apple system → lib installée mais invisible à l'import.
+      // (AI_SANDBOX_PYTHON). Et on install vers un `site-packages` dédié + partagé
+      // entre install et run (PYTHONPATH du subprocess-sandbox). Sinon sur macOS,
+      // le package peut être installé dans user site mais invisible au runtime
+      // (HOME modifié par la sandbox pour l'isolation).
       const pythonBin = process.env.AI_SANDBOX_PYTHON || 'python3';
       const pipOverride = process.env.AI_SANDBOX_PIP; // optionnel, bypass si vraiment nécessaire
       const npmBin = process.env.AI_SANDBOX_NPM || 'npm';
+      const sharedPyTarget = process.env.AI_SANDBOX_PY_SITE_PACKAGES
+        || path.join(os.tmpdir(), 'kinn-sandbox-pkgs', 'python');
+      try { fs.mkdirSync(sharedPyTarget, { recursive: true }); } catch { /* non-fatal */ }
+      const sharedNodeTarget = process.env.AI_SANDBOX_NODE_MODULES
+        || path.join(os.tmpdir(), 'kinn-sandbox-pkgs', 'node');
+      try { fs.mkdirSync(sharedNodeTarget, { recursive: true }); } catch { /* non-fatal */ }
       const cmdArgs = language === 'python'
         ? (pipOverride
-            ? [pipOverride, 'install', '--break-system-packages', '--no-input', '--quiet', version ? `${pkg}==${version}` : pkg]
-            : [pythonBin, '-m', 'pip', 'install', '--break-system-packages', '--no-input', '--quiet', version ? `${pkg}==${version}` : pkg])
-        : [npmBin, 'install', '-g', '--silent', version ? `${pkg}@${version}` : pkg];
+            ? [pipOverride, 'install', '--target', sharedPyTarget, '--upgrade', '--no-input', '--quiet', version ? `${pkg}==${version}` : pkg]
+            : [pythonBin, '-m', 'pip', 'install', '--target', sharedPyTarget, '--upgrade', '--no-input', '--quiet', version ? `${pkg}==${version}` : pkg])
+        : [npmBin, 'install', '--prefix', sharedNodeTarget, '--silent', version ? `${pkg}@${version}` : pkg];
 
       return new Promise((resolve) => {
         const child = spawn(cmdArgs[0], cmdArgs.slice(1), {

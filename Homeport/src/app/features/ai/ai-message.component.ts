@@ -224,11 +224,11 @@ interface ProcessedSegment {
           <div *ngSwitchCase="'canvas_html'" class="canvas-html-bubble widget-bubble widget-wrap">
             <ai-canvas-html [data]="msg.metadata!['canvasHtml']!"></ai-canvas-html>
           </div>
-          <!-- agent_report masqué s'il est déjà référencé par un todo_list du thread
-               (évite le doublon : une fois dans la todo, une fois en bas du chat) -->
-          <div *ngSwitchCase="'agent_report'" class="widget-bubble widget-wrap"
-               [class.report-absorbed]="isReportAbsorbedByTodo(msg)">
-            <ai-agent-report-card *ngIf="!isReportAbsorbedByTodo(msg)" [report]="msg.metadata!.agentReport!"></ai-agent-report-card>
+          <!-- agent_report TOUJOURS visible dans le chat principal pour que
+               l'utilisateur voie "Tim Terminé" inline, même si la todo référence
+               aussi le job. La card est compacte (reasoning-style) → pas de doublon visuel. -->
+          <div *ngSwitchCase="'agent_report'" class="widget-bubble widget-wrap">
+            <ai-agent-report-card [report]="msg.metadata!.agentReport!"></ai-agent-report-card>
           </div>
           <div *ngSwitchCase="'system_hint'" class="system-hint-hidden"></div>
           <div *ngSwitchCase="'system_note'" class="system-hint-hidden"></div>
@@ -669,8 +669,19 @@ interface ProcessedSegment {
     .msg-att-file { display: inline-flex; align-items: center; gap: 4px; background: #f5f5f5; border: 1px solid #e8e8e8; border-radius: 6px; padding: 4px 8px; font-size: 12px; color: #333; text-decoration: none; transition: border-color 0.2s; }
     .msg-att-file:hover { border-color: #e61982; color: #e61982; }
     .msg-att-size { color: #999; font-size: 10px; }
-    .comment-msg { background: #faf5ff; border-left: 3px solid #722ed1; border-radius: 0 8px 8px 0; padding: 8px 12px; margin: 4px 0; max-width: 85%; }
-    .comment-msg .comment-content { margin-top: 4px; font-size: 13px; color: #333; line-height: 1.5; }
+    /* Style inline (comme agent_report "Terminé") : pas de fond, juste une
+       bordure gauche colorée. Max-width message pour s'intégrer au flux. */
+    .comment-msg {
+      background: transparent;
+      border-left: 3px solid #722ed1;
+      border-radius: 0;
+      padding: 4px 12px;
+      margin: 6px 0;
+      max-width: 85%;
+    }
+    .comment-msg .comment-content { margin-top: 4px; font-size: 13px; color: #333; line-height: 1.55; }
+    .comment-msg .comment-content ::ng-deep p { margin: 0 0 4px; }
+    .comment-msg .comment-content ::ng-deep p:last-child { margin-bottom: 0; }
     .comment-msg nz-tag { margin-bottom: 4px; }
     /* Message venant d'un subagent → charte rose + animation d'arrivée */
     .comment-msg.subagent-ping {
@@ -718,11 +729,10 @@ interface ProcessedSegment {
       box-shadow: none;
     }
     @media (max-width: 640px) { .widget-bubble { max-width: 100%; } }
-    .perm-request-bubble { max-width: min(560px, 85%); animation: perm-pulse 2s ease-in-out 2; }
-    @keyframes perm-pulse {
-      0%, 100% { box-shadow: 0 0 0 rgba(114, 46, 209, 0); }
-      50% { box-shadow: 0 0 0 6px rgba(114, 46, 209, 0.18); border-radius: 10px; }
-    }
+    /* Permission request : style inline (bordure gauche colorée), même largeur
+       que les bulles message (85%). Pas de pulse, pas de box-shadow. */
+    .perm-request-bubble { max-width: 85%; animation: none; box-shadow: none; }
+    @media (max-width: 640px) { .perm-request-bubble { max-width: 100%; } }
     @media (max-width: 640px) { .widget-bubble { max-width: 100%; } }
     .widget-bubble :host ::ng-deep > * { max-width: 100%; }
     /* Diagrammes : bubble plus large (pleine largeur dispo) pour que le mermaid respire */

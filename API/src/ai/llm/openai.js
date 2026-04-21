@@ -1,6 +1,8 @@
 // OpenAI streaming client — native fetch, no LangChain
 // Yields normalized events: text_delta, tool_use_start, tool_input_delta, tool_use_end, done
 
+const { isDebug } = require('../util/debug');
+
 async function* streamOpenAI(messages, tools, config) {
   const apiKey = config.apiKey;
   if (!apiKey) throw new Error('OpenAI API key not configured');
@@ -110,7 +112,7 @@ async function* streamOpenAI(messages, tools, config) {
           }
           if (tc.function?.arguments) {
             b.arguments += tc.function.arguments;
-            if (process.env.AI_DEBUG) console.log(`[llm-openai] input_delta: ${b.name} +${tc.function.arguments.length}chars`);
+            if (isDebug()) console.log(`[llm-openai] input_delta: ${b.name} +${tc.function.arguments.length}chars`);
             yield { type: 'tool_input_delta', index: idx, id: b.id, name: b.name, text: tc.function.arguments };
           }
         }

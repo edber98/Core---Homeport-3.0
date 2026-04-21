@@ -67,10 +67,15 @@ async function run(opts) {
   const nodeBin = process.env.AI_SANDBOX_NODE || 'node';
   const baseCmd = Array.isArray(opts.cmdOverride) && opts.cmdOverride.length
     ? opts.cmdOverride.map((a) => {
-        let s = a
+        let s = String(a)
           .replace('/workspace/script.py', scriptHostPath)
           .replace('/workspace/script.js', scriptHostPath)
-          .replace('/workspace', scratch);
+          .replace(/\/workspace\/out\b/g, scratchOut)
+          .replace(/\/workspace\/in\b/g, scratchIn)
+          .replace(/\/workspace\b/g, scratch)
+          // CRITIQUE : les skill cmd ont des paths container-style (`/app/skills-bundle/...`)
+          // qui n'existent pas hors sandbox. On réécrit vers le bundle hôte.
+          .replace(/\/app\/skills-bundle\b/g, skillsBundleHost);
         if (s === 'python3' || s === 'python') s = pythonBin;
         if (s === 'node') s = nodeBin;
         return s;
@@ -118,6 +123,25 @@ async function run(opts) {
   // pour que python3/node résolvent le même binaire que celui de l'utilisateur
   // (miniforge, pyenv, nvm, brew, etc.) et aient accès aux site-packages installées.
   const parentEnv = process.env || {};
+
+  // Site-packages partagé : quand install_package a installé vers un dir
+  // dédié (--target pour pip, --prefix pour npm), on l'expose au runtime via
+  // PYTHONPATH / NODE_PATH. Garantit que `from docx import Document` trouve la
+  // lib même si elle a été installée dans une zone non-système.
+  const sharedPySite = parentEnv.AI_SANDBOX_PY_SITE_PACKAGES
+    || path.join(os.tmpdir(), 'kinn-sandbox-pkgs', 'python');
+  const sharedNodeModules = parentEnv.AI_SANDBOX_NODE_MODULES
+    || path.join(os.tmpdir(), 'kinn-sandbox-pkgs', 'node');
+  // `npm install --prefix X <pkg>` dépose dans `X/node_modules/` (PAS dans lib/)
+  // sauf si flag -g. On garde --prefix sans -g dans install_package pour simplicité
+  // → donc NODE_PATH doit pointer vers `<prefix>/node_modules` direct.
+  const sharedNodeLib = path.join(sharedNodeModules, 'node_modules');
+  // API/node_modules rendu accessible aux scripts de skills Node (docx, pptxgenjs, etc.).
+  // Sans ça, les scripts officiels Anthropic échouent à `require('docx')`.
+  const apiNodeModules = path.resolve(__dirname, '..', '..', '..', '..', 'node_modules');
+  const pythonPathParts = [sharedPySite, parentEnv.PYTHONPATH].filter(Boolean);
+  const nodePathParts = [sharedNodeLib, apiNodeModules, parentEnv.NODE_PATH].filter(Boolean);
+
   const childEnv = {
     HOME: scratch,
     LANG: parentEnv.LANG || 'C.UTF-8',
@@ -126,12 +150,14 @@ async function run(opts) {
     WORKSPACE: scratch,
     WORKSPACE_OUT: scratchOut,
     WORKSPACE_IN: scratchIn,
+    HOMEPORT_WORKSPACE: scratch,
     SKILLS_BUNDLE_DIR: skillsBundleHost,
-    // Propage les env critiques pour résolution des libs
-    ...(parentEnv.PYTHONPATH ? { PYTHONPATH: parentEnv.PYTHONPATH } : {}),
+    // PYTHONPATH / NODE_PATH enrichis avec les packages installés par install_package.
+    PYTHONPATH: pythonPathParts.join(':'),
+    NODE_PATH: nodePathParts.join(':'),
+    // Propage les env critiques pour résolution des libs natives
     ...(parentEnv.VIRTUAL_ENV ? { VIRTUAL_ENV: parentEnv.VIRTUAL_ENV } : {}),
     ...(parentEnv.CONDA_PREFIX ? { CONDA_PREFIX: parentEnv.CONDA_PREFIX } : {}),
-    ...(parentEnv.NODE_PATH ? { NODE_PATH: parentEnv.NODE_PATH } : {}),
     ...(parentEnv.TMPDIR ? { TMPDIR: parentEnv.TMPDIR } : {}),
   };
   const child = spawn(spawnBin, spawnArgs, {

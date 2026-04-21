@@ -1,6 +1,8 @@
 // Anthropic streaming client — native fetch, no SDK
 // Yields normalized events: text_delta, tool_use_start, tool_input_delta, tool_use_end, done
 
+const { isDebug } = require('../util/debug');
+
 async function* streamAnthropic(messages, tools, config) {
   const apiKey = config.apiKey;
   if (!apiKey) throw new Error('Anthropic API key not configured');
@@ -19,9 +21,13 @@ async function* streamAnthropic(messages, tools, config) {
   const modelId = config.model || 'claude-sonnet-4-5-20250929';
   // Claude Opus 4.7+ et certains modèles récents ne supportent pas `temperature`.
   const supportsTemperature = !modelId.includes('opus-4-7') && !modelId.includes('opus-4-6');
+  // Opus génère souvent du code/docx très long → bump le max_tokens par défaut
+  // pour éviter coupure en plein milieu de string Python. 16384 = plafond large.
+  const isOpus = modelId.includes('opus');
+  const defaultMaxTokens = isOpus ? 16384 : 4096;
   const body = {
     model: modelId,
-    max_tokens: config.maxTokens || 4096,
+    max_tokens: config.maxTokens || defaultMaxTokens,
     messages: formatMessages(filtered),
     stream: true,
     ...(supportsTemperature ? { temperature: config.temperature ?? 0.7 } : {}),
@@ -102,7 +108,7 @@ async function* streamAnthropic(messages, tools, config) {
           }
           if (data.delta?.type === 'input_json_delta' && data.delta.partial_json) {
             currentToolArgs += data.delta.partial_json;
-            if (process.env.AI_DEBUG) console.log(`[llm-anthropic] input_json_delta: ${currentToolName} +${data.delta.partial_json.length}chars`);
+            if (isDebug()) console.log(`[llm-anthropic] input_json_delta: ${currentToolName} +${data.delta.partial_json.length}chars`);
             yield { type: 'tool_input_delta', index: currentBlockIndex, id: currentToolId, name: currentToolName, text: data.delta.partial_json };
           }
           break;

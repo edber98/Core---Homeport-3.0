@@ -26,11 +26,12 @@ import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { NzDrawerModule } from 'ng-zorro-antd/drawer';
 import { NzBadgeModule } from 'ng-zorro-antd/badge';
 import { NzAvatarModule } from 'ng-zorro-antd/avatar';
+import { WindowHostComponent } from './window-manager/window-host.component';
 
 @Component({
   selector: 'ai-fullpage',
   standalone: true,
-  imports: [CommonModule, FormsModule, NzButtonModule, NzIconModule, NzSelectModule, NzInputModule, NzTagModule, NzSpinModule, NzEmptyModule, NzToolTipModule, NzPopconfirmModule, NzPopoverModule, NzModalModule, NzDrawerModule, NzBadgeModule, NzAvatarModule, AiChatComponent, AiSettingsComponent, AiCanvasPanelComponent, AiProjectRootPickerComponent, AiThreadShareDialogComponent],
+  imports: [CommonModule, FormsModule, NzButtonModule, NzIconModule, NzSelectModule, NzInputModule, NzTagModule, NzSpinModule, NzEmptyModule, NzToolTipModule, NzPopconfirmModule, NzPopoverModule, NzModalModule, NzDrawerModule, NzBadgeModule, NzAvatarModule, AiChatComponent, AiSettingsComponent, AiCanvasPanelComponent, AiProjectRootPickerComponent, AiThreadShareDialogComponent, WindowHostComponent],
   template: `
     <div
       class="fp-layout"
@@ -610,6 +611,9 @@ import { NzAvatarModule } from 'ng-zorro-antd/avatar';
           <ai-thread-share-dialog [thread]="shareThread!" (close)="closeShareDialog()"></ai-thread-share-dialog>
         </ng-container>
       </nz-drawer>
+
+      <!-- Window Manager : host global pour les fenêtres flottantes (subagents, etc.) -->
+      <ai-window-host></ai-window-host>
     </div>
   `,
   styles: [`

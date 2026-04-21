@@ -507,10 +507,19 @@ async function _persistTaskCreate(threadId, task) {
             jobId: task.jobId || task.id,
             subject: task.subject || '',
             description: task.prompt || '',
+            subagentType: task.subagentType || null,
             status: task.status || 'queued',
             parentTaskId: task.parentJobId,
             startedAt: task.startedAt ? new Date(task.startedAt) : new Date(),
             toolCalls: [],
+            // Persiste les champs roster (agentName, emoji, color, ...) pour que
+            // l'identité visuelle du subagent survive aux reloads / SSE reconnect.
+            // Sans ça, au refresh, le canvas affiche une task anonyme.
+            ...(task.agentName ? { agentName: task.agentName } : {}),
+            ...(task.agentEmoji ? { agentEmoji: task.agentEmoji } : {}),
+            ...(task.agentColor ? { agentColor: task.agentColor } : {}),
+            ...(task.agentTagline ? { agentTagline: task.agentTagline } : {}),
+            ...(task.agentFigure ? { agentFigure: task.agentFigure } : {}),
           }],
           $slice: -200,
         },

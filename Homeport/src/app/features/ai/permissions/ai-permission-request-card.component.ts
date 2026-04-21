@@ -69,25 +69,34 @@ import { AiPermissionRequest } from '../ai.service';
     </div>
   `,
   styles: [`
+    /* Style inline raisonnement-block : pas de card, juste une bordure gauche
+       colorée selon le niveau de risque. Pas de fond, pas de radius, padding
+       minimal, s'intègre dans le flux du message. */
     .perm-card {
-      background: #fff; border: 1px solid #f0f0f0; border-radius: 10px;
-      padding: 12px 14px; margin: 6px 0; max-width: 100%;
-      transition: opacity .2s;
+      background: transparent;
+      border: 0;
+      border-left: 3px solid #d9d9d9;
+      border-radius: 0;
+      padding: 4px 12px;
+      margin: 4px 0;
+      opacity: 0.95;
+      transition: opacity .2s, border-color .15s;
     }
-    .perm-card.disabled { opacity: 0.75; }
-    .perm-card.risk-safe { border-left: 3px solid #52c41a; }
-    .perm-card.risk-write { border-left: 3px solid #faad14; }
-    .perm-card.risk-destructive { border-left: 3px solid #ff4d4f; }
-    .perm-card.risk-elevated { border-left: 3px solid #722ed1; }
-    .perm-header { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
-    .risk-icon { font-size: 16px; }
+    .perm-card:hover { opacity: 1; }
+    .perm-card.disabled { opacity: 0.7; }
+    .perm-card.risk-safe { border-left-color: #52c41a; }
+    .perm-card.risk-write { border-left-color: #faad14; }
+    .perm-card.risk-destructive { border-left-color: #ff4d4f; }
+    .perm-card.risk-elevated { border-left-color: #722ed1; }
+    .perm-header { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+    .risk-icon { font-size: 14px; }
     .risk-safe .risk-icon { color: #52c41a; }
     .risk-write .risk-icon { color: #faad14; }
     .risk-destructive .risk-icon { color: #ff4d4f; }
     .risk-elevated .risk-icon { color: #722ed1; }
-    .tool-name { font-weight: 600; font-size: 13px; color: #333; flex: 1; }
-    .risk-tag { margin: 0; font-size: 11px; }
-    .perm-desc { font-size: 12px; color: #666; margin-bottom: 8px; line-height: 1.5; }
+    .tool-name { font-weight: 600; font-size: 12px; color: #333; flex: 1; }
+    .risk-tag { margin: 0; font-size: 10px; }
+    .perm-desc { font-size: 11.5px; color: #666; margin-bottom: 6px; line-height: 1.5; }
     .perm-desc code { background: #f5f5f5; padding: 1px 5px; border-radius: 3px; font-size: 11px; color: #e61982; }
     .args-block { margin: 6px 0; }
     .args-toggle { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; color: #999; cursor: pointer; }

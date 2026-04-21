@@ -5,6 +5,7 @@
 const dns = require('dns').promises;
 const { randomUUID } = require('crypto');
 const env = require('../../config/env');
+const { isDebug } = require('../util/debug');
 
 // Lazy requires — keep server boot light, only load when AI calls a web tool
 let _undici = null;
@@ -259,7 +260,7 @@ async function searchDdgLite({ query, limit, locale, site }) {
     });
   }
 
-  if (process.env.AI_DEBUG) console.log(`[web-tool:ddg_lite] query="${fullQuery}" → ${results.length} résultats (status=${res.statusCode}, htmlLen=${html.length})`);
+  if (isDebug()) console.log(`[web-tool:ddg_lite] query="${fullQuery}" → ${results.length} résultats (status=${res.statusCode}, htmlLen=${html.length})`);
   return results;
 }
 
@@ -300,7 +301,7 @@ async function searchBing({ query, limit, locale, site }) {
         results.push({ title, url, snippet: '', rank: results.length + 1 });
       });
     }
-    if (process.env.AI_DEBUG) console.log(`[web-tool:bing] query="${fullQuery}" → ${results.length} résultats (htmlLen=${html.length})`);
+    if (isDebug()) console.log(`[web-tool:bing] query="${fullQuery}" → ${results.length} résultats (htmlLen=${html.length})`);
     return results;
   });
 }
@@ -351,7 +352,7 @@ async function searchBrave({ query, limit, locale, site }) {
         results.push({ title, url, snippet, rank: results.length + 1 });
       });
     }
-    if (process.env.AI_DEBUG) console.log(`[web-tool:brave] query="${fullQuery}" → ${results.length} résultats (htmlLen=${html.length})`);
+    if (isDebug()) console.log(`[web-tool:brave] query="${fullQuery}" → ${results.length} résultats (htmlLen=${html.length})`);
     return results;
   });
 }
@@ -455,7 +456,7 @@ async function runSearch(opts) {
     }));
 
   const ms = Date.now() - t0;
-  if (process.env.AI_DEBUG) console.log(`[web-search] query="${opts.query}" → ${merged.length} unique/${[...byUrl.keys()].length} total in ${ms}ms (${sources.join(' ')})`);
+  if (isDebug()) console.log(`[web-search] query="${opts.query}" → ${merged.length} unique/${[...byUrl.keys()].length} total in ${ms}ms (${sources.join(' ')})`);
   return { engine: 'multi', results: merged };
 }
 
@@ -1193,10 +1194,10 @@ function createWebExecutor(metadata, emit) {
     async execute(name, input) {
       if (!(name in tools)) throw new Error(`Unknown web tool: ${name}`);
       const tag = `[web-tool:${name}]`;
-      if (process.env.AI_DEBUG) console.log(`${tag} input:`, JSON.stringify(input || {}, null, 2).slice(0, 800));
+      if (isDebug()) console.log(`${tag} input:`, JSON.stringify(input || {}, null, 2).slice(0, 800));
       try {
         const result = await tools[name](input || {});
-        if (process.env.AI_DEBUG) {
+        if (isDebug()) {
           const preview = JSON.stringify(result || {}).slice(0, 500);
           console.log(`${tag} result preview: ${preview}`);
         }

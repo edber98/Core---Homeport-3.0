@@ -124,26 +124,42 @@ export interface TodoListPayload {
     </div>
   `,
   styles: [`
-    :host { display: block; max-width: 720px; }
+    /* Intégré dans le flux du message exactement comme un reasoning-block :
+       - bordure gauche légère 3px #d9d9d9 (rose quand actif, vert quand done)
+       - pas de max-width (prend la place dispo)
+       - pas de box-shadow, pas de radius
+       - padding minimal, chevron sans marge */
+    :host { display: block; min-width: 0; }
     .todo-card {
-      background: #fff;
-      border: 1px solid #f0f0f0;
-      border-radius: 10px;
+      background: transparent;
+      border: 0;
+      border-left: 3px solid #d9d9d9;
+      border-radius: 0;
       overflow: hidden;
-      margin: 6px 0;
-      transition: box-shadow .15s, border-color .15s;
+      margin: 4px 0;
+      padding: 0 12px;
+      opacity: 0.9;
+      transition: border-color .15s, opacity .15s;
     }
-    .todo-card.has-active { box-shadow: 0 2px 12px rgba(230,25,130,.06); border-color: #ffd6e7; }
-    .todo-card.all-done { opacity: .85; }
+    .todo-card:hover { opacity: 1; }
+    .todo-card.has-active { border-left-color: #e61982; opacity: 1; }
+    .todo-card.all-done { border-left-color: #52c41a; opacity: 0.85; }
 
     .todo-head {
-      display: flex; align-items: center; justify-content: space-between; gap: 10px;
-      padding: 10px 14px;
+      display: flex; align-items: center; gap: 6px;
+      padding: 4px 0;
       cursor: pointer;
       user-select: none;
-      transition: background .12s;
+      font-size: 11px;
+      color: #999;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      transition: color .12s;
     }
-    .todo-head:hover { background: #fafafa; }
+    .todo-head:hover { color: #e61982; }
+    .has-active .todo-head { color: #e61982; text-transform: none; letter-spacing: 0; font-size: 13px; font-weight: 600; }
+    .all-done .todo-head { color: #52c41a; }
 
     .head-left { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
     .head-ico {

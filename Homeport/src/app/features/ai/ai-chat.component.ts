@@ -1004,7 +1004,7 @@ export class AiChatComponent implements AfterViewInit {
     for (const m of msgs) {
       const kind = m.metadata?.kind;
       const wid = m?.metadata?.widgetId;
-      const isWidget = ['structured', 'canvas_html', 'diagram', 'image_inline', 'file_inline'].includes(kind || '');
+      const isWidget = ['structured', 'canvas_html', 'diagram', 'image_inline', 'file_inline', 'todo_list'].includes(kind || '');
       // Cas 1 : widget référencé par [[WIDGET:id]] dans un message texte → masqué
       // (il sera rendu inline à l'emplacement du marqueur, pas en bulle séparée).
       if (isWidget && wid && inlineRefs.has(String(wid))) {
@@ -1012,10 +1012,15 @@ export class AiChatComponent implements AfterViewInit {
       }
       // Cas 2 : widget produit par un subagent (metadata.subagentJobId) → masqué
       // de la timeline principale. Il apparaît UNIQUEMENT inline quand le parent
-      // fait sa synthèse avec [[WIDGET:id]]. Visible aussi dans l'agent_report card
-      // du subagent. Évite le double affichage + apparition prématurée avant
-      // que le parent ait intégré ses livrables.
+      // fait sa synthèse avec [[WIDGET:id]], OU dans la fenêtre WM du subagent
+      // (subagent-todos visibles uniquement via ai-subagent-window).
       if (isWidget && m?.metadata?.subagentJobId) {
+        continue;
+      }
+      // Cas 3 : filet de sécurité par widgetId — les todos de subagent ont un
+      // widgetId qui commence par `subagent-todos-`. Si par ex. subagentJobId
+      // n'a pas été persisté (ancien message), on filtre quand même par pattern.
+      if (kind === 'todo_list' && typeof wid === 'string' && wid.startsWith('subagent-todos-')) {
         continue;
       }
       // System messages sauf hint/note → leur propre groupe

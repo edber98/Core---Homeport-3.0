@@ -36,9 +36,14 @@ export class AiToolLabelsService {
     render_html_preview: 'Aperçu HTML',
     build_website: 'Site web',
     render_structured: 'Affichage structuré',
+    render_interactive_canvas: 'Canvas interactif',
     propose_plan: 'Plan d\'action',
     generate_diagram: 'Diagramme',
     display_image: 'Image',
+    display_file: 'Fichier',
+    todo_write: 'Checklist',
+    send_message_to_agent: 'Message agent',
+    enrich_context: 'Contexte',
 
     // Meta / orchestration
     ask_user: 'Question',
