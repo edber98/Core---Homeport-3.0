@@ -95,8 +95,19 @@ export class AiCanvasHtmlComponent implements OnChanges, AfterViewInit {
 
   fullscreen = false;
   copied = false;
+  /** Dernier html réellement injecté — pour éviter de rebuild l'iframe à chaque
+      CD cycle quand le data reference change mais le contenu est identique
+      (pendant streaming du message parent par exemple, la ref widget est
+      stable mais Angular re-check). Sans ce guard : iframe srcdoc réassigné
+      = flash visuel à chaque chunk texte reçu. */
+  private _lastAppliedHtml: string | null = null;
 
-  ngOnChanges(_changes: SimpleChanges): void { this.applyHtml(); }
+  ngOnChanges(changes: SimpleChanges): void {
+    // Évite reload iframe si le html n'a pas changé (même ref ou même string)
+    const newHtml = this.data?.html || '';
+    if (newHtml === this._lastAppliedHtml && !changes['data']?.firstChange) return;
+    this.applyHtml();
+  }
   ngAfterViewInit(): void { this.applyHtml(); }
 
   /**
@@ -147,6 +158,10 @@ export class AiCanvasHtmlComponent implements OnChanges, AfterViewInit {
       const rawHtml = this.data?.html
         || '<!DOCTYPE html><html><body style="display:flex;align-items:center;justify-content:center;height:100%;color:#bbb;font-family:sans-serif">(aucun contenu)</body></html>';
       const html = this.injectPreamble(rawHtml);
+      // Double guard : si l'HTML final injecté est identique au dernier, skip
+      // le setAttribute pour éviter un reload complet de l'iframe (flash).
+      if (html === this._lastAppliedHtml) return;
+      this._lastAppliedHtml = html;
       try { iframe.setAttribute('srcdoc', html); } catch {}
     };
     requestAnimationFrame(() => requestAnimationFrame(run));

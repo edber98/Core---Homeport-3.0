@@ -80,7 +80,7 @@ export interface AiProjectRoot {
 
 export interface AiCanvasState {
   threadId: string;
-  activeTab: 'document' | 'research' | 'agents' | 'tasks' | 'artifacts' | 'files';
+  activeTab: 'document' | 'research' | 'workplan' | 'artifacts' | 'files';
   document?: {
     format?: 'docx' | 'pptx' | 'xlsx' | 'html' | 'md' | 'mermaid';
     title?: string;
@@ -551,18 +551,11 @@ export class AiService {
   /** Recharge silencieusement les messages du thread courant (utilisé après render_structured etc.) */
   async reloadThreadMessages() {
     const t = this.currentThread();
-    console.log('[reload] entry, currentThread=', t?.id || t?._id || 'NULL');
-    if (!t?.id && !t?._id) { console.warn('[reload] SKIP — no current thread'); return; }
+    if (!t?.id && !t?._id) return;
     const threadId = t.id || t._id;
     try {
-      console.log(`[reload] fetching /api/ai/threads/${threadId}...`);
       const data = await this.api.get<any>(`/api/ai/threads/${threadId}`, { workspaceId: this.wsId() }).toPromise();
       const msgs = data?.messages || [];
-      const kinds = msgs.map((m: any) => m.metadata?.kind).filter(Boolean);
-      console.log(`[reload] ✓ thread ${threadId} : ${msgs.length} messages, kinds=[${kinds.join(',')}]`);
-      const todoMsg = msgs.find((m: any) => m.metadata?.kind === 'todo_list');
-      if (todoMsg) console.log('[reload] ✓ todo_list found:', todoMsg.metadata?.todoList);
-      else console.warn('[reload] ✗ no todo_list in reloaded messages');
       if (data?.messages) {
         // Préserve l'état en mémoire des messages actuellement streamés
         // (placeholder resume parent). La version DB est vide ou partielle
@@ -1478,7 +1471,7 @@ export class AiService {
   closeCanvas() { this.canvasOpen.set(false); }
   toggleCanvas() { this.canvasOpen.set(!this.canvasOpen()); }
   togglePinCanvas() { this.canvasPinned.set(!this.canvasPinned()); }
-  setCanvasTab(tab: 'document' | 'research' | 'agents' | 'tasks' | 'artifacts' | 'files') {
+  setCanvasTab(tab: 'document' | 'research' | 'workplan' | 'artifacts' | 'files') {
     const cur = this.canvasState();
     if (cur) this.canvasState.set({ ...cur, activeTab: tab });
   }

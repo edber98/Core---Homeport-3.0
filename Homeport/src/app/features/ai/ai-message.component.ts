@@ -22,6 +22,7 @@ import { AiStructuredMessageComponent } from './structured/ai-structured-message
 import { AiInlineImageComponent } from './images/ai-inline-image.component';
 import { AiInlineFileComponent } from './files/ai-inline-file.component';
 import { AiTodoListComponent } from './todo-list/ai-todo-list.component';
+import { AiMessagePlanHeaderComponent } from './plan-header/ai-message-plan-header.component';
 import { AiAgentBadgeComponent } from './agents/ai-agent-badge.component';
 import { resolveAgentProfile } from './agents/ai-roster';
 import { AiCanvasHtmlComponent } from './canvas-html/ai-canvas-html.component';
@@ -146,7 +147,7 @@ interface ProcessedSegment {
 @Component({
   selector: 'ai-message',
   standalone: true,
-  imports: [CommonModule, FormsModule, NzButtonModule, NzIconModule, NzTagModule, NzToolTipModule, NzBadgeModule, NzInputModule, NodeExecResultDialogComponent, AiPermissionRequestCardComponent, AiCacheSyncRequestCardComponent, AiStructuredMessageComponent, AiPlanProposalCardComponent, AiDiagramRendererComponent, AiInlineImageComponent, AiInlineFileComponent, AiTodoListComponent, AiCanvasHtmlComponent, AiWidgetActionsComponent, AiAgentReportCardComponent, AiAgentBadgeComponent, AiInlineWidgetCollapseComponent],
+  imports: [CommonModule, FormsModule, NzButtonModule, NzIconModule, NzTagModule, NzToolTipModule, NzBadgeModule, NzInputModule, NodeExecResultDialogComponent, AiPermissionRequestCardComponent, AiCacheSyncRequestCardComponent, AiStructuredMessageComponent, AiPlanProposalCardComponent, AiDiagramRendererComponent, AiInlineImageComponent, AiInlineFileComponent, AiTodoListComponent, AiCanvasHtmlComponent, AiWidgetActionsComponent, AiAgentReportCardComponent, AiAgentBadgeComponent, AiInlineWidgetCollapseComponent, AiMessagePlanHeaderComponent],
   template: `
     <div class="ai-msg" [class.user]="msg.role === 'user'" [class.assistant]="msg.role === 'assistant'" [class.compact]="compact">
       <div class="avatar" *ngIf="!compact">
@@ -218,8 +219,11 @@ interface ProcessedSegment {
           <div *ngSwitchCase="'file_inline'" class="widget-bubble widget-wrap">
             <ai-inline-file [data]="msg.metadata!.fileInline!"></ai-inline-file>
           </div>
-          <div *ngSwitchCase="'todo_list'" class="widget-bubble widget-wrap">
-            <ai-todo-list [data]="msg.metadata!['todoList']!"></ai-todo-list>
+          <!-- Todo list : style compact plan-header (sticky, collapse, comme ChatGPT Thinking).
+               L'ancien ai-todo-list (gros bloc) est retiré du chat principal au profit de ce format
+               plus aéré. Le rendu détaillé reste dans la fenêtre WM du subagent. -->
+          <div *ngSwitchCase="'todo_list'" class="plan-header-wrap">
+            <ai-message-plan-header [data]="msg.metadata!['todoList']!"></ai-message-plan-header>
           </div>
           <div *ngSwitchCase="'canvas_html'" class="canvas-html-bubble widget-bubble widget-wrap">
             <ai-canvas-html [data]="msg.metadata!['canvasHtml']!"></ai-canvas-html>
@@ -281,6 +285,13 @@ interface ProcessedSegment {
 
         <!-- Standard rendering (skipped for special metadata kinds) -->
         <ng-container *ngIf="!msg.metadata?.kind">
+        <!-- Loading indicator pendant streaming : bulle créée mais pas encore de contenu
+             (parent resume qui démarre, attend la 1ère réponse LLM). -->
+        <div class="typing-indicator" *ngIf="isStreamingEmpty()">
+          <span class="td-dot"></span>
+          <span class="td-dot"></span>
+          <span class="td-dot"></span>
+        </div>
         <!-- Segments mode: reasoning blocks with text + tools, final text at end -->
         <ng-container *ngIf="msg.segments?.length; else flatLayout">
           <ng-container *ngFor="let ps of getProcessedSegments()">
@@ -757,6 +768,24 @@ interface ProcessedSegment {
     /* Compact mode — used when message is grouped with previous assistant message */
     .ai-msg.compact { padding-top: 0; padding-bottom: 2px; }
     .ai-msg.compact .avatar.avatar-spacer { background: transparent; }
+    /* Typing indicator (3 dots bouncing) — affiché dans le placeholder resume
+       tant que le LLM n'a pas commencé à émettre son premier text_delta. */
+    .typing-indicator {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 8px 12px; margin: 4px 0;
+      background: #f5f5f5; border-radius: 14px 14px 14px 2px;
+    }
+    .td-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #e61982;
+      animation: td-bounce 1.2s ease-in-out infinite;
+    }
+    .td-dot:nth-child(2) { animation-delay: 0.15s; }
+    .td-dot:nth-child(3) { animation-delay: 0.3s; }
+    @keyframes td-bounce {
+      0%, 60%, 100% { opacity: 0.35; transform: translateY(0); }
+      30% { opacity: 1; transform: translateY(-3px); }
+    }
   `]
 })
 export class AiMessageComponent {
@@ -1325,16 +1354,48 @@ export class AiMessageComponent {
     return bw.widgetId;
   }
 
+  // Cache des segments découpés : évite de reconstruire les objets segment
+  // (et donc de déclencher des re-renders OnPush des widgets enfants canvas/iframe)
+  // à chaque CD cycle. Keyed par (content + nb widgets in map).
+  private _segCache = new Map<string, ContentRenderSegment[]>();
+
   /**
    * Découpe le contenu markdown en segments alternant texte et widgets inline.
    * Cherche les marqueurs `[[WIDGET:id]]` et les résout via `widgetsById`.
    * Si le widget n'est pas trouvé, le marqueur est silencieusement retiré.
+   *
+   * MÉMOIZÉ : appelée à chaque CD cycle par le template. Sans cache, rebuild
+   * des objets segment → AiCanvasHtml reçoit nouveaux `[data]` refs →
+   * iframe re-set srcdoc → FLASH à chaque chunk de stream.
    */
   contentSegments(src: string): ContentRenderSegment[] {
     const text = String(src || '');
     if (!text) return [];
+    // Cache key : content + refs identity sur les widgets présents → si
+    // le contenu n'a pas changé ET les widgets référencés sont les mêmes
+    // objets → on renvoie exactement la même instance de segments[].
+    // Conséquence : Angular OnPush voit [data]="seg.widget" identique,
+    // ai-canvas-html ne refait PAS de srcdoc, pas de flash.
+    const refKey = (() => {
+      if (!text.includes('[[WIDGET:')) return `t:${text.length}:${text.slice(0, 40)}`;
+      const widgetIds: string[] = [];
+      const re = new RegExp(WIDGET_MARKER_REGEX.source, 'g');
+      let m: RegExpExecArray | null;
+      while ((m = re.exec(text)) !== null) widgetIds.push(m[1]);
+      const identitySig = widgetIds.map(id => {
+        const w = this.widgetsById?.get(id);
+        // _id + widgetUpdatedAt → identity stable tant que la DB n'a pas update
+        return `${id}#${w?._id || ''}:${w?.metadata?.widgetUpdatedAt || ''}`;
+      }).join('|');
+      return `${text.length}:${text.slice(0, 40)}|${identitySig}`;
+    })();
+    const cached = this._segCache.get(refKey);
+    if (cached) return cached;
+
     if (!text.includes('[[WIDGET:')) {
-      return [{ type: 'text', html: this.renderMarkdown(text) }];
+      const segs: ContentRenderSegment[] = [{ type: 'text', html: this.renderMarkdown(text) }];
+      this._setCache(refKey, segs);
+      return segs;
     }
     const segments: ContentRenderSegment[] = [];
     let lastIdx = 0;
@@ -1356,7 +1417,31 @@ export class AiMessageComponent {
     if (tail.trim()) {
       segments.push({ type: 'text', html: this.renderMarkdown(tail) });
     }
+    this._setCache(refKey, segments);
     return segments;
+  }
+
+  private _setCache(key: string, segs: ContentRenderSegment[]): void {
+    // LRU simple : cap à 20 entrées pour éviter fuite mémoire sur conversations longues.
+    if (this._segCache.size > 20) {
+      const firstKey = this._segCache.keys().next().value as string | undefined;
+      if (firstKey) this._segCache.delete(firstKey);
+    }
+    this._segCache.set(key, segs);
+  }
+
+  /**
+   * True si ce message est un placeholder de streaming qui n'a encore aucun
+   * contenu (text, segments, toolCalls). Affiche alors un typing indicator
+   * à la place du vide — UX plus claire pour le resume parent en attente.
+   */
+  isStreamingEmpty(): boolean {
+    const meta: any = this.msg?.metadata;
+    if (!meta?.streaming) return false;
+    const hasText = !!(this.msg?.content && String(this.msg.content).trim().length > 0);
+    const hasSegments = Array.isArray(this.msg?.segments) && this.msg.segments.some((s: any) => s?.content || s?.toolCalls?.length);
+    const hasTools = Array.isArray(this.msg?.toolCalls) && this.msg.toolCalls.length > 0;
+    return !hasText && !hasSegments && !hasTools;
   }
 
   trackSegment(i: number, s: ContentRenderSegment): string {

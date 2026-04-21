@@ -10,8 +10,7 @@ import { Subscription } from 'rxjs';
 import { AiService } from '../ai.service';
 import { AiCanvasDocumentComponent } from './ai-canvas-document.component';
 import { AiCanvasResearchComponent } from './ai-canvas-research.component';
-import { AiCanvasTasksComponent } from './ai-canvas-tasks.component';
-import { AiCanvasAgentsComponent } from './ai-canvas-agents.component';
+import { AiCanvasWorkplanComponent } from './ai-canvas-workplan.component';
 import { AiCanvasFilesComponent } from './ai-canvas-files.component';
 import { AiCanvasArtifactsComponent } from './ai-canvas-artifacts.component';
 
@@ -20,7 +19,7 @@ import { AiCanvasArtifactsComponent } from './ai-canvas-artifacts.component';
   standalone: true,
   imports: [
     CommonModule, FormsModule, NzTabsModule, NzButtonModule, NzIconModule, NzToolTipModule, NzBadgeModule,
-    AiCanvasDocumentComponent, AiCanvasResearchComponent, AiCanvasTasksComponent, AiCanvasAgentsComponent, AiCanvasFilesComponent, AiCanvasArtifactsComponent,
+    AiCanvasDocumentComponent, AiCanvasResearchComponent, AiCanvasWorkplanComponent, AiCanvasFilesComponent, AiCanvasArtifactsComponent,
   ],
   template: `
     <div class="canvas-panel">
@@ -36,15 +35,10 @@ import { AiCanvasArtifactsComponent } from './ai-canvas-artifacts.component';
               <span>Recherche</span>
               <nz-badge *ngIf="researchCount()" [nzCount]="researchCount()" [nzOverflowCount]="9" nzSize="small"></nz-badge>
             </button>
-            <button *ngIf="showAgentsTab()" class="ctab" [class.active]="activeTab === 'agents'" (click)="setTab('agents')">
-              <span nz-icon nzType="deployment-unit" nzTheme="outline"></span>
-              <span>Agents</span>
-              <nz-badge *ngIf="agentsCount()" [nzCount]="agentsCount()" [nzOverflowCount]="9" nzSize="small"></nz-badge>
-            </button>
-            <button *ngIf="showTasksTab()" class="ctab" [class.active]="activeTab === 'tasks'" (click)="setTab('tasks')">
-              <span nz-icon nzType="ordered-list" nzTheme="outline"></span>
-              <span>Tâches</span>
-              <nz-badge *ngIf="tasksCount()" [nzCount]="tasksCount()" [nzOverflowCount]="9" nzSize="small"></nz-badge>
+            <button *ngIf="showWorkplanTab()" class="ctab" [class.active]="activeTab === 'workplan'" (click)="setTab('workplan')">
+              <span nz-icon nzType="partition" nzTheme="outline"></span>
+              <span>Plan de travail</span>
+              <nz-badge *ngIf="workplanCount()" [nzCount]="workplanCount()" [nzOverflowCount]="9" nzSize="small"></nz-badge>
             </button>
             <button *ngIf="showArtifactsTab()" class="ctab" [class.active]="activeTab === 'artifacts'" (click)="setTab('artifacts')">
               <span nz-icon nzType="experiment" nzTheme="outline"></span>
@@ -70,8 +64,7 @@ import { AiCanvasArtifactsComponent } from './ai-canvas-artifacts.component';
       <div class="canvas-body">
         <ai-canvas-document *ngIf="activeTab === 'document'" [threadId]="threadId"></ai-canvas-document>
         <ai-canvas-research *ngIf="activeTab === 'research'" [threadId]="threadId"></ai-canvas-research>
-        <ai-canvas-agents *ngIf="activeTab === 'agents'" [threadId]="threadId" (answerPermission)="onAnswerPermission($event)"></ai-canvas-agents>
-        <ai-canvas-tasks *ngIf="activeTab === 'tasks'" [threadId]="threadId" (answerPermission)="onAnswerPermission($event)"></ai-canvas-tasks>
+        <ai-canvas-workplan *ngIf="activeTab === 'workplan'" [threadId]="threadId"></ai-canvas-workplan>
         <ai-canvas-artifacts *ngIf="activeTab === 'artifacts'" [threadId]="threadId"></ai-canvas-artifacts>
         <ai-canvas-files *ngIf="activeTab === 'files'" [threadId]="threadId"></ai-canvas-files>
       </div>
@@ -99,12 +92,12 @@ export class AiCanvasPanelComponent implements OnInit, OnDestroy {
   @Input() threadId!: string;
   public ai = inject(AiService);
 
-  activeTab: 'document' | 'research' | 'agents' | 'tasks' | 'artifacts' | 'files' = 'document';
+  activeTab: 'document' | 'research' | 'workplan' | 'artifacts' | 'files' = 'document';
   private sub?: Subscription;
 
   researchCount = computed(() => this.ai.canvasState()?.research?.steps?.length || 0);
-  tasksCount = computed(() => this.ai.canvasState()?.tasks?.length || 0);
-  agentsCount = computed(() => {
+  workplanCount = computed(() => {
+    // Compte = nombre de subagents actifs/finis + plan si existe
     const tasks = this.ai.canvasState()?.tasks || [];
     return tasks.filter(t => (t as any).subagentType || t.jobId).length;
   });
@@ -126,13 +119,9 @@ export class AiCanvasPanelComponent implements OnInit, OnDestroy {
     if (this.isProject()) return true;
     return (this.ai.canvasState()?.research?.steps?.length || 0) > 0;
   });
-  showAgentsTab = computed(() => {
+  showWorkplanTab = computed(() => {
     if (this.isProject()) return true;
-    return this.agentsCount() > 0;
-  });
-  showTasksTab = computed(() => {
-    if (this.isProject()) return true;
-    return (this.ai.canvasState()?.tasks?.length || 0) > 0;
+    return this.workplanCount() > 0;
   });
   showArtifactsTab = computed(() => this.artifactsCount() > 0);
   // Fichiers toujours visible : en projet = fichiers distant + chat ; en chat = fichiers partagés dans le thread
@@ -151,7 +140,7 @@ export class AiCanvasPanelComponent implements OnInit, OnDestroy {
       const visible = this.visibleTabs();
       if (!visible.length) return;
 
-      const serverTab = state?.activeTab as ('document' | 'research' | 'agents' | 'tasks' | 'artifacts' | 'files' | undefined);
+      const serverTab = state?.activeTab as ('document' | 'research' | 'workplan' | 'artifacts' | 'files' | undefined);
       const currentIsVisible = visible.includes(this.activeTab);
       const serverTabVisible = serverTab && visible.includes(serverTab);
 
@@ -163,19 +152,18 @@ export class AiCanvasPanelComponent implements OnInit, OnDestroy {
       // 2. Si l'actuel est toujours visible → on reste
       if (currentIsVisible) return;
       // 3. Sinon, choisir par priorité (research > agents > document > tasks > files)
-      const priority: Array<'research' | 'agents' | 'artifacts' | 'document' | 'tasks' | 'files'> = ['research', 'agents', 'artifacts', 'document', 'tasks', 'files'];
+      const priority: Array<'research' | 'workplan' | 'artifacts' | 'document' | 'files'> = ['workplan', 'research', 'artifacts', 'document', 'files'];
       const next = priority.find(t => visible.includes(t)) || visible[0];
       this.activeTab = next;
       this.ai.setCanvasTab(next);
     });
   }
 
-  private visibleTabs(): Array<'document' | 'research' | 'agents' | 'tasks' | 'artifacts' | 'files'> {
-    const tabs: Array<'document' | 'research' | 'agents' | 'tasks' | 'artifacts' | 'files'> = [];
+  private visibleTabs(): Array<'document' | 'research' | 'workplan' | 'artifacts' | 'files'> {
+    const tabs: Array<'document' | 'research' | 'workplan' | 'artifacts' | 'files'> = [];
     if (this.showDocumentTab()) tabs.push('document');
     if (this.showResearchTab()) tabs.push('research');
-    if (this.showAgentsTab()) tabs.push('agents');
-    if (this.showTasksTab()) tabs.push('tasks');
+    if (this.showWorkplanTab()) tabs.push('workplan');
     if (this.showArtifactsTab()) tabs.push('artifacts');
     if (this.showFilesTab()) tabs.push('files');
     return tabs;
@@ -188,7 +176,7 @@ export class AiCanvasPanelComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() { this.sub?.unsubscribe(); }
 
-  setTab(tab: 'document' | 'research' | 'agents' | 'tasks' | 'artifacts' | 'files') {
+  setTab(tab: 'document' | 'research' | 'workplan' | 'artifacts' | 'files') {
     this.activeTab = tab;
     this.ai.setCanvasTab(tab as any);
   }

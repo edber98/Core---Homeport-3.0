@@ -735,7 +735,10 @@ async function _maybeResumeParent(job) {
   // background silencieux qui tournent après chaque complétion de subagent.
   // Sans cette exclusion, ils bloqueraient le resume éternellement car chaque
   // complétion spawn un nouvel extracteur → le compteur ne descend jamais à 0.
-  const STALE_HB_MS = 2 * 60_000;
+  // Heartbeat timeout : au-delà de X ms sans heartbeat, un subagent "running"
+  // est considéré mort. Override via env AI_SUBAGENT_HEARTBEAT_TIMEOUT_MS.
+  // 3 min par défaut (2 min était trop agressif sur gros LLM calls Opus).
+  const STALE_HB_MS = parseInt(process.env.AI_SUBAGENT_HEARTBEAT_TIMEOUT_MS || '180000', 10);
   const staleThreshold = new Date(Date.now() - STALE_HB_MS);
   const BACKGROUND_TYPES = ['memory_extractor', 'project_doc_writer'];
 
@@ -841,19 +844,20 @@ async function _maybeResumeParent(job) {
   // l'instruction finale au parent).
   const allWidgetIds = recentJobs.flatMap(j => (j.result?.widgets || []).map(w => w.widgetId)).filter(Boolean);
 
-  // Anti-boucle : ne pas resume plus de 3 fois sur un même thread dans la fenêtre.
-  // On compare avec le job PARENT (via parentJobId) plutôt que le thread entier
-  // pour ne pas bloquer une nouvelle demande utilisateur sur le même thread.
+  // Anti-boucle : compter par parentJobId (= cascade isolée) au lieu du thread
+  // entier. Sinon 4+ cascades parallèles indépendantes bloquent les autres
+  // silencieusement quand le compteur thread-wide atteint 3.
   const antiLoopQuery = {
     threadId,
     role: 'system',
     'metadata.extra.kind': 'pipeline_resume',
     createdAt: { $gte: new Date(Date.now() - 5 * 60_000) },
+    ...(parentKey ? { 'metadata.extra.parentJobId': parentKey } : {}),
   };
   const recentResumes = await AiMessage.countDocuments(antiLoopQuery);
   console.log(`[resume-parent] thread=${threadId} recentResumes=${recentResumes}/3 recentJobs=${recentJobs.length} parentKey=${parentKey || 'n/a'}`);
   if (recentResumes >= 3) {
-    console.warn(`[resume-parent] HIT ANTI-LOOP thread=${threadId} : ${recentResumes} resumes en 5min — checklist peut rester in_progress`);
+    console.warn(`[resume-parent] HIT ANTI-LOOP thread=${threadId} parentKey=${parentKey} : ${recentResumes} resumes en 5min — cascade bloquée`);
     return;
   }
 
@@ -866,76 +870,27 @@ async function _maybeResumeParent(job) {
     if (lastUser?.content) userRequest = String(lastUser.content).slice(0, 1000);
   } catch {}
 
-  const resumePrompt = `Tous les sous-agents lancés sont terminés. Voici leurs résultats consolidés :
+  const resumePrompt = `Tous les sous-agents sont terminés. Tu es en MODE SYNTHÈSE VERROUILLÉ : tu peux UNIQUEMENT appeler \`todo_write\` et écrire du texte. Rien d'autre.
 
-📋 RAPPEL DE LA DEMANDE ORIGINALE DE L'UTILISATEUR :
+DEMANDE ORIGINALE :
 ${userRequest || '(non récupérée)'}
 
-=== RÉSULTATS DES SOUS-AGENTS ===
+RÉSULTATS DES SOUS-AGENTS (tu as tout ce qu'il faut) :
 
 ${summaries}
 
-🧩 **CONSOLIDATION DES LIVRABLES** :
-Ne recopie JAMAIS le contenu brut (code, listes, tableaux) en markdown dans ton texte — c'est du bruit.
+${allWidgetIds.length ? `WIDGETS DÉJÀ PRODUITS (référence-les via [[WIDGET:id]] dans ton texte, NE LES RECRÉE PAS) :\n${allWidgetIds.map(w => `  [[WIDGET:${w}]]`).join('\n')}\n\n` : ''}TA MISSION (exactement 2 étapes) :
 
-**Sélection intelligente** : s'il y a beaucoup de livrables (ex: 10+ subagents), **ne place pas TOUS les widgets inline**. Choisis les plus pertinents pour la demande utilisateur : les livrables finaux directement utiles, la synthèse clé, le document final. Les autres restent accessibles via les cards agent_report (l'user peut ouvrir leur fenêtre s'il veut creuser). Recommande si pertinent "tu peux aussi consulter X via la fenêtre de Tim".
+1. Appelle \`todo_write\` UNE fois : marque TOUT en \`completed\`.
 
-**Placement naturel** : pour les widgets que tu affiches, place-les **à l'endroit naturel dans ton texte** (après la phrase qui les introduit), pas tous groupés en bloc à la fin. Rédige comme une réponse à l'utilisateur.
+2. Écris UN message final à l'utilisateur, naturel et utile :
+   - Place les \`[[WIDGET:id]]\` inline aux endroits pertinents (pas tous groupés à la fin).
+   - Si beaucoup de widgets (10+), sélectionne les plus importants et dis "les autres sont dans les rapports Tim/Marie/Denis ci-dessus".
+   - Réponds directement à la demande user avec les points-clés que tu veux qu'il retienne (pas une paraphrase des summaries).
+   - Court et clair. 3-8 lignes suffisent sauf demande complexe.
 
-Exemple attendu (2 subagents, tous les widgets pertinents) :
-  > Voici le module TypeScript que Tim a produit :
-  > [[WIDGET:tim-code]]
-  > Et la palette conçue par Marie :
-  > [[WIDGET:marie-palette]]
-  > J'ai également généré le docx final de synthèse.
-  > (appel display_file fileId=xxx)
-
-Exemple avec beaucoup de subagents (sélection) :
-  > Après l'analyse des 15 concurrents, voici le livrable principal :
-  > [[WIDGET:top3-comparison]]
-  > Les détails pour chaque concurrent sont dans les rapports individuels (Tim, Marie, Denis ci-dessus, clique pour ouvrir).
-
-Outils utilisables (uniquement si pas déjà produit par le subagent) :
-- Code source → render_structured accordion.
-- Palette/tableau/comparaison → render_structured (card_grid, comparison_table).
-- Document docx/xlsx/pptx/pdf → display_file avec fileId.
-- Image → display_image. Diagramme → generate_diagram.
-
-Si le subagent a déjà produit un widget (cf. "Widgets inline produits"), RÉFÉRENCE-LE via [[WIDGET:id]] plutôt que d'en créer un nouveau.
-
-${allWidgetIds.length ? `🧩 **INTÉGRATION OBLIGATOIRE DES WIDGETS SUBAGENT** — tes subagents ont produit les widgets suivants qui DOIVENT apparaître inline dans ta synthèse finale : ${allWidgetIds.map(w => `[[WIDGET:${w}]]`).join(', ')}. Insère chaque marqueur sur sa propre ligne à l'endroit pertinent dans ton texte. NE RECRÉE PAS ces widgets, NE PARAPHRASE PAS leur contenu — place juste le marqueur.\n\n` : ''}🎯 TÂCHE : finalise la livraison en 2 étapes STRICTES dans cet ordre :
-
-1. **MISE À JOUR OBLIGATOIRE DE LA CHECKLIST** (si une existe — widget 'session-todos')
-   Appelle \`todo_write\` EN PREMIER avec la checklist mise à jour :
-   - Marque \`completed\` les items qui correspondent aux subagents terminés ci-dessus
-   - Marque \`in_progress\` le prochain item qui va consommer ces résultats (ex: "Consolider en tableau", "Afficher le résultat")
-   - Les items déjà livrés via d'autres outils (render_structured, display_file) marque-les aussi \`completed\`
-   - Si c'est la dernière étape, marque tout en \`completed\`
-
-2. **EXÉCUTE TOUTES LES TÂCHES DEMANDÉES** (relis la demande originale ci-dessus !)
-   Compare la demande utilisateur avec ce qui a été produit par les subagents. Si il manque des livrables (ex: docx, xlsx, logo, fichier, canvas...) → produis-les MAINTENANT avec les tools appropriés :
-   - Document Word/docx → \`execute_code\` avec python-docx (la lib la plus fiable)
-   - Fichier Excel/xlsx → \`execute_code\` avec openpyxl
-   - Tableau visuel → render_structured
-   - Graphique/visualisation → render_interactive_canvas
-   - Fichier téléchargé → display_file ou display_image
-   - Conclusion → texte brut 2-3 phrases
-   CHAQUE livrable doit être suivi de son affichage (display_file, display_image, etc.).
-   Puis un dernier \`todo_write\` pour marquer la dernière étape \`completed\`.
-
-   ⚠️ NE SKIP PAS de tâche. Si l'utilisateur a demandé un docx, GÉNÈRE-LE. Si il a demandé le logo, AFFICHE-LE. Vérifie item par item.
-
-🚫 INTERDICTIONS
-- ❌ NE FAIS PAS de \`propose_plan\` (la planification est passée, on finalise)
-- ❌ NE RELANCE PAS de \`spawn_subagent\` (tous les résultats sont déjà dans les résumés ci-dessus)
-- ❌ NE PARAPHRASE PAS les résumés (l'utilisateur les verra dans les cards agent_report)
-
-🧠 PLAN vs TODOS — clarification importante :
-- \`propose_plan\` = carte INITIALE pour demander la validation d'une approche AVANT d'exécuter. Une seule fois, en début de tâche.
-- \`todo_write\` = checklist VIVANTE qui suit l'exécution en temps réel. Mise à jour à chaque transition d'étape. C'est ÇA qu'on utilise maintenant.
-Il ne faut JAMAIS confondre les deux ni rappeler propose_plan une fois l'exécution lancée.
-
-Si tout est déjà livré visuellement (widget structured/canvas/file dans le thread) mais la checklist n'est pas close, mets juste à jour la checklist (todo_write avec tout en completed) + une phrase de conclusion. C'est fini.`;
+Tu N'AS PAS accès à : spawn_subagent, render_structured, canvas_html, generate_diagram, display_file, display_image, execute_code, install_package, web_*, propose_plan, ask_user.
+Si tu essaies d'en appeler un, il sera bloqué.`;
 
   try {
     // Crée un message system de tracking (anti-boucle + traçabilité)
@@ -943,11 +898,13 @@ Si tout est déjà livré visuellement (widget structured/canvas/file dans le th
       threadId,
       role: 'system',
       content: '[Pipeline complete] resume auto déclenché',
-      metadata: { kind: 'system_note', extra: { kind: 'pipeline_resume', jobIds: recentJobs.map(j => j.id) } },
+      metadata: { kind: 'system_note', extra: { kind: 'pipeline_resume', parentJobId: parentKey || null, jobIds: recentJobs.map(j => j.id) } },
     });
 
     // Crée un nouveau job agent_run qui reprend le thread avec le prompt resume
     const { newId } = require('../../utils/ids');
+    // Resume = tour de synthèse unique. 3 loops max suffisent : 1 pour
+    // todo_write, 1 pour le texte final, 1 de marge au cas où.
     const resumeJob = await AiJob.create({
       id: newId('aij_'),
       threadId,
@@ -957,7 +914,7 @@ Si tout est déjà livré visuellement (widget structured/canvas/file dans le th
       type: 'agent_run',
       status: 'queued',
       mode: job.mode || 'project',
-      maxLoops: 20,
+      maxLoops: 3,
     });
 
     // PLACEHOLDER : message assistant vide créé à l'avance. PAS de metadata.kind
@@ -984,13 +941,17 @@ Si tout est déjà livré visuellement (widget structured/canvas/file dans le th
       messageId: String(placeholder._id),
     });
 
-    // Lance asynchrone (setImmediate) — pas await pour ne pas bloquer ce hook
+    // Lance asynchrone (setImmediate) — pas await pour ne pas bloquer ce hook.
+    // toolsAllowed = WHITELIST STRICTE : uniquement `todo_write` (clôture checklist)
+    // et `send_message_to_agent` (si le parent veut répondre à un message pendant).
+    // Impossible de recréer render_structured/canvas/diagram/execute_code/spawn → zéro doublon.
     setImmediate(() => {
       const { runJob } = module.exports;
       runJob(resumeJob.id, {
         prompt: resumePrompt,
-        toolsDenied: ['propose_plan', 'spawn_subagent', 'compact_and_transfer', 'research_deep'],
+        toolsAllowed: ['todo_write', 'send_message_to_agent'],
         _streamingMessageId: String(placeholder._id),
+        _resumeMode: true,
       }).catch(e => console.error(`[resume-parent] runJob failed:`, e?.message));
     });
   } catch (e) {

@@ -2539,6 +2539,201 @@ ${stepsList}${answersBlock}
 
   const AiCanvasState = require('../../db/models/ai-canvas-state.model');
 
+  // Work-plan unifié — source unique pour le panneau droit "Plan de travail".
+  // Retourne : plan (propose_plan), todo principal, subagents avec leurs
+  // tools/todos internes/widgets, artefacts produits, permissions pending.
+  r.get('/ai/threads/:threadId/work-plan', requireThreadAccess('view'), async (req, res) => {
+    const threadId = req.aiThread._id;
+    try {
+      const AiJob = require('../../db/models/ai-job.model');
+      const FileRecord = require('../../db/models/file.model');
+
+      // Tous les messages du thread (tri chrono)
+      const allMsgs = await AiMessage.find({ threadId })
+        .sort({ createdAt: 1 })
+        .lean();
+
+      // Plan = dernier propose_plan
+      const planMsg = [...allMsgs].reverse().find(m => m?.metadata?.kind === 'plan_proposal');
+      const plan = planMsg
+        ? {
+            messageId: String(planMsg._id),
+            summary: planMsg.metadata?.planProposal?.summary || '',
+            steps: planMsg.metadata?.planProposal?.steps || [],
+            risks: planMsg.metadata?.planProposal?.risks || [],
+            createdAt: planMsg.createdAt,
+          }
+        : null;
+
+      // Todo principal = dernier session-todos-*
+      const todoMsg = [...allMsgs].reverse().find(m =>
+        m?.metadata?.kind === 'todo_list'
+        && typeof m?.metadata?.widgetId === 'string'
+        && m.metadata.widgetId.startsWith('session-todos')
+      );
+      const mainTodo = todoMsg
+        ? {
+            messageId: String(todoMsg._id),
+            widgetId: todoMsg.metadata?.widgetId,
+            todos: todoMsg.metadata?.todoList?.todos || [],
+            updatedAt: todoMsg.metadata?.widgetUpdatedAt || todoMsg.createdAt,
+          }
+        : null;
+
+      // Tous les jobs subagent du thread
+      const subagentJobs = await AiJob.find(
+        { threadId, type: 'subagent' },
+        { id: 1, status: 1, subagentType: 1, subagentInstructions: 1, parentJobId: 1,
+          startedAt: 1, finishedAt: 1, duration: 1, error: 1, result: 1,
+          iteration: 1, heartbeatAt: 1, pendingMessages: 1, depth: 1 },
+      ).sort({ createdAt: 1 }).lean();
+
+      // Roster enrichissement
+      let ROSTER = {};
+      try { ROSTER = require('../../ai/subagent/roster').ROSTER || {}; } catch {}
+
+      const subagents = subagentJobs.map(j => {
+        const info = ROSTER[j.subagentType] || {};
+        // Todo interne du subagent (subagent-todos-<jobId>)
+        const internalTodoMsg = allMsgs.find(m =>
+          m?.metadata?.kind === 'todo_list'
+          && m?.metadata?.widgetId === `subagent-todos-${String(j.id).slice(-12)}`
+        );
+        // Widgets produits par ce subagent
+        const widgets = allMsgs
+          .filter(m => m?.metadata?.subagentJobId === j.id && m?.metadata?.widgetId)
+          .map(m => ({
+            widgetId: m.metadata.widgetId,
+            kind: m.metadata.kind,
+            messageId: String(m._id),
+            title: (m.content || '').slice(0, 120),
+          }));
+        // Permission pending
+        const pendingPerm = allMsgs.find(m =>
+          m?.metadata?.kind === 'permission_request'
+          && m?.metadata?.permissionRequest?.jobId === j.id
+          && !m?.metadata?.permissionRequest?.answer
+        );
+        return {
+          jobId: j.id,
+          parentJobId: j.parentJobId || null,
+          subagentType: j.subagentType,
+          agentName: info.name || j.subagentType,
+          agentEmoji: info.emoji || '🤖',
+          agentColor: info.color || '#888',
+          agentTagline: info.tagline || '',
+          status: j.status,
+          startedAt: j.startedAt,
+          finishedAt: j.finishedAt,
+          duration: j.duration,
+          error: j.error,
+          summary: (j.result?.summary || '').slice(0, 500),
+          toolCallsCount: Array.isArray(j.result?.artifacts) ? j.result.artifacts.length : 0,
+          internalTodo: internalTodoMsg
+            ? { todos: internalTodoMsg.metadata?.todoList?.todos || [] }
+            : null,
+          widgets,
+          pendingMessages: (j.pendingMessages || []).filter(m => !m.delivered).length,
+          pendingPermission: pendingPerm
+            ? {
+                messageId: String(pendingPerm._id),
+                requestId: pendingPerm.metadata.permissionRequest.requestId,
+                toolName: pendingPerm.metadata.permissionRequest.toolName,
+                risk: pendingPerm.metadata.permissionRequest.risk,
+              }
+            : null,
+        };
+      });
+
+      // Artefacts (fichiers uploadés par user + fichiers générés par tools)
+      const fileIds = new Set();
+      const artifacts = [];
+      for (const m of allMsgs) {
+        // Fichier attaché par user
+        if (Array.isArray(m.attachments)) {
+          for (const att of m.attachments) {
+            if (att?.fileId && !fileIds.has(att.fileId)) {
+              fileIds.add(att.fileId);
+              artifacts.push({
+                fileId: att.fileId,
+                name: att.name || 'fichier',
+                mimeType: att.mimeType,
+                size: att.size,
+                source: 'user_upload',
+                messageId: String(m._id),
+                createdAt: m.createdAt,
+              });
+            }
+          }
+        }
+        // Fichier inline widget
+        if (m?.metadata?.fileInline?.fileId) {
+          const f = m.metadata.fileInline;
+          if (!fileIds.has(f.fileId)) {
+            fileIds.add(f.fileId);
+            artifacts.push({
+              fileId: f.fileId,
+              name: f.name || 'fichier',
+              mimeType: f.mimeType,
+              size: f.size,
+              source: m.metadata.subagentJobId ? 'subagent' : 'agent',
+              subagentJobId: m.metadata.subagentJobId || null,
+              messageId: String(m._id),
+              createdAt: m.createdAt,
+            });
+          }
+        }
+      }
+      // Images inline = artefacts aussi
+      for (const m of allMsgs) {
+        const img = m?.metadata?.imageInline;
+        if (img?.fileId && !fileIds.has(img.fileId)) {
+          fileIds.add(img.fileId);
+          artifacts.push({
+            fileId: img.fileId,
+            name: img.caption || img.alt || 'image',
+            mimeType: 'image/*',
+            source: m.metadata.subagentJobId ? 'subagent' : 'agent',
+            subagentJobId: m.metadata.subagentJobId || null,
+            messageId: String(m._id),
+            createdAt: m.createdAt,
+          });
+        }
+      }
+
+      // Actions = tool calls chronologiques (toolCalls des messages assistants)
+      const actions = [];
+      for (const m of allMsgs) {
+        if (m.role !== 'assistant') continue;
+        const tcs = Array.isArray(m.toolCalls) ? m.toolCalls : [];
+        for (const tc of tcs) {
+          actions.push({
+            messageId: String(m._id),
+            id: tc.id,
+            name: tc.name,
+            status: tc.status,
+            duration: tc.duration,
+            at: m.createdAt,
+            agent: m.metadata?.subagentJobId ? 'subagent' : 'parent',
+            subagentJobId: m.metadata?.subagentJobId || null,
+          });
+        }
+      }
+
+      res.apiOk({
+        threadId: String(threadId),
+        plan,
+        mainTodo,
+        subagents,
+        artifacts,
+        actions: actions.slice(-100),
+      });
+    } catch (e) {
+      console.error('[work-plan] failed:', e?.message);
+      res.apiError(500, 'work_plan_failed', e?.message || 'Erreur');
+    }
+  });
+
   r.get('/ai/threads/:threadId/canvas', requireThreadAccess('view'), async (req, res) => {
     const doc = await AiCanvasState.findOne({ threadId: req.aiThread._id }).lean();
     // Dédoublonnage research.steps : d'anciens events ont pu créer 2 entries

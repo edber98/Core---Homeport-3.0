@@ -18,6 +18,7 @@ import { AiDiagramRendererComponent } from './diagram/ai-diagram-renderer.compon
 import { AiLivePreviewComponent, detectPreviewType, LivePreviewType } from './live-preview/ai-live-preview.component';
 import { PreviewParserService, ParsedPreview } from './live-preview/preview-parser.service';
 import { marked } from 'marked';
+import { isWidgetKind } from './constants/widget-kinds';
 import DOMPurify from 'dompurify';
 import { jsonrepair } from 'jsonrepair';
 
@@ -1004,7 +1005,7 @@ export class AiChatComponent implements AfterViewInit {
     for (const m of msgs) {
       const kind = m.metadata?.kind;
       const wid = m?.metadata?.widgetId;
-      const isWidget = ['structured', 'canvas_html', 'diagram', 'image_inline', 'file_inline', 'todo_list'].includes(kind || '');
+      const isWidget = isWidgetKind(kind);
       // Cas 1 : widget référencé par [[WIDGET:id]] dans un message texte → masqué
       // (il sera rendu inline à l'emplacement du marqueur, pas en bulle séparée).
       if (isWidget && wid && inlineRefs.has(String(wid))) {
@@ -1022,6 +1023,15 @@ export class AiChatComponent implements AfterViewInit {
       // n'a pas été persisté (ancien message), on filtre quand même par pattern.
       if (kind === 'todo_list' && typeof wid === 'string' && wid.startsWith('subagent-todos-')) {
         continue;
+      }
+      // Cas 4 : la DERNIÈRE checklist parent (session-todos-*) si tous ses items
+      // sont completed/cancelled ET que c'est un update du resume parent → masquée.
+      // Le plan en haut affiche déjà la progression en cours ; le "tout coché" de
+      // clôture fait doublon visuel et pollue le fil juste avant la synthèse finale.
+      if (kind === 'todo_list' && typeof wid === 'string' && wid.startsWith('session-todos')) {
+        const todos = (m.metadata as any)?.todoList?.todos || [];
+        const allFinished = todos.length > 0 && todos.every((t: any) => t.status === 'completed' || t.status === 'cancelled');
+        if (allFinished) continue;
       }
       // System messages sauf hint/note → leur propre groupe
       if (m.role === 'system' && kind !== 'system_hint' && kind !== 'system_note') {

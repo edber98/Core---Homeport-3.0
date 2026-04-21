@@ -621,30 +621,11 @@ factuel des livrables créés avec leurs IDs/paths. Pas de phrase de conclusion 
       return;
     }
 
-    // No tool calls → soit l'agent a fini, soit promesse vide à corriger.
+    // No tool calls → l'agent a fini sa réponse. On sort du loop.
+    // (Ancien nudge "empty promise" supprimé : causait des boucles infinies
+    // quand le LLM reproduisait le même pattern — + empêchait le resume
+    // verrouillé de juste écrire du texte sans tool.)
     if (pendingToolCalls.length === 0) {
-      // Détection promesse vide : message qui annonce une action SANS tool.
-      // On laisse au LLM 1 chance de se corriger via un nudge système.
-      const EMPTY_PROMISE_PATTERNS = /\b(je\s+(?:lance|exécute|execute|vais|m['e ]occupe|fais|corrige|génère|genere|produis|crée|cree|envoie|extrais|construis|bascule|relance|reprends|continue|dépose|depose|mets|poste|pousse|ajoute|téléverse|televerse|upload|télécharge|telecharge|récupère|recupere|sauvegarde|réessaie|reessaie|retente|publie|partage|regénère|regenere|réexécute|reexecute|recommence|réécris|reecris|prépare|prepare|rédige|redige|finalise|assemble|compile|formate|structure))\b|\bj['e ]exécute\b|\bje\s+viens\s+de\b|\bje\s+le\s+(?:dépose|depose|mets|poste|pousse|sauvegarde|envoie|upload|téléverse|televerse)\b|\bje\s+(?:te|vous)\s+(?:le|la|les)\s+(?:dépose|depose|envoie|partage|transmets|prépare|prepare|renvoie|renvois|montre|livre|affiche|rends)\b|\bje\s+(?:te|vous)\s+(?:prépare|prepare|renvoie|renvois|montre|livre|affiche|rends|donne|génère|genere|propose|fais)\b|\bon\s+(?:repart|reprend|y\s+va|recommence|refait|relance)\b|\bc['e ]est\s+parti\b|maintenant\s*[.!]?$|juste\s+après\b|dans\s+(?:la|le|une|un)\s+(?:foulée|seconde|minute|instant)|j['e ]exécute la correction maintenant/i;
-      const looksLikePromise = assistantText && EMPTY_PROMISE_PATTERNS.test(assistantText);
-      const _emptyRetries = (jobContext?._emptyPromiseRetries || 0);
-      if (looksLikePromise && _emptyRetries < 1) {
-        console.warn(`[harness] empty promise detected (no tool, text="${assistantText.slice(0, 120)}…"), nudging LLM to actually execute`);
-        if (jobContext) jobContext._emptyPromiseRetries = _emptyRetries + 1;
-        // Émet un thinking pour que le frontend affiche "réflexion en cours…"
-        // pendant le nudge silencieux (sinon l'user voit juste un blanc).
-        yield { type: 'thinking', iteration: loopCount + 1, reason: 'auto_resume_after_empty_promise' };
-        // Push assistant message + nudge système
-        conversation.push({ role: 'assistant', content: assistantText });
-        conversation.push({
-          role: 'user',
-          content: '[SYSTÈME] Tu viens d\'annoncer une action (au présent, futur OU passé composé type "je viens de déposer / fichier créé") mais n\'as appelé AUCUN tool dans ce tour. C\'est interdit — tu mens à l\'utilisateur. Appelle MAINTENANT le tool qui exécute réellement l\'action (execute_code, project_write, files.upload, etc.). Si une action précédente a échoué, NE prétends PAS qu\'elle a réussi : relis le dernier tool result, reprends le tool correctif avec les BONS IDs du result, et exécute. Si tu manques d\'info, utilise ask_user pour UNE question courte. Interdit de répondre uniquement par du texte.',
-        });
-        if (jobContext) {
-          try { await jobContext.persistCheckpoint(loopCount, conversation); } catch {}
-        }
-        continue; // relance la boucle LLM
-      }
       await toolSet.cleanup();
       // Ferme les todos in_progress/pending qui traînent (le LLM a fini sans les clore)
       const tid = modeMetadata.threadId || context._threadId;

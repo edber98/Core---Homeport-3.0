@@ -341,6 +341,10 @@ async function _runSubagentJob({
         console.warn(`[sub-runner] ${subagentType} job=${job.id} : '${effectiveInputFrom}' a retourné 0 siblings (parentJobId différent entre spawns ?). Fallback → depends_on=[${depends_on.join(',')}]`);
         sourceIds = depends_on.slice();
       }
+      // Dédup : si hasDeps + input_from='all_above' pointent vers des jobs
+      // qui se chevauchent (ex: auto-wait sibling ajoute D alors que deps=[A,B,C]
+      // et D est aussi dans all_above), on évite d'inclure 2 fois la même source.
+      sourceIds = Array.from(new Set(sourceIds.filter(Boolean)));
 
       console.log(`[sub-runner] enrich for ${subagentType} job=${job.id} : sourceIds=[${sourceIds.join(',')}]`);
       if (sourceIds.length) {
@@ -429,15 +433,17 @@ async function _runSubagentJob({
       try { runAc.abort(); } catch {}
     }, runtimeLimit);
   }
-  // Widget tools = moyen de livrer un résultat visuel → TOUJOURS dispo aux
-  // subagents, même si toolsAllowed ne les mentionne pas. Sinon le LLM tente
-  // d'appeler render_structured et reçoit "Outil inconnu".
-  // Exception : memory_extractor (strictement whitelisté sur suggest_memory_entries).
-  const WIDGET_TOOLS_ALWAYS_ALLOWED = ['render_structured', 'generate_diagram', 'render_interactive_canvas', 'display_image', 'display_file', 'todo_write', 'send_message_to_agent'];
+  // Widget tools = moyen de livrer un résultat visuel → toujours dispo aux
+  // subagents. todo_write RETIRÉ : seul le parent gère la checklist principale
+  // pour éviter la pollution. Les subagents peuvent toujours envoyer des
+  // messages au parent via send_message_to_agent.
+  const WIDGET_TOOLS_ALWAYS_ALLOWED = ['render_structured', 'generate_diagram', 'render_interactive_canvas', 'display_image', 'display_file', 'send_message_to_agent'];
   let effectiveToolsAllowed = toolsAllowed || typeDef.toolsAllowed;
   if (effectiveToolsAllowed && subagentType !== 'memory_extractor') {
     const merged = new Set(effectiveToolsAllowed);
     for (const t of WIDGET_TOOLS_ALWAYS_ALLOWED) merged.add(t);
+    // Retire explicitement todo_write s'il était dans la liste (héritage)
+    merged.delete('todo_write');
     effectiveToolsAllowed = Array.from(merged);
   }
 
