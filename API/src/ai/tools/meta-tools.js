@@ -888,7 +888,31 @@ Fournis uniquement le fileId retourné par files.upload / project_write. Pas bes
 - Three.js : \`ResizeObserver\` sur body + camera.aspect + renderer.setSize.
 - SVG : \`viewBox\` au lieu de width/height absolus.
 
-📝 Le paramètre \`html\` doit contenir un document HTML complet self-contained (doctype + html + head + body). Three.js via importmap, Chart.js/D3/ECharts via script CDN. Tout JS inline, pas de fetch vers ton backend.`,
+📝 Le paramètre \`html\` doit contenir un document HTML complet self-contained (doctype + html + head + body). Three.js via importmap, Chart.js/D3/ECharts via script CDN. Tout JS inline, pas de fetch vers ton backend.
+
+⚠️ **ÉVITER LES ERREURS DE SYNTAXE — LIS AVANT DE GÉNÉRER** :
+
+Le param \`html\` transite en JSON, donc backslashes et backticks sont traîtres. Suis ces règles pour éviter les "unexpected token" / "invalid or unexpected token" qui te forcent à régénérer :
+
+1. **Pas de template literals JS dans l'HTML** (backticks \` \`). Utilise des strings simples (apostrophes \`'\`) ou doubles (\`"\`) concatenées avec \`+\`. Si tu DOIS utiliser un template literal, échappe les backticks en \`\\\\\`\`.
+   ✅ \`const msg = 'Hello ' + name;\`
+   ❌ \`const msg = \\\`Hello \${name}\\\`\`  ← source classique du bug
+
+2. **Strings CSS dans JS** : double-quote à l'extérieur, simple-quote à l'intérieur (ou l'inverse).
+   ✅ \`el.style.font = '16px Arial';\`
+   ❌ \`el.style.font = "16px 'Arial'";\` si la string JS est entre double-quotes
+
+3. **Échappe les apostrophes françaises dans les strings JS** (ou utilise des double-quotes).
+   ✅ \`const t = "L'utilisateur";\`
+   ❌ \`const t = 'L'utilisateur';\`  ← erreur syntax
+
+4. **Regex et strings avec \\\\n \\\\t** : double backslash dans JSON, donc en résultat HTML tu auras bien \\n \\t.
+
+5. **Caractères spéciaux** : < > & dans du JS inline doivent être dans une string (sinon le parser HTML ferme ton <script>). Si tu écris du HTML comme string JS, utilise \`\\\\x3C\` au lieu de \`<\` pour ouvrir des balises.
+
+6. **TOUJOURS tester mentalement** : relis ton HTML une fois avant de l'envoyer. Si tu vois un backtick, une apostrophe suspecte, un mix de quotes → corrige avant d'envoyer.
+
+7. **Préfère le plus simple** : pas besoin de frameworks lourds pour une viz simple. Vanilla JS + Chart.js/D3 + CSS suffit. Moins de code = moins de bugs de syntaxe.`,
     parameters: {
       type: 'object',
       properties: {

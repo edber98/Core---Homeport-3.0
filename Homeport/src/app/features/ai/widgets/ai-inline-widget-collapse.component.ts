@@ -74,6 +74,13 @@ import { AiInlineFileComponent } from '../files/ai-inline-file.component';
       display: block;
       max-width: 85%;
       min-width: 0;
+      /* Fade + slide in smooth quand le widget s'ancre à sa position finale
+         (transition "bulle séparée" → "inline dans le texte" suite à [[WIDGET:id]]) */
+      animation: wc-appear 280ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    @keyframes wc-appear {
+      from { opacity: 0; transform: translateY(-4px) scale(0.98); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
     }
     .inline-widget {
       margin: 10px 0;
@@ -82,6 +89,11 @@ import { AiInlineFileComponent } from '../files/ai-inline-file.component';
       background: #fff;
       overflow: hidden;
       max-width: 100%;
+      transition: border-color 180ms ease, box-shadow 180ms ease;
+    }
+    .inline-widget:hover {
+      border-color: #d9d9d9;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
     }
     .inline-widget.is-open { border-color: #e8e8e8; }
     .header {

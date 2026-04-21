@@ -509,7 +509,15 @@ interface ProcessedSegment {
     .ai-msg.user { flex-direction: row-reverse; }
     .ai-msg.user .body { align-items: flex-end; }
     .ai-msg.user .content { background: #fdf2f8; border-radius: 14px 14px 2px 14px; padding: 10px 16px; }
-    .ai-msg.assistant .content { background: #ebebeb; border-radius: 14px 14px 14px 2px; padding: 10px 16px; }
+    .ai-msg.assistant .content {
+      background: #ebebeb; border-radius: 14px 14px 14px 2px; padding: 10px 16px;
+      /* Apparition fluide des nouvelles portions de texte pendant streaming */
+      animation: ai-msg-appear 220ms ease-out;
+    }
+    @keyframes ai-msg-appear {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
     .avatar { width: 32px; height: 32px; border-radius: 50%; background: #f0f0f0; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 16px; }
     .ai-msg.assistant .avatar { background: #fdf2f8; color: #e61982; }
     .body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
@@ -1389,7 +1397,20 @@ export class AiMessageComponent {
    * iframe re-set srcdoc → FLASH à chaque chunk de stream.
    */
   contentSegments(src: string): ContentRenderSegment[] {
-    const text = String(src || '');
+    let text = String(src || '');
+    if (!text) return [];
+    // Pendant streaming, un marqueur incomplet comme "Voici [[WIDGET:tim" (pas
+    // encore fermé) serait rendu comme texte brut jusqu'à ce que "code]]"
+    // arrive. Pour éviter le flash de texte brut, on masque la portion
+    // d'un [[WIDGET:... ouvert non fermé à la fin du texte.
+    const openIdx = text.lastIndexOf('[[WIDGET:');
+    if (openIdx >= 0) {
+      const closeIdx = text.indexOf(']]', openIdx);
+      if (closeIdx < 0) {
+        // Marqueur non fermé à la fin du stream → tronque pour ne pas afficher "[[WIDGET:tim"
+        text = text.slice(0, openIdx);
+      }
+    }
     if (!text) return [];
     // Cache key : content + refs identity sur les widgets présents → si
     // le contenu n'a pas changé ET les widgets référencés sont les mêmes

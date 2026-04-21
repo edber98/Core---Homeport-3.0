@@ -1321,7 +1321,9 @@ export class AiService {
     switch (type) {
       case 'canvas.switch_tab': {
         this.canvasState.set({ ...cur, activeTab: event.tab || cur.activeTab });
-        this.canvasOpen.set(true);
+        // Ne force l'ouverture que sur desktop. Sur mobile, l'user doit ouvrir
+        // manuellement pour éviter de bloquer l'écran pendant qu'il lit le chat.
+        if (!this._isMobile()) this.canvasOpen.set(true);
         break;
       }
       case 'canvas.document.update': {
@@ -1456,6 +1458,9 @@ export class AiService {
   }
 
   private autoOpenCanvasFor(kind: 'document' | 'research' | 'project') {
+    // Sur mobile : JAMAIS d'auto-open du canvas — ça couvre tout l'écran et
+    // bloque le chat. L'user doit explicitement tapper le bouton canvas.
+    if (this._isMobile()) return;
     const p = this.preferences();
     if (!p) {
       this.canvasOpen.set(true);
@@ -1465,6 +1470,11 @@ export class AiService {
     if (kind === 'document' && cb?.autoOpenOnDocument) this.canvasOpen.set(true);
     if (kind === 'research' && cb?.autoOpenOnResearch) this.canvasOpen.set(true);
     if (kind === 'project' && cb?.autoOpenOnProjectMode) this.canvasOpen.set(true);
+  }
+
+  private _isMobile(): boolean {
+    try { return typeof window !== 'undefined' && window.innerWidth <= 900; }
+    catch { return false; }
   }
 
   openCanvas() { this.canvasOpen.set(true); }
