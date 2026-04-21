@@ -433,11 +433,21 @@ async function _runSubagentJob({
       try { runAc.abort(); } catch {}
     }, runtimeLimit);
   }
-  // Widget tools = moyen de livrer un résultat visuel → toujours dispo aux
-  // subagents. todo_write RETIRÉ : seul le parent gère la checklist principale
-  // pour éviter la pollution. Les subagents peuvent toujours envoyer des
-  // messages au parent via send_message_to_agent.
-  const WIDGET_TOOLS_ALWAYS_ALLOWED = ['render_structured', 'generate_diagram', 'render_interactive_canvas', 'display_image', 'display_file', 'send_message_to_agent'];
+  // Tools de LIVRAISON (visuel + fichiers) toujours dispo aux subagents.
+  // Sans ça, un subagent comme Florence (dataviz) qui produit un xlsx via
+  // execute_code ne peut pas l'uploader sur Nextcloud ni le display. Le
+  // parent doit alors redemander manuellement, ce qui est une perte d'UX.
+  // todo_write RESTE RETIRÉ : seul le parent gère la checklist principale.
+  const WIDGET_TOOLS_ALWAYS_ALLOWED = [
+    // Widgets visuels
+    'render_structured', 'generate_diagram', 'render_interactive_canvas',
+    'display_image', 'display_file',
+    // Communication
+    'send_message_to_agent',
+    // Production / upload de fichiers (pour xlsx/docx/pptx/pdf)
+    'project_write_file', 'project_stage_for_sandbox', 'project_read_file',
+    'generate_document',
+  ];
   let effectiveToolsAllowed = toolsAllowed || typeDef.toolsAllowed;
   if (effectiveToolsAllowed && subagentType !== 'memory_extractor') {
     const merged = new Set(effectiveToolsAllowed);

@@ -83,7 +83,31 @@ function buildBasePrompt(ctx) {
 - Les PDF et fichiers texte ont leur contenu extrait et inclus.
 - Quand un outil retourne un fichier (image, document), tu peux le voir via \`read_file\`.
 - Pour passer un fichier à un outil, utilise le fileId obtenu d'un résultat précédent ou d'un attachment utilisateur.
-- Pour les fichiers binaires non supportés, tu as le nom et la taille mais pas le contenu.`);
+- Pour les fichiers binaires non supportés, tu as le nom et la taille mais pas le contenu.
+
+## Où écrire les fichiers générés (CRITIQUE — lis avant de lancer execute_code/generate_document)
+
+Deux modes possibles selon le thread :
+
+**Mode PROJET** (thread avec projet Nextcloud/Drive/Dropbox configuré) :
+- Tu peux utiliser \`project_write_file\` pour déposer un fichier à un chemin relatif au root du projet (ex: \`analyses/rapport.xlsx\`, \`livres/facture.docx\`).
+- C'est le seul cas où tu peux écrire dans des sous-dossiers du projet.
+
+**Mode CHAT** (thread sans projet — tu es en mode \`chat\`) :
+- ❌ **NE TENTE PAS** d'utiliser \`project_write_file\` avec un chemin type \`/analyses/...\` ou \`analyses/...\`. Ça échoue avec "projet non configuré".
+- ❌ **N'INVENTE PAS** de chemin type \`/home/...\`, \`/tmp/...\`, \`~/Documents/...\` — la sandbox est éphémère.
+- ✅ Écris les fichiers dans \`/workspace/out/\` via \`execute_code\` (Python/Node). C'est un dossier temporaire de la sandbox.
+- ✅ Affiche le fichier via \`display_file\` avec le \`fileId\` renvoyé par execute_code (viewer inline docx/xlsx/pptx/pdf).
+- ✅ L'utilisateur peut télécharger le fichier depuis le viewer.
+
+**Vérifie le mode au début** : si le thread est en \`chat\` et que l'user demande "dépose à tel endroit", tu réponds :
+  > "Je suis en mode chat (pas de projet configuré), donc je ne peux pas déposer dans un dossier distant. Je vais te générer le fichier ici, tu pourras le télécharger ou me dire de basculer en mode projet."
+Puis tu utilises execute_code + display_file. N'essaie pas project_write_file dans ce cas.`);
+  // Mode actuel du thread (chat vs project)
+  const mode = ctx?._modeHint || ctx?.threadMode || ctx?.mode;
+  if (mode) {
+    parts.push(`\n> **Mode actuel du thread** : \`${mode}\`${mode === 'chat' ? ' — pas de projet Nextcloud/Drive, utilise execute_code + display_file pour les fichiers.' : ''}`);
+  }
 
   // Rules
   parts.push(`\n## Règles
