@@ -1879,6 +1879,13 @@ ${toolLines.join('\n')}
                 },
               }
             );
+            // Émet ai.message.updated pour que le frontend rafraîchisse la card
+            // et affiche le badge "Toujours autorisé — propagé" sans refresh manuel.
+            emitThreadEvent(String(job.threadId), {
+              type: 'ai.message.updated',
+              kind: 'permission_request',
+              messageId: String(card._id),
+            });
             return true;
           }));
           const propagated = results.filter(Boolean).length;
@@ -2139,8 +2146,12 @@ ${toolLines.join('\n')}
     try {
       const { countThreadTokens, resolveLimit } = require('../../ai/context/token-counter');
       const { tokens, messageCount } = await countThreadTokens(thread._id);
-      // Résolution modèle : override agent > env AI_MODEL > fallback gpt-5.2
-      let model = process.env.AI_MODEL || 'gpt-5.2';
+      // Résolution modèle : override agent > env config (AI_MODEL getter qui
+      // résout ANTHROPIC_MODEL ou OPENAI_MODEL selon provider) > fallback.
+      // Bug corrigé : process.env.AI_MODEL n'est PAS défini (c'est un getter
+      // dans src/config/env.js), on lisait donc toujours le fallback 'gpt-5.2'.
+      const envConfig = require('../../config/env');
+      let model = envConfig.AI_MODEL || process.env.AI_MODEL || 'gpt-5.2';
       if (thread.agentId) {
         try {
           const AiAgent = require('../../db/models/ai-agent.model');

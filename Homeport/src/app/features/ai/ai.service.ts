@@ -162,6 +162,14 @@ export interface AiPermissionRequest {
   answer?: string;
   answeredAt?: string;
   answeredBy?: string;
+  // Identité du subagent qui demande (roster), injectée par le backend
+  agentName?: string;
+  agentEmoji?: string;
+  agentColor?: string;
+  agentTagline?: string;
+  escalatedFromSubagent?: boolean;
+  childJobId?: string;
+  parentJobId?: string;
 }
 
 export interface AiCacheSyncRequest {

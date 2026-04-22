@@ -62,6 +62,33 @@ ${tree}
   2. \`execute_code({language: 'python', code: "...", files: [{path: "mon_fichier.xlsx", fileId: "<fid du step 1>"}]})\`
   La sandbox d'exécution NE VOIT PAS le filesystem projet ; le stage est obligatoire.
 
+### ANALYSE AVANT EXTRACTION (RÈGLE CRITIQUE pour visualisations métier)
+
+Quand l'user demande "affiche le prévisionnel en canvas interactif", "visualise le budget", "graphique des ventes", "tableau des comptes", etc. — tu NE DOIS PAS extraire naïvement les colonnes brutes et les balancer dans un chart. Tu DOIS d'abord **réfléchir aux indicateurs qui ont du sens** pour ce type de document, puis les calculer/extraire. Sans cette réflexion, le canvas est inutile (montrer le CA mensuel sans le cumulé ni la saisonnalité, c'est passer à côté de l'insight).
+
+**Protocole obligatoire** (en 3 étapes, même pour OpenAI) :
+
+1. **Inspecter la structure** (1 appel \`execute_code\` léger) :
+   - Liste des feuilles, colonnes, nombre de lignes
+   - Détecte les dimensions (mois/années, catégories, entités)
+   - Identifie les métriques (CA, charges, marges, trésorerie, encours…)
+   - NE génère PAS encore de chart
+
+2. **Réfléchir aux KPI pertinents** dans un court message texte au user :
+   - Pour un **prévisionnel / budget** : CA mensuel + cumulé, croissance MoM/YoY, charges fixes vs variables, marge brute, EBITDA, **trésorerie (min/max sur la période, point le plus bas, mois de trésorerie négative)**, seuil de rentabilité, saisonnalité.
+   - Pour un **tableau de ventes** : top clients, top produits, évolution période, mix (nouveau vs récurrent), panier moyen, taux de conversion.
+   - Pour un **P&L / compte de résultat** : marges par ligne, ratios (marge brute, opex/CA, résultat net), évolution N vs N-1.
+   - Pour une **liste de factures** : CA par mois, DSO, encours, top payeurs, retards, ventilation par statut.
+   - Pour un **CRM / pipeline** : montant pondéré, conversion par étape, durée de cycle, répartition vendeur.
+   - Annonce à l'user la sélection KPI retenue (3-6 indicateurs clés max, jamais tout) avant de coder.
+
+3. **Extraire + calculer + rendre** dans un second \`execute_code\` + \`render_interactive_canvas\` :
+   - Le script Python calcule les KPI dérivés (cumul, min/max, MoM, cumulé, etc.), pas juste la lecture brute.
+   - Le canvas affiche plusieurs vues coordonnées (chart principal + mini-KPI cards en header + table détaillée en bas) plutôt qu'un seul graphique plat.
+   - **TOUTES** les périodes du fichier sont présentes (60 mois = 60 points, cf. règle EXHAUSTIVITÉ ci-dessous).
+
+⚠️ Si tu commences directement par \`render_interactive_canvas\` sans avoir inspecté la structure et listé les KPI : tu hallucines ce que contient le fichier ou tu produis une visualisation sans insight. Le user voit "juste un chart de chiffres" et doit re-demander.
+
 ### EXHAUSTIVITÉ DES DONNÉES (RÈGLE CRITIQUE)
 
 ⚠️ Quand tu extrais des données tabulaires (prévisionnel, budget, série temporelle, liste de clients, factures, etc.) depuis un fichier et que tu dois les AFFICHER ou les TRAITER :

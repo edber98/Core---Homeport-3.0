@@ -22,7 +22,15 @@ import { AiPermissionRequest } from '../ai.service';
       </div>
 
       <div class="perm-desc">
-        L'assistant demande la permission d'exécuter <strong>{{ toolLabel() }}</strong>
+        <ng-container *ngIf="request.agentName; else noAgent">
+          <span class="perm-agent-chip" [style.background]="request.agentColor || '#e61982'">
+            {{ request.agentEmoji || '🤖' }} {{ request.agentName }}
+          </span>
+          demande la permission d'exécuter <strong>{{ toolLabel() }}</strong>
+        </ng-container>
+        <ng-template #noAgent>
+          L'assistant demande la permission d'exécuter <strong>{{ toolLabel() }}</strong>
+        </ng-template>
         <span *ngIf="request.scope?.path"> sur <code>{{ request.scope.path }}</code></span>.
       </div>
 
@@ -97,6 +105,12 @@ import { AiPermissionRequest } from '../ai.service';
     .tool-name { font-weight: 600; font-size: 12px; color: #333; flex: 1; }
     .risk-tag { margin: 0; font-size: 10px; }
     .perm-desc { font-size: 11.5px; color: #666; margin-bottom: 6px; line-height: 1.5; }
+    .perm-agent-chip {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 1px 8px; border-radius: 10px;
+      color: #fff; font-weight: 600; font-size: 11px;
+      margin-right: 4px;
+    }
     .perm-desc code { background: #f5f5f5; padding: 1px 5px; border-radius: 3px; font-size: 11px; color: #e61982; }
     .args-block { margin: 6px 0; }
     .args-toggle { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; color: #999; cursor: pointer; }
