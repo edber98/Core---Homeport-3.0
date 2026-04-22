@@ -34,6 +34,11 @@ async function* streamOpenAIResponses(messages, tools, config) {
   // Tools
   if (tools?.length) {
     body.tools = formatResponsesTools(tools);
+    // Désactive parallel_tool_calls : OpenAI peut émettre plusieurs tool calls
+    // dans le même tour sans voir les résultats intermédiaires, ce qui casse les
+    // chaînes depends_on (placeholder `{{tool_uses[0].jobId}}` littéral au lieu
+    // du vrai ID). Override possible via AI_PARALLEL_TOOL_CALLS=1.
+    body.parallel_tool_calls = process.env.AI_PARALLEL_TOOL_CALLS === '1';
   }
 
   // Max output tokens

@@ -1815,71 +1815,73 @@ ${toolLines.join('\n')}
 
     // PROPAGATION : si la décision est non-"once" (allow_always / allow_session
     // / deny_always / always), on résout AUSSI toutes les autres demandes de
-    // permission en attente dans ce thread pour le MÊME tool. Évite à l'user de
-    // devoir cliquer sur chaque card individuellement quand il a choisi
-    // "Toujours autoriser" sur la première.
+    // permission en attente dans ce thread pour le MÊME tool. Détachée de la
+    // réponse HTTP pour éviter de bloquer la réponse sous charge LLM streaming.
     const isBroadDecision = !['allow_once', 'deny_once'].includes(rawDecision);
     if (isBroadDecision && toolName) {
-      try {
-        const pendingCards = await AiMessage.find({
-          threadId: job.threadId,
-          'metadata.kind': 'permission_request',
-          'metadata.permissionRequest.toolName': toolName,
-          'metadata.permissionRequest.requestId': { $ne: requestId },
-          $or: [
-            { 'metadata.permissionRequest.answer': { $exists: false } },
-            { 'metadata.permissionRequest.answer': null },
-          ],
-        }).lean();
+      setImmediate(async () => {
+        try {
+          const pendingCards = await AiMessage.find({
+            threadId: job.threadId,
+            'metadata.kind': 'permission_request',
+            'metadata.permissionRequest.toolName': toolName,
+            'metadata.permissionRequest.requestId': { $ne: requestId },
+            $or: [
+              { 'metadata.permissionRequest.answer': { $exists: false } },
+              { 'metadata.permissionRequest.answer': null },
+            ],
+          }).lean();
 
-        let propagated = 0;
-        for (const card of pendingCards) {
-          const pendingRequestId = card?.metadata?.permissionRequest?.requestId;
-          const pendingJobId = card?.metadata?.permissionRequest?.jobId;
-          if (!pendingRequestId) continue;
+          // Batch-résolution en parallèle : toutes les cards traitées simultanément
+          // au lieu de sérialiser (était un for-loop avec await qui pouvait prendre
+          // N×50ms = 500ms+ sous charge).
+          const results = await Promise.all(pendingCards.map(async (card) => {
+            const pendingRequestId = card?.metadata?.permissionRequest?.requestId;
+            const pendingJobId = card?.metadata?.permissionRequest?.jobId;
+            if (!pendingRequestId) return false;
 
-          // Trouve le job associé (stocké dans la card ou via recherche par requestId)
-          let targetJob = null;
-          if (pendingJobId) {
-            targetJob = await AiJob.findOne({ id: pendingJobId }, 'id parentJobId');
-          }
-          if (!targetJob) {
-            // Fallback : cherche tous les jobs du thread et prends le plus récent en waiting_permission
-            targetJob = await AiJob.findOne({
-              threadId: job.threadId,
-              status: 'waiting_permission',
-            }, 'id parentJobId');
-          }
-          if (!targetJob) continue;
-
-          emitJobEvent(targetJob.id, { type: 'permission.resolved', requestId: pendingRequestId, decision: normalized });
-          if (targetJob.parentJobId) {
-            emitJobEvent(String(targetJob.parentJobId), {
-              type: 'subagent.permission.granted',
-              requestId: pendingRequestId,
-              childJobId: targetJob.id,
-              decision: normalized,
-            });
-          }
-          await AiMessage.updateOne(
-            { _id: card._id },
-            {
-              $set: {
-                'metadata.permissionRequest.answer': decision,
-                'metadata.permissionRequest.answeredAt': new Date(),
-                'metadata.permissionRequest.answeredBy': req.user.id || req.user._id,
-                'metadata.permissionRequest.propagatedFrom': requestId,
-              },
+            let targetJob = null;
+            if (pendingJobId) {
+              targetJob = await AiJob.findOne({ id: pendingJobId }, 'id parentJobId').lean();
             }
-          );
-          propagated++;
+            if (!targetJob) {
+              targetJob = await AiJob.findOne({
+                threadId: job.threadId,
+                status: 'waiting_permission',
+              }, 'id parentJobId').lean();
+            }
+            if (!targetJob) return false;
+
+            emitJobEvent(targetJob.id, { type: 'permission.resolved', requestId: pendingRequestId, decision: normalized });
+            if (targetJob.parentJobId) {
+              emitJobEvent(String(targetJob.parentJobId), {
+                type: 'subagent.permission.granted',
+                requestId: pendingRequestId,
+                childJobId: targetJob.id,
+                decision: normalized,
+              });
+            }
+            await AiMessage.updateOne(
+              { _id: card._id },
+              {
+                $set: {
+                  'metadata.permissionRequest.answer': decision,
+                  'metadata.permissionRequest.answeredAt': new Date(),
+                  'metadata.permissionRequest.answeredBy': req.user.id || req.user._id,
+                  'metadata.permissionRequest.propagatedFrom': requestId,
+                },
+              }
+            );
+            return true;
+          }));
+          const propagated = results.filter(Boolean).length;
+          if (propagated > 0) {
+            console.log(`[perm-resolve] propagated "${decision}" to ${propagated} other pending ${toolName} requests in thread ${job.threadId}`);
+          }
+        } catch (e) {
+          console.error('[permissions] propagation failed:', e?.message);
         }
-        if (propagated > 0) {
-          console.log(`[perm-resolve] propagated "${decision}" to ${propagated} other pending ${toolName} requests in thread ${job.threadId}`);
-        }
-      } catch (e) {
-        console.error('[permissions] propagation failed:', e?.message);
-      }
+      });
     }
 
     res.apiOk({ ok: true });

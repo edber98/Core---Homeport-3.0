@@ -26,6 +26,38 @@ function _summarizeArgs(args, maxChars = 300) {
   } catch { return String(args || ''); }
 }
 
+// Mapping français des noms d'outils connus. Pour execute_tool, on résout
+// dynamiquement le NodeTemplate via input.key pour afficher le vrai label.
+const _STATIC_TOOL_LABELS = {
+  read_file: 'Lire un fichier',
+  write_file: 'Écrire un fichier',
+  delete_file: 'Supprimer un fichier',
+  list_directory: 'Lister un dossier',
+  execute_code: 'Exécuter du code',
+  run_workflow: 'Lancer un workflow',
+  project_write_file: 'Écrire un fichier projet',
+  project_read_file: 'Lire un fichier projet',
+  project_delete: 'Supprimer un fichier projet',
+  project_stage_for_sandbox: 'Stager pour sandbox',
+  install_package: 'Installer un package',
+  generate_document: 'Générer un document',
+  search_tools: 'Rechercher un outil',
+  get_tool_details: 'Détails d\'un outil',
+};
+
+async function _resolveToolLabel(toolName, input) {
+  if (toolName === 'execute_tool' && input?.key) {
+    try {
+      const NodeTemplate = require('../db/models/node-template.model');
+      const tpl = await NodeTemplate.findOne({ key: input.key }, 'title name').lean();
+      const label = tpl?.title || tpl?.name;
+      if (label) return `${label}`;
+    } catch { /* non-fatal */ }
+    return String(input.key);
+  }
+  return _STATIC_TOOL_LABELS[toolName] || toolName;
+}
+
 // 100 tours par défaut (était 40). Pour les pipelines avec spawn_subagent +
 // dépendances + consolidation + ask_user + multiples retries, 40 saute vite
 // et coupe l'agent en plein milieu avec "Limite de boucles atteinte".
@@ -440,8 +472,10 @@ factuel des livrables créés avec leurs IDs/paths. Pas de phrase de conclusion 
     try {
       while (true) {
         if (signal?.aborted) break;
-        // Yield to event loop every 20 events so req.on('close') can fire
-        if (eventCount > 0 && eventCount % 20 === 0) {
+        // Yield to event loop toutes les 5 events pour éviter la starvation
+        // pendant le streaming des args d'un tool (execute_code peut émettre
+        // 1000+ chunks). Sans ça, les autres requêtes HTTP attendent 2-3s.
+        if (eventCount > 0 && eventCount % 5 === 0) {
           await new Promise(r => setImmediate(r));
           if (signal?.aborted) break;
         }
@@ -785,15 +819,17 @@ factuel des livrables créés avec leurs IDs/paths. Pas de phrase de conclusion 
                 const subLabel = subAgentInfo.agentName
                   ? `${subAgentInfo.agentEmoji || '🤖'} ${subAgentInfo.agentName}`
                   : 'Sous-agent';
+                const toolLabel = await _resolveToolLabel(tc.name, tc.input);
                 await AiMessage.create({
                   threadId,
                   role: 'assistant',
-                  content: `${subLabel} demande la permission d'exécuter ${tc.name}`,
+                  content: `${subLabel} demande la permission d'exécuter ${toolLabel}`,
                   metadata: {
                     kind: 'permission_request',
                     permissionRequest: {
                       requestId,
                       toolName: tc.name,
+                      toolLabel,
                       argsPreview,
                       risk: permCheck.risk,
                       childJobId: jobContext.jobId,
@@ -806,7 +842,7 @@ factuel des livrables créés avec leurs IDs/paths. Pas de phrase de conclusion 
                 });
                 emitThreadEvent(String(threadId), {
                   type: 'ai.permission.request',
-                  requestId, toolName: tc.name, risk: permCheck.risk,
+                  requestId, toolName: tc.name, toolLabel, risk: permCheck.risk,
                   argsPreview, childJobId: jobContext.jobId, parentJobId,
                   escalatedFromSubagent: true,
                 });
@@ -900,15 +936,17 @@ factuel des livrables créés avec leurs IDs/paths. Pas de phrase de conclusion 
                 const agentLabel = agentInfo.agentName
                   ? `${agentInfo.agentEmoji || '🤖'} ${agentInfo.agentName}`
                   : 'Agent';
+                const toolLabel = await _resolveToolLabel(tc.name, tc.input);
                 await AiMessage.create({
                   threadId,
                   role: 'assistant',
-                  content: `${agentLabel} demande la permission d'exécuter ${tc.name}`,
+                  content: `${agentLabel} demande la permission d'exécuter ${toolLabel}`,
                   metadata: {
                     kind: 'permission_request',
                     permissionRequest: {
                       requestId,
                       toolName: tc.name,
+                      toolLabel,
                       argsPreview,
                       risk: permCheck.risk,
                       childJobId: jobContext.jobId,
@@ -924,7 +962,7 @@ factuel des livrables créés avec leurs IDs/paths. Pas de phrase de conclusion 
                 const { emitThreadEvent } = require('./jobs/job-events');
                 emitThreadEvent(String(threadId), {
                   type: 'ai.permission.request',
-                  requestId, toolName: tc.name, risk: permCheck.risk,
+                  requestId, toolName: tc.name, toolLabel, risk: permCheck.risk,
                   argsPreview, jobId: jobContext.jobId,
                 });
                 emitThreadEvent(String(threadId), { type: 'ai.message.created', kind: 'permission_request' });

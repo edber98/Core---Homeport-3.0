@@ -141,13 +141,21 @@ export class AiPermissionRequestCardComponent {
   showPattern(): boolean { return this.extendToWorkspace; }
 
   toolLabel(): string {
+    // Backend fournit déjà le label résolu (execute_tool → titre NodeTemplate).
+    if (this.request.toolLabel) return this.request.toolLabel;
     const map: Record<string, string> = {
       read_file: 'Lire un fichier',
       write_file: 'Écrire un fichier',
       delete_file: 'Supprimer un fichier',
       list_directory: 'Lister un dossier',
       execute_code: 'Exécuter du code',
+      execute_tool: 'Exécuter un outil',
       run_workflow: 'Lancer un workflow',
+      project_write_file: 'Écrire un fichier projet',
+      project_read_file: 'Lire un fichier projet',
+      project_delete: 'Supprimer un fichier projet',
+      install_package: 'Installer un package',
+      generate_document: 'Générer un document',
     };
     return map[this.request.toolName] || this.request.toolName;
   }

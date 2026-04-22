@@ -26,9 +26,12 @@ async function* streamOpenAI(messages, tools, config) {
   if (config.maxTokens) body.max_completion_tokens = config.maxTokens;
   if (tools && tools.length) {
     body.tools = tools;
-    // Force sequential tool calls — prevents LLM from hallucinating keys
-    // when it needs a previous tool result (e.g. search_tools → get_tool_details)
-    body.parallel_tool_calls = false;
+    // Force sequential tool calls par défaut : évite que le LLM hallucine des
+    // IDs / keys quand il a besoin du résultat d'un tool call précédent (ex:
+    // search_tools → get_tool_details, spawn_subagent avec depends_on chaînés).
+    // Override possible via AI_PARALLEL_TOOL_CALLS=1 pour les cas où la vraie
+    // parallélisation (tool calls indépendants) est souhaitée.
+    body.parallel_tool_calls = process.env.AI_PARALLEL_TOOL_CALLS === '1';
   }
   // Include usage in streaming response (otherwise totalUsage is always null)
   body.stream_options = { include_usage: true };

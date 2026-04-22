@@ -974,7 +974,6 @@ export class AiFullpageComponent implements OnInit, OnDestroy, AfterViewInit {
   regeneratingTitle = false;
   recentFlows: { id: string; name: string }[] = [];
 
-  private refreshInterval?: any;
   private titleDebounce?: any;
   private readonly threadsPageSize = 20;
   private threadsPage = 0;
@@ -1179,8 +1178,6 @@ export class AiFullpageComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     });
 
-    // Auto-refresh threads every 30s
-    this.refreshInterval = setInterval(() => this.loadThreads(), 30000);
   }
 
   ngAfterViewInit() {
@@ -1282,7 +1279,6 @@ export class AiFullpageComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnDestroy() {
-    if (this.refreshInterval) clearInterval(this.refreshInterval);
     if (this.titleDebounce) clearTimeout(this.titleDebounce);
     if (this.mobileSidebarAnimationTimer) clearTimeout(this.mobileSidebarAnimationTimer);
     if (this.aiInputLayoutRaf != null) {
@@ -1334,7 +1330,6 @@ export class AiFullpageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.threadsLoading = false;
         this.threadsLoadingMore = false;
         this.cdr.detectChanges();
-        setTimeout(() => this.tryLoadMoreThreads(), 0);
       },
       error: () => {
         if (ticket !== this.threadsLoadTicket) return;

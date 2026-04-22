@@ -154,6 +154,7 @@ export interface AiPermissionGrant {
 export interface AiPermissionRequest {
   requestId: string;
   toolName: string;
+  toolLabel?: string;
   argsPreview: string;
   risk: 'safe' | 'write' | 'destructive' | 'elevated';
   scope: { path?: string; pattern?: string };
