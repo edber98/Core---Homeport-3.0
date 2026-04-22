@@ -168,15 +168,21 @@ function _buildJobContext(job, ac, opts = {}) {
       let isParentResumeStream = false;
       if (!isSubagent && job.type === 'agent_run') {
         if (streamingMessageId) {
-          // Mode streaming complet : tout sauf les events très verbeux internes harness
+          // Mode streaming complet : tout sauf les events très verbeux internes harness.
+          // Inclut ui.preview.* pour que le parent resume affiche live l'execute_code,
+          // le render_structured, le canvas_html etc. en cours de construction.
           isParentResumeStream = (
             t === 'message' ||
             t === 'tool.start' || t === 'tool.end' || t === 'tool.input_delta' ||
-            t === 'tool.meta' || t === 'done'
+            t === 'tool.meta' || t === 'done' ||
+            t === 'ui.preview.start' || t === 'ui.preview.delta' ||
+            t === 'ui.preview.building_done' || t === 'ui.preview.update'
           );
         } else {
           isParentResumeStream = (
-            t === 'tool.start' || t === 'tool.end' || t === 'tool.meta' || t === 'done'
+            t === 'tool.start' || t === 'tool.end' || t === 'tool.meta' || t === 'done' ||
+            t === 'ui.preview.start' || t === 'ui.preview.delta' ||
+            t === 'ui.preview.building_done' || t === 'ui.preview.update'
           );
         }
       }

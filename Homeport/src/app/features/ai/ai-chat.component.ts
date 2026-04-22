@@ -199,7 +199,7 @@ interface StreamTool {
 
         <!-- GROUPE assistant fusionné : 1 avatar + N messages en flux continu -->
         <div *ngIf="group.role === 'assistant' && !group.isSystem" class="msg-wrap assistant-group">
-          <ng-container *ngFor="let msg of group.messages; let mi = index">
+          <ng-container *ngFor="let msg of group.messages; let mi = index; trackBy: trackMsgById">
             <ai-message
               [msg]="msg"
               [compact]="mi > 0"
@@ -1752,6 +1752,10 @@ export class AiChatComponent implements AfterViewInit {
    * Used to collapse consecutive assistant messages into a single bubble stack with one avatar.
    */
   trackGroup(i: number, g: any) { return g.messages[0]?._id || `g:${i}`; }
+  /** trackBy pour les messages à l'intérieur d'un groupe assistant : évite que
+   *  Angular détruise et recrée <ai-message> à chaque delta de stream (spread
+   *  object → nouvelle référence → composant recreated sans trackBy = flash). */
+  trackMsgById(i: number, m: any) { return m?._id || `m:${i}`; }
 
   toolLabel(name: string): string {
     return TOOL_LABELS[name] || name;

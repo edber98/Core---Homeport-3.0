@@ -1796,6 +1796,32 @@ export class AiService {
     });
   }
 
+  /** Applique un array de JSON patches simplifiés {op,path,value?} sur un objet. */
+  private _applyJsonPatch(base: any, patch: any[]): any {
+    let next: any = base && typeof base === 'object'
+      ? JSON.parse(JSON.stringify(base))
+      : (Array.isArray(base) ? [...base] : {});
+    for (const op of patch) {
+      if (!op || typeof op.path !== 'string') continue;
+      const keys = op.path.split('/').filter(Boolean);
+      let cur = next;
+      for (let i = 0; i < keys.length - 1; i++) {
+        const k = keys[i];
+        if (cur[k] == null) cur[k] = /^\d+$/.test(keys[i + 1]) ? [] : {};
+        cur = cur[k];
+      }
+      const lastKey = keys[keys.length - 1];
+      if (op.op === 'add' || op.op === 'replace') {
+        if (Array.isArray(cur) && /^\d+$/.test(lastKey)) cur[parseInt(lastKey, 10)] = op.value;
+        else if (lastKey != null) cur[lastKey] = op.value;
+      } else if (op.op === 'remove' && lastKey != null) {
+        if (Array.isArray(cur) && /^\d+$/.test(lastKey)) cur.splice(parseInt(lastKey, 10), 1);
+        else delete cur[lastKey];
+      }
+    }
+    return next;
+  }
+
   private _flushStreamDeltaBuffer(): void {
     if (this._streamDeltaBuffer.size === 0) return;
     const msgs = this.messages();
@@ -1829,6 +1855,34 @@ export class AiService {
             t[i] = { ...t[i], args: ev.args, result: ev.result, status: ev.status || 'success', duration: ev.duration };
           } else {
             t.push({ id: ev.id, name: ev.name, args: ev.args, result: ev.result, status: ev.status || 'success', duration: ev.duration });
+          }
+        } else if (evType === 'ui.preview.start' || evType === 'ui.preview.delta' || evType === 'ui.preview.building_done') {
+          // Live preview des widgets (structured/canvas/code/etc.) en cours de build.
+          // Associe au tool call via toolId pour que ai-message affiche le preview.
+          const t = getTools();
+          const toolId = ev.toolId;
+          const i = t.findIndex((x: any) => x.id === toolId);
+          if (i >= 0) {
+            const prevData = t[i].livePreview?.data || {};
+            const nextData = ev.state != null ? ev.state : prevData;
+            t[i] = {
+              ...t[i],
+              livePreview: { type: ev.previewType, data: nextData },
+              status: evType === 'ui.preview.building_done' ? (t[i].status || 'running') : 'running',
+            };
+          }
+        } else if (evType === 'ui.preview.update') {
+          // Patch incrémental (research_deep steps, execute_code stdout lines, etc.)
+          const t = getTools();
+          const toolId = ev.toolId;
+          const i = t.findIndex((x: any) => x.id === toolId);
+          if (i >= 0 && Array.isArray(ev.patch)) {
+            const prevData = t[i].livePreview?.data || {};
+            const nextData = this._applyJsonPatch(prevData, ev.patch);
+            t[i] = {
+              ...t[i],
+              livePreview: { type: t[i].livePreview?.type || ev.previewType || 'code', data: nextData },
+            };
           }
         }
       }
