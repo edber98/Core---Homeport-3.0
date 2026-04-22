@@ -1762,13 +1762,24 @@ ${toolLines.join('\n')}
     const { requestId, decision, pathPattern, scope, toolName, risk, ttlMs } = req.body || {};
     if (!requestId || !decision) return res.apiError(400, 'missing_fields', 'requestId + decision required');
 
+    // Normalisation des décisions courtes envoyées par le frontend
+    // ("always" → "allow_always", "once" → "allow_once", "session" → "allow_session",
+    //  "deny" → "deny_always"). Sans ça, le grant était stocké avec "always" mais
+    // checkPermission ne reconnaît que "allow_always" → permission redemandée à chaque appel.
+    const rawDecision = String(decision);
+    let normalizedDecision = rawDecision;
+    if (rawDecision === 'always') normalizedDecision = 'allow_always';
+    else if (rawDecision === 'once') normalizedDecision = 'allow_once';
+    else if (rawDecision === 'session') normalizedDecision = 'allow_session';
+    else if (rawDecision === 'deny') normalizedDecision = 'deny_always';
+
     // Persist grant (for allow_session/allow_always/etc.)
-    if (toolName && decision !== 'allow_once' && decision !== 'deny_once') {
+    if (toolName && normalizedDecision !== 'allow_once' && normalizedDecision !== 'deny_once') {
       try {
         await resolvePendingDecision({
           threadId: job.threadId,
           workspaceId: job.workspaceId,
-          toolName, decision, pathPattern, scope, risk, ttlMs,
+          toolName, decision: normalizedDecision, pathPattern, scope, risk, ttlMs,
           userId: req.user.id,
           jobId: job.id,
         });
@@ -1777,11 +1788,7 @@ ${toolLines.join('\n')}
       }
     }
     // Notify the running job via pub/sub
-    // "always" sans préfixe = "allow_always" (le frontend envoie "always" au
-    // lieu de "allow_always" depuis le bouton "Toujours autorisé").
-    const rawDecision = String(decision);
-    const effectiveDecision = rawDecision === 'always' ? 'allow_always' : rawDecision;
-    const normalized = effectiveDecision.startsWith('allow') || effectiveDecision === 'always' ? 'allow' : 'deny';
+    const normalized = normalizedDecision.startsWith('allow') ? 'allow' : 'deny';
     console.log(`[perm-resolve] job=${job.id} requestId=${requestId} decision=${decision} (normalized=${normalized})`);
     emitJobEvent(job.id, { type: 'permission.resolved', requestId, decision: normalized });
     // Émet AUSSI sur le parent en tant que subagent.permission.granted pour que
@@ -2590,12 +2597,27 @@ ${stepsList}${answersBlock}
           iteration: 1, heartbeatAt: 1, pendingMessages: 1, depth: 1 },
       ).sort({ createdAt: 1 }).lean();
 
+      // Canvas state : toolCalls live par subagent (mis à jour en temps réel via
+      // persistCanvasEvent('canvas.task.toolcall')). Le count sur j.result.artifacts
+      // n'est rempli qu'à la fin du job → avant ça, le panel affichait "0 tools"
+      // même pendant l'exécution. On lit canvas_state pour avoir le vrai temps réel.
+      const AiCanvasState = require('../../db/models/ai-canvas-state.model');
+      let canvasTasksById = new Map();
+      try {
+        const canvasState = await AiCanvasState.findOne({ threadId }, 'tasks').lean();
+        for (const t of (canvasState?.tasks || [])) {
+          canvasTasksById.set(String(t.id || t.jobId), t);
+        }
+      } catch { /* non-fatal */ }
+
       // Roster enrichissement
       let ROSTER = {};
       try { ROSTER = require('../../ai/subagent/roster').ROSTER || {}; } catch {}
 
       const subagents = subagentJobs.map(j => {
         const info = ROSTER[j.subagentType] || {};
+        const canvasTask = canvasTasksById.get(String(j.id));
+        const liveToolCalls = Array.isArray(canvasTask?.toolCalls) ? canvasTask.toolCalls : [];
         // Todo interne du subagent (subagent-todos-<jobId>)
         const internalTodoMsg = allMsgs.find(m =>
           m?.metadata?.kind === 'todo_list'
@@ -2630,7 +2652,15 @@ ${stepsList}${answersBlock}
           duration: j.duration,
           error: j.error,
           summary: (j.result?.summary || '').slice(0, 500),
-          toolCallsCount: Array.isArray(j.result?.artifacts) ? j.result.artifacts.length : 0,
+          // Priorité au compte live (canvas_state pendant exécution). Fallback sur
+          // result.artifacts (final) pour les jobs terminés pré-canvas_state.
+          toolCallsCount: liveToolCalls.length || (Array.isArray(j.result?.artifacts) ? j.result.artifacts.length : 0),
+          toolCalls: liveToolCalls.slice(-20).map(tc => ({
+            name: tc.name,
+            status: tc.status,
+            at: tc.at,
+            argsSummary: tc.argsSummary,
+          })),
           internalTodo: internalTodoMsg
             ? { todos: internalTodoMsg.metadata?.todoList?.todos || [] }
             : null,

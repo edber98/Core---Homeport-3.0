@@ -43,6 +43,9 @@ async function spawnSubagent(opts) {
         error: `subagent_depth_exceeded (${DEFAULT_MAX_DEPTH})`,
       }));
     }
+    // _parallelBatch: true → désactive l'auto-wait siblings dans _runSubagentJob.
+    // Sans ça, les 3 subagents créés en rafale s'auto-attendent entre eux et
+    // deviennent séquentiels (bug visible surtout avec OpenAI en mode parallel).
     const results = await Promise.all(parallel.map(p => _spawnOne({
       parentJobId,
       subagentType: p.subagentType || subagentType,
@@ -55,6 +58,7 @@ async function spawnSubagent(opts) {
       depends_on: p.depends_on || depends_on,
       input_from: p.input_from || input_from,
       parentBroadcast,
+      _parallelBatch: true,
     })));
     return results;
   }
@@ -94,6 +98,7 @@ async function _spawnOne(opts) {
     async: asyncMode,
     depends_on, input_from,
     parentBroadcast,
+    _parallelBatch,
   } = opts;
 
   const typeDef = SUBAGENT_TYPES[subagentType];
@@ -187,6 +192,7 @@ async function _spawnOne(opts) {
         toolsAllowed, contextSlice, prompt,
         depends_on, input_from,
         emitUpdate, parentBroadcast,
+        _parallelBatch,
       }).catch((e) => {
         console.error('[sub-runner] async run failed:', e?.message);
       });
@@ -210,6 +216,7 @@ async function _spawnOne(opts) {
     toolsAllowed, contextSlice, prompt,
     depends_on, input_from,
     emitUpdate, parentBroadcast,
+    _parallelBatch,
   });
   return final;
 }
@@ -223,6 +230,7 @@ async function _runSubagentJob({
   toolsAllowed, contextSlice, prompt,
   depends_on, input_from,
   emitUpdate, parentBroadcast,
+  _parallelBatch,
 }) {
   const startedAt = Date.now();
   let hasDeps = Array.isArray(depends_on) && depends_on.length > 0;
@@ -233,7 +241,11 @@ async function _runSubagentJob({
   // On attend automatiquement les siblings actifs pour éviter qu'un
   // consolidateur parte avec un contexte vide et demande à l'user de coller
   // les résultats manuellement.
-  if (!hasDeps && job.parentJobId) {
+  //
+  // Exception : si _parallelBatch=true (spawn via parallel:[...]), on sait que
+  // le LLM a EXPLICITEMENT voulu lancer tous les subagents en parallèle. Skip
+  // l'auto-wait pour ne pas transformer le batch parallèle en chaîne séquentielle.
+  if (!hasDeps && job.parentJobId && !_parallelBatch) {
     try {
       const activeSiblings = await AiJob.find({
         parentJobId: job.parentJobId,

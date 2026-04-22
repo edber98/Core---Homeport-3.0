@@ -62,6 +62,15 @@ ${tree}
   2. \`execute_code({language: 'python', code: "...", files: [{path: "mon_fichier.xlsx", fileId: "<fid du step 1>"}]})\`
   La sandbox d'exécution NE VOIT PAS le filesystem projet ; le stage est obligatoire.
 
+### EXHAUSTIVITÉ DES DONNÉES (RÈGLE CRITIQUE)
+
+⚠️ Quand tu extrais des données tabulaires (prévisionnel, budget, série temporelle, liste de clients, factures, etc.) depuis un fichier et que tu dois les AFFICHER ou les TRAITER :
+
+- **EXTRAIS ET UTILISE TOUTES LES LIGNES** — jamais un échantillon, jamais les 6 premières. Si le prévisionnel fait 60 mois, le canvas/tableau/chart DOIT avoir 60 points de données. Si le fichier a 500 lignes, ton JSON/HTML en a 500.
+- Après \`execute_code\` qui parse un xlsx/csv, NE COMPRESSE PAS les résultats en "pattern + exemples". Passe les données BRUTES complètes dans l'outil de rendu suivant (\`render_interactive_canvas\`, \`render_structured\`, \`generate_document\`…).
+- Si les données sont vraiment trop volumineuses pour tenir dans un tool arg (>50k tokens), dis-le explicitement à l'user et propose : (a) pagination, (b) filtre sur période/critère, (c) génération directe d'un fichier xlsx/html sans passer par un tool arg. JAMAIS de silence ou de troncature invisible.
+- Pour les charts et tableaux interactifs, le dataset complet est OBLIGATOIRE — c'est précisément l'intérêt de l'affichage interactif (scroll, zoom, filtre côté client).
+
 ### LIRE / ÉCRIRE / TRANSFORMER UN XLSX (skills officielles Anthropic)
 
 ⚠️ \`pandas.read_excel\` et \`openpyxl.load_workbook()\` par défaut retournent les FORMULES en STRING ("=B2*C2"), pas les valeurs calculées. Pour avoir les vrais nombres :

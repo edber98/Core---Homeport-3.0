@@ -1759,48 +1759,79 @@ export class AiService {
     }
   }
 
+  // Buffer de deltas streaming par messageId. Batché en 1 frame (~16ms) via rAF.
+  // Évite 4000+ re-renders Angular quand OpenAI stream une grosse arg execute_code.
+  private _streamDeltaBuffer = new Map<string, Array<{ evType: string; ev: any }>>();
+  private _streamDeltaRaf: any = null;
+
   /**
    * Applique un delta stream (text, tool.start, tool.end, tool.input_delta)
    * directement sur le message placeholder en mémoire. Pas de fetch DB.
-   * Le signal `messages` est mis à jour → Angular re-render uniquement la bulle.
+   * Les deltas sont batchés en 1 frame pour éviter le flash de re-renders.
    */
   private applyStreamingDelta(messageId: string, evType: string, ev: any): void {
     // Marque ce message comme "en streaming" pour que reloadThreadMessages ne
     // l'écrase pas avec la version DB (encore vide ou partielle).
     this._streamingMessageIds.add(String(messageId));
+    const key = String(messageId);
+    const arr = this._streamDeltaBuffer.get(key) || [];
+    arr.push({ evType, ev });
+    this._streamDeltaBuffer.set(key, arr);
+
+    if (this._streamDeltaRaf != null) return;
+    const schedule = typeof requestAnimationFrame === 'function'
+      ? requestAnimationFrame
+      : ((cb: any) => setTimeout(cb, 16));
+    this._streamDeltaRaf = schedule(() => {
+      this._streamDeltaRaf = null;
+      this._flushStreamDeltaBuffer();
+    });
+  }
+
+  private _flushStreamDeltaBuffer(): void {
+    if (this._streamDeltaBuffer.size === 0) return;
     const msgs = this.messages();
-    const idx = msgs.findIndex(m => String(m._id) === String(messageId));
-    if (idx < 0) return; // placeholder pas encore chargé (race rare)
-    const msg = { ...msgs[idx] } as any;
-    if (evType === 'message' && typeof ev.text === 'string') {
-      msg.content = String(msg.content || '') + ev.text;
-    } else if (evType === 'tool.start') {
-      const tools = Array.isArray(msg.toolCalls) ? [...msg.toolCalls] : [];
-      tools.push({ id: ev.id, name: ev.name, status: 'running' });
-      msg.toolCalls = tools;
-    } else if (evType === 'tool.input_delta') {
-      const tools = Array.isArray(msg.toolCalls) ? [...msg.toolCalls] : [];
-      const i = tools.findIndex((t: any) => t.id === ev.id);
-      if (i >= 0) {
-        tools[i] = { ...tools[i], _argsBuf: (tools[i]._argsBuf || '') + (ev.text || '') };
-        msg.toolCalls = tools;
+    let next = msgs;
+    let dirty = false;
+
+    for (const [mid, deltas] of this._streamDeltaBuffer) {
+      const idx = next.findIndex(m => String(m._id) === mid);
+      if (idx < 0) continue;
+      const msg = { ...next[idx] } as any;
+      let tools: any[] | null = null;
+      const getTools = () => {
+        if (tools === null) tools = Array.isArray(msg.toolCalls) ? [...msg.toolCalls] : [];
+        return tools!;
+      };
+
+      for (const { evType, ev } of deltas) {
+        if (evType === 'message' && typeof ev.text === 'string') {
+          msg.content = String(msg.content || '') + ev.text;
+        } else if (evType === 'tool.start') {
+          const t = getTools();
+          t.push({ id: ev.id, name: ev.name, status: 'running' });
+        } else if (evType === 'tool.input_delta') {
+          const t = getTools();
+          const i = t.findIndex((x: any) => x.id === ev.id);
+          if (i >= 0) t[i] = { ...t[i], _argsBuf: (t[i]._argsBuf || '') + (ev.text || '') };
+        } else if (evType === 'tool.end') {
+          const t = getTools();
+          const i = t.findIndex((x: any) => x.id === ev.id);
+          if (i >= 0) {
+            t[i] = { ...t[i], args: ev.args, result: ev.result, status: ev.status || 'success', duration: ev.duration };
+          } else {
+            t.push({ id: ev.id, name: ev.name, args: ev.args, result: ev.result, status: ev.status || 'success', duration: ev.duration });
+          }
+        }
       }
-    } else if (evType === 'tool.end') {
-      const tools = Array.isArray(msg.toolCalls) ? [...msg.toolCalls] : [];
-      const i = tools.findIndex((t: any) => t.id === ev.id);
-      if (i >= 0) {
-        tools[i] = { ...tools[i], args: ev.args, result: ev.result, status: ev.status || 'success', duration: ev.duration };
-        msg.toolCalls = tools;
-      } else {
-        tools.push({ id: ev.id, name: ev.name, args: ev.args, result: ev.result, status: ev.status || 'success', duration: ev.duration });
-        msg.toolCalls = tools;
-      }
-    } else {
-      return;
+
+      if (tools !== null) msg.toolCalls = tools;
+      if (next === msgs) next = [...msgs];
+      next[idx] = msg;
+      dirty = true;
     }
-    const next = [...msgs];
-    next[idx] = msg;
-    this.messages.set(next);
+    this._streamDeltaBuffer.clear();
+    if (dirty) this.messages.set(next);
   }
 
   /** Ferme le stream live (à appeler quand on quitte le thread / déconnexion). */

@@ -8,12 +8,16 @@ import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { marked } from 'marked';
 import DOMPurify from 'dompurify';
-import { AiService } from '../ai.service';
+import { AiService, AiMessage, AiMessageSegment, AiToolCall } from '../ai.service';
 import { ApiClientService } from '../../../services/api-client.service';
 import { resolveAgentProfile } from '../agents/ai-roster';
 import { AiToolLabelsService } from '../ai-tool-labels.service';
+import { AiLivePreviewComponent, detectPreviewType, LivePreviewType } from '../live-preview/ai-live-preview.component';
+import { AiInlineWidgetCollapseComponent } from '../widgets/ai-inline-widget-collapse.component';
+import { AiMessageComponent } from '../ai-message.component';
+import { isWidgetKind } from '../constants/widget-kinds';
 
-type TimelineItemKind = 'tool' | 'message_in' | 'message_out' | 'status' | 'permission' | 'text_out';
+type TimelineItemKind = 'tool' | 'message_in' | 'message_out' | 'status' | 'permission' | 'text_out' | 'widget';
 
 interface TimelineItem {
   id: string;
@@ -23,10 +27,18 @@ interface TimelineItem {
   toolName?: string;
   toolArgs?: any;
   toolResult?: any;
+  /** Statut du tool : 'running' (en cours), 'success' (fini), 'error' */
+  toolStatus?: 'running' | 'success' | 'error';
+  /** Durée du tool en ms, une fois terminé */
+  toolDuration?: number;
+  /** State live preview (execute_code / render_structured / canvas_html / etc.) */
+  livePreview?: { type: LivePreviewType; data: any };
   status?: string;
   fromName?: string;
   /** Pour message_in : message encore en attente de prise en compte par le subagent */
   pending?: boolean;
+  /** Widget produit (render_structured, canvas_html, diagram, image_inline, file_inline) */
+  widget?: AiMessage;
 }
 
 /**
@@ -38,7 +50,7 @@ interface TimelineItem {
   selector: 'ai-subagent-window',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, FormsModule, NzIconModule, NzButtonModule, NzInputModule, NzTagModule],
+  imports: [CommonModule, FormsModule, NzIconModule, NzButtonModule, NzInputModule, NzTagModule, AiLivePreviewComponent, AiInlineWidgetCollapseComponent, AiMessageComponent],
   template: `
     <div class="sw-wrap">
       <div class="sw-header" *ngIf="profile">
@@ -60,55 +72,41 @@ interface TimelineItem {
         </div>
 
         <div class="sw-timeline">
-          <div class="sw-empty" *ngIf="timeline().length === 0">
+          <div class="sw-empty" *ngIf="!hasActivity()">
             <span nz-icon nzType="loading" nzTheme="outline"></span>
             <span>En attente d'activité…</span>
           </div>
-          <div *ngFor="let it of timeline(); trackBy: trackItem" class="sw-item" [class]="'kind-' + it.kind">
-            <div class="sw-item-time">{{ formatTime(it.at) }}</div>
-            <div class="sw-item-body">
-              <ng-container [ngSwitch]="it.kind">
-                <div *ngSwitchCase="'tool'" class="sw-tool">
-                  <span nz-icon nzType="tool" nzTheme="outline"></span>
-                  <span class="sw-tool-name">{{ toolLabel(it.toolName) }}</span>
-                  <span class="sw-tool-raw" *ngIf="it.toolName !== toolLabel(it.toolName)">{{ it.toolName }}</span>
-                  <span class="sw-tool-args" *ngIf="formatArgs(it.toolArgs) as s">{{ s }}</span>
-                </div>
-                <div *ngSwitchCase="'message_in'" class="sw-msg in" [class.pending]="it.pending">
-                  <div class="sw-msg-from">
-                    {{ it.fromName || 'Utilisateur' }} → {{ profile?.name }}
-                    <span class="sw-pending-chip" *ngIf="it.pending">
-                      <span nz-icon nzType="clock-circle" nzTheme="outline"></span>
-                      En attente de prise en compte
-                    </span>
-                    <span class="sw-delivered-chip" *ngIf="it.pending === false">
-                      <span nz-icon nzType="check" nzTheme="outline"></span>
-                      Pris en compte
-                    </span>
-                  </div>
-                  <div class="sw-msg-text" [innerHTML]="renderMd(it.text || '')"></div>
-                </div>
-                <div *ngSwitchCase="'message_out'" class="sw-msg out">
-                  <div class="sw-msg-from">{{ profile?.name }} → {{ it.fromName || 'parent' }}</div>
-                  <div class="sw-msg-text" [innerHTML]="renderMd(it.text || '')"></div>
-                </div>
-                <div *ngSwitchCase="'text_out'" class="sw-text-out">
-                  <div class="sw-text-head">
-                    <span nz-icon nzType="message" nzTheme="outline"></span>
-                    {{ profile?.name }} répond
-                  </div>
-                  <div class="sw-text-body" [innerHTML]="renderMd(it.text || '')"></div>
-                </div>
-                <div *ngSwitchCase="'status'" class="sw-status">
-                  <span nz-icon nzType="info-circle" nzTheme="outline"></span>
-                  <span>{{ it.text }}</span>
-                </div>
-                <div *ngSwitchCase="'permission'" class="sw-perm">
-                  <span nz-icon nzType="lock" nzTheme="outline"></span>
-                  <span>{{ it.text }}</span>
-                </div>
-              </ng-container>
+
+          <!-- Messages user → subagent (mailbox poke), affichés chronologiquement -->
+          <div *ngFor="let it of userMessages(); trackBy: trackItem" class="sw-msg in" [class.pending]="it.pending">
+            <div class="sw-msg-from">
+              {{ it.fromName || 'Utilisateur' }} → {{ profile?.name }}
+              <span class="sw-pending-chip" *ngIf="it.pending">
+                <span nz-icon nzType="clock-circle" nzTheme="outline"></span>
+                En attente de prise en compte
+              </span>
+              <span class="sw-delivered-chip" *ngIf="it.pending === false">
+                <span nz-icon nzType="check" nzTheme="outline"></span>
+                Pris en compte
+              </span>
             </div>
+            <div class="sw-msg-text" [innerHTML]="renderMd(it.text || '')"></div>
+          </div>
+
+          <!-- Rendering via ai-message : même look que le chat principal
+               (msg-wrap assistant-group avec tools, text, live-preview interleavés). -->
+          <ai-message *ngIf="synthesizedMessage() as msg" [msg]="msg"></ai-message>
+
+          <!-- Widgets finalisés produits par ce subagent (tableaux, canvases,
+               diagrammes, fichiers) rendus dans l'ordre de création. -->
+          <div *ngFor="let it of widgetMessages(); trackBy: trackItem" class="sw-widget-wrap">
+            <ai-inline-widget-collapse *ngIf="it.widget" [widget]="it.widget"></ai-inline-widget-collapse>
+          </div>
+
+          <!-- Statuts et permissions (footer) -->
+          <div *ngFor="let it of statusMessages(); trackBy: trackItem" class="sw-status-row">
+            <span nz-icon [nzType]="it.kind === 'permission' ? 'lock' : 'info-circle'" nzTheme="outline"></span>
+            <span>{{ it.text }}</span>
           </div>
         </div>
       </div>
@@ -171,11 +169,15 @@ interface TimelineItem {
     .sw-item:hover { background: #fafafa; }
     .sw-item-time { font-size: 10px; color: #bfbfbf; flex-shrink: 0; min-width: 40px; }
     .sw-item-body { flex: 1; min-width: 0; }
-    .sw-tool {
-      display: flex; align-items: center; gap: 6px;
-      font-size: 11.5px; color: #595959;
+    .sw-widget-wrap { margin: 8px 0; }
+    .sw-status-row {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 4px 0; font-size: 11.5px; color: #8c8c8c;
     }
-    .sw-tool-name { font-weight: 600; color: #262626; }
+    /* Surcharge ai-message rendu dans la modal subagent : retire la marge user
+       et la taille max (toute la largeur dispo de la modal). */
+    ::ng-deep ai-message { display: block; }
+    ::ng-deep ai-message .msg-wrap { max-width: 100% !important; }
     .sw-tool-raw {
       font-family: 'SFMono-Regular', Consolas, monospace; font-size: 10px;
       color: #bfbfbf; padding: 1px 5px; border-radius: 3px; background: #fafafa;
@@ -256,6 +258,71 @@ export class AiSubagentWindowComponent implements OnInit, OnChanges, OnDestroy {
 
   timeline = computed(() => this._events());
 
+  hasActivity = computed(() => this._events().length > 0);
+
+  /** Messages user → subagent (mailbox poke). Rendus en bulles orangées. */
+  userMessages = computed(() => this._events().filter(it => it.kind === 'message_in' || it.kind === 'message_out'));
+
+  /** Widgets finalisés (render_structured / canvas_html / diagram / image / file). */
+  widgetMessages = computed(() => this._events().filter(it => it.kind === 'widget'));
+
+  /** Statuts et permissions, rendus en footer. */
+  statusMessages = computed(() => this._events().filter(it => it.kind === 'status' || it.kind === 'permission'));
+
+  /**
+   * Synthétise UN AiMessage assistant à partir des events (tools + text_out).
+   * Permet de réutiliser <ai-message> et d'avoir exactement le même rendu
+   * (segments interleaved, live preview, grouped tool viewer) que le chat.
+   */
+  synthesizedMessage = computed<AiMessage | null>(() => {
+    const relevant = this._events().filter(it => it.kind === 'tool' || it.kind === 'text_out');
+    if (relevant.length === 0) return null;
+    const segments: AiMessageSegment[] = [];
+    const toolCalls: AiToolCall[] = [];
+    let lastKind: 'text' | 'tools' | null = null;
+    for (const it of relevant) {
+      if (it.kind === 'text_out') {
+        if (lastKind === 'text' && segments.length) {
+          const prev = segments[segments.length - 1];
+          prev.content = (prev.content || '') + (it.text || '');
+        } else {
+          segments.push({ type: 'text', content: it.text || '' });
+          lastKind = 'text';
+        }
+      } else if (it.kind === 'tool') {
+        const tc: AiToolCall & { livePreview?: any } = {
+          id: it.id,
+          name: it.toolName || 'tool',
+          args: it.toolArgs,
+          result: it.toolResult,
+          duration: it.toolDuration,
+          status: it.toolStatus === 'error' ? 'error' : (it.toolStatus === 'success' ? 'success' : undefined) as any,
+        };
+        if (it.livePreview) (tc as any).livePreview = it.livePreview;
+        toolCalls.push(tc);
+        if (lastKind === 'tools' && segments.length) {
+          const prev = segments[segments.length - 1];
+          prev.toolCalls = [...(prev.toolCalls || []), tc];
+        } else {
+          segments.push({ type: 'tools', toolCalls: [tc] });
+          lastKind = 'tools';
+        }
+      }
+    }
+    return {
+      _id: `synthesized-${this.jobId}`,
+      threadId: this.ai.currentThread()?.id || '',
+      role: 'assistant',
+      content: segments.filter(s => s.type === 'text').map(s => s.content || '').join('\n'),
+      toolCalls,
+      segments,
+      metadata: {
+        // Tag pour éviter que ai-chat.component le prenne en compte dans ses groupes
+        subagentJobId: this.jobId,
+      } as any,
+    };
+  });
+
   isActive = computed(() => {
     const s = this._job()?.status;
     return !!s && !['completed', 'error', 'cancelled'].includes(s);
@@ -265,8 +332,70 @@ export class AiSubagentWindowComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnInit(): void {
     this._load();
+    this._loadWidgets().catch(() => {});
     this._subscribeBus();
     this._subscribeJobStream();
+  }
+
+  /** Applique un array de JSON patches simplifiés {op,path,value?} sur un objet. */
+  private _applyPatch(base: any, patch: any[]): any {
+    let next: any = base && typeof base === 'object' ? JSON.parse(JSON.stringify(base)) : (Array.isArray(base) ? [...base] : {});
+    for (const op of patch) {
+      if (!op || typeof op.path !== 'string') continue;
+      const keys = op.path.split('/').filter(Boolean);
+      let cur = next;
+      for (let i = 0; i < keys.length - 1; i++) {
+        const k = keys[i];
+        if (cur[k] == null) cur[k] = /^\d+$/.test(keys[i + 1]) ? [] : {};
+        cur = cur[k];
+      }
+      const lastKey = keys[keys.length - 1];
+      if (op.op === 'add' || op.op === 'replace') {
+        if (Array.isArray(cur) && /^\d+$/.test(lastKey)) cur[parseInt(lastKey, 10)] = op.value;
+        else if (lastKey != null) cur[lastKey] = op.value;
+      } else if (op.op === 'remove' && lastKey != null) {
+        if (Array.isArray(cur) && /^\d+$/.test(lastKey)) cur.splice(parseInt(lastKey, 10), 1);
+        else delete cur[lastKey];
+      }
+    }
+    return next;
+  }
+
+  /** Fetch les AiMessages widget produits par ce subagent et les ajoute en timeline. */
+  private async _loadWidgets(): Promise<void> {
+    try {
+      const tid = this.ai.currentThread()?.id || (this.ai.currentThread() as any)?._id;
+      if (!tid) return;
+      const data: any = await this.api.get<any>(
+        `/api/ai/threads/${tid}`,
+        { workspaceId: this._wsId() },
+      ).toPromise();
+      const msgs: AiMessage[] = Array.isArray(data?.messages) ? data.messages : [];
+      // todo_list exclu : la checklist interne est déjà rendue dans la section
+      // dédiée "sw-todo" en haut (via _loadSubagentTodo). Pas de double affichage.
+      const mine = msgs.filter(m => {
+        const md: any = m.metadata || {};
+        if (md.subagentJobId !== this.jobId) return false;
+        if (md.kind === 'todo_list') return false;
+        return isWidgetKind(md.kind);
+      });
+      if (!mine.length) return;
+      this._events.update(arr => {
+        const existing = new Set(arr.filter(x => x.kind === 'widget').map(x => x.id));
+        const next = [...arr];
+        for (const m of mine) {
+          const id = `widget-${m._id}`;
+          if (existing.has(id)) continue;
+          next.push({
+            id,
+            kind: 'widget',
+            at: new Date((m as any).createdAt || Date.now()),
+            widget: m,
+          });
+        }
+        return next.sort((a, b) => a.at.getTime() - b.at.getTime());
+      });
+    } catch { /* non-fatal */ }
   }
 
   ngOnChanges(c: SimpleChanges): void {
@@ -301,8 +430,63 @@ export class AiSubagentWindowComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
+  /** Met à jour un TimelineItem tool par son id avec un patch partiel. */
+  private _patchTool(toolId: string, patch: Partial<TimelineItem>, createIfMissing: Partial<TimelineItem> | null = null): void {
+    this._events.update(arr => {
+      const idx = arr.findIndex(x => x.id === toolId && x.kind === 'tool');
+      if (idx >= 0) {
+        const next = [...arr];
+        next[idx] = { ...next[idx], ...patch };
+        return next;
+      }
+      if (createIfMissing) {
+        return [...arr, { id: toolId, kind: 'tool' as const, at: new Date(), ...createIfMissing, ...patch }];
+      }
+      return arr;
+    });
+  }
+
   private _handleJobEvent(ev: any): void {
     if (!ev || !ev.type) return;
+    // ── Live preview streaming (ui.preview.start/delta/building_done/update) ──
+    if (ev.type === 'ui.preview.start') {
+      const toolId = `tool-${ev.toolId}`;
+      const type = ev.previewType as LivePreviewType;
+      if (!ev.toolId || !type) return;
+      this._patchTool(toolId, {
+        livePreview: { type, data: {} },
+        toolStatus: 'running',
+      }, { toolName: ev.toolName, toolStatus: 'running' });
+      return;
+    }
+    if (ev.type === 'ui.preview.delta' || ev.type === 'ui.preview.building_done') {
+      const toolId = `tool-${ev.toolId}`;
+      const type = ev.previewType as LivePreviewType;
+      if (!ev.toolId || !type) return;
+      this._patchTool(toolId, {
+        livePreview: { type, data: ev.state || {} },
+        toolStatus: ev.type === 'ui.preview.building_done' ? 'success' : 'running',
+      }, { toolName: ev.toolName, toolStatus: 'running' });
+      return;
+    }
+    if (ev.type === 'ui.preview.update') {
+      // Patch incrémental (research_deep steps, execute_code stdout, etc.)
+      const toolId = `tool-${ev.toolId}`;
+      const type = detectPreviewType(ev.toolName);
+      if (!ev.toolId || !type || !Array.isArray(ev.patch)) return;
+      this._events.update(arr => {
+        const idx = arr.findIndex(x => x.id === toolId && x.kind === 'tool');
+        const curData = idx >= 0 ? (arr[idx].livePreview?.data || {}) : {};
+        const nextData = this._applyPatch(curData, ev.patch);
+        if (idx >= 0) {
+          const next = [...arr];
+          next[idx] = { ...next[idx], livePreview: { type, data: nextData } };
+          return next;
+        }
+        return [...arr, { id: toolId, kind: 'tool', at: new Date(), toolName: ev.toolName, toolStatus: 'running', livePreview: { type, data: nextData } }];
+      });
+      return;
+    }
     if (ev.type === 'message' && typeof ev.text === 'string') {
       this._events.update(arr => {
         const last = arr[arr.length - 1];
@@ -331,21 +515,34 @@ export class AiSubagentWindowComponent implements OnInit, OnChanges, OnDestroy {
         }
         return arr;
       });
+      // Ajoute un tool item en statut running (sera complété par tool.end)
+      const toolId = `tool-${ev.id || ev.toolId || Date.now()}`;
+      this._patchTool(toolId, { toolName: ev.name || ev.toolName, toolStatus: 'running' }, {
+        toolName: ev.name || ev.toolName,
+        toolStatus: 'running',
+      });
       return;
     }
     if (ev.type === 'tool.end') {
       const toolId = `tool-${ev.id || ev.toolId || Date.now()}`;
-      this._events.update(arr => {
-        if (arr.some(x => x.id === toolId)) return arr;
-        return [...arr, {
-          id: toolId,
-          kind: 'tool',
-          at: new Date(),
-          toolName: ev.name || ev.toolName,
-          toolArgs: ev.args,
-          toolResult: ev.result,
-        }];
+      const status: 'success' | 'error' = ev.status === 'error' ? 'error' : 'success';
+      this._patchTool(toolId, {
+        toolArgs: ev.args,
+        toolResult: ev.result,
+        toolStatus: status,
+        toolDuration: ev.duration,
+      }, {
+        toolName: ev.name || ev.toolName,
+        toolArgs: ev.args,
+        toolResult: ev.result,
+        toolStatus: status,
+        toolDuration: ev.duration,
       });
+      // Refresh widget list quand un tool widget-producer termine.
+      const name = ev.name || ev.toolName || '';
+      if (['render_structured', 'generate_diagram', 'render_interactive_canvas', 'display_image', 'display_file', 'generate_document'].includes(name)) {
+        setTimeout(() => this._loadWidgets().catch(() => {}), 300);
+      }
       return;
     }
     if (ev.type === 'job.status' && ev.status) {
@@ -544,18 +741,27 @@ export class AiSubagentWindowComponent implements OnInit, OnChanges, OnDestroy {
       }
       if (ev.type === 'tool.end' || ev.type === 'canvas.task.toolcall') {
         const toolId = `tool-${ev.toolId || ev.id || ev.at || Date.now()}`;
-        this._events.update(arr => {
-          if (arr.some(x => x.id === toolId)) return arr;
-          return [...arr, {
-            id: toolId,
-            kind: 'tool',
-            at: new Date(ev.at || Date.now()),
-            toolName: ev.toolName || ev.name,
-            toolArgs: ev.args || (ev.argsSummary ? { _summary: ev.argsSummary } : undefined),
-            toolResult: ev.result || ev.resultSummary,
-          }];
+        const status: 'success' | 'error' = ev.status === 'error' ? 'error' : 'success';
+        this._patchTool(toolId, {
+          toolArgs: ev.args || (ev.argsSummary ? { _summary: ev.argsSummary } : undefined),
+          toolResult: ev.result || ev.resultSummary,
+          toolStatus: status,
+          toolDuration: ev.duration,
+        }, {
+          toolName: ev.toolName || ev.name,
+          toolArgs: ev.args || (ev.argsSummary ? { _summary: ev.argsSummary } : undefined),
+          toolResult: ev.result || ev.resultSummary,
+          toolStatus: status,
+          toolDuration: ev.duration,
         });
-      } else if (ev.type === 'subagent.message.received') {
+        return;
+      }
+      // Widget inline produit par le subagent (render_structured/canvas_html/diagram/...)
+      if (ev.type === 'ai.message.created' && ev.kind && isWidgetKind(ev.kind)) {
+        setTimeout(() => this._loadWidgets().catch(() => {}), 200);
+        return;
+      }
+      if (ev.type === 'subagent.message.received') {
         const kind: TimelineItemKind = ev.targetJobId === this.jobId ? 'message_in' : 'message_out';
         const msgId = `msg-${ev.at || Date.now()}-${ev.fromName || ''}`;
         this._events.update(arr => {

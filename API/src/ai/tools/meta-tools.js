@@ -629,6 +629,23 @@ EXEMPLE
       "    prompt:'Consolide en render_structured comparison_table puis génère xlsx + dépose dans /analyses/X.xlsx'",
       "  })",
       "",
+      "⚡ MODE PARALLÈLE EN 1 SEUL APPEL (recommandé pour lancer 2-5 subagents indépendants d'un coup) :",
+      "Quand tu dois lancer PLUSIEURS subagents INDÉPENDANTS (pas de dépendance entre eux), utilise le paramètre `parallel` : un SEUL tool call, N subagents démarrent simultanément côté backend.",
+      "  spawn_subagent({",
+      "    subagent_type:'research',",
+      "    prompt:'axe 1 (placeholder, ignoré si parallel fourni)',",
+      "    parallel:[",
+      "      {subagent_type:'research', prompt:'Cherche concurrents iPaaS 2026', toolsAllowed:['web_search','web_fetch','research_deep']},",
+      "      {subagent_type:'research', prompt:'Cherche tendances AI agents/MCP/RAG', toolsAllowed:['web_search','web_fetch','research_deep']},",
+      "      {subagent_type:'file_analyzer', prompt:'Récupère logo + charte c4rbon.group', toolsAllowed:['web_fetch','web_download']},",
+      "    ]",
+      "  })",
+      "C'est la forme PRÉFÉRÉE pour lancer N recherches en parallèle. Bénéfices :",
+      "- 1 seul tool call → compatible avec tous les LLM (Anthropic ET OpenAI même en mode séquentiel `parallel_tool_calls=false`).",
+      "- Les subagents démarrent vraiment en même temps côté backend (Promise.all).",
+      "- Pas de risque de placeholder non résolu dans depends_on (pas d'ID à chaîner).",
+      "Si tu as besoin d'un consolidateur final APRÈS le parallel, fais-le en 2e appel avec depends_on sur les jobIds retournés.",
+      "",
       "💡 AUTO-RESUME PARENT : quand tous les subagents async d'une cascade sont terminés ET qu'aucun subagent final ne livre le résultat (ex: tu n'as pas configuré de step de consolidation), un message système s'inject automatiquement avec les résumés et tu (l'agent principal) reprends pour finir la tâche. Mais c'est plus propre de PRÉVOIR un subagent final avec les bons toolsAllowed.",
     ].join('\n'),
     parameters: {
@@ -713,6 +730,8 @@ EXEMPLE
       "- accordion : {\"sections\":[{\"id\":\"q1\",\"title\":\"Q1\",\"content\":\"Réponse\"}]}",
       "- timeline : {\"events\":[{\"date\":\"2026-01-01\",\"title\":\"Evt\",\"description\":\"...\"}]}",
       "- card_grid : {\"cards\":[{\"title\":\"Card 1\",\"description\":\"...\"}]}",
+      "",
+      "🗂️ EXHAUSTIVITÉ : quand le contenu vient d'un dataset extrait (tableau Excel, liste, série), embarque TOUTES les entrées dans data, jamais un échantillon. 60 lignes = 60 rows dans comparison_table, pas 6.",
     ].join('\n'),
     parameters: {
       type: 'object',
@@ -868,6 +887,13 @@ Fournis uniquement le fileId retourné par files.upload / project_write. Pas bes
     name: 'render_interactive_canvas',
     description: `Affiche un canvas HTML interactif inline dans le chat (animations 2D canvas/SVG, scènes 3D Three.js, démos WebGL, visualisations live, dashboards charts).
 
+🗂️ EXHAUSTIVITÉ DES DONNÉES (CRITIQUE — lire AVANT de générer le HTML)
+Quand le canvas affiche un dataset extrait d'un fichier (prévisionnel, budget, séries, tableau Excel…), tu DOIS embarquer **LA TOTALITÉ** des lignes/points dans le JS inline. Pas d'échantillon, pas de "les 6 premiers mois" si le fichier en contient 60, pas de "…" à la fin.
+- Si \`execute_code\` a retourné 60 mois de data → le chart doit avoir 60 points.
+- Si \`project_read_file\` a retourné 500 lignes → la table doit avoir 500 rows.
+- L'intérêt du canvas interactif est précisément d'être scrollable/zoomable/filtrable côté client — donne-lui toute la matière.
+- Si le dataset est vraiment trop gros (>50k tokens d'arg), alerte l'user et propose une pagination ou un filtre ; ne tronque JAMAIS silencieusement.
+
 🎨 CHARTE GRAPHIQUE HOMEPORT (à appliquer par DÉFAUT — impératif sauf contexte contraire)
 - **Thème TOUJOURS clair** : fond \`#ffffff\` ou \`#fafafa\`. JAMAIS de fond noir/sombre par défaut.
 - **Couleur signature** : rose magenta \`#e61982\` (primary Homeport) pour le 1er dataset / élément principal.
@@ -929,6 +955,55 @@ Le param \`html\` transite en JSON, donc backslashes et backticks sont traîtres
     },
   },
 ];
+
+/**
+ * Parcourt le HTML et valide la syntaxe des blocs <script> non-module inline.
+ * Utilise vm.Script (parser natif Node, zéro dep) qui accepte la même grammaire
+ * que les scripts classiques côté browser. Les scripts type="module" sont skippés
+ * (ils utilisent import/importmap que vm.Script ne supporte pas en top-level).
+ *
+ * @param {string} html
+ * @returns {null | { message: string, snippet: string, line?: number }}
+ */
+function _validateInlineScripts(html) {
+  try {
+    const { Script } = require('vm');
+    // Regex simple pour extraire <script ...>...</script>. Capture les attributs
+    // pour distinguer type="module" qu'on skip. Non-greedy sur le contenu.
+    const re = /<script\b([^>]*)>([\s\S]*?)<\/script>/gi;
+    let m;
+    while ((m = re.exec(html)) !== null) {
+      const attrs = (m[1] || '').toLowerCase();
+      const body = m[2] || '';
+      if (!body.trim()) continue;
+      // Skip modules (import/export top-level pas parsable par vm.Script)
+      if (/type\s*=\s*["']?module/.test(attrs)) continue;
+      // Skip importmap (JSON, pas du JS)
+      if (/type\s*=\s*["']?importmap/.test(attrs)) continue;
+      // Skip src="..." (pas de body à valider)
+      if (/\bsrc\s*=/.test(attrs)) continue;
+      try {
+        // filename fictif pour la localisation d'erreur
+        new Script(body, { filename: 'canvas-inline.js', displayErrors: false });
+      } catch (e) {
+        const errMsg = String(e?.message || e);
+        // Extrait la ligne approximative depuis le stack si disponible
+        let line;
+        const lineMatch = /canvas-inline\.js:(\d+)/.exec(String(e?.stack || ''));
+        if (lineMatch) line = parseInt(lineMatch[1], 10);
+        // Snippet de contexte : ±60 chars autour de la ligne fautive (ou début)
+        const lines = body.split('\n');
+        const idx = (line || 1) - 1;
+        const snippet = (lines[idx] || lines[0] || '').trim().slice(0, 120);
+        return { message: errMsg.slice(0, 200), snippet, line };
+      }
+    }
+    return null;
+  } catch {
+    // Si le validateur lui-même plante, on laisse passer (fail-open)
+    return null;
+  }
+}
 
 /** Recursively extract fileRef objects from a result */
 function extractFileRefs(obj, found = []) {
@@ -2366,6 +2441,18 @@ async function executeMetaTool(name, input, ctx) {
       if (!html || typeof html !== 'string') return { ok: false, error: 'html requis (document HTML complet)' };
       // Taille raisonnable : 400KB max pour éviter de stocker des payloads géants
       if (html.length > 400_000) return { ok: false, error: 'html trop volumineux (>400KB). Minimise le code ou charge via CDN.' };
+      // Validation syntaxe JS des blocs <script> inline (non-module). Détecte les
+      // erreurs classiques d'OpenAI (parens mal fermées, apostrophes non échappées,
+      // template literals cassés) AVANT de stocker un canvas qui va planter en
+      // runtime avec "Unexpected token ')'" côté user.
+      const syntaxErr = _validateInlineScripts(html);
+      if (syntaxErr) {
+        return {
+          ok: false,
+          error: `js_syntax_error: ${syntaxErr.message}`,
+          hint: `Le JS inline du canvas a une erreur de syntaxe (${syntaxErr.line ? 'ligne ~' + syntaxErr.line : 'position inconnue'}). Extrait : "${syntaxErr.snippet}". CAUSES FRÉQUENTES : (1) apostrophe française non échappée dans une string (ex: 'L\\'utilisateur' au lieu de "L\\'utilisateur"), (2) backticks/template literals mal fermés : préfère 'str'+var+'str', (3) parenthèses déséquilibrées dans une arrow function, (4) trailing comma dans un appel de fonction. Régénère en appliquant les règles anti-erreurs de la description du tool.`,
+        };
+      }
       const safeHeight = Math.max(200, Math.min(900, Number(height) || 420));
       try {
         const widgetId = _resolveWidgetId(input.widgetId);

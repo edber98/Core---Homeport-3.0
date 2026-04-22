@@ -110,12 +110,11 @@ async function* streamOpenAIResponses(messages, tools, config) {
 
       // Responses API event types
       const type = data.type;
-      if (type?.includes('function_call') || type?.includes('output_item')) {
-        // Les events `delta` sont très verbeux (1 log par chunk d'arg). Silencieux
-        // par défaut, activables via AI_DEBUG=1.
-        if (!type.includes('delta') || isDebug()) {
-          console.log(`[llm-openai-responses] SSE event: ${type}`, type.includes('delta') ? `delta=${(data.delta || '').length}chars` : '');
-        }
+      // Logs désactivés par défaut : 50-200 events SSE par stream × N subagents
+      // en parallèle × console.log synchrone = event loop saturé. Activable via
+      // AI_DEBUG=1 pour investigation.
+      if (isDebug() && (type?.includes('function_call') || type?.includes('output_item'))) {
+        console.log(`[llm-openai-responses] SSE event: ${type}`, type.includes('delta') ? `delta=${(data.delta || '').length}chars` : '');
       }
 
       switch (type) {
@@ -151,7 +150,7 @@ async function* streamOpenAIResponses(messages, tools, config) {
             if (itemId && itemId !== callId) {
               toolBuilders.set(itemId, builder);
             }
-            console.log(`[llm-openai-responses] output_item.added: callId=${callId}, itemId=${itemId}, name=${name}`);
+            if (isDebug()) console.log(`[llm-openai-responses] output_item.added: callId=${callId}, itemId=${itemId}, name=${name}`);
             yield { type: 'tool_use_start', index: toolIndex, id: callId, name };
             toolIndex++;
           }
@@ -163,7 +162,7 @@ async function* streamOpenAIResponses(messages, tools, config) {
           // Ensure item_id and call_id are both mapped to the same builder
           const startCallId = data.call_id;
           const startItemId = data.item_id;
-          console.log(`[llm-openai-responses] arguments.start: call_id=${startCallId}, item_id=${startItemId}`);
+          if (isDebug()) console.log(`[llm-openai-responses] arguments.start: call_id=${startCallId}, item_id=${startItemId}`);
           if (startItemId && startCallId) {
             const b = toolBuilders.get(startCallId) || toolBuilders.get(startItemId);
             if (b) {
@@ -195,7 +194,7 @@ async function* streamOpenAIResponses(messages, tools, config) {
             let input = {};
             try { input = JSON.parse(builder.arguments); } catch {}
             builder.ended = true;
-            console.log(`[llm-openai-responses] arguments.done → tool_use_end: ${builder.name} (id=${builder.id})`);
+            if (isDebug()) console.log(`[llm-openai-responses] arguments.done → tool_use_end: ${builder.name} (id=${builder.id})`);
             yield { type: 'tool_use_end', index: toolIndex - 1, id: builder.id, name: builder.name, input };
           }
           break;
@@ -227,7 +226,7 @@ async function* streamOpenAIResponses(messages, tools, config) {
               let input = {};
               try { input = JSON.parse(builder.arguments); } catch {}
               builder.ended = true;
-              console.log(`[llm-openai-responses] output_item.done → tool_use_end: ${builder.name} (id=${builder.id})`);
+              if (isDebug()) console.log(`[llm-openai-responses] output_item.done → tool_use_end: ${builder.name} (id=${builder.id})`);
               yield { type: 'tool_use_end', index: toolIndex - 1, id: builder.id, name: builder.name, input };
             }
           }
@@ -242,7 +241,7 @@ async function* streamOpenAIResponses(messages, tools, config) {
               let input = {};
               try { input = JSON.parse(builder.arguments); } catch {}
               builder.ended = true;
-              console.log(`[llm-openai-responses] response.completed flush → tool_use_end: ${builder.name} (id=${callId})`);
+              if (isDebug()) console.log(`[llm-openai-responses] response.completed flush → tool_use_end: ${builder.name} (id=${callId})`);
               yield { type: 'tool_use_end', index: 0, id: callId, name: builder.name, input };
             }
           }

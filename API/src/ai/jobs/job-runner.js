@@ -844,6 +844,21 @@ async function _maybeResumeParent(job) {
   // l'instruction finale au parent).
   const allWidgetIds = recentJobs.flatMap(j => (j.result?.widgets || []).map(w => w.widgetId)).filter(Boolean);
 
+  // Détection "subagents research seulement" : aucun widget ni fichier produit.
+  // Dans ce cas, le parent DOIT pouvoir générer le livrable (xlsx/pdf/diagram/etc.)
+  // au lieu d'être bloqué en mode synthèse-texte. Sans ça, OpenAI notamment
+  // abandonne en disant "tour verrouillé" et l'user n'a rien.
+  const hasArtifactFiles = recentJobs.some(j => {
+    const artifacts = Array.isArray(j.result?.artifacts) ? j.result.artifacts : [];
+    return artifacts.some(a => {
+      const tcResult = a?.result;
+      if (!tcResult || typeof tcResult !== 'object') return false;
+      const produced = tcResult.producedFiles || tcResult._files || [];
+      return Array.isArray(produced) && produced.length > 0;
+    });
+  });
+  const researchOnly = allWidgetIds.length === 0 && !hasArtifactFiles;
+
   // Anti-boucle : compter par parentJobId (= cascade isolée) au lieu du thread
   // entier. Sinon 4+ cascades parallèles indépendantes bloquent les autres
   // silencieusement quand le compteur thread-wide atteint 3.
@@ -870,7 +885,37 @@ async function _maybeResumeParent(job) {
     if (lastUser?.content) userRequest = String(lastUser.content).slice(0, 1000);
   } catch {}
 
-  const resumePrompt = `Tous les sous-agents sont terminés. Tu es en MODE SYNTHÈSE VERROUILLÉ : tu peux UNIQUEMENT appeler \`todo_write\` et écrire du texte. Rien d'autre.
+  // Deux modes :
+  //  (a) researchOnly=false : comportement HISTORIQUE. Subagents ont déjà produit
+  //      des widgets/fichiers → synthèse stricte (todo_write + texte + [[WIDGET:id]]).
+  //      C'est le golden path Claude, inchangé.
+  //  (b) researchOnly=true : NOUVEAU. Aucun livrable concret produit (que de la
+  //      recherche). Le parent doit pouvoir finir le job lui-même ou relancer un
+  //      subagent pour la consolidation/génération manquante. Règle l'issue OpenAI
+  //      qui dit "tour verrouillé" et abandonne.
+  const resumePrompt = researchOnly
+    ? `Tous les sous-agents de recherche sont terminés. **IMPORTANT : aucun livrable concret n'a encore été produit** (pas de widgets, pas de fichiers). Tu as les résultats de recherche, tu dois maintenant produire le livrable final demandé.
+
+DEMANDE ORIGINALE :
+${userRequest || '(non récupérée)'}
+
+RÉSULTATS DES SOUS-AGENTS (à utiliser pour produire le livrable) :
+
+${summaries}
+
+TA MISSION :
+
+1. Relis la checklist (\`todo_write\`). Marque \`completed\` ce qui est VRAIMENT fait. Marque \`cancelled\` avec \`errorReason\` ce qui a échoué (subagent en error, résultat vide). Ne masque JAMAIS un step non fait en le passant silencieusement à \`completed\`.
+
+2. Pour chaque step qui reste nécessaire à la demande user :
+   - Tâche de génération finale (xlsx / pdf / diagram / rapport structuré) → produis-la toi-même MAINTENANT : \`activate_capsule\` puis \`execute_code\` / \`render_structured\` / \`generate_document\` / \`display_file\`.
+   - Recherche ou tâche spécialisée longue → \`spawn_subagent(async:true)\` avec les bons \`toolsAllowed\`. Le système te réveillera quand il aura fini.
+   - Vraiment impossible → dis-le explicitement à l'user et marque le todo \`cancelled\` avec la raison.
+
+3. Une fois le livrable produit, écris UN message final court (3-8 lignes) qui répond à la demande user, avec les widgets référencés via \`[[WIDGET:id]]\` inline.
+
+⚠️ NE PAS abandonner en disant "tour verrouillé" — tu as tous les outils nécessaires.`
+    : `Tous les sous-agents sont terminés. Tu es en MODE SYNTHÈSE VERROUILLÉ : tu peux UNIQUEMENT appeler \`todo_write\` et écrire du texte. Rien d'autre.
 
 DEMANDE ORIGINALE :
 ${userRequest || '(non récupérée)'}
@@ -881,12 +926,12 @@ ${summaries}
 
 ${allWidgetIds.length ? `WIDGETS DÉJÀ PRODUITS (référence-les via [[WIDGET:id]] dans ton texte, NE LES RECRÉE PAS) :\n${allWidgetIds.map(w => `  [[WIDGET:${w}]]`).join('\n')}\n\n` : ''}TA MISSION (exactement 2 étapes) :
 
-1. Appelle \`todo_write\` UNE fois : marque TOUT en \`completed\`.
+1. Appelle \`todo_write\` UNE fois : marque \`completed\` les steps VRAIMENT faits et \`cancelled\` avec \`errorReason\` les steps qui ont échoué. Ne masque JAMAIS un step non fait en le passant silencieusement à \`completed\`.
 
 2. Écris UN message final à l'utilisateur, naturel et utile :
    - Place les \`[[WIDGET:id]]\` inline aux endroits pertinents (pas tous groupés à la fin).
    - Si beaucoup de widgets (10+), sélectionne les plus importants et dis "les autres sont dans les rapports Tim/Marie/Denis ci-dessus".
-   - Réponds directement à la demande user avec les points-clés que tu veux qu'il retienne (pas une paraphrase des summaries).
+   - Réponds directement à la demande user avec les points-clés (pas une paraphrase des summaries).
    - Court et clair. 3-8 lignes suffisent sauf demande complexe.
 
 Tu N'AS PAS accès à : spawn_subagent, render_structured, canvas_html, generate_diagram, display_file, display_image, execute_code, install_package, web_*, propose_plan, ask_user.
@@ -903,8 +948,10 @@ Si tu essaies d'en appeler un, il sera bloqué.`;
 
     // Crée un nouveau job agent_run qui reprend le thread avec le prompt resume
     const { newId } = require('../../utils/ids');
-    // Resume = tour de synthèse unique. 3 loops max suffisent : 1 pour
-    // todo_write, 1 pour le texte final, 1 de marge au cas où.
+    // maxLoops adaptatif :
+    //  - researchOnly=false (synthèse texte) : 3 loops (todo_write + texte + marge).
+    //  - researchOnly=true (finalisation) : 15 loops pour permettre
+    //    activate_capsule + execute_code + display_file + spawn_subagent + retries.
     const resumeJob = await AiJob.create({
       id: newId('aij_'),
       threadId,
@@ -914,7 +961,7 @@ Si tu essaies d'en appeler un, il sera bloqué.`;
       type: 'agent_run',
       status: 'queued',
       mode: job.mode || 'project',
-      maxLoops: 3,
+      maxLoops: researchOnly ? 15 : 3,
     });
 
     // PLACEHOLDER : message assistant vide créé à l'avance. PAS de metadata.kind
@@ -941,15 +988,29 @@ Si tu essaies d'en appeler un, il sera bloqué.`;
       messageId: String(placeholder._id),
     });
 
-    // Lance asynchrone (setImmediate) — pas await pour ne pas bloquer ce hook.
-    // toolsAllowed = WHITELIST STRICTE : uniquement `todo_write` (clôture checklist)
-    // et `send_message_to_agent` (si le parent veut répondre à un message pendant).
-    // Impossible de recréer render_structured/canvas/diagram/execute_code/spawn → zéro doublon.
+    // toolsAllowed adaptatif :
+    //  - researchOnly=false (HISTORIQUE, golden path Claude) → whitelist stricte :
+    //    seul todo_write + send_message_to_agent. Zéro risque de doublon.
+    //  - researchOnly=true (NOUVEAU, cas OpenAI "tour verrouillé") → set élargi :
+    //    le parent peut spawn un subagent pour consolidation OU produire le
+    //    livrable lui-même. Le prompt l'instruit de ne pas boucler.
+    const resumeToolsAllowed = researchOnly
+      ? [
+          'todo_write', 'send_message_to_agent',
+          'spawn_subagent',
+          'activate_capsule',
+          'render_structured', 'render_interactive_canvas',
+          'generate_diagram', 'generate_document',
+          'display_file', 'display_image',
+          'execute_code', 'install_package', 'prepare_code_environment',
+          'project_write_file', 'project_read_file', 'project_stage_for_sandbox',
+        ]
+      : ['todo_write', 'send_message_to_agent'];
     setImmediate(() => {
       const { runJob } = module.exports;
       runJob(resumeJob.id, {
         prompt: resumePrompt,
-        toolsAllowed: ['todo_write', 'send_message_to_agent'],
+        toolsAllowed: resumeToolsAllowed,
         _streamingMessageId: String(placeholder._id),
         _resumeMode: true,
       }).catch(e => console.error(`[resume-parent] runJob failed:`, e?.message));

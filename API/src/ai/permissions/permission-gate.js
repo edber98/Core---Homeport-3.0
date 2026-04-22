@@ -134,11 +134,13 @@ async function checkPermission(opts) {
 
   if (matching) {
     const d = matching.decision;
-    if (d === 'allow_once' || d === 'allow_session' || d === 'allow_always') {
-      // allow_once is consumed on use — caller is responsible for expiring it if needed
+    // Filet de sécurité : accepte aussi les formes courtes legacy ("always",
+    // "once", "session") stockées par une ancienne version du code. Évite de
+    // redemander une permission déjà accordée.
+    if (d === 'allow_once' || d === 'allow_session' || d === 'allow_always' || d === 'always' || d === 'once' || d === 'session') {
       return { decision: 'allow', risk, grantId: matching.id, reason: `granted_${d}` };
     }
-    if (d === 'deny_once' || d === 'deny_always') {
+    if (d === 'deny_once' || d === 'deny_always' || d === 'deny') {
       return { decision: 'deny', risk, grantId: matching.id, reason: `denied_${d}` };
     }
   }
