@@ -2,6 +2,7 @@ import React from "react";
 import { AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import { theme, agents } from "../theme";
 import { AnimatedBg } from "../components/AnimatedBg";
+import { LucideIcon, IconName } from "../components/AgentIcon";
 import { easeOutExpo, easeInExpo, easeOutBack } from "../utils/easing";
 
 export const S07_AgentGallery: React.FC = () => {
@@ -184,13 +185,13 @@ const DynamicAgentCard: React.FC<{
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          fontSize: 28,
+          color: "#fff",
           boxShadow: `0 8px 22px ${agent.color}55, inset 0 1px 0 rgba(255,255,255,0.3)`,
           position: "relative",
           zIndex: 1,
         }}
       >
-        {agent.emoji}
+        <LucideIcon name={agent.iconName as IconName} size={30} color="#fff" strokeWidth={2} />
       </div>
       <div style={{ flex: 1, minWidth: 0, position: "relative", zIndex: 1 }}>
         <div style={{ fontSize: 16, fontWeight: 700, color: theme.color.text, letterSpacing: -0.3 }}>{agent.name}</div>

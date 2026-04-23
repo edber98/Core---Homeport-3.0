@@ -294,7 +294,7 @@ interface ProcessedSegment {
         </div>
         <!-- Segments mode: reasoning blocks with text + tools, final text at end -->
         <ng-container *ngIf="msg.segments?.length; else flatLayout">
-          <ng-container *ngFor="let ps of getProcessedSegments()">
+          <ng-container *ngFor="let ps of getProcessedSegments(); let psi = index">
             <!-- Final response text — découpé pour intégrer les widgets inline [[WIDGET:id]] -->
             <ng-container *ngIf="ps.type === 'text' && ps.content">
               <ng-container *ngFor="let seg of contentSegments(ps.content); trackBy: trackSegment">
@@ -330,24 +330,33 @@ interface ProcessedSegment {
                    *ngIf="ps.reasoningText && isReasoningExpanded(ps)"
                    [innerHTML]="renderMarkdown(ps.reasoningText)"></div>
               <div class="tool-summary" *ngIf="ps.toolCalls?.length">
-                <!-- Summary textuel affiché quand 2+ groupes OU quand expanded (pour re-close) -->
+                <!-- Tools en cours (streaming args) : toujours visibles, JAMAIS dans le groupe -->
+                <div class="tool-live-list" *ngIf="runningToolCalls(ps.toolCalls).length">
+                  <div *ngFor="let tc of runningToolCalls(ps.toolCalls); trackBy: trackTc" class="tool-live-item">
+                    <span nz-icon nzType="loading" [nzSpin]="true" nzTheme="outline" class="tl-ico"></span>
+                    <span class="tl-name">{{ toolDisplayName(tc) }}</span>
+                    <span class="tl-args" *ngIf="toolLiveArgsPreview(tc) as s">{{ s }}</span>
+                  </div>
+                </div>
+                <!-- Summary + groupes collapsed : UNIQUEMENT pour les tools terminés -->
+                <ng-container *ngIf="completedToolCalls(ps.toolCalls) as completed">
                 <span class="summary-toggle"
-                      *ngIf="groupedToolCalls(ps.toolCalls!).length > 1 || expandedTools.has(ps)"
-                      (click)="toggleToolExpand(ps)">
-                  <span nz-icon [nzType]="expandedTools.has(ps) ? 'down' : 'right'" nzTheme="outline"></span>
-                  {{ toolGroupSummary(ps.toolCalls!) }}
+                      *ngIf="completed.length && (groupedToolCalls(completed).length > 1 || isToolExpanded(ps, psi))"
+                      (click)="toggleToolExpand(ps, psi)">
+                  <span nz-icon [nzType]="isToolExpanded(ps, psi) ? 'down' : 'right'" nzTheme="outline"></span>
+                  {{ toolGroupSummary(completed) }}
                 </span>
-                <!-- Pills visibles UNIQUEMENT quand collapsed (quand expand, on voit le détail en dessous) -->
-                <div class="tool-groups" *ngIf="!expandedTools.has(ps)">
-                  <span class="tool-group-pill" *ngFor="let g of groupedToolCalls(ps.toolCalls!); trackBy: trackToolGroup"
+                <div class="tool-groups" *ngIf="completed.length && !isToolExpanded(ps, psi)">
+                  <span class="tool-group-pill" *ngFor="let g of groupedToolCalls(completed); trackBy: trackToolGroup"
                         [class.group-err]="g.hasError"
-                        (click)="toggleToolExpand(ps)">
+                        (click)="toggleToolExpand(ps, psi)">
                     <span nz-icon [nzType]="g.icon" nzTheme="outline"></span>
                     <span *ngIf="g.count > 1" class="group-count">×{{ g.count }}</span>
                     <span class="group-label">{{ g.label }}</span>
                   </span>
                 </div>
-                <div class="tool-list" *ngIf="expandedTools.has(ps)">
+                </ng-container>
+                <div class="tool-list" *ngIf="isToolExpanded(ps, psi)">
                   <div *ngFor="let tc of ps.toolCalls" class="tool-item-wrap">
                     <div class="tool-list-item"
                          [class.item-success]="tc.status !== 'error'"
@@ -393,14 +402,23 @@ interface ProcessedSegment {
           </ng-container>
           <div class="reasoning-block" *ngIf="visibleToolCalls(msg.toolCalls).length">
             <div class="tool-summary">
+              <!-- Tools en cours : live, hors groupe -->
+              <div class="tool-live-list" *ngIf="runningToolCalls(msg.toolCalls).length">
+                <div *ngFor="let tc of runningToolCalls(msg.toolCalls); trackBy: trackTc" class="tool-live-item">
+                  <span nz-icon nzType="loading" [nzSpin]="true" nzTheme="outline" class="tl-ico"></span>
+                  <span class="tl-name">{{ toolDisplayName(tc) }}</span>
+                  <span class="tl-args" *ngIf="toolLiveArgsPreview(tc) as s">{{ s }}</span>
+                </div>
+              </div>
+              <ng-container *ngIf="completedToolCalls(msg.toolCalls) as completed">
               <span class="summary-toggle"
-                    *ngIf="groupedToolCalls(visibleToolCalls(msg.toolCalls)).length > 1 || expandedTools.has(msg)"
+                    *ngIf="completed.length && (groupedToolCalls(completed).length > 1 || isToolExpanded(msg))"
                     (click)="toggleToolExpand(msg)">
-                <span nz-icon [nzType]="expandedTools.has(msg) ? 'down' : 'right'" nzTheme="outline"></span>
-                {{ toolGroupSummary(visibleToolCalls(msg.toolCalls)) }}
+                <span nz-icon [nzType]="isToolExpanded(msg) ? 'down' : 'right'" nzTheme="outline"></span>
+                {{ toolGroupSummary(completed) }}
               </span>
-              <div class="tool-groups" *ngIf="!expandedTools.has(msg)">
-                <span class="tool-group-pill" *ngFor="let g of groupedToolCalls(visibleToolCalls(msg.toolCalls)); trackBy: trackToolGroup"
+              <div class="tool-groups" *ngIf="completed.length && !isToolExpanded(msg)">
+                <span class="tool-group-pill" *ngFor="let g of groupedToolCalls(completed); trackBy: trackToolGroup"
                       [class.group-err]="g.hasError"
                       (click)="toggleToolExpand(msg)">
                   <span nz-icon [nzType]="g.icon" nzTheme="outline"></span>
@@ -408,7 +426,8 @@ interface ProcessedSegment {
                   <span class="group-label">{{ g.label }}</span>
                 </span>
               </div>
-              <div class="tool-list" *ngIf="expandedTools.has(msg)">
+              </ng-container>
+              <div class="tool-list" *ngIf="isToolExpanded(msg)">
                 <div *ngFor="let tc of visibleToolCalls(msg.toolCalls)" class="tool-item-wrap">
                   <div class="tool-list-item"
                        [class.item-success]="tc.status !== 'error'"
@@ -603,6 +622,22 @@ interface ProcessedSegment {
     .reasoning-text ::ng-deep ul, .reasoning-text ::ng-deep ol { margin: 2px 0; padding-left: 18px; }
     .reasoning-text ::ng-deep li { margin: 1px 0; }
     .tool-summary { margin-top: 4px; }
+    /* Tools en cours de streaming : visibles live, jamais dans un groupe collapsed. */
+    .tool-live-list { display: flex; flex-direction: column; gap: 3px; margin-bottom: 6px; }
+    .tool-live-item {
+      display: flex; align-items: center; gap: 8px;
+      padding: 5px 10px; border-radius: 6px;
+      background: linear-gradient(90deg, #fff7e6, #fff3e0);
+      border-left: 3px solid #faad14;
+      font-size: 12px;
+    }
+    .tool-live-item .tl-ico { color: #faad14; flex-shrink: 0; }
+    .tool-live-item .tl-name { font-weight: 600; color: #262626; flex-shrink: 0; }
+    .tool-live-item .tl-args {
+      font-family: 'SFMono-Regular', Consolas, monospace; font-size: 11px;
+      color: #8c6c14; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      padding: 1px 6px; background: rgba(255,255,255,0.6); border-radius: 3px;
+    }
     .summary-toggle { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; color: #999; cursor: pointer; transition: color 0.2s; }
     .summary-toggle:hover { color: #666; }
     .tool-list { margin-top: 4px; }
@@ -1035,7 +1070,10 @@ export class AiMessageComponent {
   selectedToolTitle = '';
   selectedToolTemplate: any = null;
 
-  expandedTools = new Set<any>();
+  // Clés stables (pas des refs d'objet) → survit aux deltas streaming qui créent
+  // de nouvelles références pour msg/ps. Sans ça le collapse se refermait à chaque
+  // chunk car le Set perdait sa clé.
+  expandedTools = new Set<string>();
   expandedToolItems = new Set<string>();
   expandedArgValues = new Set<string>();
   private _processedCache = new WeakMap<AiMessageSegment[], ProcessedSegment[]>();
@@ -1165,6 +1203,45 @@ export class AiMessageComponent {
     return this._filterHiddenTools(tools);
   }
 
+  /** Tools en cours de streaming (args ou body pas encore finalisés). Affichés
+   *  live, séparés du groupe collapsed. Status 'running'/'building' OU pas de
+   *  status (cas des deltas avec juste _argsBuf en cours). */
+  runningToolCalls(tools: AiToolCall[] | undefined): AiToolCall[] {
+    if (!tools?.length) return [];
+    return this._filterHiddenTools(tools).filter(tc => {
+      const s = String((tc as any).status || '');
+      // Pas encore de status OU status running/building = tool live
+      if (!s) return !!(tc as any)._argsBuf || !(tc as any).result;
+      return s === 'running' || s === 'building';
+    });
+  }
+
+  /** Tools terminés (success ou error). Ceux-là peuvent être groupés collapsed. */
+  completedToolCalls(tools: AiToolCall[] | undefined): AiToolCall[] {
+    if (!tools?.length) return [];
+    return this._filterHiddenTools(tools).filter(tc => {
+      const s = String((tc as any).status || '');
+      return s === 'success' || s === 'error';
+    });
+  }
+
+  /** Preview court des args en cours de streaming (pour affichage live). */
+  toolLiveArgsPreview(tc: AiToolCall): string {
+    const buf = (tc as any)._argsBuf;
+    if (typeof buf === 'string' && buf.length) {
+      // Remove newlines and collapse whitespace, cap at 240 chars
+      const one = buf.replace(/\s+/g, ' ').trim();
+      return one.length > 240 ? one.slice(0, 240) + '…' : one;
+    }
+    if (tc.args && Object.keys(tc.args).length) {
+      try {
+        const s = JSON.stringify(tc.args);
+        return s.length > 240 ? s.slice(0, 240) + '…' : s;
+      } catch { return ''; }
+    }
+    return '';
+  }
+
   getProcessedSegments(): ProcessedSegment[] {
     const segs = this.msg.segments;
     if (!segs?.length) return [];
@@ -1248,6 +1325,7 @@ export class AiMessageComponent {
   }
 
   trackToolGroup(i: number, g: any): string { return g.name + ':' + i; }
+  trackTc(i: number, tc: AiToolCall): string { return tc.id || `tc:${i}`; }
 
   toolGroupSummary(tools: AiToolCall[]): string {
     const groups = this.groupedToolCalls(tools);
@@ -1518,9 +1596,28 @@ export class AiMessageComponent {
     return extra ? `${label} — ${extra}` : label;
   }
 
-  toggleToolExpand(item: any) {
-    if (this.expandedTools.has(item)) this.expandedTools.delete(item);
-    else this.expandedTools.add(item);
+  /** Clé stable pour l'état de collapse d'un groupe de tools. Survit aux
+   *  re-renders streaming (ps/msg changent de référence à chaque delta). */
+  toolGroupKey(item: any, index?: number): string {
+    if (!item) return 'none';
+    // Pour un processed segment : on utilise l'index + premier toolId stable
+    if (typeof index === 'number' && item.toolCalls?.length) {
+      return `ps:${index}:${item.toolCalls[0].id || ''}`;
+    }
+    // Pour un message : utilise _id (fixe pour les vrais msgs et les synthesized)
+    if (item._id) return `msg:${item._id}`;
+    if (item.toolCalls?.length) return `ps:fallback:${item.toolCalls[0].id || ''}`;
+    return 'none';
+  }
+
+  toggleToolExpand(item: any, index?: number) {
+    const key = this.toolGroupKey(item, index);
+    if (this.expandedTools.has(key)) this.expandedTools.delete(key);
+    else this.expandedTools.add(key);
+  }
+
+  isToolExpanded(item: any, index?: number): boolean {
+    return this.expandedTools.has(this.toolGroupKey(item, index));
   }
 
   toggleToolItemExpand(id: string) {

@@ -1,6 +1,7 @@
 import React from "react";
 import { theme } from "../theme";
 import type { Agent } from "../theme";
+import { LucideIcon, IconName } from "./AgentIcon";
 
 export const AgentCard: React.FC<{
   agent: Agent;
@@ -45,11 +46,11 @@ export const AgentCard: React.FC<{
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          fontSize: sizes.emoji,
-          boxShadow: `0 6px 18px ${agent.color}40`,
+          color: "#fff",
+          boxShadow: `0 6px 18px ${agent.color}40, inset 0 1px 0 rgba(255,255,255,0.25)`,
         }}
       >
-        {agent.emoji}
+        <LucideIcon name={agent.iconName as IconName} size={Math.round(sizes.emoji * 0.85)} color="#fff" strokeWidth={2} />
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{ fontSize: sizes.name, fontWeight: 600, color: theme.color.text }}>{agent.name}</div>

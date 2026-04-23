@@ -1,16 +1,17 @@
 import React from "react";
 import { theme } from "../theme";
+import { LucideIcon, IconName } from "./AgentIcon";
 
 export const ChatMessage: React.FC<{
   kind: "user" | "assistant";
   agentColor?: string;
   agentName?: string;
-  agentEmoji?: string;
+  agentIcon?: IconName;
   children: React.ReactNode;
   opacity?: number;
   translateY?: number;
   maxWidth?: number;
-}> = ({ kind, agentColor, agentName, agentEmoji, children, opacity = 1, translateY = 0, maxWidth = 540 }) => {
+}> = ({ kind, agentColor, agentName, agentIcon, children, opacity = 1, translateY = 0, maxWidth = 540 }) => {
   const isUser = kind === "user";
   return (
     <div
@@ -36,16 +37,16 @@ export const ChatMessage: React.FC<{
               width: 36,
               height: 36,
               borderRadius: 12,
-              background: agentColor,
+              background: `linear-gradient(135deg, ${agentColor}, ${agentColor}cc)`,
+              color: "#fff",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              fontSize: 18,
-              boxShadow: `0 4px 14px ${agentColor}44`,
+              boxShadow: `0 4px 14px ${agentColor}55, inset 0 1px 0 rgba(255,255,255,0.25)`,
               flexShrink: 0,
             }}
           >
-            {agentEmoji}
+            {agentIcon && <LucideIcon name={agentIcon} size={18} color="#fff" />}
           </div>
         )}
         <div>

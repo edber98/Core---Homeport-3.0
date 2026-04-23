@@ -4,6 +4,7 @@ import { theme, agents } from "../theme";
 import { ChatMessage } from "../components/ChatMessage";
 import { AnimatedBg } from "../components/AnimatedBg";
 import { Icon } from "../components/Icon";
+import { LucideIcon, IconName } from "../components/AgentIcon";
 import { easeOutExpo, easeInExpo, easeOutBack } from "../utils/easing";
 
 const denis = agents.find(a => a.id === "denis")!;
@@ -141,7 +142,7 @@ const ConversationCard: React.FC<{ frame: number; fps: number }> = ({ frame, fps
           kind="assistant"
           agentColor={denis.color}
           agentName={`${denis.name} · Généraliste`}
-          agentEmoji={denis.emoji}
+          agentIcon={denis.iconName}
           opacity={d1}
           translateY={(1 - d1) * 14}
           maxWidth={460}
@@ -153,7 +154,7 @@ const ConversationCard: React.FC<{ frame: number; fps: number }> = ({ frame, fps
           kind="assistant"
           agentColor={denis.color}
           agentName={denis.name}
-          agentEmoji={denis.emoji}
+          agentIcon={denis.iconName}
           opacity={d2}
           translateY={(1 - d2) * 14}
           maxWidth={460}
@@ -169,7 +170,7 @@ const ConversationCard: React.FC<{ frame: number; fps: number }> = ({ frame, fps
           kind="assistant"
           agentColor={denis.color}
           agentName={denis.name}
-          agentEmoji={denis.emoji}
+          agentIcon={denis.iconName}
           opacity={d3}
           translateY={(1 - d3) * 14}
           maxWidth={460}
@@ -203,14 +204,14 @@ const DelegateRow: React.FC<{ agent: typeof agents[number]; label: string }> = (
         height: 26,
         borderRadius: 8,
         background: agent.color,
+        color: "#fff",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        fontSize: 13,
         flexShrink: 0,
       }}
     >
-      {agent.emoji}
+      <LucideIcon name={agent.iconName as IconName} size={14} color="#fff" strokeWidth={2.2} />
     </div>
     <div style={{ flex: 1, minWidth: 0 }}>
       <div style={{ fontSize: 12, fontWeight: 600, color: theme.color.text, lineHeight: 1.2 }}>→ {agent.name}</div>
@@ -310,15 +311,15 @@ const SubagentPanel: React.FC<{
             height: 40,
             borderRadius: 12,
             background: `linear-gradient(135deg, ${agent.color}, ${agent.color}cc)`,
+            color: "#fff",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            fontSize: 20,
-            boxShadow: `0 6px 18px ${agent.color}55`,
+            boxShadow: `0 6px 18px ${agent.color}55, inset 0 1px 0 rgba(255,255,255,0.25)`,
             flexShrink: 0,
           }}
         >
-          {agent.emoji}
+          <LucideIcon name={agent.iconName as IconName} size={20} color="#fff" strokeWidth={2} />
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>

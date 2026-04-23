@@ -38,21 +38,23 @@ export const theme = {
   },
 };
 
+// Each agent has an icon name pointing into the lucide-react registry (see AgentIcon.tsx).
+// We no longer use emojis anywhere in the pitch video.
 export const agents = [
-  { id: "tim", name: "Tim", role: "Explorateur web", color: "#1890ff", emoji: "🌐" },
-  { id: "ada", name: "Ada", role: "Analyste données", color: "#13c2c2", emoji: "📊" },
-  { id: "donald", name: "Donald", role: "Rédacteur", color: "#722ed1", emoji: "✒️" },
-  { id: "denis", name: "Denis", role: "Généraliste", color: "#e61982", emoji: "📚" },
-  { id: "van", name: "Van", role: "Archiviste mémoire", color: "#fa8c16", emoji: "🧠" },
-  { id: "hypatie", name: "Hypatie", role: "Doc projet", color: "#52c41a", emoji: "🏛️" },
-  { id: "alan", name: "Alan", role: "Exécuteur code", color: "#2f54eb", emoji: "⚙️" },
-  { id: "rene", name: "René", role: "Logicien", color: "#595959", emoji: "🧩" },
-  { id: "hedy", name: "Hedy", role: "Vision", color: "#eb2f96", emoji: "👁️" },
-  { id: "graham", name: "Graham", role: "Voix", color: "#d46b08", emoji: "🎤" },
-  { id: "marie", name: "Marie", role: "Data scientist", color: "#cf1322", emoji: "🔬" },
-  { id: "florence", name: "Florence", role: "Dataviz", color: "#ff70a6", emoji: "📈" },
-  { id: "isaac", name: "Isaac", role: "Architecte", color: "#531dab", emoji: "🤖" },
-  { id: "claude", name: "Claude", role: "Auditeur sécurité", color: "#434343", emoji: "🔒" },
-] as const;
+  { id: "tim", name: "Tim", role: "Explorateur web", color: "#1890ff", iconName: "tim" as const },
+  { id: "ada", name: "Ada", role: "Analyste données", color: "#13c2c2", iconName: "ada" as const },
+  { id: "donald", name: "Donald", role: "Rédacteur", color: "#722ed1", iconName: "donald" as const },
+  { id: "denis", name: "Denis", role: "Généraliste", color: "#e61982", iconName: "denis" as const },
+  { id: "van", name: "Van", role: "Archiviste mémoire", color: "#fa8c16", iconName: "van" as const },
+  { id: "hypatie", name: "Hypatie", role: "Doc projet", color: "#52c41a", iconName: "hypatie" as const },
+  { id: "alan", name: "Alan", role: "Exécuteur code", color: "#2f54eb", iconName: "alan" as const },
+  { id: "rene", name: "René", role: "Logicien", color: "#595959", iconName: "rene" as const },
+  { id: "hedy", name: "Hedy", role: "Vision", color: "#eb2f96", iconName: "hedy" as const },
+  { id: "graham", name: "Graham", role: "Voix", color: "#d46b08", iconName: "graham" as const },
+  { id: "marie", name: "Marie", role: "Data scientist", color: "#cf1322", iconName: "marie" as const },
+  { id: "florence", name: "Florence", role: "Dataviz", color: "#ff70a6", iconName: "florence" as const },
+  { id: "isaac", name: "Isaac", role: "Architecte", color: "#531dab", iconName: "isaac" as const },
+  { id: "claude", name: "Claude", role: "Auditeur sécurité", color: "#434343", iconName: "claude" as const },
+];
 
 export type Agent = (typeof agents)[number];

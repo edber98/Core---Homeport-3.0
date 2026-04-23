@@ -62,6 +62,14 @@ interface TimelineItem {
         <nz-tag [nzColor]="statusColor()">{{ statusLabel() }}</nz-tag>
       </div>
 
+      <!-- Phrase-titre : brief envoyé au subagent, visible dès le démarrage.
+           Avant, user voyait seulement la réponse finale (OpenAI particulièrement
+           était muet pendant l'exécution). Claude annonçait toujours le sujet. -->
+      <div class="sw-brief" *ngIf="jobBrief() as brief">
+        <span nz-icon nzType="bulb" nzTheme="outline" class="sw-brief-ico"></span>
+        <span class="sw-brief-text">{{ brief }}</span>
+      </div>
+
       <div class="sw-body">
         <div class="sw-todo" *ngIf="subagentTodo() as todo">
           <div class="sw-todo-title">{{ todo.title || 'Checklist interne' }}</div>
@@ -169,6 +177,16 @@ interface TimelineItem {
     .sw-item:hover { background: #fafafa; }
     .sw-item-time { font-size: 10px; color: #bfbfbf; flex-shrink: 0; min-width: 40px; }
     .sw-item-body { flex: 1; min-width: 0; }
+    .sw-brief {
+      display: flex; align-items: flex-start; gap: 8px;
+      padding: 10px 14px; margin: 0 14px;
+      background: linear-gradient(135deg, #fdf2f8, #fef3f2);
+      border-left: 3px solid #e61982;
+      border-radius: 0 6px 6px 0;
+      font-size: 12px; line-height: 1.4; color: #262626;
+    }
+    .sw-brief-ico { color: #e61982; font-size: 14px; margin-top: 1px; flex-shrink: 0; }
+    .sw-brief-text { flex: 1; }
     .sw-widget-wrap { margin: 8px 0; }
     .sw-status-row {
       display: inline-flex; align-items: center; gap: 6px;
@@ -269,14 +287,34 @@ export class AiSubagentWindowComponent implements OnInit, OnChanges, OnDestroy {
   /** Statuts et permissions, rendus en footer. */
   statusMessages = computed(() => this._events().filter(it => it.kind === 'status' || it.kind === 'permission'));
 
+  // Cache pour éviter de recomposer un AiMessage tout neuf à chaque event.
+  // Référence stable → pas de re-render destructif de <ai-message> et ses
+  // sous-composants (iframe canvas, markdown, live preview).
+  private _synthCache: { key: string; msg: AiMessage | null } = { key: '', msg: null };
+
   /**
    * Synthétise UN AiMessage assistant à partir des events (tools + text_out).
    * Permet de réutiliser <ai-message> et d'avoir exactement le même rendu
    * (segments interleaved, live preview, grouped tool viewer) que le chat.
+   * Memoized sur une signature d'état pour stabiliser la référence.
    */
   synthesizedMessage = computed<AiMessage | null>(() => {
     const relevant = this._events().filter(it => it.kind === 'tool' || it.kind === 'text_out');
     if (relevant.length === 0) return null;
+    // Signature : nb items + dernier text length + status/duration/livePreview version
+    // de chaque tool. Si rien de matériel n'a changé, on réutilise le msg cached.
+    const keyParts: string[] = [String(relevant.length)];
+    for (const it of relevant) {
+      if (it.kind === 'text_out') {
+        keyParts.push(`t:${(it.text || '').length}`);
+      } else {
+        const lpLen = it.livePreview ? JSON.stringify(it.livePreview.data || {}).length : 0;
+        keyParts.push(`tc:${it.id}:${it.toolStatus || '?'}:${it.toolDuration || 0}:${lpLen}`);
+      }
+    }
+    const key = keyParts.join('|');
+    if (this._synthCache.key === key && this._synthCache.msg) return this._synthCache.msg;
+
     const segments: AiMessageSegment[] = [];
     const toolCalls: AiToolCall[] = [];
     let lastKind: 'text' | 'tools' | null = null;
@@ -309,7 +347,7 @@ export class AiSubagentWindowComponent implements OnInit, OnChanges, OnDestroy {
         }
       }
     }
-    return {
+    const msg: AiMessage = {
       _id: `synthesized-${this.jobId}`,
       threadId: this.ai.currentThread()?.id || '',
       role: 'assistant',
@@ -317,10 +355,11 @@ export class AiSubagentWindowComponent implements OnInit, OnChanges, OnDestroy {
       toolCalls,
       segments,
       metadata: {
-        // Tag pour éviter que ai-chat.component le prenne en compte dans ses groupes
         subagentJobId: this.jobId,
       } as any,
     };
+    this._synthCache = { key, msg };
+    return msg;
   });
 
   isActive = computed(() => {
@@ -329,6 +368,17 @@ export class AiSubagentWindowComponent implements OnInit, OnChanges, OnDestroy {
   });
 
   subagentTodo = computed(() => this._subagentTodo());
+
+  /** Phrase-titre résumant ce qui a été demandé au subagent, visible dès le
+   *  démarrage (avant que l'agent ne produise le moindre texte). Source :
+   *  job.subagentInstructions (le prompt), tronqué à 180 chars. */
+  jobBrief = computed<string | null>(() => {
+    const raw = this._job()?.subagentInstructions;
+    if (!raw || typeof raw !== 'string') return null;
+    const cleaned = raw.trim().replace(/\s+/g, ' ');
+    if (!cleaned) return null;
+    return cleaned.length > 180 ? cleaned.slice(0, 180) + '…' : cleaned;
+  });
 
   ngOnInit(): void {
     this._load();
@@ -520,6 +570,30 @@ export class AiSubagentWindowComponent implements OnInit, OnChanges, OnDestroy {
       this._patchTool(toolId, { toolName: ev.name || ev.toolName, toolStatus: 'running' }, {
         toolName: ev.name || ev.toolName,
         toolStatus: 'running',
+      });
+      return;
+    }
+    if (ev.type === 'tool.input_delta') {
+      // Accumule les args en cours de construction → visible dans le widget
+      // tool viewer en streaming (execute_code, spawn_subagent, etc.).
+      const toolId = `tool-${ev.id || ev.toolId}`;
+      if (!ev.id && !ev.toolId) return;
+      this._events.update(arr => {
+        const idx = arr.findIndex(x => x.id === toolId && x.kind === 'tool');
+        if (idx < 0) return arr;
+        const cur = arr[idx];
+        const prevArgs = cur.toolArgs || {};
+        const nextArgsBuf = (prevArgs._argsBuf || '') + (ev.text || '');
+        // Tentative de parse JSON partiel → si ça passe, expose les champs
+        // parsés en plus du buffer brut.
+        let parsed: any = {};
+        try { parsed = JSON.parse(nextArgsBuf); } catch { /* partial JSON, keep buffer only */ }
+        const next = [...arr];
+        next[idx] = {
+          ...cur,
+          toolArgs: { ...parsed, _argsBuf: nextArgsBuf },
+        };
+        return next;
       });
       return;
     }

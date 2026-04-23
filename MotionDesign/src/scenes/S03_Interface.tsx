@@ -3,6 +3,7 @@ import { AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig } fr
 import { theme, agents } from "../theme";
 import { AppShell } from "../components/AppShell";
 import { Icon } from "../components/Icon";
+import { LucideIcon, IconName } from "../components/AgentIcon";
 import { easeOutExpo, easeInExpo } from "../utils/easing";
 
 export const S03_Interface: React.FC = () => {
@@ -160,13 +161,13 @@ export const S03_Interface: React.FC = () => {
                         height: 20,
                         borderRadius: 6,
                         background: a.color,
+                        color: "#fff",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
-                        fontSize: 11,
                       }}
                     >
-                      {a.emoji}
+                      <LucideIcon name={a.iconName as IconName} size={11} color="#fff" strokeWidth={2.3} />
                     </span>
                     <span style={{ fontWeight: 500 }}>{a.name}</span>
                     <span style={{ color: theme.color.textMuted, fontSize: 11 }}>· {a.role}</span>
