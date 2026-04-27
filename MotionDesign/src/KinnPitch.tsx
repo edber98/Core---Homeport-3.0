@@ -12,6 +12,7 @@ import { P07_Confidentiality as P10_Confidentiality } from "./scenes/pitch/P07_C
 import { P08_WorkflowAgentic as P09_WorkflowAgentic } from "./scenes/pitch/P08_WorkflowAgentic";
 import { P10_UseCases as P11_UseCases } from "./scenes/pitch/P10_UseCases";
 import { P09_Closing as P12_Closing } from "./scenes/pitch/P09_Closing";
+import { AmbientStyles } from "./components/AmbientStyles";
 import { theme } from "./theme";
 
 // Kinn Pitch v7 — ~7:10 — visual backdrop for a 10-minute sales pitch.
@@ -33,6 +34,10 @@ import { theme } from "./theme";
 export const KinnPitch: React.FC = () => {
   return (
     <AbsoluteFill style={{ background: "#f5f5f7", fontFamily: theme.font.family }}>
+      {/* Inject CSS keyframes for ambient animations (caret blink, flowing
+          packets, pulses) — these keep running even when Remotion Player is
+          paused on a checkpoint, critical for the live pitch experience. */}
+      <AmbientStyles />
       {/*
         AUDIO SLOTS — plug in your voice-over or music track here.
         <Audio src={staticFile('pitch-voiceover.mp3')} />

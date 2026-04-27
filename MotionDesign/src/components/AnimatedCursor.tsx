@@ -91,12 +91,14 @@ export const AnimatedCursor: React.FC<{
       <div
         style={{
           position: "absolute",
-          left: x,
-          top: y,
+          // The tip of the arrow sits at (5, 3) inside the 28×28 SVG, so we
+          // offset so that (x, y) corresponds to the actual click point.
+          left: x - 5,
+          top: y - 3,
           width: size,
           height: size,
           transform: `scale(${scale})`,
-          transformOrigin: "top left",
+          transformOrigin: "5px 3px",
           filter: "drop-shadow(0 4px 12px rgba(0,0,0,0.25))",
           transition: "transform 0.1s",
         }}

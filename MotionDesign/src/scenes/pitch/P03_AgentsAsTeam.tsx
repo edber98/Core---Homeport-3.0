@@ -60,7 +60,7 @@ export const P03_AgentsAsTeam: React.FC = () => {
           Solution 2 · Agents IA
         </div>
         <div style={{ fontSize: 52, fontWeight: 800, color: theme.color.text, marginTop: 10, letterSpacing: -1 }}>
-          Comme une <span style={{ color: theme.color.brand }}>équipe</span>. En mieux.
+          <span style={{ color: theme.color.brand }}>Augmentez</span> vos équipes.
         </div>
         <div
           style={{

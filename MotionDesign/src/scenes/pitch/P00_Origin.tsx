@@ -65,16 +65,16 @@ export const P00_Origin: React.FC = () => {
   const logoSpring = spring({ frame: frame - 4, fps, config: { damping: 14, stiffness: 110 } });
   const taglineSpring = spring({ frame: frame - 30, fps, config: { damping: 18 } });
 
-  // Phase 2 : Timeline reveal (frames 110-560)
-  const titleSpring = spring({ frame: frame - 110, fps, config: { damping: 16, stiffness: 130 } });
+  // Phase 2 : Timeline reveal — starts quickly after the intro
+  const titleSpring = spring({ frame: frame - 85, fps, config: { damping: 16, stiffness: 130 } });
 
-  // Phase 3 : Kinn emerges (frames 560+)
-  const kinnSpring = spring({ frame: frame - 560, fps, config: { damping: 14, stiffness: 100 } });
-  const quoteSpring = spring({ frame: frame - 640, fps, config: { damping: 18 } });
+  // Phase 3 : Kinn emerges. Compressed timing — cards run faster.
+  const kinnSpring = spring({ frame: frame - 420, fps, config: { damping: 14, stiffness: 100 } });
+  const quoteSpring = spring({ frame: frame - 460, fps, config: { damping: 18 } });
 
   // Phase boundaries for slide layout
-  const inTimeline = frame >= 110 && frame < 560;
-  const inClosing = frame >= 560;
+  const inTimeline = frame >= 80 && frame < 420;
+  const inClosing = frame >= 420;
 
   return (
     <AbsoluteFill style={{ opacity: inP * out }}>
@@ -236,20 +236,26 @@ export const P00_Origin: React.FC = () => {
               strokeLinecap="round"
               pathLength={1}
               strokeDasharray={1}
-              // Fill advances step by step — reaches position i exactly when
-              // card i appears (card startAt = 160 + i*80, i=0..3).
+              // Compressed stepped fill — cards at 100, 180, 260, 340 (80 frames apart).
+              //   [100, 140]  → 0     (card 1 settles, bar 0)
+              //   [140, 180]  → 0→1/3 (bar fills)
+              //   [180, 220]  → 1/3   (card 2 settles)
+              //   [220, 260]  → 1/3→2/3
+              //   [260, 300]  → 2/3   (card 3 settles)
+              //   [300, 340]  → 2/3→1
+              //   [340, 420]  → 1     (card 4 settles)
               strokeDashoffset={1 - interpolate(
                 frame,
-                [160, 240, 320, 400],
-                [0, 1 / 3, 2 / 3, 1],
+                [100, 140, 180, 220, 260, 300, 340, 420],
+                [0,   0,   1/3, 1/3, 2/3, 2/3, 1,   1],
                 { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: easeOutExpo }
               )}
             />
           </svg>
 
-          {/* Milestones — vertically centered in the available area */}
+          {/* Milestones — cards spaced 80 frames apart (compressed timeline). */}
           {milestones.map((m, i) => {
-            const startAt = 160 + i * 80;
+            const startAt = 100 + i * 80;
             const sp = spring({ frame: frame - startAt, fps, config: { damping: 13, stiffness: 120 } });
             const opacity = interpolate(sp, [0, 1], [0, 1]);
             const ty = interpolate(sp, [0, 1], [22, 0]);

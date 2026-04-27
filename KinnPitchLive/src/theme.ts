@@ -1,0 +1,25 @@
+export const theme = {
+  color: {
+    brand: "#e61982",
+    brandHover: "#d0167a",
+    brandLight: "#fdf2f8",
+    brandSoft: "#fce7f3",
+    success: "#16a34a",
+    warning: "#f59e0b",
+    error: "#ef4444",
+    info: "#0ea5e9",
+    bg: "#f8f8f8",
+    bgCard: "#ffffff",
+    bgDark: "#0b0b12",
+    bgDeep: "#05050a",
+    grid: "#e8e8e8",
+    border: "#e5e7eb",
+    borderSoft: "#f0f0f0",
+    text: "#1f2937",
+    textMuted: "#6b7280",
+    textSubtle: "#9ca3af",
+  },
+  font: {
+    family: "'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+  },
+};

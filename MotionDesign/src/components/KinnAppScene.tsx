@@ -10,20 +10,22 @@ import { C4rbonLogo, c4rbonPalette } from "./C4rbonLogo";
 import { CanvasArtifact } from "./CanvasArtifact";
 import { XlsxPreview } from "./XlsxPreview";
 import { LucideIcon } from "./AgentIcon";
+import { TypingText, StreamingText } from "./TypingAnimations";
 
 // Pixel coordinates (in scene space 1920×1080) of clickable Kinn UI elements.
 // These MUST match the real geometry produced by AppShell.
+// UI coordinates (scene space 1920×1080) of clickable Kinn elements.
+// These are the TIP positions the animated cursor should land on.
 const UI = {
-  // Header right icons, each 34×34, gap 8, padding-right 16.
-  // Order from right: avatar, bell, AI, sliders, rocket.
-  // AI button center:
+  // Header right icons (34×34, gap 8, padding-right 16). AI is 3rd from right.
   aiBtn: { x: 1803, y: 26 },
-  // Search bar center (position:absolute at left:50%)
   search: { x: 960, y: 26 },
-  // Input bar area (bottom composer). MaxWidth 900 centered in main area (main starts at x=230).
-  // Main inner width = 1690, input centered. Input bar y ≈ 980 in scene.
-  promptInput: { x: 910, y: 980 },
-  sendBtn: { x: 1460, y: 980 },
+  // Composer at bottom : max-width 900, centered in main (main starts x=230
+  // width 1690). Composer bar horizontal range ≈ 625..1525. Send button sits
+  // at the right end with ~18px padding — center ≈ 1468, but the visible
+  // button edge is closer to 1475 so we aim there for a clean landing.
+  promptInput: { x: 910, y: 978 },
+  sendBtn: { x: 1470, y: 978 },
 };
 
 const PROMPT_LINE_1 = "Étude de marché sur les plateformes iPaaS en Europe 2026.";
@@ -55,76 +57,79 @@ const DENIS_REPLY = [
 // 1700-2100 xlsx opens fullscreen
 // 2100-end  hold xlsx
 
+// Compressed timeline — tight camera + snappy transitions.
+//   0-30   cursor to AI btn + click
+//   30-80  halo + zoom on prompt input
+//   100    cursor click inside input (field focused)
+//   120-340 TypingText prompt (≈210 frames at 34 cps)
+//   340    cursor moves to send
+//   360    click send
+//   370    user bubble appears
+//   420    Denis msg appears, StreamingText begins
+//   420-620 Denis streams (~200 frames)
+//   700    canvas inline (Tim/Ada)
+//   1100   Donald assembling
+//   1400   xlsx fullscreen
 const cameraShot: CameraShot = {
   width: 1920,
   height: 1080,
   keyframes: [
     { frame: 0, cx: 960, cy: 540, zoom: 1.0 },
-    { frame: 40, cx: 1760, cy: 120, zoom: 1.9 },
-    { frame: 90, cx: 1760, cy: 120, zoom: 1.9 }, // hold click
-    { frame: 140, cx: 960, cy: 540, zoom: 1.0 }, // pull back
-    { frame: 190, cx: 960, cy: 960, zoom: 1.7 }, // zoom on input
-    { frame: 400, cx: 960, cy: 960, zoom: 1.7 }, // hold while typing (200 frames)
-    { frame: 470, cx: 960, cy: 540, zoom: 1.0 }, // pull back for send visibility
-    { frame: 560, cx: 960, cy: 540, zoom: 1.0 }, // wide (Denis talks)
-    { frame: 780, cx: 720, cy: 560, zoom: 1.1 }, // slight lean to chat canvas
-    { frame: 1040, cx: 960, cy: 540, zoom: 1.0 }, // back to full canvas layout
-    { frame: 1280, cx: 560, cy: 540, zoom: 1.2 }, // pan left canvas Tim
-    { frame: 1480, cx: 1360, cy: 540, zoom: 1.2 }, // pan right canvas Ada
-    { frame: 1620, cx: 960, cy: 540, zoom: 1.0 }, // back wide
-    { frame: 1780, cx: 960, cy: 540, zoom: 1.0 }, // hold
-    { frame: 1900, cx: 960, cy: 540, zoom: 1.08 }, // slight zoom into xlsx
-    { frame: 2700, cx: 960, cy: 540, zoom: 1.02 },
+    { frame: 30, cx: 1760, cy: 120, zoom: 1.9 },
+    { frame: 70, cx: 1760, cy: 120, zoom: 1.9 },
+    { frame: 110, cx: 960, cy: 540, zoom: 1.0 },
+    { frame: 150, cx: 960, cy: 960, zoom: 1.7 },
+    { frame: 340, cx: 960, cy: 960, zoom: 1.7 },
+    { frame: 380, cx: 960, cy: 540, zoom: 1.0 },
+    { frame: 430, cx: 960, cy: 540, zoom: 1.0 },
+    { frame: 640, cx: 720, cy: 560, zoom: 1.1 },
+    { frame: 900, cx: 960, cy: 540, zoom: 1.0 },
+    { frame: 1140, cx: 560, cy: 540, zoom: 1.2 },
+    { frame: 1300, cx: 1360, cy: 540, zoom: 1.2 },
+    { frame: 1430, cx: 960, cy: 540, zoom: 1.0 },
+    { frame: 1560, cx: 960, cy: 540, zoom: 1.0 },
+    { frame: 1650, cx: 960, cy: 540, zoom: 1.06 },
+    { frame: 1800, cx: 960, cy: 540, zoom: 1.02 },
   ],
 };
 
+// Cursor path — each click is preceded by an "arrival" keyframe ~15 frames
+// earlier so the viewer sees the cursor reach the target, hold, then click.
 const cursorPath: CursorKeyframe[] = [
-  { frame: 0, x: 1300, y: 700 },
-  { frame: 35, x: UI.aiBtn.x, y: UI.aiBtn.y, click: true },
-  { frame: 120, x: UI.aiBtn.x, y: UI.aiBtn.y },
-  { frame: 170, x: UI.promptInput.x, y: UI.promptInput.y, click: true },
-  { frame: 430, x: UI.promptInput.x, y: UI.promptInput.y },
-  { frame: 470, x: UI.sendBtn.x, y: UI.sendBtn.y, click: true },
-  { frame: 560, x: UI.sendBtn.x, y: UI.sendBtn.y },
+  { frame: 0,   x: 1300, y: 700 },
+  { frame: 15,  x: UI.aiBtn.x,       y: UI.aiBtn.y },                           // arrived on AI btn
+  { frame: 30,  x: UI.aiBtn.x,       y: UI.aiBtn.y,       click: true },        // click
+  { frame: 90,  x: UI.aiBtn.x,       y: UI.aiBtn.y },
+  { frame: 108, x: UI.promptInput.x, y: UI.promptInput.y },                      // arrived on input
+  { frame: 120, x: UI.promptInput.x, y: UI.promptInput.y, click: true },         // click input
+  { frame: 340, x: UI.promptInput.x, y: UI.promptInput.y },
+  { frame: 348, x: UI.sendBtn.x,     y: UI.sendBtn.y },                          // arrived on Send (12f before click)
+  { frame: 360, x: UI.sendBtn.x,     y: UI.sendBtn.y,     click: true },         // click Send
+  { frame: 430, x: UI.sendBtn.x,     y: UI.sendBtn.y },
 ];
+
+// Scheduling constants — change these to retime the whole scene.
+// NB: the cursor click ripple lasts ~22 frames, so the user bubble should
+// only appear AFTER the ripple has fully played out, not during it.
+const PROMPT_TYPE_START = 120;
+const SEND_CLICK_FRAME = 360;   // cursor fires the click here
+const USER_BUBBLE_FRAME = 400;  // +40 frames so the ripple has finished
+const DENIS_START = 450;
+const CANVAS_INLINE_FRAME = 720;
+const DONALD_FRAME = 1100;
+const XLSX_FRAME = 1400;
 
 export const KinnAppScene: React.FC<{ duration: number }> = ({ duration }) => {
   const frame = useCurrentFrame();
 
-  // Typing by WORD CHUNKS — far snappier than char by char.
-  const promptWords = FULL_PROMPT.split(/(\s+)/); // keep spaces
-  const typeStart = 190;
-  const typeEnd = 450; // was 540 — compressed to 260 frames
-  const wordsCount = Math.floor(
-    interpolate(frame, [typeStart, typeEnd], [0, promptWords.length], {
-      extrapolateLeft: "clamp",
-      extrapolateRight: "clamp",
-    })
-  );
-  const typedText = promptWords.slice(0, wordsCount).join("");
-  const showTypingCursor = Math.floor(frame / 10) % 2 === 0;
-
-  // Progressive word-by-word for Denis reply — faster cadence
-  const denisStart = 580;
-  const denisEnd = 780; // 200 frames
-  const words = DENIS_REPLY.split(" ");
-  const wordsShown = Math.floor(
-    interpolate(frame, [denisStart, denisEnd], [0, words.length], {
-      extrapolateLeft: "clamp",
-      extrapolateRight: "clamp",
-    })
-  );
-  const denisTyped = words.slice(0, wordsShown).join(" ");
-
   // State flags — tightly synchronized with cursor clicks
-  const aiBtnHalo = frame >= 20 && frame < 90;
-  const inputFocused = frame >= 170 && frame < 475;
-  // Only become "sent" AFTER the cursor clicked the send button at frame 470
-  const sentPromptVisible = frame >= 475;
-  const denisMsgVisible = frame >= 560;
-  const canvasInline = frame >= 880; // canvases appear INSIDE the chat flow
-  const donaldSection = frame >= 1380;
-  const showXlsx = frame >= 1660;
+  const aiBtnHalo = frame >= 15 && frame < 80;
+  const inputFocused = frame >= 110 && frame < SEND_CLICK_FRAME;
+  const sentPromptVisible = frame >= USER_BUBBLE_FRAME;
+  const denisMsgVisible = frame >= DENIS_START;
+  const canvasInline = frame >= CANVAS_INLINE_FRAME;
+  const donaldSection = frame >= DONALD_FRAME;
+  const showXlsx = frame >= XLSX_FRAME;
 
   return (
     <CameraViewport shot={cameraShot} background="#05050a">
@@ -159,7 +164,7 @@ export const KinnAppScene: React.FC<{ duration: number }> = ({ duration }) => {
               <div style={{ paddingBottom: 14 }}>
                 <ChatMessage
                   kind="user"
-                  opacity={interpolate(frame, [610, 660], [0, 1], {
+                  opacity={interpolate(frame, [USER_BUBBLE_FRAME, USER_BUBBLE_FRAME + 20], [0, 1], {
                     extrapolateLeft: "clamp",
                     extrapolateRight: "clamp",
                   })}
@@ -178,18 +183,18 @@ export const KinnAppScene: React.FC<{ duration: number }> = ({ duration }) => {
                   agentColor="#e61982"
                   agentName="Denis · Généraliste"
                   agentIcon="denis"
-                  opacity={interpolate(frame, [660, 700], [0, 1], {
+                  opacity={interpolate(frame, [DENIS_START, DENIS_START + 20], [0, 1], {
                     extrapolateLeft: "clamp",
                     extrapolateRight: "clamp",
                   })}
                   maxWidth={780}
                 >
-                  <div style={{ lineHeight: 1.6 }}>
-                    {denisTyped}
-                    {wordsShown < words.length && (
-                      <span style={{ borderRight: "2px solid #e61982", marginLeft: 2 }}>&nbsp;</span>
-                    )}
-                  </div>
+                  <StreamingText
+                    text={DENIS_REPLY}
+                    startFrame={DENIS_START + 10}
+                    wps={8}
+                    style={{ lineHeight: 1.6 }}
+                  />
                 </ChatMessage>
               </div>
             )}
@@ -248,38 +253,48 @@ export const KinnAppScene: React.FC<{ duration: number }> = ({ duration }) => {
                   flex: 1,
                   minHeight: 22,
                   fontSize: 14,
-                  color: typedText ? theme.color.text : "#c4c4c4",
-                  whiteSpace: "pre-wrap",
+                  color: theme.color.text,
                   lineHeight: 1.55,
                   paddingTop: 3,
                 }}
               >
-                {sentPromptVisible
-                  ? <span style={{ color: "#c4c4c4" }}>Demandez à Kinn...</span>
-                  : (typedText || "Demandez à Kinn...")}
-                {showTypingCursor && typedText && !sentPromptVisible && (
-                  <span style={{ borderRight: `2px solid ${theme.color.brand}`, marginLeft: 1 }}>&nbsp;</span>
+                {sentPromptVisible ? (
+                  <span style={{ color: "#c4c4c4" }}>Demandez à Kinn...</span>
+                ) : frame < PROMPT_TYPE_START ? (
+                  <span style={{ color: "#c4c4c4" }}>Demandez à Kinn...</span>
+                ) : (
+                  <TypingText
+                    text={FULL_PROMPT}
+                    startFrame={PROMPT_TYPE_START}
+                    cps={34}
+                    caret
+                  />
                 )}
               </div>
-              <div
-                style={{
-                  padding: "8px 14px",
-                  borderRadius: 11,
-                  background: typedText && !sentPromptVisible ? theme.color.brand : theme.color.bg,
-                  color: typedText && !sentPromptVisible ? "#fff" : theme.color.textMuted,
-                  fontSize: 12,
-                  fontWeight: 600,
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 6,
-                  boxShadow: typedText && !sentPromptVisible ? "0 6px 18px rgba(230,25,130,0.35)" : "none",
-                  flexShrink: 0,
-                  transition: "all 0.2s",
-                }}
-              >
-                <Icon name="send" size={12} color={typedText && !sentPromptVisible ? "#fff" : theme.color.textMuted} />
-                Envoyer
-              </div>
+              {(() => {
+                const ready = frame >= PROMPT_TYPE_START + 180 && !sentPromptVisible;
+                return (
+                  <div
+                    style={{
+                      padding: "8px 14px",
+                      borderRadius: 11,
+                      background: ready ? theme.color.brand : theme.color.bg,
+                      color: ready ? "#fff" : theme.color.textMuted,
+                      fontSize: 12,
+                      fontWeight: 600,
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 6,
+                      boxShadow: ready ? "0 6px 18px rgba(230,25,130,0.35)" : "none",
+                      flexShrink: 0,
+                      transition: "all 0.2s",
+                    }}
+                  >
+                    <Icon name="send" size={12} color={ready ? "#fff" : theme.color.textMuted} />
+                    Envoyer
+                  </div>
+                );
+              })()}
             </div>
           </div>
         </div>
@@ -353,7 +368,7 @@ const GreetingBlock: React.FC<{ frame: number }> = ({ frame }) => {
 // Mimics the real Kinn "structured response" UI.
 
 const InlineCanvasBlock: React.FC<{ frame: number; donaldSection: boolean }> = ({ frame, donaldSection }) => {
-  const containerOp = interpolate(frame, [880, 940], [0, 1], {
+  const containerOp = interpolate(frame, [700, 760], [0, 1], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
@@ -391,7 +406,7 @@ const InlineCanvasBlock: React.FC<{ frame: number; donaldSection: boolean }> = (
 
 const CanvasInlineTim: React.FC<{ frame: number }> = ({ frame }) => {
   const height = 340;
-  const progress = interpolate(frame, [940, 1240], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const progress = interpolate(frame, [770, 1020], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
   return (
     <div style={{ height }}>
       <CanvasArtifact
@@ -411,7 +426,7 @@ const CanvasInlineTim: React.FC<{ frame: number }> = ({ frame }) => {
 
 const CanvasInlineAda: React.FC<{ frame: number }> = ({ frame }) => {
   const height = 340;
-  const progress = interpolate(frame, [980, 1280], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const progress = interpolate(frame, [810, 1060], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
   return (
     <div style={{ height }}>
       <CanvasArtifact
@@ -430,7 +445,7 @@ const CanvasInlineAda: React.FC<{ frame: number }> = ({ frame }) => {
 };
 
 const DonaldAssembling: React.FC<{ frame: number }> = ({ frame }) => {
-  const op = interpolate(frame, [1380, 1430], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const op = interpolate(frame, [1100, 1150], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
   const donald = agents.find(a => a.id === "donald")!;
 
   return (
@@ -471,11 +486,11 @@ const DonaldAssembling: React.FC<{ frame: number }> = ({ frame }) => {
           </span>
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-          <DonaldStep label="Import données Tim & Ada" done={frame > 1440} />
-          <DonaldStep label="Téléchargement charte c4rbon.group" done={frame > 1490} branded />
-          <DonaldStep label="Application couleurs + typos + logo" done={frame > 1540} />
-          <DonaldStep label="Génération des 3 feuilles Excel" done={frame > 1590} />
-          <DonaldStep label="/analyses/etude-marche-2026-3.0.xlsx" done={frame > 1630} file />
+          <DonaldStep label="Import données Tim & Ada" done={frame > 1160} />
+          <DonaldStep label="Téléchargement charte c4rbon.group" done={frame > 1210} branded />
+          <DonaldStep label="Application couleurs + typos + logo" done={frame > 1260} />
+          <DonaldStep label="Génération des 3 feuilles Excel" done={frame > 1310} />
+          <DonaldStep label="/analyses/etude-marche-2026-3.0.xlsx" done={frame > 1360} file />
         </div>
       </div>
     </div>
@@ -541,8 +556,8 @@ const DonaldStep: React.FC<{ label: string; done: boolean; branded?: boolean; fi
 // Xlsx fullscreen preview (after Donald is done)
 
 const XlsxFullscreen: React.FC<{ frame: number }> = ({ frame }) => {
-  const op = interpolate(frame, [1660, 1730], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
-  const ty = interpolate(frame, [1660, 1730], [18, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const op = interpolate(frame, [1400, 1470], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const ty = interpolate(frame, [1400, 1470], [18, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
   return (
     <div
       style={{
@@ -574,7 +589,7 @@ const XlsxFullscreen: React.FC<{ frame: number }> = ({ frame }) => {
         }}
       >
         <XlsxPreview
-          progress={interpolate(frame, [1730, 1930], [0, 1], {
+          progress={interpolate(frame, [1470, 1670], [0, 1], {
             extrapolateLeft: "clamp",
             extrapolateRight: "clamp",
           })}

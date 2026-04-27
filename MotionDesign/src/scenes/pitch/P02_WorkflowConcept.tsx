@@ -202,30 +202,38 @@ export const P02_WorkflowConcept: React.FC = () => {
             );
           })}
 
-          {/* Flowing data packets on edges */}
+          {/* Flowing data packets on edges — uses SVG SMIL animateMotion so
+              the loop keeps running even when Remotion Player is paused. */}
           {steps.slice(0, -1).map((_, i) => {
             const edgeReady = frame > stepActiveAt(i + 1);
             if (!edgeReady) return null;
             const totalW = 1600;
             const startX = 160 + (totalW / (totalSteps - 1)) * i;
             const endX = 160 + (totalW / (totalSteps - 1)) * (i + 1);
-            return Array.from({ length: 2 }).map((_, k) => {
-              const cycle = 58;
-              const phase = ((frame - stepActiveAt(i + 1) + k * 30) % cycle) / cycle;
-              const x = startX + 56 + ((endX - 56) - (startX + 56)) * phase;
-              const op = 1 - Math.abs(0.5 - phase) * 1.5;
-              return (
-                <circle
-                  key={`p-${i}-${k}`}
-                  cx={x}
-                  cy={100}
-                  r={6}
-                  fill={theme.color.brand}
-                  filter="url(#p2-node-glow)"
-                  opacity={Math.max(0, op)}
+            const path = `M ${startX + 56},100 L ${endX - 56},100`;
+            return Array.from({ length: 2 }).map((_, k) => (
+              <circle
+                key={`p-${i}-${k}`}
+                r={6}
+                fill={theme.color.brand}
+                filter="url(#p2-node-glow)"
+              >
+                <animateMotion
+                  dur="1.6s"
+                  repeatCount="indefinite"
+                  path={path}
+                  begin={`${k * 0.8}s`}
                 />
-              );
-            });
+                <animate
+                  attributeName="opacity"
+                  values="0;1;1;0"
+                  keyTimes="0;0.15;0.85;1"
+                  dur="1.6s"
+                  repeatCount="indefinite"
+                  begin={`${k * 0.8}s`}
+                />
+              </circle>
+            ));
           })}
         </svg>
 
@@ -260,9 +268,11 @@ export const P02_WorkflowConcept: React.FC = () => {
                 gap: 8,
               }}
             >
-              {/* Badge ring when lit */}
+              {/* Badge ring when lit — uses CSS keyframe so the pulse keeps
+                  breathing even when Remotion Player is paused. */}
               {lit && (
                 <div
+                  className="kn-pulse-strong"
                   style={{
                     position: "absolute",
                     top: -4,
@@ -270,8 +280,7 @@ export const P02_WorkflowConcept: React.FC = () => {
                     width: 120,
                     height: 120,
                     borderRadius: 26,
-                    boxShadow: `0 0 0 ${3 + pulse * 3}px ${theme.color.brand}${Math.round(20 + pulse * 30).toString(16)}`,
-                    transform: `scale(${0.72})`,
+                    transform: "scale(0.72)",
                     transformOrigin: "center 40%",
                     pointerEvents: "none",
                   }}

@@ -9,6 +9,7 @@ import { LucideIcon, IconName } from "../../components/AgentIcon";
 import { ProviderIcon } from "../../components/ProviderIcon";
 import { NodeKind } from "../../components/FlowNode";
 import { easeOutExpo, easeInExpo } from "../../utils/easing";
+import { TypingText, StreamingText } from "../../components/TypingAnimations";
 
 // Scene shows Flow Builder + AI panel on the right. User writes a prompt,
 // AI generates the workflow (VERTICAL, no branching), then execution runs
@@ -69,26 +70,32 @@ const shot: CameraShot = {
   ],
 };
 
-// Cursor positions — AI panel composer sits at the very bottom-right (inside the
-// 480-px-wide panel). AppShell main starts at x=230, panel is right 480, so panel
-// left edge = 1920 - 480 = 1440. Composer inside has padding 14 + 12.
-// Send button is at the right end of the composer.
-// Flow builder "Lancer" button is on the right of its bottombar, which spans the
-// flow builder area (from x=230 to x=1440, minus 18px side margin).
+// Cursor click targets — visual button centers in scene-space.
+//  • AI panel is 480 px wide, anchored right. Its composer sits at the bottom.
+//    Composer y-center ≈ 1035 (bottom-aligned, height ~70).
+//  • AI panel composer horizontal inside : 1454..1906. The "Demandez…" text
+//    zone is centered around 1650. Send button sits at the far right ≈ 1885.
+//  • Flow builder bottombar : x 248..1422, y ≈ 1048 (bottom:12 + padding 8 +
+//    button height 36 → center y = 1080 - 12 - 8 - 18 ≈ 1042).
 const CURSOR = {
-  aiInput: { x: 1620, y: 960 },   // text input inside the composer
-  aiSend: { x: 1860, y: 960 },    // send button at right of composer
-  runBtn: { x: 1345, y: 1010 },   // Lancer button on the right of flow builder bottombar
+  aiInput: { x: 1650, y: 1035 },
+  aiSend:  { x: 1885, y: 1035 },
+  runBtn:  { x: 1358, y: 1048 },
 };
 
+// Cursor moves ~15 frames (0.5 s) before each click, so the user sees the
+// cursor arrive, settle, THEN click — much more natural than landing on the
+// button and clicking instantly.
 const cursor: CursorKeyframe[] = [
-  { frame: 0, x: 1300, y: 700 },
-  { frame: 35, x: CURSOR.aiInput.x, y: CURSOR.aiInput.y, click: true },
+  { frame: 0,   x: 1300, y: 700 },
+  { frame: 20,  x: CURSOR.aiInput.x, y: CURSOR.aiInput.y },                      // arrived, waits
+  { frame: 35,  x: CURSOR.aiInput.x, y: CURSOR.aiInput.y, click: true },        // click input
   { frame: 210, x: CURSOR.aiInput.x, y: CURSOR.aiInput.y },
-  { frame: 230, x: CURSOR.aiSend.x, y: CURSOR.aiSend.y, click: true }, // click Send right after typing ends
-  { frame: 520, x: CURSOR.aiSend.x, y: CURSOR.aiSend.y },
-  { frame: 900, x: CURSOR.runBtn.x, y: CURSOR.runBtn.y }, // move towards Lancer
-  { frame: 960, x: CURSOR.runBtn.x, y: CURSOR.runBtn.y, click: true }, // click Lancer
+  { frame: 215, x: CURSOR.aiSend.x,  y: CURSOR.aiSend.y },                       // arrived on Send
+  { frame: 230, x: CURSOR.aiSend.x,  y: CURSOR.aiSend.y,  click: true },         // click Send
+  { frame: 520, x: CURSOR.aiSend.x,  y: CURSOR.aiSend.y },
+  { frame: 880, x: CURSOR.runBtn.x,  y: CURSOR.runBtn.y },                       // arrived on Lancer (15 frames before click)
+  { frame: 960, x: CURSOR.runBtn.x,  y: CURSOR.runBtn.y,  click: true },         // click Lancer
   { frame: 1040, x: CURSOR.runBtn.x, y: CURSOR.runBtn.y },
 ];
 
@@ -830,30 +837,18 @@ const IconSquare: React.FC<{ children: React.ReactNode }> = ({ children }) => (
 );
 
 // ════════════════════════════════════════════════════════
+// Timing constants for P03's AI panel — adjust these to retime the scene.
+const P3_PROMPT_START = 40;
+const P3_SEND_CLICK = 230;     // cursor fires click here
+const P3_SENT_FRAME = 265;     // user bubble appears (after ripple finishes)
+const P3_REPLY_START = 290;
+
 const AiAssistantPanel: React.FC<{ frame: number }> = ({ frame }) => {
-  // Typing by WORD CHUNKS (preserve whitespace) — snappy cadence
-  const promptWords = PROMPT.split(/(\s+)/);
-  const typeStart = 50;
-  const typeEnd = 200; // was 330 — compressed ~2× faster
-  const wordsCount = Math.floor(
-    interpolate(frame, [typeStart, typeEnd], [0, promptWords.length], {
-      extrapolateLeft: "clamp",
-      extrapolateRight: "clamp",
-    })
-  );
-  const typed = promptWords.slice(0, wordsCount).join("");
-  const blink = Math.floor(frame / 10) % 2 === 0;
-  // "sent" only becomes true AFTER the cursor actually clicks Send (frame 230)
-  const sent = frame >= 230;
+  const sent = frame >= P3_SENT_FRAME;
+  // Typed text is considered "done" ~ when the cursor reaches the send button.
+  const typingLikelyDone = frame >= P3_SEND_CLICK - 10;
 
   const assistantReply = "Je construis votre workflow. Voici les étapes mises en place à gauche :";
-  const rWords = assistantReply.split(" ");
-  const rShown = Math.floor(
-    interpolate(frame, [250, 400], [0, rWords.length], {
-      extrapolateLeft: "clamp",
-      extrapolateRight: "clamp",
-    })
-  );
 
   const buildSteps = [
     { at: 240, label: "Formulaire · champ image" },
@@ -989,10 +984,11 @@ const AiAssistantPanel: React.FC<{ frame: number }> = ({ frame }) => {
                     border: `1px solid ${theme.color.borderSoft}`,
                   }}
                 >
-                  {rWords.slice(0, rShown).join(" ")}
-                  {rShown < rWords.length && (
-                    <span style={{ borderRight: `2px solid ${theme.color.brand}`, marginLeft: 2 }}>&nbsp;</span>
-                  )}
+                  <StreamingText
+                    text={assistantReply}
+                    startFrame={P3_REPLY_START}
+                    wps={8}
+                  />
                 </div>
 
                 {frame >= 360 && (
@@ -1068,7 +1064,8 @@ const AiAssistantPanel: React.FC<{ frame: number }> = ({ frame }) => {
         )}
       </div>
 
-      {/* Composer bottom — prompt stays visible while typing */}
+      {/* Composer bottom — TypingText streams the prompt char by char with
+          human-like jitter (uses CSS caret so it blinks during pause). */}
       <div style={{ padding: "10px 14px", borderTop: `1px solid ${theme.color.borderSoft}`, background: "#fff" }}>
         <div
           style={{
@@ -1087,37 +1084,40 @@ const AiAssistantPanel: React.FC<{ frame: number }> = ({ frame }) => {
             style={{
               flex: 1,
               fontSize: 12,
-              color: typed ? theme.color.text : "#c4c4c4",
+              color: theme.color.text,
               lineHeight: 1.55,
               minHeight: 48,
-              whiteSpace: "pre-wrap",
             }}
           >
             {sent ? (
               <span style={{ color: "#c4c4c4" }}>Demandez quelque chose…</span>
+            ) : frame < P3_PROMPT_START ? (
+              <span style={{ color: "#c4c4c4" }}>Demandez quelque chose…</span>
             ) : (
-              <>
-                {typed || "Demandez quelque chose…"}
-                {blink && typed && <span style={{ borderRight: `2px solid ${theme.color.brand}`, marginLeft: 1 }}>&nbsp;</span>}
-              </>
+              <TypingText
+                text={PROMPT}
+                startFrame={P3_PROMPT_START}
+                cps={36}
+                caret
+              />
             )}
           </div>
           <div
             style={{
               padding: "6px 10px",
               borderRadius: 8,
-              background: typed && !sent ? theme.color.brand : "#f1f5f9",
-              color: typed && !sent ? "#fff" : theme.color.textMuted,
+              background: typingLikelyDone && !sent ? theme.color.brand : "#f1f5f9",
+              color: typingLikelyDone && !sent ? "#fff" : theme.color.textMuted,
               fontSize: 11,
               fontWeight: 700,
               display: "flex",
               alignItems: "center",
               gap: 5,
               flexShrink: 0,
-              boxShadow: typed && !sent ? "0 4px 12px rgba(230,25,130,0.35)" : "none",
+              boxShadow: typingLikelyDone && !sent ? "0 4px 12px rgba(230,25,130,0.35)" : "none",
             }}
           >
-            <LucideIcon name="send" size={10} color={typed && !sent ? "#fff" : theme.color.textMuted} strokeWidth={2.2} />
+            <LucideIcon name="send" size={10} color={typingLikelyDone && !sent ? "#fff" : theme.color.textMuted} strokeWidth={2.2} />
           </div>
         </div>
       </div>

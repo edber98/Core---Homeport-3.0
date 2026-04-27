@@ -1,0 +1,28 @@
+{
+  "name": "kinn-motion-design",
+  "version": "1.0.0",
+  "description": "Motion design promo videos for Kinn (Homeport 1.0)",
+  "private": true,
+  "scripts": {
+    "start": "remotion studio",
+    "build": "remotion render KinnPromo out/kinn-promo.mp4",
+    "build:teaser": "remotion render KinnTeaser out/kinn-teaser.mp4",
+    "build:all": "npm run build && npm run build:teaser",
+    "upgrade": "remotion upgrade"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.240",
+    "@remotion/fonts": "4.0.240",
+    "@remotion/google-fonts": "4.0.240",
+    "lucide-react": "^1.8.0",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "remotion": "4.0.240",
+    "zod": "3.23.8"
+  },
+  "devDependencies": {
+    "@types/react": "18.3.12",
+    "@types/react-dom": "18.3.1",
+    "typescript": "5.5.4"
+  }
+}
