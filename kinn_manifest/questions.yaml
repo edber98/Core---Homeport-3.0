@@ -1,0 +1,221 @@
+questions:
+  # ────────────── Comptes par défaut ──────────────
+  - variable: kinn.kinnApi.default_admin_email
+    default: admin@acme.test
+    type: string
+    required: true
+    label: Email de l'utilisateur par défaut
+    group: Comptes
+
+  - variable: kinn.kinnApi.default_admin_password
+    type: password
+    default: password
+    required: true
+    label: Mot de passe de l'utilisateur par défaut
+    group: Comptes
+
+  - variable: kinn.kinnApi.default_company
+    type: string
+    default: ACME
+    label: Nom de l'entreprise par défaut
+    group: Comptes
+
+  - variable: kinn.kinnApi.default_workspace_name
+    type: string
+    default: Default
+    label: Nom du workspace par défaut
+    group: Comptes
+
+  # ────────────── Provider LLM principal ──────────────
+  - variable: kinn.kinnApi.ai_provider
+    type: enum
+    options:
+      - openai
+      - anthropic
+    default: openai
+    required: true
+    label: Provider LLM principal
+    description: Choix du fournisseur d'IA pour l'agent principal
+    group: LLM principal
+
+  - variable: kinn.kinnApi.openai_api_key
+    default: ""
+    type: password
+    label: Clé OpenAI
+    description: Requise si provider = openai
+    group: LLM principal
+    show_if: "kinn.kinnApi.ai_provider=openai"
+
+  - variable: kinn.kinnApi.openai_model
+    default: ""
+    type: string
+    label: Modèle OpenAI
+    description: 'Ex: gpt-5.4, gpt-4o, gpt-4o-mini. Vide = défaut config.'
+    group: LLM principal
+    show_if: "kinn.kinnApi.ai_provider=openai"
+
+  - variable: kinn.kinnApi.anthropic_api_key
+    default: ""
+    type: password
+    label: Clé Anthropic
+    description: Requise si provider = anthropic
+    group: LLM principal
+    show_if: "kinn.kinnApi.ai_provider=anthropic"
+
+  - variable: kinn.kinnApi.anthropic_model
+    default: ""
+    type: string
+    label: Modèle Anthropic
+    description: 'Ex: claude-sonnet-4-5-20250929, claude-haiku-4-5. Vide = défaut.'
+    group: LLM principal
+    show_if: "kinn.kinnApi.ai_provider=anthropic"
+
+  # ────────────── Tuning LLM ──────────────
+  - variable: kinn.kinnApi.ai_reasoning_effort
+    type: enum
+    options:
+      - none
+      - low
+      - medium
+      - high
+      - xhigh
+    default: none
+    label: Niveau de raisonnement (OpenAI gpt-5.x)
+    description: '"none" = streaming rapide. "low/medium/high" = réflexion plus poussée mais plus de tokens consommés.'
+    group: Tuning LLM
+
+  - variable: kinn.kinnApi.ai_verbosity
+    type: enum
+    options:
+      - low
+      - medium
+      - high
+    default: medium
+    label: Verbosité (OpenAI gpt-5.x)
+    description: '"high" recommandé pour analyses tabulaires complètes (préviionnel, P&L, etc.).'
+    group: Tuning LLM
+
+  - variable: kinn.kinnApi.ai_parallel_tool_calls
+    type: enum
+    options:
+      - "0"
+      - "1"
+    default: "0"
+    label: Tool calls parallèles (OpenAI)
+    description: '0 = séquentiel (recommandé, évite le bug placeholder dans depends_on). 1 = active mode parallèle.'
+    group: Tuning LLM
+
+  - variable: kinn.kinnApi.ai_max_tokens
+    type: string
+    default: "16384"
+    label: Tokens max par réponse
+    group: Tuning LLM
+
+  - variable: kinn.kinnApi.ai_temperature
+    type: string
+    default: "0.7"
+    label: Température
+    description: 0 = déterministe, 1 = créatif. Ignoré pour les modèles reasoning sans 'none'.
+    group: Tuning LLM
+
+  # ────────────── LLM mini pour webscraping ──────────────
+  - variable: kinn.kinnApi.web_mini_provider
+    type: enum
+    options:
+      - ""
+      - openai
+      - anthropic
+    default: ""
+    label: Provider LLM mini (webscraping)
+    description: Vide = même provider que principal mais avec un modèle plus petit/rapide.
+    group: Webscraping
+
+  - variable: kinn.kinnApi.web_mini_model
+    type: string
+    default: ""
+    label: Modèle LLM mini
+    description: 'Ex: gpt-4o-mini ou claude-haiku-4-5. Vide = défaut auto.'
+    group: Webscraping
+
+  # ────────────── Sandbox sécurisée ──────────────
+  - variable: kinn.kinnApi.runtimeClassName
+    type: enum
+    options:
+      - ""
+      - gvisor
+      - kata
+    default: ""
+    label: RuntimeClass Kubernetes
+    description: |
+      Vide = runc par défaut. "gvisor" si tu as installé runsc + RuntimeClass sur tes nodes
+      (cf. README pour la procédure). "kata" si tu utilises Kata Containers.
+    group: Sandbox & sécurité
+
+  - variable: kinn.kinnApi.ai_sandbox_backend
+    type: enum
+    options:
+      - subprocess
+      - bwrap
+      - none
+      - auto
+    default: subprocess
+    label: Backend sandbox d'exécution code
+    description: |
+      "subprocess" = exécution directe (sûr UNIQUEMENT avec runtimeClassName=gvisor).
+      "bwrap" = namespaces Linux (besoin kernel.unprivileged_userns_clone=1).
+      "none" = pas d'isolation (DEV).
+      "auto" = bwrap si dispo, sinon subprocess.
+    group: Sandbox & sécurité
+
+  - variable: kinn.kinnApi.ai_sandbox_py_site_packages
+    type: string
+    default: "/data/sandbox-pkgs"
+    label: Chemin packages Python sandbox
+    description: Volume partagé pour les packages installés par install_package.
+    group: Sandbox & sécurité
+
+  # ────────────── Timeouts ──────────────
+  - variable: kinn.kinnApi.ai_stream_timeout_ms
+    type: string
+    default: "240000"
+    label: Timeout stream LLM (ms)
+    description: 240000 = 4 minutes. Augmenter pour gros canvas/code.
+    group: Timeouts
+
+  - variable: kinn.kinnApi.ai_subagent_heartbeat_timeout_ms
+    type: string
+    default: "180000"
+    label: Timeout heartbeat sous-agent (ms)
+    description: 180000 = 3 min. Au-delà, un sous-agent sans heartbeat est marqué "stalled".
+    group: Timeouts
+
+  - variable: kinn.kinnApi.ai_max_subagent_depth
+    type: string
+    default: "3"
+    label: Profondeur max sous-agents
+    description: Limite récursive pour éviter les cascades infinies.
+    group: Timeouts
+
+  # ────────────── Avancé ──────────────
+  - variable: kinn.kinnApi.node_env
+    type: enum
+    options:
+      - production
+      - development
+    default: production
+    label: NODE_ENV
+    group: Avancé
+
+  - variable: kinn.kinnApi.hmac_secret
+    type: password
+    default: "dev-secret-change-me"
+    required: true
+    label: HMAC secret
+    description: À CHANGER en production. Sert à signer les tokens.
+    group: Avancé
+
+  - variable: kinn.kinnApi.token_ttl_sec
+    type: string
+    default: "86400"
+    label: TTL des tokens (secondes)
+    group: Avancé

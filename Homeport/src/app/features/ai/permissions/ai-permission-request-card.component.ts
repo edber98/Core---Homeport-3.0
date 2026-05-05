@@ -77,20 +77,22 @@ import { AiPermissionRequest } from '../ai.service';
     </div>
   `,
   styles: [`
-    /* Style inline raisonnement-block : pas de card, juste une bordure gauche
-       colorée selon le niveau de risque. Pas de fond, pas de radius, padding
-       minimal, s'intègre dans le flux du message. */
+    /* Card compacte, max-width réduite : pas de bandeau pleine-largeur dans le
+       flux assistant. Encapsulé dans un cadre arrondi avec fond léger pour
+       différencier du raisonnement. */
+    :host { display: block; }
     .perm-card {
-      background: transparent;
-      border: 0;
+      background: #fafafa;
+      border: 1px solid #f0f0f0;
       border-left: 3px solid #d9d9d9;
-      border-radius: 0;
-      padding: 4px 12px;
-      margin: 4px 0;
+      border-radius: 8px;
+      padding: 8px 12px;
+      margin: 6px 0;
+      max-width: 520px;
       opacity: 0.95;
-      transition: opacity .2s, border-color .15s;
+      transition: opacity .2s, border-color .15s, box-shadow .15s;
     }
-    .perm-card:hover { opacity: 1; }
+    .perm-card:hover { opacity: 1; box-shadow: 0 2px 6px rgba(0,0,0,0.04); }
     .perm-card.disabled { opacity: 0.7; }
     .perm-card.risk-safe { border-left-color: #52c41a; }
     .perm-card.risk-write { border-left-color: #faad14; }

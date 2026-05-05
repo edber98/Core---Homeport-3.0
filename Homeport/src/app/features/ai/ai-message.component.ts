@@ -1,4 +1,5 @@
 import { Component, Input, Output, EventEmitter, inject, ChangeDetectorRef, HostListener, ElementRef } from '@angular/core';
+import { trigger, transition, style, animate } from '@angular/animations';
 import { CommonModule } from '@angular/common';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
@@ -148,6 +149,23 @@ interface ProcessedSegment {
   selector: 'ai-message',
   standalone: true,
   imports: [CommonModule, FormsModule, NzButtonModule, NzIconModule, NzTagModule, NzToolTipModule, NzBadgeModule, NzInputModule, NodeExecResultDialogComponent, AiPermissionRequestCardComponent, AiCacheSyncRequestCardComponent, AiStructuredMessageComponent, AiPlanProposalCardComponent, AiDiagramRendererComponent, AiInlineImageComponent, AiInlineFileComponent, AiTodoListComponent, AiCanvasHtmlComponent, AiWidgetActionsComponent, AiAgentReportCardComponent, AiAgentBadgeComponent, AiInlineWidgetCollapseComponent, AiMessagePlanHeaderComponent],
+  animations: [
+    // Animation de pliage des blocs raisonnement quand le message se finalise.
+    // :leave joue quand *ngIf passe à false (collapse) → fold-up vers le header.
+    // :enter joue quand l'utilisateur clique pour ré-expand → fold-down.
+    trigger('reasoningFold', [
+      transition(':enter', [
+        style({ opacity: 0, maxHeight: 0, transform: 'translateY(-8px)', marginTop: 0, marginBottom: 0 }),
+        animate('260ms cubic-bezier(0.22, 1, 0.36, 1)',
+          style({ opacity: 0.85, maxHeight: '4000px', transform: 'translateY(0)', marginTop: '*', marginBottom: '*' })),
+      ]),
+      transition(':leave', [
+        style({ opacity: 0.85, maxHeight: '4000px', transform: 'translateY(0)' }),
+        animate('260ms cubic-bezier(0.4, 0, 1, 1)',
+          style({ opacity: 0, maxHeight: 0, transform: 'translateY(-8px)', marginTop: 0, marginBottom: 0, paddingTop: 0, paddingBottom: 0 })),
+      ]),
+    ]),
+  ],
   template: `
     <div class="ai-msg" [class.user]="msg.role === 'user'" [class.assistant]="msg.role === 'assistant'" [class.compact]="compact">
       <div class="avatar" *ngIf="!compact">
@@ -180,7 +198,12 @@ interface ProcessedSegment {
               </ai-widget-actions>
             </div>
           </div>
-          <div *ngSwitchCase="'plan_proposal'" class="widget-bubble widget-wrap">
+          <!-- Plan_proposal : si en attente, il est affiché en sticky au-dessus
+               de l'input par ai-chat, donc on le masque dans le flux inline pour
+               éviter le double affichage. Une fois répondu, l'inline réapparaît
+               (snapshot de la décision dans l'historique). -->
+          <div *ngSwitchCase="'plan_proposal'" class="widget-bubble widget-wrap"
+               [hidden]="!msg.metadata?.planProposal?.answer">
             <ai-plan-proposal-card
               [proposal]="msg.metadata!.planProposal!"
               (answered)="onPlanAnswer($event)">
@@ -294,6 +317,16 @@ interface ProcessedSegment {
         </div>
         <!-- Segments mode: reasoning blocks with text + tools, final text at end -->
         <ng-container *ngIf="msg.segments?.length; else flatLayout">
+          <!-- Quand le message est terminé ET a une réponse finale, on groupe TOUS
+               les blocs raisonnement dans un seul collapse pour éviter le mur de
+               raisonnement. Header unique avec compteurs, ordre préservé à l'expand. -->
+          <div class="reasoning-collapse-head"
+               *ngIf="shouldCollapseReasoningGroup()"
+               (click)="toggleReasoningGroupExpand()">
+            <span nz-icon nzType="experiment" nzTheme="outline" class="rcg-ico"></span>
+            <span class="rcg-label">{{ reasoningGroupSummary() }}</span>
+            <span nz-icon class="rcg-chev" [nzType]="isReasoningGroupExpanded() ? 'down' : 'right'" nzTheme="outline"></span>
+          </div>
           <ng-container *ngFor="let ps of getProcessedSegments(); let psi = index">
             <!-- Final response text — découpé pour intégrer les widgets inline [[WIDGET:id]] -->
             <ng-container *ngIf="ps.type === 'text' && ps.content">
@@ -305,8 +338,11 @@ interface ProcessedSegment {
                 </ai-inline-widget-collapse>
               </ng-container>
             </ng-container>
-            <!-- Reasoning block: optional text + collapsible tool summary -->
-            <div class="reasoning-block" *ngIf="ps.type === 'reasoning'">
+            <!-- Reasoning block: caché si le groupe est collapsé (message complet).
+                 @reasoningFold anime le pliage/dépliage à la transition. -->
+            <div class="reasoning-block"
+                 *ngIf="ps.type === 'reasoning' && (!shouldCollapseReasoningGroup() || isReasoningGroupExpanded())"
+                 @reasoningFold>
               <!-- Live widgets en construction : affichés inline en tête du reasoning,
                    dans l'ordre de création. Remplacent le rendu "top of tools" pour
                    que le widget apparaisse à la place naturelle du flux. -->
@@ -622,6 +658,26 @@ interface ProcessedSegment {
     .reasoning-text ::ng-deep ul, .reasoning-text ::ng-deep ol { margin: 2px 0; padding-left: 18px; }
     .reasoning-text ::ng-deep li { margin: 1px 0; }
     .tool-summary { margin-top: 4px; }
+    /* Header unique de groupe raisonnement, mêmes codes visuels qu'un
+       reasoning-block normal (border-left gauche, opacity, max-width). Cliquable
+       pour expand/collapse. */
+    .reasoning-collapse-head {
+      display: flex; align-items: center; gap: 4px;
+      border-left: 3px solid #d9d9d9;
+      padding: 6px 12px; margin: 4px 0;
+      border-radius: 0 8px 8px 0;
+      opacity: 0.85;
+      max-width: 85%; min-width: 0;
+      cursor: pointer; user-select: none;
+      font-size: 11px; color: #999; font-weight: 500;
+      text-transform: uppercase; letter-spacing: 0.3px;
+      transition: opacity .12s, color .12s, border-color .12s;
+    }
+    .reasoning-collapse-head:hover { opacity: 1; color: #e61982; border-left-color: #e61982; }
+    .reasoning-collapse-head .rcg-ico { font-size: 12px; }
+    .reasoning-collapse-head .rcg-label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .reasoning-collapse-head .rcg-chev { font-size: 10px; color: #bbb; margin-left: 2px; transition: transform .2s ease; }
+    .reasoning-collapse-head:hover .rcg-chev { color: #e61982; }
     /* Tools en cours de streaming : visibles live, jamais dans un groupe collapsed. */
     .tool-live-list { display: flex; flex-direction: column; gap: 3px; margin-bottom: 6px; }
     .tool-live-item {
@@ -1074,6 +1130,51 @@ export class AiMessageComponent {
   // de nouvelles références pour msg/ps. Sans ça le collapse se refermait à chaque
   // chunk car le Set perdait sa clé.
   expandedTools = new Set<string>();
+
+  // État du collapse du groupe raisonnement (par message). Par défaut : collapsé
+  // (chevron pointe à droite). Toggle au clic sur le header.
+  private _reasoningGroupExpanded = new Set<string>();
+
+  /** Vrai quand on doit grouper les blocs raisonnement sous UN seul collapse :
+   *  message terminé (last segment text non vide) ET pas en streaming. Évite le
+   *  mur de raisonnement quand l'agent a livré sa réponse finale. */
+  shouldCollapseReasoningGroup(): boolean {
+    if ((this.msg as any).metadata?.streaming) return false;
+    const ps = this.getProcessedSegments();
+    if (!ps.length) return false;
+    const reasoningCount = ps.filter(p => p.type === 'reasoning').length;
+    if (reasoningCount < 2) return false; // pas la peine de grouper 0 ou 1 bloc
+    const last = ps[ps.length - 1];
+    // Doit avoir une réponse finale visible (texte non vide)
+    return last?.type === 'text' && !!(last.content || '').trim();
+  }
+
+  isReasoningGroupExpanded(): boolean {
+    return this._reasoningGroupExpanded.has(String(this.msg._id || 'msg'));
+  }
+
+  toggleReasoningGroupExpand(): void {
+    const k = String(this.msg._id || 'msg');
+    if (this._reasoningGroupExpanded.has(k)) this._reasoningGroupExpanded.delete(k);
+    else this._reasoningGroupExpanded.add(k);
+    this.cdr.markForCheck();
+  }
+
+  reasoningGroupSummary(): string {
+    const ps = this.getProcessedSegments();
+    let steps = 0;
+    let toolCount = 0;
+    for (const p of ps) {
+      if (p.type !== 'reasoning') continue;
+      steps++;
+      toolCount += (p.toolCalls?.length || 0);
+    }
+    const stepLabel = steps > 1 ? `${steps} étapes` : `${steps} étape`;
+    const toolLabel = toolCount > 0
+      ? ` · ${toolCount} outil${toolCount > 1 ? 's' : ''}`
+      : '';
+    return `Raisonnement (${stepLabel}${toolLabel})`;
+  }
   expandedToolItems = new Set<string>();
   expandedArgValues = new Set<string>();
   private _processedCache = new WeakMap<AiMessageSegment[], ProcessedSegment[]>();

@@ -1,4 +1,0 @@
-# Prod : cache agent plus large (100Gi)
-- op: replace
-  path: /spec/resources/requests/storage
-  value: 100Gi

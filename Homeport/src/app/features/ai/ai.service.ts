@@ -1904,39 +1904,70 @@ export class AiService {
   }
 
   streamJob(jobId: string): Observable<any> {
-    const subj = new Subject<any>();
     const url = this.buildFetchUrl(`/api/ai/jobs/${jobId}/stream?workspaceId=${encodeURIComponent(this.wsId())}`);
-    const ctrl = new AbortController();
-    (async () => {
-      try {
-        const res = await fetch(url, {
-          headers: { Authorization: `Bearer ${this.auth.token || ''}` },
-          signal: ctrl.signal,
-        });
-        const reader = res.body!.getReader();
-        const decoder = new TextDecoder();
-        let buffer = '';
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-          buffer += decoder.decode(value, { stream: true });
-          const lines = buffer.split('\n');
-          buffer = lines.pop() || '';
-          for (const line of lines) {
-            const t = line.trim();
-            if (!t.startsWith('data:')) continue;
-            try {
-              const data = JSON.parse(t.slice(5).trim());
-              this.zone.run(() => subj.next(data));
-            } catch {}
+    return new Observable<any>(subscriber => {
+      const ctrl = new AbortController();
+      let aborted = false;
+      let closeTimer: any = null;
+      (async () => {
+        try {
+          const res = await fetch(url, {
+            headers: { Authorization: `Bearer ${this.auth.token || ''}` },
+            signal: ctrl.signal,
+          });
+          const reader = res.body!.getReader();
+          const decoder = new TextDecoder();
+          let buffer = '';
+          while (!aborted) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            buffer += decoder.decode(value, { stream: true });
+            const lines = buffer.split('\n');
+            buffer = lines.pop() || '';
+            for (const line of lines) {
+              const t = line.trim();
+              if (!t.startsWith('data:')) continue;
+              try {
+                const data = JSON.parse(t.slice(5).trim());
+                this.zone.run(() => subscriber.next(data));
+                // Auto-close quand le job atteint un état terminal : libère le slot
+                // SSE TCP côté browser (limite 6/origine). Sans ça, ouvrir 5 modals
+                // subagent + le passive thread stream sature les sockets et bloque
+                // toutes les autres requêtes HTTP jusqu'à un refresh manuel.
+                if (data?.type === 'job.status'
+                  && (data.status === 'completed' || data.status === 'error' || data.status === 'cancelled')) {
+                  // Petit délai pour laisser passer les derniers events tool.end
+                  // qui suivent souvent juste après le status.
+                  if (closeTimer) clearTimeout(closeTimer);
+                  closeTimer = setTimeout(() => {
+                    if (!aborted) {
+                      aborted = true;
+                      try { ctrl.abort(); } catch {}
+                      this.zone.run(() => subscriber.complete());
+                    }
+                  }, 1500);
+                }
+              } catch {}
+            }
+          }
+          if (!aborted) this.zone.run(() => subscriber.complete());
+        } catch (e: any) {
+          if (e?.name === 'AbortError' || aborted) {
+            // Abort propre : pas une erreur
+            this.zone.run(() => subscriber.complete());
+          } else {
+            this.zone.run(() => subscriber.error(e));
           }
         }
-        this.zone.run(() => subj.complete());
-      } catch (e) {
-        this.zone.run(() => subj.error(e));
-      }
-    })();
-    return subj.asObservable().pipe(throttleTime(100, undefined, { leading: true, trailing: true }));
+      })();
+      // Teardown : appelé quand l'observable est unsubscribed (ngOnDestroy, switch
+      // jobId, etc.) → abort le fetch → ferme la connexion TCP côté serveur.
+      return () => {
+        aborted = true;
+        if (closeTimer) clearTimeout(closeTimer);
+        try { ctrl.abort(); } catch {}
+      };
+    }).pipe(throttleTime(100, undefined, { leading: true, trailing: true }));
   }
 
   pauseJob(jobId: string): Observable<any> {

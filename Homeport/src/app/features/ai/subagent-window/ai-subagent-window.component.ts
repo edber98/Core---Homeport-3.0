@@ -381,10 +381,12 @@ export class AiSubagentWindowComponent implements OnInit, OnChanges, OnDestroy {
   });
 
   ngOnInit(): void {
-    this._load();
+    // _load() est async : on attend qu'il finisse (set _job avec son status)
+    // AVANT de décider d'ouvrir un SSE. Évite d'ouvrir un stream pour un job
+    // déjà fini → économise un slot HTTP/1.1 (limite 6/origine).
+    this._load().then(() => this._subscribeJobStream());
     this._loadWidgets().catch(() => {});
     this._subscribeBus();
-    this._subscribeJobStream();
   }
 
   /** Applique un array de JSON patches simplifiés {op,path,value?} sur un objet. */
@@ -466,14 +468,29 @@ export class AiSubagentWindowComponent implements OnInit, OnChanges, OnDestroy {
    * tool.*, done) qui ne sont PAS forwardés vers le thread bus (seul canvas.*
    * et subagent.* sont forwardés). Sans ça, impossible de streamer le texte
    * que le subagent génère en réponse.
+   *
+   * Skip si le job est déjà terminé : pas besoin d'ouvrir un SSE qui va se
+   * fermer aussitôt — économise un slot HTTP/1.1 (limite 6/origine côté browser
+   * sinon les modals + thread stream saturent les sockets et bloquent tout).
    */
   private _subscribeJobStream(): void {
+    // Cleanup défensif : évite la double-subscription si appelé deux fois (ex:
+    // ngOnInit + ngOnChanges sur le même jobId).
+    if (this._jobStreamSub) {
+      try { this._jobStreamSub.unsubscribe?.(); } catch {}
+      this._jobStreamSub = null;
+    }
+    const status = this._job()?.status;
+    if (status === 'completed' || status === 'error' || status === 'cancelled') {
+      return; // job déjà fini → pas de stream à ouvrir
+    }
     try {
       const stream$ = (this.ai as any).streamJob?.(this.jobId);
       if (!stream$) return;
       this._jobStreamSub = stream$.subscribe({
         next: (ev: any) => this._handleJobEvent(ev),
         error: (e: any) => console.warn('[subagent-window] job stream error:', e?.message),
+        complete: () => { this._jobStreamSub = null; },
       });
     } catch (e: any) {
       console.warn('[subagent-window] streamJob not available:', e?.message);

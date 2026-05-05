@@ -9,10 +9,11 @@ import { NzEmptyModule } from 'ng-zorro-antd/empty';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { AiService, AiStreamEvent, AiAttachment, AI_MAX_FILES, AI_MAX_FILE_SIZE } from './ai.service';
+import { AiService, AiMessage, AiStreamEvent, AiAttachment, AI_MAX_FILES, AI_MAX_FILE_SIZE } from './ai.service';
 import { AiAudioService } from './ai-audio.service';
 import { AiMessageComponent } from './ai-message.component';
 import { AiQuestionComponent } from './ai-question.component';
+import { AiPlanProposalCardComponent } from './plan/ai-plan-proposal-card.component';
 import { AiStructuredMessageComponent } from './structured/ai-structured-message.component';
 import { AiDiagramRendererComponent } from './diagram/ai-diagram-renderer.component';
 import { AiLivePreviewComponent, detectPreviewType, LivePreviewType } from './live-preview/ai-live-preview.component';
@@ -144,7 +145,7 @@ interface StreamTool {
 @Component({
   selector: 'ai-chat',
   standalone: true,
-  imports: [CommonModule, FormsModule, NzInputModule, NzButtonModule, NzIconModule, NzEmptyModule, NzTagModule, NzToolTipModule, AiMessageComponent, AiQuestionComponent, AiStructuredMessageComponent, AiDiagramRendererComponent, AiLivePreviewComponent],
+  imports: [CommonModule, FormsModule, NzInputModule, NzButtonModule, NzIconModule, NzEmptyModule, NzTagModule, NzToolTipModule, AiMessageComponent, AiQuestionComponent, AiStructuredMessageComponent, AiDiagramRendererComponent, AiLivePreviewComponent, AiPlanProposalCardComponent],
   animations: [
     trigger('toolRotate', [
       transition(':enter', [
@@ -418,6 +419,24 @@ interface StreamTool {
       <span class="sli-arrow">
         <span nz-icon nzType="arrow-right" nzTheme="outline"></span>
       </span>
+    </div>
+
+    <!-- Pending plan proposal — sticky au-dessus de l'input, même pattern que la
+         question. Visible quand un plan_proposal n'a pas encore été approuvé/rejeté. -->
+    <div class="pending-question-pinned pending-plan-pinned" *ngIf="pendingPlanProposal() as plan">
+      <div class="pq-head">
+        <span nz-icon nzType="ordered-list" nzTheme="outline" class="pq-ico"></span>
+        <span class="pq-title">L'agent te propose un plan — valides-tu ?</span>
+        <button nz-button nzType="text" nzSize="small" class="pq-close"
+                (click)="cancelPlan(plan)"
+                nz-tooltip nzTooltipTitle="Rejeter le plan">
+          <span nz-icon nzType="close" nzTheme="outline"></span>
+        </button>
+      </div>
+      <ai-plan-proposal-card
+        [proposal]="plan.metadata!.planProposal!"
+        (answered)="onPlanAnswer(plan, $event)">
+      </ai-plan-proposal-card>
     </div>
 
     <!-- Pending question — ANCRÉ AU-DESSUS DE L'INPUT (sticky bas) -->
@@ -783,6 +802,12 @@ interface StreamTool {
       box-shadow: 0 -4px 20px rgba(230, 25, 130, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
       animation: pqSlideIn 240ms cubic-bezier(.2,.8,.2,1);
       border-bottom: 0;
+    }
+    /* Variante pour un plan_proposal : le plan a son propre cadre, on annule
+       la marge interne et on autorise le scroll si le plan est très long. */
+    .pending-plan-pinned { padding: 10px 14px 8px; max-height: 60vh; overflow-y: auto; }
+    .pending-plan-pinned ::ng-deep ai-plan-proposal-card .plan-card {
+      margin: 0; border: 0; padding: 4px 0 0;
     }
     @keyframes pqSlideIn {
       from { opacity: 0; transform: translateY(8px); }
@@ -1400,6 +1425,57 @@ export class AiChatComponent implements AfterViewInit {
   cancelQuestion(): void {
     this.ai.pendingQuestion.set(null);
     this.ai.pendingQuestionContext.set(null);
+  }
+
+  /** Dernier plan_proposal non encore répondu — affiché sticky au-dessus de
+   *  l'input (même UX que pendingQuestion). */
+  pendingPlanProposal = computed<AiMessage | null>(() => {
+    const msgs = this.ai.messages();
+    if (!msgs?.length) return null;
+    // Cherche en partant du plus récent : le dernier plan_proposal sans answer.
+    for (let i = msgs.length - 1; i >= 0; i--) {
+      const m = msgs[i];
+      if (m?.role !== 'assistant') continue;
+      if (m?.metadata?.kind !== 'plan_proposal') continue;
+      const prop = m.metadata?.planProposal;
+      if (prop && !prop.answer) return m;
+      // Si on tombe sur un plan déjà répondu avant un non-répondu, on continue
+      // de chercher (l'agent peut avoir proposé plusieurs plans dans la session).
+    }
+    return null;
+  });
+
+  /** Réponse au plan sticky : décision (approve/reject/modify) → backend. */
+  onPlanAnswer(planMsg: AiMessage, evt: { decision: 'approve' | 'reject' | 'modify'; approvedSteps?: string[]; modifiedSteps?: any[]; missingInfoAnswers?: Record<string, string> }): void {
+    const prop = planMsg.metadata?.planProposal;
+    const threadId = planMsg.threadId;
+    if (!prop || !threadId) return;
+    this.ai.respondToPlan(
+      threadId,
+      prop.requestId,
+      evt.decision,
+      evt.approvedSteps,
+      evt.modifiedSteps as any,
+      evt.missingInfoAnswers,
+    ).subscribe({
+      next: () => {
+        // Update local pour faire disparaître la sticky immédiatement.
+        if (planMsg.metadata?.planProposal) {
+          planMsg.metadata.planProposal.answer = evt.decision;
+          planMsg.metadata.planProposal.answeredAt = new Date().toISOString();
+          if (evt.approvedSteps) planMsg.metadata.planProposal.approvedSteps = evt.approvedSteps;
+          if (evt.modifiedSteps) planMsg.metadata.planProposal.modifiedSteps = evt.modifiedSteps as any;
+          if (evt.missingInfoAnswers) planMsg.metadata.planProposal.missingInfoAnswers = evt.missingInfoAnswers;
+        }
+        // Force re-eval du computed (set un nouveau tableau)
+        this.ai.messages.set([...this.ai.messages()]);
+      },
+    });
+  }
+
+  /** Rejette le plan sticky (= bouton X). */
+  cancelPlan(planMsg: AiMessage): void {
+    this.onPlanAnswer(planMsg, { decision: 'reject' });
   }
 
   /** Preview (max 4) des subagents actifs pour l'indicateur live */

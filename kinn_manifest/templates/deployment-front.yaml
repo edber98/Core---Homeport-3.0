@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-kinn-homeport
+spec:
+  replicas: {{ default .Values.replicaCount .Values.kinn.kinnHomeport.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-kinn-homeport
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-kinn-homeport
+        role: frontend
+    spec:
+      containers:
+        - name: kinn-homeport
+          image: registry.c4rbon.group/edouard.bernier/kinn-homeport/web:v0.0.33
+          ports:
+            - containerPort: {{ .Values.kinn.kinnHomeport.port | int }}

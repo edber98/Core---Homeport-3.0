@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-kinn-api
+spec:
+  type: ClusterIP
+  selector:
+    app: {{ .Release.Name }}-kinn-api
+  ports:
+    - port: {{ .Values.kinn.kinnApi.port | int }}
+      targetPort: {{ .Values.kinn.kinnApi.port | int }}

@@ -1,0 +1,12 @@
+apiVersion: v2
+name: kinn
+version: 1.0.15
+appVersion: latest
+description: "Super logiciel d'automatisation"
+annotations:
+  catalog.cattle.io/display-name: "Kinn"
+  catalog.cattle.io/dependencies: "mongodb"
+icon: https://kinn.fr/kinn-logo.png
+maintainers:
+  - name: Edouard Bernier
+    email: edouard.bernier@i55.fr
