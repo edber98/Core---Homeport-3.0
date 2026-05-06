@@ -62,11 +62,12 @@ ENV AI_SANDBOX_BACKEND=auto \
     SKILLS_BUNDLE_DIR=/app/skills-bundle \
     AI_STREAM_TIMEOUT_MS=240000
 
-# package.json d'abord pour cacher npm install derrière un layer
+# package.json d'abord pour cacher npm ci derrière un layer
 COPY API/package*.json ./
-RUN npm install --unsafe-perm && npm cache clean --force
+RUN npm ci --unsafe-perm && npm cache clean --force
 
-# Puis le code + les skills (copié séparément pour cache plus efficace)
+# Puis le code + les skills (copié séparément pour cache plus efficace).
+# Important: `node_modules` doit être exclu du contexte via `.dockerignore`.
 COPY API/ ./
 
 # Pré-crée les dossiers shared site-packages (volumes montés en override)
@@ -74,17 +75,17 @@ RUN mkdir -p /data/sandbox-pkgs/python /data/sandbox-pkgs/node
 
 # ────────────────────────────────────────
 FROM dependencies AS development
-COPY --chown=node:node scripts/install-docker.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/install-docker.sh
+# COPY --chown=node:node scripts/install-docker.sh /usr/local/bin/
+# RUN chmod +x /usr/local/bin/install-docker.sh
 EXPOSE 5055
-ENTRYPOINT ["install-docker.sh"]
+# ENTRYPOINT ["install-docker.sh"]
 CMD ["npm", "run", "dev"]
 
 # ────────────────────────────────────────
 FROM dependencies AS production
 ENV NODE_ENV=production
-COPY --chown=node:node scripts/install-docker.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/install-docker.sh
+# COPY --chown=node:node scripts/install-docker.sh /usr/local/bin/
+# RUN chmod +x /usr/local/bin/install-docker.sh
 EXPOSE 5055
-ENTRYPOINT ["install-docker.sh"]
+# ENTRYPOINT ["install-docker.sh"]
 CMD ["npm", "start"]

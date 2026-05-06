@@ -1,0 +1,18 @@
+.git
+.github
+.agents
+
+# Never copy host dependencies into images.
+**/node_modules
+
+# Runtime/generated data
+API/mongo-data
+API/redis-data
+API/uploads
+API/logs
+
+# Local/editor artifacts
+.env
+*.log
+.DS_Store
+Thumbs.db
