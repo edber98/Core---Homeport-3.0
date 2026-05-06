@@ -77,20 +77,35 @@ ORIGINAL_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
 [[ "$ORIGINAL_BRANCH" == "HEAD" ]] && fatal "tu es en detached HEAD, checkout une branche d'abord"
 ok "Branche initiale : $ORIGINAL_BRANCH"
 
-# ─── 3. Identifier la remote GitLab ──────────────────────────────────────
-step "Recherche de la remote GitLab"
+# ─── 3. Identifier les remotes valides du repo kinn-homeport ─────────────
+# Critère : URL contient "kinn-homeport" (GitLab) ou "Core---Homeport" (GitHub).
+# On exclut les remotes pointant sur d'AUTRES repos même s'ils sont sur le
+# même hôte gitlab.c4rbon.group (ex: backend-origin → kinn-api.git).
+step "Recherche des remotes du repo kinn-homeport"
+VALID_REMOTES=()
 GITLAB_REMOTE=""
+SKIPPED_REMOTES=()
 while IFS= read -r line; do
   name=$(echo "$line" | awk '{print $1}')
   url=$(echo "$line" | awk '{print $2}')
-  if echo "$url" | grep -q "gitlab.c4rbon.group"; then
-    GITLAB_REMOTE="$name"
-    break
+  if echo "$url" | grep -qE "(kinn-homeport|Core---Homeport)"; then
+    VALID_REMOTES+=("$name")
+    if echo "$url" | grep -q "gitlab.c4rbon.group"; then
+      GITLAB_REMOTE="$name"
+    fi
+  else
+    SKIPPED_REMOTES+=("$name")
   fi
 done < <(git remote -v | grep "(push)")
 
-[[ -z "$GITLAB_REMOTE" ]] && fatal "Aucune remote pointant sur gitlab.c4rbon.group trouvée. Liste : $(git remote -v)"
-ok "Remote GitLab identifiée : $GITLAB_REMOTE"
+[[ -z "$GITLAB_REMOTE" ]] && fatal "Aucune remote GitLab pointant sur kinn-homeport trouvée. Remotes : $(git remote -v)"
+[[ ${#VALID_REMOTES[@]} -eq 0 ]] && fatal "Aucune remote valide pour ce repo"
+
+ok "Remote GitLab (CI) : ${BOLD}$GITLAB_REMOTE${NC}"
+ok "Remotes pour push branche : ${BOLD}${VALID_REMOTES[*]}${NC}"
+if [[ ${#SKIPPED_REMOTES[@]} -gt 0 ]]; then
+  warn "Remotes ignorées (autre repo) : ${SKIPPED_REMOTES[*]}"
+fi
 
 # ─── 4. Fetch + lecture de la version actuelle ───────────────────────────
 # Source de vérité = le tag d'image dans deployment-back.yaml. C'est ce que
@@ -169,7 +184,7 @@ echo "  • Chart.yaml appVersion: → $NEW_TAG"
 echo "  • Image API            : api:$LAST_TAG → api:$NEW_TAG"
 echo "  • Image WEB            : web:$LAST_TAG → web:$NEW_TAG"
 echo "  • Remote GitLab (CI)   : $GITLAB_REMOTE"
-echo "  • Push branche         : production → TOUTES les remotes ($(git remote | tr '\n' ' '))"
+echo "  • Push branche         : production → ${VALID_REMOTES[*]}"
 echo "  • Push tag             : $NEW_TAG → $GITLAB_REMOTE uniquement (CI/CD)"
 echo
 read -rp "Procéder ? (y/N) " confirm
@@ -232,13 +247,13 @@ step "Création du tag $NEW_TAG"
 git tag -a "$NEW_TAG" -m "Release $NEW_TAG"
 ok "Tag créé"
 
-# ─── 10. Push de la branche sur TOUTES les remotes ───────────────────────
-# Branche production = backup partout (GitHub, GitLab, autres miroirs).
+# ─── 10. Push de la branche sur les remotes du repo kinn-homeport ────────
+# Branche production = backup sur GitLab (CI) + GitHub (mirror).
+# Les autres remotes (kinn-api etc.) ne reçoivent rien.
 # Tag = uniquement sur GitLab (c'est là que tourne la CI/CD release).
-step "Push branche production vers toutes les remotes"
-ALL_REMOTES=$(git remote)
+step "Push branche production"
 PUSH_FAILURES=()
-for remote in $ALL_REMOTES; do
+for remote in "${VALID_REMOTES[@]}"; do
   echo "  → $remote"
   if git push "$remote" production; then
     ok "  $remote : production OK"
