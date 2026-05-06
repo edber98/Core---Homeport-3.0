@@ -168,8 +168,9 @@ echo "  • Chart.yaml version   : $CURRENT_CHART_VERSION → $CHART_PATCH_NEXT"
 echo "  • Chart.yaml appVersion: → $NEW_TAG"
 echo "  • Image API            : api:$LAST_TAG → api:$NEW_TAG"
 echo "  • Image WEB            : web:$LAST_TAG → web:$NEW_TAG"
-echo "  • Remote GitLab        : $GITLAB_REMOTE"
-echo "  • Branche cible push   : production (+ tag $NEW_TAG)"
+echo "  • Remote GitLab (CI)   : $GITLAB_REMOTE"
+echo "  • Push branche         : production → TOUTES les remotes ($(git remote | tr '\n' ' '))"
+echo "  • Push tag             : $NEW_TAG → $GITLAB_REMOTE uniquement (CI/CD)"
 echo
 read -rp "Procéder ? (y/N) " confirm
 [[ "$confirm" =~ ^[yY]$ ]] || { echo "Annulé."; exit 0; }
@@ -231,19 +232,46 @@ step "Création du tag $NEW_TAG"
 git tag -a "$NEW_TAG" -m "Release $NEW_TAG"
 ok "Tag créé"
 
-# ─── 10. Push UN SEUL coup (branche + tag) ───────────────────────────────
-step "Push branche production + tag $NEW_TAG vers $GITLAB_REMOTE"
-git push "$GITLAB_REMOTE" production "$NEW_TAG"
-ok "Push OK — 2 pipelines vont démarrer en parallèle"
+# ─── 10. Push de la branche sur TOUTES les remotes ───────────────────────
+# Branche production = backup partout (GitHub, GitLab, autres miroirs).
+# Tag = uniquement sur GitLab (c'est là que tourne la CI/CD release).
+step "Push branche production vers toutes les remotes"
+ALL_REMOTES=$(git remote)
+PUSH_FAILURES=()
+for remote in $ALL_REMOTES; do
+  echo "  → $remote"
+  if git push "$remote" production; then
+    ok "  $remote : production OK"
+  else
+    warn "  $remote : push échoué (continue avec les autres)"
+    PUSH_FAILURES+=("$remote")
+  fi
+done
 
-# ─── 11. Retour à la branche initiale ────────────────────────────────────
+# Si la GitLab a échoué, c'est bloquant (la CI ne sera jamais déclenchée)
+for f in "${PUSH_FAILURES[@]:-}"; do
+  if [[ "$f" == "$GITLAB_REMOTE" ]]; then
+    fatal "Le push sur $GITLAB_REMOTE (GitLab) a échoué — résous avant de retenter"
+  fi
+done
+
+# ─── 11. Push du tag UNIQUEMENT sur GitLab ───────────────────────────────
+step "Push tag $NEW_TAG vers $GITLAB_REMOTE (CI uniquement)"
+git push "$GITLAB_REMOTE" "$NEW_TAG"
+ok "Tag pushé sur $GITLAB_REMOTE — pipeline build_release démarré"
+
+if [[ ${#PUSH_FAILURES[@]} -gt 0 ]]; then
+  warn "Push branche échoué sur : ${PUSH_FAILURES[*]} (à retenter manuellement)"
+fi
+
+# ─── 12. Retour à la branche initiale ────────────────────────────────────
 if [[ "$ORIGINAL_BRANCH" != "production" ]]; then
   step "Retour à $ORIGINAL_BRANCH"
   git checkout "$ORIGINAL_BRANCH"
   ok "Retour sur $ORIGINAL_BRANCH"
 fi
 
-# ─── 12. Affiche les liens utiles ────────────────────────────────────────
+# ─── 13. Affiche les liens utiles ────────────────────────────────────────
 GITLAB_URL="$(git remote get-url "$GITLAB_REMOTE" | sed -E 's|^git@([^:]+):(.+)\.git$|https://\1/\2|; s|\.git$||')"
 
 echo
