@@ -1324,7 +1324,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Comptes"
+      "group": "Comptes",
+      "risk": "write"
     },
     {
       "key": "salesforce_account_get",
@@ -1386,7 +1387,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Comptes"
+      "group": "Comptes",
+      "risk": "safe"
     },
     {
       "key": "salesforce_account_update",
@@ -1484,7 +1486,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Comptes"
+      "group": "Comptes",
+      "risk": "write"
     },
     {
       "key": "salesforce_account_delete",
@@ -1546,7 +1549,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Comptes"
+      "group": "Comptes",
+      "risk": "destructive"
     },
     {
       "key": "salesforce_accounts_list",
@@ -1603,7 +1607,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Comptes"
+      "group": "Comptes",
+      "risk": "safe"
     },
     {
       "key": "salesforce_contact_create",
@@ -1701,7 +1706,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Contacts"
+      "group": "Contacts",
+      "risk": "write"
     },
     {
       "key": "salesforce_contact_get",
@@ -1763,7 +1769,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Contacts"
+      "group": "Contacts",
+      "risk": "safe"
     },
     {
       "key": "salesforce_contact_update",
@@ -1861,7 +1868,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Contacts"
+      "group": "Contacts",
+      "risk": "write"
     },
     {
       "key": "salesforce_contact_delete",
@@ -1923,7 +1931,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Contacts"
+      "group": "Contacts",
+      "risk": "destructive"
     },
     {
       "key": "salesforce_contacts_list",
@@ -1980,7 +1989,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Contacts"
+      "group": "Contacts",
+      "risk": "safe"
     },
     {
       "key": "salesforce_contact_search",
@@ -2051,7 +2061,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Contacts"
+      "group": "Contacts",
+      "risk": "safe"
     },
     {
       "key": "salesforce_opportunity_create",
@@ -2167,7 +2178,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Opportunités"
+      "group": "Opportunités",
+      "risk": "write"
     },
     {
       "key": "salesforce_opportunity_get",
@@ -2229,7 +2241,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Opportunités"
+      "group": "Opportunités",
+      "risk": "safe"
     },
     {
       "key": "salesforce_opportunity_update",
@@ -2335,7 +2348,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Opportunités"
+      "group": "Opportunités",
+      "risk": "write"
     },
     {
       "key": "salesforce_opportunity_delete",
@@ -2397,7 +2411,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Opportunités"
+      "group": "Opportunités",
+      "risk": "destructive"
     },
     {
       "key": "salesforce_opportunities_list",
@@ -2454,7 +2469,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Opportunités"
+      "group": "Opportunités",
+      "risk": "safe"
     },
     {
       "key": "salesforce_lead_create",
@@ -2566,7 +2582,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Leads"
+      "group": "Leads",
+      "risk": "write"
     },
     {
       "key": "salesforce_lead_get",
@@ -2628,7 +2645,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Leads"
+      "group": "Leads",
+      "risk": "safe"
     },
     {
       "key": "salesforce_lead_update",
@@ -2735,7 +2753,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Leads"
+      "group": "Leads",
+      "risk": "write"
     },
     {
       "key": "salesforce_lead_delete",
@@ -2797,7 +2816,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Leads"
+      "group": "Leads",
+      "risk": "destructive"
     },
     {
       "key": "salesforce_leads_list",
@@ -2854,7 +2874,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Leads"
+      "group": "Leads",
+      "risk": "safe"
     },
     {
       "key": "salesforce_lead_convert",
@@ -2943,7 +2964,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Leads"
+      "group": "Leads",
+      "risk": "write"
     },
     {
       "key": "salesforce_case_create",
@@ -3041,7 +3063,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Cases"
+      "group": "Cases",
+      "risk": "write"
     },
     {
       "key": "salesforce_case_get",
@@ -3103,7 +3126,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Cases"
+      "group": "Cases",
+      "risk": "safe"
     },
     {
       "key": "salesforce_case_update",
@@ -3192,7 +3216,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Cases"
+      "group": "Cases",
+      "risk": "write"
     },
     {
       "key": "salesforce_cases_list",
@@ -3249,7 +3274,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Cases"
+      "group": "Cases",
+      "risk": "safe"
     },
     {
       "key": "salesforce_task_create",
@@ -3364,7 +3390,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Tâches"
+      "group": "Tâches",
+      "risk": "write"
     },
     {
       "key": "salesforce_task_get",
@@ -3426,7 +3453,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Tâches"
+      "group": "Tâches",
+      "risk": "safe"
     },
     {
       "key": "salesforce_tasks_list",
@@ -3483,7 +3511,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Tâches"
+      "group": "Tâches",
+      "risk": "safe"
     },
     {
       "key": "salesforce_soql_query",
@@ -3545,7 +3574,9 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "SOQL"
+      "group": "SOQL",
+      "risk": "safe",
+      "riskReason": "Requête SOQL lecture seule"
     },
     {
       "key": "salesforce_webhook_event",
@@ -3591,7 +3622,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Événements"
+      "group": "Événements",
+      "risk": "safe"
     }
   ]
 }

@@ -1,6 +1,8 @@
 # See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
 
-
+MotionDesign/KinnPitch.mp4
+# ou mieux
+*.mp4
 
 dist
 tmp

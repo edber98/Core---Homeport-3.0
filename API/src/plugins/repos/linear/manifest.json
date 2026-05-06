@@ -1166,7 +1166,8 @@
         "linear",
         "création"
       ],
-      "group": "Issues"
+      "group": "Issues",
+      "risk": "write"
     },
     {
       "key": "linear_issue_get",
@@ -1228,7 +1229,8 @@
         "linear",
         "lecture"
       ],
-      "group": "Issues"
+      "group": "Issues",
+      "risk": "write"
     },
     {
       "key": "linear_issue_update",
@@ -1335,7 +1337,8 @@
         "linear",
         "mise-à-jour"
       ],
-      "group": "Issues"
+      "group": "Issues",
+      "risk": "write"
     },
     {
       "key": "linear_issues_list",
@@ -1401,7 +1404,8 @@
         "linear",
         "liste"
       ],
-      "group": "Issues"
+      "group": "Issues",
+      "risk": "safe"
     },
     {
       "key": "linear_issue_search",
@@ -1472,7 +1476,8 @@
         "linear",
         "recherche"
       ],
-      "group": "Issues"
+      "group": "Issues",
+      "risk": "write"
     },
     {
       "key": "linear_project_create",
@@ -1557,7 +1562,8 @@
         "linear",
         "création"
       ],
-      "group": "Projets"
+      "group": "Projets",
+      "risk": "write"
     },
     {
       "key": "linear_project_get",
@@ -1619,7 +1625,8 @@
         "linear",
         "lecture"
       ],
-      "group": "Projets"
+      "group": "Projets",
+      "risk": "safe"
     },
     {
       "key": "linear_projects_list",
@@ -1676,7 +1683,8 @@
         "linear",
         "liste"
       ],
-      "group": "Projets"
+      "group": "Projets",
+      "risk": "safe"
     },
     {
       "key": "linear_cycle_get",
@@ -1738,7 +1746,8 @@
         "linear",
         "lecture"
       ],
-      "group": "Cycles"
+      "group": "Cycles",
+      "risk": "safe"
     },
     {
       "key": "linear_cycles_list",
@@ -1804,7 +1813,8 @@
         "linear",
         "liste"
       ],
-      "group": "Cycles"
+      "group": "Cycles",
+      "risk": "safe"
     },
     {
       "key": "linear_team_get",
@@ -1866,7 +1876,8 @@
         "linear",
         "lecture"
       ],
-      "group": "Équipes"
+      "group": "Équipes",
+      "risk": "safe"
     },
     {
       "key": "linear_teams_list",
@@ -1913,7 +1924,8 @@
         "linear",
         "liste"
       ],
-      "group": "Équipes"
+      "group": "Équipes",
+      "risk": "safe"
     },
     {
       "key": "linear_user_get",
@@ -1970,7 +1982,8 @@
         "linear",
         "lecture"
       ],
-      "group": "Utilisateurs"
+      "group": "Utilisateurs",
+      "risk": "safe"
     },
     {
       "key": "linear_users_list",
@@ -2017,7 +2030,8 @@
         "linear",
         "liste"
       ],
-      "group": "Utilisateurs"
+      "group": "Utilisateurs",
+      "risk": "safe"
     },
     {
       "key": "linear_label_create",
@@ -2102,7 +2116,8 @@
         "linear",
         "création"
       ],
-      "group": "Labels"
+      "group": "Labels",
+      "risk": "write"
     },
     {
       "key": "linear_labels_list",
@@ -2159,7 +2174,8 @@
         "linear",
         "liste"
       ],
-      "group": "Labels"
+      "group": "Labels",
+      "risk": "safe"
     },
     {
       "key": "linear_comment_create",
@@ -2235,7 +2251,8 @@
         "linear",
         "création"
       ],
-      "group": "Commentaires"
+      "group": "Commentaires",
+      "risk": "write"
     },
     {
       "key": "linear_comments_list",
@@ -2297,7 +2314,8 @@
         "linear",
         "liste"
       ],
-      "group": "Commentaires"
+      "group": "Commentaires",
+      "risk": "write"
     },
     {
       "key": "linear_webhook_event",
@@ -2346,7 +2364,8 @@
         "linear",
         "événement"
       ],
-      "group": "Événements"
+      "group": "Événements",
+      "risk": "safe"
     }
   ]
 }

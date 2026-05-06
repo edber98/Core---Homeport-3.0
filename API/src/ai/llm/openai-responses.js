@@ -1,6 +1,8 @@
 // OpenAI Responses API streaming client — /v1/responses (GPT-5.2, o-series)
 // Yields normalized events: text_delta, tool_use_start, tool_input_delta, tool_use_end, done
 
+const { isDebug } = require('../util/debug');
+
 /**
  * Stream from OpenAI's Responses API.
  * @param {Array} messages - Normalized messages [{role, content, tool_calls?}]
@@ -32,6 +34,11 @@ async function* streamOpenAIResponses(messages, tools, config) {
   // Tools
   if (tools?.length) {
     body.tools = formatResponsesTools(tools);
+    // Désactive parallel_tool_calls : OpenAI peut émettre plusieurs tool calls
+    // dans le même tour sans voir les résultats intermédiaires, ce qui casse les
+    // chaînes depends_on (placeholder `{{tool_uses[0].jobId}}` littéral au lieu
+    // du vrai ID). Override possible via AI_PARALLEL_TOOL_CALLS=1.
+    body.parallel_tool_calls = process.env.AI_PARALLEL_TOOL_CALLS === '1';
   }
 
   // Max output tokens
@@ -103,7 +110,10 @@ async function* streamOpenAIResponses(messages, tools, config) {
 
       // Responses API event types
       const type = data.type;
-      if (type?.includes('function_call') || type?.includes('output_item')) {
+      // Logs désactivés par défaut : 50-200 events SSE par stream × N subagents
+      // en parallèle × console.log synchrone = event loop saturé. Activable via
+      // AI_DEBUG=1 pour investigation.
+      if (isDebug() && (type?.includes('function_call') || type?.includes('output_item'))) {
         console.log(`[llm-openai-responses] SSE event: ${type}`, type.includes('delta') ? `delta=${(data.delta || '').length}chars` : '');
       }
 
@@ -140,7 +150,7 @@ async function* streamOpenAIResponses(messages, tools, config) {
             if (itemId && itemId !== callId) {
               toolBuilders.set(itemId, builder);
             }
-            console.log(`[llm-openai-responses] output_item.added: callId=${callId}, itemId=${itemId}, name=${name}`);
+            if (isDebug()) console.log(`[llm-openai-responses] output_item.added: callId=${callId}, itemId=${itemId}, name=${name}`);
             yield { type: 'tool_use_start', index: toolIndex, id: callId, name };
             toolIndex++;
           }
@@ -152,7 +162,7 @@ async function* streamOpenAIResponses(messages, tools, config) {
           // Ensure item_id and call_id are both mapped to the same builder
           const startCallId = data.call_id;
           const startItemId = data.item_id;
-          console.log(`[llm-openai-responses] arguments.start: call_id=${startCallId}, item_id=${startItemId}`);
+          if (isDebug()) console.log(`[llm-openai-responses] arguments.start: call_id=${startCallId}, item_id=${startItemId}`);
           if (startItemId && startCallId) {
             const b = toolBuilders.get(startCallId) || toolBuilders.get(startItemId);
             if (b) {
@@ -184,7 +194,7 @@ async function* streamOpenAIResponses(messages, tools, config) {
             let input = {};
             try { input = JSON.parse(builder.arguments); } catch {}
             builder.ended = true;
-            console.log(`[llm-openai-responses] arguments.done → tool_use_end: ${builder.name} (id=${builder.id})`);
+            if (isDebug()) console.log(`[llm-openai-responses] arguments.done → tool_use_end: ${builder.name} (id=${builder.id})`);
             yield { type: 'tool_use_end', index: toolIndex - 1, id: builder.id, name: builder.name, input };
           }
           break;
@@ -216,7 +226,7 @@ async function* streamOpenAIResponses(messages, tools, config) {
               let input = {};
               try { input = JSON.parse(builder.arguments); } catch {}
               builder.ended = true;
-              console.log(`[llm-openai-responses] output_item.done → tool_use_end: ${builder.name} (id=${builder.id})`);
+              if (isDebug()) console.log(`[llm-openai-responses] output_item.done → tool_use_end: ${builder.name} (id=${builder.id})`);
               yield { type: 'tool_use_end', index: toolIndex - 1, id: builder.id, name: builder.name, input };
             }
           }
@@ -231,7 +241,7 @@ async function* streamOpenAIResponses(messages, tools, config) {
               let input = {};
               try { input = JSON.parse(builder.arguments); } catch {}
               builder.ended = true;
-              console.log(`[llm-openai-responses] response.completed flush → tool_use_end: ${builder.name} (id=${callId})`);
+              if (isDebug()) console.log(`[llm-openai-responses] response.completed flush → tool_use_end: ${builder.name} (id=${callId})`);
               yield { type: 'tool_use_end', index: 0, id: callId, name: builder.name, input };
             }
           }
@@ -256,7 +266,7 @@ async function* streamOpenAIResponses(messages, tools, config) {
 
         // ── Unhandled events — log for debugging ──
         default: {
-          if (process.env.AI_DEBUG) {
+          if (isDebug()) {
             console.log(`[llm-openai-responses] unhandled event: ${type}`);
           }
           break;
@@ -289,11 +299,44 @@ function formatInputItems(messages) {
     }
 
     if (m.role === 'tool') {
-      items.push({
-        type: 'function_call_output',
-        call_id: m.tool_call_id,
-        output: typeof m.content === 'string' ? m.content : JSON.stringify(m.content),
-      });
+      // Tool result multimodal : extrait les blocks image/document et les émet
+      // comme message user séparé (Responses API ne supporte pas encore les
+      // content parts non-texte dans function_call_output).
+      if (Array.isArray(m.content)) {
+        const textParts = m.content.filter(b => b.type === 'text' || typeof b === 'string')
+          .map(b => typeof b === 'string' ? b : (b.text || ''));
+        const mediaParts = m.content.filter(b => b && (b.type === 'image' || b.type === 'document'));
+        items.push({
+          type: 'function_call_output',
+          call_id: m.tool_call_id,
+          output: textParts.join('\n') || '[contenu multimodal ci-dessous]',
+        });
+        if (mediaParts.length) {
+          const parts = [
+            { type: 'input_text', text: `(Contenu retourné par le tool pour call ${m.tool_call_id})` },
+          ];
+          for (const b of mediaParts) {
+            const src = b.source || { type: 'base64', media_type: b.media_type, data: b.data };
+            if (b.type === 'image') {
+              parts.push({ type: 'input_image', image_url: `data:${src.media_type};base64,${src.data}` });
+            } else if (b.type === 'document') {
+              // OpenAI Responses API : input_file avec file_data (base64)
+              parts.push({
+                type: 'input_file',
+                filename: b.name || 'document.pdf',
+                file_data: `data:${src.media_type || 'application/pdf'};base64,${src.data}`,
+              });
+            }
+          }
+          items.push({ type: 'message', role: 'user', content: parts });
+        }
+      } else {
+        items.push({
+          type: 'function_call_output',
+          call_id: m.tool_call_id,
+          output: typeof m.content === 'string' ? m.content : JSON.stringify(m.content),
+        });
+      }
       continue;
     }
 
@@ -316,7 +359,23 @@ function formatInputItems(messages) {
     if (Array.isArray(m.content)) {
       const parts = m.content.map(b => {
         if (b.type === 'image') {
-          return { type: 'input_image', image_url: `data:${b.media_type};base64,${b.data}` };
+          const src = b.source || { data: b.data, media_type: b.media_type };
+          return { type: 'input_image', image_url: `data:${src.media_type};base64,${src.data}` };
+        }
+        if (b.type === 'document') {
+          const src = b.source || { data: b.data, media_type: b.media_type || 'application/pdf' };
+          return {
+            type: 'input_file',
+            filename: b.name || 'document.pdf',
+            file_data: `data:${src.media_type};base64,${src.data}`,
+          };
+        }
+        if (b.type === 'input_audio' || b.type === 'audio') {
+          const src = b.source || { data: b.data, media_type: b.media_type || 'audio/mpeg' };
+          return {
+            type: 'input_audio',
+            input_audio: { data: src.data, format: (src.media_type || '').split('/').pop() || 'mp3' },
+          };
         }
         return { type: 'input_text', text: b.text || '' };
       });

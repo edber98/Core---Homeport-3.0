@@ -203,7 +203,8 @@
       "tags": [
         "création",
         "trello"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "trello_board_get",
@@ -280,7 +281,8 @@
       "tags": [
         "lecture",
         "trello"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "trello_board_update",
@@ -379,7 +381,8 @@
       "tags": [
         "mise-à-jour",
         "trello"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "trello_board_lists",
@@ -489,7 +492,8 @@
       "tags": [
         "liste",
         "trello"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "trello_board_cards",
@@ -566,7 +570,8 @@
       "tags": [
         "liste",
         "trello"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "trello_board_members",
@@ -643,7 +648,8 @@
       "tags": [
         "liste",
         "trello"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "trello_board_labels",
@@ -732,7 +738,8 @@
       "tags": [
         "liste",
         "trello"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "trello_card_create",
@@ -900,7 +907,8 @@
       "tags": [
         "création",
         "trello"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "trello_card_get",
@@ -1001,7 +1009,8 @@
       "tags": [
         "lecture",
         "trello"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "trello_card_update",
@@ -1185,7 +1194,8 @@
       "tags": [
         "mise-à-jour",
         "trello"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "trello_card_delete",
@@ -1250,7 +1260,9 @@
       "tags": [
         "suppression",
         "trello"
-      ]
+      ],
+      "risk": "destructive",
+      "riskReason": "Supprime une carte"
     },
     {
       "key": "trello_card_move",
@@ -1354,7 +1366,8 @@
       "tags": [
         "mise-à-jour",
         "trello"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "trello_card_add_comment",
@@ -1435,7 +1448,8 @@
       "tags": [
         "création",
         "trello"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "trello_card_add_label",
@@ -1516,7 +1530,8 @@
       "tags": [
         "création",
         "trello"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "trello_card_remove_label",
@@ -1597,7 +1612,8 @@
       "tags": [
         "suppression",
         "trello"
-      ]
+      ],
+      "risk": "destructive"
     },
     {
       "key": "trello_card_add_member",
@@ -1678,7 +1694,8 @@
       "tags": [
         "création",
         "trello"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "trello_card_remove_member",
@@ -1759,7 +1776,8 @@
       "tags": [
         "suppression",
         "trello"
-      ]
+      ],
+      "risk": "destructive"
     },
     {
       "key": "trello_card_attachments",
@@ -1824,7 +1842,8 @@
       "tags": [
         "liste",
         "trello"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "trello_card_add_attachment",
@@ -1927,7 +1946,8 @@
       "tags": [
         "création",
         "trello"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "trello_card_checklists",
@@ -1992,7 +2012,8 @@
       "tags": [
         "liste",
         "trello"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "trello_card_add_checklist",
@@ -2090,7 +2111,8 @@
       "tags": [
         "création",
         "trello"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "trello_card_actions",
@@ -2178,7 +2200,8 @@
       "tags": [
         "liste",
         "trello"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "trello_list_create",
@@ -2271,7 +2294,8 @@
       "tags": [
         "création",
         "trello"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "trello_list_get",
@@ -2348,7 +2372,8 @@
       "tags": [
         "lecture",
         "trello"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "trello_list_update",
@@ -2459,7 +2484,8 @@
       "tags": [
         "mise-à-jour",
         "trello"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "trello_list_cards",
@@ -2536,7 +2562,8 @@
       "tags": [
         "liste",
         "trello"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "trello_list_archive_cards",
@@ -2601,7 +2628,8 @@
       "tags": [
         "mise-à-jour",
         "trello"
-      ]
+      ],
+      "risk": "destructive"
     },
     {
       "key": "trello_list_move_cards",
@@ -2682,7 +2710,8 @@
       "tags": [
         "mise-à-jour",
         "trello"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "trello_label_create",
@@ -2825,7 +2854,8 @@
       "tags": [
         "création",
         "trello"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "trello_label_get",
@@ -2902,7 +2932,8 @@
       "tags": [
         "lecture",
         "trello"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "trello_label_update",
@@ -3039,7 +3070,8 @@
       "tags": [
         "mise-à-jour",
         "trello"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "trello_label_delete",
@@ -3104,7 +3136,8 @@
       "tags": [
         "suppression",
         "trello"
-      ]
+      ],
+      "risk": "destructive"
     },
     {
       "key": "trello_checklist_create",
@@ -3196,7 +3229,8 @@
       "tags": [
         "création",
         "trello"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "trello_checklist_get",
@@ -3285,7 +3319,8 @@
       "tags": [
         "lecture",
         "trello"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "trello_checklist_delete",
@@ -3350,7 +3385,8 @@
       "tags": [
         "suppression",
         "trello"
-      ]
+      ],
+      "risk": "destructive"
     },
     {
       "key": "trello_checklist_items",
@@ -3427,7 +3463,8 @@
       "tags": [
         "liste",
         "trello"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "trello_checklist_add_item",
@@ -3531,7 +3568,8 @@
       "tags": [
         "création",
         "trello"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "trello_checklist_delete_item",
@@ -3612,7 +3650,8 @@
       "tags": [
         "suppression",
         "trello"
-      ]
+      ],
+      "risk": "destructive"
     },
     {
       "key": "trello_checklist_update_item",
@@ -3756,7 +3795,8 @@
       "tags": [
         "mise-à-jour",
         "trello"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "trello_member_get",
@@ -3834,7 +3874,8 @@
       "tags": [
         "lecture",
         "trello"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "trello_member_boards",
@@ -3957,7 +3998,8 @@
       "tags": [
         "liste",
         "trello"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "trello_member_cards",
@@ -4035,7 +4077,8 @@
       "tags": [
         "liste",
         "trello"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "trello_member_organizations",
@@ -4113,7 +4156,8 @@
       "tags": [
         "liste",
         "trello"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "trello_org_get",
@@ -4190,7 +4234,8 @@
       "tags": [
         "lecture",
         "trello"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "trello_org_boards",
@@ -4308,7 +4353,8 @@
       "tags": [
         "liste",
         "trello"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "trello_org_members",
@@ -4385,7 +4431,8 @@
       "tags": [
         "liste",
         "trello"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "trello_search",
@@ -4508,7 +4555,8 @@
       "tags": [
         "recherche",
         "trello"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "trello_search_members",
@@ -4607,7 +4655,8 @@
       "tags": [
         "recherche",
         "trello"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "trello_webhook_create",
@@ -4712,7 +4761,8 @@
         "création",
         "événement",
         "trello"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "trello_webhook_get",
@@ -4778,7 +4828,8 @@
         "lecture",
         "événement",
         "trello"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "trello_webhook_update",
@@ -4889,7 +4940,8 @@
         "mise-à-jour",
         "événement",
         "trello"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "trello_webhook_delete",
@@ -4955,7 +5007,8 @@
         "suppression",
         "événement",
         "trello"
-      ]
+      ],
+      "risk": "destructive"
     },
     {
       "key": "trello_action_get",
@@ -5032,7 +5085,8 @@
       "tags": [
         "lecture",
         "trello"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "trello_action_delete",
@@ -5097,7 +5151,8 @@
       "tags": [
         "suppression",
         "trello"
-      ]
+      ],
+      "risk": "destructive"
     }
   ],
   "variables": {

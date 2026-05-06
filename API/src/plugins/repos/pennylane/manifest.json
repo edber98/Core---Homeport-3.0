@@ -1082,7 +1082,8 @@
         "création",
         "pennylane"
       ],
-      "group": "Clients"
+      "group": "Clients",
+      "risk": "write"
     },
     {
       "key": "pl_customer_get",
@@ -1144,7 +1145,8 @@
         "lecture",
         "pennylane"
       ],
-      "group": "Clients"
+      "group": "Clients",
+      "risk": "safe"
     },
     {
       "key": "pl_customer_update",
@@ -1242,7 +1244,8 @@
         "mise-à-jour",
         "pennylane"
       ],
-      "group": "Clients"
+      "group": "Clients",
+      "risk": "write"
     },
     {
       "key": "pl_customers_list",
@@ -1317,7 +1320,8 @@
         "liste",
         "pennylane"
       ],
-      "group": "Clients"
+      "group": "Clients",
+      "risk": "safe"
     },
     {
       "key": "pl_supplier_create",
@@ -1415,7 +1419,8 @@
         "création",
         "pennylane"
       ],
-      "group": "Fournisseurs"
+      "group": "Fournisseurs",
+      "risk": "write"
     },
     {
       "key": "pl_supplier_get",
@@ -1477,7 +1482,8 @@
         "lecture",
         "pennylane"
       ],
-      "group": "Fournisseurs"
+      "group": "Fournisseurs",
+      "risk": "safe"
     },
     {
       "key": "pl_supplier_update",
@@ -1566,7 +1572,8 @@
         "mise-à-jour",
         "pennylane"
       ],
-      "group": "Fournisseurs"
+      "group": "Fournisseurs",
+      "risk": "write"
     },
     {
       "key": "pl_suppliers_list",
@@ -1632,7 +1639,8 @@
         "liste",
         "pennylane"
       ],
-      "group": "Fournisseurs"
+      "group": "Fournisseurs",
+      "risk": "safe"
     },
     {
       "key": "pl_invoice_create",
@@ -1751,7 +1759,9 @@
         "création",
         "pennylane"
       ],
-      "group": "Factures"
+      "group": "Factures",
+      "risk": "write",
+      "riskReason": "Crée un brouillon de facture"
     },
     {
       "key": "pl_invoice_get",
@@ -1813,7 +1823,8 @@
         "lecture",
         "pennylane"
       ],
-      "group": "Factures"
+      "group": "Factures",
+      "risk": "safe"
     },
     {
       "key": "pl_invoices_list",
@@ -1888,7 +1899,8 @@
         "liste",
         "pennylane"
       ],
-      "group": "Factures"
+      "group": "Factures",
+      "risk": "safe"
     },
     {
       "key": "pl_invoice_finalize",
@@ -1950,7 +1962,9 @@
         "finalisation",
         "pennylane"
       ],
-      "group": "Factures"
+      "group": "Factures",
+      "risk": "destructive",
+      "riskReason": "Finalise une facture (verrouillage comptable)"
     },
     {
       "key": "pl_customer_invoice_create",
@@ -2069,7 +2083,8 @@
         "création",
         "pennylane"
       ],
-      "group": "Factures clients"
+      "group": "Factures clients",
+      "risk": "write"
     },
     {
       "key": "pl_customer_invoices_list",
@@ -2144,7 +2159,8 @@
         "liste",
         "pennylane"
       ],
-      "group": "Factures clients"
+      "group": "Factures clients",
+      "risk": "safe"
     },
     {
       "key": "pl_supplier_invoice_create",
@@ -2263,7 +2279,8 @@
         "création",
         "pennylane"
       ],
-      "group": "Factures fournisseurs"
+      "group": "Factures fournisseurs",
+      "risk": "write"
     },
     {
       "key": "pl_supplier_invoices_list",
@@ -2338,7 +2355,8 @@
         "liste",
         "pennylane"
       ],
-      "group": "Factures fournisseurs"
+      "group": "Factures fournisseurs",
+      "risk": "safe"
     },
     {
       "key": "pl_estimate_create",
@@ -2440,7 +2458,8 @@
         "création",
         "pennylane"
       ],
-      "group": "Devis"
+      "group": "Devis",
+      "risk": "write"
     },
     {
       "key": "pl_estimate_get",
@@ -2502,7 +2521,8 @@
         "lecture",
         "pennylane"
       ],
-      "group": "Devis"
+      "group": "Devis",
+      "risk": "safe"
     },
     {
       "key": "pl_estimates_list",
@@ -2568,7 +2588,8 @@
         "liste",
         "pennylane"
       ],
-      "group": "Devis"
+      "group": "Devis",
+      "risk": "safe"
     },
     {
       "key": "pl_product_create",
@@ -2675,7 +2696,8 @@
         "création",
         "pennylane"
       ],
-      "group": "Produits"
+      "group": "Produits",
+      "risk": "write"
     },
     {
       "key": "pl_products_list",
@@ -2741,7 +2763,8 @@
         "liste",
         "pennylane"
       ],
-      "group": "Produits"
+      "group": "Produits",
+      "risk": "safe"
     },
     {
       "key": "pl_categories_list",
@@ -2807,7 +2830,8 @@
         "liste",
         "pennylane"
       ],
-      "group": "Catégories"
+      "group": "Catégories",
+      "risk": "safe"
     },
     {
       "key": "pl_payment_methods_list",
@@ -2854,7 +2878,8 @@
         "liste",
         "pennylane"
       ],
-      "group": "Moyens de paiement"
+      "group": "Moyens de paiement",
+      "risk": "safe"
     },
     {
       "key": "pl_webhook_event",
@@ -2901,7 +2926,8 @@
         "événement",
         "pennylane"
       ],
-      "group": "Événements"
+      "group": "Événements",
+      "risk": "safe"
     }
   ]
 }

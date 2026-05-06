@@ -452,7 +452,8 @@
           }
         ]
       },
-      "group": "Messages"
+      "group": "Messages",
+      "risk": "write"
     },
     {
       "key": "anthropic_create_message_stream",
@@ -561,7 +562,8 @@
           }
         ]
       },
-      "group": "Messages"
+      "group": "Messages",
+      "risk": "write"
     },
     {
       "key": "anthropic_create_message_tools",
@@ -684,7 +686,8 @@
           }
         ]
       },
-      "group": "Messages"
+      "group": "Messages",
+      "risk": "write"
     },
     {
       "key": "anthropic_create_message_vision",
@@ -830,7 +833,8 @@
           }
         ]
       },
-      "group": "Messages"
+      "group": "Messages",
+      "risk": "write"
     },
     {
       "key": "anthropic_list_models",
@@ -887,7 +891,8 @@
           }
         ]
       },
-      "group": "Modèles"
+      "group": "Modèles",
+      "risk": "safe"
     },
     {
       "key": "anthropic_get_model",
@@ -948,7 +953,8 @@
           }
         ]
       },
-      "group": "Modèles"
+      "group": "Modèles",
+      "risk": "safe"
     },
     {
       "key": "anthropic_count_tokens",
@@ -1037,7 +1043,8 @@
           }
         ]
       },
-      "group": "Tokens"
+      "group": "Tokens",
+      "risk": "safe"
     },
     {
       "key": "anthropic_classify",
@@ -1214,7 +1221,9 @@
         "anthropic",
         "classification",
         "ai"
-      ]
+      ],
+      "risk": "safe",
+      "riskReason": "Appel LLM lecture (coût tokens)"
     },
     {
       "key": "anthropic_extract",
@@ -1352,7 +1361,9 @@
         "anthropic",
         "extraction",
         "ai"
-      ]
+      ],
+      "risk": "safe",
+      "riskReason": "Appel LLM lecture (coût tokens)"
     }
   ]
 }

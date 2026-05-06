@@ -1959,7 +1959,8 @@
       "tags": [
         "lecture",
         "GitHub"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "github_repos_list",
@@ -2089,7 +2090,8 @@
       "tags": [
         "liste",
         "GitHub"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "github_repo_create",
@@ -2190,7 +2192,8 @@
       "tags": [
         "création",
         "GitHub"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "github_repo_forks_list",
@@ -2284,7 +2287,8 @@
       "tags": [
         "liste",
         "GitHub"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "github_repo_fork",
@@ -2378,7 +2382,9 @@
       "tags": [
         "création",
         "GitHub"
-      ]
+      ],
+      "risk": "write",
+      "riskReason": "Crée un fork"
     },
     {
       "key": "github_issue_create",
@@ -2525,7 +2531,8 @@
       "tags": [
         "création",
         "GitHub"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "github_issue_get",
@@ -2624,7 +2631,8 @@
       "tags": [
         "lecture",
         "GitHub"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "github_issue_update",
@@ -2794,7 +2802,8 @@
       "tags": [
         "mise-à-jour",
         "GitHub"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "github_issues_list",
@@ -2966,7 +2975,8 @@
       "tags": [
         "liste",
         "GitHub"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "github_issue_comment_create",
@@ -3082,7 +3092,8 @@
       "tags": [
         "création",
         "GitHub"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "github_issue_comments_list",
@@ -3193,7 +3204,8 @@
       "tags": [
         "liste",
         "GitHub"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "github_pr_create",
@@ -3350,7 +3362,9 @@
       "tags": [
         "création",
         "GitHub"
-      ]
+      ],
+      "risk": "write",
+      "riskReason": "Crée une pull request"
     },
     {
       "key": "github_pr_get",
@@ -3449,7 +3463,8 @@
       "tags": [
         "lecture",
         "GitHub"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "github_pr_update",
@@ -3607,7 +3622,8 @@
       "tags": [
         "mise-à-jour",
         "GitHub"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "github_prs_list",
@@ -3783,7 +3799,8 @@
       "tags": [
         "liste",
         "GitHub"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "github_pr_merge",
@@ -3933,7 +3950,9 @@
       "tags": [
         "mise-à-jour",
         "GitHub"
-      ]
+      ],
+      "risk": "destructive",
+      "riskReason": "Fusion PR, altère l'historique"
     },
     {
       "key": "github_branches_list",
@@ -4027,7 +4046,8 @@
       "tags": [
         "liste",
         "GitHub"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "github_branch_get",
@@ -4126,7 +4146,8 @@
       "tags": [
         "lecture",
         "GitHub"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "github_branch_create",
@@ -4242,7 +4263,8 @@
       "tags": [
         "création",
         "GitHub"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "github_commits_list",
@@ -4394,7 +4416,8 @@
       "tags": [
         "liste",
         "GitHub"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "github_commit_get",
@@ -4493,7 +4516,8 @@
       "tags": [
         "lecture",
         "GitHub"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "github_release_create",
@@ -4652,7 +4676,8 @@
       "tags": [
         "création",
         "GitHub"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "github_releases_list",
@@ -4746,7 +4771,8 @@
       "tags": [
         "liste",
         "GitHub"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "github_release_get",
@@ -4845,7 +4871,8 @@
       "tags": [
         "lecture",
         "GitHub"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "github_user_get",
@@ -4905,7 +4932,8 @@
       "tags": [
         "lecture",
         "GitHub"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "github_user_repos_list",
@@ -5040,7 +5068,8 @@
       "tags": [
         "liste",
         "GitHub"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "github_workflows_list",
@@ -5122,7 +5151,8 @@
       "tags": [
         "liste",
         "GitHub"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "github_workflow_dispatch",
@@ -5250,7 +5280,8 @@
       "tags": [
         "envoi",
         "GitHub"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "github_labels_list",
@@ -5332,7 +5363,8 @@
       "tags": [
         "liste",
         "GitHub"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "github_label_create",
@@ -5455,7 +5487,8 @@
       "tags": [
         "création",
         "GitHub"
-      ]
+      ],
+      "risk": "write"
     }
   ]
 }

@@ -1,7 +1,7 @@
 import { Component, ChangeDetectorRef, OnInit, OnDestroy, AfterViewInit, HostListener, ElementRef, ViewChild, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzSelectModule } from 'ng-zorro-antd/select';
@@ -19,11 +19,19 @@ import { ApiClientService } from '../../services/api-client.service';
 import { AccessControlService } from '../../services/access-control.service';
 import { AiChatComponent } from './ai-chat.component';
 import { AiSettingsComponent } from './ai-settings.component';
+import { AiCanvasPanelComponent } from './canvas/ai-canvas-panel.component';
+import { AiProjectRootPickerComponent } from './project/ai-project-root-picker.component';
+import { AiThreadShareDialogComponent } from './sharing/ai-thread-share-dialog.component';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
+import { NzDrawerModule } from 'ng-zorro-antd/drawer';
+import { NzBadgeModule } from 'ng-zorro-antd/badge';
+import { NzAvatarModule } from 'ng-zorro-antd/avatar';
+import { WindowHostComponent } from './window-manager/window-host.component';
 
 @Component({
   selector: 'ai-fullpage',
   standalone: true,
-  imports: [CommonModule, FormsModule, NzButtonModule, NzIconModule, NzSelectModule, NzInputModule, NzTagModule, NzSpinModule, NzEmptyModule, NzToolTipModule, NzPopconfirmModule, NzPopoverModule, AiChatComponent, AiSettingsComponent],
+  imports: [CommonModule, FormsModule, NzButtonModule, NzIconModule, NzSelectModule, NzInputModule, NzTagModule, NzSpinModule, NzEmptyModule, NzToolTipModule, NzPopconfirmModule, NzPopoverModule, NzModalModule, NzDrawerModule, NzBadgeModule, NzAvatarModule, AiChatComponent, AiSettingsComponent, AiCanvasPanelComponent, AiProjectRootPickerComponent, AiThreadShareDialogComponent, WindowHostComponent],
   template: `
     <div
       class="fp-layout"
@@ -92,9 +100,13 @@ import { AiSettingsComponent } from './ai-settings.component';
           </div>
 
           <!-- New thread button -->
-          <div class="sidebar-new">
-            <button nz-button nzType="primary" nzSize="small" nzBlock class="new-thread-btn" (click)="newThread()">
+          <div class="sidebar-new sidebar-new-v2">
+            <button nz-button nzType="primary" nzSize="small" class="new-thread-btn" (click)="newThread()">
               <span nz-icon nzType="plus" nzTheme="outline"></span> Nouvelle conversation
+            </button>
+            <button nz-button nzType="default" nzSize="small" class="new-project-btn" (click)="openProjectPicker()"
+              nz-tooltip nzTooltipTitle="Nouveau projet (dossier distant)">
+              <span nz-icon nzType="folder-add" nzTheme="outline"></span>
             </button>
           </div>
 
@@ -107,22 +119,55 @@ import { AiSettingsComponent } from './ai-settings.component';
             <div *ngIf="!threadsLoading && threads.length === 0" class="empty-threads">
               <nz-empty nzNotFoundContent="Aucune conversation" [nzNotFoundImage]="'simple'"></nz-empty>
             </div>
+            <!-- Owned threads -->
+            <div class="threads-group" *ngIf="ownedThreads().length">
+              <div class="threads-group-title" *ngIf="sharedThreads().length">Mes conversations</div>
+            </div>
             <div class="thread-item"
-              *ngFor="let t of threads"
+              *ngFor="let t of ownedThreads()"
               (click)="selectThread(t)"
               [class.active]="t._id === ai.currentThread()?._id">
-              <div class="thread-title">{{ t.title }}</div>
+              <div class="thread-title">
+                {{ t.title }}
+                <span *ngIf="t.visibility === 'shared'" nz-icon nzType="team" nzTheme="outline" class="shared-badge"
+                  nz-tooltip nzTooltipTitle="Partagée"></span>
+              </div>
               <div class="thread-meta">
                 <span class="mode-tag" [class]="'mode-' + t.mode">{{ modeLabel(t.mode) }}</span>
                 <span class="thread-agent" *ngIf="t.agentId && t.agentId !== 'general'">{{ agentName(t.agentId) }}</span>
                 <span class="thread-date">{{ t.updatedAt | date:'short' }}</span>
               </div>
+              <button class="thread-share" nz-button nzType="text" nzSize="small"
+                (click)="openShareDialog(t, $event)"
+                nz-tooltip nzTooltipTitle="Partager">
+                <span nz-icon nzType="share-alt" nzTheme="outline"></span>
+              </button>
               <button class="thread-delete" nz-button nzType="text" nzSize="small" nzDanger
                 nz-popconfirm nzPopconfirmTitle="Supprimer ?"
                 (nzOnConfirm)="deleteThread(t)"
                 (click)="$event.stopPropagation()">
                 <span nz-icon nzType="delete" nzTheme="outline"></span>
               </button>
+            </div>
+
+            <!-- Shared threads -->
+            <div class="threads-group" *ngIf="sharedThreads().length">
+              <div class="threads-group-title">
+                <span nz-icon nzType="team" nzTheme="outline"></span> Partagées avec moi
+              </div>
+            </div>
+            <div class="thread-item thread-item-shared"
+              *ngFor="let t of sharedThreads()"
+              (click)="selectThread(t)"
+              [class.active]="t._id === ai.currentThread()?._id">
+              <nz-avatar nzIcon="user" [nzSize]="22" class="shared-owner-avatar"></nz-avatar>
+              <div class="thread-item-body">
+                <div class="thread-title">{{ t.title }}</div>
+                <div class="thread-meta">
+                  <span class="mode-tag" [class]="'mode-' + t.mode">{{ modeLabel(t.mode) }}</span>
+                  <span class="thread-date">{{ t.updatedAt | date:'short' }}</span>
+                </div>
+              </div>
             </div>
             <div *ngIf="threadsLoadingMore" class="threads-loading-more">
               <nz-spin nzSimple nzSize="small"></nz-spin>
@@ -311,6 +356,60 @@ import { AiSettingsComponent } from './ai-settings.component';
                 </span>
               </div>
               <div class="chat-actions">
+                <!-- Badges présence (utilisateurs actifs sur la conversation) -->
+                <div class="presence-badges" *ngIf="(ai.presence()?.length || 0) > 1"
+                     nz-tooltip [nzTooltipTitle]="presenceTooltip()">
+                  <ng-container *ngIf="ai.presence() as plist">
+                    <div *ngFor="let p of plist.slice(0, 3); trackBy: trackPresence"
+                         class="presence-avatar"
+                         [style.background]="avatarColor(p.userId)">
+                      {{ initials(p.name || p.userId) }}
+                    </div>
+                    <div *ngIf="plist.length > 3" class="presence-more">+{{ plist.length - 3 }}</div>
+                  </ng-container>
+                </div>
+                <!-- Jauge contexte tokens -->
+                <button *ngIf="ai.contextUsage() as u"
+                  nz-button nzType="text" nzSize="small"
+                  class="chat-action-btn context-gauge"
+                  [class.gauge-warn]="u.percent >= 70 && u.percent < 90"
+                  [class.gauge-alert]="u.percent >= 90"
+                  nz-popover [nzPopoverContent]="gaugePopover" nzPopoverTrigger="click" nzPopoverPlacement="bottomRight"
+                  nz-tooltip [nzTooltipTitle]="(u.tokens/1000 | number:'1.1-1') + 'k / ' + (u.limit/1000 | number:'1.0-0') + 'k tokens — ' + u.model"
+                  nzTooltipOverlayClassName="chat-action-tooltip">
+                  {{ u.percent }}%
+                </button>
+                <ng-template #gaugePopover>
+                  <div style="min-width: 220px; padding: 4px 0;" *ngIf="ai.contextUsage() as u">
+                    <div style="font-weight: 600; margin-bottom: 6px;">Contexte de la conversation</div>
+                    <div style="font-size: 12px; color: #595959;">
+                      <div>{{ (u.tokens / 1000 | number:'1.1-1') }}k tokens sur {{ (u.limit / 1000 | number:'1.0-0') }}k</div>
+                      <div>Modèle : <code>{{ u.model }}</code></div>
+                      <div>{{ u.messageCount }} messages</div>
+                    </div>
+                    <div style="height: 6px; background: #f0f0f0; border-radius: 3px; margin: 10px 0;">
+                      <div [style.width.%]="u.percent"
+                           [style.background]="u.percent >= 90 ? '#ff4d4f' : u.percent >= 70 ? '#faad14' : '#52c41a'"
+                           style="height: 100%; border-radius: 3px; transition: width .3s;"></div>
+                    </div>
+                    <button *ngIf="u.percent >= 70"
+                      nz-button nzSize="small" nzBlock (click)="askCompact()"
+                      style="margin-top: 4px;">
+                      <span nz-icon nzType="compress" nzTheme="outline"></span>
+                      Compacter et continuer
+                    </button>
+                  </div>
+                </ng-template>
+                <!-- Badge détection auto mémoire (projet uniquement) -->
+                <button *ngIf="ai.currentThread()?.mode === 'project' && ai.pendingKnowledgeCount() > 0"
+                  nz-button nzType="text" nzSize="small" class="chat-action-btn knowledge-pending-btn"
+                  (click)="openKnowledgePending()"
+                  nz-tooltip [nzTooltipTitle]="'Voir les ' + ai.pendingKnowledgeCount() + ' suggestion(s) en attente'"
+                  nzTooltipOverlayClassName="chat-action-tooltip">
+                  <nz-badge [nzCount]="ai.pendingKnowledgeCount()" [nzOverflowCount]="9" nzSize="small">
+                    <span nz-icon nzType="bulb" nzTheme="outline" style="font-size: 16px; color: #faad14;"></span>
+                  </nz-badge>
+                </button>
                 <button nz-button nzType="text" nzSize="small" class="chat-action-btn" (click)="regenerateTitle()"
                   nz-tooltip nzTooltipTitle="Régénérer le titre" nzTooltipOverlayClassName="chat-action-tooltip" [nzLoading]="regeneratingTitle">
                   <span nz-icon nzType="reload" nzTheme="outline"></span>
@@ -318,6 +417,12 @@ import { AiSettingsComponent } from './ai-settings.component';
                 <button nz-button nzType="text" nzSize="small" class="chat-action-btn" (click)="duplicateThread()"
                   nz-tooltip nzTooltipTitle="Dupliquer la conversation" nzTooltipOverlayClassName="chat-action-tooltip">
                   <span nz-icon nzType="copy" nzTheme="outline"></span>
+                </button>
+                <button nz-button nzType="text" nzSize="small" class="chat-action-btn"
+                  [class.active]="ai.canvasOpen()"
+                  (click)="toggleCanvasPanel()"
+                  nz-tooltip [nzTooltipTitle]="ai.canvasOpen() ? 'Fermer le panneau' : 'Ouvrir le panneau (fichiers, recherche…)'" nzTooltipOverlayClassName="chat-action-tooltip">
+                  <span nz-icon [nzType]="ai.canvasOpen() ? 'layout' : 'appstore'" nzTheme="outline"></span>
                 </button>
                 <button nz-button nzType="text" nzSize="small" class="chat-action-btn"
                   nz-popover [nzPopoverContent]="settingsPopover" nzPopoverTrigger="click" nzPopoverPlacement="bottomRight" nzPopoverOverlayClassName="thread-settings-popover"
@@ -459,6 +564,58 @@ import { AiSettingsComponent } from './ai-settings.component';
           </ng-container>
         </ng-container>
       </div>
+
+      <!-- V2: Canvas panel (desktop split) — animation width + slide out quand fermé -->
+      <div class="fp-canvas"
+           *ngIf="!isMobileSidebar() && ai.currentThread()"
+           [class.collapsed]="!ai.canvasOpen()">
+        <ai-canvas-panel [threadId]="currentThreadId()"></ai-canvas-panel>
+      </div>
+
+      <!-- V2: Canvas drawer (mobile) — body padding retiré pour maximiser l'espace du panel -->
+      <nz-drawer
+        *ngIf="ai.canvasOpen() && isMobileSidebar() && ai.currentThread()"
+        [nzVisible]="ai.canvasOpen()"
+        nzPlacement="right"
+        [nzClosable]="true"
+        [nzTitle]="'Canvas'"
+        [nzWidth]="'100%'"
+        [nzBodyStyle]="{ padding: '0' }"
+        nzWrapClassName="canvas-drawer-wrap"
+        (nzOnClose)="ai.closeCanvas()">
+        <ng-container *nzDrawerContent>
+          <ai-canvas-panel [threadId]="currentThreadId()"></ai-canvas-panel>
+        </ng-container>
+      </nz-drawer>
+
+      <!-- V2: Project picker modal -->
+      <nz-drawer
+        *ngIf="showProjectPicker"
+        [nzVisible]="showProjectPicker"
+        nzTitle="Nouveau projet"
+        [nzWidth]="720"
+        nzPlacement="right"
+        (nzOnClose)="closeProjectPicker()">
+        <ng-container *nzDrawerContent>
+          <ai-project-root-picker (close)="closeProjectPicker()" (created)="onProjectCreated($event)"></ai-project-root-picker>
+        </ng-container>
+      </nz-drawer>
+
+      <!-- V2: Share dialog -->
+      <nz-drawer
+        *ngIf="showShareDialog && shareThread"
+        [nzVisible]="showShareDialog"
+        nzTitle="Partager la conversation"
+        [nzWidth]="520"
+        nzPlacement="right"
+        (nzOnClose)="closeShareDialog()">
+        <ng-container *nzDrawerContent>
+          <ai-thread-share-dialog [thread]="shareThread!" (close)="closeShareDialog()"></ai-thread-share-dialog>
+        </ng-container>
+      </nz-drawer>
+
+      <!-- Window Manager : host global pour les fenêtres flottantes (subagents, etc.) -->
+      <ai-window-host></ai-window-host>
     </div>
   `,
   styles: [`
@@ -527,6 +684,42 @@ import { AiSettingsComponent } from './ai-settings.component';
 
     /* ── Main ── */
     .fp-main { flex: 1; display: flex; flex-direction: column; min-width: 0; position: relative; background: #f8f8f8; border-radius: 18px 0 0 18px; }
+    /* Panel canvas droit : animation de slide inspirée du flow-builder right-panel.
+       - Container : width 480 ↔ 0 + opacity, transition 220ms
+       - Contenu interne : width fixe 480 + translateX(100%) quand fermé → slide out
+       Pointer-events coupés quand fermé pour ne pas intercepter clics. */
+    .fp-canvas {
+      width: 480px; min-width: 480px; max-width: 50vw;
+      flex-shrink: 0;
+      border-left: 1px solid #e5e5e5;
+      background: #fff;
+      display: flex; flex-direction: column;
+      overflow: hidden;
+      transition: width 220ms ease, min-width 220ms ease, opacity 220ms ease;
+      will-change: width, opacity;
+    }
+    .fp-canvas.collapsed {
+      width: 0; min-width: 0; opacity: 0; border-left-width: 0;
+      pointer-events: none;
+    }
+    .fp-canvas > * {
+      width: 480px; min-width: 480px;
+      flex-shrink: 0;
+      transition: transform 220ms ease;
+    }
+    .fp-canvas.collapsed > * { transform: translateX(100%); }
+    .fp-layout.canvas-collapsed .fp-canvas { width: 0; }
+    .sidebar-new-v2 { display: flex; gap: 6px; align-items: center; }
+    .sidebar-new-v2 .new-thread-btn { flex: 1; }
+    .sidebar-new-v2 .new-project-btn { flex-shrink: 0; }
+    @media (max-width: 1023px) { .fp-canvas { display: none; } }
+    .threads-group-title { font-size: 11px; font-weight: 600; color: #999; padding: 8px 12px 4px; text-transform: uppercase; letter-spacing: 0.4px; display: flex; align-items: center; gap: 4px; }
+    .thread-share { position: absolute; right: 30px; top: 8px; opacity: 0; transition: opacity .15s; }
+    .thread-item:hover .thread-share { opacity: 1; }
+    .thread-item-shared { display: flex; gap: 6px; align-items: flex-start; background: #fcfaff; }
+    .thread-item-shared .shared-owner-avatar { flex-shrink: 0; margin-top: 2px; background: #f0e6ff !important; color: #722ed1 !important; }
+    .thread-item-shared .thread-item-body { flex: 1; min-width: 0; }
+    .shared-badge { font-size: 11px; color: #722ed1; margin-left: 4px; }
     .mobile-sidebar-open-btn { display: none; }
     .mobile-sidebar-backdrop { display: none; }
     .fp-empty { flex: 1; display: flex; align-items: center; justify-content: center; padding: 0 20px; }
@@ -612,7 +805,33 @@ import { AiSettingsComponent } from './ai-settings.component';
     .agent-badge { font-size: 11px; color: #e61982; background: #fdf2f8; padding: 2px 8px; border-radius: 10px; font-weight: 500; }
     .linked-link { display: flex; align-items: center; gap: 3px; font-size: 11px; color: #e61982; cursor: pointer; padding: 2px 6px; border-radius: 6px; text-decoration: none; white-space: nowrap; }
     .linked-link:hover { background: #fdf2f8; }
-    .chat-actions { margin-left: auto; display: flex; gap: 2px; }
+    .chat-actions { margin-left: auto; display: flex; gap: 2px; align-items: center; }
+    .presence-badges { display: inline-flex; align-items: center; margin-right: 8px; }
+    .presence-avatar {
+      width: 24px; height: 24px; border-radius: 50%;
+      color: #fff; font-size: 10px; font-weight: 600;
+      display: flex; align-items: center; justify-content: center;
+      border: 2px solid #fff; margin-left: -6px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      position: relative;
+    }
+    .presence-avatar::after {
+      content: ''; position: absolute; bottom: -1px; right: -1px;
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #52c41a; border: 1.5px solid #fff;
+    }
+    .presence-more {
+      width: 24px; height: 24px; border-radius: 50%;
+      background: #f0f0f0; color: #595959; font-size: 10px; font-weight: 600;
+      display: flex; align-items: center; justify-content: center;
+      border: 2px solid #fff; margin-left: -6px;
+    }
+    .context-gauge { font-size: 11px; font-weight: 600; min-width: 42px; padding: 0 8px !important; border-radius: 10px !important; color: #52c41a; background: rgba(82,196,26,0.08); }
+    .context-gauge:hover { background: rgba(82,196,26,0.16) !important; }
+    .context-gauge.gauge-warn { color: #faad14; background: rgba(250,173,20,0.1); }
+    .context-gauge.gauge-warn:hover { background: rgba(250,173,20,0.18) !important; }
+    .context-gauge.gauge-alert { color: #ff4d4f; background: rgba(255,77,79,0.1); animation: gauge-pulse 1.5s ease-in-out infinite; }
+    @keyframes gauge-pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.7; } }
     :host ::ng-deep .chat-action-tooltip .ant-tooltip-inner { font-size: 10px; line-height: 1.15; padding: 4px 6px; }
 
     /* ── Settings popover ── */
@@ -755,7 +974,6 @@ export class AiFullpageComponent implements OnInit, OnDestroy, AfterViewInit {
   regeneratingTitle = false;
   recentFlows: { id: string; name: string }[] = [];
 
-  private refreshInterval?: any;
   private titleDebounce?: any;
   private readonly threadsPageSize = 20;
   private threadsPage = 0;
@@ -770,11 +988,111 @@ export class AiFullpageComponent implements OnInit, OnDestroy, AfterViewInit {
   private mainSwipeHandled = false;
   private mobileSidebarAnimationTimer: ReturnType<typeof setTimeout> | null = null;
   private readonly mobileSidebarAnimationDurationMs = 340;
+  private _lastLoadedCanvasThreadId: string | null = null;
   private readonly sidebarSwipeOpenThreshold = 64;
   private readonly sidebarSwipeCloseThreshold = 56;
   private readonly sidebarSwipeMaxVerticalDelta = 44;
 
-  constructor(public ai: AiService, public audioService: AiAudioService, private cdr: ChangeDetectorRef, private router: Router, private nzMsg: NzMessageService, private apiClient: ApiClientService, private acl: AccessControlService) {
+  // Sync URL /ai/:threadId au changement de thread — déclaré ici car effect()
+  // doit être appelé en injection context (constructor).
+  private _lastUrlTid: string | null = null;
+  private _lastPresenceIds: Set<string> = new Set();
+
+  constructor(public ai: AiService, public audioService: AiAudioService, private cdr: ChangeDetectorRef, private router: Router, private route: ActivatedRoute, private nzMsg: NzMessageService, private apiClient: ApiClientService, private acl: AccessControlService) {
+    // Notif toast quand un user rejoint la conversation partagée.
+    effect(() => {
+      const list = this.ai.presence() || [];
+      const currentIds = new Set(list.map(p => p.userId));
+      if (this._lastPresenceIds.size > 0) {
+        for (const p of list) {
+          if (!this._lastPresenceIds.has(p.userId)) {
+            this.nzMsg.info(`👋 ${p.name || 'Un collaborateur'} a rejoint la conversation`, { nzDuration: 3000 });
+          }
+        }
+      }
+      this._lastPresenceIds = currentIds;
+    });
+
+    // Sync URL thread — effect local
+    effect(() => {
+      const t = this.ai.currentThread();
+      const tid = t?.id || t?._id || null;
+      if (tid === this._lastUrlTid) return;
+      this._lastUrlTid = tid;
+      const currentTid = this.route.snapshot.params['threadId'] || null;
+      if (tid && tid !== currentTid) {
+        this.router.navigate(['/ai', tid], { replaceUrl: !currentTid });
+      } else if (!tid && currentTid) {
+        this.router.navigate(['/ai'], { replaceUrl: true });
+      }
+    });
+
+    // Charge le canvas une fois par thread (et uniquement si l'ID change)
+    effect(() => {
+      const cur = this.ai.currentThread();
+      const tid = cur?._id || cur?.id;
+      if (!tid || tid === this._lastLoadedCanvasThreadId) return;
+      this._lastLoadedCanvasThreadId = tid;
+      // Reset le flag "fermé par l'user" à chaque switch → la nouvelle thread
+      // peut à nouveau ouvrir automatiquement selon ses règles.
+      this._userClosedCanvas = false;
+      this.ai.loadCanvas(tid);
+      if (cur?.mode !== 'project' && !this.isMobileSidebar() && this.ai.canvasOpen()) {
+        this.ai.closeCanvas();
+      }
+    });
+
+    // Détecte une fermeture manuelle (via bouton X du panel ou toggle header)
+    // et bloque l'auto-open jusqu'au prochain thread switch.
+    effect(() => {
+      const open = this.ai.canvasOpen();
+      if (this._lastCanvasOpenSeen === true && open === false) {
+        this._userClosedCanvas = true;
+      } else if (open === true) {
+        this._userClosedCanvas = false;
+      }
+      this._lastCanvasOpenSeen = open;
+    });
+
+    // Auto-open au refresh si le DERNIER message est un widget canvas.
+    // Ajout canvas_html : bascule automatiquement sur l'onglet Artefacts.
+    effect(() => {
+      const msgs = this.ai.messages();
+      const cur = this.ai.currentThread();
+      if (!cur || !msgs || !msgs.length) return;
+      if (cur.mode === 'project') return;
+      if (this.isMobileSidebar()) return;
+      if (this._userClosedCanvas) return;
+      const last = msgs[msgs.length - 1];
+      const kind = last?.metadata?.kind;
+      const isCanvasWidget = ['structured', 'diagram', 'plan_proposal', 'canvas_html'].includes(kind as string);
+      const state = this.ai.canvasState();
+      const hasResearch = (state?.research?.steps?.length || 0) > 0;
+      if ((isCanvasWidget || (hasResearch && last?.role === 'assistant')) && !this.ai.canvasOpen()) {
+        this.ai.openCanvas();
+        if (kind === 'canvas_html') this.ai.setCanvasTab('artifacts');
+      }
+    });
+
+    // Ouverture auto selon mode / activité (respecte _userClosedCanvas).
+    effect(() => {
+      const cur = this.ai.currentThread();
+      if (!cur) return;
+      if (this.isMobileSidebar()) return;
+      if (this._userClosedCanvas) return; // l'user a fermé explicitement
+      const state = this.ai.canvasState();
+      const hasActivity = !!(
+        state?.tasks?.length ||
+        state?.research?.steps?.length ||
+        state?.document?.previewHtml
+      );
+      const shouldOpen = cur.mode === 'project' || hasActivity;
+      if (shouldOpen && !this.ai.canvasOpen()) this.ai.openCanvas();
+    });
+
+    // V2 — Load preferences on mount
+    this.ai.loadPreferences().catch(() => {});
+
     // Sync currentThread changes (title, mode, flowId) back to local threads list in real-time
     effect(() => {
       const cur = this.ai.currentThread();
@@ -797,15 +1115,43 @@ export class AiFullpageComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnInit() {
     // Set page context
     this.ai.setPageContext({ page: 'other' });
-    // Always land on a fresh empty conversation when entering Assistant IA.
-    this.ai.currentThread.set(null);
-    this.ai.messages.set([]);
-    this.ai.pendingQuestion.set(null);
-    this.ai.streaming.set(false);
     this.updateThreadSettingsSelectMode();
     this.updateSidebarAgentSelectMode();
     this.updateAiInputPlaceholder();
     if (this.shouldAutoCloseSidebarNav()) this.sidebarCollapsed = true;
+
+    // Deep-link : lit le threadId de l'URL (/ai/:threadId) et ouvre directement
+    // ou démarre une nouvelle conversation vide si absent.
+    const initialThreadId = this.route.snapshot.params['threadId'] || null;
+    if (initialThreadId) {
+      this.ai.loadThread(initialThreadId).catch(() => {
+        // ID invalide / accès refusé → fallback nouvelle conversation
+        this.router.navigate(['/ai'], { replaceUrl: true });
+        this.ai.currentThread.set(null);
+        this.ai.messages.set([]);
+      });
+    } else {
+      this.ai.currentThread.set(null);
+      this.ai.messages.set([]);
+      this.ai.pendingQuestion.set(null);
+      this.ai.streaming.set(false);
+    }
+
+    // Subscribe aux query params pour réagir aux changements (ex: clic sur
+    // l'icône ampoule d'un message → ?settings=knowledge&filter=pending).
+    this.route.queryParamMap.subscribe(qp => {
+      const wantSettings = qp.get('settings') === 'knowledge';
+      if (wantSettings && !this.showSettings) {
+        this.showSettings = true;
+        this.cdr.detectChanges();
+      }
+      if (wantSettings) {
+        setTimeout(() => this.ai.openKnowledgePending$.next(), 100);
+      }
+    });
+
+    // Sync URL quand le thread change (signal effect-like via Subject)
+    this._syncUrlOnThreadChange();
 
     // Load threads and agents
     this.loadThreads();
@@ -832,8 +1178,6 @@ export class AiFullpageComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     });
 
-    // Auto-refresh threads every 30s
-    this.refreshInterval = setInterval(() => this.loadThreads(), 30000);
   }
 
   ngAfterViewInit() {
@@ -935,7 +1279,6 @@ export class AiFullpageComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnDestroy() {
-    if (this.refreshInterval) clearInterval(this.refreshInterval);
     if (this.titleDebounce) clearTimeout(this.titleDebounce);
     if (this.mobileSidebarAnimationTimer) clearTimeout(this.mobileSidebarAnimationTimer);
     if (this.aiInputLayoutRaf != null) {
@@ -987,7 +1330,6 @@ export class AiFullpageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.threadsLoading = false;
         this.threadsLoadingMore = false;
         this.cdr.detectChanges();
-        setTimeout(() => this.tryLoadMoreThreads(), 0);
       },
       error: () => {
         if (ticket !== this.threadsLoadTicket) return;
@@ -1051,6 +1393,32 @@ export class AiFullpageComponent implements OnInit, OnDestroy, AfterViewInit {
 
   toggleSettingsFromSidebar() {
     this.showSettings = !this.showSettings;
+    this._syncUrlSettings();
+    if (this.shouldAutoCloseSidebarNav()) this.closeSidebarPanel();
+  }
+
+  /** No-op : le sync URL se fait via un effect déclaré dans le constructor. */
+  private _syncUrlOnThreadChange() { /* moved to constructor */ }
+
+  /** Sync URL quand settings overlay ouvre/ferme. */
+  private _syncUrlSettings() {
+    const qp: any = this.showSettings ? { settings: 'knowledge' } : {};
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: qp,
+      queryParamsHandling: 'merge',
+      replaceUrl: true,
+    });
+  }
+
+  /**
+   * Ouvre la page paramètres sur l'onglet "Connaissances projet" avec filtre
+   * "En attente". Déclenché par le badge pending dans le header chat.
+   */
+  openKnowledgePending() {
+    this.showSettings = true;
+    // Emit pour que le composant ai-settings sache quel tab + filtre activer
+    this.ai.openKnowledgePending$.next();
     if (this.shouldAutoCloseSidebarNav()) this.closeSidebarPanel();
   }
 
@@ -1060,6 +1428,44 @@ export class AiFullpageComponent implements OnInit, OnDestroy, AfterViewInit {
     await this.ai.createThread('chat', undefined, this.selectedAgentId);
     this.loadThreads();
     this.cdr.detectChanges();
+  }
+
+  // V2 — project picker
+  showProjectPicker = false;
+  openProjectPicker() { this.showProjectPicker = true; }
+  closeProjectPicker() { this.showProjectPicker = false; }
+
+  async onProjectCreated(evt: { threadId: string; root: any }) {
+    this.showProjectPicker = false;
+    await this.ai.loadThread(evt.threadId);
+    this.ai.openCanvas();
+    this.loadThreads();
+    this.cdr.detectChanges();
+  }
+
+  // V2 — sharing
+  showShareDialog = false;
+  shareThread: AiThread | null = null;
+  openShareDialog(thread: AiThread, ev?: Event) {
+    if (ev) { ev.preventDefault(); ev.stopPropagation(); }
+    this.shareThread = thread;
+    this.showShareDialog = true;
+  }
+  closeShareDialog() { this.showShareDialog = false; this.shareThread = null; }
+
+  // V2 — canvas helpers
+  currentThreadId(): string {
+    const t = this.ai.currentThread();
+    return t?._id || t?.id || '';
+  }
+
+  // V2 — thread grouping (mine vs shared with me)
+  ownedThreads(): AiThread[] {
+    return this.threads.filter(t => !t._shared);
+  }
+
+  sharedThreads(): AiThread[] {
+    return this.threads.filter(t => t._shared);
   }
 
   async sendAiMessage() {
@@ -1379,6 +1785,46 @@ export class AiFullpageComponent implements OnInit, OnDestroy, AfterViewInit {
     if (found) return found.name;
     if (agentId.startsWith('provider:')) return agentId.slice('provider:'.length);
     return agentId;
+  }
+
+  // Flag : quand l'user ferme manuellement le canvas, on bloque l'auto-open
+  // jusqu'au prochain thread switch. Évite le "ça se réouvre tout seul".
+  private _userClosedCanvas = false;
+  private _lastCanvasOpenSeen: boolean | undefined = undefined;
+
+  toggleCanvasPanel() {
+    if (this.ai.canvasOpen()) {
+      this._userClosedCanvas = true;
+      this.ai.closeCanvas();
+    } else {
+      this._userClosedCanvas = false;
+      this.ai.openCanvas();
+    }
+  }
+
+  /** Helpers présence — badges avatars des users actifs sur le thread. */
+  trackPresence(_: number, p: any) { return p.userId; }
+  initials(s: string): string {
+    if (!s) return '?';
+    const parts = s.trim().split(/\s+/);
+    return parts.length >= 2 ? (parts[0][0] + parts[1][0]).toUpperCase() : s.slice(0, 2).toUpperCase();
+  }
+  avatarColor(userId: string): string {
+    // Couleur déterministe à partir de l'id
+    let h = 0;
+    for (let i = 0; i < (userId || '').length; i++) h = (h * 31 + userId.charCodeAt(i)) >>> 0;
+    const palette = ['#e61982', '#1890ff', '#52c41a', '#faad14', '#722ed1', '#13c2c2', '#fa541c'];
+    return palette[h % palette.length];
+  }
+  presenceTooltip(): string {
+    const names = (this.ai.presence() || []).map(p => p.name || p.userId.slice(0, 6));
+    return names.length <= 1 ? '' : names.join(', ') + ' en ligne sur cette conversation';
+  }
+
+  /** Envoie un message pour compacter la conversation courante. */
+  askCompact() {
+    const input = "Cette conversation devient longue. Utilise compact_and_transfer pour résumer l'essentiel et démarrer un nouveau thread. Garde les points clés et les décisions prises.";
+    this.ai.quickSend(input).catch((e) => console.error('[fullpage] compact ask failed:', e?.message));
   }
 
   regenerateTitle() {

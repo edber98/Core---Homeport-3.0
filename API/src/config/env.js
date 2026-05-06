@@ -76,4 +76,19 @@ module.exports = {
   AI_VERBOSITY: process.env.AI_VERBOSITY || 'medium',
   // Force Chat Completions API instead of Responses API (set to 1 to disable Responses API)
   AI_FORCE_CHAT_COMPLETIONS: readBool('AI_FORCE_CHAT_COMPLETIONS', false),
+
+  /**
+   * Mode workspace pour les subagents :
+   * - 'shared' (défaut) : tous les subagents partagent le même workspace/état
+   *   (mode actuel — ils voient les mêmes fichiers, la même DB, etc.).
+   * - 'isolated' : chaque subagent aura un git worktree / workspace isolé
+   *   (non implémenté — stub prévu pour une future version).
+   *
+   * Intention : permettre plus tard que les subagents travaillent sur des copies
+   * isolées du repo pour éviter les collisions quand ils modifient du code en
+   * parallèle (ex: 3 subagents rédigent chacun un fichier différent sans se
+   * marcher dessus). Pour l'instant ce flag n'est LU nulle part dans le code,
+   * il sert à exposer l'intention et permettre au futur code de s'y brancher.
+   */
+  AI_AGENT_WORKTREE_MODE: process.env.AI_AGENT_WORKTREE_MODE || 'shared',
 };

@@ -46,11 +46,15 @@
     "d3-drag": "^3.0.0",
     "d3-selection": "^3.0.0",
     "d3-zoom": "^3.0.0",
+    "docx-preview": "^0.3.7",
     "dompurify": "^3.2.7",
     "driver.js": "^1.4.0",
+    "html2canvas": "^1.4.1",
     "jsonrepair": "^3.13.2",
+    "jspdf": "^2.5.2",
     "langchain": "^0.3.31",
     "marked": "^9.1.6",
+    "mermaid": "^11.14.0",
     "ng-zorro-antd": "^20.1.0",
     "ngx-codemirror": "^1.0.0",
     "ngx-vflow": "^1.16.4",
@@ -58,6 +62,7 @@
     "nunjucks": "^3.2.4",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
+    "xlsx": "^0.18.5",
     "zone.js": "~0.15.0"
   },
   "devDependencies": {

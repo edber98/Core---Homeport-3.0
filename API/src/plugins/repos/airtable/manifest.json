@@ -679,7 +679,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Enregistrements"
+      "group": "Enregistrements",
+      "risk": "write"
     },
     {
       "key": "airtable_record_get",
@@ -769,7 +770,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Enregistrements"
+      "group": "Enregistrements",
+      "risk": "safe"
     },
     {
       "key": "airtable_record_update",
@@ -873,7 +875,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Enregistrements"
+      "group": "Enregistrements",
+      "risk": "write"
     },
     {
       "key": "airtable_record_delete",
@@ -963,7 +966,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Enregistrements"
+      "group": "Enregistrements",
+      "risk": "destructive"
     },
     {
       "key": "airtable_records_list",
@@ -1066,7 +1070,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Enregistrements"
+      "group": "Enregistrements",
+      "risk": "safe"
     },
     {
       "key": "airtable_table_get",
@@ -1142,7 +1147,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Tables"
+      "group": "Tables",
+      "risk": "safe"
     },
     {
       "key": "airtable_tables_list",
@@ -1204,7 +1210,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Tables"
+      "group": "Tables",
+      "risk": "safe"
     },
     {
       "key": "airtable_table_create",
@@ -1303,7 +1310,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Tables"
+      "group": "Tables",
+      "risk": "write"
     },
     {
       "key": "airtable_field_create",
@@ -1416,7 +1424,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Champs"
+      "group": "Champs",
+      "risk": "write"
     },
     {
       "key": "airtable_fields_list",
@@ -1492,7 +1501,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Champs"
+      "group": "Champs",
+      "risk": "safe"
     },
     {
       "key": "airtable_bases_list",
@@ -1539,7 +1549,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Bases"
+      "group": "Bases",
+      "risk": "safe"
     },
     {
       "key": "airtable_views_list",
@@ -1615,7 +1626,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Vues"
+      "group": "Vues",
+      "risk": "safe"
     },
     {
       "key": "airtable_webhook_event",
@@ -1664,7 +1676,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Événements"
+      "group": "Événements",
+      "risk": "safe"
     }
   ]
 }

@@ -28,6 +28,14 @@ try { require('./realtime/socketio').attach(server); } catch {}
       try { const { startCleanupCron } = require('./services/file-cleanup'); startCleanupCron(); } catch (e) { try { console.error('[backend] file cleanup cron failed:', e.message); } catch {} }
       // Start trigger manager — restore production flows
       try { const { triggerManager } = require('./services/trigger-manager'); await triggerManager.startAll(); } catch (e) { try { console.error('[backend] trigger manager failed:', e.message); } catch {} }
+      // Load SKILL.md registry (Anthropic-skills-style)
+      try { const { initSkills } = require('./ai/skills/init'); await initSkills(); } catch (e) { try { console.error('[backend] skills init failed:', e.message); } catch {} }
+      // Initialize AI sandbox (bwrap/subprocess/none)
+      try { const sandbox = require('./ai/sandbox'); await sandbox.init(); console.log(`[backend] AI sandbox backend: ${sandbox.getBackend?.() || 'unknown'}`); } catch (e) { try { console.error('[backend] sandbox init failed:', e.message); } catch {} }
+      // Start AI project cache cleanup worker (TTL purge + dirty-sync best-effort)
+      try { const { startCleanupWorker } = require('./ai/cache/cleanup-worker'); startCleanupWorker(); } catch (e) { try { console.error('[backend] ai cache cleanup worker failed:', e.message); } catch {} }
+      // Start AI jobs resume worker (detects stale heartbeats, resumes)
+      try { const { startResumeWorker } = require('./ai/jobs/resume-worker'); startResumeWorker(); } catch (e) { try { console.error('[backend] ai jobs resume worker failed:', e.message); } catch {} }
     } catch (e) {
       console.error('[backend] DB init failed:', e.message);
     }

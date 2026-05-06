@@ -144,7 +144,8 @@
         "envoi",
         "discord"
       ],
-      "group": "Messages"
+      "group": "Messages",
+      "risk": "write"
     },
     {
       "key": "discord_get_message",
@@ -221,7 +222,8 @@
         "lecture",
         "discord"
       ],
-      "group": "Messages"
+      "group": "Messages",
+      "risk": "safe"
     },
     {
       "key": "discord_edit_message",
@@ -316,7 +318,8 @@
         "mise-à-jour",
         "discord"
       ],
-      "group": "Messages"
+      "group": "Messages",
+      "risk": "write"
     },
     {
       "key": "discord_delete_message",
@@ -393,7 +396,8 @@
         "suppression",
         "discord"
       ],
-      "group": "Messages"
+      "group": "Messages",
+      "risk": "destructive"
     },
     {
       "key": "discord_list_messages",
@@ -484,7 +488,8 @@
         "liste",
         "discord"
       ],
-      "group": "Messages"
+      "group": "Messages",
+      "risk": "safe"
     },
     {
       "key": "discord_react_message",
@@ -575,7 +580,8 @@
         "création",
         "discord"
       ],
-      "group": "Messages"
+      "group": "Messages",
+      "risk": "write"
     },
     {
       "key": "discord_get_channel",
@@ -638,7 +644,8 @@
         "lecture",
         "discord"
       ],
-      "group": "Canaux"
+      "group": "Canaux",
+      "risk": "safe"
     },
     {
       "key": "discord_list_channels",
@@ -701,7 +708,8 @@
         "liste",
         "discord"
       ],
-      "group": "Canaux"
+      "group": "Canaux",
+      "risk": "safe"
     },
     {
       "key": "discord_create_channel",
@@ -831,7 +839,8 @@
         "création",
         "discord"
       ],
-      "group": "Canaux"
+      "group": "Canaux",
+      "risk": "write"
     },
     {
       "key": "discord_modify_channel",
@@ -930,7 +939,8 @@
         "mise-à-jour",
         "discord"
       ],
-      "group": "Canaux"
+      "group": "Canaux",
+      "risk": "write"
     },
     {
       "key": "discord_delete_channel",
@@ -993,7 +1003,8 @@
         "suppression",
         "discord"
       ],
-      "group": "Canaux"
+      "group": "Canaux",
+      "risk": "destructive"
     },
     {
       "key": "discord_get_guild",
@@ -1056,7 +1067,8 @@
         "lecture",
         "discord"
       ],
-      "group": "Serveurs"
+      "group": "Serveurs",
+      "risk": "safe"
     },
     {
       "key": "discord_list_guild_channels",
@@ -1119,7 +1131,8 @@
         "liste",
         "discord"
       ],
-      "group": "Serveurs"
+      "group": "Serveurs",
+      "risk": "safe"
     },
     {
       "key": "discord_list_guild_members",
@@ -1201,7 +1214,8 @@
         "liste",
         "discord"
       ],
-      "group": "Serveurs"
+      "group": "Serveurs",
+      "risk": "safe"
     },
     {
       "key": "discord_list_roles",
@@ -1264,7 +1278,8 @@
         "liste",
         "discord"
       ],
-      "group": "Rôles"
+      "group": "Rôles",
+      "risk": "safe"
     },
     {
       "key": "discord_create_role",
@@ -1368,7 +1383,8 @@
         "création",
         "discord"
       ],
-      "group": "Rôles"
+      "group": "Rôles",
+      "risk": "write"
     },
     {
       "key": "discord_add_role_to_member",
@@ -1459,7 +1475,8 @@
         "mise-à-jour",
         "discord"
       ],
-      "group": "Rôles"
+      "group": "Rôles",
+      "risk": "write"
     },
     {
       "key": "discord_get_user",
@@ -1522,7 +1539,8 @@
         "lecture",
         "discord"
       ],
-      "group": "Utilisateurs"
+      "group": "Utilisateurs",
+      "risk": "safe"
     },
     {
       "key": "discord_get_me",
@@ -1570,7 +1588,8 @@
         "lecture",
         "discord"
       ],
-      "group": "Utilisateurs"
+      "group": "Utilisateurs",
+      "risk": "safe"
     },
     {
       "key": "discord_create_thread",
@@ -1687,7 +1706,8 @@
         "création",
         "discord"
       ],
-      "group": "Fils de discussion"
+      "group": "Fils de discussion",
+      "risk": "write"
     },
     {
       "key": "discord_list_threads",
@@ -1750,7 +1770,8 @@
         "liste",
         "discord"
       ],
-      "group": "Fils de discussion"
+      "group": "Fils de discussion",
+      "risk": "safe"
     },
     {
       "key": "discord_execute_webhook",
@@ -1849,7 +1870,8 @@
         "envoi",
         "discord"
       ],
-      "group": "Webhooks"
+      "group": "Webhooks",
+      "risk": "elevated"
     },
     {
       "key": "discord_webhook_event",
@@ -1896,7 +1918,8 @@
         "événement",
         "discord"
       ],
-      "group": "Événements"
+      "group": "Événements",
+      "risk": "safe"
     }
   ],
   "variables": {

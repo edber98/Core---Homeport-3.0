@@ -1038,7 +1038,8 @@
         "asana",
         "création"
       ],
-      "group": "Tâches"
+      "group": "Tâches",
+      "risk": "write"
     },
     {
       "key": "asana_task_get",
@@ -1100,7 +1101,8 @@
         "asana",
         "lecture"
       ],
-      "group": "Tâches"
+      "group": "Tâches",
+      "risk": "safe"
     },
     {
       "key": "asana_task_update",
@@ -1215,7 +1217,8 @@
         "asana",
         "mise-à-jour"
       ],
-      "group": "Tâches"
+      "group": "Tâches",
+      "risk": "write"
     },
     {
       "key": "asana_task_delete",
@@ -1277,7 +1280,9 @@
         "asana",
         "suppression"
       ],
-      "group": "Tâches"
+      "group": "Tâches",
+      "risk": "destructive",
+      "riskReason": "Supprime une tâche"
     },
     {
       "key": "asana_tasks_list",
@@ -1348,7 +1353,8 @@
         "asana",
         "liste"
       ],
-      "group": "Tâches"
+      "group": "Tâches",
+      "risk": "safe"
     },
     {
       "key": "asana_project_create",
@@ -1442,7 +1448,8 @@
         "asana",
         "création"
       ],
-      "group": "Projets"
+      "group": "Projets",
+      "risk": "write"
     },
     {
       "key": "asana_project_get",
@@ -1504,7 +1511,8 @@
         "asana",
         "lecture"
       ],
-      "group": "Projets"
+      "group": "Projets",
+      "risk": "safe"
     },
     {
       "key": "asana_projects_list",
@@ -1575,7 +1583,8 @@
         "asana",
         "liste"
       ],
-      "group": "Projets"
+      "group": "Projets",
+      "risk": "safe"
     },
     {
       "key": "asana_section_create",
@@ -1651,7 +1660,8 @@
         "asana",
         "création"
       ],
-      "group": "Sections"
+      "group": "Sections",
+      "risk": "write"
     },
     {
       "key": "asana_sections_list",
@@ -1713,7 +1723,8 @@
         "asana",
         "liste"
       ],
-      "group": "Sections"
+      "group": "Sections",
+      "risk": "safe"
     },
     {
       "key": "asana_tag_create",
@@ -1798,7 +1809,8 @@
         "asana",
         "création"
       ],
-      "group": "Tags"
+      "group": "Tags",
+      "risk": "write"
     },
     {
       "key": "asana_tags_list",
@@ -1869,7 +1881,8 @@
         "asana",
         "liste"
       ],
-      "group": "Tags"
+      "group": "Tags",
+      "risk": "safe"
     },
     {
       "key": "asana_user_get",
@@ -1931,7 +1944,8 @@
         "asana",
         "lecture"
       ],
-      "group": "Utilisateurs"
+      "group": "Utilisateurs",
+      "risk": "safe"
     },
     {
       "key": "asana_users_list_workspace",
@@ -2002,7 +2016,8 @@
         "asana",
         "liste"
       ],
-      "group": "Utilisateurs"
+      "group": "Utilisateurs",
+      "risk": "safe"
     },
     {
       "key": "asana_workspaces_list",
@@ -2049,7 +2064,8 @@
         "asana",
         "liste"
       ],
-      "group": "Espaces de travail"
+      "group": "Espaces de travail",
+      "risk": "safe"
     },
     {
       "key": "asana_story_create",
@@ -2125,7 +2141,8 @@
         "asana",
         "création"
       ],
-      "group": "Stories"
+      "group": "Stories",
+      "risk": "write"
     },
     {
       "key": "asana_stories_list",
@@ -2187,7 +2204,8 @@
         "asana",
         "liste"
       ],
-      "group": "Stories"
+      "group": "Stories",
+      "risk": "write"
     },
     {
       "key": "asana_webhook_event",
@@ -2236,7 +2254,8 @@
         "asana",
         "événement"
       ],
-      "group": "Événements"
+      "group": "Événements",
+      "risk": "safe"
     }
   ]
 }

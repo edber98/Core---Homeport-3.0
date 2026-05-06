@@ -888,7 +888,8 @@
         "PrestaShop",
         "lecture"
       ],
-      "group": "Commandes"
+      "group": "Commandes",
+      "risk": "safe"
     },
     {
       "key": "ps_orders_list",
@@ -954,7 +955,8 @@
         "PrestaShop",
         "liste"
       ],
-      "group": "Commandes"
+      "group": "Commandes",
+      "risk": "safe"
     },
     {
       "key": "ps_product_get",
@@ -1016,7 +1018,8 @@
         "PrestaShop",
         "lecture"
       ],
-      "group": "Produits"
+      "group": "Produits",
+      "risk": "safe"
     },
     {
       "key": "ps_products_list",
@@ -1082,7 +1085,8 @@
         "PrestaShop",
         "liste"
       ],
-      "group": "Produits"
+      "group": "Produits",
+      "risk": "safe"
     },
     {
       "key": "ps_product_create",
@@ -1176,7 +1180,8 @@
         "PrestaShop",
         "création"
       ],
-      "group": "Produits"
+      "group": "Produits",
+      "risk": "write"
     },
     {
       "key": "ps_product_update",
@@ -1274,7 +1279,8 @@
         "PrestaShop",
         "mise-à-jour"
       ],
-      "group": "Produits"
+      "group": "Produits",
+      "risk": "write"
     },
     {
       "key": "ps_customer_get",
@@ -1336,7 +1342,8 @@
         "PrestaShop",
         "lecture"
       ],
-      "group": "Clients"
+      "group": "Clients",
+      "risk": "safe"
     },
     {
       "key": "ps_customers_list",
@@ -1402,7 +1409,8 @@
         "PrestaShop",
         "liste"
       ],
-      "group": "Clients"
+      "group": "Clients",
+      "risk": "safe"
     },
     {
       "key": "ps_customer_create",
@@ -1506,7 +1514,8 @@
         "PrestaShop",
         "création"
       ],
-      "group": "Clients"
+      "group": "Clients",
+      "risk": "write"
     },
     {
       "key": "ps_category_get",
@@ -1568,7 +1577,8 @@
         "PrestaShop",
         "lecture"
       ],
-      "group": "Catégories"
+      "group": "Catégories",
+      "risk": "safe"
     },
     {
       "key": "ps_categories_list",
@@ -1634,7 +1644,8 @@
         "PrestaShop",
         "liste"
       ],
-      "group": "Catégories"
+      "group": "Catégories",
+      "risk": "safe"
     },
     {
       "key": "ps_cart_rule_get",
@@ -1696,7 +1707,8 @@
         "PrestaShop",
         "lecture"
       ],
-      "group": "Règles panier"
+      "group": "Règles panier",
+      "risk": "safe"
     },
     {
       "key": "ps_cart_rules_list",
@@ -1762,7 +1774,8 @@
         "PrestaShop",
         "liste"
       ],
-      "group": "Règles panier"
+      "group": "Règles panier",
+      "risk": "safe"
     },
     {
       "key": "ps_cart_rule_create",
@@ -1865,7 +1878,8 @@
         "PrestaShop",
         "création"
       ],
-      "group": "Règles panier"
+      "group": "Règles panier",
+      "risk": "write"
     },
     {
       "key": "ps_stock_list",
@@ -1931,7 +1945,8 @@
         "PrestaShop",
         "liste"
       ],
-      "group": "Stocks"
+      "group": "Stocks",
+      "risk": "safe"
     },
     {
       "key": "ps_carriers_list",
@@ -1978,7 +1993,8 @@
         "PrestaShop",
         "liste"
       ],
-      "group": "Transporteurs"
+      "group": "Transporteurs",
+      "risk": "safe"
     },
     {
       "key": "ps_manufacturers_list",
@@ -2025,7 +2041,8 @@
         "PrestaShop",
         "liste"
       ],
-      "group": "Fabricants"
+      "group": "Fabricants",
+      "risk": "safe"
     },
     {
       "key": "ps_order_states_list",
@@ -2072,7 +2089,8 @@
         "PrestaShop",
         "liste"
       ],
-      "group": "Commandes"
+      "group": "Commandes",
+      "risk": "safe"
     },
     {
       "key": "ps_suppliers_list",
@@ -2119,7 +2137,8 @@
         "PrestaShop",
         "liste"
       ],
-      "group": "Fournisseurs"
+      "group": "Fournisseurs",
+      "risk": "safe"
     },
     {
       "key": "ps_languages_list",
@@ -2166,7 +2185,8 @@
         "PrestaShop",
         "liste"
       ],
-      "group": "Langues"
+      "group": "Langues",
+      "risk": "safe"
     },
     {
       "key": "ps_countries_list",
@@ -2213,7 +2233,8 @@
         "PrestaShop",
         "liste"
       ],
-      "group": "Pays"
+      "group": "Pays",
+      "risk": "safe"
     },
     {
       "key": "ps_webhook_event",
@@ -2262,7 +2283,8 @@
         "PrestaShop",
         "événement"
       ],
-      "group": "Déclencheur"
+      "group": "Déclencheur",
+      "risk": "safe"
     }
   ]
 }

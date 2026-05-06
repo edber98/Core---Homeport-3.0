@@ -45,7 +45,8 @@
         "fields": [],
         "displayTitle": false,
         "displayDescription": false
-      }
+      },
+      "risk": "safe"
     },
     {
       "key": "start_form",
@@ -73,7 +74,8 @@
         "fields": [],
         "displayTitle": false,
         "displayDescription": false
-      }
+      },
+      "risk": "safe"
     }
   ]
 }

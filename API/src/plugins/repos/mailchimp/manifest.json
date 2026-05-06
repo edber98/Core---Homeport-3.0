@@ -959,7 +959,8 @@
         "lecture",
         "mailchimp"
       ],
-      "group": "Audiences"
+      "group": "Audiences",
+      "risk": "safe"
     },
     {
       "key": "mc_lists_list",
@@ -1025,7 +1026,8 @@
         "liste",
         "mailchimp"
       ],
-      "group": "Audiences"
+      "group": "Audiences",
+      "risk": "safe"
     },
     {
       "key": "mc_list_create",
@@ -1157,7 +1159,8 @@
         "création",
         "mailchimp"
       ],
-      "group": "Audiences"
+      "group": "Audiences",
+      "risk": "write"
     },
     {
       "key": "mc_member_add",
@@ -1278,7 +1281,8 @@
         "création",
         "mailchimp"
       ],
-      "group": "Membres"
+      "group": "Membres",
+      "risk": "write"
     },
     {
       "key": "mc_member_get",
@@ -1354,7 +1358,8 @@
         "lecture",
         "mailchimp"
       ],
-      "group": "Membres"
+      "group": "Membres",
+      "risk": "safe"
     },
     {
       "key": "mc_member_update",
@@ -1475,7 +1480,8 @@
         "mise-à-jour",
         "mailchimp"
       ],
-      "group": "Membres"
+      "group": "Membres",
+      "risk": "write"
     },
     {
       "key": "mc_member_delete",
@@ -1551,7 +1557,8 @@
         "suppression",
         "mailchimp"
       ],
-      "group": "Membres"
+      "group": "Membres",
+      "risk": "destructive"
     },
     {
       "key": "mc_members_list",
@@ -1631,7 +1638,8 @@
         "liste",
         "mailchimp"
       ],
-      "group": "Membres"
+      "group": "Membres",
+      "risk": "safe"
     },
     {
       "key": "mc_member_search",
@@ -1693,7 +1701,8 @@
         "recherche",
         "mailchimp"
       ],
-      "group": "Membres"
+      "group": "Membres",
+      "risk": "safe"
     },
     {
       "key": "mc_campaign_create",
@@ -1815,7 +1824,8 @@
         "création",
         "mailchimp"
       ],
-      "group": "Campagnes"
+      "group": "Campagnes",
+      "risk": "write"
     },
     {
       "key": "mc_campaign_get",
@@ -1877,7 +1887,8 @@
         "lecture",
         "mailchimp"
       ],
-      "group": "Campagnes"
+      "group": "Campagnes",
+      "risk": "safe"
     },
     {
       "key": "mc_campaigns_list",
@@ -1974,7 +1985,8 @@
         "liste",
         "mailchimp"
       ],
-      "group": "Campagnes"
+      "group": "Campagnes",
+      "risk": "safe"
     },
     {
       "key": "mc_campaign_send",
@@ -2036,7 +2048,8 @@
         "envoi",
         "mailchimp"
       ],
-      "group": "Campagnes"
+      "group": "Campagnes",
+      "risk": "write"
     },
     {
       "key": "mc_campaign_schedule",
@@ -2120,7 +2133,8 @@
         "envoi",
         "mailchimp"
       ],
-      "group": "Campagnes"
+      "group": "Campagnes",
+      "risk": "write"
     },
     {
       "key": "mc_campaign_unschedule",
@@ -2182,7 +2196,8 @@
         "suppression",
         "mailchimp"
       ],
-      "group": "Campagnes"
+      "group": "Campagnes",
+      "risk": "write"
     },
     {
       "key": "mc_templates_list",
@@ -2248,7 +2263,8 @@
         "liste",
         "mailchimp"
       ],
-      "group": "Templates"
+      "group": "Templates",
+      "risk": "safe"
     },
     {
       "key": "mc_template_get",
@@ -2310,7 +2326,8 @@
         "lecture",
         "mailchimp"
       ],
-      "group": "Templates"
+      "group": "Templates",
+      "risk": "safe"
     },
     {
       "key": "mc_tags_list",
@@ -2372,7 +2389,8 @@
         "liste",
         "mailchimp"
       ],
-      "group": "Tags"
+      "group": "Tags",
+      "risk": "safe"
     },
     {
       "key": "mc_tag_add",
@@ -2462,7 +2480,8 @@
         "création",
         "mailchimp"
       ],
-      "group": "Tags"
+      "group": "Tags",
+      "risk": "write"
     },
     {
       "key": "mc_tag_remove",
@@ -2552,7 +2571,8 @@
         "suppression",
         "mailchimp"
       ],
-      "group": "Tags"
+      "group": "Tags",
+      "risk": "destructive"
     },
     {
       "key": "mc_segments_list",
@@ -2614,7 +2634,8 @@
         "liste",
         "mailchimp"
       ],
-      "group": "Segments"
+      "group": "Segments",
+      "risk": "safe"
     },
     {
       "key": "mc_segment_get",
@@ -2690,7 +2711,8 @@
         "lecture",
         "mailchimp"
       ],
-      "group": "Segments"
+      "group": "Segments",
+      "risk": "safe"
     },
     {
       "key": "mc_reports_list",
@@ -2756,7 +2778,8 @@
         "liste",
         "mailchimp"
       ],
-      "group": "Rapports"
+      "group": "Rapports",
+      "risk": "safe"
     },
     {
       "key": "mc_report_get",
@@ -2818,7 +2841,8 @@
         "lecture",
         "mailchimp"
       ],
-      "group": "Rapports"
+      "group": "Rapports",
+      "risk": "safe"
     },
     {
       "key": "mc_webhook_event",
@@ -2890,7 +2914,8 @@
         "événement",
         "mailchimp"
       ],
-      "group": "Événements"
+      "group": "Événements",
+      "risk": "safe"
     }
   ]
 }

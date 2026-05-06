@@ -1,0 +1,109 @@
+{{- $globalValues := .Values.global | default dict -}}
+{{- $globalDependencies := get $globalValues "dependencies" | default dict -}}
+{{- $globalMongo := get $globalDependencies "mongodb" | default dict -}}
+{{- $globalCredentials := get $globalDependencies "credentials" | default dict -}}
+{{- $globalMongoCredentials := get $globalMongo "credentials" | default dict -}}
+{{- $chartMongo := .Values.mongodb | default dict -}}
+{{- $chartMongoCredentials := get $chartMongo "credentials" | default dict -}}
+{{- $mongoURL := get $globalMongo "url" | default (get $chartMongo "url") | default "" -}}
+{{- $mongoPort := get $globalMongo "port" | default (get $chartMongo "port") | default 27017 -}}
+{{- $mongoUsername := get $globalMongoCredentials "username" | default (get $globalCredentials "username") | default (get $chartMongoCredentials "username") | default "" -}}
+{{- $mongoPassword := get $globalMongoCredentials "password" | default (get $globalCredentials "password") | default (get $chartMongoCredentials "password") | default "" -}}
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-kinn-api
+spec:
+  replicas: {{ .Values.kinn.kinnApi.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-kinn-api
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-kinn-api
+        role: backend
+    spec:
+      {{- if .Values.kinn.kinnApi.runtimeClassName }}
+      # Pointer sur une RuntimeClass alternative (gvisor / kata) — voir README.
+      # Vide ou absent → runc par défaut (containerd standard).
+      runtimeClassName: {{ .Values.kinn.kinnApi.runtimeClassName | quote }}
+      {{- end }}
+      containers:
+        - name: kinn-api
+          image: registry.c4rbon.group/edouard.bernier/kinn-homeport/api:v0.0.34
+          ports:
+            - containerPort: {{ .Values.kinn.kinnApi.port | int }}
+          env:
+            - name: AI_PROVIDER
+              value: {{ .Values.kinn.kinnApi.ai_provider | default "openai" | quote }}
+            - name: ANTHROPIC_API_KEY
+              value: {{ .Values.kinn.kinnApi.anthropic_api_key | quote }}
+            - name: ANTHROPIC_MODEL
+              value: {{ .Values.kinn.kinnApi.anthropic_model | default "" | quote }}
+            - name: PORT
+              value: {{ .Values.kinn.kinnApi.port | quote }}
+            - name: NODE_ENV
+              value: {{ .Values.kinn.kinnApi.node_env | default "development" | quote }}
+            - name: HMAC_SECRET
+              value: {{ .Values.kinn.kinnApi.hmac_secret | quote }}
+            - name: TOKEN_TTL_SEC
+              value: {{ .Values.kinn.kinnApi.token_ttl_sec | quote }}
+            - name: MONGO_URL
+              value: {{ $mongoURL | quote }}
+            - name: MONGO_DB_NAME
+              value: {{ .Values.kinn.kinnApi.mongo_db_name | quote }}
+            - name: PLUGIN_IMPORT_ENABLED
+              value: {{.Values.kinn.kinnApi.plugin_import_enabled | quote}}
+            - name: SEED
+              value: {{ .Values.kinn.kinnApi.seed | quote }}
+            - name: DEFAULT_COMPANY
+              value: {{ .Values.kinn.kinnApi.default_company | quote }}
+            - name: DEFAULT_ADMIN_EMAIL
+              value: {{ .Values.kinn.kinnApi.default_admin_email | quote }}
+            - name: DEFAULT_ADMIN_PASSWORD
+              value: {{ .Values.kinn.kinnApi.default_admin_password | quote }}
+            - name: DEFAULT_WORKSPACE_NAME
+              value: {{ .Values.kinn.kinnApi.default_workspace_name | quote }}
+            - name: OPENAI_API_KEY
+              value: {{ .Values.kinn.kinnApi.openai_api_key | quote }}
+            - name: OPENAI_MODEL
+              value: {{ .Values.kinn.kinnApi.openai_model | quote }}
+            # ── Sandbox d'exécution code (execute_code, install_package) ──
+            # bwrap : namespaces Linux (besoin kernel.unprivileged_userns_clone=1)
+            # subprocess : exécution directe — sûr SEULEMENT si runtimeClassName=gvisor
+            # none : pas de sandbox — DEV UNIQUEMENT
+            # auto : détection automatique (bwrap si dispo, sinon subprocess)
+            - name: AI_SANDBOX_BACKEND
+              value: {{ .Values.kinn.kinnApi.ai_sandbox_backend | default "subprocess" | quote }}
+            # ── Tuning OpenAI (gpt-5.x) ──
+            - name: AI_REASONING_EFFORT
+              value: {{ .Values.kinn.kinnApi.ai_reasoning_effort | default "none" | quote }}
+            - name: AI_VERBOSITY
+              value: {{ .Values.kinn.kinnApi.ai_verbosity | default "medium" | quote }}
+            - name: AI_PARALLEL_TOOL_CALLS
+              value: {{ .Values.kinn.kinnApi.ai_parallel_tool_calls | default "0" | quote }}
+            - name: AI_MAX_TOKENS
+              value: {{ .Values.kinn.kinnApi.ai_max_tokens | default "16384" | quote }}
+            - name: AI_TEMPERATURE
+              value: {{ .Values.kinn.kinnApi.ai_temperature | default "0.7" | quote }}
+            # ── LLM "mini" pour le webscraping / extraction de pages ──
+            - name: WEB_MINI_PROVIDER
+              value: {{ .Values.kinn.kinnApi.web_mini_provider | default "" | quote }}
+            - name: WEB_MINI_MODEL
+              value: {{ .Values.kinn.kinnApi.web_mini_model | default "" | quote }}
+            # ── Timeouts agent / streaming ──
+            - name: AI_STREAM_TIMEOUT_MS
+              value: {{ .Values.kinn.kinnApi.ai_stream_timeout_ms | default "240000" | quote }}
+            - name: AI_SUBAGENT_HEARTBEAT_TIMEOUT_MS
+              value: {{ .Values.kinn.kinnApi.ai_subagent_heartbeat_timeout_ms | default "180000" | quote }}
+            - name: AI_MAX_SUBAGENT_DEPTH
+              value: {{ .Values.kinn.kinnApi.ai_max_subagent_depth | default "3" | quote }}
+            # ── Storage / skills ──
+            - name: SKILLS_BUNDLE_DIR
+              value: {{ .Values.kinn.kinnApi.skills_bundle_dir | default "/app/skills-bundle" | quote }}
+            - name: AI_SANDBOX_PYTHON
+              value: {{ .Values.kinn.kinnApi.ai_sandbox_python | default "python3" | quote }}
+            - name: AI_SANDBOX_PY_SITE_PACKAGES
+              value: {{ .Values.kinn.kinnApi.ai_sandbox_py_site_packages | default "/data/sandbox-pkgs" | quote }}

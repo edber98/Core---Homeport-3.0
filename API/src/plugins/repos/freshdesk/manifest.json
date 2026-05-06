@@ -1078,7 +1078,8 @@
         "création",
         "freshdesk"
       ],
-      "group": "Tickets"
+      "group": "Tickets",
+      "risk": "write"
     },
     {
       "key": "fd_ticket_get",
@@ -1140,7 +1141,8 @@
         "lecture",
         "freshdesk"
       ],
-      "group": "Tickets"
+      "group": "Tickets",
+      "risk": "safe"
     },
     {
       "key": "fd_ticket_update",
@@ -1282,7 +1284,8 @@
         "mise-à-jour",
         "freshdesk"
       ],
-      "group": "Tickets"
+      "group": "Tickets",
+      "risk": "write"
     },
     {
       "key": "fd_ticket_delete",
@@ -1344,7 +1347,8 @@
         "suppression",
         "freshdesk"
       ],
-      "group": "Tickets"
+      "group": "Tickets",
+      "risk": "destructive"
     },
     {
       "key": "fd_tickets_list",
@@ -1410,7 +1414,8 @@
         "liste",
         "freshdesk"
       ],
-      "group": "Tickets"
+      "group": "Tickets",
+      "risk": "safe"
     },
     {
       "key": "fd_ticket_search",
@@ -1472,7 +1477,8 @@
         "recherche",
         "freshdesk"
       ],
-      "group": "Tickets"
+      "group": "Tickets",
+      "risk": "safe"
     },
     {
       "key": "fd_contact_create",
@@ -1561,7 +1567,8 @@
         "création",
         "freshdesk"
       ],
-      "group": "Contacts"
+      "group": "Contacts",
+      "risk": "write"
     },
     {
       "key": "fd_contact_get",
@@ -1623,7 +1630,8 @@
         "lecture",
         "freshdesk"
       ],
-      "group": "Contacts"
+      "group": "Contacts",
+      "risk": "safe"
     },
     {
       "key": "fd_contact_update",
@@ -1712,7 +1720,8 @@
         "mise-à-jour",
         "freshdesk"
       ],
-      "group": "Contacts"
+      "group": "Contacts",
+      "risk": "write"
     },
     {
       "key": "fd_contacts_list",
@@ -1778,7 +1787,8 @@
         "liste",
         "freshdesk"
       ],
-      "group": "Contacts"
+      "group": "Contacts",
+      "risk": "safe"
     },
     {
       "key": "fd_company_create",
@@ -1858,7 +1868,8 @@
         "création",
         "freshdesk"
       ],
-      "group": "Entreprises"
+      "group": "Entreprises",
+      "risk": "write"
     },
     {
       "key": "fd_company_get",
@@ -1920,7 +1931,8 @@
         "lecture",
         "freshdesk"
       ],
-      "group": "Entreprises"
+      "group": "Entreprises",
+      "risk": "safe"
     },
     {
       "key": "fd_companies_list",
@@ -1977,7 +1989,8 @@
         "liste",
         "freshdesk"
       ],
-      "group": "Entreprises"
+      "group": "Entreprises",
+      "risk": "safe"
     },
     {
       "key": "fd_agent_get",
@@ -2039,7 +2052,8 @@
         "lecture",
         "freshdesk"
       ],
-      "group": "Agents"
+      "group": "Agents",
+      "risk": "safe"
     },
     {
       "key": "fd_agents_list",
@@ -2096,7 +2110,8 @@
         "liste",
         "freshdesk"
       ],
-      "group": "Agents"
+      "group": "Agents",
+      "risk": "safe"
     },
     {
       "key": "fd_group_get",
@@ -2158,7 +2173,8 @@
         "lecture",
         "freshdesk"
       ],
-      "group": "Groupes"
+      "group": "Groupes",
+      "risk": "safe"
     },
     {
       "key": "fd_groups_list",
@@ -2205,7 +2221,8 @@
         "liste",
         "freshdesk"
       ],
-      "group": "Groupes"
+      "group": "Groupes",
+      "risk": "safe"
     },
     {
       "key": "fd_note_create",
@@ -2304,7 +2321,8 @@
         "création",
         "freshdesk"
       ],
-      "group": "Notes"
+      "group": "Notes",
+      "risk": "write"
     },
     {
       "key": "fd_notes_list",
@@ -2366,7 +2384,8 @@
         "liste",
         "freshdesk"
       ],
-      "group": "Notes"
+      "group": "Notes",
+      "risk": "safe"
     },
     {
       "key": "fd_time_entry_create",
@@ -2451,7 +2470,8 @@
         "création",
         "freshdesk"
       ],
-      "group": "Temps"
+      "group": "Temps",
+      "risk": "write"
     },
     {
       "key": "fd_time_entries_list",
@@ -2513,7 +2533,8 @@
         "liste",
         "freshdesk"
       ],
-      "group": "Temps"
+      "group": "Temps",
+      "risk": "safe"
     },
     {
       "key": "fd_satisfaction_list",
@@ -2570,7 +2591,8 @@
         "liste",
         "freshdesk"
       ],
-      "group": "Satisfaction"
+      "group": "Satisfaction",
+      "risk": "safe"
     },
     {
       "key": "fd_webhook_event",
@@ -2638,7 +2660,8 @@
         "événement",
         "freshdesk"
       ],
-      "group": "Événements"
+      "group": "Événements",
+      "risk": "safe"
     }
   ]
 }

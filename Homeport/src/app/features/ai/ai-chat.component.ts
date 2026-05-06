@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild, ChangeDetectorRef, effect, inject, AfterViewInit } from '@angular/core';
+import { Component, ElementRef, ViewChild, ChangeDetectorRef, effect, inject, AfterViewInit, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { trigger, transition, style, animate } from '@angular/animations';
@@ -9,11 +9,17 @@ import { NzEmptyModule } from 'ng-zorro-antd/empty';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { AiService, AiStreamEvent, AiAttachment, AI_MAX_FILES, AI_MAX_FILE_SIZE } from './ai.service';
+import { AiService, AiMessage, AiStreamEvent, AiAttachment, AI_MAX_FILES, AI_MAX_FILE_SIZE } from './ai.service';
 import { AiAudioService } from './ai-audio.service';
 import { AiMessageComponent } from './ai-message.component';
 import { AiQuestionComponent } from './ai-question.component';
+import { AiPlanProposalCardComponent } from './plan/ai-plan-proposal-card.component';
+import { AiStructuredMessageComponent } from './structured/ai-structured-message.component';
+import { AiDiagramRendererComponent } from './diagram/ai-diagram-renderer.component';
+import { AiLivePreviewComponent, detectPreviewType, LivePreviewType } from './live-preview/ai-live-preview.component';
+import { PreviewParserService, ParsedPreview } from './live-preview/preview-parser.service';
 import { marked } from 'marked';
+import { isWidgetKind } from './constants/widget-kinds';
 import DOMPurify from 'dompurify';
 import { jsonrepair } from 'jsonrepair';
 
@@ -23,7 +29,9 @@ const TOOL_LABELS: Record<string, string> = {
   run_workflow: 'Lancement workflow', save_memory: 'Mémoire', get_memory: 'Mémoire',
   enrich_context: 'Contexte', open_element: 'Ouverture', list_credentials: 'Lister les identifiants', open_credentials: 'Identifiants',
   save_project_memory: 'Mémoire projet', get_project_memory: 'Mémoire projet',
+  set_project_knowledge: 'Mise à jour mémoire projet', get_project_knowledge: 'Mémoire projet',
   compact_and_transfer: 'Transfert', activate_capsule: 'Activation outils',
+  propose_plan: 'Plan d\'action', generate_diagram: 'Diagramme',
   read_file: 'Lecture fichier', search_manual: 'Manuel', get_manual_section: 'Manuel',
   create_flow: 'Création flow', list_graph: 'Graphe', get_templates: 'Templates',
   get_template_details: 'Détails template', ensure_start: 'Démarrage', add_node: 'Ajout noeud',
@@ -44,6 +52,31 @@ const TOOL_LABELS: Record<string, string> = {
   deploy_flow: 'Déploiement', undeploy_flow: 'Arrêt production',
   get_deployment_status: 'Statut déploiement', start_run: 'Lancement exécution',
   list_runs: 'Historique', get_run_stats: 'Statistiques',
+  // Project FS tools
+  project_list_dir: 'Liste dossier projet', project_tree: 'Arborescence projet',
+  project_read_file: 'Lecture fichier projet', project_read_batch: 'Lecture multiple',
+  project_grep: 'Recherche texte', project_search: 'Recherche fichiers',
+  project_write_file: 'Écriture fichier', project_create_folder: 'Création dossier',
+  project_delete: 'Suppression fichier', project_move: 'Déplacement fichier',
+  project_refresh_tree: 'Actualisation arbo', project_sync_remote: 'Synchronisation distant',
+  // Web tools
+  web_search: 'Recherche web', web_fetch: 'Lecture page web', research_deep: 'Recherche approfondie', web_download: 'Téléchargement web',
+  // Code execution
+  execute_code: 'Exécution code', prepare_code_environment: 'Préparation environnement',
+  // Subagents
+  spawn_subagent: 'Sous-agent',
+  install_package: 'Installation package', display_image: 'Affichage image',
+  // Skills
+  skill_list: 'Liste skills', skill_get: 'Détails skill', skill_execute: 'Exécution skill',
+  // Document generation
+  generate_document: 'Génération document', edit_document: 'Édition document',
+  render_html_preview: 'Aperçu HTML', build_website: 'Construction site',
+  // Structured interactive messages
+  render_structured: 'Affichage structuré',
+  render_interactive_canvas: 'Canvas interactif',
+  todo_write: 'Checklist',
+  send_message_to_agent: 'Message agent',
+  display_file: 'Aperçu fichier',
 };
 
 /** Human-readable labels for meta-tool arguments (non-execute_tool tools) */
@@ -84,6 +117,8 @@ const META_TOOL_ARG_LABELS: Record<string, Record<string, string>> = {
   open_credentials: { providerKey: 'Fournisseur' },
   save_project_memory: { content: 'Contenu' },
   compact_and_transfer: { summary: 'Résumé' },
+  propose_plan: { summary: 'Résumé', steps: 'Étapes', risks: 'Risques' },
+  generate_diagram: { type: 'Type', title: 'Titre', mermaid: 'Code' },
 };
 
 interface StreamSegment {
@@ -103,12 +138,14 @@ interface StreamTool {
   argsSchema?: { key: string; label: string }[];
   parsedArgs?: Record<string, any>;
   changedKeys?: Set<string>;
+  /** Live preview state (incremental, mis à jour via worker + ui.preview.update) */
+  livePreview?: { type: LivePreviewType; data: any };
 }
 
 @Component({
   selector: 'ai-chat',
   standalone: true,
-  imports: [CommonModule, FormsModule, NzInputModule, NzButtonModule, NzIconModule, NzEmptyModule, NzTagModule, NzToolTipModule, AiMessageComponent, AiQuestionComponent],
+  imports: [CommonModule, FormsModule, NzInputModule, NzButtonModule, NzIconModule, NzEmptyModule, NzTagModule, NzToolTipModule, AiMessageComponent, AiQuestionComponent, AiStructuredMessageComponent, AiDiagramRendererComponent, AiLivePreviewComponent, AiPlanProposalCardComponent],
   animations: [
     trigger('toolRotate', [
       transition(':enter', [
@@ -134,26 +171,45 @@ interface StreamTool {
   template: `
     <!-- Messages -->
     <div class="messages" #scrollContainer (scroll)="onScroll()">
-      <ng-container *ngIf="ai.messages().length === 0 && !ai.streaming()">
+      <ng-container *ngIf="messageGroups().length === 0 && !ai.streaming()">
         <div class="empty">
           <nz-empty nzNotFoundContent="Commencez une conversation"></nz-empty>
         </div>
       </ng-container>
 
-      <ng-container *ngFor="let msg of ai.messages()">
-        <!-- System context message (transferred context) -->
-        <div class="system-msg" *ngIf="msg.role === 'system'">
+      <ng-container *ngFor="let group of messageGroups(); let gi = index; trackBy: trackGroup">
+        <!-- System context messages -->
+        <div class="system-msg" *ngIf="group.isSystem">
           <div class="system-context">
             <span nz-icon nzType="info-circle" nzTheme="outline"></span>
             <span class="system-label">Contexte transféré</span>
-            <button nz-button nzType="text" nzSize="small" (click)="toggleExpanded(msg)">
-              {{ expandedMsgs.has(msg) ? 'Masquer' : 'Voir' }}
+            <button nz-button nzType="text" nzSize="small" (click)="toggleExpanded(group.messages[0])">
+              {{ expandedMsgs.has(group.messages[0]) ? 'Masquer' : 'Voir' }}
             </button>
           </div>
-          <div class="system-content" *ngIf="expandedMsgs.has(msg)" [innerHTML]="renderMd(msg.content)"></div>
+          <div class="system-content" *ngIf="expandedMsgs.has(group.messages[0])" [innerHTML]="renderMd(group.messages[0].content)"></div>
         </div>
-        <!-- Regular message -->
-        <ai-message *ngIf="msg.role !== 'system'" [msg]="msg" (retryClick)="retry()"></ai-message>
+
+        <!-- User message (toujours seul) -->
+        <div *ngIf="group.role === 'user'" class="msg-wrap">
+          <ai-message [msg]="group.messages[0]" [compact]="false"
+                      [isLast]="gi === messageGroups().length - 1"
+                      [widgetsById]="widgetsById()"
+                      (retryClick)="retry()"></ai-message>
+        </div>
+
+        <!-- GROUPE assistant fusionné : 1 avatar + N messages en flux continu -->
+        <div *ngIf="group.role === 'assistant' && !group.isSystem" class="msg-wrap assistant-group">
+          <ng-container *ngFor="let msg of group.messages; let mi = index; trackBy: trackMsgById">
+            <ai-message
+              [msg]="msg"
+              [compact]="mi > 0"
+              [isLast]="gi === messageGroups().length - 1 && mi === group.messages.length - 1"
+              [widgetsById]="widgetsById()"
+              (retryClick)="retry()">
+            </ai-message>
+          </ng-container>
+        </div>
       </ng-container>
 
       <!-- Waiting for first token / thinking between iterations -->
@@ -244,7 +300,7 @@ interface StreamTool {
                   <ng-container *ngIf="latestToolArray(seg.tools!).length">
                     <div *ngFor="let t of latestToolArray(seg.tools!); trackBy: trackToolRotate"
                          @toolRotate class="tool-viewer">
-                      <div class="tool-viewer-header"
+                      <div class="tool-viewer-header claude-style"
                            [class.tool-building]="t.status === 'building'"
                            [class.tool-running]="t.status === 'running'"
                            [class.tool-success]="t.status === 'success'"
@@ -253,12 +309,27 @@ interface StreamTool {
                            (click)="t.status === 'running' && hasVisibleArgs(t) && toggleRunningArgs(t.id)">
                         <span nz-icon
                           [nzType]="t.status === 'building' ? 'tool' : t.status === 'running' ? 'loading' : t.status === 'error' ? 'close-circle' : 'check-circle'"
-                          nzTheme="outline" [nzSpin]="t.status === 'running'"></span>
+                          nzTheme="outline" [nzSpin]="t.status === 'running'"
+                          class="viewer-ico"></span>
                         <span class="viewer-title">{{ toolDisplayName(t) }}</span>
+                        <!-- Signature inline (Claude Code style): args compact sur 1 ligne
+                             avec shimmer pendant streaming des arguments -->
+                        <span class="viewer-sig"
+                              *ngIf="toolInlineSignature(t) as sig"
+                              [class.shimmer]="t.status === 'building' || t.status === 'running'">{{ sig }}</span>
+                        <span class="viewer-dur" *ngIf="t.duration && t.status !== 'running' && t.status !== 'building'">{{ t.duration }}ms</span>
                         <span nz-icon *ngIf="t.status === 'running' && hasVisibleArgs(t)" class="item-chevron"
                               [nzType]="runningArgsExpanded.has(t.id) ? 'down' : 'right'" nzTheme="outline"></span>
                       </div>
-                      <div class="args-tree" *ngIf="(t.status === 'building' || (t.status === 'running' && runningArgsExpanded.has(t.id))) && hasVisibleArgs(t)" @argsExpand>
+                      <!-- Live preview universel (structured/diagram/plan/document/research/subagent/download/code) -->
+                      <div class="live-preview-wrap" *ngIf="hasLivePreview(t)">
+                        <ai-live-preview
+                          [previewType]="t.livePreview!.type"
+                          [data]="t.livePreview!.data"
+                          [status]="t.status">
+                        </ai-live-preview>
+                      </div>
+                      <div class="args-tree" *ngIf="!hasLivePreview(t) && (t.status === 'building' || (t.status === 'running' && runningArgsExpanded.has(t.id))) && hasVisibleArgs(t)" @argsExpand>
                         <div *ngFor="let field of getArgsFields(t); trackBy: trackArgField" class="args-row"
                              [class.args-row-new]="t.changedKeys?.has(field.key)">
                           <span class="args-label">{{ field.label }}</span>
@@ -327,21 +398,72 @@ interface StreamTool {
         </div>
       </div>
 
-      <!-- Pending question -->
-      <div class="question-msg" *ngIf="ai.pendingQuestion()">
-        <div class="avatar"><span nz-icon nzType="robot" nzTheme="outline"></span></div>
-        <div class="question-body">
-          <ai-question
-            [question]="ai.pendingQuestion()!"
-            (answered)="onAnswer($event)">
-          </ai-question>
-        </div>
+    </div>
+
+    <!-- Indicateur subagents en cours : petite card compacte, toujours visible
+         tant qu'au moins 1 subagent est actif. Click → ouvre le canvas Agents. -->
+    <div class="subagent-live-indicator" *ngIf="ai.activeSubagents().length && !ai.pendingQuestion()"
+         (click)="openAgentsCanvas()">
+      <span class="sli-pulse"></span>
+      <span class="sli-count">{{ ai.activeSubagents().length }}</span>
+      <span class="sli-label">
+        sous-agent{{ ai.activeSubagents().length > 1 ? 's' : '' }} en cours
+      </span>
+      <span class="sli-names">
+        <span *ngFor="let s of activeSubagentsPreview(); trackBy: trackSubagent" class="sli-mini"
+              [style.background]="s.agentColor || '#e61982'"
+              [title]="(s.agentName || s.subagentType) + ' — ' + s.status">
+          {{ s.agentEmoji || '🤖' }}
+        </span>
+      </span>
+      <span class="sli-arrow">
+        <span nz-icon nzType="arrow-right" nzTheme="outline"></span>
+      </span>
+    </div>
+
+    <!-- Pending plan proposal — sticky au-dessus de l'input, même pattern que la
+         question. Visible quand un plan_proposal n'a pas encore été approuvé/rejeté. -->
+    <div class="pending-question-pinned pending-plan-pinned" *ngIf="pendingPlanProposal() as plan">
+      <div class="pq-head">
+        <span nz-icon nzType="ordered-list" nzTheme="outline" class="pq-ico"></span>
+        <span class="pq-title">L'agent te propose un plan — valides-tu ?</span>
+        <button nz-button nzType="text" nzSize="small" class="pq-close"
+                (click)="cancelPlan(plan)"
+                nz-tooltip nzTooltipTitle="Rejeter le plan">
+          <span nz-icon nzType="close" nzTheme="outline"></span>
+        </button>
       </div>
+      <ai-plan-proposal-card
+        [proposal]="plan.metadata!.planProposal!"
+        (answered)="onPlanAnswer(plan, $event)">
+      </ai-plan-proposal-card>
+    </div>
+
+    <!-- Pending question — ANCRÉ AU-DESSUS DE L'INPUT (sticky bas) -->
+    <div class="pending-question-pinned" *ngIf="ai.pendingQuestion()">
+      <!-- Contexte : texte assistant qui précédait la question -->
+      <div class="pq-context" *ngIf="ai.pendingQuestionContext() as ctx">
+        <div class="pq-context-body" [innerHTML]="renderPqContext(ctx)"></div>
+      </div>
+      <div class="pq-head">
+        <span nz-icon nzType="question-circle" nzTheme="outline" class="pq-ico"></span>
+        <span class="pq-title">Une réponse est attendue</span>
+        <button nz-button nzType="text" nzSize="small" class="pq-close"
+                (click)="cancelQuestion()"
+                nz-tooltip nzTooltipTitle="Annuler — continue sans répondre">
+          <span nz-icon nzType="close" nzTheme="outline"></span>
+        </button>
+      </div>
+      <ai-question
+        [question]="ai.pendingQuestion()!"
+        (answered)="onAnswer($event)">
+      </ai-question>
     </div>
 
     <!-- Input -->
     <div class="input-bar" (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)" (drop)="onDrop($event)"
-         [class.drag-over]="isDragOver">
+         [class.drag-over]="isDragOver"
+         [class.input-disabled]="!!ai.pendingQuestion()">
       <!-- Attachment previews -->
       <div class="att-previews" *ngIf="pendingAttachments.length">
         <div class="att-chip" *ngFor="let att of pendingAttachments; let i = index"
@@ -356,6 +478,15 @@ interface StreamTool {
             <span nz-icon nzType="close" nzTheme="outline"></span>
           </button>
         </div>
+      </div>
+      <!-- Suggestions auto selon type de fichier : affichées uniquement si input vide -->
+      <div class="att-suggestions" *ngIf="pendingAttachments.length && !inputText.trim() && !ai.streaming()">
+        <span class="sug-hint">Suggestions :</span>
+        <button *ngFor="let s of attachmentSuggestions()"
+                nz-button nzType="default" nzSize="small" class="sug-chip"
+                (click)="applySuggestion(s.prompt)">
+          <span nz-icon [nzType]="s.icon" nzTheme="outline"></span> {{ s.label }}
+        </button>
       </div>
       <!-- Normal text input -->
       <div class="input-row" *ngIf="!audio.recording()">
@@ -378,11 +509,11 @@ interface StreamTool {
         <textarea
           nz-input
           [(ngModel)]="inputText"
-          placeholder="Écris un message..."
+          [placeholder]="placeholderText()"
           (keydown)="onInputKeydown($event)"
           (paste)="onPaste($event)"
           [nzAutosize]="{ minRows: 1, maxRows: 6 }"
-          [disabled]="audio.transcribing()">
+          [disabled]="audio.transcribing() || readOnly()">
         </textarea>
         <div class="input-suffix">
           <button *ngIf="ai.streaming()" nz-button nzType="text" nzSize="small" nzShape="circle" nzDanger (click)="stopStream()">
@@ -413,6 +544,32 @@ interface StreamTool {
     :host { display: flex; flex-direction: column; height: 100%; min-width: 0; overflow-x: hidden; }
     .messages { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 12px 16px; display: flex; flex-direction: column; gap: 4px; }
     .empty { flex: 1; display: flex; align-items: center; justify-content: center; }
+    /* Grouped assistant messages — collapse space between stacked bubbles */
+    .msg-wrap { display: block; }
+    /* Groupe assistant fusionné : 1 avatar + N messages en flux continu.
+       Les sub-messages après le premier n'ont pas d'avatar (compact mode),
+       et les widgets s'intercalent naturellement sans card séparée. */
+    .assistant-group ::ng-deep ai-message + ai-message .ai-msg {
+      padding-top: 0 !important;
+      padding-bottom: 2px !important;
+    }
+    .assistant-group ::ng-deep ai-message + ai-message .ai-msg .avatar,
+    .assistant-group ::ng-deep ai-message + ai-message .ai-msg .avatar-spacer {
+      visibility: hidden;
+      height: 0;
+      overflow: hidden;
+    }
+    /* Widgets dans le groupe : inline, pas de card surélevée */
+    .assistant-group ::ng-deep ai-message + ai-message .widget-bubble {
+      margin: 4px 0;
+      border: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+    .assistant-group ::ng-deep .report-card {
+      margin: 2px 0;
+      border-left-color: #e8e8e8;
+    }
     .streaming-msg .ai-msg { display: flex; gap: 10px; padding: 8px 0; }
     .streaming-msg .avatar { width: 32px; height: 32px; border-radius: 50%; background: #e6f4ff; color: #e61982; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 16px; }
     .streaming-msg .body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
@@ -465,6 +622,60 @@ interface StreamTool {
     .tool-viewer { margin: 2px 0; }
     .tool-viewer-header { display: flex; align-items: center; gap: 6px; font-size: 12px; padding: 2px 0; }
     .viewer-title { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    /* Claude Code style : 1 ligne compacte, signature inline, shimmer streaming */
+    .tool-viewer-header.claude-style {
+      padding: 4px 10px;
+      background: transparent;
+      border-radius: 6px;
+      font-size: 12px;
+      gap: 7px;
+      min-width: 0;
+    }
+    .tool-viewer-header.claude-style.tool-building,
+    .tool-viewer-header.claude-style.tool-running { color: #e61982; font-weight: 500; }
+    .tool-viewer-header.claude-style.tool-success { color: #595959; }
+    .tool-viewer-header.claude-style.tool-error { color: #cf1322; background: #fff2f0; }
+    .tool-viewer-header.claude-style .viewer-ico { font-size: 12px; color: inherit; flex-shrink: 0; }
+    .tool-viewer-header.claude-style .viewer-title {
+      font-weight: 600;
+      color: #262626;
+      max-width: 220px;
+    }
+    .tool-viewer-header.claude-style.tool-building .viewer-title,
+    .tool-viewer-header.claude-style.tool-running .viewer-title { color: #e61982; }
+    .tool-viewer-header.claude-style.tool-error .viewer-title { color: #cf1322; }
+
+    /* Signature : monospace, color muted, shimmer quand en cours */
+    .viewer-sig {
+      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+      font-size: 11px;
+      color: #8c8c8c;
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      padding: 0 2px;
+    }
+    .viewer-sig.shimmer {
+      background: linear-gradient(90deg, #bfbfbf 0%, #e61982 50%, #bfbfbf 100%);
+      background-size: 200% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: sigShimmer 1.5s ease-in-out infinite;
+    }
+    @keyframes sigShimmer {
+      0%   { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+    .viewer-dur {
+      font-size: 10px;
+      color: #bfbfbf;
+      font-variant-numeric: tabular-nums;
+      flex-shrink: 0;
+    }
     .tool-building { color: #8c8c8c; }
     .tool-running { color: #e61982; }
     .tool-clickable { cursor: pointer; border-radius: 4px; padding: 2px 6px; margin: 0 -6px; transition: background 0.15s; }
@@ -579,12 +790,134 @@ interface StreamTool {
     .system-label { font-weight: 500; }
     .system-content { margin-top: 6px; font-size: 12px; color: #666; line-height: 1.5; }
     .system-content ::ng-deep p { margin: 0 0 4px; }
-    .question-msg { display: flex; gap: 10px; padding: 8px 0; }
-    .question-msg .avatar { width: 32px; height: 32px; border-radius: 50%; background: #e6f4ff; color: #e61982; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 16px; }
-    .question-msg .question-body { flex: 1; min-width: 0; max-width: 85%; }
+    /* Question ancrée au-dessus de l'input : empêche l'user d'écrire
+       librement tant qu'une réponse est attendue. Animation slide-up. */
+    .pending-question-pinned {
+      position: relative;
+      margin: 0 16px;
+      background: #fff;
+      border: 1px solid #ffd6e7;
+      border-radius: 12px 12px 8px 8px;
+      padding: 10px 14px 12px;
+      box-shadow: 0 -4px 20px rgba(230, 25, 130, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+      animation: pqSlideIn 240ms cubic-bezier(.2,.8,.2,1);
+      border-bottom: 0;
+    }
+    /* Variante pour un plan_proposal : le plan a son propre cadre, on annule
+       la marge interne et on autorise le scroll si le plan est très long. */
+    .pending-plan-pinned { padding: 10px 14px 8px; max-height: 60vh; overflow-y: auto; }
+    .pending-plan-pinned ::ng-deep ai-plan-proposal-card .plan-card {
+      margin: 0; border: 0; padding: 4px 0 0;
+    }
+    @keyframes pqSlideIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .pq-head {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 11px; font-weight: 600;
+      color: #e61982;
+      text-transform: uppercase; letter-spacing: .5px;
+      margin-bottom: 8px;
+    }
+    .pq-ico { font-size: 13px; }
+    .pq-title { flex: 1; }
+    .pq-close {
+      margin-left: auto;
+      color: #bfbfbf !important;
+      padding: 0 6px !important;
+      height: 22px !important;
+      line-height: 1 !important;
+    }
+    .pq-close:hover { color: #e61982 !important; background: #fff5fa !important; }
+
+    /* Contexte assistant texte précédant la question */
+    .pq-context {
+      margin-bottom: 10px;
+      padding: 8px 10px;
+      background: #fafafa;
+      border-left: 2px solid #e8e8e8;
+      border-radius: 4px;
+      max-height: 96px;
+      overflow-y: auto;
+    }
+    .pq-context-body {
+      font-size: 12px; color: #595959; line-height: 1.5;
+    }
+    .pq-context-body ::ng-deep p { margin: 0 0 4px; }
+    .pq-context-body ::ng-deep p:last-child { margin: 0; }
+    .pq-context-body ::ng-deep code { background: #f0f0f0; padding: 0 3px; border-radius: 2px; font-size: 11px; }
+
+    /* Indicateur subagents en cours : compacte, 1 ligne, sticky */
+    .subagent-live-indicator {
+      display: flex; align-items: center; gap: 8px;
+      margin: 0 16px 6px;
+      padding: 8px 12px;
+      background: linear-gradient(90deg, #fff5fa 0%, #fff 100%);
+      border: 1px solid #ffd6e7;
+      border-radius: 10px;
+      font-size: 12px;
+      color: #595959;
+      cursor: pointer;
+      transition: background .15s, border-color .15s, transform .12s;
+      animation: sliSlideIn 220ms cubic-bezier(.2,.8,.2,1);
+    }
+    .subagent-live-indicator:hover {
+      background: linear-gradient(90deg, #ffe0ee 0%, #fff5fa 100%);
+      border-color: #e61982;
+      transform: translateY(-1px);
+    }
+    @keyframes sliSlideIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .sli-pulse {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #e61982;
+      box-shadow: 0 0 0 0 rgba(230,25,130,.4);
+      animation: sliPulse 1.4s ease-in-out infinite;
+      flex-shrink: 0;
+    }
+    @keyframes sliPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(230,25,130,.4); }
+      50%      { box-shadow: 0 0 0 6px rgba(230,25,130,0); }
+    }
+    .sli-count { font-weight: 700; color: #e61982; font-size: 13px; font-variant-numeric: tabular-nums; }
+    .sli-label { flex: 1; color: #595959; }
+    .sli-names { display: inline-flex; gap: 3px; }
+    .sli-mini {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 20px; height: 20px;
+      background: #e61982; color: #fff;
+      border-radius: 50%;
+      font-size: 11px;
+      line-height: 1;
+      border: 2px solid #fff;
+      box-shadow: 0 1px 3px rgba(0,0,0,.1);
+    }
+    .sli-arrow { color: #e61982; font-size: 11px; }
+
+    /* Input grisé quand une question bloque */
+    .input-bar.input-disabled {
+      opacity: 0.55;
+      pointer-events: none;
+      position: relative;
+    }
+    .input-bar.input-disabled::after {
+      content: "Réponds d'abord à la question ci-dessus";
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; color: #8c8c8c;
+      background: linear-gradient(180deg, rgba(255,255,255,0), rgba(255,255,255,0.4));
+      pointer-events: none;
+    }
     .interrupted-tag { padding: 4px 0; }
     .drag-over { border-color: #e61982 !important; background: rgba(230, 25, 130, 0.04); }
     .att-previews { display: flex; flex-wrap: wrap; gap: 6px; padding: 0px 24px 2px; }
+    .att-suggestions { display: flex; flex-wrap: wrap; gap: 6px; padding: 4px 24px 4px; align-items: center; }
+    .att-suggestions .sug-hint { font-size: 11px; color: #8c8c8c; font-weight: 500; }
+    .att-suggestions .sug-chip { font-size: 12px; height: 26px; padding: 0 10px; border-radius: 14px; color: #e61982; border-color: rgba(230,25,130,0.3); }
+    .att-suggestions .sug-chip:hover { background: rgba(230,25,130,0.08); border-color: #e61982; }
     .att-chip { display: inline-flex; align-items: center; gap: 4px; background: #f5f5f5; border: 1px solid #e8e8e8; border-radius: 6px; padding: 3px 6px; font-size: 12px; max-width: 200px; }
     .att-chip.att-uploading { opacity: 0.7; }
     .att-chip.att-error { border-color: #ff4d4f; background: #fff2f0; }
@@ -615,6 +948,21 @@ export class AiChatComponent implements AfterViewInit {
   isDragOver = false;
   maxFiles = AI_MAX_FILES;
 
+  // V2 — permission-based chat behavior
+  readOnly(): boolean {
+    const t = this.ai.currentThread() as any;
+    return t?._sharedPermission === 'view';
+  }
+  commentMode(): boolean {
+    const t = this.ai.currentThread() as any;
+    return t?._sharedPermission === 'comment';
+  }
+  placeholderText(): string {
+    if (this.readOnly()) return "Vous n'avez pas l'autorisation de répondre";
+    if (this.commentMode()) return 'Écrire un commentaire...';
+    return 'Écris un message...';
+  }
+
   // Auto-scroll: only scroll if user is near the bottom
   private _userAtBottom = true;
   private readonly SCROLL_THRESHOLD = 60; // px from bottom to consider "at bottom"
@@ -630,8 +978,133 @@ export class AiChatComponent implements AfterViewInit {
   private stopFn?: () => void;
 
   private nzMsg = inject(NzMessageService);
+  private previewParser = inject(PreviewParserService);
+  // Souscriptions worker par toolId (pour cleanup)
+  private _previewSubs = new Map<string, { unsub: () => void }>();
+
+  /**
+   * Fusionne les messages consécutifs du même rôle assistant en "groupes".
+   * Chaque groupe partage un seul avatar et un seul conteneur visuel →
+   * texte + widgets s'intercalent naturellement (approche A).
+   */
+  /**
+   * Construit une Map widgetId → AiMessage à partir des messages du thread.
+   * Utilisée par ai-message pour résoudre les marqueurs [[WIDGET:id]] inline.
+   */
+  widgetsById = computed<Map<string, any>>(() => {
+    const map = new Map<string, any>();
+    const msgs = this.ai.messages();
+    for (const m of msgs) {
+      const wid = m?.metadata?.widgetId;
+      if (wid) map.set(String(wid), m);
+    }
+    return map;
+  });
+
+  /** Set des widgetIds référencés inline par [[WIDGET:id]] dans n'importe quel message assistant. */
+  private _inlineReferencedWidgetIds = computed<Set<string>>(() => {
+    const ref = new Set<string>();
+    const re = /\[\[WIDGET:([a-zA-Z0-9_\-.]{1,60})\]\]/g;
+    for (const m of this.ai.messages()) {
+      if (m.role !== 'assistant') continue;
+      const scan = (s: string) => {
+        if (!s || !s.includes('[[WIDGET:')) return;
+        let x: RegExpExecArray | null;
+        re.lastIndex = 0;
+        while ((x = re.exec(s)) !== null) ref.add(x[1]);
+      };
+      scan(m.content || '');
+      for (const seg of (m.segments || [])) {
+        if (seg.type === 'text' && seg.content) scan(seg.content);
+      }
+    }
+    return ref;
+  });
+
+  messageGroups = computed(() => {
+    const msgs = this.ai.messages();
+    const inlineRefs = this._inlineReferencedWidgetIds();
+    const groups: Array<{ role: string; messages: any[]; isSystem: boolean }> = [];
+    let current: { role: string; messages: any[]; isSystem: boolean } | null = null;
+
+    for (const m of msgs) {
+      const kind = m.metadata?.kind;
+      const wid = m?.metadata?.widgetId;
+      const isWidget = isWidgetKind(kind);
+      // Cas 1 : widget référencé par [[WIDGET:id]] dans un message texte → masqué
+      // (il sera rendu inline à l'emplacement du marqueur, pas en bulle séparée).
+      if (isWidget && wid && inlineRefs.has(String(wid))) {
+        continue;
+      }
+      // Cas 2 : widget produit par un subagent (metadata.subagentJobId) → masqué
+      // de la timeline principale. Il apparaît UNIQUEMENT inline quand le parent
+      // fait sa synthèse avec [[WIDGET:id]], OU dans la fenêtre WM du subagent
+      // (subagent-todos visibles uniquement via ai-subagent-window).
+      if (isWidget && m?.metadata?.subagentJobId) {
+        continue;
+      }
+      // Cas 3 : filet de sécurité par widgetId — les todos de subagent ont un
+      // widgetId qui commence par `subagent-todos-`. Si par ex. subagentJobId
+      // n'a pas été persisté (ancien message), on filtre quand même par pattern.
+      if (kind === 'todo_list' && typeof wid === 'string' && wid.startsWith('subagent-todos-')) {
+        continue;
+      }
+      // Cas 4 : la DERNIÈRE checklist parent (session-todos-*) si tous ses items
+      // sont completed/cancelled ET que c'est un update du resume parent → masquée.
+      // Le plan en haut affiche déjà la progression en cours ; le "tout coché" de
+      // clôture fait doublon visuel et pollue le fil juste avant la synthèse finale.
+      if (kind === 'todo_list' && typeof wid === 'string' && wid.startsWith('session-todos')) {
+        const todos = (m.metadata as any)?.todoList?.todos || [];
+        const allFinished = todos.length > 0 && todos.every((t: any) => t.status === 'completed' || t.status === 'cancelled');
+        if (allFinished) continue;
+      }
+      // System messages sauf hint/note → leur propre groupe
+      if (m.role === 'system' && kind !== 'system_hint' && kind !== 'system_note') {
+        if (current) { groups.push(current); current = null; }
+        groups.push({ role: 'system', messages: [m], isSystem: true });
+        continue;
+      }
+      // Hidden (system_hint, system_note) → skip
+      if (m.role === 'system' && (kind === 'system_hint' || kind === 'system_note')) {
+        continue;
+      }
+      // User message → propre groupe
+      if (m.role === 'user') {
+        if (current) { groups.push(current); current = null; }
+        groups.push({ role: 'user', messages: [m], isSystem: false });
+        continue;
+      }
+      // Assistant → fusion avec le groupe courant si assistant aussi
+      if (m.role === 'assistant') {
+        if (current && current.role === 'assistant') {
+          current.messages.push(m);
+        } else {
+          if (current) groups.push(current);
+          current = { role: 'assistant', messages: [m], isSystem: false };
+        }
+        continue;
+      }
+      // Fallback
+      if (current) { groups.push(current); current = null; }
+      groups.push({ role: m.role || 'unknown', messages: [m], isSystem: false });
+    }
+    if (current) groups.push(current);
+    return groups;
+  });
 
   constructor(public ai: AiService, public audio: AiAudioService, private cdr: ChangeDetectorRef) {
+    // Prompt templates : insertion dans input chat
+    this.ai.promptTemplateApply$.subscribe((prompt: string) => {
+      if (!prompt) return;
+      this.inputText = prompt;
+      this.cdr.detectChanges();
+      setTimeout(() => {
+        try {
+          const ta = document.querySelector('ai-chat textarea') as HTMLTextAreaElement | null;
+          if (ta) { ta.focus(); ta.setSelectionRange?.(prompt.length, prompt.length); }
+        } catch {}
+      }, 30);
+    });
     // Reset auto-scroll when switching threads
     effect(() => {
       this.ai.currentThread();
@@ -815,6 +1288,55 @@ export class AiChatComponent implements AfterViewInit {
     this.cdr.detectChanges();
   }
 
+  /** Suggestions de prompt selon les types de fichiers attachés. */
+  attachmentSuggestions(): Array<{ label: string; prompt: string; icon: string }> {
+    const out: Array<{ label: string; prompt: string; icon: string }> = [];
+    const mimes = this.pendingAttachments.filter(a => !a.uploading && !a.error).map(a => a.mimeType || '');
+    if (!mimes.length) return out;
+    const hasImage = mimes.some(m => m.startsWith('image/'));
+    const hasPdf = mimes.some(m => m === 'application/pdf');
+    const hasXlsx = mimes.some(m => /spreadsheet|excel|csv/i.test(m));
+    const hasDocx = mimes.some(m => /wordprocessing|msword/i.test(m));
+    const hasAudio = mimes.some(m => m.startsWith('audio/'));
+    const hasVideo = mimes.some(m => m.startsWith('video/'));
+    const hasCode = mimes.some(m => /javascript|typescript|json|xml|yaml/i.test(m));
+    if (hasImage) {
+      out.push({ label: 'Décrire', prompt: 'Décris précisément ce que tu vois sur cette image.', icon: 'eye' });
+      out.push({ label: 'Extraire le texte', prompt: "Extrais tout le texte visible sur cette image (OCR).", icon: 'scan' });
+    }
+    if (hasPdf) {
+      out.push({ label: 'Résumer', prompt: 'Lis ce PDF et fais-moi un résumé structuré des points clés.', icon: 'file-text' });
+      out.push({ label: 'Extraire données', prompt: 'Extrais les données structurées de ce PDF (dates, montants, noms, tableaux).', icon: 'table' });
+    }
+    if (hasXlsx) {
+      out.push({ label: 'Analyser', prompt: 'Analyse ce tableau et donne-moi les insights principaux avec éventuellement un graphique.', icon: 'bar-chart' });
+    }
+    if (hasDocx) {
+      out.push({ label: 'Résumer', prompt: 'Lis ce document et fais-moi un résumé.', icon: 'file-text' });
+    }
+    if (hasAudio) {
+      out.push({ label: 'Transcrire', prompt: 'Transcris cet enregistrement audio en texte.', icon: 'audio' });
+    }
+    if (hasVideo) {
+      out.push({ label: 'Analyser', prompt: 'Analyse cette vidéo et décris ce qui s\'y passe.', icon: 'video-camera' });
+    }
+    if (hasCode) {
+      out.push({ label: 'Expliquer', prompt: 'Explique ce que fait ce code et suggère des améliorations.', icon: 'code' });
+    }
+    return out.slice(0, 3);
+  }
+
+  applySuggestion(prompt: string) {
+    this.inputText = prompt;
+    this.cdr.detectChanges();
+    setTimeout(() => {
+      try {
+        const textarea = document.querySelector('ai-chat textarea') as HTMLTextAreaElement | null;
+        if (textarea) { textarea.focus(); textarea.setSelectionRange?.(prompt.length, prompt.length); }
+      } catch {}
+    }, 30);
+  }
+
   removeAttachment(index: number) {
     const att = this.pendingAttachments[index];
     if (att?.previewUrl) URL.revokeObjectURL(att.previewUrl);
@@ -898,6 +1420,92 @@ export class AiChatComponent implements AfterViewInit {
     this.handleStream(events$);
   }
 
+  /** Annule la question pinned sans envoyer de réponse (l'agent reste en attente
+   *  côté backend mais le chat est débloqué côté user). */
+  cancelQuestion(): void {
+    this.ai.pendingQuestion.set(null);
+    this.ai.pendingQuestionContext.set(null);
+  }
+
+  /** Dernier plan_proposal non encore répondu — affiché sticky au-dessus de
+   *  l'input (même UX que pendingQuestion). */
+  pendingPlanProposal = computed<AiMessage | null>(() => {
+    const msgs = this.ai.messages();
+    if (!msgs?.length) return null;
+    // Cherche en partant du plus récent : le dernier plan_proposal sans answer.
+    for (let i = msgs.length - 1; i >= 0; i--) {
+      const m = msgs[i];
+      if (m?.role !== 'assistant') continue;
+      if (m?.metadata?.kind !== 'plan_proposal') continue;
+      const prop = m.metadata?.planProposal;
+      if (prop && !prop.answer) return m;
+      // Si on tombe sur un plan déjà répondu avant un non-répondu, on continue
+      // de chercher (l'agent peut avoir proposé plusieurs plans dans la session).
+    }
+    return null;
+  });
+
+  /** Réponse au plan sticky : décision (approve/reject/modify) → backend. */
+  onPlanAnswer(planMsg: AiMessage, evt: { decision: 'approve' | 'reject' | 'modify'; approvedSteps?: string[]; modifiedSteps?: any[]; missingInfoAnswers?: Record<string, string> }): void {
+    const prop = planMsg.metadata?.planProposal;
+    const threadId = planMsg.threadId;
+    if (!prop || !threadId) return;
+    this.ai.respondToPlan(
+      threadId,
+      prop.requestId,
+      evt.decision,
+      evt.approvedSteps,
+      evt.modifiedSteps as any,
+      evt.missingInfoAnswers,
+    ).subscribe({
+      next: () => {
+        // Update local pour faire disparaître la sticky immédiatement.
+        if (planMsg.metadata?.planProposal) {
+          planMsg.metadata.planProposal.answer = evt.decision;
+          planMsg.metadata.planProposal.answeredAt = new Date().toISOString();
+          if (evt.approvedSteps) planMsg.metadata.planProposal.approvedSteps = evt.approvedSteps;
+          if (evt.modifiedSteps) planMsg.metadata.planProposal.modifiedSteps = evt.modifiedSteps as any;
+          if (evt.missingInfoAnswers) planMsg.metadata.planProposal.missingInfoAnswers = evt.missingInfoAnswers;
+        }
+        // Force re-eval du computed (set un nouveau tableau)
+        this.ai.messages.set([...this.ai.messages()]);
+      },
+    });
+  }
+
+  /** Rejette le plan sticky (= bouton X). */
+  cancelPlan(planMsg: AiMessage): void {
+    this.onPlanAnswer(planMsg, { decision: 'reject' });
+  }
+
+  /** Preview (max 4) des subagents actifs pour l'indicateur live */
+  activeSubagentsPreview(): any[] {
+    return this.ai.activeSubagents().slice(0, 4);
+  }
+
+  trackSubagent(_i: number, s: any): string {
+    return s.jobId || s.id || _i.toString();
+  }
+
+  /** Ouvre le canvas Agents quand l'utilisateur clique sur l'indicateur live */
+  openAgentsCanvas(): void {
+    try {
+      (this.ai as any).sideEvents$?.next({ type: 'canvas.agents.open' });
+      this.ai.canvasOpen.set(true);
+    } catch { /* non-fatal */ }
+  }
+
+  /** Render markdown-lite pour le contexte (clamp à ~2 lignes via CSS) */
+  renderPqContext(src: string): string {
+    try {
+      const html = marked.parse(String(src || ''), { breaks: true, gfm: true }) as string;
+      return DOMPurify.sanitize(html, {
+        ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'code', 'a', 'span'],
+        ALLOWED_ATTR: ['href', 'target', 'rel'],
+      });
+    } catch { return String(src || ''); }
+  }
+
   private handleStream(events$: any) {
     events$.subscribe({
       next: (ev: AiStreamEvent) => {
@@ -926,6 +1534,24 @@ export class AiChatComponent implements AfterViewInit {
 
   /** Process a single stream event — fully immutable segment updates */
   private processStreamEvent(ev: AiStreamEvent) {
+    // Filtre : les events `tool.*` et `message` issus d'un SOUS-AGENT (tag
+    // `_subagentEvent: true` + `_parentJobId` par le backend) ne doivent PAS
+    // apparaître dans le chat principal — ils sont affichés dans le canvas
+    // « Agents » uniquement. Seuls les events de l'agent principal (et l'appel
+    // à spawn_subagent lui-même) s'affichent ici.
+    const evAny = ev as any;
+    const isSubagentEvent = evAny?._subagentEvent === true || !!evAny?._parentJobId;
+    const evType = (ev as any).type as string;
+    if (isSubagentEvent && (
+      evType === 'tool.start' ||
+      evType === 'tool.end' ||
+      evType === 'tool.input_delta' ||
+      evType === 'tool.meta' ||
+      evType === 'tool.building_done' ||
+      evType === 'message'
+    )) {
+      return;
+    }
     switch (ev.type) {
       case 'message': {
         this.resetRotator(); // Text streaming → collapse tools immediately
@@ -993,30 +1619,14 @@ export class AiChatComponent implements AfterViewInit {
             this.segments = [...this.segments, { type: 'tools', tools: [tool] }];
           }
         }
-        // Parse partial args with jsonrepair
-        const lastSeg = this.segments[this.segments.length - 1];
-        if (lastSeg?.type === 'tools') {
-          const tool = lastSeg.tools?.find(t => t.id === deltaId);
-          if (tool?.inputJson) {
-            const parsed = this.parsePartialArgs(tool);
-            if (parsed) {
-              const prevKeys = tool.parsedArgs ? new Set(Object.keys(tool.parsedArgs)) : new Set<string>();
-              const changedKeys = new Set<string>();
-              // Only mark genuinely NEW keys (first appearance) — not value updates
-              for (const k of Object.keys(parsed)) {
-                if (!prevKeys.has(k)) changedKeys.add(k);
-              }
-              this.segments = this.segments.map(seg => {
-                if (seg.type !== 'tools' || !seg.tools) return seg;
-                const idx = seg.tools.findIndex(t => t.id === deltaId);
-                if (idx < 0) return seg;
-                return { ...seg, tools: seg.tools.map((t, i) =>
-                  i === idx ? { ...t, parsedArgs: parsed, changedKeys: changedKeys.size ? changedKeys : t.changedKeys } : t
-                )};
-              });
-            }
-          }
+        // Parse partial args via Web Worker (fallback main thread si worker indispo)
+        // pour éviter tout jank sur gros JSON. On démarre la session à la volée.
+        if (deltaId && !this._previewSubs.has(deltaId)) {
+          const obs = this.previewParser.startSession(deltaId, deltaName);
+          const sub = obs.subscribe((parsed: ParsedPreview) => this.onWorkerParsed(deltaId, parsed));
+          this._previewSubs.set(deltaId, { unsub: () => sub.unsubscribe() });
         }
+        if (deltaId) this.previewParser.feed(deltaId, deltaText);
         this.updateRotator();
         break;
       }
@@ -1081,6 +1691,17 @@ export class AiChatComponent implements AfterViewInit {
             this.segments = [...this.segments, { type: 'tools', tools: [tool] }];
           }
         }
+        // Cleanup worker session pour ce tool
+        {
+          const entry = this._previewSubs.get(evId);
+          if (entry) { try { entry.unsub(); } catch {} ; this._previewSubs.delete(evId); }
+          try { this.previewParser.closeSession(evId); } catch {}
+        }
+        // Quand un tool crée un AiMessage inline (structured/plan/diagram), le front doit
+        // recharger les messages pour que le widget s'affiche naturellement dans le flux.
+        if (['render_structured', 'propose_plan', 'generate_diagram', 'display_image', 'render_interactive_canvas'].includes(evName) && evStatus === 'success') {
+          try { this.ai.reloadThreadMessages?.(); } catch {}
+        }
         this.updateRotator();
         break;
       }
@@ -1104,10 +1725,56 @@ export class AiChatComponent implements AfterViewInit {
       }
       case 'done':
         this.resetRotator();
+        // Cleanup toutes les sessions preview pending
+        for (const [toolId, entry] of this._previewSubs.entries()) {
+          try { entry.unsub(); } catch {}
+          try { this.previewParser.closeSession(toolId); } catch {}
+        }
+        this._previewSubs.clear();
         // Clear segments immediately to avoid duplication with final message from messages signal
         this.segments = [];
         this.thinkingIteration = 0;
         break;
+      case 'ui.preview.start' as any: {
+        const pId = (ev as any).toolId;
+        const pType = (ev as any).previewType as LivePreviewType;
+        if (pId && pType) {
+          this.ensureLivePreview(pId, pType);
+        }
+        break;
+      }
+      case 'ui.preview.delta' as any: {
+        const pId = (ev as any).toolId;
+        const pType = (ev as any).previewType as LivePreviewType;
+        const pState = (ev as any).state;
+        if (!pId || !pType) break;
+        // Le backend envoie déjà l'état reconstitué — on l'utilise directement
+        // (le worker frontend sert pour les tool.input_delta non-preview, en fallback).
+        this.applyLivePreviewState(pId, pType, pState);
+        break;
+      }
+      case 'ui.preview.building_done' as any: {
+        const pId = (ev as any).toolId;
+        const pType = (ev as any).previewType as LivePreviewType;
+        const pState = (ev as any).state;
+        if (pId && pType && pState != null) {
+          this.applyLivePreviewState(pId, pType, pState);
+        }
+        break;
+      }
+      case 'ui.preview.update' as any: {
+        // Émis par les exécuteurs pendant l'exécution (research_deep steps, web_download progress,
+        // execute_code stdout lines, spawn_subagent status). `patch` est un tableau
+        // d'ops JSON-patch simplifiées : [{op, path, value?}].
+        const pId = (ev as any).toolId;
+        const pName = (ev as any).toolName;
+        const patch = (ev as any).patch as Array<{ op: string; path: string; value?: any }>;
+        if (!pId || !Array.isArray(patch)) break;
+        const pType = detectPreviewType(pName);
+        if (!pType) break;
+        this.applyLivePreviewPatch(pId, pType, patch);
+        break;
+      }
       case 'thinking' as any:
         this.thinkingIteration = (ev as any).iteration || 0;
         break;
@@ -1156,6 +1823,15 @@ export class AiChatComponent implements AfterViewInit {
     else this.expandedMsgs.add(msg);
   }
 
+  /**
+   * Returns true if `msg` should be visually grouped with `prev` (same author, close in time).
+   * Used to collapse consecutive assistant messages into a single bubble stack with one avatar.
+   */
+  trackGroup(i: number, g: any) { return g.messages[0]?._id || `g:${i}`; }
+  /** trackBy pour les messages à l'intérieur d'un groupe assistant : évite que
+   *  Angular détruise et recrée <ai-message> à chaque delta de stream (spread
+   *  object → nouvelle référence → composant recreated sans trackBy = flash). */
+  trackMsgById(i: number, m: any) { return m?._id || `m:${i}`; }
 
   toolLabel(name: string): string {
     return TOOL_LABELS[name] || name;
@@ -1231,6 +1907,51 @@ export class AiChatComponent implements AfterViewInit {
   trackToolRotate(_i: number, t: StreamTool): string { return t.id; }
   trackArgField(_i: number, f: { key: string }): string { return f.key; }
 
+  /**
+   * Signature inline style Claude Code : extrait l'arg le plus pertinent et
+   * le formate en 1 ligne compacte. Retourne '' si pas d'arg à montrer.
+   * Ex:
+   *   web_search({query:"iPaaS"}) → '"iPaaS"'
+   *   execute_code({language:"python", code:"..."}) → 'python (215c)'
+   *   spawn_subagent({subagent_type:"research"}) → 'research'
+   *   project_read_file({path:"/src/app.ts"}) → '/src/app.ts'
+   */
+  toolInlineSignature(t: StreamTool): string {
+    const a: any = t.args;
+    if (!a || typeof a !== 'object') {
+      // Pendant le streaming, on n'a que le JSON partiel
+      if (t.inputJson) {
+        const q = t.inputJson.match(/"(?:query|url|path|key|prompt|to|subagent_type)"\s*:\s*"([^"]{1,80})/);
+        if (q) return `"${q[1]}${q[1].length >= 60 ? '…' : ''}"`;
+      }
+      return '';
+    }
+    if (t.name === 'web_search' && a.query) return `"${String(a.query).slice(0, 70)}${String(a.query).length > 70 ? '…' : ''}"`;
+    if (t.name === 'web_fetch' && a.url) return String(a.url).replace(/^https?:\/\//, '').slice(0, 70);
+    if (t.name === 'web_download' && a.url) return String(a.url).replace(/^https?:\/\//, '').slice(0, 70);
+    if (t.name === 'execute_code') {
+      const lang = a.language || '';
+      const len = a.code ? String(a.code).length : 0;
+      return len ? `${lang} (${len}c)` : lang;
+    }
+    if (t.name === 'project_read_file' && a.path) return String(a.path);
+    if (t.name === 'project_write_file' && a.path) return String(a.path);
+    if (t.name === 'project_grep' && a.pattern) return `/${String(a.pattern).slice(0, 50)}/`;
+    if (t.name === 'spawn_subagent' && a.subagent_type) return String(a.subagent_type);
+    if (t.name === 'send_message_to_agent' && a.to) return `→ ${a.to}`;
+    if (t.name === 'todo_write' && Array.isArray(a.todos)) return `${a.todos.length} item${a.todos.length > 1 ? 's' : ''}`;
+    if (t.name === 'display_file' && a.fileId) return a.fileId;
+    if (t.name === 'display_image' && (a.fileId || a.url)) return a.fileId || String(a.url).replace(/^https?:\/\//, '').slice(0, 50);
+    if (t.name === 'render_structured' && a.layout) return String(a.layout);
+    if (t.name === 'generate_diagram' && a.type) return String(a.type);
+    if (t.name === 'render_interactive_canvas' && a.title) return `"${String(a.title).slice(0, 50)}"`;
+    // Fallback : première string significative
+    for (const k of ['query', 'url', 'path', 'key', 'prompt', 'to', 'title']) {
+      if (typeof a[k] === 'string' && a[k]) return String(a[k]).slice(0, 60);
+    }
+    return '';
+  }
+
   toolDisplayName(t: StreamTool): string {
     if (t.displayTitle) return t.displayTitle;
     if (t.name === 'execute_tool') {
@@ -1276,6 +1997,141 @@ export class AiChatComponent implements AfterViewInit {
   /** Check if tool has args to display in tree */
   hasVisibleArgs(t: StreamTool): boolean {
     return this.getArgsFields(t).length > 0;
+  }
+
+  /** Rendu live render_structured : dès qu'on a layout + data partiel on affiche */
+  isStructuredLive(t: StreamTool): boolean {
+    if (t.name !== 'render_structured') return false;
+    const pa: any = t.parsedArgs;
+    return !!(pa && pa.layout && pa.data && typeof pa.data === 'object');
+  }
+
+  /** Rendu live generate_diagram : dès qu'on a mermaid (même partiel valide) */
+  isDiagramLive(t: StreamTool): boolean {
+    if (t.name !== 'generate_diagram') return false;
+    const pa: any = t.parsedArgs;
+    return !!(pa && typeof pa.mermaid === 'string' && pa.mermaid.trim().length > 10);
+  }
+
+  /** Callback depuis le worker : set parsedArgs + changedKeys sur le tool correspondant. */
+  private onWorkerParsed(toolId: string, res: ParsedPreview): void {
+    const parsed = res.parsed;
+    if (!parsed || typeof parsed !== 'object') return;
+    const changedKeys = new Set<string>(res.diffKeys || []);
+    this.segments = this.segments.map(seg => {
+      if (seg.type !== 'tools' || !seg.tools) return seg;
+      const idx = seg.tools.findIndex(t => t.id === toolId);
+      if (idx < 0) return seg;
+      return {
+        ...seg,
+        tools: seg.tools.map((t, i) => i === idx
+          ? { ...t, parsedArgs: parsed, changedKeys: changedKeys.size ? changedKeys : t.changedKeys }
+          : t),
+      };
+    });
+    this.cdr.markForCheck();
+  }
+
+  /** Initialise la structure livePreview pour un tool (sans écraser data si déjà là). */
+  private ensureLivePreview(toolId: string, type: LivePreviewType): void {
+    this.segments = this.segments.map(seg => {
+      if (seg.type !== 'tools' || !seg.tools) return seg;
+      const idx = seg.tools.findIndex(t => t.id === toolId);
+      if (idx < 0) return seg;
+      const t = seg.tools[idx];
+      if (t.livePreview?.type === type) return seg;
+      const tools = seg.tools.map((tt, i) => i === idx ? { ...tt, livePreview: { type, data: t.livePreview?.data || {} } } : tt);
+      return { ...seg, tools };
+    });
+  }
+
+  /** Remplace l'état complet de la live preview d'un tool. */
+  private applyLivePreviewState(toolId: string, type: LivePreviewType, state: any): void {
+    this.segments = this.segments.map(seg => {
+      if (seg.type !== 'tools' || !seg.tools) return seg;
+      const idx = seg.tools.findIndex(t => t.id === toolId);
+      if (idx < 0) return seg;
+      const tools = seg.tools.map((tt, i) => i === idx
+        ? { ...tt, livePreview: { type, data: this.cloneShallow(state) } }
+        : tt);
+      return { ...seg, tools };
+    });
+  }
+
+  /** Applique un patch JSON-simplifié ({op, path, value?}) sur l'état livePreview. */
+  private applyLivePreviewPatch(toolId: string, type: LivePreviewType, patch: Array<{ op: string; path: string; value?: any }>): void {
+    this.segments = this.segments.map(seg => {
+      if (seg.type !== 'tools' || !seg.tools) return seg;
+      const idx = seg.tools.findIndex(t => t.id === toolId);
+      if (idx < 0) return seg;
+      const t = seg.tools[idx];
+      const cur = t.livePreview?.data ? this.cloneShallow(t.livePreview.data) : {};
+      let next = cur;
+      for (const op of patch) {
+        next = this.applyJsonPatchOp(next, op);
+      }
+      const tools = seg.tools.map((tt, i) => i === idx ? { ...tt, livePreview: { type, data: next } } : tt);
+      return { ...seg, tools };
+    });
+  }
+
+  private cloneShallow<T>(v: T): T {
+    if (v == null || typeof v !== 'object') return v;
+    try { return JSON.parse(JSON.stringify(v)); } catch { return v; }
+  }
+
+  private applyJsonPatchOp(state: any, op: { op: string; path: string; value?: any }): any {
+    // Support : paths absolus de type /a/b/0 (RFC 6902 simplifié, séparateur '/')
+    const path = String(op.path || '');
+    if (!path || path === '/') {
+      if (op.op === 'replace' || op.op === 'add') return op.value;
+      if (op.op === 'remove') return null;
+      return state;
+    }
+    const segments = path.split('/').slice(1).map(s => s.replace(/~1/g, '/').replace(/~0/g, '~'));
+    // cloner en copiant les branches touchées
+    const root = state == null ? (Number.isInteger(parseInt(segments[0], 10)) ? [] : {}) : state;
+    const rootCopy = Array.isArray(root) ? [...root] : { ...root };
+    let cur: any = rootCopy;
+    for (let i = 0; i < segments.length - 1; i++) {
+      const key = segments[i];
+      const nextKey = segments[i + 1];
+      let child = cur[key];
+      if (child == null) child = Number.isInteger(parseInt(nextKey, 10)) ? [] : {};
+      const childCopy = Array.isArray(child) ? [...child] : { ...child };
+      cur[key] = childCopy;
+      cur = childCopy;
+    }
+    const lastKey = segments[segments.length - 1];
+    if (op.op === 'add' || op.op === 'replace') {
+      cur[lastKey] = op.value;
+    } else if (op.op === 'remove') {
+      if (Array.isArray(cur)) cur.splice(parseInt(lastKey, 10), 1);
+      else delete cur[lastKey];
+    }
+    return rootCopy;
+  }
+
+  /** Indique si le tool a une live preview prête à afficher (état non vide). */
+  hasLivePreview(t: StreamTool): boolean {
+    const lp = t.livePreview;
+    if (!lp || !lp.type) return false;
+    // Les tools widget (render_structured, canvas_html, diagram, display_image/file)
+    // sont rendus INLINE via <ai-inline-widget-collapse> dans le flux du message,
+    // pas ici en haut des tools. On masque la preview top-of-tools pour eux.
+    const WIDGET_TOOL_NAMES = new Set([
+      'render_structured', 'render_interactive_canvas', 'generate_diagram',
+      'display_image', 'display_file',
+    ]);
+    if (WIDGET_TOOL_NAMES.has(t.name)) return false;
+    const d = lp.data;
+    if (d == null) return false;
+    if (typeof d === 'object' && !Array.isArray(d) && Object.keys(d).length === 0) return false;
+    // Cas spécifique : structured nécessite au moins layout
+    if (lp.type === 'structured') return !!d.layout;
+    // Cas diagram : attend mermaid non vide
+    if (lp.type === 'diagram') return typeof d.mermaid === 'string' && d.mermaid.trim().length > 10;
+    return true;
   }
 
   /** Build field list for template: key, label (from argsSchema → META_TOOL_ARG_LABELS → raw key), value */

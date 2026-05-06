@@ -1,6 +1,8 @@
 // OpenAI streaming client — native fetch, no LangChain
 // Yields normalized events: text_delta, tool_use_start, tool_input_delta, tool_use_end, done
 
+const { isDebug } = require('../util/debug');
+
 async function* streamOpenAI(messages, tools, config) {
   const apiKey = config.apiKey;
   if (!apiKey) throw new Error('OpenAI API key not configured');
@@ -24,9 +26,12 @@ async function* streamOpenAI(messages, tools, config) {
   if (config.maxTokens) body.max_completion_tokens = config.maxTokens;
   if (tools && tools.length) {
     body.tools = tools;
-    // Force sequential tool calls — prevents LLM from hallucinating keys
-    // when it needs a previous tool result (e.g. search_tools → get_tool_details)
-    body.parallel_tool_calls = false;
+    // Force sequential tool calls par défaut : évite que le LLM hallucine des
+    // IDs / keys quand il a besoin du résultat d'un tool call précédent (ex:
+    // search_tools → get_tool_details, spawn_subagent avec depends_on chaînés).
+    // Override possible via AI_PARALLEL_TOOL_CALLS=1 pour les cas où la vraie
+    // parallélisation (tool calls indépendants) est souhaitée.
+    body.parallel_tool_calls = process.env.AI_PARALLEL_TOOL_CALLS === '1';
   }
   // Include usage in streaming response (otherwise totalUsage is always null)
   body.stream_options = { include_usage: true };
@@ -110,7 +115,7 @@ async function* streamOpenAI(messages, tools, config) {
           }
           if (tc.function?.arguments) {
             b.arguments += tc.function.arguments;
-            if (process.env.AI_DEBUG) console.log(`[llm-openai] input_delta: ${b.name} +${tc.function.arguments.length}chars`);
+            if (isDebug()) console.log(`[llm-openai] input_delta: ${b.name} +${tc.function.arguments.length}chars`);
             yield { type: 'tool_input_delta', index: idx, id: b.id, name: b.name, text: tc.function.arguments };
           }
         }
@@ -157,11 +162,30 @@ function formatMessages(messages) {
         })),
       };
     }
-    // Content arrays (multimodal) — convert to OpenAI format
+    // Content arrays (multimodal) — convert to OpenAI Chat Completions format
     if (Array.isArray(m.content)) {
       const parts = m.content.map(b => {
         if (b.type === 'image') {
-          return { type: 'image_url', image_url: { url: `data:${b.media_type};base64,${b.data}` } };
+          const src = b.source || { data: b.data, media_type: b.media_type };
+          return { type: 'image_url', image_url: { url: `data:${src.media_type};base64,${src.data}` } };
+        }
+        if (b.type === 'document') {
+          // OpenAI Chat Completions supports input via "file" content part (type: 'file', file: {file_data})
+          const src = b.source || { data: b.data, media_type: b.media_type || 'application/pdf' };
+          return {
+            type: 'file',
+            file: {
+              filename: b.name || 'document.pdf',
+              file_data: `data:${src.media_type};base64,${src.data}`,
+            },
+          };
+        }
+        if (b.type === 'input_audio' || b.type === 'audio') {
+          const src = b.source || { data: b.data, media_type: b.media_type || 'audio/mpeg' };
+          return {
+            type: 'input_audio',
+            input_audio: { data: src.data, format: (src.media_type || '').split('/').pop() || 'mp3' },
+          };
         }
         return { type: 'text', text: b.text || '' };
       });

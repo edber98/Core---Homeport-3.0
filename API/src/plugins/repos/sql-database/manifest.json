@@ -423,7 +423,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Requêtes"
+      "group": "Requêtes",
+      "risk": "elevated"
     },
     {
       "key": "sql_execute_parameterized",
@@ -494,7 +495,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Requêtes"
+      "group": "Requêtes",
+      "risk": "elevated"
     },
     {
       "key": "sql_list_tables",
@@ -551,7 +553,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Tables"
+      "group": "Tables",
+      "risk": "safe"
     },
     {
       "key": "sql_describe_table",
@@ -621,7 +624,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Tables"
+      "group": "Tables",
+      "risk": "safe"
     },
     {
       "key": "sql_select",
@@ -728,7 +732,9 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Données"
+      "group": "Données",
+      "risk": "safe",
+      "riskReason": "Requête SELECT lecture seule"
     },
     {
       "key": "sql_insert",
@@ -803,7 +809,9 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Données"
+      "group": "Données",
+      "risk": "write",
+      "riskReason": "Insertion de lignes"
     },
     {
       "key": "sql_update",
@@ -892,7 +900,9 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Données"
+      "group": "Données",
+      "risk": "write",
+      "riskReason": "Modifie des lignes (réversible si transaction)"
     },
     {
       "key": "sql_delete",
@@ -967,7 +977,9 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Données"
+      "group": "Données",
+      "risk": "destructive",
+      "riskReason": "Supprime des lignes"
     },
     {
       "key": "sql_call_procedure",
@@ -1037,7 +1049,9 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Procédures"
+      "group": "Procédures",
+      "risk": "elevated",
+      "riskReason": "Exécute une procédure stockée arbitraire"
     }
   ]
 }

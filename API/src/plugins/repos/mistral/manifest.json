@@ -417,7 +417,8 @@
           }
         ]
       },
-      "group": "Complétions"
+      "group": "Complétions",
+      "risk": "write"
     },
     {
       "key": "mistral_create_completion_stream",
@@ -516,7 +517,8 @@
           }
         ]
       },
-      "group": "Complétions"
+      "group": "Complétions",
+      "risk": "write"
     },
     {
       "key": "mistral_create_completion_tools",
@@ -648,7 +650,8 @@
           }
         ]
       },
-      "group": "Complétions"
+      "group": "Complétions",
+      "risk": "write"
     },
     {
       "key": "mistral_create_completion_json",
@@ -747,7 +750,8 @@
           }
         ]
       },
-      "group": "Complétions"
+      "group": "Complétions",
+      "risk": "write"
     },
     {
       "key": "mistral_create_embedding",
@@ -818,7 +822,8 @@
           }
         ]
       },
-      "group": "Embeddings"
+      "group": "Embeddings",
+      "risk": "write"
     },
     {
       "key": "mistral_list_models",
@@ -864,7 +869,8 @@
         },
         "fields": []
       },
-      "group": "Modèles"
+      "group": "Modèles",
+      "risk": "safe"
     },
     {
       "key": "mistral_agent_completion",
@@ -957,7 +963,8 @@
           }
         ]
       },
-      "group": "Agents"
+      "group": "Agents",
+      "risk": "write"
     },
     {
       "key": "mistral_classify",
@@ -1134,7 +1141,9 @@
         "mistral",
         "classification",
         "ai"
-      ]
+      ],
+      "risk": "safe",
+      "riskReason": "Appel LLM lecture (coût tokens)"
     },
     {
       "key": "mistral_extract",
@@ -1272,7 +1281,9 @@
         "mistral",
         "extraction",
         "ai"
-      ]
+      ],
+      "risk": "safe",
+      "riskReason": "Appel LLM lecture (coût tokens)"
     },
     {
       "key": "mistral_vision",
@@ -1397,7 +1408,9 @@
         "mistral",
         "vision",
         "ai"
-      ]
+      ],
+      "risk": "safe",
+      "riskReason": "Appel LLM lecture (coût tokens)"
     }
   ]
 }

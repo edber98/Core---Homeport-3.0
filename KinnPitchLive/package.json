@@ -1,0 +1,27 @@
+{
+  "name": "kinn-pitch-live",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview --port 4173"
+  },
+  "dependencies": {
+    "@remotion/google-fonts": "^4.0.240",
+    "@remotion/player": "^4.0.240",
+    "framer-motion": "^11.11.0",
+    "lucide-react": "^1.8.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "remotion": "^4.0.240"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.3",
+    "typescript": "^5.5.4",
+    "vite": "^5.4.10"
+  }
+}

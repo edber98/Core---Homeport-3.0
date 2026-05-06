@@ -1,0 +1,72 @@
+global:
+  dependencies:
+    mongodb:
+      url: ""
+      port: 27017
+    credentials:
+      username: ""
+      password: ""
+
+redis:
+  image: redis:latest
+  url: ""
+  port: 6379
+  persistence:
+    storageClass: "longhorn"
+    size: "1Gi"
+
+replicaCount: 1
+
+kinn:
+  ingress:
+    host: "${client.key}-kinn.app.kinn.fr"
+    tlsSecret: kinn-c4rbon-io2
+    enabled: true
+  kinnApi:
+    replicaCount: 1
+    port: 5055
+    hmac_secret: 'dev-secret-change-me'
+    token_ttl_sec: 86400
+    seed: "true"
+    plugin_import_enabled: 1
+    default_company: "ACME"
+    default_admin_email: "admin@acme.test"
+    default_admin_password: "admin"
+    default_workspace_name: "Default"
+    node_env: "production"
+    # ── LLM provider ──
+    ai_provider: "openai"           # "openai" | "anthropic"
+    openai_api_key: ""
+    openai_model: ""                # ex: "gpt-5.4" / "gpt-4o" / "gpt-4o-mini"
+    anthropic_api_key: ""
+    anthropic_model: ""             # ex: "claude-sonnet-4-5-20250929"
+    mongo_db_name: "kinn-test"
+    # ── Runtime container (gVisor / kata) ──
+    # Vide = runc par défaut. Mettre "gvisor" si tu as installé runsc + RuntimeClass.
+    runtimeClassName: ""
+    # ── Sandbox d'exécution code IA (execute_code) ──
+    # bwrap     : isolation Linux namespaces (besoin sysctl unprivileged_userns_clone=1)
+    # subprocess: exécution directe — recommandé AVEC runtimeClassName=gvisor
+    # none      : aucune isolation — DEV UNIQUEMENT
+    # auto      : détection auto (bwrap si dispo, sinon subprocess)
+    ai_sandbox_backend: "subprocess"
+    ai_sandbox_python: "python3"
+    ai_sandbox_py_site_packages: "/data/sandbox-pkgs"
+    skills_bundle_dir: "/app/skills-bundle"
+    # ── Tuning OpenAI (gpt-5.x) ──
+    ai_reasoning_effort: "none"     # "none" | "low" | "medium" | "high" | "xhigh"
+    ai_verbosity: "medium"          # "low" | "medium" | "high"
+    ai_parallel_tool_calls: "0"     # "1" pour activer (défaut 0 = séquentiel)
+    ai_max_tokens: "16384"
+    ai_temperature: "0.7"
+    # ── LLM "mini" pour webscraping / extraction de pages ──
+    # Vide = défaut auto (haiku si Anthropic, gpt-4o-mini si OpenAI)
+    web_mini_provider: ""           # "openai" | "anthropic"
+    web_mini_model: ""              # ex: "gpt-4o-mini" / "claude-haiku-4-5"
+    # ── Timeouts streaming / subagents ──
+    ai_stream_timeout_ms: "240000"           # 4 min
+    ai_subagent_heartbeat_timeout_ms: "180000"  # 3 min
+    ai_max_subagent_depth: "3"
+  kinnHomeport:
+    replicaCount: 1
+    port: 80

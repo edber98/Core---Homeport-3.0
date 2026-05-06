@@ -1206,7 +1206,8 @@
       "tags": [
         "création",
         "hubspot"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "hubspot_contact_get",
@@ -1268,7 +1269,8 @@
       "tags": [
         "lecture",
         "hubspot"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "hubspot_contact_update",
@@ -1366,7 +1368,8 @@
       "tags": [
         "mise-à-jour",
         "hubspot"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "hubspot_contact_delete",
@@ -1428,7 +1431,9 @@
       "tags": [
         "suppression",
         "hubspot"
-      ]
+      ],
+      "risk": "destructive",
+      "riskReason": "Supprime un contact CRM"
     },
     {
       "key": "hubspot_contact_search",
@@ -1499,7 +1504,8 @@
       "tags": [
         "recherche",
         "hubspot"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "hubspot_contacts_list",
@@ -1565,7 +1571,8 @@
       "tags": [
         "liste",
         "hubspot"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "hubspot_company_create",
@@ -1654,7 +1661,8 @@
       "tags": [
         "création",
         "hubspot"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "hubspot_company_get",
@@ -1716,7 +1724,8 @@
       "tags": [
         "lecture",
         "hubspot"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "hubspot_company_update",
@@ -1805,7 +1814,8 @@
       "tags": [
         "mise-à-jour",
         "hubspot"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "hubspot_company_delete",
@@ -1867,7 +1877,9 @@
       "tags": [
         "suppression",
         "hubspot"
-      ]
+      ],
+      "risk": "destructive",
+      "riskReason": "Supprime une société CRM"
     },
     {
       "key": "hubspot_company_search",
@@ -1938,7 +1950,8 @@
       "tags": [
         "recherche",
         "hubspot"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "hubspot_companies_list",
@@ -2004,7 +2017,8 @@
       "tags": [
         "liste",
         "hubspot"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "hubspot_deal_create",
@@ -2093,7 +2107,8 @@
       "tags": [
         "création",
         "hubspot"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "hubspot_deal_get",
@@ -2155,7 +2170,8 @@
       "tags": [
         "lecture",
         "hubspot"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "hubspot_deal_update",
@@ -2244,7 +2260,8 @@
       "tags": [
         "mise-à-jour",
         "hubspot"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "hubspot_deal_delete",
@@ -2306,7 +2323,9 @@
       "tags": [
         "suppression",
         "hubspot"
-      ]
+      ],
+      "risk": "destructive",
+      "riskReason": "Supprime un deal CRM"
     },
     {
       "key": "hubspot_deal_search",
@@ -2377,7 +2396,8 @@
       "tags": [
         "recherche",
         "hubspot"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "hubspot_deals_list",
@@ -2443,7 +2463,8 @@
       "tags": [
         "liste",
         "hubspot"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "hubspot_ticket_create",
@@ -2541,7 +2562,8 @@
       "tags": [
         "création",
         "hubspot"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "hubspot_ticket_get",
@@ -2603,7 +2625,8 @@
       "tags": [
         "lecture",
         "hubspot"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "hubspot_ticket_update",
@@ -2692,7 +2715,8 @@
       "tags": [
         "mise-à-jour",
         "hubspot"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "hubspot_ticket_delete",
@@ -2754,7 +2778,8 @@
       "tags": [
         "suppression",
         "hubspot"
-      ]
+      ],
+      "risk": "destructive"
     },
     {
       "key": "hubspot_tickets_list",
@@ -2820,7 +2845,8 @@
       "tags": [
         "liste",
         "hubspot"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "hubspot_note_create",
@@ -2917,7 +2943,8 @@
       "tags": [
         "création",
         "hubspot"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "hubspot_task_create",
@@ -3014,7 +3041,8 @@
       "tags": [
         "création",
         "hubspot"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "hubspot_meeting_create",
@@ -3103,7 +3131,8 @@
       "tags": [
         "création",
         "hubspot"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "hubspot_call_create",
@@ -3192,7 +3221,8 @@
       "tags": [
         "création",
         "hubspot"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "hubspot_pipelines_list",
@@ -3268,7 +3298,8 @@
       "tags": [
         "liste",
         "hubspot"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "hubspot_pipeline_stages_list",
@@ -3358,7 +3389,8 @@
       "tags": [
         "liste",
         "hubspot"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "hubspot_owners_list",
@@ -3433,7 +3465,8 @@
       "tags": [
         "liste",
         "hubspot"
-      ]
+      ],
+      "risk": "safe"
     }
   ]
 }

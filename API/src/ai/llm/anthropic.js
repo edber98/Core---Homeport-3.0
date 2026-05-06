@@ -1,6 +1,8 @@
 // Anthropic streaming client — native fetch, no SDK
 // Yields normalized events: text_delta, tool_use_start, tool_input_delta, tool_use_end, done
 
+const { isDebug } = require('../util/debug');
+
 async function* streamAnthropic(messages, tools, config) {
   const apiKey = config.apiKey;
   if (!apiKey) throw new Error('Anthropic API key not configured');
@@ -16,12 +18,19 @@ async function* streamAnthropic(messages, tools, config) {
     }
   }
 
+  const modelId = config.model || 'claude-sonnet-4-5-20250929';
+  // Claude Opus 4.7+ et certains modèles récents ne supportent pas `temperature`.
+  const supportsTemperature = !modelId.includes('opus-4-7') && !modelId.includes('opus-4-6');
+  // Opus génère souvent du code/docx très long → bump le max_tokens par défaut
+  // pour éviter coupure en plein milieu de string Python. 16384 = plafond large.
+  const isOpus = modelId.includes('opus');
+  const defaultMaxTokens = isOpus ? 16384 : 4096;
   const body = {
-    model: config.model || 'claude-sonnet-4-5-20250929',  // Latest Claude Sonnet
-    max_tokens: config.maxTokens || 4096,
+    model: modelId,
+    max_tokens: config.maxTokens || defaultMaxTokens,
     messages: formatMessages(filtered),
     stream: true,
-    temperature: config.temperature ?? 0.7,
+    ...(supportsTemperature ? { temperature: config.temperature ?? 0.7 } : {}),
   };
   if (system) body.system = system;
   if (tools && tools.length) body.tools = formatTools(tools);
@@ -99,7 +108,7 @@ async function* streamAnthropic(messages, tools, config) {
           }
           if (data.delta?.type === 'input_json_delta' && data.delta.partial_json) {
             currentToolArgs += data.delta.partial_json;
-            if (process.env.AI_DEBUG) console.log(`[llm-anthropic] input_json_delta: ${currentToolName} +${data.delta.partial_json.length}chars`);
+            if (isDebug()) console.log(`[llm-anthropic] input_json_delta: ${currentToolName} +${data.delta.partial_json.length}chars`);
             yield { type: 'tool_input_delta', index: currentBlockIndex, id: currentToolId, name: currentToolName, text: data.delta.partial_json };
           }
           break;
@@ -145,11 +154,16 @@ function formatMessages(messages) {
 
     if (m.role === 'tool') {
       const toolContent = [];
-      // Support multimodal tool results (text + images)
+      // Support multimodal tool results (text + images + PDFs documents)
       if (Array.isArray(m.content)) {
         for (const b of m.content) {
           if (b.type === 'image') {
-            toolContent.push({ type: 'image', source: { type: 'base64', media_type: b.media_type, data: b.data } });
+            const src = b.source || { type: 'base64', media_type: b.media_type, data: b.data };
+            toolContent.push({ type: 'image', source: src });
+          } else if (b.type === 'document') {
+            // Anthropic supporte nativement les PDF via type:'document'
+            const src = b.source || { type: 'base64', media_type: b.media_type || 'application/pdf', data: b.data };
+            toolContent.push({ type: 'document', source: src });
           } else {
             toolContent.push({ type: 'text', text: b.text || '' });
           }
@@ -187,7 +201,12 @@ function formatMessages(messages) {
     if (Array.isArray(m.content)) {
       const blocks = m.content.map(b => {
         if (b.type === 'image') {
-          return { type: 'image', source: { type: 'base64', media_type: b.media_type, data: b.data } };
+          const src = b.source || { type: 'base64', media_type: b.media_type, data: b.data };
+          return { type: 'image', source: src };
+        }
+        if (b.type === 'document') {
+          const src = b.source || { type: 'base64', media_type: b.media_type || 'application/pdf', data: b.data };
+          return { type: 'document', source: src };
         }
         return { type: 'text', text: b.text || '' };
       });
@@ -213,7 +232,25 @@ function formatMessages(messages) {
       merged.push({ ...m });
     }
   }
-  return merged;
+  // Defense in depth : Anthropic rejette "text content blocks must be non-empty".
+  // Retire tout message dont le content est vide (ou tous ses text blocks vides).
+  const cleaned = merged
+    .map(m => {
+      if (typeof m.content === 'string') {
+        return m.content.trim() ? m : null;
+      }
+      if (Array.isArray(m.content)) {
+        const filtered = m.content.filter(b => {
+          if (b.type === 'text') return String(b.text || '').trim().length > 0;
+          return true; // image, tool_use, tool_result : on garde
+        });
+        if (filtered.length === 0) return null;
+        return { ...m, content: filtered };
+      }
+      return null;
+    })
+    .filter(Boolean);
+  return cleaned;
 }
 
 // Format tools for Anthropic API

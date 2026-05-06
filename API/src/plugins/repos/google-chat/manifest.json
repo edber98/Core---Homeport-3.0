@@ -185,7 +185,8 @@
       "tags": [
         "envoi",
         "Google Chat"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "googlechat_card_message",
@@ -292,7 +293,8 @@
       "tags": [
         "envoi",
         "Google Chat"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "googlechat_incoming_webhook",
@@ -341,7 +343,8 @@
       "tags": [
         "événement",
         "Google Chat"
-      ]
+      ],
+      "risk": "safe"
     }
   ]
 }

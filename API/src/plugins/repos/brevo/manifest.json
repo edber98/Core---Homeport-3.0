@@ -927,7 +927,8 @@
         "création",
         "brevo"
       ],
-      "group": "Contacts"
+      "group": "Contacts",
+      "risk": "write"
     },
     {
       "key": "brevo_contact_get",
@@ -989,7 +990,8 @@
         "lecture",
         "brevo"
       ],
-      "group": "Contacts"
+      "group": "Contacts",
+      "risk": "safe"
     },
     {
       "key": "brevo_contact_update",
@@ -1087,7 +1089,8 @@
         "mise-à-jour",
         "brevo"
       ],
-      "group": "Contacts"
+      "group": "Contacts",
+      "risk": "write"
     },
     {
       "key": "brevo_contact_delete",
@@ -1149,7 +1152,8 @@
         "suppression",
         "brevo"
       ],
-      "group": "Contacts"
+      "group": "Contacts",
+      "risk": "destructive"
     },
     {
       "key": "brevo_contacts_list",
@@ -1215,7 +1219,8 @@
         "liste",
         "brevo"
       ],
-      "group": "Contacts"
+      "group": "Contacts",
+      "risk": "safe"
     },
     {
       "key": "brevo_contacts_import",
@@ -1291,7 +1296,8 @@
         "importation",
         "brevo"
       ],
-      "group": "Contacts"
+      "group": "Contacts",
+      "risk": "write"
     },
     {
       "key": "brevo_list_create",
@@ -1367,7 +1373,8 @@
         "création",
         "brevo"
       ],
-      "group": "Listes"
+      "group": "Listes",
+      "risk": "write"
     },
     {
       "key": "brevo_list_get",
@@ -1429,7 +1436,8 @@
         "lecture",
         "brevo"
       ],
-      "group": "Listes"
+      "group": "Listes",
+      "risk": "safe"
     },
     {
       "key": "brevo_lists_list",
@@ -1495,7 +1503,8 @@
         "liste",
         "brevo"
       ],
-      "group": "Listes"
+      "group": "Listes",
+      "risk": "safe"
     },
     {
       "key": "brevo_list_add_contacts",
@@ -1571,7 +1580,8 @@
         "mise-à-jour",
         "brevo"
       ],
-      "group": "Listes"
+      "group": "Listes",
+      "risk": "write"
     },
     {
       "key": "brevo_campaign_create",
@@ -1707,7 +1717,8 @@
         "création",
         "brevo"
       ],
-      "group": "Campagnes"
+      "group": "Campagnes",
+      "risk": "write"
     },
     {
       "key": "brevo_campaign_get",
@@ -1769,7 +1780,8 @@
         "lecture",
         "brevo"
       ],
-      "group": "Campagnes"
+      "group": "Campagnes",
+      "risk": "safe"
     },
     {
       "key": "brevo_campaigns_list",
@@ -1866,7 +1878,8 @@
         "liste",
         "brevo"
       ],
-      "group": "Campagnes"
+      "group": "Campagnes",
+      "risk": "safe"
     },
     {
       "key": "brevo_campaign_send_test",
@@ -1942,7 +1955,8 @@
         "envoi",
         "brevo"
       ],
-      "group": "Campagnes"
+      "group": "Campagnes",
+      "risk": "write"
     },
     {
       "key": "brevo_campaign_send_now",
@@ -2004,7 +2018,8 @@
         "envoi",
         "brevo"
       ],
-      "group": "Campagnes"
+      "group": "Campagnes",
+      "risk": "write"
     },
     {
       "key": "brevo_transactional_send",
@@ -2130,7 +2145,8 @@
         "envoi",
         "brevo"
       ],
-      "group": "Emails transactionnels"
+      "group": "Emails transactionnels",
+      "risk": "write"
     },
     {
       "key": "brevo_smtp_stats",
@@ -2212,7 +2228,8 @@
         "lecture",
         "brevo"
       ],
-      "group": "Statistiques"
+      "group": "Statistiques",
+      "risk": "safe"
     },
     {
       "key": "brevo_templates_list",
@@ -2278,7 +2295,8 @@
         "liste",
         "brevo"
       ],
-      "group": "Templates"
+      "group": "Templates",
+      "risk": "safe"
     },
     {
       "key": "brevo_template_get",
@@ -2340,7 +2358,8 @@
         "lecture",
         "brevo"
       ],
-      "group": "Templates"
+      "group": "Templates",
+      "risk": "safe"
     },
     {
       "key": "brevo_senders_list",
@@ -2387,7 +2406,8 @@
         "liste",
         "brevo"
       ],
-      "group": "Expéditeurs"
+      "group": "Expéditeurs",
+      "risk": "write"
     },
     {
       "key": "brevo_webhook_event",
@@ -2463,7 +2483,8 @@
         "événement",
         "brevo"
       ],
-      "group": "Événements"
+      "group": "Événements",
+      "risk": "safe"
     }
   ]
 }

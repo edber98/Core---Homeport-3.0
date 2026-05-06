@@ -209,7 +209,8 @@
         "création",
         "événement",
         "calendars"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "gcal_update_event",
@@ -291,7 +292,8 @@
         "mise-à-jour",
         "événement",
         "calendars"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "gcal_rsvp_event",
@@ -389,7 +391,9 @@
       "tags": [
         "mise-à-jour",
         "calendars"
-      ]
+      ],
+      "risk": "write",
+      "riskReason": "Répond à une invitation"
     },
     {
       "key": "gcal_webhook_event",
@@ -427,7 +431,8 @@
       "tags": [
         "événement",
         "calendars"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "outlook_create_event",
@@ -522,7 +527,8 @@
         "création",
         "événement",
         "calendars"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "outlook_update_event",
@@ -604,7 +610,8 @@
         "mise-à-jour",
         "événement",
         "calendars"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "outlook_rsvp_event",
@@ -702,7 +709,9 @@
       "tags": [
         "mise-à-jour",
         "calendars"
-      ]
+      ],
+      "risk": "write",
+      "riskReason": "Répond à une invitation"
     },
     {
       "key": "outlook_webhook_event",
@@ -740,7 +749,8 @@
       "tags": [
         "événement",
         "calendars"
-      ]
+      ],
+      "risk": "safe"
     }
   ]
 }

@@ -6,6 +6,10 @@ services:
       - ./API:/app
       - ./API/mongo-data:/mongo-data
       - ./API/redis-data:/redis-data
+      # Persistance des packages installés dynamiquement via install_package.
+      # Sans ce volume, chaque redémarrage perd les libs installées par l'agent
+      # (python-docx, openpyxl, etc. via --target → survit aux restarts).
+      - sandbox_pkgs:/data/sandbox-pkgs
     environment:
       - PORT=${PORT}
       - NODE_ENV=development
@@ -22,10 +26,34 @@ services:
       - DEFAULT_WORKSPACE_NAME=${DEFAULT_WORKSPACE_NAME}
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - OPENAI_MODEL=${OPENAI_MODEL}
-      - OPENAI_MODEL=${OPENAI_MODEL}
+      - ANTHROPIC_MODEL=${ANTHROPIC_MODEL}
       - PLUGIN_IMPORT_ENABLED=1
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - SSRF_ALLOW_PRIVATE=1
       - HOST=0.0.0.0
+      # ── Sandbox d'exécution de code ────────────────────────────
+      # auto = bwrap si userns autorisé par l'hôte, sinon fallback subprocess.
+      # Sur K8s managé (userns bloqué), force "subprocess" avec isolation dégradée.
+      - AI_SANDBOX_BACKEND=${AI_SANDBOX_BACKEND:-auto}
+      - AI_SANDBOX_PYTHON=/usr/bin/python3
+      - AI_SANDBOX_NODE=/usr/bin/node
+      - AI_SANDBOX_NPM=/usr/bin/npm
+      # Shared site-packages (install_package --target + PYTHONPATH) → persistés
+      # sur volume `sandbox_pkgs` pour survivre aux redémarrages.
+      - AI_SANDBOX_PY_SITE_PACKAGES=/data/sandbox-pkgs/python
+      - AI_SANDBOX_NODE_MODULES=/data/sandbox-pkgs/node
+      - SKILLS_BUNDLE_DIR=/app/skills-bundle
+      # Stream LLM : Opus 4.7 peut pauser 120-180s durant extended thinking.
+      - AI_STREAM_TIMEOUT_MS=${AI_STREAM_TIMEOUT_MS:-240000}
+      # Install_package policy
+      - AI_PACKAGE_INSTALL_MODE=${AI_PACKAGE_INSTALL_MODE:-ask}
+      - AI_PACKAGE_INSTALL_MAX_PER_DAY=${AI_PACKAGE_INSTALL_MAX_PER_DAY:-20}
+    # ── Capabilities pour bwrap user namespaces ──────────────────
+    # Sur Docker Engine moderne (rootless ou classic), bwrap nécessite seccomp
+    # permissif. En K8s sans privileged, retirer ces deux options et passer
+    # AI_SANDBOX_BACKEND=subprocess.
+    security_opt:
+      - seccomp:unconfined
     labels:
       - "traefik.http.routers.kinn-backend.rule=Host(`kinn.c4rbon.group`) && (PathPrefix(`/api`) || PathPrefix(`/auth`)) && !PathPrefix(`/onlyoffice`)"
       - "traefik.http.routers.kinn-backend.priority=20"
@@ -38,7 +66,7 @@ services:
     restart: always
     networks:
       - traefik-web
-  
+
   homeport:
     container_name: kinn_homeport
     image: kinn_homeport:${CI_COMMIT_REF_SLUG}
@@ -51,13 +79,15 @@ services:
       - "traefik.http.routers.kinn-homeport.tls=true"
       - "traefik.http.routers.kinn-homeport.entrypoints=websecure,web"
       - "traefik.http.routers.kinn-homeport.tls.certresolver=myresolver"
-
     depends_on:
       - api
     networks:
       - traefik-web
 
-
+volumes:
+  sandbox_pkgs:
+    # Packages Python/Node installés dynamiquement par l'agent via install_package.
+    # Persiste entre redémarrages pour éviter de réinstaller à chaque restart.
 
 networks:
   traefik-web:

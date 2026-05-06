@@ -1482,7 +1482,8 @@
         "création",
         "quickbooks"
       ],
-      "group": "Clients"
+      "group": "Clients",
+      "risk": "write"
     },
     {
       "key": "qb_customer_get",
@@ -1544,7 +1545,8 @@
         "lecture",
         "quickbooks"
       ],
-      "group": "Clients"
+      "group": "Clients",
+      "risk": "safe"
     },
     {
       "key": "qb_customer_update",
@@ -1642,7 +1644,8 @@
         "mise-à-jour",
         "quickbooks"
       ],
-      "group": "Clients"
+      "group": "Clients",
+      "risk": "write"
     },
     {
       "key": "qb_customers_list",
@@ -1708,7 +1711,8 @@
         "liste",
         "quickbooks"
       ],
-      "group": "Clients"
+      "group": "Clients",
+      "risk": "safe"
     },
     {
       "key": "qb_customer_query",
@@ -1770,7 +1774,8 @@
         "recherche",
         "quickbooks"
       ],
-      "group": "Clients"
+      "group": "Clients",
+      "risk": "safe"
     },
     {
       "key": "qb_invoice_create",
@@ -1875,7 +1880,9 @@
         "création",
         "quickbooks"
       ],
-      "group": "Factures"
+      "group": "Factures",
+      "risk": "destructive",
+      "riskReason": "Crée une facture comptable"
     },
     {
       "key": "qb_invoice_get",
@@ -1937,7 +1944,8 @@
         "lecture",
         "quickbooks"
       ],
-      "group": "Factures"
+      "group": "Factures",
+      "risk": "safe"
     },
     {
       "key": "qb_invoice_update",
@@ -2031,7 +2039,8 @@
         "mise-à-jour",
         "quickbooks"
       ],
-      "group": "Factures"
+      "group": "Factures",
+      "risk": "write"
     },
     {
       "key": "qb_invoice_delete",
@@ -2107,7 +2116,8 @@
         "suppression",
         "quickbooks"
       ],
-      "group": "Factures"
+      "group": "Factures",
+      "risk": "destructive"
     },
     {
       "key": "qb_invoices_list",
@@ -2173,7 +2183,8 @@
         "liste",
         "quickbooks"
       ],
-      "group": "Factures"
+      "group": "Factures",
+      "risk": "safe"
     },
     {
       "key": "qb_invoice_send_email",
@@ -2244,7 +2255,8 @@
         "envoi",
         "quickbooks"
       ],
-      "group": "Factures"
+      "group": "Factures",
+      "risk": "write"
     },
     {
       "key": "qb_payment_create",
@@ -2346,7 +2358,9 @@
         "création",
         "quickbooks"
       ],
-      "group": "Paiements"
+      "group": "Paiements",
+      "risk": "destructive",
+      "riskReason": "Enregistre un paiement"
     },
     {
       "key": "qb_payment_get",
@@ -2408,7 +2422,8 @@
         "lecture",
         "quickbooks"
       ],
-      "group": "Paiements"
+      "group": "Paiements",
+      "risk": "safe"
     },
     {
       "key": "qb_payments_list",
@@ -2474,7 +2489,8 @@
         "liste",
         "quickbooks"
       ],
-      "group": "Paiements"
+      "group": "Paiements",
+      "risk": "safe"
     },
     {
       "key": "qb_item_create",
@@ -2581,7 +2597,8 @@
         "création",
         "quickbooks"
       ],
-      "group": "Articles"
+      "group": "Articles",
+      "risk": "write"
     },
     {
       "key": "qb_item_get",
@@ -2643,7 +2660,8 @@
         "lecture",
         "quickbooks"
       ],
-      "group": "Articles"
+      "group": "Articles",
+      "risk": "safe"
     },
     {
       "key": "qb_item_update",
@@ -2746,7 +2764,8 @@
         "mise-à-jour",
         "quickbooks"
       ],
-      "group": "Articles"
+      "group": "Articles",
+      "risk": "write"
     },
     {
       "key": "qb_items_list",
@@ -2812,7 +2831,8 @@
         "liste",
         "quickbooks"
       ],
-      "group": "Articles"
+      "group": "Articles",
+      "risk": "safe"
     },
     {
       "key": "qb_vendor_create",
@@ -2901,7 +2921,8 @@
         "création",
         "quickbooks"
       ],
-      "group": "Fournisseurs"
+      "group": "Fournisseurs",
+      "risk": "write"
     },
     {
       "key": "qb_vendor_get",
@@ -2963,7 +2984,8 @@
         "lecture",
         "quickbooks"
       ],
-      "group": "Fournisseurs"
+      "group": "Fournisseurs",
+      "risk": "safe"
     },
     {
       "key": "qb_vendors_list",
@@ -3029,7 +3051,8 @@
         "liste",
         "quickbooks"
       ],
-      "group": "Fournisseurs"
+      "group": "Fournisseurs",
+      "risk": "safe"
     },
     {
       "key": "qb_bill_create",
@@ -3134,7 +3157,9 @@
         "création",
         "quickbooks"
       ],
-      "group": "Factures fournisseurs"
+      "group": "Factures fournisseurs",
+      "risk": "destructive",
+      "riskReason": "Crée une facture fournisseur"
     },
     {
       "key": "qb_bill_get",
@@ -3196,7 +3221,8 @@
         "lecture",
         "quickbooks"
       ],
-      "group": "Factures fournisseurs"
+      "group": "Factures fournisseurs",
+      "risk": "safe"
     },
     {
       "key": "qb_bills_list",
@@ -3262,7 +3288,8 @@
         "liste",
         "quickbooks"
       ],
-      "group": "Factures fournisseurs"
+      "group": "Factures fournisseurs",
+      "risk": "safe"
     },
     {
       "key": "qb_account_get",
@@ -3324,7 +3351,8 @@
         "lecture",
         "quickbooks"
       ],
-      "group": "Comptes"
+      "group": "Comptes",
+      "risk": "safe"
     },
     {
       "key": "qb_accounts_list",
@@ -3390,7 +3418,8 @@
         "liste",
         "quickbooks"
       ],
-      "group": "Comptes"
+      "group": "Comptes",
+      "risk": "safe"
     },
     {
       "key": "qb_report_profit_loss",
@@ -3472,7 +3501,9 @@
         "lecture",
         "quickbooks"
       ],
-      "group": "Rapports"
+      "group": "Rapports",
+      "risk": "safe",
+      "riskReason": "Rapport lecture seule"
     },
     {
       "key": "qb_report_balance_sheet",
@@ -3554,7 +3585,9 @@
         "lecture",
         "quickbooks"
       ],
-      "group": "Rapports"
+      "group": "Rapports",
+      "risk": "safe",
+      "riskReason": "Rapport lecture seule"
     },
     {
       "key": "qb_estimate_create",
@@ -3651,7 +3684,8 @@
         "création",
         "quickbooks"
       ],
-      "group": "Devis"
+      "group": "Devis",
+      "risk": "write"
     },
     {
       "key": "qb_estimate_get",
@@ -3713,7 +3747,8 @@
         "lecture",
         "quickbooks"
       ],
-      "group": "Devis"
+      "group": "Devis",
+      "risk": "safe"
     },
     {
       "key": "qb_estimates_list",
@@ -3779,7 +3814,8 @@
         "liste",
         "quickbooks"
       ],
-      "group": "Devis"
+      "group": "Devis",
+      "risk": "safe"
     },
     {
       "key": "qb_webhook_event",
@@ -3826,7 +3862,8 @@
         "événement",
         "quickbooks"
       ],
-      "group": "Événements"
+      "group": "Événements",
+      "risk": "safe"
     }
   ]
 }

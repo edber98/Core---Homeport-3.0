@@ -784,7 +784,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Enveloppes"
+      "group": "Enveloppes",
+      "risk": "write"
     },
     {
       "key": "docusign_envelope_get",
@@ -846,7 +847,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Enveloppes"
+      "group": "Enveloppes",
+      "risk": "safe"
     },
     {
       "key": "docusign_envelopes_list",
@@ -946,7 +948,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Enveloppes"
+      "group": "Enveloppes",
+      "risk": "safe"
     },
     {
       "key": "docusign_envelope_send",
@@ -1008,7 +1011,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Enveloppes"
+      "group": "Enveloppes",
+      "risk": "write"
     },
     {
       "key": "docusign_envelope_void",
@@ -1084,7 +1088,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Enveloppes"
+      "group": "Enveloppes",
+      "risk": "destructive"
     },
     {
       "key": "docusign_envelope_documents_download",
@@ -1156,7 +1161,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Documents"
+      "group": "Documents",
+      "risk": "safe"
     },
     {
       "key": "docusign_recipients_list",
@@ -1218,7 +1224,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Destinataires"
+      "group": "Destinataires",
+      "risk": "safe"
     },
     {
       "key": "docusign_recipients_update",
@@ -1312,7 +1319,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Destinataires"
+      "group": "Destinataires",
+      "risk": "write"
     },
     {
       "key": "docusign_template_get",
@@ -1374,7 +1382,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Templates"
+      "group": "Templates",
+      "risk": "safe"
     },
     {
       "key": "docusign_templates_list",
@@ -1440,7 +1449,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Templates"
+      "group": "Templates",
+      "risk": "safe"
     },
     {
       "key": "docusign_documents_list",
@@ -1502,7 +1512,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Documents"
+      "group": "Documents",
+      "risk": "safe"
     },
     {
       "key": "docusign_tabs_list",
@@ -1578,7 +1589,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Onglets"
+      "group": "Onglets",
+      "risk": "safe"
     },
     {
       "key": "docusign_signing_url_create",
@@ -1696,7 +1708,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Signature"
+      "group": "Signature",
+      "risk": "write"
     },
     {
       "key": "docusign_webhook_event",
@@ -1733,7 +1746,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Événements"
+      "group": "Événements",
+      "risk": "safe"
     }
   ]
 }

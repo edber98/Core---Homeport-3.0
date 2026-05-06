@@ -73,6 +73,7 @@ export const routes: Routes = [
             { path: 'runs', loadComponent: () => import('./features/flow/workspace-run-list.component').then(m => m.WorkspaceRunListComponent), title: 'Exécutions (workspace)' },
             { path: 'notifications', loadComponent: () => import('./features/notifications/notifications-page.component').then(m => m.NotificationsPageComponent), title: 'Notifications' },
             { path: 'ai', loadComponent: () => import('./features/ai/ai-fullpage.component').then(m => m.AiFullpageComponent), title: 'Assistant IA' },
+            { path: 'ai/:threadId', loadComponent: () => import('./features/ai/ai-fullpage.component').then(m => m.AiFullpageComponent), title: 'Assistant IA' },
             { path: 'learn', loadComponent: () => import('./features/learn/learn-page.component').then(m => m.LearnPageComponent), title: 'Apprendre' },
             { path: 'debug', loadComponent: () => import('./features/debug/debugging-list.component').then(m => m.DebuggingListComponent), title: 'Debugging' },
             // AI Form Agent debug removed (old system)

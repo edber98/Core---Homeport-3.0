@@ -1027,7 +1027,8 @@
         "WooCommerce",
         "lecture"
       ],
-      "group": "Commandes"
+      "group": "Commandes",
+      "risk": "safe"
     },
     {
       "key": "wc_orders_list",
@@ -1102,7 +1103,8 @@
         "WooCommerce",
         "liste"
       ],
-      "group": "Commandes"
+      "group": "Commandes",
+      "risk": "safe"
     },
     {
       "key": "wc_order_create",
@@ -1191,7 +1193,8 @@
         "WooCommerce",
         "création"
       ],
-      "group": "Commandes"
+      "group": "Commandes",
+      "risk": "write"
     },
     {
       "key": "wc_order_update",
@@ -1271,7 +1274,8 @@
         "WooCommerce",
         "mise-à-jour"
       ],
-      "group": "Commandes"
+      "group": "Commandes",
+      "risk": "write"
     },
     {
       "key": "wc_order_delete",
@@ -1333,7 +1337,8 @@
         "WooCommerce",
         "suppression"
       ],
-      "group": "Commandes"
+      "group": "Commandes",
+      "risk": "destructive"
     },
     {
       "key": "wc_product_get",
@@ -1395,7 +1400,8 @@
         "WooCommerce",
         "lecture"
       ],
-      "group": "Produits"
+      "group": "Produits",
+      "risk": "safe"
     },
     {
       "key": "wc_products_list",
@@ -1479,7 +1485,8 @@
         "WooCommerce",
         "liste"
       ],
-      "group": "Produits"
+      "group": "Produits",
+      "risk": "safe"
     },
     {
       "key": "wc_product_create",
@@ -1586,7 +1593,8 @@
         "WooCommerce",
         "création"
       ],
-      "group": "Produits"
+      "group": "Produits",
+      "risk": "write"
     },
     {
       "key": "wc_product_update",
@@ -1693,7 +1701,8 @@
         "WooCommerce",
         "mise-à-jour"
       ],
-      "group": "Produits"
+      "group": "Produits",
+      "risk": "write"
     },
     {
       "key": "wc_product_delete",
@@ -1755,7 +1764,8 @@
         "WooCommerce",
         "suppression"
       ],
-      "group": "Produits"
+      "group": "Produits",
+      "risk": "destructive"
     },
     {
       "key": "wc_customer_get",
@@ -1817,7 +1827,8 @@
         "WooCommerce",
         "lecture"
       ],
-      "group": "Clients"
+      "group": "Clients",
+      "risk": "safe"
     },
     {
       "key": "wc_customers_list",
@@ -1892,7 +1903,8 @@
         "WooCommerce",
         "liste"
       ],
-      "group": "Clients"
+      "group": "Clients",
+      "risk": "safe"
     },
     {
       "key": "wc_customer_create",
@@ -1981,7 +1993,8 @@
         "WooCommerce",
         "création"
       ],
-      "group": "Clients"
+      "group": "Clients",
+      "risk": "write"
     },
     {
       "key": "wc_customer_update",
@@ -2070,7 +2083,8 @@
         "WooCommerce",
         "mise-à-jour"
       ],
-      "group": "Clients"
+      "group": "Clients",
+      "risk": "write"
     },
     {
       "key": "wc_category_get",
@@ -2132,7 +2146,8 @@
         "WooCommerce",
         "lecture"
       ],
-      "group": "Catégories"
+      "group": "Catégories",
+      "risk": "safe"
     },
     {
       "key": "wc_categories_list",
@@ -2198,7 +2213,8 @@
         "WooCommerce",
         "liste"
       ],
-      "group": "Catégories"
+      "group": "Catégories",
+      "risk": "safe"
     },
     {
       "key": "wc_category_create",
@@ -2278,7 +2294,8 @@
         "WooCommerce",
         "création"
       ],
-      "group": "Catégories"
+      "group": "Catégories",
+      "risk": "write"
     },
     {
       "key": "wc_coupon_get",
@@ -2340,7 +2357,8 @@
         "WooCommerce",
         "lecture"
       ],
-      "group": "Coupons"
+      "group": "Coupons",
+      "risk": "safe"
     },
     {
       "key": "wc_coupons_list",
@@ -2406,7 +2424,8 @@
         "WooCommerce",
         "liste"
       ],
-      "group": "Coupons"
+      "group": "Coupons",
+      "risk": "safe"
     },
     {
       "key": "wc_coupon_create",
@@ -2508,7 +2527,8 @@
         "WooCommerce",
         "création"
       ],
-      "group": "Coupons"
+      "group": "Coupons",
+      "risk": "write"
     },
     {
       "key": "wc_coupon_delete",
@@ -2570,7 +2590,8 @@
         "WooCommerce",
         "suppression"
       ],
-      "group": "Coupons"
+      "group": "Coupons",
+      "risk": "destructive"
     },
     {
       "key": "wc_report_sales",
@@ -2652,7 +2673,8 @@
         "WooCommerce",
         "lecture"
       ],
-      "group": "Rapports"
+      "group": "Rapports",
+      "risk": "safe"
     },
     {
       "key": "wc_report_top_sellers",
@@ -2734,7 +2756,8 @@
         "WooCommerce",
         "lecture"
       ],
-      "group": "Rapports"
+      "group": "Rapports",
+      "risk": "safe"
     },
     {
       "key": "wc_shipping_zones_list",
@@ -2781,7 +2804,8 @@
         "WooCommerce",
         "liste"
       ],
-      "group": "Expéditions"
+      "group": "Expéditions",
+      "risk": "write"
     },
     {
       "key": "wc_webhook_event",
@@ -2830,7 +2854,8 @@
         "WooCommerce",
         "événement"
       ],
-      "group": "Déclencheur"
+      "group": "Déclencheur",
+      "risk": "safe"
     }
   ]
 }

@@ -1,5 +1,6 @@
 // Unified agent runner — core loop with tool_use support + mode-specific tools
 const { createLlmClient } = require('./llm');
+const { isDebug } = require('./util/debug');
 const { META_TOOL_DEFINITIONS, executeMetaTool } = require('./tools/meta-tools');
 const { createWorkflowExecutor } = require('./tools/workflow-tools');
 const { createNodeArgsExecutor } = require('./tools/node-args-tools');
@@ -10,6 +11,7 @@ const { buildWorkflowPrompt } = require('./prompts/workflow-builder');
 const { buildNodeArgsPrompt } = require('./prompts/node-args');
 const { buildFormPrompt } = require('./prompts/form-builder');
 const { buildOnboardingPrompt } = require('./prompts/onboarding');
+const { buildProjectPrompt } = require('./prompts/project');
 const { trackToolUsage } = require('./context/memory-manager');
 
 const MAX_TOOL_LOOPS = 40;
@@ -33,6 +35,9 @@ function buildSystemPrompt(mode, ctx) {
     case 'onboarding':
       prompt += buildOnboardingPrompt();
       break;
+    case 'project':
+      prompt += buildProjectPrompt(ctx);
+      break;
   }
 
   // Inject agent prompt fragment (dynamic provider or custom agent)
@@ -46,6 +51,24 @@ function buildSystemPrompt(mode, ctx) {
       `- ${k}: ${typeof v === 'string' ? v : JSON.stringify(v)}`
     );
     prompt += '\n\n## Mémoire du projet\n' + lines.join('\n');
+  }
+
+  // Inject structured project knowledge (key/value) if available
+  if (Array.isArray(ctx._projectKnowledge) && ctx._projectKnowledge.length) {
+    // Sort: pinned first, then by key
+    const sorted = [...ctx._projectKnowledge].sort((a, b) => {
+      if (!!a.pinned !== !!b.pinned) return a.pinned ? -1 : 1;
+      return String(a.key).localeCompare(String(b.key));
+    });
+    const lines = sorted.map(e => {
+      const v = typeof e.value === 'string' ? `"${e.value}"` : JSON.stringify(e.value);
+      const desc = e.description ? ` (${e.description})` : '';
+      const pin = e.pinned ? ' [épinglé]' : '';
+      return `- ${e.key}: ${v}${desc}${pin}`;
+    });
+    prompt += '\n\n## CONNAISSANCES PROJET (référence manuelle — remplies par l\'utilisateur)\n'
+      + 'Infos durables sur le projet. Utilise-les AVANT de poser des questions au user.\n'
+      + lines.join('\n');
   }
 
   // Inject custom instructions
@@ -154,6 +177,12 @@ async function* runAgent({ mode, messages, context, metadata, agentOverrides }) 
     }
   }
   if (agentOverrides?.llmModel) llmConfig.model = agentOverrides.llmModel;
+  // AI_PROVIDER env explicite → override priorité absolue sur agent config
+  if (process.env.AI_PROVIDER) {
+    llmConfig.provider = process.env.AI_PROVIDER;
+    const p = process.env.AI_PROVIDER.toLowerCase();
+    llmConfig.apiKey = (p === 'anthropic' || p === 'claude') ? env.ANTHROPIC_API_KEY : env.OPENAI_API_KEY;
+  }
   const llm = createLlmClient(llmConfig.provider, llmConfig);
 
   // 5. Build conversation
@@ -184,17 +213,17 @@ async function* runAgent({ mode, messages, context, metadata, agentOverrides }) 
           break;
 
         case 'tool_use_start':
-          if (process.env.AI_DEBUG) console.log(`[agent] >> tool.start: ${event.name} (id=${event.id})`);
+          if (isDebug()) console.log(`[agent] >> tool.start: ${event.name} (id=${event.id})`);
           yield { type: 'tool.start', id: event.id, name: event.name };
           break;
 
         case 'tool_input_delta':
-          if (process.env.AI_DEBUG) console.log(`[agent] >> tool.input_delta: ${event.name} +${(event.text || '').length}chars`);
+          if (isDebug()) console.log(`[agent] >> tool.input_delta: ${event.name} +${(event.text || '').length}chars`);
           yield { type: 'tool.input_delta', id: event.id, name: event.name, text: event.text };
           break;
 
         case 'tool_use_end':
-          if (process.env.AI_DEBUG) console.log(`[agent] >> tool_use_end: ${event.name} input=${JSON.stringify(event.input || {}).slice(0, 200)}`);
+          if (isDebug()) console.log(`[agent] >> tool_use_end: ${event.name} input=${JSON.stringify(event.input || {}).slice(0, 200)}`);
           pendingToolCalls.push({ id: event.id, name: event.name, input: event.input });
           break;
 

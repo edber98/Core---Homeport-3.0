@@ -1,20 +1,72 @@
 import { Component, Input, Output, EventEmitter, inject, ChangeDetectorRef, HostListener, ElementRef } from '@angular/core';
+import { trigger, transition, style, animate } from '@angular/animations';
 import { CommonModule } from '@angular/common';
 import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
+import { NzBadgeModule } from 'ng-zorro-antd/badge';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { FormsModule } from '@angular/forms';
+import { Router, ActivatedRoute } from '@angular/router';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzTagModule } from 'ng-zorro-antd/tag';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzMessageService } from 'ng-zorro-antd/message';
 import { marked } from 'marked';
 import DOMPurify from 'dompurify';
 import { AiMessage, AiMessageSegment, AiToolCall, AiQuestionOption, AiService, AiAttachment } from './ai.service';
 import { NodeExecResultDialogComponent } from '../flow/node-exec-result-dialog.component';
+import { AiPermissionRequestCardComponent } from './permissions/ai-permission-request-card.component';
+import { AiCacheSyncRequestCardComponent } from './permissions/ai-cache-sync-request-card.component';
+import { AiPlanProposalCardComponent } from './plan/ai-plan-proposal-card.component';
+import { AiDiagramRendererComponent } from './diagram/ai-diagram-renderer.component';
+import { AiStructuredMessageComponent } from './structured/ai-structured-message.component';
+import { AiInlineImageComponent } from './images/ai-inline-image.component';
+import { AiInlineFileComponent } from './files/ai-inline-file.component';
+import { AiTodoListComponent } from './todo-list/ai-todo-list.component';
+import { AiMessagePlanHeaderComponent } from './plan-header/ai-message-plan-header.component';
+import { AiAgentBadgeComponent } from './agents/ai-agent-badge.component';
+import { resolveAgentProfile } from './agents/ai-roster';
+import { AiCanvasHtmlComponent } from './canvas-html/ai-canvas-html.component';
+import { AiAgentReportCardComponent } from './agent-reports/ai-agent-report-card.component';
+import { AiWidgetActionsComponent, WidgetAction, WidgetActionId } from './widgets/ai-widget-actions.component';
+import { AiWidgetModalComponent, WidgetType, WidgetModalData } from './widgets/ai-widget-modal.component';
+import { WidgetExportService } from './widgets/widget-export.service';
+import { AiInlineWidgetCollapseComponent } from './widgets/ai-inline-widget-collapse.component';
+
+/** Segment interne du rendu d'un message : texte markdown ou widget inline. */
+export interface ContentRenderSegment {
+  type: 'text' | 'widget';
+  html?: string;         // si type=text : HTML markdown rendu
+  widget?: AiMessage;    // si type=widget : message-widget référencé par [[WIDGET:id]]
+  widgetId?: string;     // si type=widget : id pour trackBy
+}
+
+const WIDGET_MARKER_REGEX = /\[\[WIDGET:([a-zA-Z0-9_\-.]{1,60})\]\]/g;
 
 const TOOL_LABELS: Record<string, string> = {
   search_tools: 'Recherche d\'outils', get_tool_details: 'Détails outil', execute_tool: 'Exécution',
   list_providers: 'Providers', ask_user: 'Question', search_workflows: 'Recherche workflows',
   run_workflow: 'Lancement workflow', save_memory: 'Mémoire', get_memory: 'Mémoire',
+  project_list_dir: 'Liste dossier projet', project_tree: 'Arborescence projet',
+  project_read_file: 'Lecture fichier projet', project_read_batch: 'Lecture multiple',
+  project_grep: 'Recherche texte', project_search: 'Recherche fichiers',
+  project_write_file: 'Écriture fichier', project_create_folder: 'Création dossier',
+  project_delete: 'Suppression fichier', project_move: 'Déplacement fichier',
+  project_refresh_tree: 'Actualisation arbo', project_sync_remote: 'Synchronisation distant',
+  project_stage_for_sandbox: 'Préparation fichier sandbox',
+  web_search: 'Recherche web', web_fetch: 'Lecture page web', research_deep: 'Recherche approfondie', web_download: 'Téléchargement web',
+  execute_code: 'Exécution code', prepare_code_environment: 'Préparation environnement',
+  spawn_subagent: 'Sous-agent',
+  install_package: 'Installation package', display_image: 'Affichage image',
+  skill_list: 'Liste skills', skill_get: 'Détails skill', skill_execute: 'Exécution skill',
+  generate_document: 'Génération document', edit_document: 'Édition document',
+  render_html_preview: 'Aperçu HTML', build_website: 'Construction site',
   enrich_context: 'Contexte', open_element: 'Ouverture', list_credentials: 'Lister les identifiants', open_credentials: 'Identifiants',
   save_project_memory: 'Mémoire projet', get_project_memory: 'Mémoire projet',
+  set_project_knowledge: 'Mise à jour mémoire projet', get_project_knowledge: 'Mémoire projet',
+  suggest_memory_entries: 'Suggestion mémoire projet',
   compact_and_transfer: 'Transfert', activate_capsule: 'Activation outils',
+  propose_plan: 'Plan d\'action', generate_diagram: 'Diagramme',
   read_file: 'Lecture fichier', search_manual: 'Manuel', get_manual_section: 'Manuel',
   create_flow: 'Création flow', list_graph: 'Graphe',
   get_templates: 'Templates', get_template_details: 'Détails template', ensure_start: 'Démarrage',
@@ -38,6 +90,9 @@ const TOOL_LABELS: Record<string, string> = {
   deploy_flow: 'Déploiement', undeploy_flow: 'Arrêt production',
   get_deployment_status: 'Statut déploiement', start_run: 'Lancement exécution',
   list_runs: 'Historique exécutions', get_run_stats: 'Statistiques',
+  render_structured: 'Affichage structuré',
+  todo_write: 'Checklist', send_message_to_agent: 'Message agent',
+  display_file: 'Aperçu fichier', render_interactive_canvas: 'Canvas interactif',
 };
 
 /** Human-readable labels for meta-tool arguments (non-execute_tool tools) */
@@ -78,6 +133,8 @@ const META_TOOL_ARG_LABELS: Record<string, Record<string, string>> = {
   open_credentials: { providerKey: 'Fournisseur' },
   save_project_memory: { content: 'Contenu' },
   compact_and_transfer: { summary: 'Résumé' },
+  propose_plan: { summary: 'Résumé', steps: 'Étapes', risks: 'Risques' },
+  generate_diagram: { type: 'Type', title: 'Titre', mermaid: 'Code' },
 };
 
 /** Processed segment for display — text-before-tools merged into reasoning blocks */
@@ -91,17 +148,133 @@ interface ProcessedSegment {
 @Component({
   selector: 'ai-message',
   standalone: true,
-  imports: [CommonModule, NzButtonModule, NzIconModule, NzTagModule, NodeExecResultDialogComponent],
+  imports: [CommonModule, FormsModule, NzButtonModule, NzIconModule, NzTagModule, NzToolTipModule, NzBadgeModule, NzInputModule, NodeExecResultDialogComponent, AiPermissionRequestCardComponent, AiCacheSyncRequestCardComponent, AiStructuredMessageComponent, AiPlanProposalCardComponent, AiDiagramRendererComponent, AiInlineImageComponent, AiInlineFileComponent, AiTodoListComponent, AiCanvasHtmlComponent, AiWidgetActionsComponent, AiAgentReportCardComponent, AiAgentBadgeComponent, AiInlineWidgetCollapseComponent, AiMessagePlanHeaderComponent],
+  animations: [
+    // Animation de pliage des blocs raisonnement quand le message se finalise.
+    // :leave joue quand *ngIf passe à false (collapse) → fold-up vers le header.
+    // :enter joue quand l'utilisateur clique pour ré-expand → fold-down.
+    trigger('reasoningFold', [
+      transition(':enter', [
+        style({ opacity: 0, maxHeight: 0, transform: 'translateY(-8px)', marginTop: 0, marginBottom: 0 }),
+        animate('260ms cubic-bezier(0.22, 1, 0.36, 1)',
+          style({ opacity: 0.85, maxHeight: '4000px', transform: 'translateY(0)', marginTop: '*', marginBottom: '*' })),
+      ]),
+      transition(':leave', [
+        style({ opacity: 0.85, maxHeight: '4000px', transform: 'translateY(0)' }),
+        animate('260ms cubic-bezier(0.4, 0, 1, 1)',
+          style({ opacity: 0, maxHeight: 0, transform: 'translateY(-8px)', marginTop: 0, marginBottom: 0, paddingTop: 0, paddingBottom: 0 })),
+      ]),
+    ]),
+  ],
   template: `
-    <div class="ai-msg" [class.user]="msg.role === 'user'" [class.assistant]="msg.role === 'assistant'">
-      <div class="avatar">
+    <div class="ai-msg" [class.user]="msg.role === 'user'" [class.assistant]="msg.role === 'assistant'" [class.compact]="compact">
+      <div class="avatar" *ngIf="!compact">
         <span *ngIf="msg.role === 'user'" nz-icon nzType="user" nzTheme="outline"></span>
         <span *ngIf="msg.role === 'assistant'" nz-icon nzType="robot" nzTheme="outline"></span>
       </div>
+      <div class="avatar avatar-spacer" *ngIf="compact" aria-hidden="true"></div>
 
-      <div class="body">
+      <div class="body" [attr.data-kind]="msg.metadata?.kind || null" [attr.data-job-id]="msg.metadata?.jobId || null">
+        <!-- V2 special message kinds -->
+        <ng-container [ngSwitch]="msg.metadata?.kind">
+          <div *ngSwitchCase="'permission_request'" class="widget-bubble perm-request-bubble">
+            <ai-permission-request-card
+              [request]="msg.metadata!.permissionRequest!"
+              (answered)="onPermissionAnswer($event)">
+            </ai-permission-request-card>
+          </div>
+          <div *ngSwitchCase="'cache_sync_request'" class="widget-bubble">
+            <ai-cache-sync-request-card
+              [request]="msg.metadata!.cacheSyncRequest!"
+              (answered)="onCacheSyncAnswer($event)">
+            </ai-cache-sync-request-card>
+          </div>
+          <div *ngSwitchCase="'structured'" class="widget-bubble widget-wrap">
+            <ai-structured-message [data]="msg.metadata!.structured!"></ai-structured-message>
+            <div class="widget-overlay">
+              <ai-widget-actions
+                [actions]="structuredActions"
+                (action)="onWidgetAction($event, 'structured', msg.metadata!.structured)">
+              </ai-widget-actions>
+            </div>
+          </div>
+          <!-- Plan_proposal : si en attente, il est affiché en sticky au-dessus
+               de l'input par ai-chat, donc on le masque dans le flux inline pour
+               éviter le double affichage. Une fois répondu, l'inline réapparaît
+               (snapshot de la décision dans l'historique). -->
+          <div *ngSwitchCase="'plan_proposal'" class="widget-bubble widget-wrap"
+               [hidden]="!msg.metadata?.planProposal?.answer">
+            <ai-plan-proposal-card
+              [proposal]="msg.metadata!.planProposal!"
+              (answered)="onPlanAnswer($event)">
+            </ai-plan-proposal-card>
+            <div class="widget-overlay">
+              <ai-widget-actions
+                [actions]="planActions"
+                (action)="onWidgetAction($event, 'plan_proposal', msg.metadata!.planProposal)">
+              </ai-widget-actions>
+            </div>
+          </div>
+          <div *ngSwitchCase="'diagram'" class="diagram-bubble widget-bubble widget-wrap">
+            <div class="diagram-bubble-head">
+              <span nz-icon nzType="deployment-unit" nzTheme="outline" class="diagram-bubble-icon"></span>
+              <span class="diagram-bubble-title">{{ msg.metadata?.diagram?.title || 'Diagramme' }}</span>
+              <nz-tag nzColor="magenta" class="diagram-bubble-type">{{ msg.metadata?.diagram?.type }}</nz-tag>
+            </div>
+            <ai-diagram-renderer
+              [mermaid]="msg.metadata?.diagram?.mermaid || ''"
+              [title]="msg.metadata?.diagram?.title || ''"
+              [interactive]="false">
+            </ai-diagram-renderer>
+            <button nz-button nzSize="small" nzType="link" class="diagram-open-canvas" (click)="openDiagramInCanvas()">
+              <span nz-icon nzType="fullscreen" nzTheme="outline"></span> Ouvrir dans canvas
+            </button>
+            <div class="widget-overlay">
+              <ai-widget-actions
+                [actions]="diagramActions"
+                (action)="onWidgetAction($event, 'diagram', msg.metadata!.diagram)">
+              </ai-widget-actions>
+            </div>
+          </div>
+          <div *ngSwitchCase="'image_inline'" class="widget-bubble image-inline-wrap">
+            <ai-inline-image [data]="msg.metadata!.imageInline!"></ai-inline-image>
+          </div>
+          <div *ngSwitchCase="'file_inline'" class="widget-bubble widget-wrap">
+            <ai-inline-file [data]="msg.metadata!.fileInline!"></ai-inline-file>
+          </div>
+          <!-- Todo list : style compact plan-header (sticky, collapse, comme ChatGPT Thinking).
+               L'ancien ai-todo-list (gros bloc) est retiré du chat principal au profit de ce format
+               plus aéré. Le rendu détaillé reste dans la fenêtre WM du subagent. -->
+          <div *ngSwitchCase="'todo_list'" class="plan-header-wrap">
+            <ai-message-plan-header [data]="msg.metadata!['todoList']!"></ai-message-plan-header>
+          </div>
+          <div *ngSwitchCase="'canvas_html'" class="canvas-html-bubble widget-bubble widget-wrap">
+            <ai-canvas-html [data]="msg.metadata!['canvasHtml']!"></ai-canvas-html>
+          </div>
+          <!-- agent_report TOUJOURS visible dans le chat principal pour que
+               l'utilisateur voie "Tim Terminé" inline, même si la todo référence
+               aussi le job. La card est compacte (reasoning-style) → pas de doublon visuel. -->
+          <div *ngSwitchCase="'agent_report'" class="widget-bubble widget-wrap">
+            <ai-agent-report-card [report]="msg.metadata!.agentReport!"></ai-agent-report-card>
+          </div>
+          <div *ngSwitchCase="'system_hint'" class="system-hint-hidden"></div>
+          <div *ngSwitchCase="'system_note'" class="system-hint-hidden"></div>
+          <div *ngSwitchCase="'comment'" class="comment-msg" [class.subagent-ping]="isSubagentComment(msg)">
+            <div class="comment-head" *ngIf="isSubagentComment(msg); else regularComment">
+              <ai-agent-badge [agent]="subagentCommentAgent(msg)" [compact]="true"></ai-agent-badge>
+              <span class="comment-label">a un message pour toi</span>
+            </div>
+            <ng-template #regularComment>
+              <nz-tag nzColor="purple">
+                <span nz-icon nzType="comment" nzTheme="outline"></span> Commentaire
+              </nz-tag>
+            </ng-template>
+            <div class="comment-content" [innerHTML]="renderMarkdown(msg.content)"></div>
+          </div>
+        </ng-container>
+
         <!-- User message attachments -->
-        <div class="msg-attachments" *ngIf="msg.role === 'user' && msg.attachments?.length">
+        <div class="msg-attachments" *ngIf="msg.role === 'user' && msg.attachments?.length && !msg.metadata?.kind && !editing">
           <div class="msg-att-chip" *ngFor="let att of msg.attachments">
             <img *ngIf="isImage(att.mimeType) && att.fileId" [src]="ai.fileUrl(att.fileId)" class="msg-att-img"
                  loading="lazy" (click)="openImagePreview(att)" />
@@ -113,25 +286,113 @@ interface ProcessedSegment {
           </div>
         </div>
 
+        <!-- Inline edit (user messages) -->
+        <div class="edit-wrap" *ngIf="msg.role === 'user' && editing">
+          <textarea nz-input [(ngModel)]="editedText" [nzAutosize]="{ minRows: 2, maxRows: 10 }" class="edit-ta"></textarea>
+          <div class="edit-actions">
+            <button nz-button nzType="default" nzSize="small" (click)="cancelEdit()">Annuler</button>
+            <button nz-button nzType="primary" nzSize="small" (click)="saveEdit()" [disabled]="!editedText.trim() || editedText.trim() === msg.content?.trim()">
+              <span nz-icon nzType="send" nzTheme="outline"></span> Renvoyer
+            </button>
+          </div>
+          <div class="edit-hint">Les réponses ultérieures seront supprimées et recalculées.</div>
+        </div>
+
+        <!-- Edit button (user message, hover) -->
+        <button *ngIf="msg.role === 'user' && !editing && !msg.metadata?.kind && msg._id"
+                nz-button nzType="text" nzSize="small" class="user-edit-btn"
+                (click)="startEdit()"
+                nz-tooltip nzTooltipTitle="Modifier et re-générer à partir d'ici">
+          <span nz-icon nzType="edit" nzTheme="outline"></span>
+        </button>
+
+        <!-- Standard rendering (skipped for special metadata kinds) -->
+        <ng-container *ngIf="!msg.metadata?.kind">
+        <!-- Loading indicator pendant streaming : bulle créée mais pas encore de contenu
+             (parent resume qui démarre, attend la 1ère réponse LLM). -->
+        <div class="typing-indicator" *ngIf="isStreamingEmpty()">
+          <span class="td-dot"></span>
+          <span class="td-dot"></span>
+          <span class="td-dot"></span>
+        </div>
         <!-- Segments mode: reasoning blocks with text + tools, final text at end -->
         <ng-container *ngIf="msg.segments?.length; else flatLayout">
-          <ng-container *ngFor="let ps of getProcessedSegments()">
-            <!-- Final response text -->
-            <div class="content" *ngIf="ps.type === 'text' && ps.content"
-                 [innerHTML]="renderMarkdown(ps.content)"></div>
-            <!-- Reasoning block: optional text + collapsible tool summary -->
-            <div class="reasoning-block" *ngIf="ps.type === 'reasoning'">
-              <div class="reasoning-header" *ngIf="ps.reasoningText">
+          <!-- Quand le message est terminé ET a une réponse finale, on groupe TOUS
+               les blocs raisonnement dans un seul collapse pour éviter le mur de
+               raisonnement. Header unique avec compteurs, ordre préservé à l'expand. -->
+          <div class="reasoning-collapse-head"
+               *ngIf="shouldCollapseReasoningGroup()"
+               (click)="toggleReasoningGroupExpand()">
+            <span nz-icon nzType="experiment" nzTheme="outline" class="rcg-ico"></span>
+            <span class="rcg-label">{{ reasoningGroupSummary() }}</span>
+            <span nz-icon class="rcg-chev" [nzType]="isReasoningGroupExpanded() ? 'down' : 'right'" nzTheme="outline"></span>
+          </div>
+          <ng-container *ngFor="let ps of getProcessedSegments(); let psi = index">
+            <!-- Final response text — découpé pour intégrer les widgets inline [[WIDGET:id]] -->
+            <ng-container *ngIf="ps.type === 'text' && ps.content">
+              <ng-container *ngFor="let seg of contentSegments(ps.content); trackBy: trackSegment">
+                <div class="content" *ngIf="seg.type === 'text'" [innerHTML]="seg.html"></div>
+                <ai-inline-widget-collapse
+                  *ngIf="seg.type === 'widget' && seg.widget"
+                  [widget]="seg.widget">
+                </ai-inline-widget-collapse>
+              </ng-container>
+            </ng-container>
+            <!-- Reasoning block: caché si le groupe est collapsé (message complet).
+                 @reasoningFold anime le pliage/dépliage à la transition. -->
+            <div class="reasoning-block"
+                 *ngIf="ps.type === 'reasoning' && (!shouldCollapseReasoningGroup() || isReasoningGroupExpanded())"
+                 @reasoningFold>
+              <!-- Live widgets en construction : affichés inline en tête du reasoning,
+                   dans l'ordre de création. Remplacent le rendu "top of tools" pour
+                   que le widget apparaisse à la place naturelle du flux. -->
+              <ng-container *ngFor="let bw of buildingWidgets(ps); trackBy: trackBuildingWidget">
+                <ai-inline-widget-collapse
+                  *ngIf="!widgetsById?.has(bw.widgetId)"
+                  [widget]="bw.placeholder">
+                </ai-inline-widget-collapse>
+              </ng-container>
+              <div class="reasoning-header" *ngIf="ps.reasoningText"
+                   (click)="toggleReasoningExpand(ps)"
+                   [class.clickable]="true">
                 <span nz-icon nzType="bulb" nzTheme="outline"></span>
                 <span>Raisonnement</span>
-              </div>
-              <div class="reasoning-text" *ngIf="ps.reasoningText" [innerHTML]="renderMarkdown(ps.reasoningText)"></div>
-              <div class="tool-summary" *ngIf="ps.toolCalls?.length">
-                <span class="summary-toggle" (click)="toggleToolExpand(ps)">
-                  <span nz-icon [nzType]="expandedTools.has(ps) ? 'down' : 'right'" nzTheme="outline"></span>
-                  {{ ps.toolCalls!.length }} outil{{ ps.toolCalls!.length > 1 ? 's' : '' }} exécuté{{ ps.toolCalls!.length > 1 ? 's' : '' }}
+                <span class="reasoning-preview" *ngIf="!isReasoningExpanded(ps)">— {{ reasoningPreview(ps) }}</span>
+                <span class="reasoning-chev">
+                  <span nz-icon [nzType]="isReasoningExpanded(ps) ? 'up' : 'down'" nzTheme="outline"></span>
                 </span>
-                <div class="tool-list" *ngIf="expandedTools.has(ps)">
+              </div>
+              <div class="reasoning-text"
+                   *ngIf="ps.reasoningText && isReasoningExpanded(ps)"
+                   [innerHTML]="renderMarkdown(ps.reasoningText)"></div>
+              <div class="tool-summary" *ngIf="ps.toolCalls?.length">
+                <!-- Tools en cours (streaming args) : toujours visibles, JAMAIS dans le groupe -->
+                <div class="tool-live-list" *ngIf="runningToolCalls(ps.toolCalls).length">
+                  <div *ngFor="let tc of runningToolCalls(ps.toolCalls); trackBy: trackTc" class="tool-live-item">
+                    <span nz-icon nzType="loading" [nzSpin]="true" nzTheme="outline" class="tl-ico"></span>
+                    <span class="tl-name">{{ toolDisplayName(tc) }}</span>
+                    <span class="tl-args" *ngIf="toolLiveArgsPreview(tc) as s">{{ s }}</span>
+                  </div>
+                </div>
+                <!-- Summary + groupes collapsed : UNIQUEMENT pour les tools terminés -->
+                <ng-container *ngIf="completedToolCalls(ps.toolCalls) as completed">
+                <span class="summary-toggle"
+                      *ngIf="completed.length && (groupedToolCalls(completed).length > 1 || isToolExpanded(ps, psi))"
+                      (click)="toggleToolExpand(ps, psi)">
+                  <span nz-icon [nzType]="isToolExpanded(ps, psi) ? 'down' : 'right'" nzTheme="outline"></span>
+                  {{ toolGroupSummary(completed) }}
+                </span>
+                <div class="tool-groups" *ngIf="completed.length && !isToolExpanded(ps, psi)">
+                  <span class="tool-group-pill" *ngFor="let g of groupedToolCalls(completed); trackBy: trackToolGroup"
+                        [class.group-err]="g.hasError"
+                        (click)="toggleToolExpand(ps, psi)">
+                    <span nz-icon [nzType]="g.icon" nzTheme="outline"></span>
+                    <span *ngIf="g.count > 1" class="group-count">×{{ g.count }}</span>
+                    <span class="group-label">{{ g.label }}</span>
+                  </span>
+                </div>
+                </ng-container>
+                <div class="tool-list" *ngIf="isToolExpanded(ps, psi)">
                   <div *ngFor="let tc of ps.toolCalls" class="tool-item-wrap">
                     <div class="tool-list-item"
                          [class.item-success]="tc.status !== 'error'"
@@ -166,15 +427,44 @@ interface ProcessedSegment {
 
         <!-- Flat layout: content + tools (for DB-loaded messages without segments) -->
         <ng-template #flatLayout>
-          <div class="content" *ngIf="msg.content" [innerHTML]="renderMarkdown(msg.content)"></div>
-          <div class="reasoning-block" *ngIf="msg.toolCalls?.length">
+          <ng-container *ngIf="msg.content">
+            <ng-container *ngFor="let seg of contentSegments(msg.content); trackBy: trackSegment">
+              <div class="content" *ngIf="seg.type === 'text'" [innerHTML]="seg.html"></div>
+              <ai-inline-widget-collapse
+                *ngIf="seg.type === 'widget' && seg.widget"
+                [widget]="seg.widget">
+              </ai-inline-widget-collapse>
+            </ng-container>
+          </ng-container>
+          <div class="reasoning-block" *ngIf="visibleToolCalls(msg.toolCalls).length">
             <div class="tool-summary">
-              <span class="summary-toggle" (click)="toggleToolExpand(msg)">
-                <span nz-icon [nzType]="expandedTools.has(msg) ? 'down' : 'right'" nzTheme="outline"></span>
-                {{ msg.toolCalls!.length }} outil{{ msg.toolCalls!.length > 1 ? 's' : '' }} exécuté{{ msg.toolCalls!.length > 1 ? 's' : '' }}
+              <!-- Tools en cours : live, hors groupe -->
+              <div class="tool-live-list" *ngIf="runningToolCalls(msg.toolCalls).length">
+                <div *ngFor="let tc of runningToolCalls(msg.toolCalls); trackBy: trackTc" class="tool-live-item">
+                  <span nz-icon nzType="loading" [nzSpin]="true" nzTheme="outline" class="tl-ico"></span>
+                  <span class="tl-name">{{ toolDisplayName(tc) }}</span>
+                  <span class="tl-args" *ngIf="toolLiveArgsPreview(tc) as s">{{ s }}</span>
+                </div>
+              </div>
+              <ng-container *ngIf="completedToolCalls(msg.toolCalls) as completed">
+              <span class="summary-toggle"
+                    *ngIf="completed.length && (groupedToolCalls(completed).length > 1 || isToolExpanded(msg))"
+                    (click)="toggleToolExpand(msg)">
+                <span nz-icon [nzType]="isToolExpanded(msg) ? 'down' : 'right'" nzTheme="outline"></span>
+                {{ toolGroupSummary(completed) }}
               </span>
-              <div class="tool-list" *ngIf="expandedTools.has(msg)">
-                <div *ngFor="let tc of msg.toolCalls" class="tool-item-wrap">
+              <div class="tool-groups" *ngIf="completed.length && !isToolExpanded(msg)">
+                <span class="tool-group-pill" *ngFor="let g of groupedToolCalls(completed); trackBy: trackToolGroup"
+                      [class.group-err]="g.hasError"
+                      (click)="toggleToolExpand(msg)">
+                  <span nz-icon [nzType]="g.icon" nzTheme="outline"></span>
+                  <span *ngIf="g.count > 1" class="group-count">×{{ g.count }}</span>
+                  <span class="group-label">{{ g.label }}</span>
+                </span>
+              </div>
+              </ng-container>
+              <div class="tool-list" *ngIf="isToolExpanded(msg)">
+                <div *ngFor="let tc of visibleToolCalls(msg.toolCalls)" class="tool-item-wrap">
                   <div class="tool-list-item"
                        [class.item-success]="tc.status !== 'error'"
                        [class.item-error]="tc.status === 'error'"
@@ -241,6 +531,23 @@ interface ProcessedSegment {
           </button>
         </div>
 
+        <!-- Footer actions : icônes discrètes sous le message assistant (copy, memory, etc.) -->
+        <div class="msg-actions" *ngIf="msg.role === 'assistant' && !msg.cancelled && showActions()">
+          <button nz-button nzType="text" nzSize="small" class="msg-action-btn"
+                  (click)="copyContent()"
+                  nz-tooltip [nzTooltipTitle]="copied ? 'Copié !' : 'Copier'">
+            <span nz-icon [nzType]="copied ? 'check' : 'copy'" nzTheme="outline"></span>
+          </button>
+          <button *ngIf="showMemoryHint()" nz-button nzType="text" nzSize="small" class="msg-action-btn msg-action-bulb"
+                  (click)="openKnowledgePending()"
+                  nz-tooltip [nzTooltipTitle]="memoryTooltip()">
+            <nz-badge [nzCount]="ai.pendingKnowledgeCount()" [nzOverflowCount]="9" nzSize="small">
+              <span nz-icon nzType="bulb" nzTheme="outline"></span>
+            </nz-badge>
+          </button>
+        </div>
+        </ng-container>
+
         <!-- Tool result dialog -->
         <node-exec-result-dialog
           *ngIf="selectedToolResult"
@@ -257,10 +564,20 @@ interface ProcessedSegment {
     .ai-msg.user { flex-direction: row-reverse; }
     .ai-msg.user .body { align-items: flex-end; }
     .ai-msg.user .content { background: #fdf2f8; border-radius: 14px 14px 2px 14px; padding: 10px 16px; }
-    .ai-msg.assistant .content { background: #ebebeb; border-radius: 14px 14px 14px 2px; padding: 10px 16px; }
+    .ai-msg.assistant .content {
+      background: #ebebeb; border-radius: 14px 14px 14px 2px; padding: 10px 16px;
+      /* Apparition fluide des nouvelles portions de texte pendant streaming */
+      animation: ai-msg-appear 220ms ease-out;
+    }
+    @keyframes ai-msg-appear {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
     .avatar { width: 32px; height: 32px; border-radius: 50%; background: #f0f0f0; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 16px; }
     .ai-msg.assistant .avatar { background: #fdf2f8; color: #e61982; }
     .body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+    /* Body vide (widget-only sans texte ni actions) : pas de place perdue */
+    .body:empty, .body:has(> .system-hint-hidden:only-child) { display: none; }
     .content { max-width: 85%; min-width: 0; overflow: hidden; word-break: break-word; line-height: 1.5; }
     .content :host ::ng-deep p { margin: 0 0 4px; }
     .content :host ::ng-deep p:last-child { margin: 0; }
@@ -287,6 +604,40 @@ interface ProcessedSegment {
     .content ::ng-deep tr:nth-child(even) { background: #fafafa; }
     .reasoning-block { border-left: 3px solid #d9d9d9; padding: 6px 12px; margin: 4px 0; border-radius: 0 8px 8px 0; opacity: 0.85; max-width: 85%; min-width: 0; overflow: hidden; }
     .reasoning-header { display: flex; align-items: center; gap: 4px; font-size: 11px; color: #999; margin-bottom: 4px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.3px; }
+    .reasoning-header.clickable { cursor: pointer; user-select: none; transition: color .12s; }
+    .reasoning-header.clickable:hover { color: #e61982; }
+    .reasoning-preview { text-transform: none; letter-spacing: 0; font-weight: 400; color: #8c8c8c; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; max-width: 480px; }
+    .reasoning-chev { margin-left: auto; font-size: 10px; color: #bfbfbf; }
+    .reasoning-header.clickable:hover .reasoning-chev { color: #e61982; }
+
+    /* Groupes de tools consécutifs (style Claude Code : pills horizontales) */
+    .tool-groups {
+      display: flex; flex-wrap: wrap; gap: 4px;
+      margin-top: 4px;
+    }
+    .tool-group-pill {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 2px 8px;
+      background: #fafafa; border: 1px solid #f0f0f0;
+      border-radius: 10px;
+      font-size: 11px; color: #595959;
+      cursor: pointer;
+      transition: all .15s;
+      line-height: 1.5;
+    }
+    .tool-group-pill:hover {
+      background: #fff5fa; border-color: #ffd6e7; color: #e61982;
+    }
+    .tool-group-pill.active { background: #fff5fa; border-color: #e61982; color: #e61982; }
+    .tool-group-pill.active [nz-icon] { color: #e61982; }
+    .tool-group-pill.active .group-count { color: #e61982; }
+    .tool-group-pill.group-err { background: #fff2f0; border-color: #ffccc7; color: #cf1322; }
+    .tool-group-pill [nz-icon] { font-size: 11px; color: #8c8c8c; }
+    .tool-group-pill:hover [nz-icon] { color: #e61982; }
+    .tool-group-pill.group-err [nz-icon] { color: #cf1322; }
+    .tool-group-pill .group-count { font-weight: 700; color: #262626; font-variant-numeric: tabular-nums; }
+    .tool-group-pill.group-err .group-count { color: #cf1322; }
+    .tool-group-pill .group-label { opacity: 0.85; }
     .reasoning-text { font-size: 12px; color: #666; line-height: 1.6; margin-bottom: 6px; word-break: break-word; overflow: hidden; }
     .reasoning-text ::ng-deep p { margin: 0 0 4px; }
     .reasoning-text ::ng-deep p:last-child { margin: 0; }
@@ -307,6 +658,42 @@ interface ProcessedSegment {
     .reasoning-text ::ng-deep ul, .reasoning-text ::ng-deep ol { margin: 2px 0; padding-left: 18px; }
     .reasoning-text ::ng-deep li { margin: 1px 0; }
     .tool-summary { margin-top: 4px; }
+    /* Header unique de groupe raisonnement, mêmes codes visuels qu'un
+       reasoning-block normal (border-left gauche, opacity, max-width). Cliquable
+       pour expand/collapse. */
+    .reasoning-collapse-head {
+      display: flex; align-items: center; gap: 4px;
+      border-left: 3px solid #d9d9d9;
+      padding: 6px 12px; margin: 4px 0;
+      border-radius: 0 8px 8px 0;
+      opacity: 0.85;
+      max-width: 85%; min-width: 0;
+      cursor: pointer; user-select: none;
+      font-size: 11px; color: #999; font-weight: 500;
+      text-transform: uppercase; letter-spacing: 0.3px;
+      transition: opacity .12s, color .12s, border-color .12s;
+    }
+    .reasoning-collapse-head:hover { opacity: 1; color: #e61982; border-left-color: #e61982; }
+    .reasoning-collapse-head .rcg-ico { font-size: 12px; }
+    .reasoning-collapse-head .rcg-label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .reasoning-collapse-head .rcg-chev { font-size: 10px; color: #bbb; margin-left: 2px; transition: transform .2s ease; }
+    .reasoning-collapse-head:hover .rcg-chev { color: #e61982; }
+    /* Tools en cours de streaming : visibles live, jamais dans un groupe collapsed. */
+    .tool-live-list { display: flex; flex-direction: column; gap: 3px; margin-bottom: 6px; }
+    .tool-live-item {
+      display: flex; align-items: center; gap: 8px;
+      padding: 5px 10px; border-radius: 6px;
+      background: linear-gradient(90deg, #fff7e6, #fff3e0);
+      border-left: 3px solid #faad14;
+      font-size: 12px;
+    }
+    .tool-live-item .tl-ico { color: #faad14; flex-shrink: 0; }
+    .tool-live-item .tl-name { font-weight: 600; color: #262626; flex-shrink: 0; }
+    .tool-live-item .tl-args {
+      font-family: 'SFMono-Regular', Consolas, monospace; font-size: 11px;
+      color: #8c6c14; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      padding: 1px 6px; background: rgba(255,255,255,0.6); border-radius: 3px;
+    }
     .summary-toggle { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; color: #999; cursor: pointer; transition: color 0.2s; }
     .summary-toggle:hover { color: #666; }
     .tool-list { margin-top: 4px; }
@@ -328,8 +715,54 @@ interface ProcessedSegment {
     .args-expand-toggle { display: inline-block; font-size: 10px; color: #e61982; cursor: pointer; margin-top: 1px; }
     .args-expand-toggle:hover { text-decoration: underline; }
     .answered-question { background: #fafafa; border: 1px solid #f0f0f0; border-radius: 8px; padding: 10px 12px; margin: 4px 0; max-width: 85%; }
+    .user-edit-btn { position: absolute; top: 4px; right: 4px; color: #bfbfbf; opacity: 0; transition: opacity .15s; }
+    .ai-msg:hover .user-edit-btn { opacity: 1; }
+    .user-edit-btn:hover { color: #1890ff; background: rgba(24,144,255,0.08); }
+    .ai-msg.user { position: relative; }
+    .edit-wrap { display: flex; flex-direction: column; gap: 6px; background: #f8f9fa; border: 1px solid #d9d9d9; border-radius: 8px; padding: 8px; min-width: 280px; max-width: 85%; }
+    .edit-ta { font-size: 13px; font-family: inherit; }
+    .edit-actions { display: flex; justify-content: flex-end; gap: 6px; }
+    .edit-hint { font-size: 11px; color: #8c8c8c; font-style: italic; }
     .aq-text { font-size: 12px; color: #666; margin-bottom: 6px; }
     .aq-options { display: flex; flex-wrap: wrap; gap: 4px; }
+    /* Actions à DROITE du message (pas en-dessous) : absolute alignée verticalement
+       sur le haut du message, visible au hover. Ne prend plus de hauteur verticale. */
+    :host { position: relative; }
+    .msg-actions {
+      position: absolute;
+      top: 4px;
+      right: -4px;
+      transform: translateX(100%);
+      display: flex; flex-direction: column; gap: 2px;
+      opacity: 0;
+      transition: opacity .15s;
+      z-index: 5;
+      pointer-events: none;
+    }
+    :host(:hover) .msg-actions,
+    .msg-actions:has(.msg-action-bulb) {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .msg-action-btn {
+      color: #bfbfbf;
+      width: 26px; height: 26px; padding: 0 !important;
+      border-radius: 6px !important;
+      background: transparent;
+    }
+    .msg-action-btn:hover { color: #e61982; background: rgba(230,25,130,0.08) !important; }
+    .msg-action-bulb { color: #faad14; }
+    .msg-action-bulb:hover { color: #d48806; background: rgba(250,173,20,0.1) !important; }
+    /* Sur petit écran : repasse en row sous le msg pour éviter overflow horizontal */
+    @media (max-width: 720px) {
+      .msg-actions {
+        position: static;
+        transform: none;
+        flex-direction: row;
+        justify-content: flex-end;
+        margin-top: 4px;
+      }
+    }
     .aq-chip { display: inline-flex; align-items: center; gap: 3px; font-size: 12px; padding: 2px 10px; border-radius: 12px; background: #f0f0f0; color: #999; }
     .aq-chip.selected { background: #e6f4ff; color: #e61982; border: 1px solid #91caff; font-weight: 500; }
     .aq-check { font-size: 10px; }
@@ -346,17 +779,334 @@ interface ProcessedSegment {
     .msg-att-file { display: inline-flex; align-items: center; gap: 4px; background: #f5f5f5; border: 1px solid #e8e8e8; border-radius: 6px; padding: 4px 8px; font-size: 12px; color: #333; text-decoration: none; transition: border-color 0.2s; }
     .msg-att-file:hover { border-color: #e61982; color: #e61982; }
     .msg-att-size { color: #999; font-size: 10px; }
+    /* Style inline (comme agent_report "Terminé") : pas de fond, juste une
+       bordure gauche colorée. Max-width message pour s'intégrer au flux. */
+    .comment-msg {
+      background: transparent;
+      border-left: 3px solid #722ed1;
+      border-radius: 0;
+      padding: 4px 12px;
+      margin: 6px 0;
+      max-width: 85%;
+    }
+    .comment-msg .comment-content { margin-top: 4px; font-size: 13px; color: #333; line-height: 1.55; }
+    .comment-msg .comment-content ::ng-deep p { margin: 0 0 4px; }
+    .comment-msg .comment-content ::ng-deep p:last-child { margin-bottom: 0; }
+    .comment-msg nz-tag { margin-bottom: 4px; }
+    /* Message venant d'un subagent → charte rose + animation d'arrivée */
+    .comment-msg.subagent-ping {
+      background: #fff5fa;
+      border-left-color: #e61982;
+      border-radius: 10px;
+      animation: pingIn 300ms cubic-bezier(.2,.8,.2,1);
+    }
+    @keyframes pingIn {
+      from { opacity: 0; transform: translateY(6px) scale(.98); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .comment-msg.subagent-ping .comment-head {
+      display: flex; align-items: center; gap: 6px;
+      margin-bottom: 6px;
+      font-size: 11px;
+    }
+    .comment-msg.subagent-ping .comment-label { color: #8c8c8c; font-weight: 500; }
+    /* Bubble absorbée par une todo : pas de place visuelle dans le chat */
+    .widget-bubble.report-absorbed { display: none; }
+    .system-hint {
+      display: flex; align-items: flex-start; gap: 10px;
+      background: #fffbe6; border: 1px solid #ffe58f; border-radius: 10px;
+      padding: 10px 14px; margin: 6px 0; max-width: 90%;
+      font-size: 13px; color: #614700;
+    }
+    .system-hint-icon { color: #faad14; font-size: 18px; flex-shrink: 0; margin-top: 2px; }
+    .system-hint-content { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+    .system-hint-text { line-height: 1.5; }
+    .system-hint .ant-btn-link { padding: 0; height: auto; font-size: 12px; color: #d48806; align-self: flex-start; }
+    .system-hint .ant-btn-link:hover { color: #faad14; }
     .tool-files { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
     .tool-file-img { max-width: 200px; max-height: 150px; border-radius: 6px; object-fit: cover; border: 1px solid #e8e8e8; }
     .tool-file-link { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; color: #e61982; }
+    /* Wrapper unifié pour TOUS les widgets assistant — même max-width que les messages texte */
+    /* Widgets inline : même largeur que le texte (85%), pas de card séparée.
+       Visuellement intégrés dans le flux du message comme dans Claude.ai. */
+    .widget-bubble {
+      max-width: 85%;
+      min-width: 0;
+      display: block;
+      margin: 8px 0;
+      background: transparent;
+      border: 0;
+      box-shadow: none;
+    }
+    @media (max-width: 640px) { .widget-bubble { max-width: 100%; } }
+    /* Permission request : style inline (bordure gauche colorée), même largeur
+       que les bulles message (85%). Pas de pulse, pas de box-shadow. */
+    .perm-request-bubble { max-width: 85%; animation: none; box-shadow: none; }
+    @media (max-width: 640px) { .perm-request-bubble { max-width: 100%; } }
+    @media (max-width: 640px) { .widget-bubble { max-width: 100%; } }
+    .widget-bubble :host ::ng-deep > * { max-width: 100%; }
+    /* Diagrammes : bubble plus large (pleine largeur dispo) pour que le mermaid respire */
+    .diagram-bubble { background: #fff; border: 1px solid #f0f0f0; border-left: 3px solid #e61982; border-radius: 0 8px 8px 0; padding: 8px 10px; max-width: min(1100px, 100%); width: 100%; }
+    .diagram-bubble-head { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+    .diagram-bubble-icon { color: #e61982; font-size: 16px; }
+    .diagram-bubble-title { font-weight: 600; font-size: 13px; color: #262626; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding-right: 32px; }
+    .diagram-bubble-type { margin: 0; font-size: 10px; }
+    .diagram-open-canvas { padding: 0; margin-top: 4px; font-size: 12px; }
+    /* Widget action menu overlay (top-right) */
+    .widget-wrap { position: relative; }
+    .widget-wrap .widget-overlay {
+      position: absolute; top: 8px; right: 8px; z-index: 10;
+      display: flex; gap: 4px;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 6px;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+      opacity: 0.85; transition: opacity 0.15s, box-shadow 0.15s;
+    }
+    .widget-wrap:hover .widget-overlay { opacity: 1; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12); }
+    .image-inline-wrap { display: inline-block; }
+    /* Compact mode — used when message is grouped with previous assistant message */
+    .ai-msg.compact { padding-top: 0; padding-bottom: 2px; }
+    .ai-msg.compact .avatar.avatar-spacer { background: transparent; }
+    /* Typing indicator (3 dots bouncing) — affiché dans le placeholder resume
+       tant que le LLM n'a pas commencé à émettre son premier text_delta. */
+    .typing-indicator {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 8px 12px; margin: 4px 0;
+      background: #f5f5f5; border-radius: 14px 14px 14px 2px;
+    }
+    .td-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #e61982;
+      animation: td-bounce 1.2s ease-in-out infinite;
+    }
+    .td-dot:nth-child(2) { animation-delay: 0.15s; }
+    .td-dot:nth-child(3) { animation-delay: 0.3s; }
+    @keyframes td-bounce {
+      0%, 60%, 100% { opacity: 0.35; transform: translateY(0); }
+      30% { opacity: 1; transform: translateY(-3px); }
+    }
   `]
 })
 export class AiMessageComponent {
   @Input() msg!: AiMessage;
+  @Input() compact = false;
+  @Input() isLast = false;
+  /** Map widgetId → AiMessage pour le rendu inline [[WIDGET:id]]. Fourni par ai-chat. */
+  @Input() widgetsById: Map<string, AiMessage> | null = null;
   @Output() retryClick = new EventEmitter<void>();
   public ai = inject(AiService);
   private cdr = inject(ChangeDetectorRef);
   private el = inject(ElementRef);
+  private modal = inject(NzModalService);
+  private msgSvc = inject(NzMessageService);
+  private widgetExp = inject(WidgetExportService);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+
+  copied = false;
+  editing = false;
+  editedText = '';
+
+  startEdit() {
+    this.editedText = this.msg.content || '';
+    this.editing = true;
+    this.cdr.markForCheck?.();
+  }
+
+  cancelEdit() {
+    this.editing = false;
+    this.editedText = '';
+    this.cdr.markForCheck?.();
+  }
+
+  async saveEdit() {
+    const newText = (this.editedText || '').trim();
+    if (!newText || !this.msg._id) return;
+    const id = this.msg._id;
+    this.editing = false;
+    try {
+      await this.ai.editAndResendUserMessage(id, newText);
+    } catch (e: any) {
+      this.msgSvc.error(e?.message || 'Édition échouée');
+    }
+    this.cdr.markForCheck?.();
+  }
+
+  showActions(): boolean {
+    // Pas d'actions sur les widgets (ils ont leur propre barre) ni sur les reports
+    const kind = (this.msg.metadata as any)?.kind;
+    if (kind && ['structured', 'plan_proposal', 'diagram', 'image_inline', 'file_inline', 'todo_list', 'canvas_html', 'agent_report', 'comment'].includes(kind)) {
+      return false;
+    }
+    return !!this.msg.content;
+  }
+
+  showMemoryHint(): boolean {
+    if (!this.isLast) return false;
+    if (this.ai.currentThread()?.mode !== 'project') return false;
+    return (this.ai.pendingKnowledgeCount() || 0) > 0;
+  }
+
+  memoryTooltip(): string {
+    const n = this.ai.pendingKnowledgeCount() || 0;
+    return `${n} info${n > 1 ? 's' : ''} à valider dans la mémoire projet`;
+  }
+
+  copyContent(): void {
+    const text = this.msg.content || '';
+    try {
+      navigator.clipboard.writeText(text).then(() => {
+        this.copied = true;
+        this.cdr.markForCheck?.();
+        setTimeout(() => { this.copied = false; this.cdr.markForCheck?.(); }, 1500);
+      }).catch(() => this.msgSvc.error('Copie échouée'));
+    } catch { this.msgSvc.error('Copie échouée'); }
+  }
+
+  // Widget action presets (same list used inline + in the modal)
+  readonly structuredActions: WidgetAction[] = [
+    { id: 'fullscreen', label: 'Ouvrir en grand', icon: 'fullscreen' },
+    { id: 'copy', label: 'Copier les données', icon: 'copy' },
+    { id: 'export:json', label: 'Télécharger JSON', icon: 'code' },
+    { id: 'export:csv', label: 'Télécharger CSV', icon: 'file-text' },
+    { id: 'export:xlsx', label: 'Télécharger Excel', icon: 'file-excel' },
+    { id: 'export:pdf', label: 'Télécharger PDF', icon: 'file-pdf' },
+  ];
+  readonly planActions: WidgetAction[] = [
+    { id: 'fullscreen', label: 'Ouvrir en grand', icon: 'fullscreen' },
+    { id: 'copy', label: 'Copier les données', icon: 'copy' },
+    { id: 'export:json', label: 'Télécharger JSON', icon: 'code' },
+    { id: 'export:pdf', label: 'Télécharger PDF', icon: 'file-pdf' },
+  ];
+  readonly diagramActions: WidgetAction[] = [
+    { id: 'fullscreen', label: 'Ouvrir en grand', icon: 'fullscreen' },
+    { id: 'copy', label: 'Copier le code', icon: 'copy' },
+    { id: 'export:svg', label: 'Télécharger SVG', icon: 'file-image' },
+    { id: 'export:png', label: 'Télécharger PNG', icon: 'picture' },
+    { id: 'export:pdf', label: 'Télécharger PDF', icon: 'file-pdf' },
+  ];
+
+  // ── System hint helpers (ex: memory_pending) ──
+  isMemoryPendingHint(msg: AiMessage): boolean {
+    return msg?.metadata?.['kind'] === 'system_hint'
+      && msg?.metadata?.['extra']?.hintType === 'memory_pending';
+  }
+
+  openKnowledgePending(): void {
+    // Via URL queryParams — ai-fullpage écoute et ouvre settings + tab Connaissances.
+    // Réutilise aussi openKnowledgePending$ en fallback (si ai-settings déjà monté).
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { settings: 'knowledge', filter: 'pending' },
+      queryParamsHandling: 'merge',
+    });
+    this.ai.openKnowledgePending$.next();
+  }
+
+  async onWidgetAction(id: WidgetActionId, widgetType: WidgetType, widgetData: any): Promise<void> {
+    if (!widgetData) return;
+    if (id === 'fullscreen') {
+      this.openWidgetModal(widgetType, widgetData);
+      return;
+    }
+    const baseName = this.widgetFilename(widgetType, widgetData);
+    try {
+      switch (id) {
+        case 'copy': {
+          const payload = widgetType === 'diagram' ? (widgetData?.mermaid || '') : JSON.stringify(widgetData, null, 2);
+          const ok = await this.widgetExp.copyText(payload);
+          this.msgSvc[ok ? 'success' : 'error'](ok ? 'Copié' : 'Copie impossible');
+          return;
+        }
+        case 'export:json': this.widgetExp.exportAsJson(widgetData, baseName); return;
+        case 'export:csv': {
+          const { rows, cols } = this.extractTable(widgetType, widgetData);
+          if (!rows.length) { this.msgSvc.warning('Aucune ligne exportable'); return; }
+          this.widgetExp.exportAsCsv(rows, cols, baseName);
+          return;
+        }
+        case 'export:xlsx': {
+          const { rows, cols } = this.extractTable(widgetType, widgetData);
+          if (!rows.length) { this.msgSvc.warning('Aucune ligne exportable'); return; }
+          await this.widgetExp.exportAsXlsx(rows, cols, baseName);
+          return;
+        }
+        case 'export:svg':
+        case 'export:png':
+        case 'export:pdf': {
+          // For SVG/PNG/PDF, need DOM — open the modal to guarantee a rendered widget then export it
+          this.openWidgetModal(widgetType, widgetData, id);
+          return;
+        }
+      }
+    } catch (e: any) {
+      this.msgSvc.error('Export échoué: ' + (e?.message || 'erreur'));
+    }
+  }
+
+  private openWidgetModal(widgetType: WidgetType, widgetData: any, deferredAction?: WidgetActionId) {
+    const title = widgetData?.title || widgetData?.summary || undefined;
+    const ref = this.modal.create<AiWidgetModalComponent, WidgetModalData>({
+      nzContent: AiWidgetModalComponent,
+      nzData: { widgetType, widgetData, title },
+      nzWidth: '90vw',
+      nzFooter: null,
+      nzMaskClosable: true,
+      nzCloseIcon: undefined,
+      nzClosable: false,
+      nzBodyStyle: { padding: '16px 20px' },
+      nzClassName: 'ai-widget-modal-shell',
+    });
+    if (deferredAction) {
+      // Wait a tick for render then trigger the action on modal
+      ref.afterOpen.subscribe(() => {
+        const instance = ref.getContentComponent();
+        setTimeout(() => instance?.onAction(deferredAction), 200);
+      });
+    }
+  }
+
+  private widgetFilename(t: WidgetType, data: any): string {
+    const raw = data?.title || data?.summary || t;
+    return String(raw).slice(0, 60) || t;
+  }
+
+  private extractTable(t: WidgetType, wd: any): { rows: any[]; cols: { key: string; label?: string }[] } {
+    if (t === 'structured') {
+      const data = wd?.data;
+      if (wd?.layout === 'comparison_table' && data?.columns && data?.rows) {
+        return {
+          rows: data.rows,
+          cols: (data.columns || []).map((c: any) => ({
+            key: c.key || c.id || c.label, label: c.label || c.key || c.id,
+          })),
+        };
+      }
+      if (Array.isArray(data?.rows)) return { rows: data.rows, cols: [] };
+      if (Array.isArray(data?.items)) return { rows: data.items, cols: [] };
+      if (Array.isArray(data)) return { rows: data, cols: [] };
+    }
+    if (t === 'plan_proposal') {
+      const steps = (wd?.steps || []).map((s: any) => ({
+        id: s.id, title: s.title, rationale: s.rationale || '',
+        tools: (s.tools || []).join(', '),
+        duration_estimate: s.duration_estimate || '',
+        dependsOn: (s.dependsOn || []).join(', '),
+      }));
+      return {
+        rows: steps,
+        cols: [
+          { key: 'id', label: 'ID' },
+          { key: 'title', label: 'Titre' },
+          { key: 'rationale', label: 'Raison' },
+          { key: 'tools', label: 'Outils' },
+          { key: 'duration_estimate', label: 'Durée' },
+          { key: 'dependsOn', label: 'Dépend de' },
+        ],
+      };
+    }
+    return { rows: [], cols: [] };
+  }
 
   /** Intercept clicks on <img> inside .content (markdown-rendered images) to open lightbox */
   @HostListener('click', ['$event'])
@@ -376,10 +1126,139 @@ export class AiMessageComponent {
   selectedToolTitle = '';
   selectedToolTemplate: any = null;
 
-  expandedTools = new Set<any>();
+  // Clés stables (pas des refs d'objet) → survit aux deltas streaming qui créent
+  // de nouvelles références pour msg/ps. Sans ça le collapse se refermait à chaque
+  // chunk car le Set perdait sa clé.
+  expandedTools = new Set<string>();
+
+  // État du collapse du groupe raisonnement (par message). Par défaut : collapsé
+  // (chevron pointe à droite). Toggle au clic sur le header.
+  private _reasoningGroupExpanded = new Set<string>();
+
+  /** Vrai quand on doit grouper les blocs raisonnement sous UN seul collapse :
+   *  message terminé (last segment text non vide) ET pas en streaming. Évite le
+   *  mur de raisonnement quand l'agent a livré sa réponse finale. */
+  shouldCollapseReasoningGroup(): boolean {
+    if ((this.msg as any).metadata?.streaming) return false;
+    const ps = this.getProcessedSegments();
+    if (!ps.length) return false;
+    const reasoningCount = ps.filter(p => p.type === 'reasoning').length;
+    if (reasoningCount < 2) return false; // pas la peine de grouper 0 ou 1 bloc
+    const last = ps[ps.length - 1];
+    // Doit avoir une réponse finale visible (texte non vide)
+    return last?.type === 'text' && !!(last.content || '').trim();
+  }
+
+  isReasoningGroupExpanded(): boolean {
+    return this._reasoningGroupExpanded.has(String(this.msg._id || 'msg'));
+  }
+
+  toggleReasoningGroupExpand(): void {
+    const k = String(this.msg._id || 'msg');
+    if (this._reasoningGroupExpanded.has(k)) this._reasoningGroupExpanded.delete(k);
+    else this._reasoningGroupExpanded.add(k);
+    this.cdr.markForCheck();
+  }
+
+  reasoningGroupSummary(): string {
+    const ps = this.getProcessedSegments();
+    let steps = 0;
+    let toolCount = 0;
+    for (const p of ps) {
+      if (p.type !== 'reasoning') continue;
+      steps++;
+      toolCount += (p.toolCalls?.length || 0);
+    }
+    const stepLabel = steps > 1 ? `${steps} étapes` : `${steps} étape`;
+    const toolLabel = toolCount > 0
+      ? ` · ${toolCount} outil${toolCount > 1 ? 's' : ''}`
+      : '';
+    return `Raisonnement (${stepLabel}${toolLabel})`;
+  }
   expandedToolItems = new Set<string>();
   expandedArgValues = new Set<string>();
   private _processedCache = new WeakMap<AiMessageSegment[], ProcessedSegment[]>();
+
+  /** V2 — handle permission card response */
+  onPermissionAnswer(evt: { decision: string; pathPattern?: string }) {
+    const req = this.msg.metadata?.permissionRequest;
+    // Cas escalation subagent → utilise childJobId. Sinon job classique → metadata.jobId.
+    const jobId = (req as any)?.childJobId || (this.msg.metadata as any)?.jobId;
+    if (!req || !jobId) return;
+    this.ai.respondToPermission(jobId, req.requestId, evt.decision, evt.pathPattern, req.toolName, req.risk).subscribe({
+      next: () => {
+        // Optimistic local update
+        if (this.msg.metadata?.permissionRequest) {
+          this.msg.metadata.permissionRequest.answer = evt.decision;
+          this.msg.metadata.permissionRequest.answeredAt = new Date().toISOString();
+        }
+        this.cdr.markForCheck();
+      },
+    });
+  }
+
+  /** V2 — handle plan proposal card response */
+  onPlanAnswer(evt: { decision: 'approve' | 'reject' | 'modify'; approvedSteps?: string[]; modifiedSteps?: any[]; missingInfoAnswers?: Record<string, string> }) {
+    const prop = this.msg.metadata?.planProposal;
+    const threadId = this.msg.threadId;
+    if (!prop || !threadId) return;
+    this.ai.respondToPlan(
+      threadId,
+      prop.requestId,
+      evt.decision,
+      evt.approvedSteps,
+      evt.modifiedSteps as any,
+      evt.missingInfoAnswers,
+    ).subscribe({
+      next: () => {
+        if (this.msg.metadata?.planProposal) {
+          this.msg.metadata.planProposal.answer = evt.decision;
+          this.msg.metadata.planProposal.answeredAt = new Date().toISOString();
+          if (evt.approvedSteps) this.msg.metadata.planProposal.approvedSteps = evt.approvedSteps;
+          if (evt.modifiedSteps) this.msg.metadata.planProposal.modifiedSteps = evt.modifiedSteps as any;
+          if (evt.missingInfoAnswers) this.msg.metadata.planProposal.missingInfoAnswers = evt.missingInfoAnswers;
+        }
+        this.cdr.markForCheck();
+      },
+    });
+  }
+
+  /** Open current diagram in the canvas panel (reuses canvas.document state) */
+  openDiagramInCanvas() {
+    const d = this.msg.metadata?.diagram;
+    if (!d) return;
+    // Push current diagram into canvas state so the canvas document renders it
+    const cur = this.ai.canvasState() || { threadId: this.msg.threadId || '', activeTab: 'document' as const };
+    this.ai.canvasState.set({
+      ...cur,
+      activeTab: 'document',
+      document: {
+        ...(cur.document || {}),
+        format: 'mermaid' as any,
+        title: d.title || 'Diagramme',
+        rawMermaid: d.mermaid,
+        updatedAt: new Date().toISOString(),
+      },
+    });
+    this.ai.canvasOpen.set(true);
+  }
+
+  /** V2 — handle cache sync card response */
+  onCacheSyncAnswer(evt: { decision: string }) {
+    const req = this.msg.metadata?.cacheSyncRequest;
+    const jobId = (this.msg.metadata as any)?.jobId;
+    const requestId = (this.msg.metadata as any)?.requestId;
+    if (!req || !jobId || !requestId) return;
+    this.ai.respondToCacheSync(jobId, requestId, evt.decision).subscribe({
+      next: () => {
+        if (this.msg.metadata?.cacheSyncRequest) {
+          this.msg.metadata.cacheSyncRequest.answer = evt.decision;
+          this.msg.metadata.cacheSyncRequest.answeredAt = new Date().toISOString();
+        }
+        this.cdr.markForCheck();
+      },
+    });
+  }
 
   /** Open tool result dialog when clicking on a tool tag */
   openToolResult(tc: AiToolCall) {
@@ -409,6 +1288,61 @@ export class AiMessageComponent {
   }
 
   /** Process raw segments: merge text-before-tools into reasoning blocks, keep only final text as content */
+  // Tools cachés de l'affichage dans les reasoning blocks / pills :
+  // - todo_write : son résultat est déjà visible via le widget plan-header /
+  //   checklist en haut. La pill "Checklist" dans le message est redondante
+  //   et visuellement lourde (surtout dans le resume final du parent).
+  private static readonly HIDDEN_TOOL_NAMES = new Set(['todo_write']);
+
+  private _filterHiddenTools(tools: AiToolCall[] | undefined): AiToolCall[] {
+    if (!tools?.length) return tools || [];
+    return tools.filter(tc => !AiMessageComponent.HIDDEN_TOOL_NAMES.has(tc.name));
+  }
+
+  /** Tool calls visibles dans le flat layout (après filtrage des tools cachés). */
+  visibleToolCalls(tools: AiToolCall[] | undefined): AiToolCall[] {
+    return this._filterHiddenTools(tools);
+  }
+
+  /** Tools en cours de streaming (args ou body pas encore finalisés). Affichés
+   *  live, séparés du groupe collapsed. Status 'running'/'building' OU pas de
+   *  status (cas des deltas avec juste _argsBuf en cours). */
+  runningToolCalls(tools: AiToolCall[] | undefined): AiToolCall[] {
+    if (!tools?.length) return [];
+    return this._filterHiddenTools(tools).filter(tc => {
+      const s = String((tc as any).status || '');
+      // Pas encore de status OU status running/building = tool live
+      if (!s) return !!(tc as any)._argsBuf || !(tc as any).result;
+      return s === 'running' || s === 'building';
+    });
+  }
+
+  /** Tools terminés (success ou error). Ceux-là peuvent être groupés collapsed. */
+  completedToolCalls(tools: AiToolCall[] | undefined): AiToolCall[] {
+    if (!tools?.length) return [];
+    return this._filterHiddenTools(tools).filter(tc => {
+      const s = String((tc as any).status || '');
+      return s === 'success' || s === 'error';
+    });
+  }
+
+  /** Preview court des args en cours de streaming (pour affichage live). */
+  toolLiveArgsPreview(tc: AiToolCall): string {
+    const buf = (tc as any)._argsBuf;
+    if (typeof buf === 'string' && buf.length) {
+      // Remove newlines and collapse whitespace, cap at 240 chars
+      const one = buf.replace(/\s+/g, ' ').trim();
+      return one.length > 240 ? one.slice(0, 240) + '…' : one;
+    }
+    if (tc.args && Object.keys(tc.args).length) {
+      try {
+        const s = JSON.stringify(tc.args);
+        return s.length > 240 ? s.slice(0, 240) + '…' : s;
+      } catch { return ''; }
+    }
+    return '';
+  }
+
   getProcessedSegments(): ProcessedSegment[] {
     const segs = this.msg.segments;
     if (!segs?.length) return [];
@@ -421,7 +1355,11 @@ export class AiMessageComponent {
         // Look back for preceding text segment → absorb as reasoning
         const prev = i > 0 ? segs[i - 1] : null;
         const reasoningText = (prev && prev.type === 'text') ? prev.content : undefined;
-        result.push({ type: 'reasoning', reasoningText: reasoningText || undefined, toolCalls: seg.toolCalls });
+        // Filtre les tools cachés (todo_write etc) → si le segment ne contient
+        // QUE ces tools, on skip le reasoning block entier.
+        const filteredTools = this._filterHiddenTools(seg.toolCalls);
+        if (filteredTools.length === 0 && !reasoningText) continue;
+        result.push({ type: 'reasoning', reasoningText: reasoningText || undefined, toolCalls: filteredTools });
       } else if (seg.type === 'text') {
         // Check if next is tools → skip, will be absorbed by next reasoning block
         const next = i < segs.length - 1 ? segs[i + 1] : null;
@@ -437,6 +1375,118 @@ export class AiMessageComponent {
     return result;
   }
 
+  /** Détecte si un message 'comment' vient d'un subagent (via send_message_to_agent to:'user') */
+  isSubagentComment(msg: any): boolean {
+    const extra = msg?.metadata?.['extra'];
+    return !!(extra?.fromSubagent);
+  }
+
+  /** Le rapport subagent est-il déjà référencé par un session-todos du thread ?
+   *  Si oui, on le masque de la chat principale (il est rendu DANS la todo). */
+  isReportAbsorbedByTodo(msg: any): boolean {
+    const jobId = msg?.metadata?.agentReport?.jobId;
+    if (!jobId) return false;
+    const allMessages = this.ai.messages();
+    for (const m of allMessages) {
+      if (m.metadata?.kind !== 'todo_list') continue;
+      const todos = (m.metadata as any)?.todoList?.todos || [];
+      for (const item of todos) {
+        const tcs = item?.toolCalls || [];
+        if (tcs.some((tc: any) => tc?.spawnedJobId === jobId)) return true;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Groupe les tool calls consécutifs de même nom en pills compactes.
+   * Ex: [web_search, web_search, web_search, web_fetch] → [{name:web_search, count:3}, {name:web_fetch, count:1}]
+   */
+  groupedToolCalls(tools: AiToolCall[]): Array<{name: string; count: number; label: string; icon: string; hasError: boolean}> {
+    if (!tools?.length) return [];
+    const groups: Array<{name: string; count: number; label: string; icon: string; hasError: boolean}> = [];
+    let current: any = null;
+    for (const tc of tools) {
+      const name = tc.name;
+      if (current && current.name === name) {
+        current.count++;
+        if (tc.status === 'error') current.hasError = true;
+      } else {
+        current = {
+          name,
+          count: 1,
+          label: this.toolLabel(name),
+          icon: this.iconForTool(name),
+          hasError: tc.status === 'error',
+        };
+        groups.push(current);
+      }
+    }
+    return groups;
+  }
+
+  trackToolGroup(i: number, g: any): string { return g.name + ':' + i; }
+  trackTc(i: number, tc: AiToolCall): string { return tc.id || `tc:${i}`; }
+
+  toolGroupSummary(tools: AiToolCall[]): string {
+    const groups = this.groupedToolCalls(tools);
+    if (!groups.length) return '0 outil';
+    if (groups.length === 1) {
+      const g = groups[0];
+      return g.count > 1 ? `${g.count} × ${g.label}` : g.label;
+    }
+    return `${tools.length} actions · ${groups.length} outils différents`;
+  }
+
+  iconForTool(name: string): string {
+    const map: Record<string, string> = {
+      web_search: 'search', web_fetch: 'global', research_deep: 'experiment', web_download: 'cloud-download',
+      execute_code: 'code', install_package: 'appstore-add',
+      project_read_file: 'file-text', project_read_batch: 'file-text', project_write_file: 'edit',
+      project_list_dir: 'folder', project_tree: 'apartment', project_grep: 'file-search',
+      project_search: 'search', project_delete: 'delete', project_move: 'drag',
+      project_create_folder: 'folder-add', project_stage_for_sandbox: 'container',
+      spawn_subagent: 'team', send_message_to_agent: 'message',
+      display_image: 'picture', display_file: 'file-done',
+      render_interactive_canvas: 'layout', render_structured: 'table',
+      generate_diagram: 'partition', generate_document: 'file-word',
+      ask_user: 'question-circle', propose_plan: 'compass',
+      todo_write: 'unordered-list',
+      save_memory: 'save', get_memory: 'database',
+      set_project_knowledge: 'book', get_project_knowledge: 'book',
+      skill_list: 'appstore', skill_get: 'appstore', skill_execute: 'thunderbolt',
+      execute_tool: 'play-circle', search_tools: 'search',
+    };
+    return map[name] || 'api';
+  }
+
+  /** Reasoning collapse : collapsed par défaut, click pour expand */
+  expandedReasonings = new WeakSet<object>();
+  isReasoningExpanded(ps: any): boolean {
+    return this.expandedReasonings.has(ps);
+  }
+  toggleReasoningExpand(ps: any): void {
+    if (this.expandedReasonings.has(ps)) this.expandedReasonings.delete(ps);
+    else this.expandedReasonings.add(ps);
+  }
+  /** 80 premiers chars du reasoning en preview dans le header collapsed */
+  reasoningPreview(ps: any): string {
+    const txt = String(ps?.reasoningText || '').replace(/\s+/g, ' ').trim();
+    return txt.length > 90 ? txt.slice(0, 90) + '…' : txt;
+  }
+
+  /** Extrait les infos roster pour afficher le badge d'un comment venu d'un subagent */
+  subagentCommentAgent(msg: any) {
+    const extra = msg?.metadata?.['extra'] || {};
+    return {
+      subagentType: extra.subagentType,
+      agentName: extra.agentName,
+      agentEmoji: extra.agentEmoji,
+      agentColor: extra.agentColor,
+      agentFigure: extra.agentFigure,
+    };
+  }
+
   renderMarkdown(src: string): string {
     try {
       const html = marked.parse(String(src || ''), { breaks: true, gfm: true }) as string;
@@ -448,6 +1498,176 @@ export class AiMessageComponent {
     } catch { return src; }
   }
 
+  /**
+   * Extrait les widgets actuellement en construction (livePreview sur tool call
+   * avec widgetId dans les args). Rendu inline en tête du reasoning block pour
+   * que le widget apparaisse à sa position naturelle dans le flux de génération,
+   * plutôt qu'en haut des tools. Disparaît automatiquement dès que le widget
+   * est persisté (widgetsById contient son widgetId).
+   */
+  buildingWidgets(ps: ProcessedSegment): Array<{ widgetId: string; placeholder: AiMessage }> {
+    const tools = ps?.toolCalls || [];
+    if (!tools.length) return [];
+    const WIDGET_TOOL_NAMES = new Set([
+      'render_structured', 'render_interactive_canvas', 'generate_diagram',
+      'display_image', 'display_file',
+    ]);
+    const TOOL_TO_KIND: Record<string, string> = {
+      render_structured: 'structured',
+      render_interactive_canvas: 'canvas_html',
+      generate_diagram: 'diagram',
+      display_image: 'image_inline',
+      display_file: 'file_inline',
+    };
+    const KIND_PAYLOAD_KEY: Record<string, string> = {
+      structured: 'structured',
+      canvas_html: 'canvasHtml',
+      diagram: 'diagram',
+      image_inline: 'imageInline',
+      file_inline: 'fileInline',
+    };
+    const out: Array<{ widgetId: string; placeholder: AiMessage }> = [];
+    for (const tc of tools) {
+      if (!WIDGET_TOOL_NAMES.has(tc.name)) continue;
+      const widgetId = tc.args?.widgetId || (tc as any).livePreview?.data?.widgetId;
+      if (!widgetId) continue;
+      // tc.status peut être 'building' | 'running' (pendant stream) en plus de
+      // 'success' | 'error' (persistés). Cast string pour couvrir les 2 états stream.
+      const status = String(tc.status || '');
+      if (status !== 'building' && status !== 'running') continue;
+      const kind = TOOL_TO_KIND[tc.name];
+      const payloadKey = KIND_PAYLOAD_KEY[kind];
+      const livePreviewData = (tc as any).livePreview?.data || {};
+      const placeholder: AiMessage = {
+        threadId: this.msg.threadId,
+        role: 'assistant',
+        content: tc.args?.title || tc.args?.caption || 'Construction en cours…',
+        metadata: {
+          kind: kind as any,
+          widgetId,
+          [payloadKey]: { ...(tc.args || {}), ...livePreviewData },
+          collapse: {
+            collapsed: tc.args?.collapsed === true,
+            collapseTitle: tc.args?.collapseTitle,
+          },
+        },
+      };
+      out.push({ widgetId, placeholder });
+    }
+    return out;
+  }
+
+  trackBuildingWidget(_: number, bw: { widgetId: string }): string {
+    return bw.widgetId;
+  }
+
+  // Cache des segments découpés : évite de reconstruire les objets segment
+  // (et donc de déclencher des re-renders OnPush des widgets enfants canvas/iframe)
+  // à chaque CD cycle. Keyed par (content + nb widgets in map).
+  private _segCache = new Map<string, ContentRenderSegment[]>();
+
+  /**
+   * Découpe le contenu markdown en segments alternant texte et widgets inline.
+   * Cherche les marqueurs `[[WIDGET:id]]` et les résout via `widgetsById`.
+   * Si le widget n'est pas trouvé, le marqueur est silencieusement retiré.
+   *
+   * MÉMOIZÉ : appelée à chaque CD cycle par le template. Sans cache, rebuild
+   * des objets segment → AiCanvasHtml reçoit nouveaux `[data]` refs →
+   * iframe re-set srcdoc → FLASH à chaque chunk de stream.
+   */
+  contentSegments(src: string): ContentRenderSegment[] {
+    let text = String(src || '');
+    if (!text) return [];
+    // Pendant streaming, un marqueur incomplet comme "Voici [[WIDGET:tim" (pas
+    // encore fermé) serait rendu comme texte brut jusqu'à ce que "code]]"
+    // arrive. Pour éviter le flash de texte brut, on masque la portion
+    // d'un [[WIDGET:... ouvert non fermé à la fin du texte.
+    const openIdx = text.lastIndexOf('[[WIDGET:');
+    if (openIdx >= 0) {
+      const closeIdx = text.indexOf(']]', openIdx);
+      if (closeIdx < 0) {
+        // Marqueur non fermé à la fin du stream → tronque pour ne pas afficher "[[WIDGET:tim"
+        text = text.slice(0, openIdx);
+      }
+    }
+    if (!text) return [];
+    // Cache key : content + refs identity sur les widgets présents → si
+    // le contenu n'a pas changé ET les widgets référencés sont les mêmes
+    // objets → on renvoie exactement la même instance de segments[].
+    // Conséquence : Angular OnPush voit [data]="seg.widget" identique,
+    // ai-canvas-html ne refait PAS de srcdoc, pas de flash.
+    const refKey = (() => {
+      if (!text.includes('[[WIDGET:')) return `t:${text.length}:${text.slice(0, 40)}`;
+      const widgetIds: string[] = [];
+      const re = new RegExp(WIDGET_MARKER_REGEX.source, 'g');
+      let m: RegExpExecArray | null;
+      while ((m = re.exec(text)) !== null) widgetIds.push(m[1]);
+      const identitySig = widgetIds.map(id => {
+        const w = this.widgetsById?.get(id);
+        // _id + widgetUpdatedAt → identity stable tant que la DB n'a pas update
+        return `${id}#${w?._id || ''}:${w?.metadata?.widgetUpdatedAt || ''}`;
+      }).join('|');
+      return `${text.length}:${text.slice(0, 40)}|${identitySig}`;
+    })();
+    const cached = this._segCache.get(refKey);
+    if (cached) return cached;
+
+    if (!text.includes('[[WIDGET:')) {
+      const segs: ContentRenderSegment[] = [{ type: 'text', html: this.renderMarkdown(text) }];
+      this._setCache(refKey, segs);
+      return segs;
+    }
+    const segments: ContentRenderSegment[] = [];
+    let lastIdx = 0;
+    const re = new RegExp(WIDGET_MARKER_REGEX.source, 'g');
+    let match: RegExpExecArray | null;
+    while ((match = re.exec(text)) !== null) {
+      const before = text.slice(lastIdx, match.index);
+      if (before.trim()) {
+        segments.push({ type: 'text', html: this.renderMarkdown(before) });
+      }
+      const widgetId = match[1];
+      const widget = this.widgetsById?.get(widgetId) || null;
+      if (widget) {
+        segments.push({ type: 'widget', widget, widgetId });
+      }
+      lastIdx = match.index + match[0].length;
+    }
+    const tail = text.slice(lastIdx);
+    if (tail.trim()) {
+      segments.push({ type: 'text', html: this.renderMarkdown(tail) });
+    }
+    this._setCache(refKey, segments);
+    return segments;
+  }
+
+  private _setCache(key: string, segs: ContentRenderSegment[]): void {
+    // LRU simple : cap à 20 entrées pour éviter fuite mémoire sur conversations longues.
+    if (this._segCache.size > 20) {
+      const firstKey = this._segCache.keys().next().value as string | undefined;
+      if (firstKey) this._segCache.delete(firstKey);
+    }
+    this._segCache.set(key, segs);
+  }
+
+  /**
+   * True si ce message est un placeholder de streaming qui n'a encore aucun
+   * contenu (text, segments, toolCalls). Affiche alors un typing indicator
+   * à la place du vide — UX plus claire pour le resume parent en attente.
+   */
+  isStreamingEmpty(): boolean {
+    const meta: any = this.msg?.metadata;
+    if (!meta?.streaming) return false;
+    const hasText = !!(this.msg?.content && String(this.msg.content).trim().length > 0);
+    const hasSegments = Array.isArray(this.msg?.segments) && this.msg.segments.some((s: any) => s?.content || s?.toolCalls?.length);
+    const hasTools = Array.isArray(this.msg?.toolCalls) && this.msg.toolCalls.length > 0;
+    return !hasText && !hasSegments && !hasTools;
+  }
+
+  trackSegment(i: number, s: ContentRenderSegment): string {
+    return s.type === 'widget' ? `w:${s.widgetId}` : `t:${i}`;
+  }
+
   private wrapTablesForScroll(html: string): string {
     return String(html || '')
       .replace(/<table(\b[^>]*)>/gi, '<div class="md-table-wrap"><table$1>')
@@ -457,14 +1677,48 @@ export class AiMessageComponent {
   toolDisplayName(tc: AiToolCall): string {
     if (tc.displayTitle) return tc.displayTitle;
     if (tc.name === 'execute_tool' && tc.args?.key) return tc.args.key;
+    // spawn_subagent → affiche le prénom du roster au lieu de "Sous-agent" générique
+    if (tc.name === 'spawn_subagent' && tc.args?.subagent_type) {
+      const profile = resolveAgentProfile({ subagentType: tc.args.subagent_type });
+      if (profile) return `Lance ${profile.emoji} ${profile.name}`;
+    }
+    if (tc.name === 'send_message_to_agent') {
+      const to = tc.args?.to;
+      if (to === 'user') return '💬 Message à l\'utilisateur';
+      if (to === 'parent') return '💬 Message au parent';
+      if (to) {
+        const p = resolveAgentProfile({ subagentType: typeof to === 'string' ? to.toLowerCase() : undefined });
+        if (p) return `💬 Message à ${p.emoji} ${p.name}`;
+        return `💬 Message à ${to}`;
+      }
+    }
     const label = this.toolLabel(tc.name);
     const extra = this.toolExtra(tc);
     return extra ? `${label} — ${extra}` : label;
   }
 
-  toggleToolExpand(item: any) {
-    if (this.expandedTools.has(item)) this.expandedTools.delete(item);
-    else this.expandedTools.add(item);
+  /** Clé stable pour l'état de collapse d'un groupe de tools. Survit aux
+   *  re-renders streaming (ps/msg changent de référence à chaque delta). */
+  toolGroupKey(item: any, index?: number): string {
+    if (!item) return 'none';
+    // Pour un processed segment : on utilise l'index + premier toolId stable
+    if (typeof index === 'number' && item.toolCalls?.length) {
+      return `ps:${index}:${item.toolCalls[0].id || ''}`;
+    }
+    // Pour un message : utilise _id (fixe pour les vrais msgs et les synthesized)
+    if (item._id) return `msg:${item._id}`;
+    if (item.toolCalls?.length) return `ps:fallback:${item.toolCalls[0].id || ''}`;
+    return 'none';
+  }
+
+  toggleToolExpand(item: any, index?: number) {
+    const key = this.toolGroupKey(item, index);
+    if (this.expandedTools.has(key)) this.expandedTools.delete(key);
+    else this.expandedTools.add(key);
+  }
+
+  isToolExpanded(item: any, index?: number): boolean {
+    return this.expandedTools.has(this.toolGroupKey(item, index));
   }
 
   toggleToolItemExpand(id: string) {

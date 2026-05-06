@@ -1088,7 +1088,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Contacts"
+      "group": "Contacts",
+      "risk": "write"
     },
     {
       "key": "intercom_contact_get",
@@ -1150,7 +1151,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Contacts"
+      "group": "Contacts",
+      "risk": "safe"
     },
     {
       "key": "intercom_contact_update",
@@ -1248,7 +1250,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Contacts"
+      "group": "Contacts",
+      "risk": "write"
     },
     {
       "key": "intercom_contact_search",
@@ -1340,7 +1343,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Contacts"
+      "group": "Contacts",
+      "risk": "safe"
     },
     {
       "key": "intercom_contacts_list",
@@ -1406,7 +1410,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Contacts"
+      "group": "Contacts",
+      "risk": "safe"
     },
     {
       "key": "intercom_contact_archive",
@@ -1468,7 +1473,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Contacts"
+      "group": "Contacts",
+      "risk": "destructive"
     },
     {
       "key": "intercom_conversation_create",
@@ -1544,7 +1550,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Conversations"
+      "group": "Conversations",
+      "risk": "write"
     },
     {
       "key": "intercom_conversation_get",
@@ -1606,7 +1613,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Conversations"
+      "group": "Conversations",
+      "risk": "safe"
     },
     {
       "key": "intercom_conversations_list",
@@ -1672,7 +1680,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Conversations"
+      "group": "Conversations",
+      "risk": "safe"
     },
     {
       "key": "intercom_conversation_reply",
@@ -1782,7 +1791,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Conversations"
+      "group": "Conversations",
+      "risk": "write"
     },
     {
       "key": "intercom_conversation_close",
@@ -1867,7 +1877,9 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Conversations"
+      "group": "Conversations",
+      "risk": "write",
+      "riskReason": "Ferme une conversation (réouvrable)"
     },
     {
       "key": "intercom_conversation_open",
@@ -1943,7 +1955,9 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Conversations"
+      "group": "Conversations",
+      "risk": "write",
+      "riskReason": "Réouvre une conversation"
     },
     {
       "key": "intercom_conversation_assign",
@@ -2042,7 +2056,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Conversations"
+      "group": "Conversations",
+      "risk": "write"
     },
     {
       "key": "intercom_conversation_tag",
@@ -2132,7 +2147,9 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Tags"
+      "group": "Tags",
+      "risk": "write",
+      "riskReason": "Ajoute un tag"
     },
     {
       "key": "intercom_company_create",
@@ -2226,7 +2243,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Entreprises"
+      "group": "Entreprises",
+      "risk": "write"
     },
     {
       "key": "intercom_company_get",
@@ -2288,7 +2306,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Entreprises"
+      "group": "Entreprises",
+      "risk": "safe"
     },
     {
       "key": "intercom_companies_list",
@@ -2354,7 +2373,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Entreprises"
+      "group": "Entreprises",
+      "risk": "safe"
     },
     {
       "key": "intercom_tag_create",
@@ -2416,7 +2436,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Tags"
+      "group": "Tags",
+      "risk": "write"
     },
     {
       "key": "intercom_tags_list",
@@ -2463,7 +2484,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Tags"
+      "group": "Tags",
+      "risk": "safe"
     },
     {
       "key": "intercom_note_create",
@@ -2548,7 +2570,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Notes"
+      "group": "Notes",
+      "risk": "write"
     },
     {
       "key": "intercom_notes_list",
@@ -2628,7 +2651,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Notes"
+      "group": "Notes",
+      "risk": "safe"
     },
     {
       "key": "intercom_data_event_create",
@@ -2713,7 +2737,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Événements de données"
+      "group": "Événements de données",
+      "risk": "write"
     },
     {
       "key": "intercom_data_events_list",
@@ -2785,7 +2810,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Événements de données"
+      "group": "Événements de données",
+      "risk": "safe"
     },
     {
       "key": "intercom_articles_list",
@@ -2851,7 +2877,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Articles"
+      "group": "Articles",
+      "risk": "safe"
     },
     {
       "key": "intercom_article_get",
@@ -2913,7 +2940,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Articles"
+      "group": "Articles",
+      "risk": "safe"
     },
     {
       "key": "intercom_webhook_event",
@@ -2950,7 +2978,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Événements"
+      "group": "Événements",
+      "risk": "safe"
     }
   ]
 }

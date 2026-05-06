@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef, OnInit, OnDestroy, HostListener } from '@angular/core';
+import { Component, ChangeDetectorRef, OnInit, OnDestroy, HostListener, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NzSelectModule } from 'ng-zorro-antd/select';
@@ -20,14 +20,19 @@ import { debounceTime, takeUntil } from 'rxjs/operators';
 import { AiService, AiAvailableAgent } from './ai.service';
 import { AccessControlService } from '../../services/access-control.service';
 import { ApiClientService } from '../../services/api-client.service';
+import { AiUserPreferencesComponent } from './settings/ai-user-preferences.component';
+import { AiActivePermissionsComponent } from './settings/ai-active-permissions.component';
+import { AiProjectKnowledgeComponent } from './knowledge/ai-project-knowledge.component';
+import { AiPromptTemplatesComponent } from './prompt-templates/ai-prompt-templates.component';
+import { AiUserSkillsComponent } from './user-skills/ai-user-skills.component';
 
 @Component({
   selector: 'ai-settings',
   standalone: true,
-  imports: [CommonModule, FormsModule, NzSelectModule, NzInputModule, NzButtonModule, NzIconModule, NzEmptyModule, NzPopconfirmModule, NzToolTipModule, NzSpinModule, NzDividerModule, NzTagModule, NzAvatarModule, NzTabsModule, NzCheckboxModule, NzInputNumberModule],
+  imports: [CommonModule, FormsModule, NzSelectModule, NzInputModule, NzButtonModule, NzIconModule, NzEmptyModule, NzPopconfirmModule, NzToolTipModule, NzSpinModule, NzDividerModule, NzTagModule, NzAvatarModule, NzTabsModule, NzCheckboxModule, NzInputNumberModule, AiUserPreferencesComponent, AiActivePermissionsComponent, AiProjectKnowledgeComponent, AiPromptTemplatesComponent, AiUserSkillsComponent],
   template: `
     <div class="settings-container" *ngIf="!loading; else loadingTpl">
-      <nz-tabset nzSize="small" nzType="card">
+      <nz-tabset nzSize="small" nzType="card" [nzSelectedIndex]="selectedTabIndex" (nzSelectedIndexChange)="onTabIndexChange($event)">
         <!-- Tab 1: Agents -->
         <nz-tab nzTitle="Agents">
           <div class="tab-content">
@@ -291,6 +296,55 @@ import { ApiClientService } from '../../services/api-client.service';
           </div>
         </nz-tab>
 
+        <!-- Tab: Connaissances projet (mode project uniquement) -->
+        <nz-tab *ngIf="currentThreadMode() === 'project' && currentThreadId()" nzTitle="Connaissances projet">
+          <div class="tab-content">
+            <div class="settings-section">
+              <div class="section-title">
+                <span nz-icon nzType="database" nzTheme="outline"></span>
+                Connaissances structurées du projet
+              </div>
+              <div class="section-desc">
+                Infos durables sur le projet (client, budget, contacts, URLs, identifiants…).
+                Auto-injectées dans le contexte de l'agent pour qu'il puisse s'y référer.
+              </div>
+              <ai-project-knowledge [threadId]="currentThreadId()!" [initialFilter]="knowledgeInitialFilter"></ai-project-knowledge>
+            </div>
+          </div>
+        </nz-tab>
+
+        <!-- Tab: Skills partagés (marketplace interne) -->
+        <nz-tab nzTitle="Skills">
+          <div class="tab-content">
+            <div class="settings-section">
+              <div class="section-title">
+                <span nz-icon nzType="code" nzTheme="outline"></span>
+                Skills du workspace
+              </div>
+              <div class="section-desc">
+                Bibliothèque de snippets code partagés (Python, JS, SQL, Bash…). Dupliques (fork) pour personnaliser.
+              </div>
+              <ai-user-skills></ai-user-skills>
+            </div>
+          </div>
+        </nz-tab>
+
+        <!-- Tab: Prompt templates (bibliothèque workspace) -->
+        <nz-tab nzTitle="Prompts">
+          <div class="tab-content">
+            <div class="settings-section">
+              <div class="section-title">
+                <span nz-icon nzType="book" nzTheme="outline"></span>
+                Bibliothèque de prompts
+              </div>
+              <div class="section-desc">
+                Sauvegarde tes prompts récurrents et partage-les avec ton workspace. Clic « Utiliser » pour insérer dans le chat.
+              </div>
+              <ai-prompt-templates></ai-prompt-templates>
+            </div>
+          </div>
+        </nz-tab>
+
         <!-- Tab 3: Instructions -->
         <nz-tab nzTitle="Instructions">
           <div class="tab-content">
@@ -434,6 +488,18 @@ import { ApiClientService } from '../../services/api-client.service';
               <pre class="context-json" *ngIf="stats?.workspaceContext">{{ formatJson(stats.workspaceContext) }}</pre>
               <div *ngIf="!stats?.workspaceContext" class="memory-empty-inline"><span class="empty-hint">Non chargé</span></div>
             </div>
+          </div>
+        </nz-tab>
+
+        <!-- V2 Tabs -->
+        <nz-tab nzTitle="Préférences">
+          <div class="tab-content">
+            <ai-user-preferences></ai-user-preferences>
+          </div>
+        </nz-tab>
+        <nz-tab nzTitle="Permissions actives">
+          <div class="tab-content">
+            <ai-active-permissions></ai-active-permissions>
           </div>
         </nz-tab>
       </nz-tabset>
@@ -661,6 +727,13 @@ export class AiSettingsComponent implements OnInit, OnDestroy {
   projectMemoryKeys: string[] = [];
   projectElementType: 'flow' | 'form' | null = null;
   projectElementId: string | null = null;
+  // computed : re-évalué dès que ai.currentThread() change → child ai-project-knowledge
+  // reçoit la nouvelle value via ngOnChanges → load() déclenché.
+  currentThreadId = computed<string | null>(() => {
+    const t = this.ai.currentThread();
+    return (t?._id || t?.id || null) as any;
+  });
+  currentThreadMode = computed<string | null>(() => this.ai.currentThread()?.mode || null);
   loading = true;
   isAdmin = false;
   stats: any = null;
@@ -713,6 +786,10 @@ export class AiSettingsComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   private instructions$ = new Subject<string>();
 
+  // ── Tab control (pour ouvrir directement l'onglet Connaissances) ──
+  selectedTabIndex = 0;
+  knowledgeInitialFilter: 'all' | 'pending' | 'approved' | 'rejected' = 'all';
+
   constructor(private ai: AiService, private cdr: ChangeDetectorRef, private acl: AccessControlService, private apiClient: ApiClientService) {}
 
   ngOnInit() {
@@ -729,7 +806,22 @@ export class AiSettingsComponent implements OnInit, OnDestroy {
       });
     });
 
+    // ── Ouvre l'onglet "Connaissances projet" sur filtre "pending" quand le
+    // badge du header chat est cliqué. L'onglet n'est visible qu'en mode
+    // project (index 2 = Agents 0 + Mémoire 1 + Connaissances 2).
+    this.ai.openKnowledgePending$.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      if (this.currentThreadMode() === 'project' && this.currentThreadId()) {
+        this.knowledgeInitialFilter = 'pending';
+        this.selectedTabIndex = 2;
+        this.cdr.detectChanges();
+      }
+    });
+
     this.loadAll();
+  }
+
+  onTabIndexChange(idx: number) {
+    this.selectedTabIndex = idx;
   }
 
   @HostListener('window:resize')
@@ -772,6 +864,8 @@ export class AiSettingsComponent implements OnInit, OnDestroy {
 
         const thread = this.ai.currentThread();
         this.selectedAgentId = thread?.agentId || this.ai.selectedAgentId() || 'general';
+        // currentThreadId / currentThreadMode sont désormais des computed() basés
+        // sur ai.currentThread() — plus besoin de les set ici.
 
         this.projectElementType = null;
         this.projectElementId = null;

@@ -830,7 +830,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Pages"
+      "group": "Pages",
+      "risk": "safe"
     },
     {
       "key": "facebook_list_page_posts",
@@ -901,7 +902,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Publications"
+      "group": "Publications",
+      "risk": "write"
     },
     {
       "key": "facebook_list_feed",
@@ -972,7 +974,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Publications"
+      "group": "Publications",
+      "risk": "safe"
     },
     {
       "key": "facebook_create_post",
@@ -1057,7 +1060,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Publications"
+      "group": "Publications",
+      "risk": "write"
     },
     {
       "key": "facebook_get_post",
@@ -1118,7 +1122,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Publications"
+      "group": "Publications",
+      "risk": "write"
     },
     {
       "key": "facebook_delete_post",
@@ -1179,7 +1184,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Publications"
+      "group": "Publications",
+      "risk": "destructive"
     },
     {
       "key": "facebook_create_comment",
@@ -1254,7 +1260,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Commentaires"
+      "group": "Commentaires",
+      "risk": "write"
     },
     {
       "key": "facebook_list_comments",
@@ -1325,7 +1332,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Commentaires"
+      "group": "Commentaires",
+      "risk": "write"
     },
     {
       "key": "facebook_delete_comment",
@@ -1386,7 +1394,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Commentaires"
+      "group": "Commentaires",
+      "risk": "destructive"
     },
     {
       "key": "facebook_upload_photo",
@@ -1473,7 +1482,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Photos"
+      "group": "Photos",
+      "risk": "write"
     },
     {
       "key": "facebook_list_photos",
@@ -1544,7 +1554,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Photos"
+      "group": "Photos",
+      "risk": "safe"
     },
     {
       "key": "facebook_send_message",
@@ -1633,7 +1644,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Messenger"
+      "group": "Messenger",
+      "risk": "write"
     },
     {
       "key": "facebook_list_leads",
@@ -1704,7 +1716,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Leads"
+      "group": "Leads",
+      "risk": "safe"
     },
     {
       "key": "facebook_page_insights",
@@ -1803,7 +1816,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Insights"
+      "group": "Insights",
+      "risk": "safe"
     },
     {
       "key": "facebook_create_custom_audience",
@@ -1919,7 +1933,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Audiences"
+      "group": "Audiences",
+      "risk": "write"
     },
     {
       "key": "facebook_list_audiences",
@@ -1990,7 +2005,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Audiences"
+      "group": "Audiences",
+      "risk": "safe"
     }
   ]
 }

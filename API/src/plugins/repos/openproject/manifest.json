@@ -562,7 +562,8 @@
       "tags": [
         "création",
         "OpenProject"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "list_openproject_projects",
@@ -609,7 +610,8 @@
       "tags": [
         "liste",
         "OpenProject"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "add_openproject_task",
@@ -772,7 +774,8 @@
       "tags": [
         "création",
         "OpenProject"
-      ]
+      ],
+      "risk": "write"
     },
     {
       "key": "search_many_openproject_users",
@@ -820,7 +823,8 @@
         "liste",
         "recherche",
         "OpenProject"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "list_openproject_tasks",
@@ -884,7 +888,8 @@
       "tags": [
         "liste",
         "OpenProject"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "list_openproject_task_statuses",
@@ -931,7 +936,8 @@
       "tags": [
         "liste",
         "OpenProject"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "list_openproject_task_types",
@@ -978,7 +984,8 @@
       "tags": [
         "liste",
         "OpenProject"
-      ]
+      ],
+      "risk": "safe"
     },
     {
       "key": "update_openproject_task",
@@ -1127,7 +1134,8 @@
       "tags": [
         "mise-à-jour",
         "OpenProject"
-      ]
+      ],
+      "risk": "write"
     }
   ]
 }

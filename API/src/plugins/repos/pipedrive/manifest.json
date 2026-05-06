@@ -1377,7 +1377,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Deals"
+      "group": "Deals",
+      "risk": "write"
     },
     {
       "key": "pipedrive_deal_get",
@@ -1439,7 +1440,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Deals"
+      "group": "Deals",
+      "risk": "safe"
     },
     {
       "key": "pipedrive_deal_update",
@@ -1537,7 +1539,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Deals"
+      "group": "Deals",
+      "risk": "write"
     },
     {
       "key": "pipedrive_deal_delete",
@@ -1599,7 +1602,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Deals"
+      "group": "Deals",
+      "risk": "destructive"
     },
     {
       "key": "pipedrive_deals_list",
@@ -1665,7 +1669,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Deals"
+      "group": "Deals",
+      "risk": "safe"
     },
     {
       "key": "pipedrive_deal_search",
@@ -1736,7 +1741,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Deals"
+      "group": "Deals",
+      "risk": "safe"
     },
     {
       "key": "pipedrive_person_create",
@@ -1825,7 +1831,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Personnes"
+      "group": "Personnes",
+      "risk": "write"
     },
     {
       "key": "pipedrive_person_get",
@@ -1887,7 +1894,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Personnes"
+      "group": "Personnes",
+      "risk": "safe"
     },
     {
       "key": "pipedrive_person_update",
@@ -1976,7 +1984,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Personnes"
+      "group": "Personnes",
+      "risk": "write"
     },
     {
       "key": "pipedrive_person_delete",
@@ -2038,7 +2047,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Personnes"
+      "group": "Personnes",
+      "risk": "destructive"
     },
     {
       "key": "pipedrive_persons_list",
@@ -2104,7 +2114,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Personnes"
+      "group": "Personnes",
+      "risk": "safe"
     },
     {
       "key": "pipedrive_person_search",
@@ -2175,7 +2186,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Personnes"
+      "group": "Personnes",
+      "risk": "safe"
     },
     {
       "key": "pipedrive_organization_create",
@@ -2246,7 +2258,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Organisations"
+      "group": "Organisations",
+      "risk": "write"
     },
     {
       "key": "pipedrive_organization_get",
@@ -2308,7 +2321,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Organisations"
+      "group": "Organisations",
+      "risk": "safe"
     },
     {
       "key": "pipedrive_organization_update",
@@ -2388,7 +2402,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Organisations"
+      "group": "Organisations",
+      "risk": "write"
     },
     {
       "key": "pipedrive_organization_delete",
@@ -2450,7 +2465,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Organisations"
+      "group": "Organisations",
+      "risk": "destructive"
     },
     {
       "key": "pipedrive_organizations_list",
@@ -2516,7 +2532,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Organisations"
+      "group": "Organisations",
+      "risk": "safe"
     },
     {
       "key": "pipedrive_activity_create",
@@ -2653,7 +2670,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Activités"
+      "group": "Activités",
+      "risk": "write"
     },
     {
       "key": "pipedrive_activity_get",
@@ -2715,7 +2733,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Activités"
+      "group": "Activités",
+      "risk": "safe"
     },
     {
       "key": "pipedrive_activity_update",
@@ -2821,7 +2840,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Activités"
+      "group": "Activités",
+      "risk": "write"
     },
     {
       "key": "pipedrive_activity_delete",
@@ -2883,7 +2903,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Activités"
+      "group": "Activités",
+      "risk": "destructive"
     },
     {
       "key": "pipedrive_activities_list",
@@ -2949,7 +2970,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Activités"
+      "group": "Activités",
+      "risk": "safe"
     },
     {
       "key": "pipedrive_pipelines_list",
@@ -2996,7 +3018,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Pipelines"
+      "group": "Pipelines",
+      "risk": "safe"
     },
     {
       "key": "pipedrive_stages_list",
@@ -3053,7 +3076,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Étapes"
+      "group": "Étapes",
+      "risk": "safe"
     },
     {
       "key": "pipedrive_note_create",
@@ -3142,7 +3166,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Notes"
+      "group": "Notes",
+      "risk": "write"
     },
     {
       "key": "pipedrive_notes_list",
@@ -3208,7 +3233,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Notes"
+      "group": "Notes",
+      "risk": "safe"
     },
     {
       "key": "pipedrive_products_list",
@@ -3274,7 +3300,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Produits"
+      "group": "Produits",
+      "risk": "safe"
     },
     {
       "key": "pipedrive_users_list",
@@ -3321,7 +3348,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Utilisateurs"
+      "group": "Utilisateurs",
+      "risk": "safe"
     },
     {
       "key": "pipedrive_webhook_event",
@@ -3367,7 +3395,8 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Événements"
+      "group": "Événements",
+      "risk": "safe"
     }
   ]
 }
