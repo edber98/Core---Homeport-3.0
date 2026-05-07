@@ -18,6 +18,10 @@ module.exports = {
       date: data.date || '',
       messageId: data.messageId || '',
       attachmentCount: data.attachmentCount || 0,
+      // Tableau de fileRef ({_type, fileId, name, mimeType, size}) — chaque
+      // pièce jointe est déjà stockée dans FileRecord par l'adapter IMAP.
+      // Connecte-le à un node loop pour itérer + uploader/transformer.
+      attachments: Array.isArray(data.attachments) ? data.attachments : [],
     };
   }
 };

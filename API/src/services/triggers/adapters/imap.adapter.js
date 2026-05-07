@@ -1,6 +1,7 @@
 const { ImapFlow } = require('imapflow');
 const { simpleParser } = require('mailparser');
 const { SubscriptionTrigger } = require('../subscription-trigger');
+const { createFilesHelper } = require('../../file-storage');
 
 class ImapAdapter extends SubscriptionTrigger {
   async _connect() {
@@ -58,6 +59,41 @@ class ImapAdapter extends SubscriptionTrigger {
         );
         if (msg?.source) {
           const parsed = await simpleParser(msg.source);
+          // Stocke les pièces jointes en FileRecord et expose un tableau
+          // de fileRef au flow → utilisable directement avec un node loop +
+          // file uploader (Nextcloud, Dropbox, S3…). Sans ça, seul le count
+          // était disponible, les fichiers eux-mêmes étaient perdus.
+          const attachments = [];
+          const rawAttachments = parsed.attachments || [];
+          if (rawAttachments.length > 0) {
+            try {
+              const filesHelper = createFilesHelper({
+                workspaceId: this.flow?.workspaceId,
+                companyId: this.flow?.companyId,
+                runId: null, // pas de runId à ce stade : le run sera créé après le trigger
+              });
+              for (const att of rawAttachments) {
+                try {
+                  const ref = await filesHelper.store(att.content, {
+                    name: att.filename || 'attachment',
+                    mimeType: att.contentType || 'application/octet-stream',
+                    lifecycle: 'temp', // expire automatiquement (cf. FILE_TTL_DEFAULT)
+                  });
+                  attachments.push({
+                    filename: att.filename || ref.name,
+                    mimeType: ref.mimeType,
+                    size: ref.size,
+                    fileId: ref.fileId,
+                    _type: 'fileRef',
+                  });
+                } catch (storeErr) {
+                  this.log.warn(`[imap] attachment store failed (${att.filename}): ${storeErr.message}`);
+                }
+              }
+            } catch (helperErr) {
+              this.log.warn(`[imap] filesHelper init failed: ${helperErr.message}`);
+            }
+          }
           await this._emit({
             from: parsed.from?.text || '',
             to: parsed.to?.text || '',
@@ -66,7 +102,8 @@ class ImapAdapter extends SubscriptionTrigger {
             html: parsed.html || '',
             date: parsed.date?.toISOString() || '',
             messageId: parsed.messageId || '',
-            attachmentCount: (parsed.attachments || []).length,
+            attachmentCount: rawAttachments.length,
+            attachments,
           });
         }
       } catch (e) {

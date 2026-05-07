@@ -244,4 +244,37 @@ const AiMessageSchema = new Schema({
   metadata: { type: MessageMetadataSchema, default: undefined },
 }, { timestamps: { createdAt: true, updatedAt: false } });
 
+// Webhook dispatch après création d'un message assistant. On hook ici plutôt
+// que dans chaque endroit qui crée des messages (harness, agent-runner,
+// sub-runner, routes ai…) — simpler, exhaustif, fire-and-forget.
+AiMessageSchema.post('save', function postSaveDispatch(doc) {
+  // On ne push QUE pour les messages assistant nouvellement créés. Les user
+  // messages, system notes et widgets internes ne déclenchent pas de webhook.
+  if (doc.role !== 'assistant') return;
+  // Skip si le message a juste un kind interne (system_note, system_hint…)
+  const kind = doc.metadata?.kind;
+  const SKIP_KINDS = new Set(['system_note', 'system_hint', 'permission_request', 'cache_sync_request']);
+  if (kind && SKIP_KINDS.has(kind)) return;
+  try {
+    const { dispatchEvent } = require('../../services/webhook-dispatcher');
+    const AiThread = require('./ai-thread.model');
+    AiThread.findById(doc.threadId, 'workspaceId companyId flowId formId mode').lean()
+      .then(thread => {
+        if (!thread) return;
+        return dispatchEvent('thread.message.created', {
+          messageId: String(doc._id),
+          threadId: String(doc.threadId),
+          flowId: thread.flowId ? String(thread.flowId) : null,
+          formId: thread.formId || null,
+          mode: thread.mode,
+          role: doc.role,
+          content: doc.content || '',
+          kind: kind || null,
+          createdAt: doc.createdAt,
+        }, { workspaceId: thread.workspaceId, companyId: thread.companyId });
+      })
+      .catch(() => {}); // fire-and-forget
+  } catch { /* le webhook ne doit jamais bloquer l'app */ }
+});
+
 module.exports = model('AiMessage', AiMessageSchema);
