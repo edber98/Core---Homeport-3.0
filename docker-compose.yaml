@@ -3,9 +3,7 @@ services:
     image: kinn-backend:${CI_COMMIT_REF_SLUG}
     container_name: kinn-backend
     volumes:
-      - ./API:/app
-      - ./API/mongo-data:/mongo-data
-      - ./API/redis-data:/redis-data
+      - ./API/uploads:/app/uploads
       # Persistance des packages installés dynamiquement via install_package.
       # Sans ce volume, chaque redémarrage perd les libs installées par l'agent
       # (python-docx, openpyxl, etc. via --target → survit aux restarts).
