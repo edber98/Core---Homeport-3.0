@@ -309,9 +309,16 @@ async function validateFlowTemplates(flowGraph) {
     }
 
     // Feature/structure changed?
-    // IMPORTANT: defaults must match importer.js L185 exactly (no || [] or || '')
-    // undefined values are stripped by JSON.stringify, so they must stay undefined
+    // IMPORTANT: defaults must match importer.js L215 EXACTLY :
+    //   - inputHandles/outputHandles/linkedHandles : stay undefined si non fournis
+    //     (JSON.stringify les strip)
+    //   - risk : default 'write' comme dans importer.normRisk → essentiel sinon
+    //     mismatch sur TOUS les templates ne définissant pas explicitement risk.
     const embTpl = n.model?.templateObj || {};
+    const embeddedRisk = (() => {
+      const r = String(embTpl.risk || '').toLowerCase();
+      return ['safe', 'write', 'destructive', 'elevated'].includes(r) ? r : 'write';
+    })();
     const embeddedFeature = checksumJSON({
       authorize_catch_error: !!embTpl.authorize_catch_error,
       authorize_skip_error: !!embTpl.authorize_skip_error,
@@ -323,6 +330,7 @@ async function validateFlowTemplates(flowGraph) {
       output_array_field: embTpl.output_array_field,
       output_schema_field: embTpl.output_schema_field,
       outputSchema: embTpl.outputSchema,
+      risk: embeddedRisk,
     });
     if (liveTpl.checksumFeature && embeddedFeature !== liveTpl.checksumFeature) {
       errors.push({ code: 'template_structure_changed',

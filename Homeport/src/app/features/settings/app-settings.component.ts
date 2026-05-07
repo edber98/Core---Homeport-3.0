@@ -46,6 +46,15 @@ import { Router } from '@angular/router';
           </div>
         </div>
         <div class="card">
+          <div class="title">Webhooks</div>
+          <p>Émettre des events HTTP signés HMAC-SHA256 vers des URLs externes (run terminée, message IA, déploiement).</p>
+          <div class="actions">
+            <button nz-button nzType="default" class="action-blue" (click)="goToWebhooks()">
+              <i class="fa-solid fa-link"></i> Gérer les webhooks
+            </button>
+          </div>
+        </div>
+        <div class="card">
           <div class="title">Réinitialiser</div>
           <p>Efface les données locales (flows, formulaires, templates, apps, credentials) et recharge les valeurs par défaut.</p>
           <div class="actions">
@@ -189,6 +198,7 @@ export class AppSettingsComponent {
     this.auth.logout();
   }
   logWorkspaceState() { try { this.acl.debugLogWorkspaceState(); this.msg = 'Voir console (F12)'; setTimeout(() => this.msg = '', 2000); } catch {} }
+  goToWebhooks() { this.router.navigateByUrl('/settings/webhooks'); }
 
   onImportFile(ev: Event) {
     const input = ev.target as HTMLInputElement;

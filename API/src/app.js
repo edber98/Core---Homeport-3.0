@@ -8,6 +8,12 @@ const { authMiddleware, requireCompanyScope } = require('./auth/jwt');
 function buildApp(opts = {}){
   const app = express();
   app.use(cors());
+
+  // ── Webhook receiver (Kinn → Kinn) — mount AVANT express.json pour avoir
+  //    accès au body brut nécessaire à la vérification HMAC. Cf. routes
+  //    montées dans modules/db/webhooks-receiver.js
+  app.use('/api/webhooks/receive', require('./modules/db/webhooks-receiver')());
+
   app.use(express.json({ limit: '1mb' }));
   if (morgan) app.use(morgan('dev'));
   app.use(require('./middlewares/api-response').apiResponse());

@@ -8,12 +8,29 @@
  */
 function buildKinnClient(opts) {
   const creds = (opts && opts.credentials) || {};
-  const baseUrl = String(creds.baseUrl || '').replace(/\/+$/, '');
-  const apiToken = String(creds.apiToken || '');
-  const defaultWorkspaceId = String(creds.workspaceId || '');
+  const isLocal = creds.local === true || creds.local === 'true';
 
-  if (!baseUrl) throw new Error('Kinn credentials: baseUrl manquant');
-  if (!apiToken) throw new Error('Kinn credentials: apiToken manquant');
+  let baseUrl, apiToken, defaultWorkspaceId;
+
+  if (isLocal) {
+    // Mode local : on parle à soi-même. Le baseUrl est dérivé du PORT courant.
+    // L'apiToken vient d'une env var KINN_LOCAL_API_TOKEN (générée au boot,
+    // cf. seed). Le workspaceId par défaut peut venir de l'env aussi.
+    const port = process.env.PORT || '5055';
+    baseUrl = String(process.env.KINN_LOCAL_BASE_URL || `http://localhost:${port}`).replace(/\/+$/, '');
+    apiToken = String(process.env.KINN_LOCAL_API_TOKEN || '');
+    defaultWorkspaceId = String(creds.workspaceId || process.env.KINN_LOCAL_WORKSPACE_ID || '');
+
+    if (!apiToken) {
+      throw new Error('Kinn local: KINN_LOCAL_API_TOKEN absent. Génère un PAT pour l\'admin et mets-le dans l\'env (ou redémarre Kinn pour auto-générer un service token).');
+    }
+  } else {
+    baseUrl = String(creds.baseUrl || '').replace(/\/+$/, '');
+    apiToken = String(creds.apiToken || '');
+    defaultWorkspaceId = String(creds.workspaceId || '');
+    if (!baseUrl) throw new Error('Kinn credentials: baseUrl manquant');
+    if (!apiToken) throw new Error('Kinn credentials: apiToken manquant');
+  }
 
   async function fetchKinn(path, options = {}) {
     const url = path.startsWith('http') ? path : `${baseUrl}${path}`;

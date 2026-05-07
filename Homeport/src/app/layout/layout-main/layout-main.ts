@@ -74,6 +74,7 @@ export class LayoutMain implements OnInit, OnDestroy {
     { label: 'Apps / Providers', icon: 'api', route: '/apps' },
     { label: 'Plugin Repos', icon: 'database', route: '/plugin-repos', adminOnly: true },
     { label: 'Notifications', icon: 'bell', route: '/notifications' },
+    { label: 'Webhooks', icon: 'api', route: '/settings/webhooks' },
     { label: 'Debugging', icon: 'tool', route: '/debug' },
     { label: 'Apprendre', icon: 'read', route: '/learn' },
     { label: 'Paramètres', icon: 'setting', route: '/settings' },

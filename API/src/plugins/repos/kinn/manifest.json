@@ -1042,7 +1042,7 @@
       "key": "kinn",
       "name": "Kinn",
       "title": "Kinn",
-      "iconUrl": "https://www.kinn.fr/logo-large.svg",
+      "iconUrl": "https://www.kinn.fr/logo-petit.svg",
       "iconClass": "fa-solid fa-rocket",
       "color": "#fdf2f8",
       "tags": [
@@ -1063,15 +1063,31 @@
         },
         "fields": [
           {
+            "type": "checkbox",
+            "key": "local",
+            "label": "Instance locale (auto-référence)",
+            "description": "Coche si tu utilises ce plugin sur la MÊME instance Kinn que celle qui exécute le flow. Pas besoin de baseUrl ni de token : on parle directement à soi-même via http://localhost et un service token généré au boot.",
+            "default": false,
+            "col": {
+              "xs": 24
+            }
+          },
+          {
             "type": "text",
             "key": "baseUrl",
             "label": "URL de l'instance Kinn",
             "description": "Ex: https://acme.kinn.fr ou http://localhost:5055 (sans /api à la fin)",
-            "validators": [
-              {
-                "type": "required"
+            "visibleIf": {
+              "!": {
+                "var": "local"
               }
-            ],
+            },
+            "requiredIf": {
+              "!": {
+                "var": "local"
+              }
+            },
+            "validators": [],
             "col": {
               "xs": 24
             }
@@ -1082,11 +1098,17 @@
             "label": "Token API (Bearer)",
             "description": "Personal Access Token généré dans Kinn → Settings → Access Tokens.",
             "secret": true,
-            "validators": [
-              {
-                "type": "required"
+            "visibleIf": {
+              "!": {
+                "var": "local"
               }
-            ],
+            },
+            "requiredIf": {
+              "!": {
+                "var": "local"
+              }
+            },
+            "validators": [],
             "col": {
               "xs": 24
             }
@@ -1096,6 +1118,11 @@
             "key": "workspaceId",
             "label": "Workspace ID par défaut",
             "description": "Optionnel — ID du workspace cible si les nodes ne le précisent pas.",
+            "visibleIf": {
+              "!": {
+                "var": "local"
+              }
+            },
             "col": {
               "xs": 24
             }
