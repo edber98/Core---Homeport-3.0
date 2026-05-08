@@ -22,6 +22,14 @@ const FlowSchema = new Schema({
   triggerType:   { type: String, enum: ['subscription','webhook','polling','cron', null], default: null },
   triggerNodeId: { type: String, default: null },
   webhookToken:  { type: String, default: null, index: true, sparse: true },
+  // Per-node HTTP trigger config (déclencheur HTTP entrant /api/trigger/:triggerId).
+  // Map<nodeId, { triggerId, encryptedAuth, createdAt, rotatedAt }>.
+  // triggerId est public (dans l'URL), encryptedAuth contient les secrets chiffrés.
+  // Persistance forte : valeurs ne changent que via rotation explicite.
+  httpTriggers:  { type: Schema.Types.Mixed, default: () => ({}) },
+  // Liste plate des triggerId pour lookup rapide depuis le receiver.
+  // Maintenue en miroir de httpTriggers (helper ensureHttpTriggerEntry / rotateTriggerId).
+  httpTriggerIds: { type: [String], default: [], index: true },
   // Validation snapshot to surface in UI lists
   invalid: { type: Boolean, default: false },
   validationErrors: { type: [Schema.Types.Mixed], default: [] },

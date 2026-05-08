@@ -166,7 +166,7 @@ import { environment } from '../../../../environments/environment';
               <app-dynamic-form  *ngIf="dfVisible"
                   [schema]="s"
                   [value]="model?.context || {}"
-                  [ctx]="ctx"
+                  [ctx]="resolverCtx"
                   [nativeSelectOnMobile]="false"
                   [hideActions]="true"
                   (valueChange)="onValue($event)"
@@ -364,6 +364,11 @@ export class FlowAdvancedCenterPanelComponent implements OnDestroy {
   @Input() model: any = {};
   @Input() ctx: any = {};
   @Input() flowId: string | null = null;
+
+  /** ctx enrichi avec flowId/nodeId pour les fields type 'resolver' qui appellent le backend. */
+  get resolverCtx(): any {
+    return { ...(this.ctx || {}), flowId: this.flowId, nodeId: this.model?.id };
+  }
   @Input() bare = false;
   @Input() simScenarios: Array<{ id: string; index: number; label: string; msgIn: any; match?: { exec?: boolean; handleId?: string; handleLabel?: string } }>|null = null;
   @Input() simSelectedIndex: number = 0;

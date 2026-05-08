@@ -181,6 +181,10 @@
 
                   <df-schema-builder *ngIf="field.type==='schema_builder'"
                                      [formControlName]="key"></df-schema-builder>
+
+                  <df-resolver *ngIf="field.type==='resolver'"
+                               [field]="$any(field)"
+                               [ctx]="ctx"></df-resolver>
                 </ng-container>
               </ng-container>
               </ng-container>

@@ -229,6 +229,13 @@ interface SectionGroup {
           <span *ngIf="!value">—</span>
         </ng-container>
 
+        <!-- resolver → texte / lien si URL -->
+        <ng-container *ngIf="field.type === 'resolver'">
+          <a *ngIf="value && (''+value).startsWith('http')" [href]="value" target="_blank" rel="noopener" class="rv-link">{{ value }}</a>
+          <code *ngIf="value && !((''+value).startsWith('http'))" class="rv-code">{{ value }}</code>
+          <span *ngIf="!value">—</span>
+        </ng-container>
+
         <!-- email → mailto link -->
         <ng-container *ngIf="field.type === 'email'">
           <a *ngIf="value" [href]="'mailto:' + value" class="rv-link">{{ value }}</a>
@@ -446,7 +453,7 @@ export class ExecResultViewerComponent implements OnChanges, OnDestroy {
     'url', 'email', 'color', 'rate',
     'code', 'expression', 'cron', 'json', 'schema_builder', 'html',
     'checkbox', 'boolean', 'date', 'select', 'radio',
-    'tags', 'text_array', 'file'
+    'tags', 'text_array', 'file', 'resolver'
   ]);
 
   private htmlCache = new Map<string, SafeHtml>();

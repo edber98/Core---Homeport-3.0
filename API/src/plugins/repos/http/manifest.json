@@ -112,14 +112,15 @@
   "nodeTemplates": [
     {
       "key": "core_webhook",
-      "name": "httpEndpoint",
+      "name": "httpTrigger",
       "schemaVersion": 2,
-      "title": "Point d’entrée HTTP",
-      "subtitle": "Webhook",
+      "title": "Déclencheur HTTP",
+      "subtitle": "Trigger entrant",
       "type": "event",
       "category": "HTTP",
       "providerKey": "http",
-      "description": "Déclenchement via requête HTTP entrante",
+      "description": "Déclenche le flow via une requête HTTP entrante. URL et auth générées par Kinn.",
+      "output_schema_field": "payload_schema",
       "outputHandles": [
         {
           "id": "ok",
@@ -129,123 +130,144 @@
         }
       ],
       "args": {
-        "title": "Point d’entrée HTTP",
-        "ui": {
-          "layout": "vertical",
-          "labelsOnTop": true
-        },
+        "title": "Déclencheur HTTP",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
         "fields": [
           {
-            "type": "text",
-            "key": "path",
-            "label": "Chemin",
-            "description": "Chemin d’URL de l’endpoint.",
-            "col": {
-              "xs": 24
-            },
-            "default": "/hooks/event",
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            "type": "resolver",
+            "key": "webhook_url",
+            "label": "URL du déclencheur",
+            "description": "URLs publiques où l'extérieur doit envoyer la requête. Persistantes, ne changent que sur clic 'Régénérer'.",
+            "resolver": "core_webhook_url",
+            "variants": [
+              { "id": "production", "label": "Production" },
+              { "id": "test",       "label": "Test" }
+            ],
+            "actions": [
+              { "id": "rotate_url", "label": "Régénérer l'URL", "confirm": true, "requiresAdmin": true }
+            ],
+            "copyable": true,
+            "col": { "xs": 24 }
           },
           {
             "type": "select",
             "key": "method",
-            "label": "Méthode",
-            "description": "Méthode HTTP attendue.",
-            "col": {
-              "xs": 24
-            },
+            "label": "Méthode HTTP attendue",
+            "col": { "xs": 24 },
             "options": [
-              {
-                "label": "GET",
-                "value": "GET"
-              },
-              {
-                "label": "POST",
-                "value": "POST"
-              },
-              {
-                "label": "PUT",
-                "value": "PUT"
-              },
-              {
-                "label": "PATCH",
-                "value": "PATCH"
-              },
-              {
-                "label": "DELETE",
-                "value": "DELETE"
-              }
+              { "label": "GET", "value": "GET" },
+              { "label": "POST", "value": "POST" },
+              { "label": "PUT", "value": "PUT" },
+              { "label": "PATCH", "value": "PATCH" },
+              { "label": "DELETE", "value": "DELETE" }
             ],
-            "default": "POST",
-            "expression": {
-              "allow": true,
-              "defaultMode": "val"
-            }
+            "default": "POST"
           },
           {
             "type": "select",
-            "key": "contentType",
-            "label": "Content-Type attendu",
-            "description": "Type de contenu attendu.",
-            "col": {
-              "xs": 24
-            },
+            "key": "auth_mode",
+            "label": "Mode d'authentification",
+            "description": "Comment l'extérieur doit prouver son identité pour appeler ce déclencheur.",
+            "col": { "xs": 24 },
             "options": [
-              {
-                "label": "application/json",
-                "value": "application/json"
-              },
-              {
-                "label": "application/x-www-form-urlencoded",
-                "value": "application/x-www-form-urlencoded"
-              },
-              {
-                "label": "text/plain",
-                "value": "text/plain"
-              },
-              {
-                "label": "multipart/form-data",
-                "value": "multipart/form-data"
-              }
+              { "label": "Public (aucune auth)", "value": "public" },
+              { "label": "Bearer token",          "value": "token" },
+              { "label": "HTTP Basic (user/pwd)", "value": "basic" },
+              { "label": "Signature HMAC",        "value": "hmac" },
+              { "label": "PAT Kinn (du workspace)", "value": "pat" }
             ],
-            "default": "application/json",
-            "expression": {
-              "allow": true,
-              "defaultMode": "val"
-            }
+            "default": "token"
+          },
+          {
+            "type": "resolver",
+            "key": "auth_token",
+            "label": "Bearer token",
+            "description": "À placer dans 'Authorization: Bearer <token>'.",
+            "resolver": "core_webhook_token",
+            "secret": true,
+            "copyable": true,
+            "actions": [
+              { "id": "rotate_secret", "label": "Régénérer le token", "confirm": true, "requiresAdmin": true }
+            ],
+            "visibleIf": { "==": [{ "var": "auth_mode" }, "token"] },
+            "col": { "xs": 24 }
+          },
+          {
+            "type": "text",
+            "key": "auth_username",
+            "label": "Nom d'utilisateur (HTTP Basic)",
+            "visibleIf": { "==": [{ "var": "auth_mode" }, "basic"] },
+            "requiredIf": { "==": [{ "var": "auth_mode" }, "basic"] },
+            "col": { "xs": 24 }
+          },
+          {
+            "type": "resolver",
+            "key": "auth_password",
+            "label": "Mot de passe (HTTP Basic)",
+            "resolver": "core_webhook_password",
+            "secret": true,
+            "copyable": true,
+            "actions": [
+              { "id": "rotate_secret", "label": "Régénérer le mot de passe", "confirm": true, "requiresAdmin": true }
+            ],
+            "visibleIf": { "==": [{ "var": "auth_mode" }, "basic"] },
+            "col": { "xs": 24 }
+          },
+          {
+            "type": "select",
+            "key": "hmac_algo",
+            "label": "Algorithme HMAC",
+            "options": [
+              { "label": "SHA-256", "value": "sha256" },
+              { "label": "SHA-1",   "value": "sha1" },
+              { "label": "SHA-512", "value": "sha512" }
+            ],
+            "default": "sha256",
+            "visibleIf": { "==": [{ "var": "auth_mode" }, "hmac"] },
+            "col": { "xs": 24 }
+          },
+          {
+            "type": "resolver",
+            "key": "auth_secret",
+            "label": "Secret HMAC",
+            "description": "Signe le body : header 'X-Kinn-Signature: <algo>=<hex>'.",
+            "resolver": "core_webhook_hmac_secret",
+            "secret": true,
+            "copyable": true,
+            "actions": [
+              { "id": "rotate_secret", "label": "Régénérer le secret", "confirm": true, "requiresAdmin": true }
+            ],
+            "visibleIf": { "==": [{ "var": "auth_mode" }, "hmac"] },
+            "col": { "xs": 24 }
+          },
+          {
+            "type": "schema_builder",
+            "key": "payload_schema",
+            "label": "Schéma du payload reçu",
+            "description": "Décrit la structure attendue du body. Définit l'output disponible pour les nodes en aval.",
+            "col": { "xs": 24 }
           },
           {
             "type": "checkbox",
             "key": "cors",
-            "label": "Autoriser CORS (\"*\")",
-            "description": "Active l’en-tête CORS permissif.",
-            "col": {
-              "xs": 24
-            },
+            "label": "Autoriser CORS",
+            "description": "Active l'en-tête Access-Control-Allow-Origin: *.",
+            "col": { "xs": 24 },
             "default": true
           },
           {
             "type": "number",
             "key": "respondStatus",
-            "label": "HTTP status de réponse",
-            "description": "Code HTTP renvoyé.",
-            "col": {
-              "xs": 24
-            },
+            "label": "Code HTTP de réponse",
+            "col": { "xs": 24 },
             "default": 200
           },
           {
             "type": "textarea",
             "key": "respondBody",
-            "label": "Corps de réponse (template JSON/texte)",
-            "description": "Corps de la réponse (template JSON/texte).",
-            "col": {
-              "xs": 24
-            },
+            "label": "Corps de réponse (JSON/texte)",
+            "description": "Vide = JSON par défaut { ok: true, flowId, triggered: true }.",
+            "col": { "xs": 24 },
             "default": ""
           }
         ],
@@ -253,10 +275,7 @@
         "displayDescription": false
       },
       "group": "Webhooks",
-      "tags": [
-        "http"
-      ],
-      "risk": "safe"
+      "tags": ["http", "trigger"]
     },
     {
       "key": "http",

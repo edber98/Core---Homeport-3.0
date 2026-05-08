@@ -91,6 +91,7 @@ function buildApp(opts = {}){
     });
     // Webhook receiver (no auth — token-based security)
     app.use('/api/hooks', require('./modules/db/webhook-receiver')());
+    app.use('/api/trigger', require('./modules/db/http-trigger-receiver')());
     app.use('/auth', require('./modules/db/auth')());
     // Public auth alias under /api to match frontend prod base (no auth middleware here)
     app.use('/api/auth', require('./modules/db/auth')());
@@ -109,6 +110,7 @@ function buildApp(opts = {}){
     app.use('/api', require('./modules/db/triggers')());
     app.use('/api', require('./modules/db/webhooks')());
     app.use('/api', require('./modules/db/me')());
+    app.use('/api', require('./modules/db/form-resolvers')());
     // Alias SSE stream without /api prefix (DB mode)
     app.get('/runs/:runId/stream', authMiddleware(), requireCompanyScope(), async (req, res) => {
       const { Types } = require('mongoose');
