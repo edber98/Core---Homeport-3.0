@@ -199,6 +199,25 @@ module.exports = function(){
       }
       // Apply graph patch (whether valid or forced)
       f.graph = patch.graph;
+
+      // Cleanup orphans : supprime les entries httpTriggers dont le nodeId
+      // n'existe plus dans le graph (node supprimé par l'utilisateur).
+      try {
+        const map = f.httpTriggers || {};
+        const liveIds = new Set((f.graph?.nodes || []).map(n => String(n.id || '')));
+        let changed = false;
+        for (const nodeId of Object.keys(map)) {
+          if (!liveIds.has(nodeId)) {
+            delete map[nodeId];
+            changed = true;
+          }
+        }
+        if (changed) {
+          f.httpTriggers = map;
+          f.markModified('httpTriggers');
+          f.httpTriggerIds = Object.values(map).map(e => e && e.triggerId).filter(Boolean);
+        }
+      } catch (e) { /* best effort */ }
     }
     // Workspace transfer: allow changing workspace if user is member of destination too
     if (patch.workspaceId) {

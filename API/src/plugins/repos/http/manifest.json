@@ -121,6 +121,7 @@
       "providerKey": "http",
       "description": "Déclenche le flow via une requête HTTP entrante. URL et auth générées par Kinn.",
       "output_schema_field": "payload_schema",
+      "output_schema_merge_at": "body",
       "outputHandles": [
         {
           "id": "ok",

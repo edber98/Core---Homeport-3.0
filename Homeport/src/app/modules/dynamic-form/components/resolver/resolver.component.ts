@@ -46,7 +46,12 @@ interface ResolverFieldConfig {
         Résolution…
       </div>
 
-      <div class="dfr-error" *ngIf="error()">
+      <div class="dfr-info" *ngIf="needsSave()">
+        <span nz-icon nzType="info-circle" nzTheme="outline"></span>
+        Sauvegarde le flow pour générer cette valeur. Elle sera persistante après création.
+      </div>
+
+      <div class="dfr-error" *ngIf="error() && !needsSave()">
         <span nz-icon nzType="warning" nzTheme="outline"></span>
         {{ error() }}
         <button nz-button nzSize="small" (click)="refresh()">Réessayer</button>
@@ -107,6 +112,7 @@ interface ResolverFieldConfig {
   styles: [`
     .dfr-host { display: flex; flex-direction: column; gap: 8px; }
     .dfr-header { color: #6b7280; font-size: 12px; display: flex; align-items: center; gap: 6px; }
+    .dfr-info { color: #6b7280; font-size: 12px; display: flex; align-items: center; gap: 6px; background: #fffbe6; padding: 8px 10px; border-radius: 4px; border: 1px solid #ffe58f; }
     .dfr-error { color: #cf1322; font-size: 12px; display: flex; align-items: center; gap: 8px; }
     .dfr-value-row { display: flex; gap: 6px; align-items: center; }
     .dfr-value-row input { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; }
@@ -123,6 +129,7 @@ export class ResolverComponent implements OnInit {
   loading = signal(false);
   error = signal<string | null>(null);
   result = signal<ResolverResult | null>(null);
+  needsSave = signal(false);
   revealed = signal(false);
   selectedVariantIdx = 0;
 
@@ -137,9 +144,14 @@ export class ResolverComponent implements OnInit {
   refresh() {
     const { flowId, nodeId } = this.getResolverContext();
     if (!flowId || !nodeId) {
-      this.error.set('Contexte flow/node manquant');
+      // Le flow n'a pas encore été sauvegardé : pas d'_id en base, donc le
+      // resolver ne peut rien produire. Affiche un message clair.
+      this.needsSave.set(true);
+      this.error.set(null);
+      this.result.set(null);
       return;
     }
+    this.needsSave.set(false);
     this.loading.set(true);
     this.error.set(null);
     this.backend.resolve(this.field.resolver, { flowId, nodeId }).subscribe({

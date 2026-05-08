@@ -40,28 +40,55 @@ function findNode(flow, nodeId) {
 
 // Récupère (ou crée si absent) l'entrée httpTriggers[nodeId].
 // L'entrée porte un triggerId stable + bundle chiffré des secrets d'auth.
+//
+// Implémentation atomique : plusieurs resolvers (URL/token/password/hmac)
+// peuvent fire EN PARALLÈLE sur le même flow au mount du panel. Sans
+// findOneAndUpdate atomique, les saves concurrents lèvent une VersionError
+// Mongoose ("No matching document found for id ... version N").
 async function ensureHttpTriggerEntry(flow, nodeId, { autoCreate = true } = {}) {
   flow.httpTriggers = flow.httpTriggers || {};
-  let entry = flow.httpTriggers[nodeId];
-  if (!entry && autoCreate) {
-    const triggerId = newId('htg');
-    const secrets = {
+  if (flow.httpTriggers[nodeId]) return flow.httpTriggers[nodeId];
+  if (!autoCreate) return null;
+
+  const Flow = require('../../db/models/flow.model');
+  const triggerId = newId('htg');
+  const newEntry = {
+    triggerId,
+    encryptedAuth: encrypt({
       token: generateSecret(40),
       password: generateSecret(24),
       hmacSecret: generateSecret(32),
-    };
-    entry = {
-      triggerId,
-      encryptedAuth: encrypt(secrets),
-      createdAt: new Date(),
-      rotatedAt: null,
-    };
-    flow.httpTriggers[nodeId] = entry;
-    flow.markModified('httpTriggers');
-    syncTriggerIds(flow);
-    await flow.save();
+    }),
+    createdAt: new Date(),
+    rotatedAt: null,
+  };
+
+  // Crée l'entrée seulement si elle n'existe pas encore (anti-race)
+  const updated = await Flow.findOneAndUpdate(
+    { _id: flow._id, [`httpTriggers.${nodeId}`]: { $exists: false } },
+    {
+      $set: { [`httpTriggers.${nodeId}`]: newEntry },
+      $addToSet: { httpTriggerIds: triggerId },
+    },
+    { new: true },
+  );
+
+  if (updated) {
+    // On a gagné la course — sync l'objet local avec le state DB
+    flow.httpTriggers = updated.httpTriggers || {};
+    flow.httpTriggerIds = updated.httpTriggerIds || [];
+    return flow.httpTriggers[nodeId];
   }
-  return entry;
+
+  // Course perdue : un autre resolver vient de créer l'entrée. Reload.
+  const reloaded = await Flow.findById(flow._id);
+  if (reloaded?.httpTriggers?.[nodeId]) {
+    flow.httpTriggers = reloaded.httpTriggers;
+    flow.httpTriggerIds = reloaded.httpTriggerIds || [];
+    return flow.httpTriggers[nodeId];
+  }
+  // Cas extrême : le flow a été supprimé entretemps
+  throw new Error('Flow disparu pendant la création de l\'entrée httpTrigger');
 }
 
 // Reconstruit l'array plat httpTriggerIds depuis la map httpTriggers.
@@ -81,28 +108,60 @@ function generateSecret(byteLen = 32) {
   return crypto.randomBytes(byteLen).toString('base64url');
 }
 
-// Regenère un secret précis dans le bundle chiffré sans toucher aux autres
+// Regenère un secret précis dans le bundle chiffré sans toucher aux autres.
+// Utilise findOneAndUpdate atomique pour éviter les conflits de version Mongoose.
 async function rotateSecretField(flow, nodeId, secretKey) {
+  const Flow = require('../../db/models/flow.model');
   const entry = await ensureHttpTriggerEntry(flow, nodeId);
   const secrets = decryptSecrets(entry);
   secrets[secretKey] = generateSecret(secretKey === 'token' ? 40 : 32);
-  entry.encryptedAuth = encrypt(secrets);
-  entry.rotatedAt = new Date();
-  flow.httpTriggers[nodeId] = entry;
-  flow.markModified('httpTriggers');
-  await flow.save();
+  const newEncrypted = encrypt(secrets);
+  const rotatedAt = new Date();
+  const updated = await Flow.findOneAndUpdate(
+    { _id: flow._id },
+    {
+      $set: {
+        [`httpTriggers.${nodeId}.encryptedAuth`]: newEncrypted,
+        [`httpTriggers.${nodeId}.rotatedAt`]: rotatedAt,
+      },
+    },
+    { new: true },
+  );
+  if (updated) {
+    flow.httpTriggers = updated.httpTriggers || {};
+    flow.httpTriggerIds = updated.httpTriggerIds || [];
+  }
   return secrets[secretKey];
 }
 
 async function rotateTriggerId(flow, nodeId) {
-  const entry = await ensureHttpTriggerEntry(flow, nodeId);
-  entry.triggerId = newId('htg');
-  entry.rotatedAt = new Date();
-  flow.httpTriggers[nodeId] = entry;
-  flow.markModified('httpTriggers');
-  syncTriggerIds(flow);
-  await flow.save();
-  return entry.triggerId;
+  const Flow = require('../../db/models/flow.model');
+  const oldEntry = await ensureHttpTriggerEntry(flow, nodeId);
+  const newTriggerId = newId('htg');
+  const rotatedAt = new Date();
+  // Atomic : remplace triggerId + maintient httpTriggerIds en miroir
+  const updated = await Flow.findOneAndUpdate(
+    { _id: flow._id },
+    {
+      $set: {
+        [`httpTriggers.${nodeId}.triggerId`]: newTriggerId,
+        [`httpTriggers.${nodeId}.rotatedAt`]: rotatedAt,
+      },
+      $pull: { httpTriggerIds: oldEntry.triggerId },
+    },
+    { new: true },
+  );
+  if (updated) {
+    // Ajoute le nouveau triggerId (en deuxième temps car $pull et $addToSet sur
+    // le même tableau dans une seule opération peut être conflictuel).
+    await Flow.updateOne({ _id: flow._id }, { $addToSet: { httpTriggerIds: newTriggerId } });
+    const reloaded = await Flow.findById(flow._id);
+    if (reloaded) {
+      flow.httpTriggers = reloaded.httpTriggers || {};
+      flow.httpTriggerIds = reloaded.httpTriggerIds || [];
+    }
+  }
+  return newTriggerId;
 }
 
 function publicBaseUrl() {

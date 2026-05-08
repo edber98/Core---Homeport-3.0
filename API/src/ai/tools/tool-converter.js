@@ -112,9 +112,11 @@ function extractOutputSchema(template) {
   if (Array.isArray(template.outputSchema) && template.outputSchema.length) {
     return template.outputSchema;
   }
-  // 3. output_schema_field → dynamic
+  // 3. output_schema_field → dynamic (avec merge_at optionnel)
   if (template.output_schema_field) {
-    return { dynamic: true, field: template.output_schema_field };
+    const out = { dynamic: true, field: template.output_schema_field };
+    if (template.output_schema_merge_at) out.mergeAt = template.output_schema_merge_at;
+    return out;
   }
   return null;
 }

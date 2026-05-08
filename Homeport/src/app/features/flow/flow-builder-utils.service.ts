@@ -396,6 +396,7 @@ export class FlowBuilderUtilsService {
         linkedHandles: tpl.linkedHandles || [],
         output_array_field: tpl.output_array_field || undefined,
         output_schema_field: tpl.output_schema_field || undefined,
+        output_schema_merge_at: (tpl as any).output_schema_merge_at || undefined,
         outputSchema: tpl.outputSchema || undefined,
       };
       return this.argsChecksum(obj);

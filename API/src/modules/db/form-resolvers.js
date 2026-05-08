@@ -57,7 +57,9 @@ async function buildResolverContext(context, user) {
   const flow = await loadFlow(flowId);
   if (!flow) throw new Error('Flow introuvable');
   const memberInfo = await assertMember(flow, user);
-  // Optional : findNode pour valider que le nodeId existe vraiment
-  try { findNode(flow, nodeId); } catch (e) { throw new Error(`Node introuvable dans le flow: ${nodeId}`); }
+  // findNode était strict ; on assouplit pour permettre la résolution avant
+  // que le node soit sauvegardé en DB (l'utilisateur vient de le déposer).
+  // L'entrée httpTriggers est créée immédiatement, et au prochain save du flow
+  // un cleanup des orphelins se fera (cf. modules/db/flows.js).
   return { flow, nodeId, user, memberInfo };
 }

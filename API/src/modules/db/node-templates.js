@@ -105,6 +105,7 @@ module.exports = function(){
       JSON.stringify(old.outputSchema || []) !== JSON.stringify(tpl.outputSchema || []) ||
       old.output_array_field !== tpl.output_array_field ||
       old.output_schema_field !== tpl.output_schema_field ||
+      old.output_schema_merge_at !== tpl.output_schema_merge_at ||
       !!old.authorize_catch_error !== !!tpl.authorize_catch_error ||
       !!old.authorize_skip_error !== !!tpl.authorize_skip_error
     );

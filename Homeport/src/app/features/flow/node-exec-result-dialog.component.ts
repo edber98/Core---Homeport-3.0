@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { resolveOutputSchema as resolveOutputSchemaUtil } from './output-schema.util';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { ExecResultViewerComponent } from './exec-result-viewer.component';
@@ -198,6 +199,7 @@ export class NodeExecResultDialogComponent implements OnChanges {
           outputHandles: this.template.outputHandles,
           outputSchema: this.template.outputSchema,
           output_schema_field: this.template.output_schema_field,
+          output_schema_merge_at: (this.template as any).output_schema_merge_at,
         } : null,
         modelContext: this.model?.context ? Object.keys(this.model.context) : null,
       });
@@ -261,31 +263,35 @@ export class NodeExecResultDialogComponent implements OnChanges {
       } catch {}
     }
 
-    // 4. Fallback: output_schema_field (dynamic schema from context, e.g. schema_builder)
+    // 4. Fallback: output_schema_field (avec optionnel output_schema_merge_at).
+    // Helper centralisé décide replace vs merge dans outputHandles[0].schema.
     if (!Object.keys(outSchemas).length && tpl.output_schema_field) {
       if (this.model?.context) {
         try {
-          const dynSchema = this.model.context[tpl.output_schema_field];
-          let fields: any[] = [];
-          if (dynSchema && typeof dynSchema === 'object' && Array.isArray(dynSchema.fields)) {
-            fields = dynSchema.fields
+          const okHandle = Array.isArray((tpl as any)?.outputHandles)
+            ? ((tpl as any).outputHandles.find((h: any) => String(h?.id) === 'ok') || (tpl as any).outputHandles[0])
+            : null;
+          const staticSch = okHandle?.schema || null;
+          const resolved = resolveOutputSchemaUtil(tpl, this.model.context, staticSch);
+          if (resolved && Array.isArray(resolved.fields)) {
+            const fields = resolved.fields
               .filter((f: any) => f.key && f.type !== 'textblock')
               .map((f: any) => {
-                // Preserve section_array / section(mode=array) with sub-fields
                 if (f.type === 'section_array' || (f.type === 'section' && f.mode === 'array')) {
                   return { ...f, label: f.label || f.title || f.key };
                 }
+                // Préserve les section avec sub-fields (ex: body après merge_at)
+                if (f.type === 'section' && Array.isArray(f.fields)) {
+                  return { ...f, label: f.label || f.title || f.key };
+                }
                 if (f.type === 'section') return null;
-                // Pass type as-is — the viewer handles all types natively
                 return { key: f.key, type: f.type || 'text', label: f.label || f.title || f.key, options: f.options };
               })
               .filter(Boolean);
-          } else if (Array.isArray(dynSchema)) {
-            fields = dynSchema.map((f: any) => ({ key: f.key || '', type: f.type || 'text', label: f.label || f.title || f.key || '' }));
-          }
-          if (fields.length) {
-            outSchemas = { ok: { title: 'Sortie', fields, ui: dynSchema?.ui } };
-            source = 'output_schema_field';
+            if (fields.length) {
+              outSchemas = { ok: { title: 'Sortie', fields, ui: resolved?.ui } };
+              source = 'output_schema_field';
+            }
           }
         } catch {}
       }

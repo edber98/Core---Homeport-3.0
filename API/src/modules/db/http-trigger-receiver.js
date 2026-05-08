@@ -16,7 +16,7 @@
 const express = require('express');
 const crypto = require('crypto');
 const Flow = require('../../db/models/flow.model');
-const { triggerManager } = require('../../services/trigger-manager');
+const { getListener } = require('../../services/triggers/http-trigger-listeners');
 const { decryptSecrets } = require('../../services/form-resolvers/_helpers');
 
 const RATE_LIMIT_PER_MIN = parseInt(process.env.HTTP_TRIGGER_RATE_LIMIT_PER_MIN || '120', 10);
@@ -196,17 +196,20 @@ module.exports = function() {
       const authResult = await authenticate(req, node, secrets);
       if (!authResult.ok) return res.status(401).json({ error: 'unauthorized' });
 
-      // Flow doit être déployé pour exécuter
-      if (flow.status !== 'production') {
-        return res.status(503).json({ error: 'flow_not_deployed', flowId: String(flow._id) });
-      }
-      const trigger = triggerManager.activeTriggers.get(String(flow._id));
-      if (!trigger || !trigger.active) {
-        return res.status(503).json({ error: 'trigger_not_active' });
+      // Cherche un listener actif pour ce triggerId. Marche pour 2 cas :
+      //   - Production : trigger-manager a démarré l'adapter au déploiement
+      //   - Test/dev : waitForOneEvent a démarré un adapter temporaire
+      // Le user a UNE URL persistante qui couvre les deux modes.
+      const adapter = getListener(triggerId);
+      if (!adapter || !adapter.active) {
+        return res.status(503).json({
+          error: 'trigger_not_active',
+          message: 'Aucun listener actif. Déploie le flow ou lance un test pour activer l\'URL.',
+        });
       }
 
       // Emit
-      await trigger._emit({
+      await adapter._emit({
         body: req.body,
         headers: req.headers || {},
         query: req.query || {},

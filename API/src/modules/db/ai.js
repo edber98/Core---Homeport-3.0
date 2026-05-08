@@ -1253,6 +1253,7 @@ ${toolLines.join('\n')}
       outputHandles: tpl.outputHandles || null,
       output_array_field: tpl.output_array_field || null,
       output_schema_field: tpl.output_schema_field || null,
+      output_schema_merge_at: tpl.output_schema_merge_at || null,
     });
   });
 

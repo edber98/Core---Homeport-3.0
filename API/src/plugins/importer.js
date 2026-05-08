@@ -86,7 +86,20 @@ async function importManifest(manifest, { dryRun = false, repo = null, manifestP
     }
   }
 
-  // Ensure expression editor is enabled by default for all node template args (form-builder schemas)
+  // Ensure expression editor is enabled by default for all node template args
+  // (form-builder schemas).
+  // defaultMode :
+  //   'expr' → pour les types texte libre où l'utilisateur saisira des
+  //            expressions {{ ... }} ou des valeurs concaténées (text, textarea,
+  //            number, email, tel, password, code, expression, json, html, url).
+  //   'val'  → pour les types structurés où l'utilisateur choisit/coche/dépose
+  //            (select, radio, checkbox, date, cron, file, color, rate,
+  //            schema_builder, tags, resolver). L'expression reste ouvrable mais
+  //            le mode val est la cible logique.
+  const TEXT_LIKE_TYPES = new Set([
+    'text', 'textarea', 'number', 'email', 'tel', 'password',
+    'code', 'expression', 'json', 'html', 'url',
+  ]);
   const enableExpressionsOnSchema = (schema) => {
     try {
       if (!schema || typeof schema !== 'object') return schema;
@@ -95,11 +108,11 @@ async function importManifest(manifest, { dryRun = false, repo = null, manifestP
           if (!f || typeof f !== 'object') continue;
           const t = String(f.type || '').toLowerCase();
           if (t === 'section' || t === 'section_array') {
-            // recurse into section contents
             visitFields(f.fields || []);
-          } else if (t && t !== 'textblock') {
+          } else if (t && t !== 'textblock' && t !== 'resolver') {
+            // resolver : pas d'expression editor (lecture/écriture custom)
             const cur = f.expression && typeof f.expression === 'object' ? f.expression : {};
-            const mode = (t === 'schema_builder' || t === 'tags') ? 'val' : 'expr';
+            const mode = TEXT_LIKE_TYPES.has(t) ? 'expr' : 'val';
             f.expression = { allow: true, defaultMode: mode, autoHeight: true, ...cur };
           }
         }
@@ -212,7 +225,7 @@ async function importManifest(manifest, { dryRun = false, repo = null, manifestP
     })();
     const normRiskReason = typeof t.riskReason === 'string' && t.riskReason.trim() ? t.riskReason.trim() : undefined;
     const checksumArgs = checksumJSON(argsWithExpr || {});
-    const checksumFeature = checksumJSON({ authorize_catch_error: !!t.authorize_catch_error, authorize_skip_error: !!t.authorize_skip_error, allowWithoutCredentials: !!t.allowWithoutCredentials, nodeKind: v2.nodeKind, inputHandles: v2.inputHandles, outputHandles: v2.outputHandles, linkedHandles: v2.linkedHandles, output_array_field: t.output_array_field, output_schema_field: t.output_schema_field, outputSchema: t.outputSchema, risk: normRisk });
+    const checksumFeature = checksumJSON({ authorize_catch_error: !!t.authorize_catch_error, authorize_skip_error: !!t.authorize_skip_error, allowWithoutCredentials: !!t.allowWithoutCredentials, nodeKind: v2.nodeKind, inputHandles: v2.inputHandles, outputHandles: v2.outputHandles, linkedHandles: v2.linkedHandles, output_array_field: t.output_array_field, output_schema_field: t.output_schema_field, output_schema_merge_at: t.output_schema_merge_at, outputSchema: t.outputSchema, risk: normRisk });
     const existing = await NodeTemplate.findOne({ key });
     // Normalize name/title/description
     const normName = toCamelCase(t.name || key);
@@ -221,7 +234,7 @@ async function importManifest(manifest, { dryRun = false, repo = null, manifestP
     // Merge risk info into metadata (preserves any other metadata set by manifest)
     const manifestMeta = (t.metadata && typeof t.metadata === 'object') ? t.metadata : {};
     const normMetadata = { ...manifestMeta, risk: normRisk, ...(normRiskReason ? { riskReason: normRiskReason } : {}) };
-    const base = { key, schemaVersion: 2, name: normName, title: normTitle, subtitle: t.subtitle, icon: t.icon, description: normDesc, tags: t.tags || [], group: t.group, type: v2.nodeKind || t.type, nodeKind: v2.nodeKind || t.type, category: t.category || '', providerKey: t.providerKey || t.provider || null, appName: t.appName || t.app || null, args: argsWithExpr || null, inputHandles: v2.inputHandles, outputHandles: v2.outputHandles, linkedHandles: v2.linkedHandles, authorize_catch_error: !!t.authorize_catch_error, authorize_skip_error: !!t.authorize_skip_error, allowWithoutCredentials: !!t.allowWithoutCredentials, output_array_field: t.output_array_field || undefined, output_schema_field: t.output_schema_field || undefined, outputSchema: t.outputSchema || undefined, risk: normRisk, riskReason: normRiskReason, metadata: normMetadata, checksumArgs, checksumFeature };
+    const base = { key, schemaVersion: 2, name: normName, title: normTitle, subtitle: t.subtitle, icon: t.icon, description: normDesc, tags: t.tags || [], group: t.group, type: v2.nodeKind || t.type, nodeKind: v2.nodeKind || t.type, category: t.category || '', providerKey: t.providerKey || t.provider || null, appName: t.appName || t.app || null, args: argsWithExpr || null, inputHandles: v2.inputHandles, outputHandles: v2.outputHandles, linkedHandles: v2.linkedHandles, authorize_catch_error: !!t.authorize_catch_error, authorize_skip_error: !!t.authorize_skip_error, allowWithoutCredentials: !!t.allowWithoutCredentials, output_array_field: t.output_array_field || undefined, output_schema_field: t.output_schema_field || undefined, output_schema_merge_at: t.output_schema_merge_at || undefined, outputSchema: t.outputSchema || undefined, risk: normRisk, riskReason: normRiskReason, metadata: normMetadata, checksumArgs, checksumFeature };
     if (!existing){
       if (!dryRun){ const doc = { ...base }; if (repo && repo.id) { doc.repoId = repo.id; doc.repoName = repo.name; doc.repos = [repo.id]; doc.repoNames = [repo.name]; } await NodeTemplate.create(doc); record('template', key, 'created', null, checksumFeature + '|' + checksumArgs); }
       summary.nodeTemplates.created++;

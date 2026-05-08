@@ -3,6 +3,7 @@ import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges, Chang
 import { FlowAdvancedCenterPanelComponent } from './advanced-editor/flow-advanced-center-panel.component';
 import { JsonSchemaViewerV2Component } from '../../modules/json-schema-viewer/json-schema-viewer-v2';
 import { DynamicForm } from '../../modules/dynamic-form/dynamic-form';
+import { resolveOutputSchema } from './output-schema.util';
 import { FlowViewerSettingsNodeComponent } from './flow-viewer-settings-node.component';
 import { FlowPathHighlightService } from '../../services/flow-path-highlight.service';
 import { LayoutBackendService } from '../../services/layout-backend.service';
@@ -958,20 +959,22 @@ export class FlowNodeSettingsV2DialogComponent implements OnChanges, OnInit, Aft
             outSchemas = { ok: { title: 'Sortie', fields } };
           } catch {}
         }
-        // Dynamic output schema from context field (e.g., extract nodes with schema_builder)
-        if ((!outSchemas || !Object.keys(outSchemas).length) && (template as any)?.output_schema_field && model?.context) {
+        // Dynamic output schema (output_schema_field) avec optionnel merge_at sur le statique.
+        // Helper centralisé décide replace vs merge dans outputHandles[0].schema.
+        if ((template as any)?.output_schema_field && model?.context) {
           try {
-            const dynSchema = model.context[(template as any).output_schema_field];
-            const typeMap: any = { text: 'text', textarea: 'text', number: 'number', checkbox: 'boolean', date: 'date', tags: 'text_array', select: 'text', radio: 'text' };
-            let fields: any[] = [];
-            if (dynSchema && typeof dynSchema === 'object' && Array.isArray(dynSchema.fields)) {
-              fields = dynSchema.fields
-                .filter((f: any) => f.key && f.type !== 'textblock' && f.type !== 'section' && f.type !== 'section_array')
-                .map((f: any) => ({ key: f.key, type: typeMap[f.type] || f.type || 'text', label: f.label || f.key }));
-            } else if (Array.isArray(dynSchema)) {
-              fields = dynSchema.map((f: any) => ({ key: f.key || '', type: f.type || 'text', label: f.label || f.key || '' }));
+            const okHandle = Array.isArray((template as any)?.outputHandles)
+              ? ((template as any).outputHandles.find((h: any) => String(h?.id) === 'ok') || (template as any).outputHandles[0])
+              : null;
+            const staticSch = okHandle?.schema || null;
+            const resolved = resolveOutputSchema(template, model.context, staticSch);
+            if (resolved && Array.isArray(resolved.fields)) {
+              const typeMap: any = { text: 'text', textarea: 'text', number: 'number', checkbox: 'boolean', date: 'date', tags: 'text_array', select: 'text', radio: 'text' };
+              const fields = resolved.fields
+                .filter((f: any) => f.key && f.type !== 'textblock')
+                .map((f: any) => ({ key: f.key, type: typeMap[f.type] || f.type || 'text', label: f.label || f.key, fields: f.fields }));
+              if (fields.length) outSchemas = { ok: { title: 'Sortie', fields } };
             }
-            if (fields.length) outSchemas = { ok: { title: 'Sortie', fields } };
           } catch {}
         }
         // Merge args for start_form (payload keys)

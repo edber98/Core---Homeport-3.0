@@ -31,6 +31,9 @@ const NodeTemplateSchema = new Schema({
   allowWithoutCredentials: { type: Boolean, default: false },
   output_array_field: { type: String, default: undefined },
   output_schema_field: { type: String, default: undefined },
+  // Sous-field cible où on injecte le schema dynamique (ex: "body" pour merge
+  // dans outputHandles[0].schema.fields[key=body]). Sinon le dynamique remplace.
+  output_schema_merge_at: { type: String, default: undefined },
   outputSchema: { type: [Schema.Types.Mixed], default: undefined },
   // Risk classification consumed by the AI assistant / permission layer.
   // Values: safe | write | destructive | elevated. Defaults to 'write' when absent.

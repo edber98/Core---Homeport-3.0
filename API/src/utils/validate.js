@@ -329,6 +329,7 @@ async function validateFlowTemplates(flowGraph) {
       linkedHandles: embTpl.linkedHandles,
       output_array_field: embTpl.output_array_field,
       output_schema_field: embTpl.output_schema_field,
+      output_schema_merge_at: embTpl.output_schema_merge_at,
       outputSchema: embTpl.outputSchema,
       risk: embeddedRisk,
     });

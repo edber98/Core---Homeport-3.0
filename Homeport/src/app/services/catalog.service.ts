@@ -49,6 +49,10 @@ export type NodeTemplate = {
   output_array_field?: string;
   // Extract-specific: output schema derived from this context field
   output_schema_field?: string;
+  // When set, le schema dynamique est mergé dans le sous-field nommé du
+  // schema statique (au lieu de le remplacer). Ex: "body" → injecte les fields
+  // utilisateur dans outputHandles[0].schema.fields[key=body].
+  output_schema_merge_at?: string;
   outputSchema?: any[];
   // Risk classification (must be preserved in templateObj — used in backend
   // validator's checksumFeature; default 'write' if missing causes mismatch
@@ -312,6 +316,7 @@ export class CatalogService {
           allowWithoutCredentials: !!t.allowWithoutCredentials,
           output_array_field: t.output_array_field,
           output_schema_field: (t as any).output_schema_field,
+          output_schema_merge_at: (t as any).output_schema_merge_at,
           outputSchema: (t as any).outputSchema,
           risk: (t as any).risk,
         };
