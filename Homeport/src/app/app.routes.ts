@@ -85,6 +85,7 @@ export const routes: Routes = [
             { path: 'credentials/viewer', loadComponent: () => import('./features/credentials/credential-viewer.component').then(m => m.CredentialViewerComponent), title: 'Credential — Viewer' },
             { path: 'settings', loadComponent: () => import('./features/settings/app-settings.component').then(m => m.AppSettingsComponent), title: 'Paramètres' },
             { path: 'settings/webhooks', loadComponent: () => import('./features/settings/webhooks/webhooks.component').then(m => m.WebhooksSettingsComponent), title: 'Webhooks' },
+            { path: 'profile', loadComponent: () => import('./features/profile/profile.component').then(m => m.ProfileComponent), title: 'Profil' },
             { path: 'ui-builder', loadComponent: () => import('./features/ui/ui-builder.component').then(m => m.UiBuilderComponent), title: 'UI Builder' },
             { path: 'flows/viewer-dialog', loadComponent: () => import('./features/flow/flow-viewer-dialog.component').then(m => m.FlowViewerDialogComponent), title: 'Flow — Visualiseur' },
             { path: 'dev/json-viewer', loadComponent: () => import('./dev/json-viewer-playground.component').then(m => m.JsonViewerPlaygroundComponent), title: 'DEV — JSON Viewer' },

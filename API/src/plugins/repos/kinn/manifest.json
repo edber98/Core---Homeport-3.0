@@ -1078,14 +1078,20 @@
             "label": "URL de l'instance Kinn",
             "description": "Ex: https://acme.kinn.fr ou http://localhost:5055 (sans /api à la fin)",
             "visibleIf": {
-              "!": {
-                "var": "local"
-              }
+              "!=": [
+                {
+                  "var": "local"
+                },
+                "true"
+              ]
             },
             "requiredIf": {
-              "!": {
-                "var": "local"
-              }
+              "!=": [
+                {
+                  "var": "local"
+                },
+                "true"
+              ]
             },
             "validators": [],
             "col": {
@@ -1099,14 +1105,20 @@
             "description": "Personal Access Token généré dans Kinn → Settings → Access Tokens.",
             "secret": true,
             "visibleIf": {
-              "!": {
-                "var": "local"
-              }
+              "!=": [
+                {
+                  "var": "local"
+                },
+                "true"
+              ]
             },
             "requiredIf": {
-              "!": {
-                "var": "local"
-              }
+              "!=": [
+                {
+                  "var": "local"
+                },
+                "true"
+              ]
             },
             "validators": [],
             "col": {
@@ -1119,9 +1131,12 @@
             "label": "Workspace ID par défaut",
             "description": "Optionnel — ID du workspace cible si les nodes ne le précisent pas.",
             "visibleIf": {
-              "!": {
-                "var": "local"
-              }
+              "!=": [
+                {
+                  "var": "local"
+                },
+                "true"
+              ]
             },
             "col": {
               "xs": 24
@@ -1160,7 +1175,121 @@
           "id": "ok",
           "name": "Success",
           "type": "payload",
-          "schema": "$var:kinn_flow"
+          "schema": {
+            "title": "Workflows",
+            "ui": {
+              "layout": "vertical",
+              "labelsOnTop": true
+            },
+            "fields": [
+              {
+                "type": "section",
+                "mode": "array",
+                "key": "flows",
+                "title": "Workflows",
+                "array": {
+                  "initialItems": 0,
+                  "minItems": 0
+                },
+                "fields": [
+                  {
+                    "type": "text",
+                    "key": "id",
+                    "label": "ID",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Identifiant unique."
+                  },
+                  {
+                    "type": "text",
+                    "key": "name",
+                    "label": "Nom",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Nom lisible."
+                  },
+                  {
+                    "type": "textarea",
+                    "key": "description",
+                    "label": "Description",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Description fournie."
+                  },
+                  {
+                    "type": "select",
+                    "key": "mode",
+                    "label": "Mode",
+                    "options": [
+                      {
+                        "label": "Chat",
+                        "value": "chat"
+                      },
+                      {
+                        "label": "Workflow",
+                        "value": "workflow"
+                      },
+                      {
+                        "label": "Form",
+                        "value": "form"
+                      }
+                    ],
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Mode du thread/flow (chat, workflow, form, project)."
+                  },
+                  {
+                    "type": "text",
+                    "key": "agentId",
+                    "label": "Agent ID",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Identifiant de l'agent IA associé."
+                  },
+                  {
+                    "type": "checkbox",
+                    "key": "deployed",
+                    "label": "Déployé",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Indique si déployé en production."
+                  },
+                  {
+                    "type": "date",
+                    "key": "createdAt",
+                    "label": "Créé le",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Date de création (ISO 8601)."
+                  },
+                  {
+                    "type": "date",
+                    "key": "updatedAt",
+                    "label": "Modifié le",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Date de dernière modification."
+                  }
+                ]
+              },
+              {
+                "type": "number",
+                "key": "count",
+                "label": "Nombre",
+                "col": {
+                  "xs": 24
+                }
+              }
+            ]
+          }
         }
       ],
       "authorize_catch_error": true,
@@ -1267,7 +1396,108 @@
           "id": "ok",
           "name": "Success",
           "type": "payload",
-          "schema": "$var:kinn_flow"
+          "schema": {
+            "title": "Workflow",
+            "ui": {
+              "layout": "vertical",
+              "labelsOnTop": true
+            },
+            "fields": [
+              {
+                "type": "section",
+                "key": "flow",
+                "title": "Workflow",
+                "fields": [
+                  {
+                    "type": "text",
+                    "key": "id",
+                    "label": "ID",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Identifiant unique."
+                  },
+                  {
+                    "type": "text",
+                    "key": "name",
+                    "label": "Nom",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Nom lisible."
+                  },
+                  {
+                    "type": "textarea",
+                    "key": "description",
+                    "label": "Description",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Description fournie."
+                  },
+                  {
+                    "type": "select",
+                    "key": "mode",
+                    "label": "Mode",
+                    "options": [
+                      {
+                        "label": "Chat",
+                        "value": "chat"
+                      },
+                      {
+                        "label": "Workflow",
+                        "value": "workflow"
+                      },
+                      {
+                        "label": "Form",
+                        "value": "form"
+                      }
+                    ],
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Mode du thread/flow (chat, workflow, form, project)."
+                  },
+                  {
+                    "type": "text",
+                    "key": "agentId",
+                    "label": "Agent ID",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Identifiant de l'agent IA associé."
+                  },
+                  {
+                    "type": "checkbox",
+                    "key": "deployed",
+                    "label": "Déployé",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Indique si déployé en production."
+                  },
+                  {
+                    "type": "date",
+                    "key": "createdAt",
+                    "label": "Créé le",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Date de création (ISO 8601)."
+                  },
+                  {
+                    "type": "date",
+                    "key": "updatedAt",
+                    "label": "Modifié le",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Date de dernière modification."
+                  }
+                ]
+              }
+            ]
+          }
         }
       ],
       "authorize_catch_error": true,
@@ -1286,7 +1516,11 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        }
       },
       "group": "Workflows",
       "tags": [
@@ -1321,7 +1555,108 @@
           "id": "ok",
           "name": "Success",
           "type": "payload",
-          "schema": "$var:kinn_flow"
+          "schema": {
+            "title": "Workflow créé",
+            "ui": {
+              "layout": "vertical",
+              "labelsOnTop": true
+            },
+            "fields": [
+              {
+                "type": "section",
+                "key": "flow",
+                "title": "Workflow créé",
+                "fields": [
+                  {
+                    "type": "text",
+                    "key": "id",
+                    "label": "ID",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Identifiant unique."
+                  },
+                  {
+                    "type": "text",
+                    "key": "name",
+                    "label": "Nom",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Nom lisible."
+                  },
+                  {
+                    "type": "textarea",
+                    "key": "description",
+                    "label": "Description",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Description fournie."
+                  },
+                  {
+                    "type": "select",
+                    "key": "mode",
+                    "label": "Mode",
+                    "options": [
+                      {
+                        "label": "Chat",
+                        "value": "chat"
+                      },
+                      {
+                        "label": "Workflow",
+                        "value": "workflow"
+                      },
+                      {
+                        "label": "Form",
+                        "value": "form"
+                      }
+                    ],
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Mode du thread/flow (chat, workflow, form, project)."
+                  },
+                  {
+                    "type": "text",
+                    "key": "agentId",
+                    "label": "Agent ID",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Identifiant de l'agent IA associé."
+                  },
+                  {
+                    "type": "checkbox",
+                    "key": "deployed",
+                    "label": "Déployé",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Indique si déployé en production."
+                  },
+                  {
+                    "type": "date",
+                    "key": "createdAt",
+                    "label": "Créé le",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Date de création (ISO 8601)."
+                  },
+                  {
+                    "type": "date",
+                    "key": "updatedAt",
+                    "label": "Modifié le",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Date de dernière modification."
+                  }
+                ]
+              }
+            ]
+          }
         }
       ],
       "authorize_catch_error": true,
@@ -1388,7 +1723,11 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        }
       },
       "group": "Workflows",
       "tags": [
@@ -1423,7 +1762,108 @@
           "id": "ok",
           "name": "Success",
           "type": "payload",
-          "schema": "$var:kinn_flow"
+          "schema": {
+            "title": "Workflow mis à jour",
+            "ui": {
+              "layout": "vertical",
+              "labelsOnTop": true
+            },
+            "fields": [
+              {
+                "type": "section",
+                "key": "flow",
+                "title": "Workflow mis à jour",
+                "fields": [
+                  {
+                    "type": "text",
+                    "key": "id",
+                    "label": "ID",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Identifiant unique."
+                  },
+                  {
+                    "type": "text",
+                    "key": "name",
+                    "label": "Nom",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Nom lisible."
+                  },
+                  {
+                    "type": "textarea",
+                    "key": "description",
+                    "label": "Description",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Description fournie."
+                  },
+                  {
+                    "type": "select",
+                    "key": "mode",
+                    "label": "Mode",
+                    "options": [
+                      {
+                        "label": "Chat",
+                        "value": "chat"
+                      },
+                      {
+                        "label": "Workflow",
+                        "value": "workflow"
+                      },
+                      {
+                        "label": "Form",
+                        "value": "form"
+                      }
+                    ],
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Mode du thread/flow (chat, workflow, form, project)."
+                  },
+                  {
+                    "type": "text",
+                    "key": "agentId",
+                    "label": "Agent ID",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Identifiant de l'agent IA associé."
+                  },
+                  {
+                    "type": "checkbox",
+                    "key": "deployed",
+                    "label": "Déployé",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Indique si déployé en production."
+                  },
+                  {
+                    "type": "date",
+                    "key": "createdAt",
+                    "label": "Créé le",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Date de création (ISO 8601)."
+                  },
+                  {
+                    "type": "date",
+                    "key": "updatedAt",
+                    "label": "Modifié le",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Date de dernière modification."
+                  }
+                ]
+              }
+            ]
+          }
         }
       ],
       "authorize_catch_error": true,
@@ -1466,7 +1906,11 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        }
       },
       "group": "Workflows",
       "tags": [
@@ -1501,7 +1945,27 @@
           "id": "ok",
           "name": "Success",
           "type": "payload",
-          "schema": "$var:kinn_flow"
+          "schema": {
+            "title": "Workflow supprimé",
+            "fields": [
+              {
+                "type": "checkbox",
+                "key": "deleted",
+                "label": "Supprimé",
+                "col": {
+                  "xs": 24
+                }
+              },
+              {
+                "type": "text",
+                "key": "flowId",
+                "label": "Flow ID",
+                "col": {
+                  "xs": 24
+                }
+              }
+            ]
+          }
         }
       ],
       "authorize_catch_error": true,
@@ -1520,7 +1984,11 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        }
       },
       "group": "Workflows",
       "tags": [
@@ -1555,7 +2023,121 @@
           "id": "ok",
           "name": "Success",
           "type": "payload",
-          "schema": "$var:kinn_run"
+          "schema": {
+            "title": "Exécution",
+            "ui": {
+              "layout": "vertical",
+              "labelsOnTop": true
+            },
+            "fields": [
+              {
+                "type": "section",
+                "key": "run",
+                "title": "Exécution",
+                "fields": [
+                  {
+                    "type": "text",
+                    "key": "id",
+                    "label": "Run ID",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Identifiant unique."
+                  },
+                  {
+                    "type": "text",
+                    "key": "flowId",
+                    "label": "Flow ID",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "ID du workflow concerné."
+                  },
+                  {
+                    "type": "select",
+                    "key": "status",
+                    "label": "Statut",
+                    "options": [
+                      {
+                        "label": "Running",
+                        "value": "running"
+                      },
+                      {
+                        "label": "Completed",
+                        "value": "completed"
+                      },
+                      {
+                        "label": "Failed",
+                        "value": "failed"
+                      },
+                      {
+                        "label": "Cancelled",
+                        "value": "cancelled"
+                      }
+                    ],
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Statut courant."
+                  },
+                  {
+                    "type": "json",
+                    "key": "input",
+                    "label": "Input",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Payload d'entrée fourni au lancement."
+                  },
+                  {
+                    "type": "json",
+                    "key": "output",
+                    "label": "Output",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Résultat produit par la run."
+                  },
+                  {
+                    "type": "date",
+                    "key": "startedAt",
+                    "label": "Démarré",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Date de démarrage de la run."
+                  },
+                  {
+                    "type": "date",
+                    "key": "finishedAt",
+                    "label": "Terminé",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Date de fin de la run."
+                  },
+                  {
+                    "type": "number",
+                    "key": "durationMs",
+                    "label": "Durée (ms)",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Durée d'exécution en millisecondes."
+                  },
+                  {
+                    "type": "text",
+                    "key": "error",
+                    "label": "Erreur",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Message d'erreur si la run a échoué."
+                  }
+                ]
+              }
+            ]
+          }
         }
       ],
       "authorize_catch_error": true,
@@ -1613,7 +2195,11 @@
               "xs": 12
             }
           }
-        ]
+        ],
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        }
       },
       "group": "Workflows",
       "tags": [
@@ -1648,7 +2234,134 @@
           "id": "ok",
           "name": "Success",
           "type": "payload",
-          "schema": "$var:kinn_run"
+          "schema": {
+            "title": "Exécutions",
+            "ui": {
+              "layout": "vertical",
+              "labelsOnTop": true
+            },
+            "fields": [
+              {
+                "type": "section",
+                "mode": "array",
+                "key": "runs",
+                "title": "Exécutions",
+                "array": {
+                  "initialItems": 0,
+                  "minItems": 0
+                },
+                "fields": [
+                  {
+                    "type": "text",
+                    "key": "id",
+                    "label": "Run ID",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Identifiant unique."
+                  },
+                  {
+                    "type": "text",
+                    "key": "flowId",
+                    "label": "Flow ID",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "ID du workflow concerné."
+                  },
+                  {
+                    "type": "select",
+                    "key": "status",
+                    "label": "Statut",
+                    "options": [
+                      {
+                        "label": "Running",
+                        "value": "running"
+                      },
+                      {
+                        "label": "Completed",
+                        "value": "completed"
+                      },
+                      {
+                        "label": "Failed",
+                        "value": "failed"
+                      },
+                      {
+                        "label": "Cancelled",
+                        "value": "cancelled"
+                      }
+                    ],
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Statut courant."
+                  },
+                  {
+                    "type": "json",
+                    "key": "input",
+                    "label": "Input",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Payload d'entrée fourni au lancement."
+                  },
+                  {
+                    "type": "json",
+                    "key": "output",
+                    "label": "Output",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Résultat produit par la run."
+                  },
+                  {
+                    "type": "date",
+                    "key": "startedAt",
+                    "label": "Démarré",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Date de démarrage de la run."
+                  },
+                  {
+                    "type": "date",
+                    "key": "finishedAt",
+                    "label": "Terminé",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Date de fin de la run."
+                  },
+                  {
+                    "type": "number",
+                    "key": "durationMs",
+                    "label": "Durée (ms)",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Durée d'exécution en millisecondes."
+                  },
+                  {
+                    "type": "text",
+                    "key": "error",
+                    "label": "Erreur",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Message d'erreur si la run a échoué."
+                  }
+                ]
+              },
+              {
+                "type": "number",
+                "key": "count",
+                "label": "Nombre",
+                "col": {
+                  "xs": 24
+                }
+              }
+            ]
+          }
         }
       ],
       "authorize_catch_error": true,
@@ -1710,7 +2423,11 @@
               "xs": 12
             }
           }
-        ]
+        ],
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        }
       },
       "group": "Workflows",
       "tags": [
@@ -1745,7 +2462,121 @@
           "id": "ok",
           "name": "Success",
           "type": "payload",
-          "schema": "$var:kinn_run"
+          "schema": {
+            "title": "Exécution",
+            "ui": {
+              "layout": "vertical",
+              "labelsOnTop": true
+            },
+            "fields": [
+              {
+                "type": "section",
+                "key": "run",
+                "title": "Exécution",
+                "fields": [
+                  {
+                    "type": "text",
+                    "key": "id",
+                    "label": "Run ID",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Identifiant unique."
+                  },
+                  {
+                    "type": "text",
+                    "key": "flowId",
+                    "label": "Flow ID",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "ID du workflow concerné."
+                  },
+                  {
+                    "type": "select",
+                    "key": "status",
+                    "label": "Statut",
+                    "options": [
+                      {
+                        "label": "Running",
+                        "value": "running"
+                      },
+                      {
+                        "label": "Completed",
+                        "value": "completed"
+                      },
+                      {
+                        "label": "Failed",
+                        "value": "failed"
+                      },
+                      {
+                        "label": "Cancelled",
+                        "value": "cancelled"
+                      }
+                    ],
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Statut courant."
+                  },
+                  {
+                    "type": "json",
+                    "key": "input",
+                    "label": "Input",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Payload d'entrée fourni au lancement."
+                  },
+                  {
+                    "type": "json",
+                    "key": "output",
+                    "label": "Output",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Résultat produit par la run."
+                  },
+                  {
+                    "type": "date",
+                    "key": "startedAt",
+                    "label": "Démarré",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Date de démarrage de la run."
+                  },
+                  {
+                    "type": "date",
+                    "key": "finishedAt",
+                    "label": "Terminé",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Date de fin de la run."
+                  },
+                  {
+                    "type": "number",
+                    "key": "durationMs",
+                    "label": "Durée (ms)",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Durée d'exécution en millisecondes."
+                  },
+                  {
+                    "type": "text",
+                    "key": "error",
+                    "label": "Erreur",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Message d'erreur si la run a échoué."
+                  }
+                ]
+              }
+            ]
+          }
         }
       ],
       "authorize_catch_error": true,
@@ -1764,7 +2595,11 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        }
       },
       "group": "Workflows",
       "tags": [
@@ -1799,7 +2634,129 @@
           "id": "ok",
           "name": "Success",
           "type": "payload",
-          "schema": "$var:kinn_run"
+          "schema": {
+            "title": "Exécution annulée",
+            "ui": {
+              "layout": "vertical",
+              "labelsOnTop": true
+            },
+            "fields": [
+              {
+                "type": "section",
+                "key": "run",
+                "title": "Exécution annulée",
+                "fields": [
+                  {
+                    "type": "text",
+                    "key": "id",
+                    "label": "Run ID",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Identifiant unique."
+                  },
+                  {
+                    "type": "text",
+                    "key": "flowId",
+                    "label": "Flow ID",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "ID du workflow concerné."
+                  },
+                  {
+                    "type": "select",
+                    "key": "status",
+                    "label": "Statut",
+                    "options": [
+                      {
+                        "label": "Running",
+                        "value": "running"
+                      },
+                      {
+                        "label": "Completed",
+                        "value": "completed"
+                      },
+                      {
+                        "label": "Failed",
+                        "value": "failed"
+                      },
+                      {
+                        "label": "Cancelled",
+                        "value": "cancelled"
+                      }
+                    ],
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Statut courant."
+                  },
+                  {
+                    "type": "json",
+                    "key": "input",
+                    "label": "Input",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Payload d'entrée fourni au lancement."
+                  },
+                  {
+                    "type": "json",
+                    "key": "output",
+                    "label": "Output",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Résultat produit par la run."
+                  },
+                  {
+                    "type": "date",
+                    "key": "startedAt",
+                    "label": "Démarré",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Date de démarrage de la run."
+                  },
+                  {
+                    "type": "date",
+                    "key": "finishedAt",
+                    "label": "Terminé",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Date de fin de la run."
+                  },
+                  {
+                    "type": "number",
+                    "key": "durationMs",
+                    "label": "Durée (ms)",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Durée d'exécution en millisecondes."
+                  },
+                  {
+                    "type": "text",
+                    "key": "error",
+                    "label": "Erreur",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Message d'erreur si la run a échoué."
+                  }
+                ]
+              },
+              {
+                "type": "checkbox",
+                "key": "cancelled",
+                "label": "Annulée",
+                "col": {
+                  "xs": 24
+                }
+              }
+            ]
+          }
         }
       ],
       "authorize_catch_error": true,
@@ -1818,7 +2775,11 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        }
       },
       "group": "Workflows",
       "tags": [
@@ -1853,7 +2814,116 @@
           "id": "ok",
           "name": "Success",
           "type": "payload",
-          "schema": "$var:kinn_deployment"
+          "schema": {
+            "title": "Déploiements",
+            "ui": {
+              "layout": "vertical",
+              "labelsOnTop": true
+            },
+            "fields": [
+              {
+                "type": "section",
+                "mode": "array",
+                "key": "deployments",
+                "title": "Déploiements",
+                "array": {
+                  "initialItems": 0,
+                  "minItems": 0
+                },
+                "fields": [
+                  {
+                    "type": "text",
+                    "key": "flowId",
+                    "label": "Flow ID",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "ID du workflow concerné."
+                  },
+                  {
+                    "type": "text",
+                    "key": "flowName",
+                    "label": "Nom du flow",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Nom du workflow (snapshot)."
+                  },
+                  {
+                    "type": "checkbox",
+                    "key": "deployed",
+                    "label": "Déployé",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Indique si déployé en production."
+                  },
+                  {
+                    "type": "date",
+                    "key": "deployedAt",
+                    "label": "Déployé le",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Date de déploiement."
+                  },
+                  {
+                    "type": "text",
+                    "key": "version",
+                    "label": "Version",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Version du déploiement."
+                  },
+                  {
+                    "type": "text",
+                    "key": "triggerType",
+                    "label": "Type de trigger",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Type de trigger (webhook, polling, subscription...)."
+                  },
+                  {
+                    "type": "date",
+                    "key": "lastEventAt",
+                    "label": "Dernier event",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Dernier événement reçu par le trigger."
+                  },
+                  {
+                    "type": "number",
+                    "key": "eventCount",
+                    "label": "Nb d'events",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Nombre total d'événements reçus."
+                  },
+                  {
+                    "type": "text",
+                    "key": "lastError",
+                    "label": "Dernière erreur",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Dernière erreur du trigger."
+                  }
+                ]
+              },
+              {
+                "type": "number",
+                "key": "count",
+                "label": "Nombre",
+                "col": {
+                  "xs": 24
+                }
+              }
+            ]
+          }
         }
       ],
       "authorize_catch_error": true,
@@ -1867,7 +2937,11 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        }
       },
       "group": "Déploiements",
       "tags": [
@@ -1902,7 +2976,103 @@
           "id": "ok",
           "name": "Success",
           "type": "payload",
-          "schema": "$var:kinn_deployment"
+          "schema": {
+            "title": "Déploiement",
+            "ui": {
+              "layout": "vertical",
+              "labelsOnTop": true
+            },
+            "fields": [
+              {
+                "type": "section",
+                "key": "deployment",
+                "title": "Déploiement",
+                "fields": [
+                  {
+                    "type": "text",
+                    "key": "flowId",
+                    "label": "Flow ID",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "ID du workflow concerné."
+                  },
+                  {
+                    "type": "text",
+                    "key": "flowName",
+                    "label": "Nom du flow",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Nom du workflow (snapshot)."
+                  },
+                  {
+                    "type": "checkbox",
+                    "key": "deployed",
+                    "label": "Déployé",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Indique si déployé en production."
+                  },
+                  {
+                    "type": "date",
+                    "key": "deployedAt",
+                    "label": "Déployé le",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Date de déploiement."
+                  },
+                  {
+                    "type": "text",
+                    "key": "version",
+                    "label": "Version",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Version du déploiement."
+                  },
+                  {
+                    "type": "text",
+                    "key": "triggerType",
+                    "label": "Type de trigger",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Type de trigger (webhook, polling, subscription...)."
+                  },
+                  {
+                    "type": "date",
+                    "key": "lastEventAt",
+                    "label": "Dernier event",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Dernier événement reçu par le trigger."
+                  },
+                  {
+                    "type": "number",
+                    "key": "eventCount",
+                    "label": "Nb d'events",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Nombre total d'événements reçus."
+                  },
+                  {
+                    "type": "text",
+                    "key": "lastError",
+                    "label": "Dernière erreur",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Dernière erreur du trigger."
+                  }
+                ]
+              }
+            ]
+          }
         }
       ],
       "authorize_catch_error": true,
@@ -1921,7 +3091,11 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        }
       },
       "group": "Déploiements",
       "tags": [
@@ -1956,7 +3130,111 @@
           "id": "ok",
           "name": "Success",
           "type": "payload",
-          "schema": "$var:kinn_deployment"
+          "schema": {
+            "title": "Déploiement",
+            "ui": {
+              "layout": "vertical",
+              "labelsOnTop": true
+            },
+            "fields": [
+              {
+                "type": "section",
+                "key": "deployment",
+                "title": "Déploiement",
+                "fields": [
+                  {
+                    "type": "text",
+                    "key": "flowId",
+                    "label": "Flow ID",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "ID du workflow concerné."
+                  },
+                  {
+                    "type": "text",
+                    "key": "flowName",
+                    "label": "Nom du flow",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Nom du workflow (snapshot)."
+                  },
+                  {
+                    "type": "checkbox",
+                    "key": "deployed",
+                    "label": "Déployé",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Indique si déployé en production."
+                  },
+                  {
+                    "type": "date",
+                    "key": "deployedAt",
+                    "label": "Déployé le",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Date de déploiement."
+                  },
+                  {
+                    "type": "text",
+                    "key": "version",
+                    "label": "Version",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Version du déploiement."
+                  },
+                  {
+                    "type": "text",
+                    "key": "triggerType",
+                    "label": "Type de trigger",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Type de trigger (webhook, polling, subscription...)."
+                  },
+                  {
+                    "type": "date",
+                    "key": "lastEventAt",
+                    "label": "Dernier event",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Dernier événement reçu par le trigger."
+                  },
+                  {
+                    "type": "number",
+                    "key": "eventCount",
+                    "label": "Nb d'events",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Nombre total d'événements reçus."
+                  },
+                  {
+                    "type": "text",
+                    "key": "lastError",
+                    "label": "Dernière erreur",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Dernière erreur du trigger."
+                  }
+                ]
+              },
+              {
+                "type": "checkbox",
+                "key": "deployed",
+                "label": "Déployé",
+                "col": {
+                  "xs": 24
+                }
+              }
+            ]
+          }
         }
       ],
       "authorize_catch_error": true,
@@ -1975,7 +3253,11 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        }
       },
       "group": "Déploiements",
       "tags": [
@@ -2010,7 +3292,103 @@
           "id": "ok",
           "name": "Success",
           "type": "payload",
-          "schema": "$var:kinn_deployment"
+          "schema": {
+            "title": "Déploiement",
+            "ui": {
+              "layout": "vertical",
+              "labelsOnTop": true
+            },
+            "fields": [
+              {
+                "type": "section",
+                "key": "deployment",
+                "title": "Déploiement",
+                "fields": [
+                  {
+                    "type": "text",
+                    "key": "flowId",
+                    "label": "Flow ID",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "ID du workflow concerné."
+                  },
+                  {
+                    "type": "text",
+                    "key": "flowName",
+                    "label": "Nom du flow",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Nom du workflow (snapshot)."
+                  },
+                  {
+                    "type": "checkbox",
+                    "key": "deployed",
+                    "label": "Déployé",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Indique si déployé en production."
+                  },
+                  {
+                    "type": "date",
+                    "key": "deployedAt",
+                    "label": "Déployé le",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Date de déploiement."
+                  },
+                  {
+                    "type": "text",
+                    "key": "version",
+                    "label": "Version",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Version du déploiement."
+                  },
+                  {
+                    "type": "text",
+                    "key": "triggerType",
+                    "label": "Type de trigger",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Type de trigger (webhook, polling, subscription...)."
+                  },
+                  {
+                    "type": "date",
+                    "key": "lastEventAt",
+                    "label": "Dernier event",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Dernier événement reçu par le trigger."
+                  },
+                  {
+                    "type": "number",
+                    "key": "eventCount",
+                    "label": "Nb d'events",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Nombre total d'événements reçus."
+                  },
+                  {
+                    "type": "text",
+                    "key": "lastError",
+                    "label": "Dernière erreur",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Dernière erreur du trigger."
+                  }
+                ]
+              }
+            ]
+          }
         }
       ],
       "authorize_catch_error": true,
@@ -2029,7 +3407,11 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        }
       },
       "group": "Déploiements",
       "tags": [
@@ -2064,7 +3446,188 @@
           "id": "ok",
           "name": "Success",
           "type": "payload",
-          "schema": "$var:kinn_thread"
+          "schema": {
+            "title": "Threads",
+            "ui": {
+              "layout": "vertical",
+              "labelsOnTop": true
+            },
+            "fields": [
+              {
+                "type": "section",
+                "mode": "array",
+                "key": "threads",
+                "title": "Threads",
+                "array": {
+                  "initialItems": 0,
+                  "minItems": 0
+                },
+                "fields": [
+                  {
+                    "type": "text",
+                    "key": "id",
+                    "label": "Thread ID",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Identifiant unique."
+                  },
+                  {
+                    "type": "select",
+                    "key": "mode",
+                    "label": "Mode",
+                    "options": [
+                      {
+                        "label": "Chat",
+                        "value": "chat"
+                      },
+                      {
+                        "label": "Workflow",
+                        "value": "workflow"
+                      },
+                      {
+                        "label": "Form",
+                        "value": "form"
+                      },
+                      {
+                        "label": "Project",
+                        "value": "project"
+                      }
+                    ],
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Mode du thread/flow (chat, workflow, form, project)."
+                  },
+                  {
+                    "type": "text",
+                    "key": "title",
+                    "label": "Titre",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Titre du thread/élément."
+                  },
+                  {
+                    "type": "text",
+                    "key": "agentId",
+                    "label": "Agent",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Identifiant de l'agent IA associé."
+                  },
+                  {
+                    "type": "text",
+                    "key": "flowId",
+                    "label": "Flow lié",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "ID du workflow concerné."
+                  },
+                  {
+                    "type": "text",
+                    "key": "formId",
+                    "label": "Form lié",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "ID du formulaire associé."
+                  },
+                  {
+                    "type": "section",
+                    "key": "messages",
+                    "label": "Messages",
+                    "mode": "array",
+                    "fields": [
+                      {
+                        "type": "text",
+                        "key": "id",
+                        "label": "ID",
+                        "col": {
+                          "xs": 24
+                        },
+                        "description": "Identifiant unique."
+                      },
+                      {
+                        "type": "select",
+                        "key": "role",
+                        "label": "Rôle",
+                        "options": [
+                          {
+                            "label": "User",
+                            "value": "user"
+                          },
+                          {
+                            "label": "Assistant",
+                            "value": "assistant"
+                          },
+                          {
+                            "label": "System",
+                            "value": "system"
+                          },
+                          {
+                            "label": "Tool",
+                            "value": "tool"
+                          }
+                        ],
+                        "col": {
+                          "xs": 24
+                        },
+                        "description": "Rôle du locuteur (user, assistant, system, tool)."
+                      },
+                      {
+                        "type": "textarea",
+                        "key": "content",
+                        "label": "Contenu",
+                        "col": {
+                          "xs": 24
+                        },
+                        "description": "Contenu du message ou de l'entrée."
+                      },
+                      {
+                        "type": "date",
+                        "key": "createdAt",
+                        "label": "Date",
+                        "col": {
+                          "xs": 24
+                        },
+                        "description": "Date de création (ISO 8601)."
+                      }
+                    ],
+                    "description": "Historique des messages du thread."
+                  },
+                  {
+                    "type": "date",
+                    "key": "createdAt",
+                    "label": "Créé le",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Date de création (ISO 8601)."
+                  },
+                  {
+                    "type": "date",
+                    "key": "updatedAt",
+                    "label": "Modifié le",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Date de dernière modification."
+                  }
+                ]
+              },
+              {
+                "type": "number",
+                "key": "count",
+                "label": "Nombre",
+                "col": {
+                  "xs": 24
+                }
+              }
+            ]
+          }
         }
       ],
       "authorize_catch_error": true,
@@ -2134,7 +3697,11 @@
               "xs": 12
             }
           }
-        ]
+        ],
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        }
       },
       "group": "Assistant IA",
       "tags": [
@@ -2169,7 +3736,175 @@
           "id": "ok",
           "name": "Success",
           "type": "payload",
-          "schema": "$var:kinn_thread"
+          "schema": {
+            "title": "Thread créé",
+            "ui": {
+              "layout": "vertical",
+              "labelsOnTop": true
+            },
+            "fields": [
+              {
+                "type": "section",
+                "key": "thread",
+                "title": "Thread créé",
+                "fields": [
+                  {
+                    "type": "text",
+                    "key": "id",
+                    "label": "Thread ID",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Identifiant unique."
+                  },
+                  {
+                    "type": "select",
+                    "key": "mode",
+                    "label": "Mode",
+                    "options": [
+                      {
+                        "label": "Chat",
+                        "value": "chat"
+                      },
+                      {
+                        "label": "Workflow",
+                        "value": "workflow"
+                      },
+                      {
+                        "label": "Form",
+                        "value": "form"
+                      },
+                      {
+                        "label": "Project",
+                        "value": "project"
+                      }
+                    ],
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Mode du thread/flow (chat, workflow, form, project)."
+                  },
+                  {
+                    "type": "text",
+                    "key": "title",
+                    "label": "Titre",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Titre du thread/élément."
+                  },
+                  {
+                    "type": "text",
+                    "key": "agentId",
+                    "label": "Agent",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Identifiant de l'agent IA associé."
+                  },
+                  {
+                    "type": "text",
+                    "key": "flowId",
+                    "label": "Flow lié",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "ID du workflow concerné."
+                  },
+                  {
+                    "type": "text",
+                    "key": "formId",
+                    "label": "Form lié",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "ID du formulaire associé."
+                  },
+                  {
+                    "type": "section",
+                    "key": "messages",
+                    "label": "Messages",
+                    "mode": "array",
+                    "fields": [
+                      {
+                        "type": "text",
+                        "key": "id",
+                        "label": "ID",
+                        "col": {
+                          "xs": 24
+                        },
+                        "description": "Identifiant unique."
+                      },
+                      {
+                        "type": "select",
+                        "key": "role",
+                        "label": "Rôle",
+                        "options": [
+                          {
+                            "label": "User",
+                            "value": "user"
+                          },
+                          {
+                            "label": "Assistant",
+                            "value": "assistant"
+                          },
+                          {
+                            "label": "System",
+                            "value": "system"
+                          },
+                          {
+                            "label": "Tool",
+                            "value": "tool"
+                          }
+                        ],
+                        "col": {
+                          "xs": 24
+                        },
+                        "description": "Rôle du locuteur (user, assistant, system, tool)."
+                      },
+                      {
+                        "type": "textarea",
+                        "key": "content",
+                        "label": "Contenu",
+                        "col": {
+                          "xs": 24
+                        },
+                        "description": "Contenu du message ou de l'entrée."
+                      },
+                      {
+                        "type": "date",
+                        "key": "createdAt",
+                        "label": "Date",
+                        "col": {
+                          "xs": 24
+                        },
+                        "description": "Date de création (ISO 8601)."
+                      }
+                    ],
+                    "description": "Historique des messages du thread."
+                  },
+                  {
+                    "type": "date",
+                    "key": "createdAt",
+                    "label": "Créé le",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Date de création (ISO 8601)."
+                  },
+                  {
+                    "type": "date",
+                    "key": "updatedAt",
+                    "label": "Modifié le",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Date de dernière modification."
+                  }
+                ]
+              }
+            ]
+          }
         }
       ],
       "authorize_catch_error": true,
@@ -2242,7 +3977,11 @@
               "xs": 12
             }
           }
-        ]
+        ],
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        }
       },
       "group": "Assistant IA",
       "tags": [
@@ -2277,7 +4016,331 @@
           "id": "ok",
           "name": "Success",
           "type": "payload",
-          "schema": "$var:kinn_thread"
+          "schema": {
+            "title": "Thread + messages",
+            "ui": {
+              "layout": "vertical",
+              "labelsOnTop": true
+            },
+            "fields": [
+              {
+                "type": "section",
+                "key": "thread",
+                "title": "Thread",
+                "fields": [
+                  {
+                    "type": "text",
+                    "key": "id",
+                    "label": "Thread ID",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Identifiant unique."
+                  },
+                  {
+                    "type": "select",
+                    "key": "mode",
+                    "label": "Mode",
+                    "options": [
+                      {
+                        "label": "Chat",
+                        "value": "chat"
+                      },
+                      {
+                        "label": "Workflow",
+                        "value": "workflow"
+                      },
+                      {
+                        "label": "Form",
+                        "value": "form"
+                      },
+                      {
+                        "label": "Project",
+                        "value": "project"
+                      }
+                    ],
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Mode du thread/flow (chat, workflow, form, project)."
+                  },
+                  {
+                    "type": "text",
+                    "key": "title",
+                    "label": "Titre",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Titre du thread/élément."
+                  },
+                  {
+                    "type": "text",
+                    "key": "agentId",
+                    "label": "Agent",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Identifiant de l'agent IA associé."
+                  },
+                  {
+                    "type": "text",
+                    "key": "flowId",
+                    "label": "Flow lié",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "ID du workflow concerné."
+                  },
+                  {
+                    "type": "text",
+                    "key": "formId",
+                    "label": "Form lié",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "ID du formulaire associé."
+                  },
+                  {
+                    "type": "section",
+                    "key": "messages",
+                    "label": "Messages",
+                    "mode": "array",
+                    "fields": [
+                      {
+                        "type": "text",
+                        "key": "id",
+                        "label": "ID",
+                        "col": {
+                          "xs": 24
+                        },
+                        "description": "Identifiant unique."
+                      },
+                      {
+                        "type": "select",
+                        "key": "role",
+                        "label": "Rôle",
+                        "options": [
+                          {
+                            "label": "User",
+                            "value": "user"
+                          },
+                          {
+                            "label": "Assistant",
+                            "value": "assistant"
+                          },
+                          {
+                            "label": "System",
+                            "value": "system"
+                          },
+                          {
+                            "label": "Tool",
+                            "value": "tool"
+                          }
+                        ],
+                        "col": {
+                          "xs": 24
+                        },
+                        "description": "Rôle du locuteur (user, assistant, system, tool)."
+                      },
+                      {
+                        "type": "textarea",
+                        "key": "content",
+                        "label": "Contenu",
+                        "col": {
+                          "xs": 24
+                        },
+                        "description": "Contenu du message ou de l'entrée."
+                      },
+                      {
+                        "type": "date",
+                        "key": "createdAt",
+                        "label": "Date",
+                        "col": {
+                          "xs": 24
+                        },
+                        "description": "Date de création (ISO 8601)."
+                      }
+                    ],
+                    "description": "Historique des messages du thread."
+                  },
+                  {
+                    "type": "date",
+                    "key": "createdAt",
+                    "label": "Créé le",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Date de création (ISO 8601)."
+                  },
+                  {
+                    "type": "date",
+                    "key": "updatedAt",
+                    "label": "Modifié le",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Date de dernière modification."
+                  }
+                ]
+              },
+              {
+                "type": "section",
+                "mode": "array",
+                "key": "messages",
+                "title": "Messages",
+                "array": {
+                  "initialItems": 0,
+                  "minItems": 0
+                },
+                "fields": [
+                  {
+                    "type": "text",
+                    "key": "id",
+                    "label": "Message ID",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Identifiant unique."
+                  },
+                  {
+                    "type": "text",
+                    "key": "threadId",
+                    "label": "Thread ID",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "ID du thread de conversation."
+                  },
+                  {
+                    "type": "select",
+                    "key": "role",
+                    "label": "Rôle",
+                    "options": [
+                      {
+                        "label": "User",
+                        "value": "user"
+                      },
+                      {
+                        "label": "Assistant",
+                        "value": "assistant"
+                      },
+                      {
+                        "label": "System",
+                        "value": "system"
+                      },
+                      {
+                        "label": "Tool",
+                        "value": "tool"
+                      }
+                    ],
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Rôle du locuteur (user, assistant, system, tool)."
+                  },
+                  {
+                    "type": "textarea",
+                    "key": "content",
+                    "label": "Contenu",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Contenu du message ou de l'entrée."
+                  },
+                  {
+                    "type": "section",
+                    "key": "toolCalls",
+                    "label": "Tool calls",
+                    "mode": "array",
+                    "fields": [
+                      {
+                        "type": "text",
+                        "key": "id",
+                        "label": "ID",
+                        "col": {
+                          "xs": 24
+                        },
+                        "description": "Identifiant unique."
+                      },
+                      {
+                        "type": "text",
+                        "key": "name",
+                        "label": "Nom",
+                        "col": {
+                          "xs": 24
+                        },
+                        "description": "Nom lisible."
+                      },
+                      {
+                        "type": "json",
+                        "key": "args",
+                        "label": "Args",
+                        "col": {
+                          "xs": 24
+                        },
+                        "description": "Arguments passés au tool."
+                      },
+                      {
+                        "type": "json",
+                        "key": "result",
+                        "label": "Résultat",
+                        "col": {
+                          "xs": 24
+                        },
+                        "description": "Résultat retourné."
+                      },
+                      {
+                        "type": "select",
+                        "key": "status",
+                        "label": "Statut",
+                        "options": [
+                          {
+                            "label": "Success",
+                            "value": "success"
+                          },
+                          {
+                            "label": "Error",
+                            "value": "error"
+                          }
+                        ],
+                        "col": {
+                          "xs": 24
+                        },
+                        "description": "Statut courant."
+                      },
+                      {
+                        "type": "number",
+                        "key": "duration",
+                        "label": "Durée (ms)",
+                        "col": {
+                          "xs": 24
+                        },
+                        "description": "Durée en millisecondes."
+                      }
+                    ],
+                    "description": "Appels d'outils effectués pendant ce message."
+                  },
+                  {
+                    "type": "date",
+                    "key": "createdAt",
+                    "label": "Date",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Date de création (ISO 8601)."
+                  }
+                ]
+              },
+              {
+                "type": "number",
+                "key": "messageCount",
+                "label": "Nombre de messages",
+                "col": {
+                  "xs": 24
+                }
+              }
+            ]
+          }
         }
       ],
       "authorize_catch_error": true,
@@ -2304,7 +4367,11 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        }
       },
       "group": "Assistant IA",
       "tags": [
@@ -2339,7 +4406,27 @@
           "id": "ok",
           "name": "Success",
           "type": "payload",
-          "schema": "$var:kinn_thread"
+          "schema": {
+            "title": "Thread supprimé",
+            "fields": [
+              {
+                "type": "checkbox",
+                "key": "deleted",
+                "label": "Supprimé",
+                "col": {
+                  "xs": 24
+                }
+              },
+              {
+                "type": "text",
+                "key": "threadId",
+                "label": "Thread ID",
+                "col": {
+                  "xs": 24
+                }
+              }
+            ]
+          }
         }
       ],
       "authorize_catch_error": true,
@@ -2358,7 +4445,11 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        }
       },
       "group": "Assistant IA",
       "tags": [
@@ -2393,7 +4484,75 @@
           "id": "ok",
           "name": "Success",
           "type": "payload",
-          "schema": "$var:kinn_workspace"
+          "schema": {
+            "title": "Agents IA",
+            "ui": {
+              "layout": "vertical",
+              "labelsOnTop": true
+            },
+            "fields": [
+              {
+                "type": "section",
+                "mode": "array",
+                "key": "agents",
+                "title": "Agents",
+                "array": {
+                  "initialItems": 0,
+                  "minItems": 0
+                },
+                "fields": [
+                  {
+                    "type": "text",
+                    "key": "id",
+                    "label": "ID",
+                    "col": {
+                      "xs": 24
+                    }
+                  },
+                  {
+                    "type": "text",
+                    "key": "name",
+                    "label": "Nom",
+                    "col": {
+                      "xs": 24
+                    }
+                  },
+                  {
+                    "type": "text",
+                    "key": "description",
+                    "label": "Description",
+                    "col": {
+                      "xs": 24
+                    }
+                  },
+                  {
+                    "type": "text",
+                    "key": "mode",
+                    "label": "Mode",
+                    "col": {
+                      "xs": 24
+                    }
+                  },
+                  {
+                    "type": "text",
+                    "key": "allowedProviders",
+                    "label": "Providers autorisés",
+                    "col": {
+                      "xs": 24
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "number",
+                "key": "count",
+                "label": "Nombre",
+                "col": {
+                  "xs": 24
+                }
+              }
+            ]
+          }
         }
       ],
       "authorize_catch_error": true,
@@ -2407,7 +4566,11 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        }
       },
       "group": "Assistant IA",
       "tags": [
@@ -2442,7 +4605,218 @@
           "id": "ok",
           "name": "Success",
           "type": "payload",
-          "schema": "$var:kinn_message"
+          "schema": {
+            "title": "Réponse de l'agent",
+            "ui": {
+              "layout": "vertical",
+              "labelsOnTop": true
+            },
+            "fields": [
+              {
+                "type": "text",
+                "key": "threadId",
+                "label": "Thread ID",
+                "col": {
+                  "xs": 24
+                }
+              },
+              {
+                "type": "section",
+                "key": "message",
+                "title": "Message",
+                "fields": [
+                  {
+                    "type": "text",
+                    "key": "id",
+                    "label": "Message ID",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Identifiant unique."
+                  },
+                  {
+                    "type": "text",
+                    "key": "threadId",
+                    "label": "Thread ID",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "ID du thread de conversation."
+                  },
+                  {
+                    "type": "select",
+                    "key": "role",
+                    "label": "Rôle",
+                    "options": [
+                      {
+                        "label": "User",
+                        "value": "user"
+                      },
+                      {
+                        "label": "Assistant",
+                        "value": "assistant"
+                      },
+                      {
+                        "label": "System",
+                        "value": "system"
+                      },
+                      {
+                        "label": "Tool",
+                        "value": "tool"
+                      }
+                    ],
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Rôle du locuteur (user, assistant, system, tool)."
+                  },
+                  {
+                    "type": "textarea",
+                    "key": "content",
+                    "label": "Contenu",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Contenu du message ou de l'entrée."
+                  },
+                  {
+                    "type": "section",
+                    "key": "toolCalls",
+                    "label": "Tool calls",
+                    "mode": "array",
+                    "fields": [
+                      {
+                        "type": "text",
+                        "key": "id",
+                        "label": "ID",
+                        "col": {
+                          "xs": 24
+                        },
+                        "description": "Identifiant unique."
+                      },
+                      {
+                        "type": "text",
+                        "key": "name",
+                        "label": "Nom",
+                        "col": {
+                          "xs": 24
+                        },
+                        "description": "Nom lisible."
+                      },
+                      {
+                        "type": "json",
+                        "key": "args",
+                        "label": "Args",
+                        "col": {
+                          "xs": 24
+                        },
+                        "description": "Arguments passés au tool."
+                      },
+                      {
+                        "type": "json",
+                        "key": "result",
+                        "label": "Résultat",
+                        "col": {
+                          "xs": 24
+                        },
+                        "description": "Résultat retourné."
+                      },
+                      {
+                        "type": "select",
+                        "key": "status",
+                        "label": "Statut",
+                        "options": [
+                          {
+                            "label": "Success",
+                            "value": "success"
+                          },
+                          {
+                            "label": "Error",
+                            "value": "error"
+                          }
+                        ],
+                        "col": {
+                          "xs": 24
+                        },
+                        "description": "Statut courant."
+                      },
+                      {
+                        "type": "number",
+                        "key": "duration",
+                        "label": "Durée (ms)",
+                        "col": {
+                          "xs": 24
+                        },
+                        "description": "Durée en millisecondes."
+                      }
+                    ],
+                    "description": "Appels d'outils effectués pendant ce message."
+                  },
+                  {
+                    "type": "date",
+                    "key": "createdAt",
+                    "label": "Date",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Date de création (ISO 8601)."
+                  }
+                ]
+              },
+              {
+                "type": "textarea",
+                "key": "text",
+                "label": "Texte assistant",
+                "col": {
+                  "xs": 24
+                }
+              },
+              {
+                "type": "section",
+                "mode": "array",
+                "key": "toolCalls",
+                "title": "Tool calls",
+                "array": {
+                  "initialItems": 0,
+                  "minItems": 0
+                },
+                "fields": [
+                  {
+                    "type": "text",
+                    "key": "name",
+                    "label": "Outil",
+                    "col": {
+                      "xs": 24
+                    }
+                  },
+                  {
+                    "type": "json",
+                    "key": "arguments",
+                    "label": "Arguments",
+                    "col": {
+                      "xs": 24
+                    }
+                  },
+                  {
+                    "type": "json",
+                    "key": "result",
+                    "label": "Résultat",
+                    "col": {
+                      "xs": 24
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "number",
+                "key": "events",
+                "label": "Nombre d'événements",
+                "col": {
+                  "xs": 24
+                }
+              }
+            ]
+          }
         }
       ],
       "authorize_catch_error": true,
@@ -2528,7 +4902,11 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        }
       },
       "group": "Assistant IA",
       "tags": [
@@ -2563,7 +4941,218 @@
           "id": "ok",
           "name": "Success",
           "type": "payload",
-          "schema": "$var:kinn_message"
+          "schema": {
+            "title": "Réponse de l'agent",
+            "ui": {
+              "layout": "vertical",
+              "labelsOnTop": true
+            },
+            "fields": [
+              {
+                "type": "text",
+                "key": "threadId",
+                "label": "Thread ID",
+                "col": {
+                  "xs": 24
+                }
+              },
+              {
+                "type": "section",
+                "key": "message",
+                "title": "Message",
+                "fields": [
+                  {
+                    "type": "text",
+                    "key": "id",
+                    "label": "Message ID",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Identifiant unique."
+                  },
+                  {
+                    "type": "text",
+                    "key": "threadId",
+                    "label": "Thread ID",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "ID du thread de conversation."
+                  },
+                  {
+                    "type": "select",
+                    "key": "role",
+                    "label": "Rôle",
+                    "options": [
+                      {
+                        "label": "User",
+                        "value": "user"
+                      },
+                      {
+                        "label": "Assistant",
+                        "value": "assistant"
+                      },
+                      {
+                        "label": "System",
+                        "value": "system"
+                      },
+                      {
+                        "label": "Tool",
+                        "value": "tool"
+                      }
+                    ],
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Rôle du locuteur (user, assistant, system, tool)."
+                  },
+                  {
+                    "type": "textarea",
+                    "key": "content",
+                    "label": "Contenu",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Contenu du message ou de l'entrée."
+                  },
+                  {
+                    "type": "section",
+                    "key": "toolCalls",
+                    "label": "Tool calls",
+                    "mode": "array",
+                    "fields": [
+                      {
+                        "type": "text",
+                        "key": "id",
+                        "label": "ID",
+                        "col": {
+                          "xs": 24
+                        },
+                        "description": "Identifiant unique."
+                      },
+                      {
+                        "type": "text",
+                        "key": "name",
+                        "label": "Nom",
+                        "col": {
+                          "xs": 24
+                        },
+                        "description": "Nom lisible."
+                      },
+                      {
+                        "type": "json",
+                        "key": "args",
+                        "label": "Args",
+                        "col": {
+                          "xs": 24
+                        },
+                        "description": "Arguments passés au tool."
+                      },
+                      {
+                        "type": "json",
+                        "key": "result",
+                        "label": "Résultat",
+                        "col": {
+                          "xs": 24
+                        },
+                        "description": "Résultat retourné."
+                      },
+                      {
+                        "type": "select",
+                        "key": "status",
+                        "label": "Statut",
+                        "options": [
+                          {
+                            "label": "Success",
+                            "value": "success"
+                          },
+                          {
+                            "label": "Error",
+                            "value": "error"
+                          }
+                        ],
+                        "col": {
+                          "xs": 24
+                        },
+                        "description": "Statut courant."
+                      },
+                      {
+                        "type": "number",
+                        "key": "duration",
+                        "label": "Durée (ms)",
+                        "col": {
+                          "xs": 24
+                        },
+                        "description": "Durée en millisecondes."
+                      }
+                    ],
+                    "description": "Appels d'outils effectués pendant ce message."
+                  },
+                  {
+                    "type": "date",
+                    "key": "createdAt",
+                    "label": "Date",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Date de création (ISO 8601)."
+                  }
+                ]
+              },
+              {
+                "type": "textarea",
+                "key": "text",
+                "label": "Texte assistant",
+                "col": {
+                  "xs": 24
+                }
+              },
+              {
+                "type": "section",
+                "mode": "array",
+                "key": "toolCalls",
+                "title": "Tool calls",
+                "array": {
+                  "initialItems": 0,
+                  "minItems": 0
+                },
+                "fields": [
+                  {
+                    "type": "text",
+                    "key": "name",
+                    "label": "Outil",
+                    "col": {
+                      "xs": 24
+                    }
+                  },
+                  {
+                    "type": "json",
+                    "key": "arguments",
+                    "label": "Arguments",
+                    "col": {
+                      "xs": 24
+                    }
+                  },
+                  {
+                    "type": "json",
+                    "key": "result",
+                    "label": "Résultat",
+                    "col": {
+                      "xs": 24
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "number",
+                "key": "events",
+                "label": "Nombre d'événements",
+                "col": {
+                  "xs": 24
+                }
+              }
+            ]
+          }
         }
       ],
       "authorize_catch_error": true,
@@ -2603,7 +5192,11 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        }
       },
       "group": "Assistant IA",
       "tags": [
@@ -2638,7 +5231,158 @@
           "id": "ok",
           "name": "Success",
           "type": "payload",
-          "schema": "$var:kinn_message"
+          "schema": {
+            "title": "Message",
+            "ui": {
+              "layout": "vertical",
+              "labelsOnTop": true
+            },
+            "fields": [
+              {
+                "type": "section",
+                "key": "message",
+                "title": "Message",
+                "fields": [
+                  {
+                    "type": "text",
+                    "key": "id",
+                    "label": "Message ID",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Identifiant unique."
+                  },
+                  {
+                    "type": "text",
+                    "key": "threadId",
+                    "label": "Thread ID",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "ID du thread de conversation."
+                  },
+                  {
+                    "type": "select",
+                    "key": "role",
+                    "label": "Rôle",
+                    "options": [
+                      {
+                        "label": "User",
+                        "value": "user"
+                      },
+                      {
+                        "label": "Assistant",
+                        "value": "assistant"
+                      },
+                      {
+                        "label": "System",
+                        "value": "system"
+                      },
+                      {
+                        "label": "Tool",
+                        "value": "tool"
+                      }
+                    ],
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Rôle du locuteur (user, assistant, system, tool)."
+                  },
+                  {
+                    "type": "textarea",
+                    "key": "content",
+                    "label": "Contenu",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Contenu du message ou de l'entrée."
+                  },
+                  {
+                    "type": "section",
+                    "key": "toolCalls",
+                    "label": "Tool calls",
+                    "mode": "array",
+                    "fields": [
+                      {
+                        "type": "text",
+                        "key": "id",
+                        "label": "ID",
+                        "col": {
+                          "xs": 24
+                        },
+                        "description": "Identifiant unique."
+                      },
+                      {
+                        "type": "text",
+                        "key": "name",
+                        "label": "Nom",
+                        "col": {
+                          "xs": 24
+                        },
+                        "description": "Nom lisible."
+                      },
+                      {
+                        "type": "json",
+                        "key": "args",
+                        "label": "Args",
+                        "col": {
+                          "xs": 24
+                        },
+                        "description": "Arguments passés au tool."
+                      },
+                      {
+                        "type": "json",
+                        "key": "result",
+                        "label": "Résultat",
+                        "col": {
+                          "xs": 24
+                        },
+                        "description": "Résultat retourné."
+                      },
+                      {
+                        "type": "select",
+                        "key": "status",
+                        "label": "Statut",
+                        "options": [
+                          {
+                            "label": "Success",
+                            "value": "success"
+                          },
+                          {
+                            "label": "Error",
+                            "value": "error"
+                          }
+                        ],
+                        "col": {
+                          "xs": 24
+                        },
+                        "description": "Statut courant."
+                      },
+                      {
+                        "type": "number",
+                        "key": "duration",
+                        "label": "Durée (ms)",
+                        "col": {
+                          "xs": 24
+                        },
+                        "description": "Durée en millisecondes."
+                      }
+                    ],
+                    "description": "Appels d'outils effectués pendant ce message."
+                  },
+                  {
+                    "type": "date",
+                    "key": "createdAt",
+                    "label": "Date",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Date de création (ISO 8601)."
+                  }
+                ]
+              }
+            ]
+          }
         }
       ],
       "authorize_catch_error": true,
@@ -2671,7 +5415,11 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        }
       },
       "group": "Assistant IA",
       "tags": [
@@ -2767,7 +5515,11 @@
               "xs": 12
             }
           }
-        ]
+        ],
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        }
       },
       "group": "Assistant IA",
       "tags": [
@@ -2801,7 +5553,28 @@
         {
           "id": "ok",
           "name": "Success",
-          "type": "payload"
+          "type": "payload",
+          "schema": {
+            "title": "Extraction",
+            "fields": [
+              {
+                "type": "json",
+                "key": "extracted",
+                "label": "Données extraites",
+                "col": {
+                  "xs": 24
+                }
+              },
+              {
+                "type": "textarea",
+                "key": "raw",
+                "label": "Réponse brute",
+                "col": {
+                  "xs": 24
+                }
+              }
+            ]
+          }
         }
       ],
       "authorize_catch_error": true,
@@ -2849,7 +5622,11 @@
               "xs": 12
             }
           }
-        ]
+        ],
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        }
       },
       "group": "Assistant IA",
       "tags": [
@@ -2884,7 +5661,80 @@
           "id": "ok",
           "name": "Success",
           "type": "payload",
-          "schema": "$var:kinn_form"
+          "schema": {
+            "title": "Formulaires",
+            "ui": {
+              "layout": "vertical",
+              "labelsOnTop": true
+            },
+            "fields": [
+              {
+                "type": "section",
+                "mode": "array",
+                "key": "forms",
+                "title": "Formulaires",
+                "array": {
+                  "initialItems": 0,
+                  "minItems": 0
+                },
+                "fields": [
+                  {
+                    "type": "text",
+                    "key": "id",
+                    "label": "Form ID",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Identifiant unique."
+                  },
+                  {
+                    "type": "text",
+                    "key": "name",
+                    "label": "Nom",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Nom lisible."
+                  },
+                  {
+                    "type": "json",
+                    "key": "schema",
+                    "label": "Schéma",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Schéma JSON du formulaire (fields)."
+                  },
+                  {
+                    "type": "checkbox",
+                    "key": "deployed",
+                    "label": "Déployé",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Indique si déployé en production."
+                  },
+                  {
+                    "type": "text",
+                    "key": "flowId",
+                    "label": "Flow associé",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "ID du workflow concerné."
+                  }
+                ]
+              },
+              {
+                "type": "number",
+                "key": "count",
+                "label": "Nombre",
+                "col": {
+                  "xs": 24
+                }
+              }
+            ]
+          }
         }
       ],
       "authorize_catch_error": true,
@@ -2907,7 +5757,11 @@
               "xs": 12
             }
           }
-        ]
+        ],
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        }
       },
       "group": "Formulaires",
       "tags": [
@@ -2942,7 +5796,67 @@
           "id": "ok",
           "name": "Success",
           "type": "payload",
-          "schema": "$var:kinn_form"
+          "schema": {
+            "title": "Formulaire",
+            "ui": {
+              "layout": "vertical",
+              "labelsOnTop": true
+            },
+            "fields": [
+              {
+                "type": "section",
+                "key": "form",
+                "title": "Formulaire",
+                "fields": [
+                  {
+                    "type": "text",
+                    "key": "id",
+                    "label": "Form ID",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Identifiant unique."
+                  },
+                  {
+                    "type": "text",
+                    "key": "name",
+                    "label": "Nom",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Nom lisible."
+                  },
+                  {
+                    "type": "json",
+                    "key": "schema",
+                    "label": "Schéma",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Schéma JSON du formulaire (fields)."
+                  },
+                  {
+                    "type": "checkbox",
+                    "key": "deployed",
+                    "label": "Déployé",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Indique si déployé en production."
+                  },
+                  {
+                    "type": "text",
+                    "key": "flowId",
+                    "label": "Flow associé",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "ID du workflow concerné."
+                  }
+                ]
+              }
+            ]
+          }
         }
       ],
       "authorize_catch_error": true,
@@ -2961,7 +5875,11 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        }
       },
       "group": "Formulaires",
       "tags": [
@@ -2996,7 +5914,121 @@
           "id": "ok",
           "name": "Success",
           "type": "payload",
-          "schema": "$var:kinn_run"
+          "schema": {
+            "title": "Run",
+            "ui": {
+              "layout": "vertical",
+              "labelsOnTop": true
+            },
+            "fields": [
+              {
+                "type": "section",
+                "key": "run",
+                "title": "Run",
+                "fields": [
+                  {
+                    "type": "text",
+                    "key": "id",
+                    "label": "Run ID",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Identifiant unique."
+                  },
+                  {
+                    "type": "text",
+                    "key": "flowId",
+                    "label": "Flow ID",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "ID du workflow concerné."
+                  },
+                  {
+                    "type": "select",
+                    "key": "status",
+                    "label": "Statut",
+                    "options": [
+                      {
+                        "label": "Running",
+                        "value": "running"
+                      },
+                      {
+                        "label": "Completed",
+                        "value": "completed"
+                      },
+                      {
+                        "label": "Failed",
+                        "value": "failed"
+                      },
+                      {
+                        "label": "Cancelled",
+                        "value": "cancelled"
+                      }
+                    ],
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Statut courant."
+                  },
+                  {
+                    "type": "json",
+                    "key": "input",
+                    "label": "Input",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Payload d'entrée fourni au lancement."
+                  },
+                  {
+                    "type": "json",
+                    "key": "output",
+                    "label": "Output",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Résultat produit par la run."
+                  },
+                  {
+                    "type": "date",
+                    "key": "startedAt",
+                    "label": "Démarré",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Date de démarrage de la run."
+                  },
+                  {
+                    "type": "date",
+                    "key": "finishedAt",
+                    "label": "Terminé",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Date de fin de la run."
+                  },
+                  {
+                    "type": "number",
+                    "key": "durationMs",
+                    "label": "Durée (ms)",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Durée d'exécution en millisecondes."
+                  },
+                  {
+                    "type": "text",
+                    "key": "error",
+                    "label": "Erreur",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Message d'erreur si la run a échoué."
+                  }
+                ]
+              }
+            ]
+          }
         }
       ],
       "authorize_catch_error": true,
@@ -3024,7 +6056,11 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        }
       },
       "group": "Formulaires",
       "tags": [
@@ -3059,7 +6095,67 @@
           "id": "ok",
           "name": "Success",
           "type": "payload",
-          "schema": "$var:kinn_form"
+          "schema": {
+            "title": "Formulaire créé",
+            "ui": {
+              "layout": "vertical",
+              "labelsOnTop": true
+            },
+            "fields": [
+              {
+                "type": "section",
+                "key": "form",
+                "title": "Formulaire créé",
+                "fields": [
+                  {
+                    "type": "text",
+                    "key": "id",
+                    "label": "Form ID",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Identifiant unique."
+                  },
+                  {
+                    "type": "text",
+                    "key": "name",
+                    "label": "Nom",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Nom lisible."
+                  },
+                  {
+                    "type": "json",
+                    "key": "schema",
+                    "label": "Schéma",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Schéma JSON du formulaire (fields)."
+                  },
+                  {
+                    "type": "checkbox",
+                    "key": "deployed",
+                    "label": "Déployé",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Indique si déployé en production."
+                  },
+                  {
+                    "type": "text",
+                    "key": "flowId",
+                    "label": "Flow associé",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "ID du workflow concerné."
+                  }
+                ]
+              }
+            ]
+          }
         }
       ],
       "authorize_catch_error": true,
@@ -3107,7 +6203,11 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        }
       },
       "group": "Formulaires",
       "tags": [
@@ -3142,7 +6242,90 @@
           "id": "ok",
           "name": "Success",
           "type": "payload",
-          "schema": "$var:kinn_memory_entry"
+          "schema": {
+            "title": "Mémoire utilisateur",
+            "ui": {
+              "layout": "vertical",
+              "labelsOnTop": true
+            },
+            "fields": [
+              {
+                "type": "section",
+                "mode": "array",
+                "key": "entries",
+                "title": "Mémoire utilisateur",
+                "array": {
+                  "initialItems": 0,
+                  "minItems": 0
+                },
+                "fields": [
+                  {
+                    "type": "text",
+                    "key": "id",
+                    "label": "ID",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Identifiant unique."
+                  },
+                  {
+                    "type": "text",
+                    "key": "key",
+                    "label": "Clé",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Clé identifiant l'entrée."
+                  },
+                  {
+                    "type": "textarea",
+                    "key": "content",
+                    "label": "Contenu",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Contenu du message ou de l'entrée."
+                  },
+                  {
+                    "type": "select",
+                    "key": "scope",
+                    "label": "Portée",
+                    "options": [
+                      {
+                        "label": "User (global)",
+                        "value": "user"
+                      },
+                      {
+                        "label": "Project (flow/form)",
+                        "value": "project"
+                      }
+                    ],
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Portée de la mémoire (user globale ou project ciblée)."
+                  },
+                  {
+                    "type": "date",
+                    "key": "createdAt",
+                    "label": "Créé le",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Date de création (ISO 8601)."
+                  }
+                ]
+              },
+              {
+                "type": "number",
+                "key": "count",
+                "label": "Nombre",
+                "col": {
+                  "xs": 24
+                }
+              }
+            ]
+          }
         }
       ],
       "authorize_catch_error": true,
@@ -3156,7 +6339,11 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        }
       },
       "group": "Mémoire",
       "tags": [
@@ -3191,7 +6378,77 @@
           "id": "ok",
           "name": "Success",
           "type": "payload",
-          "schema": "$var:kinn_memory_entry"
+          "schema": {
+            "title": "Entrée sauvegardée",
+            "ui": {
+              "layout": "vertical",
+              "labelsOnTop": true
+            },
+            "fields": [
+              {
+                "type": "section",
+                "key": "entry",
+                "title": "Entrée sauvegardée",
+                "fields": [
+                  {
+                    "type": "text",
+                    "key": "id",
+                    "label": "ID",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Identifiant unique."
+                  },
+                  {
+                    "type": "text",
+                    "key": "key",
+                    "label": "Clé",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Clé identifiant l'entrée."
+                  },
+                  {
+                    "type": "textarea",
+                    "key": "content",
+                    "label": "Contenu",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Contenu du message ou de l'entrée."
+                  },
+                  {
+                    "type": "select",
+                    "key": "scope",
+                    "label": "Portée",
+                    "options": [
+                      {
+                        "label": "User (global)",
+                        "value": "user"
+                      },
+                      {
+                        "label": "Project (flow/form)",
+                        "value": "project"
+                      }
+                    ],
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Portée de la mémoire (user globale ou project ciblée)."
+                  },
+                  {
+                    "type": "date",
+                    "key": "createdAt",
+                    "label": "Créé le",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Date de création (ISO 8601)."
+                  }
+                ]
+              }
+            ]
+          }
         }
       ],
       "authorize_catch_error": true,
@@ -3226,7 +6483,11 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        }
       },
       "group": "Mémoire",
       "tags": [
@@ -3261,7 +6522,19 @@
           "id": "ok",
           "name": "Success",
           "type": "payload",
-          "schema": "$var:kinn_memory_entry"
+          "schema": {
+            "title": "Mémoire projet",
+            "fields": [
+              {
+                "type": "textarea",
+                "key": "memory",
+                "label": "Mémoire",
+                "col": {
+                  "xs": 24
+                }
+              }
+            ]
+          }
         }
       ],
       "authorize_catch_error": true,
@@ -3307,7 +6580,11 @@
               "xs": 12
             }
           }
-        ]
+        ],
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        }
       },
       "group": "Mémoire",
       "tags": [
@@ -3342,7 +6619,19 @@
           "id": "ok",
           "name": "Success",
           "type": "payload",
-          "schema": "$var:kinn_memory_entry"
+          "schema": {
+            "title": "Mémoire projet sauvegardée",
+            "fields": [
+              {
+                "type": "textarea",
+                "key": "memory",
+                "label": "Mémoire",
+                "col": {
+                  "xs": 24
+                }
+              }
+            ]
+          }
         }
       ],
       "authorize_catch_error": true,
@@ -3401,7 +6690,11 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        }
       },
       "group": "Mémoire",
       "tags": [
@@ -3436,7 +6729,71 @@
           "id": "ok",
           "name": "Success",
           "type": "payload",
-          "schema": "$var:kinn_workspace"
+          "schema": {
+            "title": "Workspaces",
+            "ui": {
+              "layout": "vertical",
+              "labelsOnTop": true
+            },
+            "fields": [
+              {
+                "type": "section",
+                "mode": "array",
+                "key": "workspaces",
+                "title": "Workspaces",
+                "array": {
+                  "initialItems": 0,
+                  "minItems": 0
+                },
+                "fields": [
+                  {
+                    "type": "text",
+                    "key": "id",
+                    "label": "ID",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Identifiant unique."
+                  },
+                  {
+                    "type": "text",
+                    "key": "name",
+                    "label": "Nom",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Nom lisible."
+                  },
+                  {
+                    "type": "text",
+                    "key": "companyId",
+                    "label": "Company ID",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "ID de la company."
+                  },
+                  {
+                    "type": "text",
+                    "key": "defaultAgentId",
+                    "label": "Agent par défaut",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Agent par défaut du workspace."
+                  }
+                ]
+              },
+              {
+                "type": "number",
+                "key": "count",
+                "label": "Nombre",
+                "col": {
+                  "xs": 24
+                }
+              }
+            ]
+          }
         }
       ],
       "authorize_catch_error": true,
@@ -3451,7 +6808,11 @@
               "xs": 12
             }
           }
-        ]
+        ],
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        }
       },
       "group": "Workspace",
       "tags": [
@@ -3486,7 +6847,71 @@
           "id": "ok",
           "name": "Success",
           "type": "payload",
-          "schema": "$var:kinn_credential"
+          "schema": {
+            "title": "Identifiants",
+            "ui": {
+              "layout": "vertical",
+              "labelsOnTop": true
+            },
+            "fields": [
+              {
+                "type": "section",
+                "mode": "array",
+                "key": "credentials",
+                "title": "Identifiants",
+                "array": {
+                  "initialItems": 0,
+                  "minItems": 0
+                },
+                "fields": [
+                  {
+                    "type": "text",
+                    "key": "id",
+                    "label": "ID",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Identifiant unique."
+                  },
+                  {
+                    "type": "text",
+                    "key": "name",
+                    "label": "Nom",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Nom lisible."
+                  },
+                  {
+                    "type": "text",
+                    "key": "providerKey",
+                    "label": "Provider",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Clé du provider associé."
+                  },
+                  {
+                    "type": "text",
+                    "key": "createdBy",
+                    "label": "Créé par",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Utilisateur ayant créé l'élément."
+                  }
+                ]
+              },
+              {
+                "type": "number",
+                "key": "count",
+                "label": "Nombre",
+                "col": {
+                  "xs": 24
+                }
+              }
+            ]
+          }
         }
       ],
       "authorize_catch_error": true,
@@ -3508,7 +6933,11 @@
               "xs": 12
             }
           }
-        ]
+        ],
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        }
       },
       "group": "Workspace",
       "tags": [
@@ -3532,7 +6961,121 @@
           "id": "ok",
           "name": "Success",
           "type": "payload",
-          "schema": "$var:kinn_run"
+          "schema": {
+            "title": "Exécution",
+            "ui": {
+              "layout": "vertical",
+              "labelsOnTop": true
+            },
+            "fields": [
+              {
+                "type": "section",
+                "key": "run",
+                "title": "Exécution",
+                "fields": [
+                  {
+                    "type": "text",
+                    "key": "id",
+                    "label": "Run ID",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Identifiant unique."
+                  },
+                  {
+                    "type": "text",
+                    "key": "flowId",
+                    "label": "Flow ID",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "ID du workflow concerné."
+                  },
+                  {
+                    "type": "select",
+                    "key": "status",
+                    "label": "Statut",
+                    "options": [
+                      {
+                        "label": "Running",
+                        "value": "running"
+                      },
+                      {
+                        "label": "Completed",
+                        "value": "completed"
+                      },
+                      {
+                        "label": "Failed",
+                        "value": "failed"
+                      },
+                      {
+                        "label": "Cancelled",
+                        "value": "cancelled"
+                      }
+                    ],
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Statut courant."
+                  },
+                  {
+                    "type": "json",
+                    "key": "input",
+                    "label": "Input",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Payload d'entrée fourni au lancement."
+                  },
+                  {
+                    "type": "json",
+                    "key": "output",
+                    "label": "Output",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Résultat produit par la run."
+                  },
+                  {
+                    "type": "date",
+                    "key": "startedAt",
+                    "label": "Démarré",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Date de démarrage de la run."
+                  },
+                  {
+                    "type": "date",
+                    "key": "finishedAt",
+                    "label": "Terminé",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Date de fin de la run."
+                  },
+                  {
+                    "type": "number",
+                    "key": "durationMs",
+                    "label": "Durée (ms)",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Durée d'exécution en millisecondes."
+                  },
+                  {
+                    "type": "text",
+                    "key": "error",
+                    "label": "Erreur",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Message d'erreur si la run a échoué."
+                  }
+                ]
+              }
+            ]
+          }
         }
       ],
       "args": {
@@ -3573,7 +7116,11 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        }
       },
       "group": "Triggers",
       "tags": [
@@ -3597,7 +7144,158 @@
           "id": "ok",
           "name": "Success",
           "type": "payload",
-          "schema": "$var:kinn_message"
+          "schema": {
+            "title": "Message",
+            "ui": {
+              "layout": "vertical",
+              "labelsOnTop": true
+            },
+            "fields": [
+              {
+                "type": "section",
+                "key": "message",
+                "title": "Message",
+                "fields": [
+                  {
+                    "type": "text",
+                    "key": "id",
+                    "label": "Message ID",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Identifiant unique."
+                  },
+                  {
+                    "type": "text",
+                    "key": "threadId",
+                    "label": "Thread ID",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "ID du thread de conversation."
+                  },
+                  {
+                    "type": "select",
+                    "key": "role",
+                    "label": "Rôle",
+                    "options": [
+                      {
+                        "label": "User",
+                        "value": "user"
+                      },
+                      {
+                        "label": "Assistant",
+                        "value": "assistant"
+                      },
+                      {
+                        "label": "System",
+                        "value": "system"
+                      },
+                      {
+                        "label": "Tool",
+                        "value": "tool"
+                      }
+                    ],
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Rôle du locuteur (user, assistant, system, tool)."
+                  },
+                  {
+                    "type": "textarea",
+                    "key": "content",
+                    "label": "Contenu",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Contenu du message ou de l'entrée."
+                  },
+                  {
+                    "type": "section",
+                    "key": "toolCalls",
+                    "label": "Tool calls",
+                    "mode": "array",
+                    "fields": [
+                      {
+                        "type": "text",
+                        "key": "id",
+                        "label": "ID",
+                        "col": {
+                          "xs": 24
+                        },
+                        "description": "Identifiant unique."
+                      },
+                      {
+                        "type": "text",
+                        "key": "name",
+                        "label": "Nom",
+                        "col": {
+                          "xs": 24
+                        },
+                        "description": "Nom lisible."
+                      },
+                      {
+                        "type": "json",
+                        "key": "args",
+                        "label": "Args",
+                        "col": {
+                          "xs": 24
+                        },
+                        "description": "Arguments passés au tool."
+                      },
+                      {
+                        "type": "json",
+                        "key": "result",
+                        "label": "Résultat",
+                        "col": {
+                          "xs": 24
+                        },
+                        "description": "Résultat retourné."
+                      },
+                      {
+                        "type": "select",
+                        "key": "status",
+                        "label": "Statut",
+                        "options": [
+                          {
+                            "label": "Success",
+                            "value": "success"
+                          },
+                          {
+                            "label": "Error",
+                            "value": "error"
+                          }
+                        ],
+                        "col": {
+                          "xs": 24
+                        },
+                        "description": "Statut courant."
+                      },
+                      {
+                        "type": "number",
+                        "key": "duration",
+                        "label": "Durée (ms)",
+                        "col": {
+                          "xs": 24
+                        },
+                        "description": "Durée en millisecondes."
+                      }
+                    ],
+                    "description": "Appels d'outils effectués pendant ce message."
+                  },
+                  {
+                    "type": "date",
+                    "key": "createdAt",
+                    "label": "Date",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Date de création (ISO 8601)."
+                  }
+                ]
+              }
+            ]
+          }
         }
       ],
       "args": {
@@ -3633,7 +7331,11 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        }
       },
       "group": "Triggers",
       "tags": [
@@ -3656,7 +7358,104 @@
         {
           "id": "ok",
           "name": "Success",
-          "type": "payload"
+          "type": "payload",
+          "schema": {
+            "title": "Déploiement",
+            "ui": {
+              "layout": "vertical",
+              "labelsOnTop": true
+            },
+            "fields": [
+              {
+                "type": "section",
+                "key": "deployment",
+                "title": "Déploiement",
+                "fields": [
+                  {
+                    "type": "text",
+                    "key": "flowId",
+                    "label": "Flow ID",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "ID du workflow concerné."
+                  },
+                  {
+                    "type": "text",
+                    "key": "flowName",
+                    "label": "Nom du flow",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Nom du workflow (snapshot)."
+                  },
+                  {
+                    "type": "checkbox",
+                    "key": "deployed",
+                    "label": "Déployé",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Indique si déployé en production."
+                  },
+                  {
+                    "type": "date",
+                    "key": "deployedAt",
+                    "label": "Déployé le",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Date de déploiement."
+                  },
+                  {
+                    "type": "text",
+                    "key": "version",
+                    "label": "Version",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Version du déploiement."
+                  },
+                  {
+                    "type": "text",
+                    "key": "triggerType",
+                    "label": "Type de trigger",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Type de trigger (webhook, polling, subscription...)."
+                  },
+                  {
+                    "type": "date",
+                    "key": "lastEventAt",
+                    "label": "Dernier event",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Dernier événement reçu par le trigger."
+                  },
+                  {
+                    "type": "number",
+                    "key": "eventCount",
+                    "label": "Nb d'events",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Nombre total d'événements reçus."
+                  },
+                  {
+                    "type": "text",
+                    "key": "lastError",
+                    "label": "Dernière erreur",
+                    "col": {
+                      "xs": 24
+                    },
+                    "description": "Dernière erreur du trigger."
+                  }
+                ]
+              }
+            ]
+          }
         }
       ],
       "args": {
@@ -3674,7 +7473,11 @@
               "xs": 24
             }
           }
-        ]
+        ],
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        }
       },
       "group": "Triggers",
       "tags": [
@@ -3715,7 +7518,82 @@
           "id": "ok",
           "name": "Design",
           "type": "payload",
-          "schema": "$var:kinn_flow_design"
+          "schema": {
+            "title": "Design de workflow (IA)",
+            "ui": {
+              "layout": "vertical",
+              "labelsOnTop": true
+            },
+            "fields": [
+              {
+                "type": "text",
+                "key": "name",
+                "label": "Nom suggéré",
+                "description": "Nom du workflow proposé par l'IA.",
+                "col": {
+                  "xs": 24
+                }
+              },
+              {
+                "type": "textarea",
+                "key": "description",
+                "label": "Description",
+                "description": "Description du workflow proposé.",
+                "col": {
+                  "xs": 24
+                }
+              },
+              {
+                "type": "select",
+                "key": "mode",
+                "label": "Mode",
+                "options": [
+                  {
+                    "label": "Workflow",
+                    "value": "workflow"
+                  },
+                  {
+                    "label": "Chat",
+                    "value": "chat"
+                  },
+                  {
+                    "label": "Form",
+                    "value": "form"
+                  }
+                ],
+                "col": {
+                  "xs": 12
+                }
+              },
+              {
+                "type": "json",
+                "key": "graph",
+                "label": "Graphe complet (nodes + edges)",
+                "description": "Structure JSON {nodes, edges} prête à être passée à kinn_create_flow.",
+                "col": {
+                  "xs": 24
+                }
+              },
+              {
+                "type": "textarea",
+                "key": "rationale",
+                "label": "Justification IA",
+                "description": "Explication produite par l'agent sur le choix du graph.",
+                "col": {
+                  "xs": 24
+                }
+              },
+              {
+                "type": "text",
+                "key": "threadId",
+                "label": "Thread ID source",
+                "description": "Thread Kinn dans lequel l'IA a travaillé.",
+                "col": {
+                  "xs": 24
+                }
+              }
+            ]
+          }
         }
       ],
       "authorize_catch_error": true,
@@ -3813,7 +7691,59 @@
           "id": "ok",
           "name": "Design",
           "type": "payload",
-          "schema": "$var:kinn_form_design"
+          "schema": {
+            "title": "Design de formulaire (IA)",
+            "ui": {
+              "layout": "vertical",
+              "labelsOnTop": true
+            },
+            "fields": [
+              {
+                "type": "text",
+                "key": "name",
+                "label": "Nom suggéré",
+                "description": "Nom du formulaire proposé.",
+                "col": {
+                  "xs": 24
+                }
+              },
+              {
+                "type": "textarea",
+                "key": "description",
+                "label": "Description",
+                "description": "Description fonctionnelle.",
+                "col": {
+                  "xs": 24
+                }
+              },
+              {
+                "type": "json",
+                "key": "schema",
+                "label": "Schéma (fields)",
+                "description": "Schema JSON {fields:[...]} prêt à être passé à kinn_create_form.",
+                "col": {
+                  "xs": 24
+                }
+              },
+              {
+                "type": "textarea",
+                "key": "rationale",
+                "label": "Justification IA",
+                "description": "Explication des choix de champs.",
+                "col": {
+                  "xs": 24
+                }
+              },
+              {
+                "type": "text",
+                "key": "threadId",
+                "label": "Thread ID source",
+                "col": {
+                  "xs": 24
+                }
+              }
+            ]
+          }
         }
       ],
       "authorize_catch_error": true,

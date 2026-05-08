@@ -6,23 +6,61 @@
  * @param {object} opts - opts du handler (contient .credentials)
  * @returns {{baseUrl, apiToken, workspaceId, fetchKinn(path, options)}}
  */
-function buildKinnClient(opts) {
+// Mode local : helper async pour générer / récupérer le service token.
+// Idempotent : si l'env var existe, on la lit ; sinon on génère via le service.
+async function getLocalServiceCreds(creds) {
+  const port = process.env.PORT || '5055';
+  const baseUrl = String(process.env.KINN_LOCAL_BASE_URL || `http://localhost:${port}`).replace(/\/+$/, '');
+
+  let apiToken = String(process.env.KINN_LOCAL_API_TOKEN || '');
+  let defaultWorkspaceId = String(creds.workspaceId || process.env.KINN_LOCAL_WORKSPACE_ID || '');
+
+  if (!apiToken) {
+    // Fallback : on génère un service token à la volée si jamais le boot
+    // n'a pas pu le faire (ex: seed pas encore lancé au moment du boot).
+    try {
+      const { ensureLocalServiceToken } = require('../../../../services/local-service-token');
+      const result = await ensureLocalServiceToken();
+      if (result && result.token) {
+        apiToken = result.token;
+        process.env.KINN_LOCAL_API_TOKEN = apiToken;
+        if (result.workspaceId && !defaultWorkspaceId) {
+          defaultWorkspaceId = result.workspaceId;
+          process.env.KINN_LOCAL_WORKSPACE_ID = defaultWorkspaceId;
+        }
+      }
+    } catch (e) {
+      throw new Error(`Kinn local: impossible de générer un service token (${e?.message || e})`);
+    }
+  }
+
+  if (!apiToken) {
+    throw new Error('Kinn local: aucun service token disponible. Vérifie que MongoDB est connecté + qu\'au moins une company existe en DB.');
+  }
+
+  return { baseUrl, apiToken, defaultWorkspaceId };
+}
+
+async function buildKinnClient(opts) {
   const creds = (opts && opts.credentials) || {};
   const isLocal = creds.local === true || creds.local === 'true';
 
   let baseUrl, apiToken, defaultWorkspaceId;
 
   if (isLocal) {
-    // Mode local : on parle à soi-même. Le baseUrl est dérivé du PORT courant.
-    // L'apiToken vient d'une env var KINN_LOCAL_API_TOKEN (générée au boot,
-    // cf. seed). Le workspaceId par défaut peut venir de l'env aussi.
+    // Mode local : on préfère le PAT user auto-généré au moment de la sauvegarde
+    // du credential (creds.apiToken). Fallback service token global si absent.
     const port = process.env.PORT || '5055';
-    baseUrl = String(process.env.KINN_LOCAL_BASE_URL || `http://localhost:${port}`).replace(/\/+$/, '');
-    apiToken = String(process.env.KINN_LOCAL_API_TOKEN || '');
+    baseUrl = String(creds.baseUrl || process.env.KINN_LOCAL_BASE_URL || `http://localhost:${port}`).replace(/\/+$/, '');
+    apiToken = String(creds.apiToken || '');
     defaultWorkspaceId = String(creds.workspaceId || process.env.KINN_LOCAL_WORKSPACE_ID || '');
-
     if (!apiToken) {
-      throw new Error('Kinn local: KINN_LOCAL_API_TOKEN absent. Génère un PAT pour l\'admin et mets-le dans l\'env (ou redémarre Kinn pour auto-générer un service token).');
+      const local = await getLocalServiceCreds(creds);
+      apiToken = local.apiToken;
+      if (!defaultWorkspaceId) defaultWorkspaceId = local.defaultWorkspaceId;
+    }
+    if (!apiToken) {
+      throw new Error('Kinn local: aucun token disponible (PAT user manquant et service token indisponible).');
     }
   } else {
     baseUrl = String(creds.baseUrl || '').replace(/\/+$/, '');

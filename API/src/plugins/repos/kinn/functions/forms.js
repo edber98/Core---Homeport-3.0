@@ -4,7 +4,7 @@ const { buildKinnClient, ok, fail } = require('./_helpers');
 module.exports = {
   async kinn_list_forms(node, msg, inputs, opts) {
     try {
-      const c = buildKinnClient(opts);
+      const c = await buildKinnClient(opts);
       const wsId = c.resolveWorkspaceId(inputs);
       if (!wsId) return fail('workspaceId requis');
       const limit = Math.min(parseInt(inputs.limit || 100, 10), 200);
@@ -16,7 +16,7 @@ module.exports = {
 
   async kinn_get_form(node, msg, inputs, opts) {
     try {
-      const c = buildKinnClient(opts);
+      const c = await buildKinnClient(opts);
       const formId = String(inputs.formId || '').trim();
       if (!formId) return fail('formId requis');
       const res = await c.fetchKinn(`/api/forms/${encodeURIComponent(formId)}`);
@@ -26,7 +26,7 @@ module.exports = {
 
   async kinn_submit_form(node, msg, inputs, opts) {
     try {
-      const c = buildKinnClient(opts);
+      const c = await buildKinnClient(opts);
       const formId = String(inputs.formId || '').trim();
       if (!formId) return fail('formId requis');
       const data = inputs.data || {};
@@ -40,7 +40,7 @@ module.exports = {
 
   async kinn_create_form(node, msg, inputs, opts) {
     try {
-      const c = buildKinnClient(opts);
+      const c = await buildKinnClient(opts);
       const wsId = c.resolveWorkspaceId(inputs);
       if (!wsId) return fail('workspaceId requis');
       const body = {

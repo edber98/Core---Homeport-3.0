@@ -32,6 +32,7 @@ export interface BackendNodeTemplate {
   output_array_field?: string;
   output_schema_field?: string;
   outputSchema?: any[];
+  risk?: 'safe' | 'write' | 'destructive' | 'elevated';
 }
 
 @Injectable({ providedIn: 'root' })

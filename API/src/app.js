@@ -108,6 +108,7 @@ function buildApp(opts = {}){
     app.use('/api', require('./modules/db/runs')());
     app.use('/api', require('./modules/db/triggers')());
     app.use('/api', require('./modules/db/webhooks')());
+    app.use('/api', require('./modules/db/me')());
     // Alias SSE stream without /api prefix (DB mode)
     app.get('/runs/:runId/stream', authMiddleware(), requireCompanyScope(), async (req, res) => {
       const { Types } = require('mongoose');

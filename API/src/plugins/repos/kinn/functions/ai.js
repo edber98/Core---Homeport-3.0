@@ -7,7 +7,7 @@ module.exports = {
   // ── Threads CRUD ───────────────────────────────────────────────────────
   async kinn_ai_list_threads(node, msg, inputs, opts) {
     try {
-      const c = buildKinnClient(opts);
+      const c = await buildKinnClient(opts);
       const wsId = c.resolveWorkspaceId(inputs);
       if (!wsId) return fail('workspaceId requis');
       const params = new URLSearchParams({ workspaceId: wsId });
@@ -24,7 +24,7 @@ module.exports = {
 
   async kinn_ai_create_thread(node, msg, inputs, opts) {
     try {
-      const c = buildKinnClient(opts);
+      const c = await buildKinnClient(opts);
       const wsId = c.resolveWorkspaceId(inputs);
       if (!wsId) return fail('workspaceId requis');
       const body = {
@@ -45,7 +45,7 @@ module.exports = {
 
   async kinn_ai_get_thread(node, msg, inputs, opts) {
     try {
-      const c = buildKinnClient(opts);
+      const c = await buildKinnClient(opts);
       const wsId = c.resolveWorkspaceId(inputs);
       const threadId = String(inputs.threadId || '').trim();
       if (!threadId) return fail('threadId requis');
@@ -58,7 +58,7 @@ module.exports = {
 
   async kinn_ai_delete_thread(node, msg, inputs, opts) {
     try {
-      const c = buildKinnClient(opts);
+      const c = await buildKinnClient(opts);
       const wsId = c.resolveWorkspaceId(inputs);
       const threadId = String(inputs.threadId || '').trim();
       if (!threadId) return fail('threadId requis');
@@ -69,7 +69,7 @@ module.exports = {
 
   async kinn_ai_list_agents(node, msg, inputs, opts) {
     try {
-      const c = buildKinnClient(opts);
+      const c = await buildKinnClient(opts);
       const wsId = c.resolveWorkspaceId(inputs);
       if (!wsId) return fail('workspaceId requis');
       const res = await c.fetchKinn(c.withWs('/api/ai/agents/available', wsId));
@@ -85,7 +85,7 @@ module.exports = {
   async kinn_ai_send_message(node, msg, inputs, opts) {
     const log = (opts && opts.log) ? opts.log : () => {};
     try {
-      const c = buildKinnClient(opts);
+      const c = await buildKinnClient(opts);
       const wsId = c.resolveWorkspaceId(inputs);
       const text = String(inputs.message || inputs.text || '').trim();
       if (!text) return fail('message (texte) requis');
@@ -184,7 +184,7 @@ module.exports = {
   // ── Répondre à une pendingQuestion posée par l'agent ───────────────────
   async kinn_ai_answer_question(node, msg, inputs, opts) {
     try {
-      const c = buildKinnClient(opts);
+      const c = await buildKinnClient(opts);
       const wsId = c.resolveWorkspaceId(inputs);
       const threadId = String(inputs.threadId || '').trim();
       if (!threadId) return fail('threadId requis');
@@ -235,7 +235,7 @@ Réponds UNIQUEMENT par un JSON {"category": "<nom>", "confidence": 0..1}.`;
   async kinn_ai_design_flow(node, msg, inputs, opts) {
     const log = (opts && opts.log) ? opts.log : () => {};
     try {
-      const c = require('./_helpers').buildKinnClient(opts);
+      const c = await require('./_helpers').buildKinnClient(opts);
       const wsId = c.resolveWorkspaceId(inputs);
       if (!wsId) return { ok: false, error: 'workspaceId requis' };
       const description = String(inputs.description || inputs.prompt || '').trim();
@@ -310,7 +310,7 @@ Crée le graph (nodes + edges) avec les bons templates et arguments. Réponds pa
   async kinn_ai_design_form(node, msg, inputs, opts) {
     const log = (opts && opts.log) ? opts.log : () => {};
     try {
-      const c = require('./_helpers').buildKinnClient(opts);
+      const c = await require('./_helpers').buildKinnClient(opts);
       const wsId = c.resolveWorkspaceId(inputs);
       if (!wsId) return { ok: false, error: 'workspaceId requis' };
       const description = String(inputs.description || inputs.prompt || '').trim();

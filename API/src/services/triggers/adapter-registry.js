@@ -2,6 +2,7 @@ const { TelegramAdapter } = require('./adapters/telegram.adapter');
 const { ImapAdapter } = require('./adapters/imap.adapter');
 const { MongoDBAdapter } = require('./adapters/mongodb.adapter');
 const { KinnWebhookAdapter } = require('./adapters/kinn-webhook.adapter');
+const { CronAdapter } = require('./adapters/cron.adapter');
 const { WebhookTrigger } = require('./webhook-trigger');
 
 // Mapping templateKey → { Adapter, type }
@@ -17,6 +18,9 @@ const registry = {
   'kinn_on_run_complete':       { Adapter: KinnWebhookAdapter, type: 'subscription' },
   'kinn_on_thread_message':     { Adapter: KinnWebhookAdapter, type: 'subscription' },
   'kinn_on_deployment_event':   { Adapter: KinnWebhookAdapter, type: 'subscription' },
+
+  // Cron (in-process, croner)
+  'cron_schedule':              { Adapter: CronAdapter,        type: 'cron' },
 
   // Webhook adapters (URL-based)
   'core_webhook':           { Adapter: WebhookTrigger,    type: 'webhook' },

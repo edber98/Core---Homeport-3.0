@@ -3,7 +3,35 @@ const { authMiddleware, requireCompanyScope } = require('../../auth/jwt');
 const Workspace = require('../../db/models/workspace.model');
 const Credential = require('../../db/models/credential.model');
 const { encrypt, decrypt } = require('../../utils/enc');
+const { makeToken, nowSec } = require('../../utils/crypto');
+const { HMAC_SECRET } = require('../../config/env');
 const { Types } = require('mongoose');
+
+// PAT auto-généré pour les credentials Kinn local : signé pour le user qui crée
+// le credential, TTL 1 an. Les appels backend->backend héritent ainsi des
+// permissions réelles de cet utilisateur (workspace membership, role, audit).
+const KINN_LOCAL_PAT_TTL_SEC = 365 * 24 * 60 * 60;
+
+function injectKinnLocalPat(values, user) {
+  const v = (values && typeof values === 'object') ? { ...values } : {};
+  const isLocal = v.local === true || v.local === 'true';
+  if (!isLocal) return v;
+  if (!user || !user.id || !user.companyId) return v;
+  const iat = nowSec();
+  const payload = {
+    user: {
+      id: String(user.id),
+      email: user.email,
+      role: user.role,
+      companyId: String(user.companyId),
+    },
+    iat,
+    exp: iat + KINN_LOCAL_PAT_TTL_SEC,
+    _kinn_local_pat: true,
+  };
+  v.apiToken = makeToken(payload, HMAC_SECRET);
+  return v;
+}
 
 module.exports = function(){
   const r = express.Router();
@@ -42,7 +70,11 @@ module.exports = function(){
     if (!ws || String(ws.companyId) !== req.user.companyId) return res.apiError(404, 'workspace_not_found', 'Workspace not found');
     const body = req.body || {};
     if (!body.name || !body.providerKey) return res.apiError(400, 'bad_request', 'Missing name or providerKey');
-    const secret = encrypt(body.values || {});
+    let values = body.values || {};
+    if (String(body.providerKey) === 'kinn') {
+      values = injectKinnLocalPat(values, req.user);
+    }
+    const secret = encrypt(values);
     const cred = await Credential.create({ name: body.name, providerKey: body.providerKey, workspaceId: ws._id, secret });
     res.status(201).json({ success: true, data: { id: String(cred._id), name: cred.name, providerKey: cred.providerKey, workspaceId: String(cred.workspaceId) }, requestId: req.requestId, ts: Date.now() });
   });
@@ -95,7 +127,13 @@ module.exports = function(){
     const body = req.body || {};
     if (body.name != null) cred.name = body.name;
     if (body.providerKey != null) cred.providerKey = body.providerKey;
-    if (body.values != null) cred.secret = encrypt(body.values);
+    if (body.values != null) {
+      let values = body.values;
+      if (String(cred.providerKey) === 'kinn') {
+        values = injectKinnLocalPat(values, req.user);
+      }
+      cred.secret = encrypt(values);
+    }
     await cred.save();
     res.apiOk({ id: String(cred._id), name: cred.name, providerKey: cred.providerKey, workspaceId: String(cred.workspaceId) });
   });

@@ -4,7 +4,7 @@ const { buildKinnClient, ok, fail } = require('./_helpers');
 module.exports = {
   async kinn_get_user_memory(node, msg, inputs, opts) {
     try {
-      const c = buildKinnClient(opts);
+      const c = await buildKinnClient(opts);
       const wsId = c.resolveWorkspaceId(inputs);
       const res = await c.fetchKinn(c.withWs('/api/ai/memory', wsId));
       const entries = Array.isArray(res?.data) ? res.data : (Array.isArray(res) ? res : []);
@@ -14,7 +14,7 @@ module.exports = {
 
   async kinn_save_user_memory(node, msg, inputs, opts) {
     try {
-      const c = buildKinnClient(opts);
+      const c = await buildKinnClient(opts);
       const wsId = c.resolveWorkspaceId(inputs);
       const content = String(inputs.content || '').trim();
       if (!content) return fail('content requis');
@@ -30,7 +30,7 @@ module.exports = {
 
   async kinn_get_project_memory(node, msg, inputs, opts) {
     try {
-      const c = buildKinnClient(opts);
+      const c = await buildKinnClient(opts);
       const wsId = c.resolveWorkspaceId(inputs);
       const elementType = String(inputs.elementType || 'flow');
       const elementId = String(inputs.elementId || '').trim();
@@ -45,7 +45,7 @@ module.exports = {
 
   async kinn_save_project_memory(node, msg, inputs, opts) {
     try {
-      const c = buildKinnClient(opts);
+      const c = await buildKinnClient(opts);
       const wsId = c.resolveWorkspaceId(inputs);
       const elementType = String(inputs.elementType || 'flow');
       const elementId = String(inputs.elementId || '').trim();

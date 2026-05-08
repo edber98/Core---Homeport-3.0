@@ -4,7 +4,7 @@ const { buildKinnClient, ok, fail } = require('./_helpers');
 module.exports = {
   async kinn_list_workspaces(node, msg, inputs, opts) {
     try {
-      const c = buildKinnClient(opts);
+      const c = await buildKinnClient(opts);
       const limit = Math.min(parseInt(inputs.limit || 100, 10), 200);
       const res = await c.fetchKinn(`/api/workspaces?page=1&limit=${limit}`);
       const workspaces = Array.isArray(res?.data) ? res.data : (Array.isArray(res) ? res : []);
@@ -14,7 +14,7 @@ module.exports = {
 
   async kinn_list_credentials(node, msg, inputs, opts) {
     try {
-      const c = buildKinnClient(opts);
+      const c = await buildKinnClient(opts);
       const wsId = c.resolveWorkspaceId(inputs);
       if (!wsId) return fail('workspaceId requis');
       const params = new URLSearchParams();

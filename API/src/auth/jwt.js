@@ -14,7 +14,7 @@ function verify(token){
 }
 
 function authMiddleware(){
-  return (req, res, next) => {
+  return async (req, res, next) => {
     let token = null;
     const h = req.headers['authorization'] || '';
     const m = /bearer (.+)/i.exec(h);
@@ -22,6 +22,32 @@ function authMiddleware(){
     // Fallback for EventSource/WebSocket: allow token via query param
     if (!token) token = (req.query && (req.query.token || req.query.access_token)) ? String(req.query.token || req.query.access_token) : null;
     if (!token) return res.status(401).json({ error: 'missing bearer token' });
+    // PAT (préfixe kpat_) → lookup en DB par hash SHA-256
+    if (typeof token === 'string' && token.startsWith('kpat_')) {
+      try {
+        const meModule = require('../modules/db/me');
+        const Pat = require('../db/models/personal-access-token.model');
+        const User = require('../db/models/user.model');
+        const tokenHash = meModule.hashToken(token);
+        const pat = await Pat.findOne({ tokenHash });
+        if (!pat) return res.status(401).json({ error: 'invalid pat' });
+        if (pat.revokedAt) return res.status(401).json({ error: 'pat revoked' });
+        if (pat.expiresAt && pat.expiresAt < new Date()) return res.status(401).json({ error: 'pat expired' });
+        const user = await User.findById(pat.userId).lean();
+        if (!user) return res.status(401).json({ error: 'pat owner missing' });
+        req.user = {
+          id: String(user._id),
+          email: user.email,
+          role: user.role,
+          companyId: String(user.companyId),
+        };
+        // best-effort lastUsedAt update (fire and forget)
+        Pat.updateOne({ _id: pat._id }, { lastUsedAt: new Date() }).catch(() => {});
+        return next();
+      } catch (e) {
+        return res.status(401).json({ error: 'pat verification failed' });
+      }
+    }
     try {
       const payload = verify(token);
       req.user = payload.user; // { id, email, role, companyId }

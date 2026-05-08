@@ -50,6 +50,10 @@ export type NodeTemplate = {
   // Extract-specific: output schema derived from this context field
   output_schema_field?: string;
   outputSchema?: any[];
+  // Risk classification (must be preserved in templateObj — used in backend
+  // validator's checksumFeature; default 'write' if missing causes mismatch
+  // for any template explicitly tagged 'safe'/'destructive'/'elevated').
+  risk?: 'safe' | 'write' | 'destructive' | 'elevated';
 };
 
 export type AppProvider = {
@@ -309,6 +313,7 @@ export class CatalogService {
           output_array_field: t.output_array_field,
           output_schema_field: (t as any).output_schema_field,
           outputSchema: (t as any).outputSchema,
+          risk: (t as any).risk,
         };
         return tpl;
       })));

@@ -6,7 +6,7 @@ const { buildKinnClient, ok, fail } = require('./_helpers');
 module.exports = {
   async kinn_list_flows(node, msg, inputs, opts) {
     try {
-      const c = buildKinnClient(opts);
+      const c = await buildKinnClient(opts);
       const wsId = c.resolveWorkspaceId(inputs);
       if (!wsId) return fail('workspaceId requis (argument ou credentials par défaut)');
       const params = new URLSearchParams({ workspaceId: wsId });
@@ -23,7 +23,7 @@ module.exports = {
 
   async kinn_get_flow(node, msg, inputs, opts) {
     try {
-      const c = buildKinnClient(opts);
+      const c = await buildKinnClient(opts);
       const flowId = String(inputs.flowId || '').trim();
       if (!flowId) return fail('flowId requis');
       const res = await c.fetchKinn(`/api/flows/${encodeURIComponent(flowId)}`);
@@ -34,7 +34,7 @@ module.exports = {
 
   async kinn_create_flow(node, msg, inputs, opts) {
     try {
-      const c = buildKinnClient(opts);
+      const c = await buildKinnClient(opts);
       const wsId = c.resolveWorkspaceId(inputs);
       if (!wsId) return fail('workspaceId requis');
       const body = {
@@ -53,7 +53,7 @@ module.exports = {
 
   async kinn_update_flow(node, msg, inputs, opts) {
     try {
-      const c = buildKinnClient(opts);
+      const c = await buildKinnClient(opts);
       const flowId = String(inputs.flowId || '').trim();
       if (!flowId) return fail('flowId requis');
       const body = {};
@@ -70,7 +70,7 @@ module.exports = {
 
   async kinn_delete_flow(node, msg, inputs, opts) {
     try {
-      const c = buildKinnClient(opts);
+      const c = await buildKinnClient(opts);
       const flowId = String(inputs.flowId || '').trim();
       if (!flowId) return fail('flowId requis');
       await c.fetchKinn(`/api/flows/${encodeURIComponent(flowId)}`, { method: 'DELETE' });
@@ -80,7 +80,7 @@ module.exports = {
 
   async kinn_run_flow(node, msg, inputs, opts) {
     try {
-      const c = buildKinnClient(opts);
+      const c = await buildKinnClient(opts);
       const flowId = String(inputs.flowId || '').trim();
       if (!flowId) return fail('flowId requis');
       const body = {
@@ -116,7 +116,7 @@ module.exports = {
 
   async kinn_list_runs(node, msg, inputs, opts) {
     try {
-      const c = buildKinnClient(opts);
+      const c = await buildKinnClient(opts);
       const wsId = c.resolveWorkspaceId(inputs);
       const params = new URLSearchParams();
       if (wsId) params.set('workspaceId', wsId);
@@ -132,7 +132,7 @@ module.exports = {
 
   async kinn_get_run(node, msg, inputs, opts) {
     try {
-      const c = buildKinnClient(opts);
+      const c = await buildKinnClient(opts);
       const runId = String(inputs.runId || '').trim();
       if (!runId) return fail('runId requis');
       const res = await c.fetchKinn(`/api/runs/${encodeURIComponent(runId)}`);
@@ -142,7 +142,7 @@ module.exports = {
 
   async kinn_cancel_run(node, msg, inputs, opts) {
     try {
-      const c = buildKinnClient(opts);
+      const c = await buildKinnClient(opts);
       const runId = String(inputs.runId || '').trim();
       if (!runId) return fail('runId requis');
       const res = await c.fetchKinn(`/api/runs/${encodeURIComponent(runId)}/cancel`, { method: 'POST' });

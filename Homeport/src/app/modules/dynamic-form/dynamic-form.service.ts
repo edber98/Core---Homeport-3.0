@@ -535,17 +535,24 @@ export class DynamicFormService {
             return (typeof x === 'object') ? this.evalRule(x, formOrValue) : x;
         };
 
+        // Coercion alignée sur le Condition Builder : toutes les valeurs scalaires
+        // sont stringifiées avant comparaison (un checkbox=true matche "true",
+        // un nombre 5 matche "5"). null/undefined → "" pour traiter "vide" uniformément.
+        const eq = (a: any, b: any) => {
+            const norm = (x: any) => (x === null || x === undefined) ? '' : String(x);
+            return norm(a) === norm(b);
+        };
         switch (op) {
             case 'var': return getByVar(formOrValue, args);
             case 'not': return !val(args);
             case 'all': return (args as any[]).every(a => !!val(a));
             case 'any': return (args as any[]).some(a => !!val(a));
-            case '==': return val(args[0]) === val(args[1]);
-            case '!=': return val(args[0]) !== val(args[1]);
-            case '>': return val(args[0]) > val(args[1]);
-            case '>=': return val(args[0]) >= val(args[1]);
-            case '<': return val(args[0]) < val(args[1]);
-            case '<=': return val(args[0]) <= val(args[1]);
+            case '==': return eq(val(args[0]), val(args[1]));
+            case '!=': return !eq(val(args[0]), val(args[1]));
+            case '>': return Number(val(args[0])) > Number(val(args[1]));
+            case '>=': return Number(val(args[0])) >= Number(val(args[1]));
+            case '<': return Number(val(args[0])) < Number(val(args[1]));
+            case '<=': return Number(val(args[0])) <= Number(val(args[1]));
             default: return true;
         }
     }

@@ -76,6 +76,56 @@
         "displayDescription": false
       },
       "risk": "safe"
+    },
+    {
+      "key": "cron_schedule",
+      "name": "cron_schedule",
+      "schemaVersion": 2,
+      "title": "Cron — planification",
+      "subtitle": "Déclencheur",
+      "type": "event",
+      "category": "Core",
+      "providerKey": "events",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": {
+            "title": "Tick cron",
+            "ui": { "layout": "vertical", "labelsOnTop": true },
+            "fields": [
+              { "type": "text", "key": "firedAt", "label": "Déclenché le (ISO)", "col": { "xs": 24 } },
+              { "type": "text", "key": "expression", "label": "Expression cron", "col": { "xs": 24 } },
+              { "type": "text", "key": "timezone", "label": "Fuseau horaire", "col": { "xs": 24 } }
+            ]
+          }
+        }
+      ],
+      "description": "Déclenche le flow selon une expression cron (toutes les X min, à heure fixe, etc.). Actif uniquement quand le flow est déployé.",
+      "args": {
+        "title": "Planification",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          {
+            "type": "cron",
+            "key": "expression",
+            "label": "Expression cron",
+            "description": "Ex: */5 * * * * (toutes les 5 min), 0 9 * * * (chaque jour à 9h), 0 0 1 * * (le 1er du mois).",
+            "validators": [{ "type": "required" }],
+            "col": { "xs": 24 }
+          },
+          {
+            "type": "text",
+            "key": "timezone",
+            "label": "Fuseau horaire (optionnel)",
+            "description": "Ex: Europe/Paris, UTC. Vide = serveur.",
+            "col": { "xs": 24 }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
     }
   ]
 }
