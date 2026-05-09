@@ -165,8 +165,10 @@ async function rotateTriggerId(flow, nodeId) {
 }
 
 function publicBaseUrl() {
+  // Précédence cohérente avec env.js : KINN_PUBLIC_URL > WEBHOOK_BASE_URL > PUBLIC_URL > localhost
   return String(
     process.env.KINN_PUBLIC_URL
+      || process.env.WEBHOOK_BASE_URL
       || process.env.PUBLIC_URL
       || `http://localhost:${process.env.PORT || 5055}`
   ).replace(/\/+$/, '');

@@ -59,6 +59,9 @@ function buildAuthRequest() {
     'email',
     'offline_access',
     projectRolesScope,
+    // Expose le claim urn:zitadel:iam:user:resourceowner:id (= org_id de l'user)
+    // pour permettre le lookup Company sans Action Zitadel custom.
+    'urn:zitadel:iam:user:resourceowner',
   ].join(' ');
   return { code_verifier, code_challenge, state, nonce, scopes };
 }
@@ -78,8 +81,13 @@ async function buildAuthorizationUrl({ code_challenge, state, nonce, scopes }) {
 /** Échange du code contre les tokens (id_token, access_token, refresh_token). */
 async function exchangeCode({ code, code_verifier, state, nonce }) {
   const client = await getClient();
-  const params = client.callbackParams({ url: `?code=${encodeURIComponent(code)}&state=${encodeURIComponent(state)}` });
-  const tokenSet = await client.callback(env.ZITADEL_REDIRECT_URI, params, { code_verifier, state, nonce });
+  // openid-client v5 accepte directement un objet { code, state } pour callback().
+  // Pas besoin d'appeler callbackParams() qui exige une string URL ou http.IncomingMessage.
+  const tokenSet = await client.callback(
+    env.ZITADEL_REDIRECT_URI,
+    { code, state },
+    { code_verifier, state, nonce },
+  );
   return tokenSet;
 }
 

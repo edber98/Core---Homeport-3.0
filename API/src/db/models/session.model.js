@@ -11,10 +11,11 @@ const { Schema, model, Types } = require('mongoose');
 
 const SessionSchema = new Schema({
   userId: { type: Types.ObjectId, ref: 'User', required: true, index: true },
-  // Tokens chiffrés au repos (utils/enc.js — clef AES depuis HMAC_SECRET)
-  refreshTokenEnc: { type: String, default: null },
-  accessTokenEnc: { type: String, default: null },
-  idTokenEnc: { type: String, default: null },
+  // Tokens chiffrés au repos. utils/enc.js encrypt() retourne un objet
+  // { iv, tag, data } (AES-256-GCM) → on stocke en Mixed.
+  refreshTokenEnc: { type: Schema.Types.Mixed, default: null },
+  accessTokenEnc: { type: Schema.Types.Mixed, default: null },
+  idTokenEnc: { type: Schema.Types.Mixed, default: null },
   // Quand expire l'accessToken (informational, on refresh avant si possible)
   accessTokenExpiresAt: { type: Date, default: null },
   // Empreinte du sub Zitadel pour validation rapide

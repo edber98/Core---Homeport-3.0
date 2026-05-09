@@ -46,8 +46,12 @@ module.exports = {
   FILE_CLEANUP_INTERVAL: process.env.FILE_CLEANUP_INTERVAL || '1h',
   FILE_EXECUTION_CLEANUP_DELAY: process.env.FILE_EXECUTION_CLEANUP_DELAY || '30m',
 
-  // Webhook base URL for trigger system (used to generate webhook URLs)
-  WEBHOOK_BASE_URL: process.env.WEBHOOK_BASE_URL || `http://localhost:${parseInt(process.env.PORT || '5055', 10)}`,
+  // URL publique du backend Kinn (utilisée par les webhooks legacy /api/hooks/:token,
+  // les HTTP triggers /api/trigger/:triggerId, et les redirects SSO).
+  // Précédence : KINN_PUBLIC_URL > WEBHOOK_BASE_URL > localhost.
+  WEBHOOK_BASE_URL: process.env.KINN_PUBLIC_URL || process.env.WEBHOOK_BASE_URL || `http://localhost:${parseInt(process.env.PORT || '5055', 10)}`,
+  KINN_PUBLIC_URL: process.env.KINN_PUBLIC_URL || process.env.WEBHOOK_BASE_URL || `http://localhost:${parseInt(process.env.PORT || '5055', 10)}`,
+  FRONTEND_BASE_URL: process.env.FRONTEND_BASE_URL || '',
 
   // AI / LLM — auto-detect: if both keys exist, prefer Anthropic
   OPENAI_API_KEY: process.env.AI_API_KEY || process.env.OPENAI_API_KEY || '',
@@ -99,8 +103,17 @@ module.exports = {
   ZITADEL_CLIENT_ID: process.env.ZITADEL_CLIENT_ID || '',
   ZITADEL_CLIENT_SECRET: process.env.ZITADEL_CLIENT_SECRET || '',
   ZITADEL_PROJECT_ID: process.env.ZITADEL_PROJECT_ID || '',
-  ZITADEL_REDIRECT_URI: process.env.ZITADEL_REDIRECT_URI || '',
-  ZITADEL_POST_LOGOUT_URI: process.env.ZITADEL_POST_LOGOUT_URI || '',
+  // Si non set, fallback auto sur ${KINN_PUBLIC_URL}/api/auth/sso/callback.
+  // L'URL doit être déclarée à l'identique dans l'app OIDC Zitadel.
+  ZITADEL_REDIRECT_URI: process.env.ZITADEL_REDIRECT_URI
+    || (process.env.KINN_PUBLIC_URL
+      ? String(process.env.KINN_PUBLIC_URL).replace(/\/+$/, '') + '/api/auth/sso/callback'
+      : ''),
+  // Si non set, fallback auto sur ${FRONTEND_BASE_URL}/login.
+  ZITADEL_POST_LOGOUT_URI: process.env.ZITADEL_POST_LOGOUT_URI
+    || (process.env.FRONTEND_BASE_URL
+      ? String(process.env.FRONTEND_BASE_URL).replace(/\/+$/, '') + '/login'
+      : ''),
   // Secret HMAC pour les webhooks /internal/* poussés par Kinn-panel
   KINN_PANEL_HMAC_SECRET: process.env.KINN_PANEL_HMAC_SECRET || '',
 };

@@ -1,6 +1,8 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiClientService } from './api-client.service';
+import { apiRoot, apiSuffix } from '../shared/api-base';
+import { environment } from '../../environments/environment';
 
 export interface SsoStatus {
   enabled: boolean;
@@ -17,13 +19,26 @@ export class SsoService {
   }
 
   /**
+   * Construit une URL backend complète. En dev, l'apiRoot pointe sur le port
+   * backend (ex http://localhost:5055). En prod, sur le même origin que le front.
+   * On NE PASSE PAS par ApiClientService car ces endpoints font des redirects
+   * HTTP (302) — il faut une navigation full page, pas un fetch XHR.
+   */
+  private backendUrl(path: string): string {
+    const root = apiRoot();
+    const suffix = apiSuffix();
+    // En prod, suffix = '/api' → on retire ce préfixe du path pour éviter doublon
+    const cleanPath = environment.production ? path.replace(/^\/api\b/, '') : path;
+    return `${root}${suffix}${cleanPath}`;
+  }
+
+  /**
    * Démarre le flow SSO : redirige le navigateur vers /api/auth/sso/start
    * (qui lui-même redirige vers Zitadel).
    */
   start(redirectAfter?: string) {
-    const base = (window as any).__API_BASE__ || '';
     const qs = redirectAfter ? `?redirect_after=${encodeURIComponent(redirectAfter)}` : '';
-    window.location.href = `${base}/api/auth/sso/start${qs}`;
+    window.location.href = this.backendUrl('/api/auth/sso/start') + qs;
   }
 
   /**
@@ -31,8 +46,7 @@ export class SsoService {
    * session Zitadel ET nettoie la session Kinn.
    */
   logout(sessionId?: string) {
-    const base = (window as any).__API_BASE__ || '';
     const qs = sessionId ? `?sessionId=${encodeURIComponent(sessionId)}` : '';
-    window.location.href = `${base}/api/auth/sso/logout${qs}`;
+    window.location.href = this.backendUrl('/api/auth/sso/logout') + qs;
   }
 }
