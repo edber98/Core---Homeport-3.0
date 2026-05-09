@@ -31,7 +31,9 @@ export interface BackendNodeTemplate {
   allowWithoutCredentials?: boolean;
   output_array_field?: string;
   output_schema_field?: string;
+  output_schema_merge_at?: string;
   outputSchema?: any[];
+  risk?: 'safe' | 'write' | 'destructive' | 'elevated';
 }
 
 @Injectable({ providedIn: 'root' })

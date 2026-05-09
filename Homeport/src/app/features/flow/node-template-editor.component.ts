@@ -224,6 +224,10 @@ import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
               <nz-form-label nzTooltipTitle="Nom du champ dans les args dont la valeur définit le schéma de sortie (ex: extraction_schema)">output_schema_field</nz-form-label>
               <nz-form-control><input nz-input formControlName="output_schema_field" placeholder="extraction_schema"/></nz-form-control>
             </nz-form-item>
+            <nz-form-item>
+              <nz-form-label nzTooltipTitle="Optionnel : key du sous-field du schéma statique où injecter le schéma dynamique (ex: 'body'). Si vide, le dynamique remplace le statique.">output_schema_merge_at</nz-form-label>
+              <nz-form-control><input nz-input formControlName="output_schema_merge_at" placeholder="body (laisse vide pour remplacer)"/></nz-form-control>
+            </nz-form-item>
           </ng-container>
           <!-- Classique: legacy outputs -->
           <ng-container *ngIf="form.get('functionSubType')?.value==='classic'">
@@ -712,6 +716,7 @@ export class NodeTemplateEditorComponent implements OnInit {
       functionSubType: new FormControl<string>('classic', { nonNullable: true }),
       output_array_field: new FormControl<string>(''),
       output_schema_field: new FormControl<string>(''),
+      output_schema_merge_at: new FormControl<string>(''),
       output: this.fb.array<FormGroup<any>>([]),
       inputHandles: this.fb.array<FormGroup<any>>([]),
       outputHandles: this.fb.array<FormGroup<any>>([]),
@@ -895,6 +900,7 @@ export class NodeTemplateEditorComponent implements OnInit {
       } else if (tAny.output_schema_field) {
         this.form.get('functionSubType')?.setValue('dynamic_schema', { emitEvent: false });
         this.form.get('output_schema_field')?.setValue(tAny.output_schema_field || '', { emitEvent: false });
+        this.form.get('output_schema_merge_at')?.setValue(tAny.output_schema_merge_at || '', { emitEvent: false });
       } else {
         this.form.get('functionSubType')?.setValue('classic', { emitEvent: false });
       }
@@ -1047,9 +1053,10 @@ export class NodeTemplateEditorComponent implements OnInit {
     if (v.type === 'function' && v.functionSubType === 'multi_output') {
       try { (tpl as any).outputSchema = JSON.parse(this.outputSchemaJson || '[]'); } catch { (tpl as any).outputSchema = []; }
     }
-    // Dynamic schema: save output_schema_field
+    // Dynamic schema: save output_schema_field + optionnel output_schema_merge_at
     if (v.type === 'function' && v.functionSubType === 'dynamic_schema') {
       (tpl as any).output_schema_field = v.output_schema_field || undefined;
+      (tpl as any).output_schema_merge_at = v.output_schema_merge_at || undefined;
     }
     // also store app object with _id for compatibility
     if (v.appId) (tpl as any).app = { _id: v.appId };

@@ -306,28 +306,19 @@ function simulateMsgForScenario(targetId, choice, graph) {
           try { msg._nodes[from] = { simulated: true, kind: 'function', outputHandle: chosenHandle, schema: {}, result: resultObj, startedAt: new Date().toISOString(), finishedAt: new Date().toISOString(), durationMs: 0 }; } catch {}
           msg.payload = resultObj; payloadSet = true;
         } else {
-          // Check for output_schema_field: node output schema is derived from a context field (e.g., extraction_schema)
+          // Check for output_schema_field (avec optionnel output_schema_merge_at).
+          // Helper centralisé décide replace vs merge avec le schema statique.
           const outputSchemaField = tmpl.output_schema_field;
           if (outputSchemaField && node.model?.context) {
-            const dynSchema = node.model.context[outputSchemaField];
-            const resultObj = { ok: true };
-            // dynSchema can be a FormSchema { fields: [...] } or a flat SchemaField[]
-            const fields = Array.isArray(dynSchema) ? dynSchema
-              : (dynSchema && typeof dynSchema === 'object' && Array.isArray(dynSchema.fields))
-                ? dynSchema.fields.filter(f => f.key && f.type !== 'textblock' && f.type !== 'section' && f.type !== 'section_array')
-                : [];
-            const typeMap = { text: 'text', textarea: 'text', number: 'number', rate: 'number', checkbox: 'boolean', date: 'date', tags: 'text_array', select: 'text', radio: 'text' };
-            for (const f of fields) {
-              const k = String(f.key || ''); if (!k) continue;
-              const ft = String(typeMap[f.type] || f.type || 'text').toLowerCase();
-              if (ft === 'number') resultObj[k] = 0;
-              else if (ft === 'boolean') resultObj[k] = true;
-              else if (ft === 'text_array' || ft === 'number_array' || ft === 'array') resultObj[k] = [];
-              else if (ft === 'date') resultObj[k] = new Date().toISOString();
-              else resultObj[k] = `sample_${k}`;
-            }
+            const { resolveOutputSchema } = require('./output-schema');
+            const staticSch = getHandleSchema(node.model, edge.sourceHandle || '');
+            const resolved = resolveOutputSchema(tmpl, node.model.context, staticSch);
+            const sample = (resolved && typeof resolved === 'object' && (Array.isArray(resolved.fields) || Array.isArray(resolved.steps)))
+              ? buildSampleFromSchema(resolved, { arraysOneItem: true })
+              : { ok: true };
+            const resultObj = (sample && typeof sample === 'object') ? sample : { ok: true };
             msg[from] = resultObj;
-            try { msg._nodes[from] = { simulated: true, kind: 'function', outputHandle: String(edge.sourceHandle || ''), schema: dynSchema || {}, result: resultObj, startedAt: new Date().toISOString(), finishedAt: new Date().toISOString(), durationMs: 0 }; } catch {}
+            try { msg._nodes[from] = { simulated: true, kind: 'function', outputHandle: String(edge.sourceHandle || ''), schema: resolved || {}, result: resultObj, startedAt: new Date().toISOString(), finishedAt: new Date().toISOString(), durationMs: 0 }; } catch {}
             msg.payload = resultObj; payloadSet = true;
           } else {
             schema = getHandleSchema(node.model, edge.sourceHandle || '');

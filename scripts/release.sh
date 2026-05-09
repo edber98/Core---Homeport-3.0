@@ -108,70 +108,93 @@ if [[ ${#SKIPPED_REMOTES[@]} -gt 0 ]]; then
 fi
 
 # ─── 4. Fetch + lecture de la version actuelle ───────────────────────────
-# Source de vérité = le tag d'image dans deployment-back.yaml. C'est ce que
-# Rancher utilise réellement pour pull l'image. Git tags = simple repère
-# créé en parallèle, non utilisé pour déterminer la version courante.
-step "Lecture de la version actuelle depuis $DEPLOY_BACK"
-LAST_TAG="$(grep -E 'image: .+/api:v[0-9]+\.[0-9]+\.[0-9]+' "$DEPLOY_BACK" \
-  | sed -E 's|.*/api:(v[0-9]+\.[0-9]+\.[0-9]+).*|\1|' | head -1)"
-if [[ -z "$LAST_TAG" ]]; then
-  warn "Aucune image taguée trouvée dans $DEPLOY_BACK — fallback v0.0.0"
-  LAST_TAG="v0.0.0"
-fi
-ok "Image API actuelle : ${BOLD}$LAST_TAG${NC} (lue dans $DEPLOY_BACK)"
-
-# Sanity check : la version dans deployment-front doit matcher
-FRONT_TAG="$(grep -E 'image: .+/web:v[0-9]+\.[0-9]+\.[0-9]+' "$DEPLOY_FRONT" \
-  | sed -E 's|.*/web:(v[0-9]+\.[0-9]+\.[0-9]+).*|\1|' | head -1)"
-if [[ "$FRONT_TAG" != "$LAST_TAG" ]]; then
-  warn "Versions désynchronisées : api=$LAST_TAG, web=$FRONT_TAG"
-  warn "Le bump aligne les deux sur la nouvelle version"
-fi
-
-# Pour info : dernier Git tag distant (juste affiché, non utilisé pour calcul)
+# Source de vérité prioritaire : tag d'image dans deployment-back.yaml.
+# Si l'image est `:latest` (ou autre non-semver), fallback sur le dernier git
+# tag distant. En dernier recours, v0.0.0 (premier release).
 git fetch "$GITLAB_REMOTE" --tags --prune --prune-tags >/dev/null 2>&1 || true
-LAST_GIT_TAG="$(git tag -l 'v*' --sort=-v:refname | head -1)"
-if [[ -n "$LAST_GIT_TAG" ]] && [[ "$LAST_GIT_TAG" != "$LAST_TAG" ]]; then
-  warn "Dernier Git tag ($LAST_GIT_TAG) ≠ version YAML ($LAST_TAG) — c'est OK, le YAML fait foi"
+LAST_GIT_TAG="$(git tag -l 'v*' --sort=-v:refname | head -1 || true)"
+
+step "Lecture de la version actuelle"
+LAST_TAG="$(grep -E 'image: .+/api:v[0-9]+\.[0-9]+\.[0-9]+' "$DEPLOY_BACK" \
+  | sed -E 's|.*/api:(v[0-9]+\.[0-9]+\.[0-9]+).*|\1|' | head -1 || true)"
+
+if [[ -n "$LAST_TAG" ]]; then
+  ok "Image API actuelle : ${BOLD}$LAST_TAG${NC} (lue dans $DEPLOY_BACK)"
+elif [[ -n "$LAST_GIT_TAG" ]]; then
+  LAST_TAG="$LAST_GIT_TAG"
+  warn "$DEPLOY_BACK pointe sur :latest (ou autre non-semver) — fallback dernier git tag : ${BOLD}$LAST_TAG${NC}"
+else
+  LAST_TAG="v0.0.0"
+  warn "Ni tag yaml ni git tag — fallback ${BOLD}$LAST_TAG${NC} (premier release ?)"
+fi
+
+# Sanity check : la version dans deployment-front doit matcher (si yaml taggé)
+FRONT_TAG="$(grep -E 'image: .+/web:v[0-9]+\.[0-9]+\.[0-9]+' "$DEPLOY_FRONT" \
+  | sed -E 's|.*/web:(v[0-9]+\.[0-9]+\.[0-9]+).*|\1|' | head -1 || true)"
+if [[ -n "$FRONT_TAG" ]] && [[ "$FRONT_TAG" != "$LAST_TAG" ]]; then
+  warn "Versions désynchronisées : api=$LAST_TAG, web=$FRONT_TAG (le bump alignera)"
 fi
 
 # ─── 5. Calcul de la nouvelle version ────────────────────────────────────
-# Parse v MAJOR.MINOR.PATCH
-if [[ ! "$LAST_TAG" =~ ^v([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
-  fatal "Tag '$LAST_TAG' ne suit pas le format vX.Y.Z — résous manuellement avant de release"
+# Override possible via env :
+#   KINN_RELEASE_VERSION=v0.5.0  → définit NEW_TAG (image tag + Chart.appVersion)
+#   KINN_CHART_VERSION=1.2.0     → définit CHART_PATCH_NEXT (Chart.yaml version)
+# Sinon prompt interactif patch/minor/major + auto-patch++ pour le chart.
+
+if [[ -n "${KINN_RELEASE_VERSION:-}" ]]; then
+  if [[ ! "$KINN_RELEASE_VERSION" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+    fatal "KINN_RELEASE_VERSION='$KINN_RELEASE_VERSION' invalide — attendu vX.Y.Z (ex: v0.5.0)"
+  fi
+  NEW_TAG="$KINN_RELEASE_VERSION"
+  ok "Version forcée via env KINN_RELEASE_VERSION : ${BOLD}$NEW_TAG${NC}"
+else
+  # Parse v MAJOR.MINOR.PATCH
+  if [[ ! "$LAST_TAG" =~ ^v([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
+    fatal "Tag '$LAST_TAG' ne suit pas le format vX.Y.Z — résous manuellement avant de release"
+  fi
+  MAJOR="${BASH_REMATCH[1]}"
+  MINOR="${BASH_REMATCH[2]}"
+  PATCH="${BASH_REMATCH[3]}"
+
+  PATCH_NEXT="v${MAJOR}.${MINOR}.$((PATCH + 1))"
+  MINOR_NEXT="v${MAJOR}.$((MINOR + 1)).0"
+  MAJOR_NEXT="v$((MAJOR + 1)).0.0"
+
+  echo
+  echo "Choisis le type d'incrément (ou définis KINN_RELEASE_VERSION en env pour skipper) :"
+  echo "  ${BOLD}[1]${NC} patch  → $PATCH_NEXT   (bug fix, modif mineure)"
+  echo "  ${BOLD}[2]${NC} minor  → $MINOR_NEXT     (nouvelle feature, compat préservée)"
+  echo "  ${BOLD}[3]${NC} major  → $MAJOR_NEXT       (breaking change)"
+  echo "  ${BOLD}[q]${NC} annuler"
+  read -rp "> " choice
+
+  case "$choice" in
+    1) NEW_TAG="$PATCH_NEXT" ;;
+    2) NEW_TAG="$MINOR_NEXT" ;;
+    3) NEW_TAG="$MAJOR_NEXT" ;;
+    q|Q) echo "Annulé."; exit 0 ;;
+    *) fatal "Choix invalide" ;;
+  esac
+  ok "Nouvelle version : ${BOLD}$NEW_TAG${NC}"
 fi
-MAJOR="${BASH_REMATCH[1]}"
-MINOR="${BASH_REMATCH[2]}"
-PATCH="${BASH_REMATCH[3]}"
 
-PATCH_NEXT="v${MAJOR}.${MINOR}.$((PATCH + 1))"
-MINOR_NEXT="v${MAJOR}.$((MINOR + 1)).0"
-MAJOR_NEXT="v$((MAJOR + 1)).0.0"
-
-echo
-echo "Choisis le type d'incrément :"
-echo "  ${BOLD}[1]${NC} patch  → $PATCH_NEXT   (bug fix, modif mineure)"
-echo "  ${BOLD}[2]${NC} minor  → $MINOR_NEXT     (nouvelle feature, compat préservée)"
-echo "  ${BOLD}[3]${NC} major  → $MAJOR_NEXT       (breaking change)"
-echo "  ${BOLD}[q]${NC} annuler"
-read -rp "> " choice
-
-case "$choice" in
-  1) NEW_TAG="$PATCH_NEXT" ;;
-  2) NEW_TAG="$MINOR_NEXT" ;;
-  3) NEW_TAG="$MAJOR_NEXT" ;;
-  q|Q) echo "Annulé."; exit 0 ;;
-  *) fatal "Choix invalide" ;;
-esac
-ok "Nouvelle version : ${BOLD}$NEW_TAG${NC}"
-
-# ─── 5bis. Calcul du bump Chart.yaml.version (toujours patch) ────────────
+# ─── 5bis. Bump Chart.yaml.version ───────────────────────────────────────
+# Par défaut : patch++ automatique. Override via KINN_CHART_VERSION en env.
 CURRENT_CHART_VERSION="$(grep -E '^version:' "$CHART_FILE" | awk '{print $2}' | tr -d '"')"
 if [[ ! "$CURRENT_CHART_VERSION" =~ ^([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
   fatal "Chart.yaml version '$CURRENT_CHART_VERSION' invalide — attendu X.Y.Z"
 fi
-CHART_PATCH_NEXT="${BASH_REMATCH[1]}.${BASH_REMATCH[2]}.$((BASH_REMATCH[3] + 1))"
-ok "Chart.yaml version : $CURRENT_CHART_VERSION → ${BOLD}$CHART_PATCH_NEXT${NC}"
+
+if [[ -n "${KINN_CHART_VERSION:-}" ]]; then
+  if [[ ! "$KINN_CHART_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+    fatal "KINN_CHART_VERSION='$KINN_CHART_VERSION' invalide — attendu X.Y.Z (sans 'v', ex: 1.2.0)"
+  fi
+  CHART_PATCH_NEXT="$KINN_CHART_VERSION"
+  ok "Chart version forcée via env KINN_CHART_VERSION : ${BOLD}$CHART_PATCH_NEXT${NC}"
+else
+  CHART_PATCH_NEXT="${BASH_REMATCH[1]}.${BASH_REMATCH[2]}.$((BASH_REMATCH[3] + 1))"
+  ok "Chart.yaml version : $CURRENT_CHART_VERSION → ${BOLD}$CHART_PATCH_NEXT${NC} (auto patch++)"
+fi
 
 # ─── 6. Confirmation finale ──────────────────────────────────────────────
 echo
@@ -220,12 +243,12 @@ sed_inplace -E "s/^version: .*/version: $CHART_PATCH_NEXT/" "$CHART_FILE"
 sed_inplace -E "s/^appVersion: .*/appVersion: $NEW_TAG/" "$CHART_FILE"
 ok "Chart.yaml : version=$CHART_PATCH_NEXT, appVersion=$NEW_TAG"
 
-# deployment-back.yaml — image api:vX.Y.Z
-sed_inplace -E "s|(/api):v[0-9]+\.[0-9]+\.[0-9]+|\1:$NEW_TAG|g" "$DEPLOY_BACK"
+# deployment-back.yaml — image api:<tag>  (matche :vX.Y.Z, :latest, etc.)
+sed_inplace -E "s|(/api):[^[:space:]\"']+|\1:$NEW_TAG|g" "$DEPLOY_BACK"
 ok "$DEPLOY_BACK : api:$NEW_TAG"
 
-# deployment-front.yaml — image web:vX.Y.Z
-sed_inplace -E "s|(/web):v[0-9]+\.[0-9]+\.[0-9]+|\1:$NEW_TAG|g" "$DEPLOY_FRONT"
+# deployment-front.yaml — image web:<tag>
+sed_inplace -E "s|(/web):[^[:space:]\"']+|\1:$NEW_TAG|g" "$DEPLOY_FRONT"
 ok "$DEPLOY_FRONT : web:$NEW_TAG"
 
 # Sanity check — les fichiers ont bien changé

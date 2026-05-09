@@ -368,8 +368,37 @@
         {
           "type": "number",
           "key": "attachmentCount",
+          "label": "Nombre de pièces jointes",
+          "description": "Nombre de fichiers attachés au message."
+        },
+        {
+          "type": "section",
+          "key": "attachments",
           "label": "Pièces jointes",
-          "description": "Nombre de pièces jointes."
+          "description": "Liste des pièces jointes du message reçu (chaque fichier expose son fileId).",
+          "mode": "array",
+          "fields": [
+            {
+              "type": "text",
+              "key": "filename",
+              "label": "Nom de fichier"
+            },
+            {
+              "type": "text",
+              "key": "mimeType",
+              "label": "Type MIME"
+            },
+            {
+              "type": "number",
+              "key": "size",
+              "label": "Taille (octets)"
+            },
+            {
+              "type": "file",
+              "key": "fileId",
+              "label": "Fichier"
+            }
+          ]
         }
       ]
     }

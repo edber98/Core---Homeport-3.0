@@ -10,7 +10,7 @@ export interface FieldValidator {
     message?: string;
 }
 
-export type FieldTypeInput = 'text' | 'textarea' | 'number' | 'select' | 'radio' | 'checkbox' | 'date' | 'cron' | 'file' | 'schema_builder' | 'tags' | 'email' | 'tel' | 'color' | 'rate';
+export type FieldTypeInput = 'text' | 'textarea' | 'number' | 'select' | 'radio' | 'checkbox' | 'date' | 'cron' | 'file' | 'schema_builder' | 'tags' | 'email' | 'tel' | 'color' | 'rate' | 'resolver';
 export type FieldType = FieldTypeInput | 'textblock' | 'section' | 'section_array';
 
 export interface FieldConfigCommon {
@@ -287,6 +287,7 @@ export class DynamicFormService {
                 case 'date': return null;
                 case 'file': return null;
                 case 'schema_builder': return null;
+                case 'resolver': return null;
                 case 'tags': return [];
                 case 'color': return '#1677ff';
                 default: return ''; // text / textarea / email / tel
@@ -535,17 +536,24 @@ export class DynamicFormService {
             return (typeof x === 'object') ? this.evalRule(x, formOrValue) : x;
         };
 
+        // Coercion alignée sur le Condition Builder : toutes les valeurs scalaires
+        // sont stringifiées avant comparaison (un checkbox=true matche "true",
+        // un nombre 5 matche "5"). null/undefined → "" pour traiter "vide" uniformément.
+        const eq = (a: any, b: any) => {
+            const norm = (x: any) => (x === null || x === undefined) ? '' : String(x);
+            return norm(a) === norm(b);
+        };
         switch (op) {
             case 'var': return getByVar(formOrValue, args);
             case 'not': return !val(args);
             case 'all': return (args as any[]).every(a => !!val(a));
             case 'any': return (args as any[]).some(a => !!val(a));
-            case '==': return val(args[0]) === val(args[1]);
-            case '!=': return val(args[0]) !== val(args[1]);
-            case '>': return val(args[0]) > val(args[1]);
-            case '>=': return val(args[0]) >= val(args[1]);
-            case '<': return val(args[0]) < val(args[1]);
-            case '<=': return val(args[0]) <= val(args[1]);
+            case '==': return eq(val(args[0]), val(args[1]));
+            case '!=': return !eq(val(args[0]), val(args[1]));
+            case '>': return Number(val(args[0])) > Number(val(args[1]));
+            case '>=': return Number(val(args[0])) >= Number(val(args[1]));
+            case '<': return Number(val(args[0])) < Number(val(args[1]));
+            case '<=': return Number(val(args[0])) <= Number(val(args[1]));
             default: return true;
         }
     }

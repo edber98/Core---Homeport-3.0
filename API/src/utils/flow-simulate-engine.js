@@ -88,27 +88,15 @@ async function simulateViaEngine(flow, targetNodeId, opts = {}){
         try { console.log('[simulate:engine] fn-mock outputSchema', { nodeId: id, keys: Object.keys(resultObj) }); } catch {}
         return resultObj;
       }
-      // Fallback: output_schema_field for dynamic schema functions (extract)
-      if (schemaEmpty && tpl.output_schema_field && model?.context) {
-        const dynSchema = model.context[tpl.output_schema_field];
-        const fields = Array.isArray(dynSchema) ? dynSchema
-          : (dynSchema && typeof dynSchema === 'object' && Array.isArray(dynSchema.fields))
-            ? dynSchema.fields.filter(f => f.key && f.type !== 'textblock' && f.type !== 'section' && f.type !== 'section_array')
-            : [];
-        if (fields.length) {
-          const typeMap = { text: 'text', textarea: 'text', number: 'number', rate: 'number', checkbox: 'boolean', date: 'date', tags: 'text_array', select: 'text', radio: 'text' };
-          const resultObj = { ok: true };
-          for (const f of fields) {
-            const k = String(f.key || ''); if (!k) continue;
-            const ft = String(typeMap[f.type] || f.type || 'text').toLowerCase();
-            if (ft === 'number') resultObj[k] = 0;
-            else if (ft === 'boolean') resultObj[k] = true;
-            else if (ft === 'text_array' || ft === 'number_array' || ft === 'array') resultObj[k] = [];
-            else if (ft === 'date') resultObj[k] = new Date().toISOString();
-            else resultObj[k] = `sample_${k}`;
-          }
-          try { console.log('[simulate:engine] fn-mock output_schema_field', { nodeId: id, field: tpl.output_schema_field, keys: Object.keys(resultObj) }); } catch {}
-          return resultObj;
+      // Dynamic output schema (output_schema_field) avec optionnel merge_at sur le statique.
+      // Utilise le helper centralisé puis buildSampleFromSchema gère le nesting.
+      if (tpl.output_schema_field && model?.context) {
+        const { resolveOutputSchema } = require('./output-schema');
+        const resolved = resolveOutputSchema(tpl, model.context, schema);
+        if (resolved && Array.isArray(resolved.fields) && resolved.fields.length) {
+          const sample = buildSampleFromSchema(resolved, { arraysOneItem: true });
+          try { console.log('[simulate:engine] fn-mock output_schema_field', { nodeId: id, field: tpl.output_schema_field, mergeAt: tpl.output_schema_merge_at || null, keys: Object.keys(sample || {}) }); } catch {}
+          return sample;
         }
       }
       const sample = buildSampleFromSchema(schema || {}, { arraysOneItem: true });
@@ -388,16 +376,20 @@ function buildOneLevelPreview(result, templateObj){
     // If result is empty/error but template has outputSchema or output_schema_field, use as fallback
     const isEmpty = result == null || (typeof result === 'object' && !Array.isArray(result) && (Object.keys(result).length === 0 || ((result.error || result.ok === false) && Object.keys(result).length <= 2)));
     let schema = Array.isArray(templateObj?.outputSchema) ? templateObj.outputSchema : null;
-    // Dynamic output schema from a context field (e.g., extraction_schema from schema_builder)
+    // Dynamic output schema (output_schema_field) avec merge_at optionnel.
+    // Helper centralisé décide replace vs merge dans le schema statique.
     if (!schema && templateObj?.output_schema_field && templateObj?.context) {
-      const dynSchema = templateObj.context[templateObj.output_schema_field];
-      if (dynSchema && typeof dynSchema === 'object' && Array.isArray(dynSchema.fields)) {
+      const { resolveOutputSchema } = require('./output-schema');
+      const okHandle = Array.isArray(templateObj?.outputHandles)
+        ? (templateObj.outputHandles.find(h => String(h?.id) === 'ok') || templateObj.outputHandles[0])
+        : null;
+      const staticSch = okHandle?.schema || null;
+      const resolved = resolveOutputSchema(templateObj, templateObj.context, staticSch);
+      if (resolved && Array.isArray(resolved.fields)) {
         const typeMap = { text: 'text', textarea: 'text', number: 'number', rate: 'number', checkbox: 'boolean', date: 'date', tags: 'text_array', select: 'text', radio: 'text' };
-        schema = dynSchema.fields
-          .filter(f => f.key && f.type !== 'textblock' && f.type !== 'section' && f.type !== 'section_array')
+        schema = resolved.fields
+          .filter(f => f.key && f.type !== 'textblock')
           .map(f => ({ key: f.key, type: typeMap[f.type] || f.type || 'text', label: f.label || f.key }));
-      } else if (Array.isArray(dynSchema)) {
-        schema = dynSchema;
       }
     }
     if (isEmpty && schema && schema.length) {

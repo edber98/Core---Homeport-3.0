@@ -8,6 +8,12 @@ const { authMiddleware, requireCompanyScope } = require('./auth/jwt');
 function buildApp(opts = {}){
   const app = express();
   app.use(cors());
+
+  // ── Webhook receiver (Kinn → Kinn) — mount AVANT express.json pour avoir
+  //    accès au body brut nécessaire à la vérification HMAC. Cf. routes
+  //    montées dans modules/db/webhooks-receiver.js
+  app.use('/api/webhooks/receive', require('./modules/db/webhooks-receiver')());
+
   app.use(express.json({ limit: '1mb' }));
   if (morgan) app.use(morgan('dev'));
   app.use(require('./middlewares/api-response').apiResponse());
@@ -85,9 +91,12 @@ function buildApp(opts = {}){
     });
     // Webhook receiver (no auth — token-based security)
     app.use('/api/hooks', require('./modules/db/webhook-receiver')());
+    app.use('/api/trigger', require('./modules/db/http-trigger-receiver')());
     app.use('/auth', require('./modules/db/auth')());
     // Public auth alias under /api to match frontend prod base (no auth middleware here)
     app.use('/api/auth', require('./modules/db/auth')());
+    app.use('/api/auth', require('./modules/db/auth-sso')());
+    app.use('/internal', require('./modules/db/internal-auth')());
     app.use('/api', require('./modules/db/core')());
     app.use('/api', require('./modules/db/flows')());
     app.use('/api', require('./modules/db/forms')());
@@ -101,6 +110,9 @@ function buildApp(opts = {}){
     app.use('/api', require('./modules/db/workspaces')());
     app.use('/api', require('./modules/db/runs')());
     app.use('/api', require('./modules/db/triggers')());
+    app.use('/api', require('./modules/db/webhooks')());
+    app.use('/api', require('./modules/db/me')());
+    app.use('/api', require('./modules/db/form-resolvers')());
     // Alias SSE stream without /api prefix (DB mode)
     app.get('/runs/:runId/stream', authMiddleware(), requireCompanyScope(), async (req, res) => {
       const { Types } = require('mongoose');

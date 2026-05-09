@@ -16,6 +16,7 @@ import { NzRateModule } from 'ng-zorro-antd/rate';
 import { ExpressionEditorComponent } from '../../../expression-editor/expression-editor';
 import { FileFieldComponent } from '../file-field/file-field';
 import { SchemaBuilderComponent } from '../schema-builder/schema-builder';
+import { ResolverComponent } from '../resolver/resolver.component';
 import {
   FieldConfig,
   InputFieldConfig,
@@ -30,7 +31,7 @@ import {
   imports: [
     CommonModule, ReactiveFormsModule, FormsModule,
     NzFormModule, NzInputModule, NzSelectModule, NzRadioModule, NzCheckboxModule, NzDatePickerModule, NzTypographyModule,
-    NzSegmentedModule, NzCronExpressionModule, NzColorPickerModule, NzRateModule, ExpressionEditorComponent, FileFieldComponent, SchemaBuilderComponent
+    NzSegmentedModule, NzCronExpressionModule, NzColorPickerModule, NzRateModule, ExpressionEditorComponent, FileFieldComponent, SchemaBuilderComponent, ResolverComponent
   ],
   templateUrl: './fields.html',
   styleUrls: ['./fields.scss']

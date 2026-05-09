@@ -643,10 +643,13 @@ function createWorkflowExecutor(metadata, emit) {
           outputFields = extractFieldsFromSchema(first);
         }
       }
-      // 3. Dynamic schema (output_schema_field): reads schema from context
+      // 3. Dynamic schema (output_schema_field) avec optionnel merge_at sur le statique
       else if (srcTmpl.output_schema_field && srcModel.context) {
-        const dynSchema = srcModel.context[srcTmpl.output_schema_field];
-        outputFields = extractFieldsFromSchema(dynSchema);
+        const { resolveOutputSchema } = require('../../utils/output-schema');
+        const staticSch = (Array.isArray(srcTmpl.outputHandles) && srcTmpl.outputHandles[0])
+          ? srcTmpl.outputHandles[0].schema : null;
+        const resolved = resolveOutputSchema(srcTmpl, srcModel.context, staticSch);
+        outputFields = extractFieldsFromSchema(resolved);
       }
       // 4. Standard outputHandles with schema
       else if (Array.isArray(srcTmpl.outputHandles) && srcTmpl.outputHandles.length) {
@@ -731,6 +734,7 @@ function createWorkflowExecutor(metadata, emit) {
         linkedHandles: tpl.linkedHandles || [],
         output_array_field: tpl.output_array_field || undefined,
         output_schema_field: tpl.output_schema_field || undefined,
+        output_schema_merge_at: tpl.output_schema_merge_at || undefined,
         outputSchema: tpl.outputSchema || undefined,
       };
       return argsChecksum(obj);
@@ -1003,6 +1007,7 @@ function createWorkflowExecutor(metadata, emit) {
         linkedHandles: tpl.linkedHandles || [], outputSchema: tpl.outputSchema || null,
         output_array_field: tpl.output_array_field || null,
         output_schema_field: tpl.output_schema_field || null,
+        output_schema_merge_at: tpl.output_schema_merge_at || null,
       };
       // Add output fields info for multi-output nodes (classifiers, conditions, any node with output_array_field)
       if (tpl.output_array_field) {

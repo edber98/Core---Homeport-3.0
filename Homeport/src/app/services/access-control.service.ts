@@ -75,7 +75,12 @@ export class AccessControlService {
       // Backend mode: fetch workspaces from API, no localStorage
       this._users.set([]);
       this._workspaces.set([]);
-      this.syncFromBackend();
+      // Skip si pas de token (cas SSO callback ou page d'erreur) — sinon on
+      // déclenche un GET 401 bruyant. initFromLogin sera appelé après.
+      try {
+        const hasToken = !!localStorage.getItem('auth.jwtToken');
+        if (hasToken) this.syncFromBackend();
+      } catch { /* localStorage indisponible (SSR ?) → skip */ }
       return;
     }
     // Local mode: seed from localStorage

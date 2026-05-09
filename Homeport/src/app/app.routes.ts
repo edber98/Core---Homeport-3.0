@@ -24,6 +24,7 @@ export const routes: Routes = [
         component: LayoutAuth,
         children: [
             { path: 'login', loadComponent: () => import('./features/users/login.component').then(m => m.LoginComponent), title: 'Connexion' },
+            { path: 'auth/sso/complete', loadComponent: () => import('./features/users/sso-callback.component').then(m => m.SsoCallbackComponent), title: 'SSO — connexion' },
             { path: 'forgot', loadComponent: () => import('./features/users/forgot-password.component').then(m => m.ForgotPasswordComponent), title: 'Mot de passe oublié' },
             { path: 'reset-password', loadComponent: () => import('./features/users/reset-password.component').then(m => m.ResetPasswordComponent), title: 'Réinitialiser le mot de passe' },
             { path: 'workspace-picker', canActivate: [authGuard], loadComponent: () => import('./features/workspace/workspace-picker.component').then(m => m.WorkspacePickerComponent), title: 'Choisir un workspace' },
@@ -84,6 +85,8 @@ export const routes: Routes = [
             { path: 'apps/viewer', loadComponent: () => import('./features/catalog/app-provider-viewer.component').then(m => m.AppProviderViewerComponent), title: 'App — Viewer' },
             { path: 'credentials/viewer', loadComponent: () => import('./features/credentials/credential-viewer.component').then(m => m.CredentialViewerComponent), title: 'Credential — Viewer' },
             { path: 'settings', loadComponent: () => import('./features/settings/app-settings.component').then(m => m.AppSettingsComponent), title: 'Paramètres' },
+            { path: 'settings/webhooks', loadComponent: () => import('./features/settings/webhooks/webhooks.component').then(m => m.WebhooksSettingsComponent), title: 'Webhooks' },
+            { path: 'profile', loadComponent: () => import('./features/profile/profile.component').then(m => m.ProfileComponent), title: 'Profil' },
             { path: 'ui-builder', loadComponent: () => import('./features/ui/ui-builder.component').then(m => m.UiBuilderComponent), title: 'UI Builder' },
             { path: 'flows/viewer-dialog', loadComponent: () => import('./features/flow/flow-viewer-dialog.component').then(m => m.FlowViewerDialogComponent), title: 'Flow — Visualiseur' },
             { path: 'dev/json-viewer', loadComponent: () => import('./dev/json-viewer-playground.component').then(m => m.JsonViewerPlaygroundComponent), title: 'DEV — JSON Viewer' },

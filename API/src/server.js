@@ -20,6 +20,8 @@ try { require('./realtime/socketio').attach(server); } catch {}
       await connectMongo();
       // Seed first to avoid duplicate key collisions during import
       await seedMongoIfEmpty();
+      // Local service token (utilisé par le plugin Kinn en mode local + intégrations internes)
+      try { const { initLocalServiceToken } = require('./services/local-service-token'); await initLocalServiceToken(); } catch (e) { try { console.error('[backend] local service token init failed:', e.message); } catch {} }
       // Then clone/update repos from env and reload registry
       try { const { ensureReposFromEnv } = require('./plugins/bootstrap'); await ensureReposFromEnv(); } catch (e) { try { console.error('[backend] plugin bootstrap failed:', e.message); } catch {} }
       // Ensure Tool metadata exists for frontend rendering

@@ -1,6 +1,9 @@
 const { TelegramAdapter } = require('./adapters/telegram.adapter');
 const { ImapAdapter } = require('./adapters/imap.adapter');
 const { MongoDBAdapter } = require('./adapters/mongodb.adapter');
+const { KinnWebhookAdapter } = require('./adapters/kinn-webhook.adapter');
+const { CronAdapter } = require('./adapters/cron.adapter');
+const { HttpTriggerAdapter } = require('./adapters/http-trigger.adapter');
 const { WebhookTrigger } = require('./webhook-trigger');
 
 // Mapping templateKey → { Adapter, type }
@@ -10,8 +13,20 @@ const registry = {
   'email_new_message':      { Adapter: ImapAdapter,       type: 'subscription' },
   'mongo_change_stream':    { Adapter: MongoDBAdapter,    type: 'subscription' },
 
-  // Webhook adapters (URL-based)
-  'core_webhook':           { Adapter: WebhookTrigger,    type: 'webhook' },
+  // Kinn auto-référence : un Homeport déployé peut s'abonner aux events d'un
+  // Kinn distant (run/thread/deployment). L'adapter s'auto-enregistre comme
+  // webhook côté Kinn distant au start et désinscrit au stop.
+  'kinn_on_run_complete':       { Adapter: KinnWebhookAdapter, type: 'subscription' },
+  'kinn_on_thread_message':     { Adapter: KinnWebhookAdapter, type: 'subscription' },
+  'kinn_on_deployment_event':   { Adapter: KinnWebhookAdapter, type: 'subscription' },
+
+  // Cron (in-process, croner)
+  'cron_schedule':              { Adapter: CronAdapter,        type: 'cron' },
+
+  // HTTP trigger entrant (per-node persistent triggerId, /api/trigger/:triggerId)
+  'core_webhook':           { Adapter: HttpTriggerAdapter, type: 'http' },
+
+  // Webhook adapters legacy (URL-based, /api/hooks/:flowToken)
   'discord_webhook_event':  { Adapter: WebhookTrigger,    type: 'webhook' },
   'jira_webhook_event':     { Adapter: WebhookTrigger,    type: 'webhook' },
   'shopify_webhook_event':  { Adapter: WebhookTrigger,    type: 'webhook' },

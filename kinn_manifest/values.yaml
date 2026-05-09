@@ -67,6 +67,28 @@ kinn:
     ai_stream_timeout_ms: "240000"           # 4 min
     ai_subagent_heartbeat_timeout_ms: "180000"  # 3 min
     ai_max_subagent_depth: "3"
+    # ── URLs publiques (HTTP trigger persistent URL + SSO callback) ──
+    # Si vides, calculées depuis kinn.ingress.host. À remplir si tu utilises
+    # un domaine custom différent du ingress par défaut.
+    kinn_public_url: ""        # ex: https://${client.key}-kinn.app.kinn.fr
+    frontend_base_url: ""      # ex: https://${client.key}-kinn.app.kinn.fr
+    # ── HTTP Trigger entrant ──
+    http_trigger_rate_limit_per_min: "120"
+    # ── SSO Zitadel (injecté par Kinn-panel à la création de l'instance) ──
+    # sso_mode: 'disabled' | 'hybrid' | 'enforced'
+    sso_mode: "disabled"
+    zitadel_issuer: ""                    # ex: https://kinn-mgmt.zitadel.cloud
+    zitadel_client_id: ""
+    zitadel_client_secret: ""
+    zitadel_project_id: ""
+    zitadel_redirect_uri: ""              # ex: https://<host>/api/auth/sso/callback
+    zitadel_post_logout_uri: ""           # ex: https://<host>/login
+    # Secret HMAC partagé pour valider les webhooks /internal/* poussés par Kinn-panel
+    kinn_panel_hmac_secret: ""
+    # Mapping rôles Zitadel → Kinn. Vide = 1:1 (admin/editor/viewer en miroir).
+    # Format : "zitadelRole:kinnRole,...". "*:role" = fallback.
+    # Ex : "superadmin:admin,poweruser:editor,readonly:viewer,*:viewer"
+    sso_role_map: ""
   kinnHomeport:
     replicaCount: 1
     port: 80

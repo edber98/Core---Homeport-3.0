@@ -1,24 +1,41 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzButtonModule } from 'ng-zorro-antd/button';
-import { Router, RouterModule } from '@angular/router';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { AccessControlService } from '../../services/access-control.service';
+import { SsoService } from '../../services/sso.service';
 import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule, NzFormModule, NzInputModule, NzButtonModule, RouterModule],
+  imports: [CommonModule, FormsModule, NzFormModule, NzInputModule, NzButtonModule, NzIconModule, RouterModule],
   template: `
   <div class="login-container">
     <h1 class="login-title">Connexion</h1>
     <p class="login-subtitle">Accédez à votre espace de travail</p>
 
-    <form nz-form nzLayout="vertical" (ngSubmit)="login()">
+    <div class="sso-error" *ngIf="ssoError()">
+      <span nz-icon nzType="warning" nzTheme="outline"></span>
+      Connexion SSO échouée : {{ ssoError() }}
+    </div>
+
+    <button *ngIf="ssoEnabled()" nz-button nzType="primary" nzBlock nzSize="large"
+            class="sso-btn" (click)="loginSso()" type="button">
+      <span nz-icon nzType="safety-certificate" nzTheme="outline"></span>
+      Se connecter avec SSO
+    </button>
+
+    <div *ngIf="ssoEnabled() && passwordAllowed()" class="sso-divider">
+      <span>ou avec email/mot de passe</span>
+    </div>
+
+    <form *ngIf="passwordAllowed()" nz-form nzLayout="vertical" (ngSubmit)="login()">
       <nz-form-item>
         <nz-form-label>Adresse e-mail</nz-form-label>
         <nz-form-control>
@@ -215,13 +232,86 @@ import { environment } from '../../../environments/environment';
       .login-input { height: 42px; border-radius: 12px !important; }
       .login-btn, .demo-btn { height: 42px !important; border-radius: 12px !important; }
     }
+
+    .sso-btn {
+      height: 46px !important;
+      border-radius: 14px !important;
+      font-size: 15px !important;
+      font-weight: 600 !important;
+      background: #1f2937 !important;
+      border-color: #1f2937 !important;
+      color: #fff !important;
+      margin-bottom: 12px;
+    }
+    .sso-btn:hover { background: #111827 !important; border-color: #111827 !important; }
+    .sso-btn span[nz-icon] { margin-right: 8px; }
+    .sso-divider {
+      text-align: center;
+      margin: 12px 0;
+      color: #9ca3af;
+      font-size: 12px;
+      position: relative;
+    }
+    .sso-divider::before, .sso-divider::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      width: calc(50% - 80px);
+      height: 1px;
+      background: #f0f0f0;
+    }
+    .sso-divider::before { left: 0; }
+    .sso-divider::after { right: 0; }
+    .sso-error {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #b42318;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 13px;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
   `]
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   userId = '';
   password = '';
   error: string | null = null;
-  constructor(private auth: AuthService, private router: Router, private acl: AccessControlService) {}
+
+  ssoEnabled = signal(false);
+  passwordAllowed = signal(true);
+  ssoError = signal<string | null>(null);
+
+  constructor(
+    private auth: AuthService,
+    private router: Router,
+    private acl: AccessControlService,
+    private sso: SsoService,
+    private route: ActivatedRoute,
+  ) {}
+
+  ngOnInit() {
+    // Lit ?sso_error=... dans l'URL si redirect erreur depuis le backend
+    const e = this.route.snapshot.queryParamMap.get('sso_error');
+    if (e) this.ssoError.set(decodeURIComponent(e));
+
+    this.sso.getStatus().subscribe({
+      next: (s) => {
+        this.ssoEnabled.set(!!s?.enabled);
+        this.passwordAllowed.set(!!s?.passwordLoginAllowed);
+      },
+      // Si l'API status ne répond pas, on assume SSO désactivé et password OK
+      error: () => { this.ssoEnabled.set(false); this.passwordAllowed.set(true); },
+    });
+  }
+
+  loginSso() {
+    this.ssoError.set(null);
+    this.sso.start('/dashboard');
+  }
   login() {
     this.error = null;
     this.auth.login(this.userId.trim(), this.password).subscribe({

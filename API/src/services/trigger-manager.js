@@ -114,6 +114,18 @@ class TriggerManager {
       console.log(`[trigger-manager] deployed flow ${flow.id || flow._id} (${adapterEntry.type})`);
     }
 
+    // Webhook : deployment.activated
+    try {
+      const { dispatchEvent } = require('./webhook-dispatcher');
+      dispatchEvent('deployment.activated', {
+        flowId: String(flow._id),
+        flowName: flow.name,
+        triggerType: adapterEntry.type,
+        deployedAt: now,
+      }, { workspaceId: flow.workspaceId, companyId: flow.companyId })
+        .catch(() => {});
+    } catch { /* fire-and-forget */ }
+
     return trigger.getStatus();
   }
 
@@ -125,11 +137,24 @@ class TriggerManager {
       await trigger.stop();
       this.activeTriggers.delete(key);
     }
+    const flow = await Flow.findById(flowId);
     await Flow.updateOne(
       { _id: flowId },
       { status: 'draft', deployedAt: null, triggerType: null, triggerNodeId: null }
     );
     console.log(`[trigger-manager] undeployed flow ${flowId}`);
+
+    // Webhook : deployment.deactivated
+    if (flow) {
+      try {
+        const { dispatchEvent } = require('./webhook-dispatcher');
+        dispatchEvent('deployment.deactivated', {
+          flowId: String(flow._id),
+          flowName: flow.name,
+        }, { workspaceId: flow.workspaceId, companyId: flow.companyId })
+          .catch(() => {});
+      } catch { /* fire-and-forget */ }
+    }
   }
 
   // ── Handle incoming webhook ──────────────────────────
@@ -258,6 +283,22 @@ class TriggerManager {
       await doc.save();
       try { await RunEvent.create({ runId: run._id, type: 'run.status', seq: ++seq, data: { status: 'success', result: doc.result }, ts: new Date() }); } catch {}
       console.log(`[trigger-manager] run completed: runId=${String(run._id)} flowId=${String(flow._id)}`);
+
+      // Webhook dispatch (fire-and-forget, n'affecte jamais le flow d'exécution)
+      try {
+        const { dispatchEvent } = require('./webhook-dispatcher');
+        dispatchEvent('run.completed', {
+          runId: String(doc._id),
+          flowId: String(flow._id),
+          flowName: flow.name,
+          status: 'success',
+          result: doc.result,
+          startedAt: doc.startedAt,
+          finishedAt: doc.finishedAt,
+          durationMs: doc.durationMs,
+        }, { workspaceId: flow.workspaceId, companyId: flow.companyId, idempotencyKey: `run_${doc._id}_completed` })
+          .catch(() => {});
+      } catch { /* webhook dispatch ne doit jamais bloquer le flow */ }
     } catch (e) {
       const doc = await Run.findById(run._id);
       doc.status = 'error';
@@ -271,6 +312,22 @@ class TriggerManager {
       broadcast(String(run._id), pkt);
       broadcastRun(String(run._id), pkt);
       console.error(`[trigger-manager] run failed: runId=${String(run._id)} error=${e?.message || e}`);
+
+      // Webhook dispatch on failure
+      try {
+        const { dispatchEvent } = require('./webhook-dispatcher');
+        dispatchEvent('run.failed', {
+          runId: String(doc._id),
+          flowId: String(flow._id),
+          flowName: flow.name,
+          status: 'error',
+          error: e?.message || String(e),
+          startedAt: doc.startedAt,
+          finishedAt: doc.finishedAt,
+          durationMs: doc.durationMs,
+        }, { workspaceId: flow.workspaceId, companyId: flow.companyId, idempotencyKey: `run_${doc._id}_failed` })
+          .catch(() => {});
+      } catch { /* fire-and-forget */ }
     }
   }
 

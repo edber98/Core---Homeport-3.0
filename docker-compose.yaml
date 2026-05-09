@@ -46,6 +46,21 @@ services:
       # Install_package policy
       - AI_PACKAGE_INSTALL_MODE=${AI_PACKAGE_INSTALL_MODE:-ask}
       - AI_PACKAGE_INSTALL_MAX_PER_DAY=${AI_PACKAGE_INSTALL_MAX_PER_DAY:-20}
+      # ── URLs publiques (HTTP trigger + SSO callback) ─────────────
+      - KINN_PUBLIC_URL=${KINN_PUBLIC_URL:-}
+      - FRONTEND_BASE_URL=${FRONTEND_BASE_URL:-}
+      # ── HTTP Trigger ─────────────────────────────────────────────
+      - HTTP_TRIGGER_RATE_LIMIT_PER_MIN=${HTTP_TRIGGER_RATE_LIMIT_PER_MIN:-120}
+      # ── SSO Zitadel (laisser vide pour désactiver) ───────────────
+      - SSO_MODE=${SSO_MODE:-disabled}
+      - ZITADEL_ISSUER=${ZITADEL_ISSUER:-}
+      - ZITADEL_CLIENT_ID=${ZITADEL_CLIENT_ID:-}
+      - ZITADEL_CLIENT_SECRET=${ZITADEL_CLIENT_SECRET:-}
+      - ZITADEL_PROJECT_ID=${ZITADEL_PROJECT_ID:-}
+      - ZITADEL_REDIRECT_URI=${ZITADEL_REDIRECT_URI:-}
+      - ZITADEL_POST_LOGOUT_URI=${ZITADEL_POST_LOGOUT_URI:-}
+      - KINN_PANEL_HMAC_SECRET=${KINN_PANEL_HMAC_SECRET:-}
+      - SSO_ROLE_MAP=${SSO_ROLE_MAP:-}
     # ── Capabilities pour bwrap user namespaces ──────────────────
     # Sur Docker Engine moderne (rootless ou classic), bwrap nécessite seccomp
     # permissif. En K8s sans privileged, retirer ces deux options et passer
