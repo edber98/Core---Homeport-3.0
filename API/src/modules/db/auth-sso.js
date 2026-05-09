@@ -135,10 +135,12 @@ module.exports = function() {
         },
       });
 
-      // 7. Redirect vers le frontend (route /auth/sso/complete?token=...)
+      // 7. Redirect vers le frontend (route /sso/complete?token=...)
+      // NOTE: pas /auth/sso/complete, car en prod /auth/* est routé vers le
+      // backend (legacy /auth/login) par Traefik → 404 sur ce path frontend.
       const front = process.env.FRONTEND_BASE_URL || '';
       const targetPath = st.redirectAfter || '/';
-      const redirectUrl = `${front}/auth/sso/complete?token=${encodeURIComponent(kinnJwt)}&redirect=${encodeURIComponent(targetPath)}`;
+      const redirectUrl = `${front}/sso/complete?token=${encodeURIComponent(kinnJwt)}&redirect=${encodeURIComponent(targetPath)}`;
       res.redirect(redirectUrl);
     } catch (e) {
       console.error('[sso] callback failed:', e?.message);
