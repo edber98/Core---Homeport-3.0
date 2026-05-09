@@ -91,4 +91,16 @@ module.exports = {
    * il sert à exposer l'intention et permettre au futur code de s'y brancher.
    */
   AI_AGENT_WORKTREE_MODE: process.env.AI_AGENT_WORKTREE_MODE || 'shared',
+
+  // ── SSO Zitadel (injecté par Kinn-panel à l'install de l'instance) ──
+  // SSO_MODE: 'disabled' | 'hybrid' (défaut MVP) | 'enforced'
+  SSO_MODE: process.env.SSO_MODE || 'disabled',
+  ZITADEL_ISSUER: process.env.ZITADEL_ISSUER || '',
+  ZITADEL_CLIENT_ID: process.env.ZITADEL_CLIENT_ID || '',
+  ZITADEL_CLIENT_SECRET: process.env.ZITADEL_CLIENT_SECRET || '',
+  ZITADEL_PROJECT_ID: process.env.ZITADEL_PROJECT_ID || '',
+  ZITADEL_REDIRECT_URI: process.env.ZITADEL_REDIRECT_URI || '',
+  ZITADEL_POST_LOGOUT_URI: process.env.ZITADEL_POST_LOGOUT_URI || '',
+  // Secret HMAC pour les webhooks /internal/* poussés par Kinn-panel
+  KINN_PANEL_HMAC_SECRET: process.env.KINN_PANEL_HMAC_SECRET || '',
 };

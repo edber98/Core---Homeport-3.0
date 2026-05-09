@@ -32,7 +32,7 @@ spec:
       {{- end }}
       containers:
         - name: kinn-api
-          image: registry.c4rbon.group/edouard.bernier/kinn-homeport/api:v0.0.35
+          image: registry.c4rbon.group/edouard.bernier/kinn-homeport/api:latest
           ports:
             - containerPort: {{ .Values.kinn.kinnApi.port | int }}
           env:
@@ -107,3 +107,31 @@ spec:
               value: {{ .Values.kinn.kinnApi.ai_sandbox_python | default "python3" | quote }}
             - name: AI_SANDBOX_PY_SITE_PACKAGES
               value: {{ .Values.kinn.kinnApi.ai_sandbox_py_site_packages | default "/data/sandbox-pkgs" | quote }}
+            # ── URLs publiques (HTTP trigger + SSO callback) ──
+            # Si non fournies, fallback sur https://<ingress.host>
+            - name: KINN_PUBLIC_URL
+              value: {{ .Values.kinn.kinnApi.kinn_public_url | default (printf "https://%s" .Values.kinn.ingress.host) | quote }}
+            - name: FRONTEND_BASE_URL
+              value: {{ .Values.kinn.kinnApi.frontend_base_url | default (printf "https://%s" .Values.kinn.ingress.host) | quote }}
+            # ── HTTP Trigger entrant ──
+            - name: HTTP_TRIGGER_RATE_LIMIT_PER_MIN
+              value: {{ .Values.kinn.kinnApi.http_trigger_rate_limit_per_min | default "120" | quote }}
+            # ── SSO Zitadel (injecté par Kinn-panel à la création de l'instance) ──
+            - name: SSO_MODE
+              value: {{ .Values.kinn.kinnApi.sso_mode | default "disabled" | quote }}
+            - name: ZITADEL_ISSUER
+              value: {{ .Values.kinn.kinnApi.zitadel_issuer | default "" | quote }}
+            - name: ZITADEL_CLIENT_ID
+              value: {{ .Values.kinn.kinnApi.zitadel_client_id | default "" | quote }}
+            - name: ZITADEL_CLIENT_SECRET
+              value: {{ .Values.kinn.kinnApi.zitadel_client_secret | default "" | quote }}
+            - name: ZITADEL_PROJECT_ID
+              value: {{ .Values.kinn.kinnApi.zitadel_project_id | default "" | quote }}
+            - name: ZITADEL_REDIRECT_URI
+              value: {{ .Values.kinn.kinnApi.zitadel_redirect_uri | default (printf "https://%s/api/auth/sso/callback" .Values.kinn.ingress.host) | quote }}
+            - name: ZITADEL_POST_LOGOUT_URI
+              value: {{ .Values.kinn.kinnApi.zitadel_post_logout_uri | default (printf "https://%s/login" .Values.kinn.ingress.host) | quote }}
+            - name: KINN_PANEL_HMAC_SECRET
+              value: {{ .Values.kinn.kinnApi.kinn_panel_hmac_secret | default "" | quote }}
+            - name: SSO_ROLE_MAP
+              value: {{ .Values.kinn.kinnApi.sso_role_map | default "" | quote }}

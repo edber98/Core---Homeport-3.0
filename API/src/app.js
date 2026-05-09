@@ -95,6 +95,8 @@ function buildApp(opts = {}){
     app.use('/auth', require('./modules/db/auth')());
     // Public auth alias under /api to match frontend prod base (no auth middleware here)
     app.use('/api/auth', require('./modules/db/auth')());
+    app.use('/api/auth', require('./modules/db/auth-sso')());
+    app.use('/internal', require('./modules/db/internal-auth')());
     app.use('/api', require('./modules/db/core')());
     app.use('/api', require('./modules/db/flows')());
     app.use('/api', require('./modules/db/forms')());

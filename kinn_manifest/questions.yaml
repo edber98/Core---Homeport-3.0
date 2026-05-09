@@ -25,6 +25,12 @@ questions:
     default: Default
     label: Nom du workspace par défaut
     group: Comptes
+  
+  - variable: kinn.ingress.host
+    type: string
+    default: https://kinn.fr
+    label: Url de Kinn
+    group: Comptes
 
   # ────────────── Provider LLM principal ──────────────
   - variable: kinn.kinnApi.ai_provider
@@ -219,3 +225,79 @@ questions:
     default: "86400"
     label: TTL des tokens (secondes)
     group: Avancé
+
+  # ────────────── SSO Zitadel ──────────────
+  - variable: kinn.kinnApi.sso_mode
+    type: enum
+    options:
+      - disabled
+      - hybrid
+      - enforced
+    default: disabled
+    label: Mode SSO
+    description: |
+      disabled = login email/mot de passe seul.
+      hybrid = SSO + login local possibles (recommandé MVP).
+      enforced = SSO obligatoire (sauf comptes break-glass avec bypassSSO).
+    group: SSO Zitadel
+
+  - variable: kinn.kinnApi.zitadel_issuer
+    type: string
+    default: ""
+    label: URL Issuer Zitadel
+    description: ex. https://kinn-mgmt.zitadel.cloud (sans slash final).
+    group: SSO Zitadel
+
+  - variable: kinn.kinnApi.zitadel_client_id
+    type: string
+    default: ""
+    label: Client ID OIDC
+    description: ID de l'application OIDC créée par Kinn-panel dans le project Zitadel.
+    group: SSO Zitadel
+
+  - variable: kinn.kinnApi.zitadel_client_secret
+    type: password
+    default: ""
+    label: Client Secret OIDC
+    description: Secret de l'application OIDC (confidential client).
+    group: SSO Zitadel
+
+  - variable: kinn.kinnApi.zitadel_project_id
+    type: string
+    default: ""
+    label: Project ID Zitadel
+    description: ID du project Zitadel (utilisé pour scoper les claims roles).
+    group: SSO Zitadel
+
+  - variable: kinn.kinnApi.kinn_panel_hmac_secret
+    type: password
+    default: ""
+    label: HMAC secret webhooks Kinn-panel
+    description: |
+      Secret partagé pour valider les webhooks /internal/* poussés par Kinn-panel
+      (ex. invalidation de session quand un grant Zitadel est révoqué).
+    group: SSO Zitadel
+
+  - variable: kinn.kinnApi.zitadel_redirect_uri
+    type: string
+    default: ""
+    label: Redirect URI (optionnel)
+    description: Vide = calculé depuis ingress.host. Utile si custom domain différent.
+    group: SSO Zitadel
+
+  - variable: kinn.kinnApi.zitadel_post_logout_uri
+    type: string
+    default: ""
+    label: Post-logout URI (optionnel)
+    description: Vide = calculé depuis ingress.host (page /login).
+    group: SSO Zitadel
+
+  - variable: kinn.kinnApi.sso_role_map
+    type: string
+    default: ""
+    label: Mapping rôles Zitadel → Kinn (optionnel)
+    description: |
+      Vide = 1:1 par défaut (Zitadel role 'admin' → Kinn 'admin', etc.).
+      Format : "zitadelRole:kinnRole,...". Utilise "*:role" pour le fallback (défaut editor).
+      Exemple : "superadmin:admin,poweruser:editor,readonly:viewer,*:viewer".
+    group: SSO Zitadel
