@@ -24,7 +24,7 @@ export const routes: Routes = [
         component: LayoutAuth,
         children: [
             { path: 'login', loadComponent: () => import('./features/users/login.component').then(m => m.LoginComponent), title: 'Connexion' },
-            { path: 'auth/sso/complete', loadComponent: () => import('./features/users/sso-callback.component').then(m => m.SsoCallbackComponent), title: 'SSO — connexion' },
+            { path: 'sso/complete', loadComponent: () => import('./features/users/sso-callback.component').then(m => m.SsoCallbackComponent), title: 'SSO — connexion' },
             { path: 'forgot', loadComponent: () => import('./features/users/forgot-password.component').then(m => m.ForgotPasswordComponent), title: 'Mot de passe oublié' },
             { path: 'reset-password', loadComponent: () => import('./features/users/reset-password.component').then(m => m.ResetPasswordComponent), title: 'Réinitialiser le mot de passe' },
             { path: 'workspace-picker', canActivate: [authGuard], loadComponent: () => import('./features/workspace/workspace-picker.component').then(m => m.WorkspacePickerComponent), title: 'Choisir un workspace' },
