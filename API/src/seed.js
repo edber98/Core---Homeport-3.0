@@ -37,11 +37,20 @@ async function seedMongoIfEmpty(){
 
   const count = await Company.countDocuments();
   if (count > 0) return;
+  // Env optionnelle pour bind directement l'org Zitadel à la 1ère company seedée.
+  // Permet à Kinn-panel d'injecter l'orgId au déploiement → SSO marche dès le 1er login,
+  // sans avoir à faire un updateOne manuel en Mongo.
+  const seedOrgId = String(process.env.SEED_COMPANY_ZITADEL_ORG_ID || '').trim();
   const nameToId = new Map();
   for (const name of SEED_COMPANIES){
-    const c = await Company.create({ name });
+    // Seule la 1ère company reçoit le zitadelOrgId. En SaaS single-tenant, c'est
+    // SEED_COMPANIES = "${client.name}" (1 seule company), donc elle est bind direct.
+    const doc = { name };
+    if (seedOrgId && nameToId.size === 0) doc.zitadelOrgId = seedOrgId;
+    const c = await Company.create(doc);
     nameToId.set(name, c._id);
   }
+  if (seedOrgId) console.log(`[seed] Company '${SEED_COMPANIES[0]}' bound to zitadelOrgId=${seedOrgId}`);
   for (const u of SEED_USERS){
     const companyId = nameToId.get(u.company); if (!companyId) continue;
     await User.create({ email: u.email, pwdHash: hashPassword(u.password), role: u.role, companyId });

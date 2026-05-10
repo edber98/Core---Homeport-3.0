@@ -25,6 +25,27 @@ questions:
     default: Default
     label: Nom du workspace par défaut
     group: Comptes
+
+  - variable: kinn.kinnApi.seed_companies
+    type: string
+    default: ""
+    label: Companies à seeder (single-tenant SaaS)
+    description: |
+      Liste des companies à créer au démarrage, séparées par virgules.
+      Vide = défaut historique (ACME + BETA).
+      En SaaS single-tenant : mets le nom de TON client uniquement (ex: "C4rbon Group").
+      Sinon le seed crée ACME + BETA et le SSO ne saura pas à quelle company rattacher l'user.
+    group: Comptes
+
+  - variable: kinn.kinnApi.seed_company_zitadel_org_id
+    type: string
+    default: ""
+    label: Zitadel Org ID à bind au seed (optionnel)
+    description: |
+      Si défini, la 1ère company seedée reçoit ce zitadelOrgId.
+      Permet au SSO de matcher dès le 1er login sans bind manuel.
+      Vide = pas de bind (mais l'auto-bind se fera au 1er login s'il n'y a qu'1 company).
+    group: SSO Zitadel
   
   - variable: kinn.ingress.host
     type: string
