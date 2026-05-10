@@ -149,7 +149,7 @@ async function attachToDefaultWorkspace(user, company) {
   // findOneAndUpdate atomique.
   await WorkspaceMembership.findOneAndUpdate(
     { userId: user._id, workspaceId: ws._id },
-    { $setOnInsert: { userId: user._id, workspaceId: ws._id, role: 'member' } },
+    { $setOnInsert: { userId: user._id, workspaceId: ws._id, role: 'editor' } },
     { upsert: true, new: true, setDefaultsOnInsert: true },
   );
   if (!user.defaultWorkspaceId) {
