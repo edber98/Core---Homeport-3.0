@@ -60,6 +60,18 @@ spec:
               value: {{ .Values.kinn.kinnApi.seed | quote }}
             - name: DEFAULT_COMPANY
               value: {{ .Values.kinn.kinnApi.default_company | quote }}
+            # Override la liste des companies seedées. Vide = seed par défaut
+            # (default_company + BETA). Mettre = "${client.name}" pour 1 seule.
+            {{- if .Values.kinn.kinnApi.seed_companies }}
+            - name: SEED_COMPANIES
+              value: {{ .Values.kinn.kinnApi.seed_companies | quote }}
+            {{- end }}
+            # Si défini, bind la 1ère company seedée à cet orgId Zitadel.
+            # SSO marche dès le 1er login sans `db.companies.updateOne` manuel.
+            {{- if .Values.kinn.kinnApi.seed_company_zitadel_org_id }}
+            - name: SEED_COMPANY_ZITADEL_ORG_ID
+              value: {{ .Values.kinn.kinnApi.seed_company_zitadel_org_id | quote }}
+            {{- end }}
             - name: DEFAULT_ADMIN_EMAIL
               value: {{ .Values.kinn.kinnApi.default_admin_email | quote }}
             - name: DEFAULT_ADMIN_PASSWORD

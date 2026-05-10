@@ -33,6 +33,14 @@ kinn:
     default_admin_email: "admin@acme.test"
     default_admin_password: "admin"
     default_workspace_name: "Default"
+    # Liste des companies à créer au seed, séparées par virgules.
+    # Vide = par défaut = ${default_company}+BETA (multi-tenant historique).
+    # En single-tenant SaaS, mets une seule entrée = ${client.name}.
+    seed_companies: ""
+    # Bind direct de la 1ère company seedée à un org Zitadel.
+    # Évite le `db.companies.updateOne(...)` manuel après déploiement.
+    # En SaaS, Kinn-panel pose cet ID au moment de la création de l'instance.
+    seed_company_zitadel_org_id: ""
     node_env: "production"
     # ── LLM provider ──
     ai_provider: "openai"           # "openai" | "anthropic"

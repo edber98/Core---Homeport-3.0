@@ -62,7 +62,9 @@ async function ensureLocalServiceToken() {
       await WorkspaceMembership.create({
         userId: user._id,
         workspaceId: workspace._id,
-        role: 'admin',
+        // WorkspaceMembership enum = ['owner', 'editor', 'viewer'].
+        // 'owner' = équivalent du rôle global User='admin' au niveau workspace.
+        role: 'owner',
       });
     }
   }
