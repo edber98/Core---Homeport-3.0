@@ -20,10 +20,11 @@ module.exports = {
   SEED: readBool('SEED', true),
   // If SEED_COMPANIES is not set, use DEFAULT_COMPANY + SECOND_COMPANY
   SEED_COMPANIES: (process.env.SEED_COMPANIES || `${DEFAULT_COMPANY},${SECOND_COMPANY}`).split(',').map(s=>s.trim()).filter(Boolean),
-  // Seed users: admin + alice for ACME, demo for BETA
+  // Seed users: admin + alice for ACME, demo for BETA.
+  // Roles : admin | editor | viewer (l'ancien 'user' est mappé sur 'editor').
   SEED_USERS: [
     { email: DEFAULT_ADMIN_EMAIL, password: DEFAULT_ADMIN_PASSWORD, role: 'admin', company: DEFAULT_COMPANY },
-    { email: 'alice@acme.test', password: 'password', role: 'user', company: DEFAULT_COMPANY },
+    { email: 'alice@acme.test', password: 'password', role: 'editor', company: DEFAULT_COMPANY },
     { email: 'demo@beta.test', password: 'demo', role: 'admin', company: SECOND_COMPANY },
   ],
   DEFAULT_COMPANY,

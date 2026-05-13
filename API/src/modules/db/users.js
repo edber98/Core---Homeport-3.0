@@ -148,7 +148,8 @@ module.exports = function(){
   r.post('/users', requireAdmin(), async (req, res) => {
     const body = req.body || {};
     const email = String(body.email || '').toLowerCase();
-    const role = (body.role === 'admin') ? 'admin' : 'user';
+    // Enum User : admin | editor | viewer. 'user' (legacy) → 'editor'.
+    const role = ['admin', 'editor', 'viewer'].includes(body.role) ? body.role : 'editor';
     if (!email) return res.apiError(400, 'email_required', 'Email is required');
     const exists = await User.findOne({ email });
     if (exists) return res.apiError(400, 'email_taken', 'Email already exists');
@@ -196,7 +197,7 @@ module.exports = function(){
     const user = uid ? await User.findById(uid) : await User.findOne({ email: String(id).toLowerCase(), companyId: req.user.companyId });
     if (!user || String(user.companyId) !== req.user.companyId) return res.apiError(404, 'user_not_found', 'User not found');
     const body = req.body || {};
-    if (body.role) user.role = (body.role === 'admin') ? 'admin' : 'user';
+    if (body.role) user.role = ['admin', 'editor', 'viewer'].includes(body.role) ? body.role : 'editor';
     await user.save();
     let adminWorkspaces = null;
     if (user.role === 'admin') {
