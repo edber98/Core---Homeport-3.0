@@ -53,10 +53,20 @@ function buildRouter() {
         role: m.role,
       } : null;
     }).filter(Boolean);
+    // displayName = name (claim Zitadel) > firstName+lastName > email (fallback)
+    const displayName = user.name
+      || [user.firstName, user.lastName].filter(Boolean).join(' ')
+      || user.email;
     res.apiOk({
       id: String(user._id),
       email: user.email,
+      firstName: user.firstName || null,
+      lastName: user.lastName || null,
+      name: user.name || null,
+      displayName,
       role: user.role,
+      kind: user.kind || null,
+      groups: user.groups || [],
       companyId: String(user.companyId),
       defaultWorkspaceId: user.defaultWorkspaceId ? String(user.defaultWorkspaceId) : null,
       workspaces: wsList,

@@ -20,13 +20,24 @@ module.exports = {
   SEED: readBool('SEED', true),
   // If SEED_COMPANIES is not set, use DEFAULT_COMPANY + SECOND_COMPANY
   SEED_COMPANIES: (process.env.SEED_COMPANIES || `${DEFAULT_COMPANY},${SECOND_COMPANY}`).split(',').map(s=>s.trim()).filter(Boolean),
+  // Crée les users de démo (admin@acme.test, alice@acme.test, demo@beta.test).
+  // En SaaS prod avec SSO : mets `SEED_DEMO_USERS=0` → aucun user créé au seed.
+  // Le 1er admin sera auto-provisionné via JIT au premier login SSO.
+  SEED_DEMO_USERS: readBool('SEED_DEMO_USERS', true),
   // Seed users: admin + alice for ACME, demo for BETA.
   // Roles : admin | editor | viewer (l'ancien 'user' est mappé sur 'editor').
-  SEED_USERS: [
-    { email: DEFAULT_ADMIN_EMAIL, password: DEFAULT_ADMIN_PASSWORD, role: 'admin', company: DEFAULT_COMPANY },
-    { email: 'alice@acme.test', password: 'password', role: 'editor', company: DEFAULT_COMPANY },
-    { email: 'demo@beta.test', password: 'demo', role: 'admin', company: SECOND_COMPANY },
-  ],
+  // Liste effective dépend de SEED_DEMO_USERS (cf. ci-dessus).
+  get SEED_USERS() {
+    if (!this.SEED_DEMO_USERS) return [];
+    return [
+      { email: DEFAULT_ADMIN_EMAIL, password: DEFAULT_ADMIN_PASSWORD, role: 'admin', company: DEFAULT_COMPANY },
+      { email: 'alice@acme.test', password: 'password', role: 'editor', company: DEFAULT_COMPANY },
+      { email: 'demo@beta.test', password: 'demo', role: 'admin', company: SECOND_COMPANY },
+    ];
+  },
+  // Crée le user `system@kinn.local` (admin) + son service token JWT au boot.
+  // Utilisé par le plugin Kinn auto-référence (mode "local"). Mets =0 si pas besoin.
+  LOCAL_SERVICE_TOKEN_ENABLED: readBool('LOCAL_SERVICE_TOKEN_ENABLED', true),
   DEFAULT_COMPANY,
   SECOND_COMPANY,
   DEFAULT_ADMIN_EMAIL,

@@ -46,6 +46,32 @@ questions:
       Permet au SSO de matcher dès le 1er login sans bind manuel.
       Vide = pas de bind (mais l'auto-bind se fera au 1er login s'il n'y a qu'1 company).
     group: SSO Zitadel
+
+  - variable: kinn.kinnApi.seed_demo_users
+    type: enum
+    options:
+      - "0"
+      - "1"
+    default: "1"
+    label: Créer les users de démo au seed
+    description: |
+      "1" = crée admin@acme.test, alice@acme.test, demo@beta.test (utile dev).
+      "0" = aucun user au seed. RECOMMANDÉ EN PROD SaaS avec SSO :
+            le 1er admin est créé automatiquement via JIT au 1er login Zitadel.
+    group: Comptes
+
+  - variable: kinn.kinnApi.local_service_token_enabled
+    type: enum
+    options:
+      - "0"
+      - "1"
+    default: "1"
+    label: Service token Kinn local (plugin auto-référence)
+    description: |
+      "1" = crée system@kinn.local + service token au boot.
+            Nécessaire seulement si tu utilises le plugin Kinn en mode auto-référence.
+      "0" = skip. RECOMMANDÉ EN PROD SaaS qui n'utilise pas le plugin Kinn local.
+    group: Avancé
   
   - variable: kinn.ingress.host
     type: string

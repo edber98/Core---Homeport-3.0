@@ -12,7 +12,13 @@ export interface ProfileWorkspace {
 export interface MeProfile {
   id: string;
   email: string;
+  firstName: string | null;
+  lastName: string | null;
+  name: string | null;
+  displayName: string;
   role: string;
+  kind: string | null;
+  groups: string[];
   companyId: string;
   defaultWorkspaceId: string | null;
   workspaces: ProfileWorkspace[];

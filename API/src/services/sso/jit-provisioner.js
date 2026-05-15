@@ -42,6 +42,13 @@ async function provisionFromClaims(claims) {
     throw new Error('Aucune Company Kinn ne correspond aux claims (kinn_client_id ou org_id absent ou inconnu)');
   }
 
+  // Identité depuis les claims OIDC standard (Zitadel les fournit avec scope `profile`)
+  const firstName = claims.given_name ? String(claims.given_name) : null;
+  const lastName = claims.family_name ? String(claims.family_name) : null;
+  const displayName = claims.name
+    ? String(claims.name)
+    : [firstName, lastName].filter(Boolean).join(' ') || null;
+
   const update = {
     $set: {
       email,
@@ -50,6 +57,9 @@ async function provisionFromClaims(claims) {
       kind,
       groups,
       companyId: company._id,
+      ...(firstName ? { firstName } : {}),
+      ...(lastName ? { lastName } : {}),
+      ...(displayName ? { name: displayName } : {}),
     },
     $setOnInsert: {
       sessionVersion: 0,
@@ -57,9 +67,6 @@ async function provisionFromClaims(claims) {
       localPromotion: null,
     },
   };
-  // Si claim contient name/given_name, on l'utilise pour les nouveaux users
-  // (ne touche pas le name d'un user existant — il a peut-être édité localement)
-  // Note : pas de field 'name' dans le schema actuel donc on ne stocke pas.
 
   // Atomic upsert : trouve par zitadelSub OU email (cas d'un user local promu en SSO)
   const filter = {
