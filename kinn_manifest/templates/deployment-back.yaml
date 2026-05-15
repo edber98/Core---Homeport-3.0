@@ -1,15 +1,3 @@
-{{- $globalValues := .Values.global | default dict -}}
-{{- $globalDependencies := get $globalValues "dependencies" | default dict -}}
-{{- $globalMongo := get $globalDependencies "mongodb" | default dict -}}
-{{- $globalCredentials := get $globalDependencies "credentials" | default dict -}}
-{{- $globalMongoCredentials := get $globalMongo "credentials" | default dict -}}
-{{- $chartMongo := .Values.mongodb | default dict -}}
-{{- $chartMongoCredentials := get $chartMongo "credentials" | default dict -}}
-{{- $mongoURL := get $globalMongo "url" | default (get $chartMongo "url") | default "" -}}
-{{- $mongoPort := get $globalMongo "port" | default (get $chartMongo "port") | default 27017 -}}
-{{- $mongoUsername := get $globalMongoCredentials "username" | default (get $globalCredentials "username") | default (get $chartMongoCredentials "username") | default "" -}}
-{{- $mongoPassword := get $globalMongoCredentials "password" | default (get $globalCredentials "password") | default (get $chartMongoCredentials "password") | default "" -}}
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -51,7 +39,7 @@ spec:
             - name: TOKEN_TTL_SEC
               value: {{ .Values.kinn.kinnApi.token_ttl_sec | quote }}
             - name: MONGO_URL
-              value: {{ $mongoURL | quote }}
+              value: {{ printf "%s:%v" .Values.kinn.mongodb.url .Values.kinn.mongodb.port | quote }}
             - name: MONGO_DB_NAME
               value: {{ .Values.kinn.kinnApi.mongo_db_name | quote }}
             - name: PLUGIN_IMPORT_ENABLED

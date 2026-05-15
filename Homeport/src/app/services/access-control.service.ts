@@ -20,6 +20,11 @@ export interface Workspace {
 export interface User {
   id: string;
   name: string;
+  // Identité depuis claims SSO / seed
+  firstName?: string | null;
+  lastName?: string | null;
+  displayName?: string;
+  email?: string;
   role: Role;
   workspaces: string[];
   companyId?: string;
@@ -49,8 +54,32 @@ export class AccessControlService {
 
   currentUser = computed<User | null>(() => {
     if (environment.useBackend) {
-      // In backend mode, expose user from auth token
       const id = this._currentUserId();
+      // Lit le user posé par AuthTokenService.setUser() au login (localStorage 'auth.user').
+      // Contient firstName/lastName/displayName/email/role depuis /api/me ou /auth/login.
+      try {
+        const raw = localStorage.getItem('auth.user');
+        const u: any = raw ? JSON.parse(raw) : null;
+        if (u) {
+          const name = u.displayName
+            || [u.firstName, u.lastName].filter(Boolean).join(' ')
+            || u.name
+            || u.email
+            || id
+            || 'Utilisateur';
+          return {
+            id: String(u.id || id || 'backend'),
+            name,
+            firstName: u.firstName || null,
+            lastName: u.lastName || null,
+            displayName: u.displayName || name,
+            email: u.email || '',
+            role: (u.role as Role) || 'admin',
+            workspaces: [],
+            companyId: u.companyId || undefined,
+          } as User;
+        }
+      } catch { /* localStorage indispo */ }
       return { id: id || 'backend', name: id || 'Backend', role: 'admin', workspaces: [] } as User;
     }
     const id = this._currentUserId();

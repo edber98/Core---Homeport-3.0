@@ -183,7 +183,7 @@
     <div class="profile-user">
       <nz-avatar nzShape="circle" [nzText]="userInitials" class="profile-avatar"></nz-avatar>
       <div class="profile-user-info">
-        <div class="profile-user-name">{{ currentUser?.name || 'Utilisateur' }}</div>
+        <div class="profile-user-name">{{ currentUser?.displayName || currentUser?.name || currentUser?.email || 'Utilisateur' }}</div>
         <div class="profile-user-role">{{ currentUser?.role || '' }}</div>
       </div>
     </div>
