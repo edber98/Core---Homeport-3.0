@@ -2,7 +2,17 @@ import { Injectable } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { ApiClientService } from './api-client.service';
 
-export interface BackendUser { id: string; email: string; name: string; role: 'admin'|'member'; workspaces: string[] }
+export interface BackendUser {
+  id: string;
+  email: string;
+  firstName?: string | null;
+  lastName?: string | null;
+  name: string;
+  role: 'admin' | 'editor' | 'viewer' | 'member'; // 'member' = legacy compat
+  kind?: string | null;
+  groups?: string[];
+  workspaces: string[];
+}
 
 @Injectable({ providedIn: 'root' })
 export class UsersBackendService {

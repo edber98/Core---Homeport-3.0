@@ -105,13 +105,23 @@ module.exports = function(){
       wsMap.set(String(w._id), resolved);
       if (w.id) wsMap.set(String(w.id), resolved);
     }
-    const data = users.map(u => ({
-      id: String(u._id),
-      email: u.email,
-      name: (u.email && String(u.email).split('@')[0]) || 'user',
-      role: u.role === 'admin' ? 'admin' : 'member',
-      workspaces: memberships.filter(m => String(m.userId) === String(u._id)).map(m => wsMap.get(String(m.workspaceId)) || String(m.workspaceId)),
-    }));
+    const data = users.map(u => {
+      const displayName = u.name
+        || [u.firstName, u.lastName].filter(Boolean).join(' ')
+        || (u.email && String(u.email).split('@')[0])
+        || 'user';
+      return {
+        id: String(u._id),
+        email: u.email,
+        firstName: u.firstName || null,
+        lastName: u.lastName || null,
+        name: displayName,
+        role: u.role,                                  // admin | editor | viewer
+        kind: u.kind || null,
+        groups: u.groups || [],
+        workspaces: memberships.filter(m => String(m.userId) === String(u._id)).map(m => wsMap.get(String(m.workspaceId)) || String(m.workspaceId)),
+      };
+    });
     res.apiOk({ total, page, limit, items: data });
   });
 
@@ -134,11 +144,19 @@ module.exports = function(){
       wsMap.set(String(w._id), resolved);
       if (w.id) wsMap.set(String(w.id), resolved);
     }
+    const displayName = u.name
+      || [u.firstName, u.lastName].filter(Boolean).join(' ')
+      || (u.email && String(u.email).split('@')[0])
+      || 'user';
     const data = {
       id: String(u._id),
       email: u.email,
-      name: (u.email && String(u.email).split('@')[0]) || 'user',
-      role: u.role === 'admin' ? 'admin' : 'member',
+      firstName: u.firstName || null,
+      lastName: u.lastName || null,
+      name: displayName,
+      role: u.role,
+      kind: u.kind || null,
+      groups: u.groups || [],
       workspaces: memberships.map(m => wsMap.get(String(m.workspaceId)) || String(m.workspaceId))
     };
     res.apiOk(data);

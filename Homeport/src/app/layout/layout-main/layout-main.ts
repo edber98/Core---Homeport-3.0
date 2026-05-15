@@ -375,9 +375,15 @@ export class LayoutMain implements OnInit, OnDestroy {
   get currentUser(): User | null { return this.acl.currentUser(); }
   get accessibleWorkspaces() { return this.acl.workspaces().filter(w => this.acl.canAccessWorkspace(w.id)); }
   get userInitials(): string {
-    const n = this.acl.currentUser()?.name || '';
-    const parts = n.trim().split(/\s+/).filter(Boolean);
-    const initials = parts.length >= 2 ? parts[0][0] + parts[1][0] : (parts[0]?.slice(0,2) || 'U');
+    const u: any = this.acl.currentUser();
+    // Priorité : firstName+lastName > displayName > name > email
+    const n = (u?.firstName && u?.lastName)
+      ? `${u.firstName} ${u.lastName}`
+      : (u?.displayName || u?.name || u?.email || '');
+    const parts = String(n).trim().split(/\s+/).filter(Boolean);
+    const initials = parts.length >= 2
+      ? parts[0][0] + parts[1][0]
+      : (parts[0]?.slice(0, 2) || 'U');
     return initials.toUpperCase();
   }
   onUserChange(id: string) {

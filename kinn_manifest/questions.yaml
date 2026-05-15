@@ -26,6 +26,24 @@ questions:
     label: Nom du workspace par défaut
     group: Comptes
 
+  - variable: kinn.kinnApi.seed
+    type: string
+    default: "true"
+    label: Générer initialisation base de données
+    group: Comptes
+
+  - variable: kinn.mongodb.url
+    type: string
+    default: "mongodb://192.168.147.40"
+    label: Adresse base de données
+    group: Comptes
+
+  - variable: kinn.mongodb.port
+    type: string
+    default: "27017"
+    label: Port de la base de données
+    group: Comptes
+
   - variable: kinn.kinnApi.seed_companies
     type: string
     default: ""

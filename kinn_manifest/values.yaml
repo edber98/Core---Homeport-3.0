@@ -1,12 +1,3 @@
-global:
-  dependencies:
-    mongodb:
-      url: ""
-      port: 27017
-    credentials:
-      username: ""
-      password: ""
-
 redis:
   image: redis:latest
   url: ""
@@ -22,6 +13,10 @@ kinn:
     host: "${client.key}-kinn.app.kinn.fr"
     tlsSecret: kinn-c4rbon-io2
     enabled: true
+  # Connexion MongoDB (URL + port séparés, format final = "url:port")
+  mongodb:
+    url: ""
+    port: 27017
   kinnApi:
     replicaCount: 1
     port: 5055

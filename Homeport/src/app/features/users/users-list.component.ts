@@ -51,11 +51,11 @@ import { AuthTokenService } from '../../services/auth-token.service';
       <div class="error" *ngIf="!loading && error">{{ error }}</div>
       <div class="grid" *ngIf="!loading && !error">
         <div class="card" *ngFor="let u of users">
-          <div class="leading"><div class="avatar">{{ initials(u.name) }}</div></div>
+          <div class="leading"><div class="avatar">{{ initials(displayNameOf(u)) }}</div></div>
           <div class="content">
-            <div class="name">{{ u.name }}</div>
-            <div class="desc" [title]="u.id + ' · ' + u.role + (u.role!=='admin' ? ' · ' + ((u.workspaces||[]).join(', ') || '—') : '')">
-              {{ u.id }} · <strong>{{ u.role }}</strong> <span *ngIf="u.role!=='admin'">· {{ (u.workspaces||[]).join(', ') || '—' }}</span>
+            <div class="name">{{ displayNameOf(u) }}</div>
+            <div class="desc" [title]="(($any(u).email) || u.id) + ' · ' + u.role + (u.role!=='admin' ? ' · ' + ((u.workspaces||[]).join(', ') || '—') : '')">
+              <span *ngIf="$any(u).email">{{ $any(u).email }} · </span><strong>{{ u.role }}</strong> <span *ngIf="u.role!=='admin'">· {{ (u.workspaces||[]).join(', ') || '—' }}</span>
             </div>
           </div>
           <div class="trailing">
@@ -170,7 +170,7 @@ export class UsersListComponent implements OnInit {
         })
       });
       this.usersApi.list().subscribe({
-        next: list => this.zone.run(() => { this.users = (list || []).map(u => ({ id: u.id, name: u.name, role: u.role as Role, workspaces: u.workspaces })) as any; }),
+        next: list => this.zone.run(() => { this.users = (list || []).map((u: any) => ({ id: u.id, name: u.name, firstName: u.firstName, lastName: u.lastName, email: u.email, role: u.role as Role, workspaces: u.workspaces })) as any; }),
         error: () => this.zone.run(() => { this.error = 'Chargement des utilisateurs échoué'; }),
         complete: () => this.zone.run(() => { this.loading = false; try { this.cdr.detectChanges(); } catch {} })
       });
@@ -251,6 +251,12 @@ export class UsersListComponent implements OnInit {
   initials(name: string): string {
     const parts = (name || '').trim().split(/\s+/).filter(Boolean);
     return (parts.length >= 2 ? parts[0][0] + parts[1][0] : (parts[0]?.slice(0,2) || 'U')).toUpperCase();
+  }
+  /** Calcule un display name lisible pour un user : firstName+lastName > name > email > id */
+  displayNameOf(u: any): string {
+    if (!u) return 'Utilisateur';
+    const fnln = [u.firstName, u.lastName].filter(Boolean).join(' ');
+    return fnln || u.name || u.email || u.id || 'Utilisateur';
   }
   reset(u: User) {
     this.auth.requestPasswordReset(u.id).subscribe({
