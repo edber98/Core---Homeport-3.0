@@ -68,14 +68,19 @@ export class SsoCallbackComponent implements OnInit {
     this.profileBackend.me().subscribe({
       next: (me) => {
         try {
-          this.tokens.setUser({
+          const userPayload = {
             id: me.id,
             email: me.email,
+            firstName: me.firstName,
+            lastName: me.lastName,
+            name: me.name,
+            displayName: me.displayName,
             role: me.role,
             companyId: me.companyId,
-          });
+          };
+          this.tokens.setUser(userPayload);
           this.acl.initFromLogin({
-            user: { id: me.id, email: me.email, role: me.role, companyId: me.companyId },
+            user: userPayload,
             workspaces: (me.workspaces || []).map((w: any) => ({
               id: w.id, name: w.name, isDefault: w.isDefault, role: w.role,
             })),

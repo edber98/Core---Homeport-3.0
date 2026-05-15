@@ -41,6 +41,12 @@ kinn:
     # Évite le `db.companies.updateOne(...)` manuel après déploiement.
     # En SaaS, Kinn-panel pose cet ID au moment de la création de l'instance.
     seed_company_zitadel_org_id: ""
+    # Crée les users démo (admin/alice/demo). En prod SaaS avec SSO, mets "0" :
+    # le 1er admin sera auto-provisionné via JIT au 1er login Zitadel.
+    seed_demo_users: "1"
+    # Crée system@kinn.local + son service token au boot (plugin Kinn auto-référence).
+    # Désactive (mets "0") si tu n'utilises pas le plugin Kinn local.
+    local_service_token_enabled: "1"
     node_env: "production"
     # ── LLM provider ──
     ai_provider: "openai"           # "openai" | "anthropic"

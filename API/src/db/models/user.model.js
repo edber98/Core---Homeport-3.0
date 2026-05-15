@@ -2,6 +2,10 @@ const { Schema, model, Types } = require('mongoose');
 
 const UserSchema = new Schema({
   email: { type: String, required: true, unique: true, index: true },
+  // Identité (synced depuis claims SSO : given_name, family_name, name)
+  firstName: { type: String, default: null },
+  lastName: { type: String, default: null },
+  name: { type: String, default: null }, // fallback display (Zitadel claim `name`)
   // Optionnel : null pour les users SSO-only sans password local
   pwdHash: { type: String, default: null },
   // Rôles 3-tiers (était admin/user, étendu pour aligner avec Zitadel project roles)

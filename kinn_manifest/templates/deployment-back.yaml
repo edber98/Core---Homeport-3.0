@@ -72,6 +72,12 @@ spec:
             - name: SEED_COMPANY_ZITADEL_ORG_ID
               value: {{ .Values.kinn.kinnApi.seed_company_zitadel_org_id | quote }}
             {{- end }}
+            # Crée admin/alice/demo. "0" = aucun user au seed (SaaS SSO).
+            - name: SEED_DEMO_USERS
+              value: {{ .Values.kinn.kinnApi.seed_demo_users | default "1" | quote }}
+            # Crée system@kinn.local + service token. "0" = skip (SaaS SSO).
+            - name: LOCAL_SERVICE_TOKEN_ENABLED
+              value: {{ .Values.kinn.kinnApi.local_service_token_enabled | default "1" | quote }}
             - name: DEFAULT_ADMIN_EMAIL
               value: {{ .Values.kinn.kinnApi.default_admin_email | quote }}
             - name: DEFAULT_ADMIN_PASSWORD

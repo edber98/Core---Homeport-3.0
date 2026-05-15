@@ -130,11 +130,17 @@ import { Router } from '@angular/router';
 })
 export class AppSettingsComponent {
   msg = '';
-  company: Company = { id: 'acme', name: 'Demo Company', adminUserId: 'admin', license: { plan: 'pro', maxUsers: 50, maxWorkspaces: 10 } } as any;
+  // Initial vide → la valeur réelle vient de l'API au constructor.
+  // Évite d'afficher un placeholder "Demo Company" hardcodé.
+  company: Company = { id: '', name: '', adminUserId: '', license: { plan: 'pro', maxUsers: 50, maxWorkspaces: 10 } } as any;
   constructor(private catalog: CatalogService, private acl: AccessControlService, private companySvc: CompanyService, private auth: AuthService, private router: Router) {
     const reload = () => {
-      const cid = this.acl.currentUser()?.companyId || 'acme';
-      this.companySvc.getCompany(cid).subscribe(c => this.company = c);
+      const cid = this.acl.currentUser()?.companyId || '';
+      if (!cid) return; // pas encore loggé / ACL pas hydratée
+      this.companySvc.getCompany(cid).subscribe({
+        next: c => this.company = c,
+        error: e => console.warn('[settings] getCompany failed:', e?.message),
+      });
     };
     reload();
     try { this.acl.changes$.pipe().subscribe(() => reload()); } catch {}
