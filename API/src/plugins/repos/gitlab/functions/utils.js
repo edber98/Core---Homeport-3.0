@@ -68,10 +68,18 @@ async function gitlabApi(method, pathTemplate, inputs, credentials, options = {}
   let data;
   const ct = String(res.headers.get('content-type') || '');
   try {
-    if (ct.includes('application/json')) data = await res.json();
-    else data = await res.text();
+    const text = await res.text();
+    if (ct.includes('application/json') && text) {
+      try {
+        data = JSON.parse(text);
+      } catch {
+        data = text;
+      }
+    } else {
+      data = text;
+    }
   } catch {
-    data = await res.text().catch(() => null);
+    data = null;
   }
 
   if (!res.ok) {
@@ -93,4 +101,4 @@ async function gitlabApi(method, pathTemplate, inputs, credentials, options = {}
   return { ok: true, status: res.status, data, pagination };
 }
 
-module.exports = { gitlabApi };
+module.exports = { gitlabApi, utils: { gitlabApi } };
