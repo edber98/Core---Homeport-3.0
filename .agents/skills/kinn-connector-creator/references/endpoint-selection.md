@@ -15,7 +15,8 @@ The goal is not to expose every API endpoint. The goal is to create useful workf
    - assign, tag, link, move, change status.
 3. Add event/webhook triggers if they unlock automation starts.
 4. Add file operations only if they integrate with Homeport file helpers or return stable URLs/metadata.
-5. Keep advanced/rare endpoints out unless the user explicitly asks.
+5. For automation/control platforms (for example home automation, IoT, observability, infrastructure), include workflow-actionable operational endpoints even when they are not classic business objects: list current states/resources, call actions/services, fire events, read schedules/calendars, fetch current media/snapshots, validate configuration, and read bounded error/status logs that can drive alerts.
+6. Keep advanced/rare endpoints out unless the user explicitly asks.
 
 ## Include
 
@@ -25,6 +26,10 @@ The goal is not to expose every API endpoint. The goal is to create useful workf
 - Workflow state changes: close issue, move task, update status, assign user.
 - Webhook events with a generic payload schema.
 - User/team lookup when needed to drive assignment and filtering.
+- Calendars/schedules and event inventories when workflows can branch on time windows or available event types.
+- Diagnostic status/error endpoints when the output can feed monitoring, alerting, or remediation flows.
+- Media snapshot/download endpoints when they return stable file data or metadata usable by later nodes.
+- Intent/command endpoints when the provider exposes them as a supported automation surface.
 
 ## Exclude by Default
 
@@ -47,4 +52,3 @@ For a broad SaaS connector, a good first pass is usually 12 to 35 nodes:
 - one webhook event node if supported.
 
 Prefer complete useful coverage over raw endpoint count. Do not stop after only `get/list/create` if obvious workflow actions like comments, status changes, assignment, or restore are central to the product.
-
