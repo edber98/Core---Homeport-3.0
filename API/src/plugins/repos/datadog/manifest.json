@@ -1,0 +1,436 @@
+{
+  "repo": {
+    "name": "datadog",
+    "type": "local",
+    "label": "Datadog"
+  },
+  "variables": {
+    "datadog_auth": {
+      "title": "Authentification Datadog",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "checkbox", "key": "valid", "label": "Valide", "col": { "xs": 24 } },
+        { "type": "json", "key": "raw", "label": "Réponse brute", "col": { "xs": 24 } }
+      ]
+    },
+    "datadog_monitor": {
+      "title": "Monitor Datadog",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "text", "key": "id", "label": "ID", "col": { "xs": 24 } },
+        { "type": "text", "key": "name", "label": "Nom", "col": { "xs": 24 } },
+        { "type": "text", "key": "type", "label": "Type", "col": { "xs": 12 } },
+        { "type": "textarea", "key": "query", "label": "Requête", "col": { "xs": 24 } },
+        { "type": "textarea", "key": "message", "label": "Message", "col": { "xs": 24 } },
+        { "type": "text", "key": "overall_state", "label": "État", "col": { "xs": 12 } },
+        { "type": "json", "key": "tags", "label": "Tags", "col": { "xs": 24 } },
+        { "type": "json", "key": "raw", "label": "Réponse brute", "col": { "xs": 24 } }
+      ]
+    },
+    "datadog_monitors": {
+      "title": "Monitors Datadog",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "number", "key": "totalCount", "label": "Nombre total", "col": { "xs": 24 } },
+        { "type": "json", "key": "monitors", "label": "Monitors", "col": { "xs": 24 } },
+        { "type": "json", "key": "raw", "label": "Réponse brute", "col": { "xs": 24 } }
+      ]
+    },
+    "datadog_logs": {
+      "title": "Logs Datadog",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "number", "key": "totalCount", "label": "Nombre total", "col": { "xs": 12 } },
+        { "type": "text", "key": "nextCursor", "label": "Curseur suivant", "col": { "xs": 24 } },
+        { "type": "json", "key": "logs", "label": "Logs", "col": { "xs": 24 } },
+        { "type": "json", "key": "raw", "label": "Réponse brute", "col": { "xs": 24 } }
+      ]
+    },
+    "datadog_metric_query": {
+      "title": "Requête métrique Datadog",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "text", "key": "status", "label": "Statut", "col": { "xs": 24 } },
+        { "type": "json", "key": "series", "label": "Séries", "col": { "xs": 24 } },
+        { "type": "json", "key": "raw", "label": "Réponse brute", "col": { "xs": 24 } }
+      ]
+    },
+    "datadog_operation": {
+      "title": "Opération Datadog",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "text", "key": "id", "label": "ID", "col": { "xs": 24 } },
+        { "type": "checkbox", "key": "accepted", "label": "Accepté", "col": { "xs": 12 } },
+        { "type": "text", "key": "title", "label": "Titre", "col": { "xs": 24 } },
+        { "type": "text", "key": "url", "label": "URL", "col": { "xs": 24 } },
+        { "type": "json", "key": "raw", "label": "Réponse brute", "col": { "xs": 24 } }
+      ]
+    },
+    "datadog_dashboards": {
+      "title": "Dashboards Datadog",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "number", "key": "totalCount", "label": "Nombre total", "col": { "xs": 24 } },
+        { "type": "json", "key": "dashboards", "label": "Dashboards", "col": { "xs": 24 } },
+        { "type": "json", "key": "raw", "label": "Réponse brute", "col": { "xs": 24 } }
+      ]
+    },
+    "datadog_dashboard": {
+      "title": "Dashboard Datadog",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "text", "key": "id", "label": "ID", "col": { "xs": 24 } },
+        { "type": "text", "key": "title", "label": "Titre", "col": { "xs": 24 } },
+        { "type": "textarea", "key": "description", "label": "Description", "col": { "xs": 24 } },
+        { "type": "text", "key": "layout_type", "label": "Type de mise en page", "col": { "xs": 24 } },
+        { "type": "text", "key": "url", "label": "URL", "col": { "xs": 24 } },
+        { "type": "json", "key": "raw", "label": "Réponse brute", "col": { "xs": 24 } }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "datadog",
+      "name": "Datadog",
+      "title": "Datadog",
+      "iconClass": "fa-solid fa-chart-line",
+      "iconUrl": "https://cdn.simpleicons.org/datadog",
+      "color": "#632ca6",
+      "tags": ["datadog", "observabilité", "monitoring"],
+      "categories": ["Observabilité"],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Datadog",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "apiKey", "label": "Clé API", "description": "Clé API Datadog.", "col": { "xs": 24 }, "secret": true, "validators": [{ "type": "required" }] },
+          { "type": "text", "key": "appKey", "label": "Clé d'application", "description": "Clé d'application Datadog pour les appels en lecture et gestion.", "col": { "xs": 24 }, "secret": true },
+          { "type": "text", "key": "siteUrl", "label": "URL du site", "default": "https://api.datadoghq.com", "description": "Exemples: https://api.datadoghq.com, https://api.datadoghq.eu.", "col": { "xs": 24 } }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "datadog_auth_validate",
+      "name": "datadogAuthValidate",
+      "schemaVersion": 2,
+      "title": "Valider la clé API",
+      "subtitle": "Authentification",
+      "icon": "fa-solid fa-key",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Datadog",
+      "providerKey": "datadog",
+      "tags": ["authentification", "datadog"],
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:datadog_auth" }],
+      "authorize_catch_error": true,
+      "description": "Vérifie si la clé API Datadog est valide.",
+      "args": { "title": "Valider la clé API", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [], "displayTitle": false, "displayDescription": false },
+      "group": "Authentification"
+    },
+    {
+      "key": "datadog_monitors_list",
+      "name": "datadogMonitorsList",
+      "schemaVersion": 2,
+      "title": "Lister les monitors",
+      "subtitle": "Monitors",
+      "icon": "fa-solid fa-bell",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Datadog",
+      "providerKey": "datadog",
+      "tags": ["monitors", "liste"],
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:datadog_monitors" }],
+      "authorize_catch_error": true,
+      "description": "Liste les monitors Datadog.",
+      "args": { "title": "Lister les monitors", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [
+        { "type": "text", "key": "name", "label": "Nom", "col": { "xs": 24 } },
+        { "type": "text", "key": "tags", "label": "Tags", "description": "Tags séparés par des virgules.", "col": { "xs": 24 } },
+        { "type": "text", "key": "monitorTags", "label": "Tags de monitor", "col": { "xs": 24 } },
+        { "type": "text", "key": "groupStates", "label": "États des groupes", "col": { "xs": 24 } },
+        { "type": "number", "key": "page", "label": "Page", "col": { "xs": 12 } },
+        { "type": "number", "key": "pageSize", "label": "Taille de page", "col": { "xs": 12 } }
+      ], "displayTitle": false, "displayDescription": false },
+      "group": "Monitors"
+    },
+    {
+      "key": "datadog_monitor_get",
+      "name": "datadogMonitorGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un monitor",
+      "subtitle": "Monitors",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Datadog",
+      "providerKey": "datadog",
+      "tags": ["monitor", "lecture"],
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:datadog_monitor" }],
+      "authorize_catch_error": true,
+      "description": "Récupère le détail d'un monitor Datadog.",
+      "args": { "title": "Récupérer un monitor", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [{ "type": "text", "key": "monitorId", "label": "ID du monitor", "default": "123", "col": { "xs": 24 }, "validators": [{ "type": "required" }] }], "displayTitle": false, "displayDescription": false },
+      "group": "Monitors"
+    },
+    {
+      "key": "datadog_monitor_create",
+      "name": "datadogMonitorCreate",
+      "schemaVersion": 2,
+      "title": "Créer un monitor",
+      "subtitle": "Monitors",
+      "icon": "fa-solid fa-plus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Datadog",
+      "providerKey": "datadog",
+      "tags": ["monitor", "création"],
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:datadog_monitor" }],
+      "authorize_catch_error": true,
+      "description": "Crée un monitor Datadog.",
+      "args": { "title": "Créer un monitor", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [
+        { "type": "text", "key": "name", "label": "Nom", "default": "Monitor API", "col": { "xs": 24 }, "validators": [{ "type": "required" }] },
+        { "type": "text", "key": "type", "label": "Type", "default": "metric alert", "col": { "xs": 24 }, "validators": [{ "type": "required" }] },
+        { "type": "textarea", "key": "query", "label": "Requête", "default": "avg(last_5m):avg:system.cpu.user{*} > 90", "col": { "xs": 24 }, "validators": [{ "type": "required" }] },
+        { "type": "textarea", "key": "message", "label": "Message", "default": "Alerte Datadog", "col": { "xs": 24 } },
+        { "type": "text", "key": "tags", "label": "Tags", "col": { "xs": 24 } },
+        { "type": "number", "key": "priority", "label": "Priorité", "col": { "xs": 12 } },
+        { "type": "json", "key": "options", "label": "Options", "default": { "thresholds": { "critical": 90 } }, "col": { "xs": 24 } }
+      ], "displayTitle": false, "displayDescription": false },
+      "group": "Monitors"
+    },
+    {
+      "key": "datadog_monitor_update",
+      "name": "datadogMonitorUpdate",
+      "schemaVersion": 2,
+      "title": "Mettre à jour un monitor",
+      "subtitle": "Monitors",
+      "icon": "fa-solid fa-pen",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Datadog",
+      "providerKey": "datadog",
+      "tags": ["monitor", "mise à jour"],
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:datadog_monitor" }],
+      "authorize_catch_error": true,
+      "description": "Met à jour un monitor Datadog.",
+      "args": { "title": "Mettre à jour un monitor", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [
+        { "type": "text", "key": "monitorId", "label": "ID du monitor", "default": "123", "col": { "xs": 24 }, "validators": [{ "type": "required" }] },
+        { "type": "text", "key": "name", "label": "Nom", "default": "Monitor API", "col": { "xs": 24 } },
+        { "type": "text", "key": "type", "label": "Type", "default": "metric alert", "col": { "xs": 24 } },
+        { "type": "textarea", "key": "query", "label": "Requête", "default": "avg(last_5m):avg:system.cpu.user{*} > 90", "col": { "xs": 24 } },
+        { "type": "textarea", "key": "message", "label": "Message", "col": { "xs": 24 } },
+        { "type": "text", "key": "tags", "label": "Tags", "col": { "xs": 24 } },
+        { "type": "number", "key": "priority", "label": "Priorité", "col": { "xs": 12 } },
+        { "type": "json", "key": "options", "label": "Options", "col": { "xs": 24 } }
+      ], "displayTitle": false, "displayDescription": false },
+      "group": "Monitors"
+    },
+    {
+      "key": "datadog_monitor_delete",
+      "name": "datadogMonitorDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un monitor",
+      "subtitle": "Monitors",
+      "icon": "fa-solid fa-trash",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Datadog",
+      "providerKey": "datadog",
+      "tags": ["monitor", "suppression"],
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:datadog_operation" }],
+      "authorize_catch_error": true,
+      "description": "Supprime un monitor Datadog.",
+      "args": { "title": "Supprimer un monitor", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [{ "type": "text", "key": "monitorId", "label": "ID du monitor", "default": "123", "col": { "xs": 24 }, "validators": [{ "type": "required" }] }], "displayTitle": false, "displayDescription": false },
+      "group": "Monitors"
+    },
+    {
+      "key": "datadog_monitor_mute",
+      "name": "datadogMonitorMute",
+      "schemaVersion": 2,
+      "title": "Mettre un monitor en sourdine",
+      "subtitle": "Monitors",
+      "icon": "fa-solid fa-volume-xmark",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Datadog",
+      "providerKey": "datadog",
+      "tags": ["monitor", "sourdine"],
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:datadog_monitor" }],
+      "authorize_catch_error": true,
+      "description": "Met un monitor Datadog en sourdine.",
+      "args": { "title": "Mettre un monitor en sourdine", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [
+        { "type": "text", "key": "monitorId", "label": "ID du monitor", "default": "123", "col": { "xs": 24 }, "validators": [{ "type": "required" }] },
+        { "type": "text", "key": "scope", "label": "Scope", "col": { "xs": 24 } },
+        { "type": "number", "key": "end", "label": "Fin Unix", "col": { "xs": 24 } }
+      ], "displayTitle": false, "displayDescription": false },
+      "group": "Monitors"
+    },
+    {
+      "key": "datadog_monitor_unmute",
+      "name": "datadogMonitorUnmute",
+      "schemaVersion": 2,
+      "title": "Réactiver un monitor",
+      "subtitle": "Monitors",
+      "icon": "fa-solid fa-volume-high",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Datadog",
+      "providerKey": "datadog",
+      "tags": ["monitor", "réactivation"],
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:datadog_monitor" }],
+      "authorize_catch_error": true,
+      "description": "Réactive un monitor Datadog.",
+      "args": { "title": "Réactiver un monitor", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [
+        { "type": "text", "key": "monitorId", "label": "ID du monitor", "default": "123", "col": { "xs": 24 }, "validators": [{ "type": "required" }] },
+        { "type": "text", "key": "scope", "label": "Scope", "col": { "xs": 24 } },
+        { "type": "checkbox", "key": "allScopes", "label": "Tous les scopes", "default": false, "col": { "xs": 24 } }
+      ], "displayTitle": false, "displayDescription": false },
+      "group": "Monitors"
+    },
+    {
+      "key": "datadog_logs_search",
+      "name": "datadogLogsSearch",
+      "schemaVersion": 2,
+      "title": "Rechercher des logs",
+      "subtitle": "Logs",
+      "icon": "fa-solid fa-magnifying-glass",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Datadog",
+      "providerKey": "datadog",
+      "tags": ["logs", "recherche"],
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:datadog_logs" }],
+      "authorize_catch_error": true,
+      "description": "Recherche des événements de logs Datadog.",
+      "args": { "title": "Rechercher des logs", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [
+        { "type": "textarea", "key": "query", "label": "Requête", "default": "*", "col": { "xs": 24 } },
+        { "type": "text", "key": "from", "label": "Début", "default": "now-15m", "col": { "xs": 12 } },
+        { "type": "text", "key": "to", "label": "Fin", "default": "now", "col": { "xs": 12 } },
+        { "type": "text", "key": "indexes", "label": "Indexes", "col": { "xs": 24 } },
+        { "type": "number", "key": "limit", "label": "Limite", "default": 25, "col": { "xs": 12 } },
+        { "type": "text", "key": "cursor", "label": "Curseur", "col": { "xs": 24 } }
+      ], "displayTitle": false, "displayDescription": false },
+      "group": "Logs"
+    },
+    {
+      "key": "datadog_metrics_query",
+      "name": "datadogMetricsQuery",
+      "schemaVersion": 2,
+      "title": "Interroger des métriques",
+      "subtitle": "Métriques",
+      "icon": "fa-solid fa-chart-area",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Datadog",
+      "providerKey": "datadog",
+      "tags": ["métriques", "requête"],
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:datadog_metric_query" }],
+      "authorize_catch_error": true,
+      "description": "Interroge une métrique Datadog sur une période.",
+      "args": { "title": "Interroger des métriques", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [
+        { "type": "textarea", "key": "query", "label": "Requête", "default": "avg:system.cpu.user{*}", "col": { "xs": 24 }, "validators": [{ "type": "required" }] },
+        { "type": "number", "key": "from", "label": "Début Unix", "col": { "xs": 12 } },
+        { "type": "number", "key": "to", "label": "Fin Unix", "col": { "xs": 12 } }
+      ], "displayTitle": false, "displayDescription": false },
+      "group": "Métriques"
+    },
+    {
+      "key": "datadog_metric_submit",
+      "name": "datadogMetricSubmit",
+      "schemaVersion": 2,
+      "title": "Envoyer une métrique",
+      "subtitle": "Métriques",
+      "icon": "fa-solid fa-upload",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Datadog",
+      "providerKey": "datadog",
+      "tags": ["métriques", "envoi"],
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:datadog_operation" }],
+      "authorize_catch_error": true,
+      "description": "Envoie une ou plusieurs séries métriques Datadog.",
+      "args": { "title": "Envoyer une métrique", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [
+        { "type": "json", "key": "series", "label": "Séries", "default": [{ "metric": "kinn.workflow.test", "type": 0, "points": [{ "timestamp": 1767225600, "value": 1 }], "resources": [{ "name": "workflow", "type": "host" }], "tags": ["source:kinn"] }], "col": { "xs": 24 }, "validators": [{ "type": "required" }] }
+      ], "displayTitle": false, "displayDescription": false },
+      "group": "Métriques"
+    },
+    {
+      "key": "datadog_event_create",
+      "name": "datadogEventCreate",
+      "schemaVersion": 2,
+      "title": "Créer un événement",
+      "subtitle": "Événements",
+      "icon": "fa-solid fa-calendar-plus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Datadog",
+      "providerKey": "datadog",
+      "tags": ["événement", "création"],
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:datadog_operation" }],
+      "authorize_catch_error": true,
+      "description": "Crée un événement dans Datadog.",
+      "args": { "title": "Créer un événement", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [
+        { "type": "text", "key": "title", "label": "Titre", "default": "Événement Kinn", "col": { "xs": 24 }, "validators": [{ "type": "required" }] },
+        { "type": "textarea", "key": "text", "label": "Texte", "default": "Événement envoyé depuis Kinn.", "col": { "xs": 24 }, "validators": [{ "type": "required" }] },
+        { "type": "select", "key": "priority", "label": "Priorité", "options": ["normal", "low"], "col": { "xs": 12 } },
+        { "type": "select", "key": "alertType", "label": "Type d'alerte", "options": ["error", "warning", "info", "success"], "col": { "xs": 12 } },
+        { "type": "text", "key": "aggregationKey", "label": "Clé d'agrégation", "col": { "xs": 24 } },
+        { "type": "text", "key": "sourceTypeName", "label": "Source", "col": { "xs": 24 } },
+        { "type": "text", "key": "tags", "label": "Tags", "col": { "xs": 24 } }
+      ], "displayTitle": false, "displayDescription": false },
+      "group": "Événements"
+    },
+    {
+      "key": "datadog_dashboards_list",
+      "name": "datadogDashboardsList",
+      "schemaVersion": 2,
+      "title": "Lister les dashboards",
+      "subtitle": "Dashboards",
+      "icon": "fa-solid fa-table-columns",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Datadog",
+      "providerKey": "datadog",
+      "tags": ["dashboards", "liste"],
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:datadog_dashboards" }],
+      "authorize_catch_error": true,
+      "description": "Liste les dashboards Datadog.",
+      "args": { "title": "Lister les dashboards", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [], "displayTitle": false, "displayDescription": false },
+      "group": "Dashboards"
+    },
+    {
+      "key": "datadog_dashboard_get",
+      "name": "datadogDashboardGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un dashboard",
+      "subtitle": "Dashboards",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Datadog",
+      "providerKey": "datadog",
+      "tags": ["dashboard", "lecture"],
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:datadog_dashboard" }],
+      "authorize_catch_error": true,
+      "description": "Récupère un dashboard Datadog.",
+      "args": { "title": "Récupérer un dashboard", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [{ "type": "text", "key": "dashboardId", "label": "ID du dashboard", "default": "abc-def-ghi", "col": { "xs": 24 }, "validators": [{ "type": "required" }] }], "displayTitle": false, "displayDescription": false },
+      "group": "Dashboards"
+    }
+  ]
+}
