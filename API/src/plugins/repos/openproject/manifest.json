@@ -1010,7 +1010,8 @@
         {
           "id": "ok",
           "name": "Success",
-          "type": "payload"
+          "type": "payload",
+          "schema": "$var:op_task"
         }
       ],
       "authorize_skip_error": true,

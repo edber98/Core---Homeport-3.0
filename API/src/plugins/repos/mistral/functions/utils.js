@@ -67,6 +67,30 @@ async function mistralRequestStream(opts, path, options = {}, onToken) {
     return { ok: false, error: errData?.message || `HTTP ${res.status}`, status: res.status, details: errData };
   }
 
+  if (!res.body || typeof res.body.getReader !== "function") {
+    const raw = await res.text();
+    let data = null;
+    if (raw) {
+      try { data = JSON.parse(raw); } catch { data = raw; }
+    }
+    const choice = (data && data.choices && data.choices[0]) || {};
+    const message = choice.message || {};
+    const delta = choice.delta || {};
+    const usage = (data && data.usage) || {};
+    return {
+      ok: true,
+      data: {
+        id: data && data.id,
+        model: data && data.model,
+        text: message.content || delta.content || "",
+        finishReason: choice.finish_reason,
+        promptTokens: usage.prompt_tokens,
+        completionTokens: usage.completion_tokens,
+        totalTokens: usage.total_tokens
+      }
+    };
+  }
+
   let text = '';
   let meta = {};
   const reader = res.body.getReader();

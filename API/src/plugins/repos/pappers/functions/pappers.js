@@ -6,7 +6,7 @@ const { pappersApi } = require('./utils');
 module.exports = {
   // ── Entreprises ──────────────────────────────────────────
 
-  async pappers_entreprise_get(node, msg, inputs, opts) {
+  pappers_entreprise_get: async (node, msg, inputs, opts) => {
     const log = (opts && opts.log) ? opts.log : () => {};
     log('Récupération de l\'entreprise...');
     const res = await pappersApi('/entreprise', inputs, opts?.credentials, {
@@ -40,7 +40,7 @@ module.exports = {
     };
   },
 
-  async pappers_entreprise_search(node, msg, inputs, opts) {
+  pappers_entreprise_search: async (node, msg, inputs, opts) => {
     const log = (opts && opts.log) ? opts.log : () => {};
     log('Recherche d\'entreprises...');
     const res = await pappersApi('/recherche', inputs, opts?.credentials, {
@@ -61,7 +61,7 @@ module.exports = {
     return { ok: true, resultats, totalCount: res.data?.total || resultats.length };
   },
 
-  async pappers_suggestions(node, msg, inputs, opts) {
+  pappers_suggestions: async (node, msg, inputs, opts) => {
     const log = (opts && opts.log) ? opts.log : () => {};
     log('Récupération des suggestions...');
     const res = await pappersApi('/suggestions', inputs, opts?.credentials, {
@@ -80,7 +80,7 @@ module.exports = {
 
   // ── Dirigeants ───────────────────────────────────────────
 
-  async pappers_dirigeants_search(node, msg, inputs, opts) {
+  pappers_dirigeants_search: async (node, msg, inputs, opts) => {
     const log = (opts && opts.log) ? opts.log : () => {};
     log('Recherche de dirigeants...');
     const res = await pappersApi('/recherche-dirigeants', inputs, opts?.credentials, {
@@ -97,7 +97,7 @@ module.exports = {
 
   // ── Bénéficiaires ────────────────────────────────────────
 
-  async pappers_beneficiaires_search(node, msg, inputs, opts) {
+  pappers_beneficiaires_search: async (node, msg, inputs, opts) => {
     const log = (opts && opts.log) ? opts.log : () => {};
     log('Recherche de bénéficiaires...');
     const res = await pappersApi('/recherche-beneficiaires', inputs, opts?.credentials, {
@@ -115,7 +115,7 @@ module.exports = {
 
   // ── Finance ──────────────────────────────────────────────
 
-  async pappers_comptes_get(node, msg, inputs, opts) {
+  pappers_comptes_get: async (node, msg, inputs, opts) => {
     const log = (opts && opts.log) ? opts.log : () => {};
     log('Récupération des comptes annuels...');
     const res = await pappersApi('/entreprise/comptes', inputs, opts?.credentials, {
@@ -134,7 +134,7 @@ module.exports = {
 
   // ── Documents ────────────────────────────────────────────
 
-  async pappers_documents_search(node, msg, inputs, opts) {
+  pappers_documents_search: async (node, msg, inputs, opts) => {
     const log = (opts && opts.log) ? opts.log : () => {};
     log('Recherche de documents...');
     const res = await pappersApi('/recherche-documents', inputs, opts?.credentials, {
@@ -151,7 +151,7 @@ module.exports = {
 
   // ── Publications ─────────────────────────────────────────
 
-  async pappers_publications_search(node, msg, inputs, opts) {
+  pappers_publications_search: async (node, msg, inputs, opts) => {
     const log = (opts && opts.log) ? opts.log : () => {};
     log('Recherche de publications BODACC...');
     const res = await pappersApi('/recherche-publications', inputs, opts?.credentials, {
@@ -169,7 +169,7 @@ module.exports = {
 
   // ── Conformité ───────────────────────────────────────────
 
-  async pappers_conformite_check(node, msg, inputs, opts) {
+  pappers_conformite_check: async (node, msg, inputs, opts) => {
     const log = (opts && opts.log) ? opts.log : () => {};
     log('Vérification de conformité...');
     const res = await pappersApi('/conformite/personne_physique', inputs, opts?.credentials, {
@@ -190,7 +190,7 @@ module.exports = {
 
   // ── Documents PDF ────────────────────────────────────────
 
-  async pappers_avis_insee(node, msg, inputs, opts) {
+  pappers_avis_insee: async (node, msg, inputs, opts) => {
     const log = (opts && opts.log) ? opts.log : () => {};
     log('Téléchargement de l\'avis INSEE...');
     const res = await pappersApi('/document/avis_situation_insee', inputs, opts?.credentials, {
@@ -213,7 +213,7 @@ module.exports = {
     };
   },
 
-  async pappers_extrait_inpi(node, msg, inputs, opts) {
+  pappers_extrait_inpi: async (node, msg, inputs, opts) => {
     const log = (opts && opts.log) ? opts.log : () => {};
     log('Téléchargement de l\'extrait INPI...');
     const res = await pappersApi('/document/extrait_inpi', inputs, opts?.credentials, {
@@ -238,7 +238,7 @@ module.exports = {
 
   // ── Associations ─────────────────────────────────────────
 
-  async pappers_association_get(node, msg, inputs, opts) {
+  pappers_association_get: async (node, msg, inputs, opts) => {
     const log = (opts && opts.log) ? opts.log : () => {};
     log('Récupération de l\'association...');
     const res = await pappersApi('/association', inputs, opts?.credentials, {

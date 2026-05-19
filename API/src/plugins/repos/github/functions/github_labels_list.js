@@ -10,7 +10,7 @@ module.exports = {
     log('Récupération de la liste...');
     const res = await utils.githubRequest(opts, `/repos/${owner}/${repo}/labels`);
     if (!res.ok) return res;
-    const labels = (res.data || []).map(r => ({ id: r.id, name: r.name, color: r.color, description: r.description }));
+    const labels = (Array.isArray(res.data) ? res.data : []).map(r => ({ id: r.id, name: r.name, color: r.color, description: r.description }));
     return { ok: true, labels, totalCount: labels.length };
   }
 };

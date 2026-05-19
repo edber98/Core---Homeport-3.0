@@ -219,6 +219,58 @@
         }
       ]
     },
+    "mistral_classification": {
+      "title": "Classification Mistral",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Catégories",
+          "description": "Catégories classées par le modèle.",
+          "mode": "array",
+          "key": "categories",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "category",
+              "label": "Catégorie",
+              "description": "Nom de la catégorie.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "confidence",
+              "label": "Confiance",
+              "description": "Score de confiance.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "explanation",
+              "label": "Explication",
+              "description": "Justification du classement.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
     "llm_text": {
       "title": "Réponse (texte)",
       "ui": {
@@ -975,6 +1027,14 @@
       "nodeKind": "function",
       "category": "AI",
       "providerKey": "mistral",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:mistral_classification"
+        }
+      ],
       "output_array_field": "categories",
       "outputSchema": [
         {
@@ -1168,7 +1228,8 @@
         {
           "id": "ok",
           "name": "Success",
-          "type": "payload"
+          "type": "payload",
+          "schema": "$var:mistral_result"
         }
       ],
       "description": "Extraire des données structurées d'un contenu via Mistral",

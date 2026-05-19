@@ -1,9 +1,10 @@
 module.exports = {
   async google_ai_image_generate(node, msg, inputs, opts) {
+    const { utils } = require("./utils");
     const log = (opts && opts.log) ? opts.log : () => {};
     const creds = (opts && opts.credentials) || {};
     const apiKey = creds.apiKey;
-    if (!apiKey) throw new Error('Missing Google AI apiKey in credentials');
+    if (!apiKey) return { ok: false, error: 'Clé API Google AI manquante.' };
     const model = String(inputs.model || 'imagen-3.0-generate-001');
     const prompt = String(inputs.prompt || '').trim();
     if (!prompt) return { ok: false, error: 'Missing prompt' };
@@ -25,7 +26,7 @@ module.exports = {
       return { ok: false, error: `Google AI Imagen error: ${res.status}`, details: err };
     }
 
-    const data = await res.json();
+    const data = await utils.readJsonResponse(res);
     const predictions = data.predictions || [];
     if (!predictions.length || !predictions[0].bytesBase64Encoded) {
       return { ok: false, error: 'Aucune image générée' };

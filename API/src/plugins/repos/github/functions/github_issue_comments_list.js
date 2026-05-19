@@ -11,7 +11,7 @@ module.exports = {
     log('Récupération de la liste...');
     const res = await utils.githubRequest(opts, `/repos/${owner}/${repo}/issues/${issue_number}/comments`, { query: { per_page: d.per_page } });
     if (!res.ok) return res;
-    const comments = (res.data || []).map(r => ({ id: r.id, body: r.body, user: r.user?.login, html_url: r.html_url, created_at: r.created_at }));
+    const comments = (Array.isArray(res.data) ? res.data : []).map(r => ({ id: r.id, body: r.body, user: r.user?.login, html_url: r.html_url, created_at: r.created_at }));
     return { ok: true, comments, totalCount: comments.length };
   }
 };

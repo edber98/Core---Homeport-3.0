@@ -12,7 +12,7 @@ module.exports = {
     const res = await utils.freshdeskRequest(opts, "/contacts", { query });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 
-    const results = res.data || [];
+    const results = Array.isArray(res.data) ? res.data : [];
     const contacts = results.map(r => ({ id: String(r.id || ""), name: r.name || "", email: r.email || "", phone: r.phone || "", createdAt: r.created_at || "" }));
     return { ok: true, totalCount: res.totalCount || 0, contacts };
   }

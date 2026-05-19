@@ -67,6 +67,69 @@
           }
         }
       ]
+    },
+    "google_ai_classification": {
+      "title": "Classification Google AI",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "category",
+          "label": "Catégorie",
+          "description": "Catégorie choisie.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "confidence",
+          "label": "Confiance",
+          "description": "Score de confiance.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "explanation",
+          "label": "Explication",
+          "description": "Explication courte.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "_output",
+          "label": "Sortie",
+          "description": "Identifiant de sortie dynamique.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "google_ai_extraction": {
+      "title": "Extraction Google AI",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "textarea",
+          "key": "raw",
+          "label": "Données",
+          "description": "Données structurées extraites.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
     }
   },
   "providers": [
@@ -428,7 +491,15 @@
         "ai"
       ],
       "risk": "safe",
-      "riskReason": "Appel LLM lecture (coût tokens)"
+      "riskReason": "Appel LLM lecture (coût tokens)",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:google_ai_classification"
+        }
+      ]
     },
     {
       "key": "google_ai_extract",
@@ -453,7 +524,8 @@
         {
           "id": "ok",
           "name": "Success",
-          "type": "payload"
+          "type": "payload",
+          "schema": "$var:google_ai_extraction"
         }
       ],
       "description": "Extraire des données structurées d'un contenu via Google Gemini",

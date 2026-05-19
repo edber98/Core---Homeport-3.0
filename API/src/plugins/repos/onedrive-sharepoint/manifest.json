@@ -72,7 +72,46 @@
       "categories": [
         "Docs & Drive"
       ],
-      "hasCredentials": true
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "OAuth Microsoft Graph",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "tenantId",
+            "label": "ID du tenant",
+            "description": "ID du tenant Microsoft.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "clientId",
+            "label": "ID client",
+            "description": "Client ID OAuth.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "clientSecret",
+            "label": "Secret client",
+            "description": "Client secret OAuth.",
+            "col": {
+              "xs": 24
+            },
+            "secret": true
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
     }
   ],
   "variables": {
@@ -173,6 +212,42 @@
           }
         }
       ]
+    },
+    "sharepoint_link": {
+      "title": "Lien SharePoint",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "url",
+          "key": "link",
+          "label": "Lien",
+          "description": "URL de partage.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "itemId",
+          "label": "Élément",
+          "description": "Identifiant de l'élément partagé.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "type",
+          "label": "Type",
+          "description": "Type de lien créé.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
     }
   },
   "nodeTemplates": [
@@ -201,7 +276,8 @@
         {
           "id": "ok",
           "name": "Success",
-          "type": "payload"
+          "type": "payload",
+          "schema": "$var:onedrive_file"
         }
       ],
       "description": "Téléverser un fichier vers OneDrive",
@@ -281,7 +357,8 @@
         {
           "id": "ok",
           "name": "Success",
-          "type": "payload"
+          "type": "payload",
+          "schema": "$var:sharepoint_file"
         }
       ],
       "description": "Téléverser un fichier dans une bibliothèque SharePoint",
@@ -374,7 +451,8 @@
         {
           "id": "ok",
           "name": "Success",
-          "type": "payload"
+          "type": "payload",
+          "schema": "$var:sharepoint_link"
         }
       ],
       "description": "Créer un lien partageable avec permissions",

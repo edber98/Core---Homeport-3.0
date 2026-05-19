@@ -1,0 +1,1466 @@
+{
+  "repo": {
+    "name": "instagram",
+    "type": "local",
+    "label": "Instagram"
+  },
+  "variables": {
+    "instagram_account": {
+      "title": "Compte Instagram",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du compte.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "username",
+          "label": "Nom utilisateur",
+          "description": "Nom utilisateur.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom affiché.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "biography",
+          "label": "Bio",
+          "description": "Biographie.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "website",
+          "label": "Site web",
+          "description": "Site web.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "followersCount",
+          "label": "Abonnés",
+          "description": "Nombre d’abonnés.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "followsCount",
+          "label": "Abonnements",
+          "description": "Nombre d’abonnements.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "mediaCount",
+          "label": "Médias",
+          "description": "Nombre de médias.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "profilePictureUrl",
+          "label": "Photo de profil",
+          "description": "URL de la photo.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "instagram_media": {
+      "title": "Média Instagram",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du média.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "caption",
+          "label": "Légende",
+          "description": "Légende.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "mediaType",
+          "label": "Type",
+          "description": "Type de média.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "mediaUrl",
+          "label": "URL média",
+          "description": "URL du média.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "permalink",
+          "label": "Permalien",
+          "description": "Permalien.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "timestamp",
+          "label": "Date",
+          "description": "Date de publication.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "username",
+          "label": "Nom utilisateur",
+          "description": "Auteur.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "commentsCount",
+          "label": "Commentaires",
+          "description": "Nombre de commentaires.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "likeCount",
+          "label": "J’aime",
+          "description": "Nombre de likes.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "instagram_media_list": {
+      "title": "Médias Instagram",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextCursor",
+          "label": "Curseur suivant",
+          "description": "Curseur de pagination.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Médias",
+          "description": "Liste",
+          "key": "media",
+          "mode": "array",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "caption",
+              "label": "Légende",
+              "description": "Légende.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "mediaType",
+              "label": "Type",
+              "description": "Type.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "permalink",
+              "label": "Permalien",
+              "description": "Lien.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "timestamp",
+              "label": "Date",
+              "description": "Date.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "commentsCount",
+              "label": "Commentaires",
+              "description": "Commentaires.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "likeCount",
+              "label": "J’aime",
+              "description": "Likes.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "instagram_insights": {
+      "title": "Insights Instagram",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Insights",
+          "description": "Liste",
+          "key": "insights",
+          "mode": "array",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom de métrique.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "period",
+              "label": "Période",
+              "description": "Période.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "value",
+              "label": "Valeur",
+              "description": "Valeur.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "instagram_comment": {
+      "title": "Commentaire Instagram",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "text",
+          "label": "Texte",
+          "description": "Texte.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "username",
+          "label": "Nom utilisateur",
+          "description": "Auteur.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "timestamp",
+          "label": "Date",
+          "description": "Date.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "checkbox",
+          "key": "hidden",
+          "label": "Masqué",
+          "description": "Commentaire masqué.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "instagram_comments": {
+      "title": "Commentaires Instagram",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextCursor",
+          "label": "Curseur suivant",
+          "description": "Curseur.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Commentaires",
+          "description": "Liste",
+          "key": "comments",
+          "mode": "array",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "text",
+              "label": "Texte",
+              "description": "Texte.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "username",
+              "label": "Nom utilisateur",
+              "description": "Auteur.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "timestamp",
+              "label": "Date",
+              "description": "Date.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "checkbox",
+              "key": "hidden",
+              "label": "Masqué",
+              "description": "Masqué.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "instagram_result": {
+      "title": "Résultat Instagram",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "statusCode",
+          "label": "Code statut",
+          "description": "Code statut.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "message",
+          "label": "Message",
+          "description": "Message.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "instagram_event": {
+      "title": "Événement Instagram",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "event",
+          "label": "Événement",
+          "description": "Type.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "object",
+          "label": "Objet",
+          "description": "Objet webhook.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "payload",
+          "label": "Payload",
+          "description": "Données reçues.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "instagram",
+      "name": "Instagram",
+      "title": "Instagram",
+      "iconClass": "fa-brands fa-instagram",
+      "iconUrl": "https://cdn.simpleicons.org/instagram",
+      "color": "#e1306c",
+      "tags": [
+        "instagram",
+        "social",
+        "meta"
+      ],
+      "categories": [
+        "Social Media"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Instagram",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "accessToken",
+            "label": "Access Token",
+            "description": "Token Meta Graph avec accès Instagram.",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "baseUrl",
+            "label": "Base URL",
+            "description": "URL/version Graph API.",
+            "col": {
+              "xs": 24
+            },
+            "default": "https://graph.facebook.com/v24.0"
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "instagram_account_get",
+      "name": "instagramAccountGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un compte",
+      "subtitle": "Compte",
+      "icon": "fa-solid fa-user",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Instagram",
+      "providerKey": "instagram",
+      "tags": [
+        "instagram",
+        "compte"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:instagram_account"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupérer un compte via Instagram Graph API.",
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Récupérer un compte",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "igUserId",
+            "label": "ID du compte Instagram",
+            "description": "Identifiant du compte professionnel.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      },
+      "group": "Compte",
+      "risk": "safe"
+    },
+    {
+      "key": "instagram_media_list",
+      "name": "instagramMediaList",
+      "schemaVersion": 2,
+      "title": "Lister les médias",
+      "subtitle": "Médias",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Instagram",
+      "providerKey": "instagram",
+      "tags": [
+        "instagram",
+        "médias"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:instagram_media_list"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lister les médias via Instagram Graph API.",
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Lister les médias",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "igUserId",
+            "label": "ID du compte Instagram",
+            "description": "Identifiant du compte.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre de médias.",
+            "col": {
+              "xs": 24
+            },
+            "default": 25
+          },
+          {
+            "type": "text",
+            "key": "after",
+            "label": "Curseur après",
+            "description": "Curseur de pagination.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "group": "Médias",
+      "risk": "safe"
+    },
+    {
+      "key": "instagram_media_get",
+      "name": "instagramMediaGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un média",
+      "subtitle": "Médias",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Instagram",
+      "providerKey": "instagram",
+      "tags": [
+        "instagram",
+        "médias"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:instagram_media"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupérer un média via Instagram Graph API.",
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Récupérer un média",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "mediaId",
+            "label": "ID du média",
+            "description": "Identifiant du média.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      },
+      "group": "Médias",
+      "risk": "safe"
+    },
+    {
+      "key": "instagram_media_insights",
+      "name": "instagramMediaInsights",
+      "schemaVersion": 2,
+      "title": "Récupérer les insights média",
+      "subtitle": "Insights",
+      "icon": "fa-solid fa-chart-line",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Instagram",
+      "providerKey": "instagram",
+      "tags": [
+        "instagram",
+        "insights"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:instagram_insights"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupérer les insights média via Instagram Graph API.",
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Récupérer les insights média",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "mediaId",
+            "label": "ID du média",
+            "description": "Identifiant du média.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "metric",
+            "label": "Métriques",
+            "description": "Métriques séparées par virgules.",
+            "col": {
+              "xs": 24
+            },
+            "default": "impressions,reach,engagement,saved"
+          }
+        ]
+      },
+      "group": "Insights",
+      "risk": "safe"
+    },
+    {
+      "key": "instagram_comments_list",
+      "name": "instagramCommentsList",
+      "schemaVersion": 2,
+      "title": "Lister les commentaires",
+      "subtitle": "Commentaires",
+      "icon": "fa-solid fa-comments",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Instagram",
+      "providerKey": "instagram",
+      "tags": [
+        "instagram",
+        "commentaires"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:instagram_comments"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lister les commentaires via Instagram Graph API.",
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Lister les commentaires",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "mediaId",
+            "label": "ID du média",
+            "description": "Identifiant du média.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre de commentaires.",
+            "col": {
+              "xs": 24
+            },
+            "default": 25
+          },
+          {
+            "type": "text",
+            "key": "after",
+            "label": "Curseur après",
+            "description": "Curseur de pagination.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "group": "Commentaires",
+      "risk": "safe"
+    },
+    {
+      "key": "instagram_comment_reply",
+      "name": "instagramCommentReply",
+      "schemaVersion": 2,
+      "title": "Répondre à un commentaire",
+      "subtitle": "Commentaires",
+      "icon": "fa-solid fa-reply",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Instagram",
+      "providerKey": "instagram",
+      "tags": [
+        "instagram",
+        "commentaires"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:instagram_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Répondre à un commentaire via Instagram Graph API.",
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Répondre à un commentaire",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "commentId",
+            "label": "ID du commentaire",
+            "description": "Commentaire cible.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "message",
+            "label": "Message",
+            "description": "Réponse à publier.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      },
+      "group": "Commentaires",
+      "risk": "write"
+    },
+    {
+      "key": "instagram_comment_hide",
+      "name": "instagramCommentHide",
+      "schemaVersion": 2,
+      "title": "Masquer un commentaire",
+      "subtitle": "Commentaires",
+      "icon": "fa-solid fa-eye-slash",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Instagram",
+      "providerKey": "instagram",
+      "tags": [
+        "instagram",
+        "commentaires"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:instagram_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Masquer un commentaire via Instagram Graph API.",
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Masquer un commentaire",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "commentId",
+            "label": "ID du commentaire",
+            "description": "Commentaire cible.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "checkbox",
+            "key": "hide",
+            "label": "Masquer",
+            "description": "Masquer le commentaire.",
+            "col": {
+              "xs": 24
+            },
+            "default": true
+          }
+        ]
+      },
+      "group": "Commentaires",
+      "risk": "write"
+    },
+    {
+      "key": "instagram_media_container_create",
+      "name": "instagramMediaContainerCreate",
+      "schemaVersion": 2,
+      "title": "Créer un container média",
+      "subtitle": "Publication",
+      "icon": "fa-solid fa-upload",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Instagram",
+      "providerKey": "instagram",
+      "tags": [
+        "instagram",
+        "publication"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:instagram_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Créer un container média via Instagram Graph API.",
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Créer un container média",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "igUserId",
+            "label": "ID du compte Instagram",
+            "description": "Identifiant du compte.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "imageUrl",
+            "label": "URL image",
+            "description": "URL publique de l’image.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "videoUrl",
+            "label": "URL vidéo",
+            "description": "URL publique de la vidéo.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "caption",
+            "label": "Légende",
+            "description": "Légende.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "select",
+            "key": "mediaType",
+            "label": "Type média",
+            "description": "Type de média.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "IMAGE",
+                "value": "IMAGE"
+              },
+              {
+                "label": "VIDEO",
+                "value": "VIDEO"
+              },
+              {
+                "label": "REELS",
+                "value": "REELS"
+              },
+              {
+                "label": "STORIES",
+                "value": "STORIES"
+              }
+            ],
+            "default": "IMAGE"
+          }
+        ]
+      },
+      "group": "Publication",
+      "risk": "write"
+    },
+    {
+      "key": "instagram_container_status_get",
+      "name": "instagramContainerStatusGet",
+      "schemaVersion": 2,
+      "title": "Vérifier un container",
+      "subtitle": "Publication",
+      "icon": "fa-solid fa-spinner",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Instagram",
+      "providerKey": "instagram",
+      "tags": [
+        "instagram",
+        "publication"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:instagram_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Vérifier un container via Instagram Graph API.",
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Vérifier un container",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "containerId",
+            "label": "ID du container",
+            "description": "Identifiant du container.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      },
+      "group": "Publication",
+      "risk": "safe"
+    },
+    {
+      "key": "instagram_media_publish",
+      "name": "instagramMediaPublish",
+      "schemaVersion": 2,
+      "title": "Publier un média",
+      "subtitle": "Publication",
+      "icon": "fa-solid fa-paper-plane",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Instagram",
+      "providerKey": "instagram",
+      "tags": [
+        "instagram",
+        "publication"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:instagram_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Publier un média via Instagram Graph API.",
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Publier un média",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "igUserId",
+            "label": "ID du compte Instagram",
+            "description": "Identifiant du compte.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "creationId",
+            "label": "ID du container",
+            "description": "Container à publier.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      },
+      "group": "Publication",
+      "risk": "write"
+    },
+    {
+      "key": "instagram_webhook_event",
+      "name": "instagramWebhookEvent",
+      "schemaVersion": 2,
+      "title": "Webhook Instagram",
+      "subtitle": "Déclencheur",
+      "icon": "fa-solid fa-bolt",
+      "type": "event",
+      "nodeKind": "event",
+      "category": "Instagram",
+      "providerKey": "instagram",
+      "tags": [
+        "instagram",
+        "déclencheur"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:instagram_event"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Webhook Instagram via Instagram Graph API.",
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Webhook Instagram",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Chemin d’endpoint",
+            "description": "Chemin webhook.",
+            "col": {
+              "xs": 24
+            },
+            "default": "/hooks/instagram"
+          }
+        ]
+      },
+      "group": "Déclencheur",
+      "risk": "safe"
+    }
+  ]
+}
