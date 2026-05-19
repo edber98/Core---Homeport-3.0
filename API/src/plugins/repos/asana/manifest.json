@@ -1357,6 +1357,314 @@
       "risk": "safe"
     },
     {
+      "key": "asana_task_search",
+      "name": "asanaTaskSearch",
+      "schemaVersion": 2,
+      "title": "Rechercher des tâches",
+      "subtitle": "Tâches",
+      "icon": "fa-solid fa-search",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Productivité",
+      "providerKey": "asana",
+      "tags": [
+        "asana",
+        "tâches"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:asana_tasks"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Rechercher des tâches dans Asana.",
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Rechercher des tâches",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "workspaceGid",
+            "label": "GID du workspace",
+            "description": "Workspace dans lequel rechercher.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "text",
+            "label": "Texte",
+            "description": "Recherche plein texte.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "projectGid",
+            "label": "GID du projet",
+            "description": "Filtrer par projet.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "sectionGid",
+            "label": "GID de section",
+            "description": "Filtrer par section.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "tagGid",
+            "label": "GID du tag",
+            "description": "Filtrer par tag.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "assignee",
+            "label": "Assigné",
+            "description": "GID, email ou me.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "completed",
+            "label": "Terminée",
+            "description": "Filtrer les tâches terminées.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre maximum de tâches.",
+            "col": {
+              "xs": 24
+            },
+            "default": 50
+          }
+        ]
+      },
+      "group": "Tâches",
+      "risk": "safe"
+    },
+    {
+      "key": "asana_task_add_project",
+      "name": "asanaTaskAddProject",
+      "schemaVersion": 2,
+      "title": "Ajouter une tâche à un projet",
+      "subtitle": "Tâches",
+      "icon": "fa-solid fa-folder-plus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Productivité",
+      "providerKey": "asana",
+      "tags": [
+        "asana",
+        "tâches"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:asana_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Ajouter une tâche à un projet dans Asana.",
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Ajouter une tâche à un projet",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "taskGid",
+            "label": "GID de la tâche",
+            "description": "Tâche à ajouter.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "projectGid",
+            "label": "GID du projet",
+            "description": "Projet cible.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "sectionGid",
+            "label": "GID de section",
+            "description": "Section cible optionnelle.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "insertBefore",
+            "label": "Insérer avant",
+            "description": "GID de tâche avant laquelle placer.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "insertAfter",
+            "label": "Insérer après",
+            "description": "GID de tâche après laquelle placer.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "group": "Tâches",
+      "risk": "write"
+    },
+    {
+      "key": "asana_task_add_tag",
+      "name": "asanaTaskAddTag",
+      "schemaVersion": 2,
+      "title": "Ajouter un tag à une tâche",
+      "subtitle": "Tâches",
+      "icon": "fa-solid fa-tag",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Productivité",
+      "providerKey": "asana",
+      "tags": [
+        "asana",
+        "tâches"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:asana_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Ajouter un tag à une tâche dans Asana.",
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Ajouter un tag à une tâche",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "taskGid",
+            "label": "GID de la tâche",
+            "description": "Tâche à taguer.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "tagGid",
+            "label": "GID du tag",
+            "description": "Tag à ajouter.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      },
+      "group": "Tâches",
+      "risk": "write"
+    },
+    {
       "key": "asana_project_create",
       "name": "asanaProjectCreate",
       "schemaVersion": 2,
@@ -2256,6 +2564,192 @@
       ],
       "group": "Événements",
       "risk": "safe"
+    },
+    {
+      "key": "asana_subtasks_list",
+      "name": "asanaSubtasksList",
+      "schemaVersion": 2,
+      "title": "Lister les sous-tâches",
+      "subtitle": "Sous-tâches",
+      "icon": "fa-solid fa-list-check",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Productivité",
+      "providerKey": "asana",
+      "tags": [
+        "asana",
+        "sous-tâches"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:asana_tasks"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lister les sous-tâches dans Asana.",
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Lister les sous-tâches",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "taskGid",
+            "label": "GID de la tâche",
+            "description": "Tâche parente.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre maximum de sous-tâches.",
+            "col": {
+              "xs": 24
+            },
+            "default": 50
+          },
+          {
+            "type": "text",
+            "key": "offset",
+            "label": "Offset",
+            "description": "Curseur de pagination.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "group": "Sous-tâches",
+      "risk": "safe"
+    },
+    {
+      "key": "asana_subtask_create",
+      "name": "asanaSubtaskCreate",
+      "schemaVersion": 2,
+      "title": "Créer une sous-tâche",
+      "subtitle": "Sous-tâches",
+      "icon": "fa-solid fa-plus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Productivité",
+      "providerKey": "asana",
+      "tags": [
+        "asana",
+        "sous-tâches"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:asana_task"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Créer une sous-tâche dans Asana.",
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Créer une sous-tâche",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "parentTaskGid",
+            "label": "GID de la tâche parente",
+            "description": "Tâche parente.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nom de la sous-tâche.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "notes",
+            "label": "Notes",
+            "description": "Description de la sous-tâche.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "assignee",
+            "label": "Assigné",
+            "description": "GID, email ou me.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "due_on",
+            "label": "Date d’échéance",
+            "description": "Date au format YYYY-MM-DD.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "group": "Sous-tâches",
+      "risk": "write"
     }
   ]
 }

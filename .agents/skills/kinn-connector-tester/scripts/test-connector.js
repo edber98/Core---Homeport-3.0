@@ -162,7 +162,7 @@ function credentialFixture(providers) {
     for (const field of (p.credentialsForm && p.credentialsForm.fields) || []) {
       const key = field.key;
       if (!key) continue;
-      credentials[key] = sampleValue(key, field);
+      credentials[key] = field.default !== undefined ? field.default : sampleValue(key, field);
     }
   }
   return credentials;
@@ -253,6 +253,59 @@ function response(data, status = 200, contentType = "application/json") {
   };
 }
 
+function connectorDirs() {
+  return fs.readdirSync(reposDir, { withFileTypes: true })
+    .filter((d) => d.isDirectory() && d.name !== "_shared")
+    .map((d) => d.name)
+    .sort();
+}
+
+function readConnecteursStatus(file) {
+  const status = new Map();
+  if (!fs.existsSync(file)) return status;
+  const text = fs.readFileSync(file, "utf8");
+  for (const line of text.split(/\r?\n/)) {
+    const match = line.match(/^\|\s*([^|]+?)\s*\|\s*(Oui|Non)\s*\|$/i);
+    if (!match) continue;
+    const name = match[1].trim();
+    if (name && name !== "---" && name.toLowerCase() !== "connecteur") {
+      status.set(name, match[2].trim().toLowerCase() === "oui" ? "Oui" : "Non");
+    }
+  }
+  return status;
+}
+
+function updateConnecteursMd(results) {
+  const file = path.join(reposDir, "connecteurs.md");
+  const previous = readConnecteursStatus(file);
+  const existingConnectors = connectorDirs();
+  const existingSet = new Set(existingConnectors);
+  const passed = new Set(
+    (results || [])
+      .filter((r) => r && r.passed)
+      .map((r) => r && r.connector)
+      .filter((name) => name && existingSet.has(name))
+  );
+  const failed = new Set(
+    (results || [])
+      .filter((r) => r && !r.passed)
+      .map((r) => r && r.connector)
+      .filter((name) => name && existingSet.has(name))
+  );
+
+  const lines = [
+    "# Connecteurs",
+    "",
+    "| Connecteur | Testé |",
+    "| --- | --- |"
+  ];
+  for (const name of existingConnectors) {
+    const value = passed.has(name) ? "Oui" : failed.has(name) ? "Non" : previous.get(name) === "Oui" ? "Oui" : "Non";
+    lines.push(`| ${name} | ${value} |`);
+  }
+  fs.writeFileSync(file, `${lines.join("\n")}\n`);
+}
+
 async function invokeTemplates(connectorName, templates, functionsDir, providers, result) {
   const restoreFetch = installMockFetch();
   const credentials = credentialFixture(providers);
@@ -295,10 +348,16 @@ async function main() {
     process.exit(2);
   }
   const connectors = runAll
-    ? fs.readdirSync(reposDir, { withFileTypes: true }).filter((d) => d.isDirectory()).map((d) => d.name).sort()
+    ? connectorDirs()
     : [connector];
   const results = [];
-  for (const name of connectors) results.push(await validateManifest(name));
+  for (const name of connectors) {
+    const failureStart = failures.length;
+    const result = await validateManifest(name);
+    result.passed = failures.length === failureStart;
+    results.push(result);
+  }
+  updateConnecteursMd(results);
   const summary = { ok: failures.length === 0, failures, warnings, results };
   if (json) {
     console.log(JSON.stringify(summary, null, 2));

@@ -8,6 +8,19 @@ function sha256(data) {
   return crypto.createHash("sha256").update(data || "", "utf8").digest("hex");
 }
 
+function responseHeaders(headers) {
+  if (!headers) return {};
+  if (typeof headers.entries === "function") return Object.fromEntries(headers.entries());
+  const out = {};
+  if (typeof headers.get === "function") {
+    for (const key of ["content-type", "etag", "x-amz-version-id", "x-amz-request-id", "x-amz-function-error", "x-amz-log-result", "x-amz-executed-version"]) {
+      const value = headers.get(key);
+      if (value !== undefined && value !== null) out[key] = value;
+    }
+  }
+  return out;
+}
+
 function getSignatureKey(secretKey, dateStamp, region, service) {
   let k = hmacSha256("AWS4" + secretKey, dateStamp);
   k = hmacSha256(k, region);
@@ -95,7 +108,7 @@ async function s3Request(opts, method, path, options = {}) {
     return { ok: false, error: `HTTP ${res.status}`, status: res.status, details: text };
   }
 
-  return { ok: true, data: text, status: res.status, headers: Object.fromEntries(res.headers.entries()) };
+  return { ok: true, data: text, status: res.status, headers: responseHeaders(res.headers) };
 }
 
 async function sesRequest(opts, action, params = {}) {
@@ -131,6 +144,72 @@ async function sesRequest(opts, action, params = {}) {
   return { ok: true, data: text, status: res.status };
 }
 
+async function awsQueryRequest(opts, service, action, params = {}, version) {
+  const credentials = (opts && opts.credentials) || {};
+  const { region } = credentials;
+  if (!region) return { ok: false, error: "Missing AWS region." };
+
+  const url = `https://${service}.${region}.amazonaws.com/`;
+  const body = new URLSearchParams({ Action: action, Version: version, ...params }).toString();
+  const headers = { "Content-Type": "application/x-www-form-urlencoded" };
+
+  try {
+    awsSign("POST", url, headers, body, credentials, service);
+  } catch (e) {
+    return { ok: false, error: e.message };
+  }
+
+  const fetchHeaders = { ...headers };
+  delete fetchHeaders["host"];
+
+  let res;
+  try {
+    res = await fetch(url, { method: "POST", headers: fetchHeaders, body });
+  } catch (e) {
+    return { ok: false, error: e.message };
+  }
+
+  const text = await res.text();
+  if (!res.ok) return { ok: false, error: `HTTP ${res.status}`, status: res.status, details: text };
+  return { ok: true, data: text, status: res.status, headers: responseHeaders(res.headers) };
+}
+
+async function lambdaInvoke(opts, functionName, payload, options = {}) {
+  const credentials = (opts && opts.credentials) || {};
+  const { region } = credentials;
+  if (!region) return { ok: false, error: "Missing AWS region." };
+
+  const encoded = encodeURIComponent(functionName);
+  const query = options.qualifier ? `?Qualifier=${encodeURIComponent(options.qualifier)}` : "";
+  const url = `https://lambda.${region}.amazonaws.com/2015-03-31/functions/${encoded}/invocations${query}`;
+  const body = typeof payload === "string" ? payload : JSON.stringify(payload || {});
+  const headers = {
+    "Content-Type": "application/json",
+    "X-Amz-Invocation-Type": options.invocationType || "RequestResponse",
+    "X-Amz-Log-Type": options.logType || "None"
+  };
+
+  try {
+    awsSign("POST", url, headers, body, credentials, "lambda");
+  } catch (e) {
+    return { ok: false, error: e.message };
+  }
+
+  const fetchHeaders = { ...headers };
+  delete fetchHeaders["host"];
+
+  let res;
+  try {
+    res = await fetch(url, { method: "POST", headers: fetchHeaders, body });
+  } catch (e) {
+    return { ok: false, error: e.message };
+  }
+
+  const text = await res.text();
+  if (!res.ok) return { ok: false, error: `HTTP ${res.status}`, status: res.status, details: text };
+  return { ok: true, data: text, status: res.status, headers: responseHeaders(res.headers) };
+}
+
 function parseXmlTag(xml, tag) {
   const r = new RegExp(`<${tag}>([\\s\\S]*?)<\\/${tag}>`, "g");
   const matches = [];
@@ -144,4 +223,4 @@ function parseXmlTagSingle(xml, tag) {
   return m ? m[1] : null;
 }
 
-module.exports = { utils: { awsSign, s3Request, sesRequest, parseXmlTag, parseXmlTagSingle } };
+module.exports = { utils: { awsSign, s3Request, sesRequest, awsQueryRequest, lambdaInvoke, parseXmlTag, parseXmlTagSingle } };

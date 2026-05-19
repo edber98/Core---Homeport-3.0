@@ -782,6 +782,175 @@
           }
         }
       ]
+    },
+    "brevo_webhook": {
+      "title": "Webhook Brevo",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du webhook.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "url",
+          "label": "URL",
+          "description": "URL appelée.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "type",
+          "label": "Type",
+          "description": "Type du webhook.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "description",
+          "label": "Description",
+          "description": "Description.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "events",
+          "label": "Événements",
+          "description": "Événements suivis.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "batched",
+          "label": "Groupé",
+          "description": "Envoi groupé.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "createdAt",
+          "label": "Date de création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "modifiedAt",
+          "label": "Date de modification",
+          "description": "Date de modification.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "brevo_webhooks": {
+      "title": "Webhooks Brevo",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Webhooks",
+          "description": "Liste",
+          "mode": "array",
+          "key": "webhooks",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "url",
+              "label": "URL",
+              "description": "URL.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "type",
+              "label": "Type",
+              "description": "Type.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "events",
+              "label": "Événements",
+              "description": "Événements.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "batched",
+              "label": "Groupé",
+              "description": "Groupé.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "createdAt",
+              "label": "Date de création",
+              "description": "Date.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
     }
   },
   "providers": [
@@ -2407,6 +2576,524 @@
         "brevo"
       ],
       "group": "Expéditeurs",
+      "risk": "write"
+    },
+    {
+      "key": "brevo_list_remove_contacts",
+      "name": "brevoListRemoveContacts",
+      "schemaVersion": 2,
+      "title": "Retirer des contacts d’une liste",
+      "subtitle": "Listes",
+      "icon": "fa-solid fa-user-minus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Brevo",
+      "providerKey": "brevo",
+      "tags": [
+        "brevo",
+        "listes"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:brevo_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Retirer des contacts d’une liste dans Brevo.",
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Retirer des contacts d’une liste",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "listId",
+            "label": "ID de la liste",
+            "description": "Identifiant de la liste.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "emails",
+            "label": "Emails",
+            "description": "Emails séparés par virgules ou lignes.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "all",
+            "label": "Tous les contacts",
+            "description": "Retirer tous les contacts de la liste.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "group": "Listes",
+      "risk": "write"
+    },
+    {
+      "key": "brevo_webhook_create",
+      "name": "brevoWebhookCreate",
+      "schemaVersion": 2,
+      "title": "Créer un webhook",
+      "subtitle": "Webhooks",
+      "icon": "fa-solid fa-link",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Brevo",
+      "providerKey": "brevo",
+      "tags": [
+        "brevo",
+        "webhooks"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:brevo_webhook"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Créer un webhook dans Brevo.",
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Créer un webhook",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "url",
+            "label": "URL",
+            "description": "URL du webhook.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "key": "type",
+            "label": "Type",
+            "description": "Type de webhook.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "transactional",
+                "value": "transactional"
+              },
+              {
+                "label": "marketing",
+                "value": "marketing"
+              },
+              {
+                "label": "inbound",
+                "value": "inbound"
+              }
+            ],
+            "default": "transactional"
+          },
+          {
+            "type": "textarea",
+            "key": "events",
+            "label": "Événements",
+            "description": "Événements séparés par virgules.",
+            "col": {
+              "xs": 24
+            },
+            "default": "delivered,opened,click"
+          },
+          {
+            "type": "textarea",
+            "key": "description",
+            "label": "Description",
+            "description": "Description optionnelle.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "batched",
+            "label": "Groupé",
+            "description": "Envoyer les événements groupés.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "group": "Webhooks",
+      "risk": "write"
+    },
+    {
+      "key": "brevo_webhook_get",
+      "name": "brevoWebhookGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un webhook",
+      "subtitle": "Webhooks",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Brevo",
+      "providerKey": "brevo",
+      "tags": [
+        "brevo",
+        "webhooks"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:brevo_webhook"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupérer un webhook dans Brevo.",
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Récupérer un webhook",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "webhookId",
+            "label": "ID du webhook",
+            "description": "Identifiant du webhook.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "group": "Webhooks",
+      "risk": "safe"
+    },
+    {
+      "key": "brevo_webhooks_list",
+      "name": "brevoWebhooksList",
+      "schemaVersion": 2,
+      "title": "Lister les webhooks",
+      "subtitle": "Webhooks",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Brevo",
+      "providerKey": "brevo",
+      "tags": [
+        "brevo",
+        "webhooks"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:brevo_webhooks"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lister les webhooks dans Brevo.",
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Lister les webhooks",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "select",
+            "key": "type",
+            "label": "Type",
+            "description": "Filtrer par type.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "transactional",
+                "value": "transactional"
+              },
+              {
+                "label": "marketing",
+                "value": "marketing"
+              },
+              {
+                "label": "inbound",
+                "value": "inbound"
+              }
+            ],
+            "default": "transactional"
+          },
+          {
+            "type": "select",
+            "key": "sort",
+            "label": "Tri",
+            "description": "Ordre de tri.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "desc",
+                "value": "desc"
+              },
+              {
+                "label": "asc",
+                "value": "asc"
+              }
+            ],
+            "default": "desc"
+          }
+        ]
+      },
+      "group": "Webhooks",
+      "risk": "safe"
+    },
+    {
+      "key": "brevo_webhook_update",
+      "name": "brevoWebhookUpdate",
+      "schemaVersion": 2,
+      "title": "Mettre à jour un webhook",
+      "subtitle": "Webhooks",
+      "icon": "fa-solid fa-pen",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Brevo",
+      "providerKey": "brevo",
+      "tags": [
+        "brevo",
+        "webhooks"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:brevo_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Mettre à jour un webhook dans Brevo.",
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Mettre à jour un webhook",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "webhookId",
+            "label": "ID du webhook",
+            "description": "Identifiant du webhook.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "url",
+            "label": "URL",
+            "description": "Nouvelle URL.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "select",
+            "key": "type",
+            "label": "Type",
+            "description": "Type de webhook.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "transactional",
+                "value": "transactional"
+              },
+              {
+                "label": "marketing",
+                "value": "marketing"
+              },
+              {
+                "label": "inbound",
+                "value": "inbound"
+              }
+            ],
+            "default": "transactional"
+          },
+          {
+            "type": "textarea",
+            "key": "events",
+            "label": "Événements",
+            "description": "Événements séparés par virgules.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "description",
+            "label": "Description",
+            "description": "Description.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "batched",
+            "label": "Groupé",
+            "description": "Envoyer les événements groupés.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "group": "Webhooks",
+      "risk": "write"
+    },
+    {
+      "key": "brevo_webhook_delete",
+      "name": "brevoWebhookDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un webhook",
+      "subtitle": "Webhooks",
+      "icon": "fa-solid fa-trash",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Brevo",
+      "providerKey": "brevo",
+      "tags": [
+        "brevo",
+        "webhooks"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:brevo_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Supprimer un webhook dans Brevo.",
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Supprimer un webhook",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "webhookId",
+            "label": "ID du webhook",
+            "description": "Identifiant du webhook.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "group": "Webhooks",
       "risk": "write"
     },
     {

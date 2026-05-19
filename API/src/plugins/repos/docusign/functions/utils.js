@@ -2,7 +2,9 @@ async function docusignRequest(opts, path, options = {}) {
   const credentials = (opts && opts.credentials) || {};
   const accessToken = credentials.accessToken;
   const accountId = credentials.accountId;
-  const basePath = (credentials.basePath || "https://demo.docusign.net").replace(/\/$/, "");
+  const configuredBasePath = String(credentials.basePath || "").trim();
+  const safeBasePath = /^https?:\/\//i.test(configuredBasePath) ? configuredBasePath : "https://demo.docusign.net";
+  const basePath = safeBasePath.replace(/\/$/, "");
   if (!accessToken) return { ok: false, error: "Missing DocuSign access token." };
   if (!accountId) return { ok: false, error: "Missing DocuSign account ID." };
 

@@ -2,7 +2,7 @@
   "repo": {
     "name": "aws",
     "type": "local",
-    "label": "AWS S3 + SES"
+    "label": "AWS"
   },
   "variables": {
     "aws_s3_object": {
@@ -483,6 +483,387 @@
           }
         }
       ]
+    },
+    "aws_sqs_queue": {
+      "title": "File SQS",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "url",
+          "label": "URL",
+          "description": "URL de la file.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom de la file.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "aws_sqs_queues": {
+      "title": "Files SQS",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextToken",
+          "label": "Token suivant",
+          "description": "Curseur de pagination.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Files SQS",
+          "description": "Liste",
+          "mode": "array",
+          "key": "queues",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "url",
+              "label": "URL",
+              "description": "URL.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "aws_sqs_message": {
+      "title": "Message SQS",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "messageId",
+          "label": "ID du message",
+          "description": "Identifiant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "receiptHandle",
+          "label": "Receipt handle",
+          "description": "Jeton de suppression.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "body",
+          "label": "Corps",
+          "description": "Corps du message.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "md5OfBody",
+          "label": "MD5",
+          "description": "Empreinte du corps.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "aws_sqs_messages": {
+      "title": "Messages SQS",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Messages",
+          "description": "Liste",
+          "mode": "array",
+          "key": "messages",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "messageId",
+              "label": "ID du message",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "receiptHandle",
+              "label": "Receipt handle",
+              "description": "Jeton de suppression.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "body",
+              "label": "Corps",
+              "description": "Corps.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "md5OfBody",
+              "label": "MD5",
+              "description": "Empreinte.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "aws_sns_topic": {
+      "title": "Topic SNS",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "topicArn",
+          "label": "ARN du topic",
+          "description": "ARN.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom du topic.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "aws_sns_topics": {
+      "title": "Topics SNS",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextToken",
+          "label": "Token suivant",
+          "description": "Curseur de pagination.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Topics",
+          "description": "Liste",
+          "mode": "array",
+          "key": "topics",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "topicArn",
+              "label": "ARN du topic",
+              "description": "ARN.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "aws_sns_publish": {
+      "title": "Publication SNS",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "messageId",
+          "label": "ID du message",
+          "description": "Identifiant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "aws_lambda_result": {
+      "title": "Résultat Lambda",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "statusCode",
+          "label": "Code statut",
+          "description": "Code HTTP.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "functionError",
+          "label": "Erreur fonction",
+          "description": "Erreur retournée par Lambda.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "executedVersion",
+          "label": "Version exécutée",
+          "description": "Version.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "logResult",
+          "label": "Logs",
+          "description": "Logs encodés retournés.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "payload",
+          "label": "Payload",
+          "description": "Réponse de la fonction.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
     }
   },
   "providers": [
@@ -570,6 +951,57 @@
       ],
       "categories": [
         "Email"
+      ],
+      "hasCredentials": false
+    },
+    {
+      "key": "awsSqs",
+      "name": "AWS SQS",
+      "title": "AWS SQS",
+      "iconClass": "fa-brands fa-aws",
+      "iconUrl": "https://cdn.simpleicons.org/amazonaws",
+      "color": "#f59e0b",
+      "tags": [
+        "aws",
+        "sqs",
+        "queue"
+      ],
+      "categories": [
+        "Messagerie"
+      ],
+      "hasCredentials": false
+    },
+    {
+      "key": "awsSns",
+      "name": "AWS SNS",
+      "title": "AWS SNS",
+      "iconClass": "fa-brands fa-aws",
+      "iconUrl": "https://cdn.simpleicons.org/amazonaws",
+      "color": "#f59e0b",
+      "tags": [
+        "aws",
+        "sns",
+        "notification"
+      ],
+      "categories": [
+        "Notifications"
+      ],
+      "hasCredentials": false
+    },
+    {
+      "key": "awsLambda",
+      "name": "AWS Lambda",
+      "title": "AWS Lambda",
+      "iconClass": "fa-brands fa-aws",
+      "iconUrl": "https://cdn.simpleicons.org/amazonaws",
+      "color": "#f59e0b",
+      "tags": [
+        "aws",
+        "lambda",
+        "serverless"
+      ],
+      "categories": [
+        "Automatisation"
       ],
       "hasCredentials": false
     }
@@ -1991,6 +2423,641 @@
       },
       "group": "Identités",
       "risk": "safe"
+    },
+    {
+      "key": "aws_sqs_list_queues",
+      "name": "awsSqsListQueues",
+      "schemaVersion": 2,
+      "title": "Lister les files SQS",
+      "subtitle": "SQS",
+      "icon": "fa-solid fa-list",
+      "tags": [
+        "aws",
+        "sqs"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AWS",
+      "providerKey": "awsSqs",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:aws_sqs_queues"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Lister les files SQS avec AWS.",
+      "args": {
+        "title": "Lister les files SQS",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "prefix",
+            "label": "Préfixe",
+            "description": "Filtrer par préfixe de nom.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "nextToken",
+            "label": "Token suivant",
+            "description": "Curseur de pagination.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "maxResults",
+            "label": "Limite",
+            "description": "Nombre maximum de files.",
+            "col": {
+              "xs": 24
+            },
+            "default": 100
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "SQS",
+      "risk": "safe"
+    },
+    {
+      "key": "aws_sqs_send_message",
+      "name": "awsSqsSendMessage",
+      "schemaVersion": 2,
+      "title": "Envoyer un message SQS",
+      "subtitle": "SQS",
+      "icon": "fa-solid fa-paper-plane",
+      "tags": [
+        "aws",
+        "sqs"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AWS",
+      "providerKey": "awsSqs",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:aws_sqs_message"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Envoyer un message SQS avec AWS.",
+      "args": {
+        "title": "Envoyer un message SQS",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "queueUrl",
+            "label": "URL de file",
+            "description": "URL de la file SQS.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "messageBody",
+            "label": "Message",
+            "description": "Corps du message.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "delaySeconds",
+            "label": "Délai secondes",
+            "description": "Délai avant visibilité.",
+            "col": {
+              "xs": 24
+            },
+            "default": 0
+          },
+          {
+            "type": "text",
+            "key": "messageGroupId",
+            "label": "Groupe FIFO",
+            "description": "MessageGroupId pour FIFO.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "messageDeduplicationId",
+            "label": "Déduplication FIFO",
+            "description": "MessageDeduplicationId pour FIFO.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "SQS",
+      "risk": "write"
+    },
+    {
+      "key": "aws_sqs_receive_messages",
+      "name": "awsSqsReceiveMessages",
+      "schemaVersion": 2,
+      "title": "Recevoir des messages SQS",
+      "subtitle": "SQS",
+      "icon": "fa-solid fa-inbox",
+      "tags": [
+        "aws",
+        "sqs"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AWS",
+      "providerKey": "awsSqs",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:aws_sqs_messages"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Recevoir des messages SQS avec AWS.",
+      "args": {
+        "title": "Recevoir des messages SQS",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "queueUrl",
+            "label": "URL de file",
+            "description": "URL de la file SQS.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "maxNumberOfMessages",
+            "label": "Nombre maximum",
+            "description": "Maximum 10.",
+            "col": {
+              "xs": 24
+            },
+            "default": 1
+          },
+          {
+            "type": "number",
+            "key": "waitTimeSeconds",
+            "label": "Attente secondes",
+            "description": "Long polling.",
+            "col": {
+              "xs": 24
+            },
+            "default": 0
+          },
+          {
+            "type": "number",
+            "key": "visibilityTimeout",
+            "label": "Timeout visibilité",
+            "description": "Timeout de visibilité.",
+            "col": {
+              "xs": 24
+            },
+            "default": 30
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "SQS",
+      "risk": "safe"
+    },
+    {
+      "key": "aws_sqs_delete_message",
+      "name": "awsSqsDeleteMessage",
+      "schemaVersion": 2,
+      "title": "Supprimer un message SQS",
+      "subtitle": "SQS",
+      "icon": "fa-solid fa-trash",
+      "tags": [
+        "aws",
+        "sqs"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AWS",
+      "providerKey": "awsSqs",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:aws_s3_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Supprimer un message SQS avec AWS.",
+      "args": {
+        "title": "Supprimer un message SQS",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "queueUrl",
+            "label": "URL de file",
+            "description": "URL de la file SQS.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "receiptHandle",
+            "label": "Receipt handle",
+            "description": "Jeton reçu avec le message.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "SQS",
+      "risk": "write"
+    },
+    {
+      "key": "aws_sns_list_topics",
+      "name": "awsSnsListTopics",
+      "schemaVersion": 2,
+      "title": "Lister les topics SNS",
+      "subtitle": "SNS",
+      "icon": "fa-solid fa-list",
+      "tags": [
+        "aws",
+        "sns"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AWS",
+      "providerKey": "awsSns",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:aws_sns_topics"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Lister les topics SNS avec AWS.",
+      "args": {
+        "title": "Lister les topics SNS",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "nextToken",
+            "label": "Token suivant",
+            "description": "Curseur de pagination.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "SNS",
+      "risk": "safe"
+    },
+    {
+      "key": "aws_sns_publish_message",
+      "name": "awsSnsPublishMessage",
+      "schemaVersion": 2,
+      "title": "Publier un message SNS",
+      "subtitle": "SNS",
+      "icon": "fa-solid fa-bullhorn",
+      "tags": [
+        "aws",
+        "sns"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AWS",
+      "providerKey": "awsSns",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:aws_sns_publish"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Publier un message SNS avec AWS.",
+      "args": {
+        "title": "Publier un message SNS",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "message",
+            "label": "Message",
+            "description": "Message à publier.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "topicArn",
+            "label": "ARN du topic",
+            "description": "Topic SNS cible.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "phoneNumber",
+            "label": "Téléphone",
+            "description": "Numéro SMS cible.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "targetArn",
+            "label": "Target ARN",
+            "description": "Endpoint mobile cible.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "subject",
+            "label": "Sujet",
+            "description": "Sujet optionnel.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "SNS",
+      "risk": "write"
+    },
+    {
+      "key": "aws_lambda_invoke",
+      "name": "awsLambdaInvoke",
+      "schemaVersion": 2,
+      "title": "Invoquer une fonction Lambda",
+      "subtitle": "Lambda",
+      "icon": "fa-solid fa-bolt",
+      "tags": [
+        "aws",
+        "lambda"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AWS",
+      "providerKey": "awsLambda",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:aws_lambda_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Invoquer une fonction Lambda avec AWS.",
+      "args": {
+        "title": "Invoquer une fonction Lambda",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "functionName",
+            "label": "Nom de fonction",
+            "description": "Nom, ARN ou ARN partiel.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "payload",
+            "label": "Payload JSON",
+            "description": "Payload JSON envoyé.",
+            "col": {
+              "xs": 24
+            },
+            "default": "{}"
+          },
+          {
+            "type": "select",
+            "key": "invocationType",
+            "label": "Type d’invocation",
+            "description": "Mode d’invocation.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "RequestResponse",
+                "value": "RequestResponse"
+              },
+              {
+                "label": "Event",
+                "value": "Event"
+              },
+              {
+                "label": "DryRun",
+                "value": "DryRun"
+              }
+            ],
+            "default": "RequestResponse"
+          },
+          {
+            "type": "select",
+            "key": "logType",
+            "label": "Logs",
+            "description": "Inclure les logs Tail en synchrone.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "None",
+                "value": "None"
+              },
+              {
+                "label": "Tail",
+                "value": "Tail"
+              }
+            ],
+            "default": "None"
+          },
+          {
+            "type": "text",
+            "key": "qualifier",
+            "label": "Qualificateur",
+            "description": "Version ou alias optionnel.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Lambda",
+      "risk": "write"
     }
   ]
 }

@@ -270,6 +270,618 @@
           }
         }
       ]
+    },
+    "anthropic_classification": {
+      "title": "Classification Anthropic",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "category",
+          "label": "Catégorie",
+          "description": "Catégorie choisie.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "confidence",
+          "label": "Confiance",
+          "description": "Score de confiance.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "explanation",
+          "label": "Explication",
+          "description": "Explication courte.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "_output",
+          "label": "Sortie",
+          "description": "Identifiant de la sortie dynamique.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "anthropic_extraction": {
+      "title": "Extraction Anthropic",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "textarea",
+          "key": "raw",
+          "label": "Données",
+          "description": "Données structurées extraites.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "anthropic_message_batch": {
+      "title": "Batch de messages Anthropic",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du batch.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "type",
+          "label": "Type",
+          "description": "Type de ressource.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "processingStatus",
+          "label": "Statut",
+          "description": "Statut de traitement.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "createdAt",
+          "label": "Date de création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "endedAt",
+          "label": "Date de fin",
+          "description": "Date de fin.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "expiresAt",
+          "label": "Expiration",
+          "description": "Date d’expiration.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "cancelInitiatedAt",
+          "label": "Annulation initiée",
+          "description": "Date de demande d’annulation.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "resultsUrl",
+          "label": "URL des résultats",
+          "description": "URL des résultats JSONL.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "processingCount",
+          "label": "En cours",
+          "description": "Requêtes en cours.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "succeededCount",
+          "label": "Réussies",
+          "description": "Requêtes réussies.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "erroredCount",
+          "label": "En erreur",
+          "description": "Requêtes en erreur.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "canceledCount",
+          "label": "Annulées",
+          "description": "Requêtes annulées.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "expiredCount",
+          "label": "Expirées",
+          "description": "Requêtes expirées.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "anthropic_message_batches": {
+      "title": "Batches de messages Anthropic",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre de batches retournés.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "firstId",
+          "label": "Premier ID",
+          "description": "Premier identifiant de page.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "lastId",
+          "label": "Dernier ID",
+          "description": "Dernier identifiant de page.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "checkbox",
+          "key": "hasMore",
+          "label": "Suite disponible",
+          "description": "Indique si une page suivante existe.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Batches",
+          "key": "batches",
+          "mode": "array",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "processingStatus",
+              "label": "Statut",
+              "description": "Statut de traitement.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "createdAt",
+              "label": "Date de création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "endedAt",
+              "label": "Date de fin",
+              "description": "Date de fin.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "resultsUrl",
+              "label": "URL des résultats",
+              "description": "URL des résultats.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "anthropic_batch_results": {
+      "title": "Résultats de batch Anthropic",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre de résultats.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "raw",
+          "label": "Résultats bruts",
+          "description": "Résultats JSONL bruts.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Résultats",
+          "key": "results",
+          "mode": "array",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "custom_id",
+              "label": "ID personnalisé",
+              "description": "Identifiant personnalisé.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "raw",
+              "label": "Données",
+              "description": "Résultat brut.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "anthropic_file": {
+      "title": "Fichier Anthropic",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du fichier.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "type",
+          "label": "Type",
+          "description": "Type de ressource.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "filename",
+          "label": "Nom",
+          "description": "Nom du fichier.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "mimeType",
+          "label": "Type MIME",
+          "description": "Type MIME.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "sizeBytes",
+          "label": "Taille",
+          "description": "Taille en octets.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "createdAt",
+          "label": "Date de création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "checkbox",
+          "key": "downloadable",
+          "label": "Téléchargeable",
+          "description": "Indique si le fichier est téléchargeable.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "anthropic_files": {
+      "title": "Fichiers Anthropic",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre de fichiers retournés.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "firstId",
+          "label": "Premier ID",
+          "description": "Premier identifiant de page.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "lastId",
+          "label": "Dernier ID",
+          "description": "Dernier identifiant de page.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "checkbox",
+          "key": "hasMore",
+          "label": "Suite disponible",
+          "description": "Indique si une page suivante existe.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Fichiers",
+          "key": "files",
+          "mode": "array",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "filename",
+              "label": "Nom",
+              "description": "Nom du fichier.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "mimeType",
+              "label": "Type MIME",
+              "description": "Type MIME.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "sizeBytes",
+              "label": "Taille",
+              "description": "Taille en octets.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "createdAt",
+              "label": "Date de création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "anthropic_file_content": {
+      "title": "Contenu de fichier Anthropic",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du fichier.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "filename",
+          "label": "Nom",
+          "description": "Nom du fichier.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "content",
+          "label": "Contenu",
+          "description": "Contenu téléchargé.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "file",
+          "key": "file",
+          "label": "Fichier",
+          "description": "Fichier stocké.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "anthropic_deleted": {
+      "title": "Suppression Anthropic",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant supprimé.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "type",
+          "label": "Type",
+          "description": "Type de suppression.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
     }
   },
   "providers": [
@@ -1223,7 +1835,15 @@
         "ai"
       ],
       "risk": "safe",
-      "riskReason": "Appel LLM lecture (coût tokens)"
+      "riskReason": "Appel LLM lecture (coût tokens)",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:anthropic_classification"
+        }
+      ]
     },
     {
       "key": "anthropic_extract",
@@ -1248,7 +1868,8 @@
         {
           "id": "ok",
           "name": "Success",
-          "type": "payload"
+          "type": "payload",
+          "schema": "$var:anthropic_extraction"
         }
       ],
       "description": "Extraire des données structurées d'un contenu via Anthropic",
@@ -1364,6 +1985,756 @@
       ],
       "risk": "safe",
       "riskReason": "Appel LLM lecture (coût tokens)"
+    },
+    {
+      "key": "anthropic_batch_create",
+      "name": "anthropicBatchCreate",
+      "schemaVersion": 2,
+      "title": "Créer un batch de messages",
+      "subtitle": "Batches",
+      "icon": "fa-solid fa-layer-group",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AI",
+      "providerKey": "anthropic",
+      "tags": [
+        "anthropic",
+        "batches"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:anthropic_message_batch"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Créer un batch de messages via Anthropic.",
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Créer un batch de messages",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "requests",
+            "label": "Requêtes (JSON)",
+            "description": "Tableau JSON de requêtes Messages Batch.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      },
+      "group": "Batches",
+      "risk": "write"
+    },
+    {
+      "key": "anthropic_batch_get",
+      "name": "anthropicBatchGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un batch",
+      "subtitle": "Batches",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AI",
+      "providerKey": "anthropic",
+      "tags": [
+        "anthropic",
+        "batches"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:anthropic_message_batch"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupérer un batch via Anthropic.",
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Récupérer un batch",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "batchId",
+            "label": "ID du batch",
+            "description": "Identifiant du batch.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      },
+      "group": "Batches",
+      "risk": "safe"
+    },
+    {
+      "key": "anthropic_batch_list",
+      "name": "anthropicBatchList",
+      "schemaVersion": 2,
+      "title": "Lister les batches",
+      "subtitle": "Batches",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AI",
+      "providerKey": "anthropic",
+      "tags": [
+        "anthropic",
+        "batches"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:anthropic_message_batches"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lister les batches via Anthropic.",
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Lister les batches",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre de batches à retourner.",
+            "col": {
+              "xs": 24
+            },
+            "default": 20
+          },
+          {
+            "type": "text",
+            "key": "beforeId",
+            "label": "Avant ID",
+            "description": "Curseur avant.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "afterId",
+            "label": "Après ID",
+            "description": "Curseur après.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "group": "Batches",
+      "risk": "safe"
+    },
+    {
+      "key": "anthropic_batch_results",
+      "name": "anthropicBatchResults",
+      "schemaVersion": 2,
+      "title": "Récupérer les résultats de batch",
+      "subtitle": "Batches",
+      "icon": "fa-solid fa-file-lines",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AI",
+      "providerKey": "anthropic",
+      "tags": [
+        "anthropic",
+        "batches"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:anthropic_batch_results"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupérer les résultats de batch via Anthropic.",
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Récupérer les résultats de batch",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "batchId",
+            "label": "ID du batch",
+            "description": "Identifiant du batch.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      },
+      "group": "Batches",
+      "risk": "safe"
+    },
+    {
+      "key": "anthropic_batch_cancel",
+      "name": "anthropicBatchCancel",
+      "schemaVersion": 2,
+      "title": "Annuler un batch",
+      "subtitle": "Batches",
+      "icon": "fa-solid fa-ban",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AI",
+      "providerKey": "anthropic",
+      "tags": [
+        "anthropic",
+        "batches"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:anthropic_message_batch"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Annuler un batch via Anthropic.",
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Annuler un batch",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "batchId",
+            "label": "ID du batch",
+            "description": "Identifiant du batch.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      },
+      "group": "Batches",
+      "risk": "write"
+    },
+    {
+      "key": "anthropic_batch_delete",
+      "name": "anthropicBatchDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un batch",
+      "subtitle": "Batches",
+      "icon": "fa-solid fa-trash",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AI",
+      "providerKey": "anthropic",
+      "tags": [
+        "anthropic",
+        "batches"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:anthropic_deleted"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Supprimer un batch via Anthropic.",
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Supprimer un batch",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "batchId",
+            "label": "ID du batch",
+            "description": "Identifiant du batch terminé.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      },
+      "group": "Batches",
+      "risk": "write"
+    },
+    {
+      "key": "anthropic_file_upload",
+      "name": "anthropicFileUpload",
+      "schemaVersion": 2,
+      "title": "Téléverser un fichier",
+      "subtitle": "Fichiers",
+      "icon": "fa-solid fa-upload",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AI",
+      "providerKey": "anthropic",
+      "tags": [
+        "anthropic",
+        "fichiers"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:anthropic_file"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Téléverser un fichier via Anthropic.",
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Téléverser un fichier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "file",
+            "key": "file",
+            "label": "Fichier",
+            "description": "Fichier à téléverser.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "filename",
+            "label": "Nom du fichier",
+            "description": "Nom à envoyer.",
+            "col": {
+              "xs": 24
+            },
+            "default": "document.txt"
+          },
+          {
+            "type": "text",
+            "key": "mimeType",
+            "label": "Type MIME",
+            "description": "Type MIME du fichier.",
+            "col": {
+              "xs": 24
+            },
+            "default": "text/plain"
+          }
+        ]
+      },
+      "group": "Fichiers",
+      "risk": "write"
+    },
+    {
+      "key": "anthropic_file_get",
+      "name": "anthropicFileGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un fichier",
+      "subtitle": "Fichiers",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AI",
+      "providerKey": "anthropic",
+      "tags": [
+        "anthropic",
+        "fichiers"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:anthropic_file"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupérer un fichier via Anthropic.",
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Récupérer un fichier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "fileId",
+            "label": "ID du fichier",
+            "description": "Identifiant du fichier.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      },
+      "group": "Fichiers",
+      "risk": "safe"
+    },
+    {
+      "key": "anthropic_file_list",
+      "name": "anthropicFileList",
+      "schemaVersion": 2,
+      "title": "Lister les fichiers",
+      "subtitle": "Fichiers",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AI",
+      "providerKey": "anthropic",
+      "tags": [
+        "anthropic",
+        "fichiers"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:anthropic_files"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lister les fichiers via Anthropic.",
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Lister les fichiers",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre de fichiers à retourner.",
+            "col": {
+              "xs": 24
+            },
+            "default": 20
+          },
+          {
+            "type": "text",
+            "key": "beforeId",
+            "label": "Avant ID",
+            "description": "Curseur avant.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "afterId",
+            "label": "Après ID",
+            "description": "Curseur après.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "group": "Fichiers",
+      "risk": "safe"
+    },
+    {
+      "key": "anthropic_file_download",
+      "name": "anthropicFileDownload",
+      "schemaVersion": 2,
+      "title": "Télécharger un fichier",
+      "subtitle": "Fichiers",
+      "icon": "fa-solid fa-download",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AI",
+      "providerKey": "anthropic",
+      "tags": [
+        "anthropic",
+        "fichiers"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:anthropic_file_content"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Télécharger un fichier via Anthropic.",
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Télécharger un fichier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "fileId",
+            "label": "ID du fichier",
+            "description": "Identifiant du fichier.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "filename",
+            "label": "Nom local",
+            "description": "Nom du fichier stocké.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "group": "Fichiers",
+      "risk": "safe"
+    },
+    {
+      "key": "anthropic_file_delete",
+      "name": "anthropicFileDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un fichier",
+      "subtitle": "Fichiers",
+      "icon": "fa-solid fa-trash",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AI",
+      "providerKey": "anthropic",
+      "tags": [
+        "anthropic",
+        "fichiers"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:anthropic_deleted"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Supprimer un fichier via Anthropic.",
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Supprimer un fichier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "fileId",
+            "label": "ID du fichier",
+            "description": "Identifiant du fichier.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      },
+      "group": "Fichiers",
+      "risk": "write"
     }
   ]
 }

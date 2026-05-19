@@ -4,6 +4,161 @@
     "type": "local",
     "label": "Calendars"
   },
+  "variables": {
+    "calendars_event": {
+      "title": "Événement calendrier",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant de l’événement.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "calendarId",
+          "label": "ID de calendrier",
+          "description": "Identifiant du calendrier.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "summary",
+          "label": "Titre",
+          "description": "Titre ou sujet.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "datetime",
+          "key": "start",
+          "label": "Début",
+          "description": "Date de début.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "datetime",
+          "key": "end",
+          "label": "Fin",
+          "description": "Date de fin.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "htmlLink",
+          "label": "Lien",
+          "description": "Lien vers l’événement.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut de l’événement.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "response",
+          "label": "Réponse",
+          "description": "Réponse RSVP.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "calendars_result": {
+      "title": "Résultat calendrier",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut de l’action.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "message",
+          "label": "Message",
+          "description": "Message de résultat.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant de ressource.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "calendars_event_payload": {
+      "title": "Événement webhook calendrier",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "event",
+          "label": "Événement",
+          "description": "Type d’événement.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "provider",
+          "label": "Fournisseur",
+          "description": "Fournisseur calendrier.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "payload",
+          "label": "Payload",
+          "description": "Payload reçu.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
   "providers": [
     {
       "key": "googleCalendar",
@@ -140,7 +295,8 @@
         {
           "id": "ok",
           "name": "Success",
-          "type": "payload"
+          "type": "payload",
+          "schema": "$var:calendars_event"
         }
       ],
       "description": "Créer un événement d’agenda (Google)",
@@ -236,7 +392,8 @@
         {
           "id": "ok",
           "name": "Success",
-          "type": "payload"
+          "type": "payload",
+          "schema": "$var:calendars_event"
         }
       ],
       "description": "Mettre à jour un événement d’agenda",
@@ -319,7 +476,8 @@
         {
           "id": "ok",
           "name": "Success",
-          "type": "payload"
+          "type": "payload",
+          "schema": "$var:calendars_event"
         }
       ],
       "description": "Répondre (RSVP) à un événement",
@@ -432,7 +590,16 @@
         "événement",
         "calendars"
       ],
-      "risk": "safe"
+      "risk": "safe",
+      "nodeKind": "event",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:calendars_event_payload"
+        }
+      ]
     },
     {
       "key": "outlook_create_event",
@@ -458,7 +625,8 @@
         {
           "id": "ok",
           "name": "Success",
-          "type": "payload"
+          "type": "payload",
+          "schema": "$var:calendars_event"
         }
       ],
       "description": "Créer un événement Outlook",
@@ -554,7 +722,8 @@
         {
           "id": "ok",
           "name": "Success",
-          "type": "payload"
+          "type": "payload",
+          "schema": "$var:calendars_event"
         }
       ],
       "description": "Mettre à jour un événement Outlook",
@@ -637,7 +806,8 @@
         {
           "id": "ok",
           "name": "Success",
-          "type": "payload"
+          "type": "payload",
+          "schema": "$var:calendars_event"
         }
       ],
       "description": "Répondre (RSVP) à un événement Outlook",
@@ -750,7 +920,16 @@
         "événement",
         "calendars"
       ],
-      "risk": "safe"
+      "risk": "safe",
+      "nodeKind": "event",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:calendars_event_payload"
+        }
+      ]
     }
   ]
 }
