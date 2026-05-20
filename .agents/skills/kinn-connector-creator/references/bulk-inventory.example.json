@@ -1,0 +1,22 @@
+[
+  {
+    "connector": "hubspot",
+    "providerName": "HubSpot",
+    "label": "HubSpot",
+    "iconUrl": "https://cdn.simpleicons.org/hubspot",
+    "iconClass": "fa-solid fa-sitemap",
+    "color": "#ffe9dd",
+    "tags": ["crm", "sales"],
+    "categories": ["CRM"]
+  },
+  {
+    "connector": "linear",
+    "providerName": "Linear",
+    "label": "Linear",
+    "iconUrl": "https://cdn.simpleicons.org/linear",
+    "iconClass": "fa-solid fa-diagram-project",
+    "color": "#ececff",
+    "tags": ["project", "issues"],
+    "categories": ["Productivité"]
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "connector": "acme-crm",
+    "specFile": "action-spec.example.json"
+  },
+  {
+    "connector": "acme-helpdesk",
+    "resources": [
+      {
+        "key": "ticket",
+        "title": "ticket",
+        "titlePlural": "tickets",
+        "basePath": "/tickets",
+        "defaultActions": ["list", "get", "create", "update", "delete", "search"]
+      }
+    ]
+  }
+]

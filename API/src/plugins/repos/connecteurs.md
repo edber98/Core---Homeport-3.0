@@ -7,6 +7,7 @@
 | airtable | Oui |
 | anthropic | Oui |
 | apify | Oui |
+| apollo | Oui |
 | asana | Oui |
 | assemblyai | Oui |
 | atera | Oui |
@@ -18,6 +19,7 @@
 | calendars | Oui |
 | calendly | Oui |
 | checkout-com | Oui |
+| clay | Oui |
 | clerk | Oui |
 | clickup | Oui |
 | cloudflare | Oui |
@@ -27,6 +29,7 @@
 | deepseek | Oui |
 | digiforma | Oui |
 | discord | Oui |
+| docker | Oui |
 | docusign | Oui |
 | dolibarr | Oui |
 | dropbox | Oui |
@@ -53,8 +56,11 @@
 | intercom | Oui |
 | jira | Oui |
 | kinn | Non |
+| klaviyo | Oui |
+| langchain | Oui |
 | linear | Oui |
 | linkedin | Oui |
+| loom | Oui |
 | mailchimp | Oui |
 | mariadb | Oui |
 | microsoft | Oui |
@@ -77,12 +83,17 @@
 | pinecone | Oui |
 | pipedrive | Oui |
 | plaid | Oui |
+| playwright | Oui |
+| postgresql | Oui |
 | postman | Oui |
 | prestashop | Oui |
 | qdrant | Oui |
+| qonto | Oui |
 | quickbooks | Oui |
+| redis | Oui |
 | replicate | Oui |
 | resend | Oui |
+| runway | Oui |
 | salesforce | Oui |
 | sap | Oui |
 | se-ranking | Oui |

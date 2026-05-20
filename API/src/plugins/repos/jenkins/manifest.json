@@ -1,0 +1,2204 @@
+{
+  "repo": {
+    "name": "jenkins",
+    "type": "local",
+    "label": "Jenkins"
+  },
+  "variables": {
+    "jenkins_job": {
+      "title": "Job Jenkins",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom du job.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "full_name",
+          "label": "Nom complet",
+          "description": "Nom complet du job.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "url",
+          "label": "URL",
+          "description": "URL du job.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "color",
+          "label": "Couleur",
+          "description": "Couleur/statut Jenkins.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "checkbox",
+          "key": "buildable",
+          "label": "Buildable",
+          "description": "Job exécutable.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "checkbox",
+          "key": "in_queue",
+          "label": "En queue",
+          "description": "Job déjà en file.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "last_build_number",
+          "label": "Dernier build",
+          "description": "Numéro du dernier build.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "last_build_url",
+          "label": "URL dernier build",
+          "description": "URL du dernier build.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "next_build_number",
+          "label": "Prochain build",
+          "description": "Numéro du prochain build.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "description",
+          "label": "Description",
+          "description": "Description du job.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Données brutes",
+          "description": "Réponse API complète.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "jenkins_jobs": {
+      "title": "Jobs Jenkins",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total de jobs.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Jobs",
+          "description": "Liste des jobs",
+          "mode": "array",
+          "key": "jobs",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "full_name",
+              "label": "Nom complet",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "url",
+              "label": "URL",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "color",
+              "label": "Couleur",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "checkbox",
+              "key": "buildable",
+              "label": "Buildable",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "checkbox",
+              "key": "in_queue",
+              "label": "En queue",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "last_build_number",
+              "label": "Dernier build",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "next_build_number",
+              "label": "Prochain build",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Données brutes",
+          "description": "Réponse API complète.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "jenkins_build": {
+      "title": "Build Jenkins",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant build Jenkins.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "number",
+          "label": "Numéro",
+          "description": "Numéro du build.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "url",
+          "label": "URL",
+          "description": "URL du build.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "result",
+          "label": "Résultat",
+          "description": "Résultat (SUCCESS, FAILURE...).",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut agrégé.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "checkbox",
+          "key": "building",
+          "label": "En cours",
+          "description": "Build en cours.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "duration",
+          "label": "Durée (ms)",
+          "description": "Durée totale en ms.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "estimated_duration",
+          "label": "Durée estimée (ms)",
+          "description": "Durée estimée en ms.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "timestamp",
+          "label": "Date démarrage",
+          "description": "Date de démarrage (ISO).",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "queue_id",
+          "label": "Queue ID",
+          "description": "ID queue associé.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "description",
+          "label": "Description",
+          "description": "Description du build.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "display_name",
+          "label": "Nom affiché",
+          "description": "Nom affiché Jenkins.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Données brutes",
+          "description": "Réponse API complète.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "jenkins_queue_item": {
+      "title": "Élément queue Jenkins",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "number",
+          "key": "id",
+          "label": "ID queue",
+          "description": "ID de l’élément en file.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "url",
+          "label": "URL",
+          "description": "URL de l’élément queue.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "task_name",
+          "label": "Nom tâche",
+          "description": "Nom de la tâche Jenkins.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "task_url",
+          "label": "URL tâche",
+          "description": "URL de la tâche Jenkins.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "why",
+          "label": "Raison",
+          "description": "Cause/raison de mise en file.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "checkbox",
+          "key": "blocked",
+          "label": "Bloqué",
+          "description": "Élément bloqué.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "checkbox",
+          "key": "stuck",
+          "label": "Coincé",
+          "description": "Élément coincé.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "build_number",
+          "label": "Numéro build",
+          "description": "Numéro build si démarré.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "build_url",
+          "label": "URL build",
+          "description": "URL build si disponible.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "checkbox",
+          "key": "cancelled",
+          "label": "Annulé",
+          "description": "Élément annulé.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Données brutes",
+          "description": "Réponse API complète.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "jenkins_queue_items": {
+      "title": "Queue Jenkins",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d’éléments queue.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Éléments queue",
+          "description": "Liste des éléments queue",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "number",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "task_name",
+              "label": "Tâche",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "why",
+              "label": "Raison",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "checkbox",
+              "key": "blocked",
+              "label": "Bloqué",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "checkbox",
+              "key": "stuck",
+              "label": "Coincé",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "build_number",
+              "label": "Build",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "checkbox",
+              "key": "cancelled",
+              "label": "Annulé",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Données brutes",
+          "description": "Réponse API complète.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "jenkins_job_config": {
+      "title": "Configuration job Jenkins",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "job_name",
+          "label": "Job",
+          "description": "Nom/chemin du job.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "url",
+          "label": "URL config",
+          "description": "URL config.xml.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "config_xml",
+          "label": "Config XML",
+          "description": "Configuration XML du job.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "jenkins_console_output": {
+      "title": "Logs console Jenkins",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "number",
+          "key": "build_number",
+          "label": "Build",
+          "description": "Numéro build.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "text",
+          "label": "Logs",
+          "description": "Contenu console text.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "nextStart",
+          "label": "Offset suivant",
+          "description": "Offset progressif suivant si disponible.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "checkbox",
+          "key": "moreData",
+          "label": "Plus de données",
+          "description": "Indique si d’autres données sont disponibles.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "jenkins_system_info": {
+      "title": "Informations système Jenkins",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "Succès",
+          "description": "Indique si la requête est réussie.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Code HTTP",
+          "description": "Code HTTP.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "message",
+          "label": "Message",
+          "description": "Message de statut.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Données brutes",
+          "description": "Réponse API complète.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "jenkins_action_result": {
+      "title": "Résultat action Jenkins",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "Succès",
+          "description": "Indique si l’action est réussie.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Code HTTP",
+          "description": "Code HTTP.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "message",
+          "label": "Message",
+          "description": "Message de statut.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "job_name",
+          "label": "Job",
+          "description": "Nom/chemin du job.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "build_number",
+          "label": "Build",
+          "description": "Numéro build.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "queue_id",
+          "label": "Queue ID",
+          "description": "ID élément queue.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "location",
+          "label": "Location",
+          "description": "Header Location éventuel.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Données brutes",
+          "description": "Réponse API complète.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "jenkins",
+      "name": "Jenkins",
+      "title": "Jenkins",
+      "iconClass": "fa-brands fa-jenkins",
+      "iconUrl": "https://cdn.simpleicons.org/jenkins",
+      "color": "#ffe5e5",
+      "tags": [
+        "jenkins",
+        "ci",
+        "cd",
+        "devops"
+      ],
+      "categories": [
+        "Développement"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Jenkins",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "baseUrl",
+            "label": "URL Jenkins",
+            "description": "URL de base Jenkins (ex: https://jenkins.example.com).",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "username",
+            "label": "Nom utilisateur",
+            "description": "Utilisateur Jenkins.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "apiToken",
+            "label": "API token",
+            "description": "Token API Jenkins.",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "checkbox",
+            "key": "disableCrumb",
+            "label": "Désactiver crumb",
+            "description": "N’ajoute pas automatiquement de crumb CSRF.",
+            "col": {
+              "xs": 24
+            },
+            "default": false
+          },
+          {
+            "type": "checkbox",
+            "key": "requireCrumb",
+            "label": "Crumb obligatoire",
+            "description": "Échoue si le crumb ne peut pas être récupéré.",
+            "col": {
+              "xs": 24
+            },
+            "default": false
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "jenkins_system_info_get",
+      "name": "jenkinsSystemInfoGet",
+      "schemaVersion": 2,
+      "title": "Récupérer les infos système",
+      "subtitle": "Système",
+      "icon": "fa-solid fa-server",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Jenkins",
+      "providerKey": "jenkins",
+      "tags": [
+        "jenkins",
+        "system",
+        "read"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:jenkins_system_info"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lit les informations système Jenkins via /api/json.",
+      "args": {
+        "title": "Récupérer les infos système",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "tree",
+            "label": "Tree",
+            "description": "Sélecteur tree API optionnel.",
+            "col": {
+              "xs": 24
+            },
+            "default": "mode,nodeDescription,numExecutors,quieting,useCrumbs,views[name,url],jobs[name,url,color]"
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Système"
+    },
+    {
+      "key": "jenkins_jobs_list",
+      "name": "jenkinsJobsList",
+      "schemaVersion": 2,
+      "title": "Lister les jobs",
+      "subtitle": "Jobs",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Jenkins",
+      "providerKey": "jenkins",
+      "tags": [
+        "jenkins",
+        "jobs",
+        "list"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:jenkins_jobs"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les jobs Jenkins à la racine ou dans un dossier.",
+      "args": {
+        "title": "Lister les jobs",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "objectPath",
+            "label": "Chemin objet",
+            "description": "Chemin dossier/vue optionnel (ex: folder/subfolder ou /job/folder).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "tree",
+            "label": "Tree",
+            "description": "Sélecteur tree API optionnel.",
+            "col": {
+              "xs": 24
+            },
+            "default": "jobs[name,fullName,url,color,buildable,inQueue,lastBuild[number,url],nextBuildNumber,description]"
+          },
+          {
+            "type": "number",
+            "key": "depth",
+            "label": "Depth",
+            "description": "Profondeur API optionnelle.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Jobs"
+    },
+    {
+      "key": "jenkins_job_get",
+      "name": "jenkinsJobGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un job",
+      "subtitle": "Jobs",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Jenkins",
+      "providerKey": "jenkins",
+      "tags": [
+        "jenkins",
+        "jobs",
+        "get"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:jenkins_job"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère le détail d’un job Jenkins.",
+      "args": {
+        "title": "Récupérer un job",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "jobPath",
+            "label": "Chemin job",
+            "description": "Chemin du job (ex: folder1/my-job).",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "tree",
+            "label": "Tree",
+            "description": "Sélecteur tree API optionnel.",
+            "col": {
+              "xs": 24
+            },
+            "default": "name,fullName,url,color,buildable,inQueue,description,lastBuild[number,url,result,building],nextBuildNumber"
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Jobs"
+    },
+    {
+      "key": "jenkins_job_create",
+      "name": "jenkinsJobCreate",
+      "schemaVersion": 2,
+      "title": "Créer un job",
+      "subtitle": "Jobs",
+      "icon": "fa-solid fa-plus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Jenkins",
+      "providerKey": "jenkins",
+      "tags": [
+        "jenkins",
+        "jobs",
+        "create"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:jenkins_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Crée un job via createItem + config.xml.",
+      "args": {
+        "title": "Créer un job",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "parentPath",
+            "label": "Dossier parent",
+            "description": "Chemin dossier parent optionnel.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "jobName",
+            "label": "Nom job",
+            "description": "Nom du nouveau job.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "configXml",
+            "label": "Config XML",
+            "description": "Configuration XML Jenkins du job.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Jobs"
+    },
+    {
+      "key": "jenkins_job_delete",
+      "name": "jenkinsJobDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un job",
+      "subtitle": "Jobs",
+      "icon": "fa-solid fa-trash",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Jenkins",
+      "providerKey": "jenkins",
+      "tags": [
+        "jenkins",
+        "jobs",
+        "delete"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:jenkins_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Supprime un job Jenkins.",
+      "args": {
+        "title": "Supprimer un job",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "jobPath",
+            "label": "Chemin job",
+            "description": "Chemin du job.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Jobs"
+    },
+    {
+      "key": "jenkins_job_enable",
+      "name": "jenkinsJobEnable",
+      "schemaVersion": 2,
+      "title": "Activer un job",
+      "subtitle": "Jobs",
+      "icon": "fa-solid fa-toggle-on",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Jenkins",
+      "providerKey": "jenkins",
+      "tags": [
+        "jenkins",
+        "jobs",
+        "enable"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:jenkins_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Active un job Jenkins.",
+      "args": {
+        "title": "Activer un job",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "jobPath",
+            "label": "Chemin job",
+            "description": "Chemin du job.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Jobs"
+    },
+    {
+      "key": "jenkins_job_disable",
+      "name": "jenkinsJobDisable",
+      "schemaVersion": 2,
+      "title": "Désactiver un job",
+      "subtitle": "Jobs",
+      "icon": "fa-solid fa-toggle-off",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Jenkins",
+      "providerKey": "jenkins",
+      "tags": [
+        "jenkins",
+        "jobs",
+        "disable"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:jenkins_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Désactive un job Jenkins.",
+      "args": {
+        "title": "Désactiver un job",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "jobPath",
+            "label": "Chemin job",
+            "description": "Chemin du job.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Jobs"
+    },
+    {
+      "key": "jenkins_job_config_get",
+      "name": "jenkinsJobConfigGet",
+      "schemaVersion": 2,
+      "title": "Lire la configuration XML",
+      "subtitle": "Jobs",
+      "icon": "fa-solid fa-file-code",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Jenkins",
+      "providerKey": "jenkins",
+      "tags": [
+        "jenkins",
+        "jobs",
+        "config"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:jenkins_job_config"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère config.xml d’un job Jenkins.",
+      "args": {
+        "title": "Lire la configuration XML",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "jobPath",
+            "label": "Chemin job",
+            "description": "Chemin du job.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Jobs"
+    },
+    {
+      "key": "jenkins_job_config_update",
+      "name": "jenkinsJobConfigUpdate",
+      "schemaVersion": 2,
+      "title": "Mettre à jour la configuration XML",
+      "subtitle": "Jobs",
+      "icon": "fa-solid fa-pen",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Jenkins",
+      "providerKey": "jenkins",
+      "tags": [
+        "jenkins",
+        "jobs",
+        "config",
+        "update"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:jenkins_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Met à jour config.xml d’un job Jenkins.",
+      "args": {
+        "title": "Mettre à jour la configuration XML",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "jobPath",
+            "label": "Chemin job",
+            "description": "Chemin du job.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "configXml",
+            "label": "Config XML",
+            "description": "Configuration XML à appliquer.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Jobs"
+    },
+    {
+      "key": "jenkins_job_build_trigger",
+      "name": "jenkinsJobBuildTrigger",
+      "schemaVersion": 2,
+      "title": "Déclencher un build",
+      "subtitle": "Builds",
+      "icon": "fa-solid fa-play",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Jenkins",
+      "providerKey": "jenkins",
+      "tags": [
+        "jenkins",
+        "build",
+        "trigger"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:jenkins_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Déclenche un build Jenkins non paramétré.",
+      "args": {
+        "title": "Déclencher un build",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "jobPath",
+            "label": "Chemin job",
+            "description": "Chemin du job.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "triggerToken",
+            "label": "Token trigger",
+            "description": "Token trigger optionnel du job.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Builds"
+    },
+    {
+      "key": "jenkins_job_build_with_parameters_trigger",
+      "name": "jenkinsJobBuildWithParametersTrigger",
+      "schemaVersion": 2,
+      "title": "Déclencher un build paramétré",
+      "subtitle": "Builds",
+      "icon": "fa-solid fa-sliders",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Jenkins",
+      "providerKey": "jenkins",
+      "tags": [
+        "jenkins",
+        "build",
+        "parameters"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:jenkins_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Déclenche un build Jenkins avec paramètres.",
+      "args": {
+        "title": "Déclencher un build paramétré",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "jobPath",
+            "label": "Chemin job",
+            "description": "Chemin du job.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "parameters",
+            "label": "Paramètres JSON",
+            "description": "Objet JSON des paramètres de build.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "parametersQuery",
+            "label": "Paramètres query",
+            "description": "Format querystring (k1=v1&k2=v2). Fusionné avec parameters.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "triggerToken",
+            "label": "Token trigger",
+            "description": "Token trigger optionnel du job.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Builds"
+    },
+    {
+      "key": "jenkins_build_get",
+      "name": "jenkinsBuildGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un build",
+      "subtitle": "Builds",
+      "icon": "fa-solid fa-hashtag",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Jenkins",
+      "providerKey": "jenkins",
+      "tags": [
+        "jenkins",
+        "build",
+        "get"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:jenkins_build"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère le détail d’un build Jenkins.",
+      "args": {
+        "title": "Récupérer un build",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "jobPath",
+            "label": "Chemin job",
+            "description": "Chemin du job.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "buildNumber",
+            "label": "Numéro build",
+            "description": "Numéro du build.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "tree",
+            "label": "Tree",
+            "description": "Sélecteur tree API optionnel.",
+            "col": {
+              "xs": 24
+            },
+            "default": "id,number,url,result,building,duration,estimatedDuration,timestamp,queueId,description,fullDisplayName"
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Builds"
+    },
+    {
+      "key": "jenkins_last_build_get",
+      "name": "jenkinsLastBuildGet",
+      "schemaVersion": 2,
+      "title": "Récupérer le dernier build",
+      "subtitle": "Builds",
+      "icon": "fa-solid fa-clock-rotate-left",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Jenkins",
+      "providerKey": "jenkins",
+      "tags": [
+        "jenkins",
+        "build",
+        "last"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:jenkins_build"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère le dernier build d’un job Jenkins.",
+      "args": {
+        "title": "Récupérer le dernier build",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "jobPath",
+            "label": "Chemin job",
+            "description": "Chemin du job.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "tree",
+            "label": "Tree",
+            "description": "Sélecteur tree API optionnel.",
+            "col": {
+              "xs": 24
+            },
+            "default": "id,number,url,result,building,duration,estimatedDuration,timestamp,queueId,description,fullDisplayName"
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Builds"
+    },
+    {
+      "key": "jenkins_build_stop",
+      "name": "jenkinsBuildStop",
+      "schemaVersion": 2,
+      "title": "Arrêter un build",
+      "subtitle": "Builds",
+      "icon": "fa-solid fa-stop",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Jenkins",
+      "providerKey": "jenkins",
+      "tags": [
+        "jenkins",
+        "build",
+        "stop"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:jenkins_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Arrête un build Jenkins (stop ou term).",
+      "args": {
+        "title": "Arrêter un build",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "jobPath",
+            "label": "Chemin job",
+            "description": "Chemin du job.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "buildNumber",
+            "label": "Numéro build",
+            "description": "Numéro du build.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "key": "stopMode",
+            "label": "Mode arrêt",
+            "description": "stop (normal) ou term (forcé).",
+            "col": {
+              "xs": 24
+            },
+            "default": "stop",
+            "options": [
+              {
+                "label": "Stop (normal)",
+                "value": "stop"
+              },
+              {
+                "label": "Term (forcé)",
+                "value": "term"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Builds"
+    },
+    {
+      "key": "jenkins_build_console_get",
+      "name": "jenkinsBuildConsoleGet",
+      "schemaVersion": 2,
+      "title": "Lire les logs console",
+      "subtitle": "Builds",
+      "icon": "fa-solid fa-terminal",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Jenkins",
+      "providerKey": "jenkins",
+      "tags": [
+        "jenkins",
+        "build",
+        "logs"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:jenkins_console_output"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lit consoleText ou progressiveText d’un build Jenkins.",
+      "args": {
+        "title": "Lire les logs console",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "jobPath",
+            "label": "Chemin job",
+            "description": "Chemin du job.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "buildNumber",
+            "label": "Numéro build",
+            "description": "Numéro du build.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "checkbox",
+            "key": "progressive",
+            "label": "Mode progressif",
+            "description": "Utilise /logText/progressiveText.",
+            "col": {
+              "xs": 24
+            },
+            "default": false
+          },
+          {
+            "type": "number",
+            "key": "start",
+            "label": "Offset start",
+            "description": "Offset de départ en mode progressif.",
+            "col": {
+              "xs": 24
+            },
+            "default": 0
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Builds"
+    },
+    {
+      "key": "jenkins_queue_items_list",
+      "name": "jenkinsQueueItemsList",
+      "schemaVersion": 2,
+      "title": "Lister la queue",
+      "subtitle": "Queue",
+      "icon": "fa-solid fa-bars-progress",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Jenkins",
+      "providerKey": "jenkins",
+      "tags": [
+        "jenkins",
+        "queue",
+        "list"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:jenkins_queue_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les éléments en file d’attente Jenkins.",
+      "args": {
+        "title": "Lister la queue",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "tree",
+            "label": "Tree",
+            "description": "Sélecteur tree API optionnel.",
+            "col": {
+              "xs": 24
+            },
+            "default": "items[id,url,why,blocked,stuck,task[name,url],executable[number,url],cancelled]"
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Queue"
+    },
+    {
+      "key": "jenkins_queue_item_get",
+      "name": "jenkinsQueueItemGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un élément queue",
+      "subtitle": "Queue",
+      "icon": "fa-solid fa-magnifying-glass",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Jenkins",
+      "providerKey": "jenkins",
+      "tags": [
+        "jenkins",
+        "queue",
+        "get"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:jenkins_queue_item"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère un élément queue Jenkins par ID.",
+      "args": {
+        "title": "Récupérer un élément queue",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "queueId",
+            "label": "Queue ID",
+            "description": "Identifiant de l’élément queue.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Queue"
+    },
+    {
+      "key": "jenkins_queue_item_cancel",
+      "name": "jenkinsQueueItemCancel",
+      "schemaVersion": 2,
+      "title": "Annuler un élément queue",
+      "subtitle": "Queue",
+      "icon": "fa-solid fa-ban",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Jenkins",
+      "providerKey": "jenkins",
+      "tags": [
+        "jenkins",
+        "queue",
+        "cancel"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:jenkins_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Annule un élément queue Jenkins.",
+      "args": {
+        "title": "Annuler un élément queue",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "queueId",
+            "label": "Queue ID",
+            "description": "Identifiant de l’élément queue.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Queue"
+    }
+  ]
+}

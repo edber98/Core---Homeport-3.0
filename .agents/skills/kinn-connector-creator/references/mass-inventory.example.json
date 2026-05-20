@@ -1,0 +1,43 @@
+[
+  {
+    "connector": "acme-crm",
+    "providerName": "Acme CRM",
+    "iconUrl": "https://cdn.simpleicons.org/hubspot",
+    "iconClass": "fa-solid fa-address-book",
+    "color": "#ffe9dd",
+    "tags": ["crm", "sales"],
+    "categories": ["CRM"],
+    "resources": [
+      {
+        "key": "contact",
+        "title": "contact",
+        "titlePlural": "contacts",
+        "basePath": "/contacts",
+        "defaultActions": ["list", "get", "create", "update", "delete", "search", "upsert"]
+      },
+      {
+        "key": "company",
+        "title": "company",
+        "titlePlural": "companies",
+        "basePath": "/companies",
+        "defaultActions": ["list", "get", "create", "update", "delete"]
+      }
+    ]
+  },
+  {
+    "connector": "acme-support",
+    "providerName": "Acme Support",
+    "iconUrl": "https://cdn.simpleicons.org/zendesk",
+    "iconClass": "fa-solid fa-life-ring",
+    "color": "#e9f9f2",
+    "resources": [
+      {
+        "key": "ticket",
+        "title": "ticket",
+        "titlePlural": "tickets",
+        "basePath": "/tickets",
+        "defaultActions": ["list", "get", "create", "update", "delete", "search"]
+      }
+    ]
+  }
+]

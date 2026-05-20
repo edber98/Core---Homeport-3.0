@@ -1,0 +1,44 @@
+{
+  "connector": "acme-crm",
+  "providerKey": "acme_crm",
+  "providerName": "Acme CRM",
+  "resources": [
+    {
+      "key": "contact",
+      "title": "contact",
+      "titlePlural": "contacts",
+      "basePath": "/contacts",
+      "defaultActions": ["list", "get", "create", "update", "delete", "search"],
+      "fields": [
+        { "key": "email", "type": "email", "label": "Email", "description": "Adresse email." },
+        { "key": "phone", "type": "tel", "label": "Téléphone", "description": "Numéro de téléphone." }
+      ],
+      "actions": [
+        {
+          "action": "upsert",
+          "method": "POST",
+          "path": "/contacts/upsert",
+          "title": "Upsert un contact",
+          "output": "item",
+          "args": [
+            {
+              "key": "body",
+              "type": "json",
+              "label": "Payload",
+              "description": "JSON de upsert contact.",
+              "required": true,
+              "in": "body"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "deal",
+      "title": "deal",
+      "titlePlural": "deals",
+      "basePath": "/deals",
+      "defaultActions": ["list", "get", "create", "update", "delete"]
+    }
+  ]
+}
