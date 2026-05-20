@@ -95,7 +95,7 @@
       "title": "Datadog",
       "iconClass": "fa-solid fa-chart-line",
       "iconUrl": "https://cdn.simpleicons.org/datadog",
-      "color": "#632ca6",
+      "color": "#e3d2ff",
       "tags": ["datadog", "observabilité", "monitoring"],
       "categories": ["Observabilité"],
       "hasCredentials": true,

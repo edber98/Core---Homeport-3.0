@@ -103,6 +103,10 @@
     {
       "key": "bill",
       "name": "BILL",
+      "title": "BILL",
+      "iconClass": "fa-solid fa-file-invoice-dollar",
+      "iconUrl": "https://upload.wikimedia.org/wikipedia/commons/9/9e/Bill.com_Logo_2019.png",
+      "color": "#ffe4cc",
       "hasCredentials": true,
       "credentialsForm": {
         "fields": [

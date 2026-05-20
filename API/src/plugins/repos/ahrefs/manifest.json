@@ -31,6 +31,10 @@
     {
       "key": "ahrefs",
       "name": "Ahrefs",
+      "title": "Ahrefs",
+      "iconClass": "fa-solid fa-chart-line",
+      "iconUrl": "https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/ahrefs/default.svg",
+      "color": "#ffe7cc",
       "hasCredentials": true,
       "credentialsForm": {
         "fields": [

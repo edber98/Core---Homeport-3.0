@@ -1031,7 +1031,7 @@
       "title": "Google Calendar",
       "iconClass": "fa-solid fa-calendar-days",
       "iconUrl": "https://cdn.simpleicons.org/googlecalendar",
-      "color": "#4285F4",
+      "color": "#d9e7ff",
       "tags": [
         "google",
         "calendar",

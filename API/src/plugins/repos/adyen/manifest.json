@@ -77,7 +77,7 @@
       "title": "Adyen",
       "iconClass": "fa-solid fa-credit-card",
       "iconUrl": "https://cdn.simpleicons.org/adyen",
-      "color": "#0abf53",
+      "color": "#cef5dd",
       "tags": ["adyen", "paiement", "checkout"],
       "categories": ["Paiement"],
       "hasCredentials": true,

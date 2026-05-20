@@ -959,8 +959,8 @@
       "name": "AWS SQS",
       "title": "AWS SQS",
       "iconClass": "fa-brands fa-aws",
-      "iconUrl": "https://cdn.simpleicons.org/amazonaws",
-      "color": "#f59e0b",
+      "iconUrl": "https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/aws-amazon-simple-queue-service/default.svg",
+      "color": "#facfe5",
       "tags": [
         "aws",
         "sqs",
@@ -976,8 +976,8 @@
       "name": "AWS SNS",
       "title": "AWS SNS",
       "iconClass": "fa-brands fa-aws",
-      "iconUrl": "https://cdn.simpleicons.org/amazonaws",
-      "color": "#f59e0b",
+      "iconUrl": "https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/aws-amazon-simple-notification-service/default.svg",
+      "color": "#facfe5",
       "tags": [
         "aws",
         "sns",
@@ -993,8 +993,8 @@
       "name": "AWS Lambda",
       "title": "AWS Lambda",
       "iconClass": "fa-brands fa-aws",
-      "iconUrl": "https://cdn.simpleicons.org/amazonaws",
-      "color": "#f59e0b",
+      "iconUrl": "https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/aws-aws-lambda/default.svg",
+      "color": "#fbe3cc",
       "tags": [
         "aws",
         "lambda",

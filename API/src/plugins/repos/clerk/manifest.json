@@ -75,7 +75,7 @@
     ] }
   },
   "providers": [
-    { "key": "clerk", "name": "Clerk", "title": "Clerk", "iconUrl": "https://cdn.simpleicons.org/clerk", "iconClass": "fa-solid fa-user-shield", "color": "#6c47ff", "tags": ["auth", "identité", "utilisateurs"], "categories": ["Authentification"], "hasCredentials": true, "credentialsForm": { "title": "Identifiants Clerk", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [
+    { "key": "clerk", "name": "Clerk", "title": "Clerk", "iconClass": "fa-solid fa-user-shield", "iconUrl": "https://cdn.simpleicons.org/clerk", "color": "#e6ddff", "tags": ["auth", "identité", "utilisateurs"], "categories": ["Authentification"], "hasCredentials": true, "credentialsForm": { "title": "Identifiants Clerk", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [
       { "type": "text", "key": "secretKey", "label": "Clé secrète", "secret": true, "validators": [{ "type": "required" }], "col": { "xs": 24 } },
       { "type": "text", "key": "baseUrl", "label": "URL API", "default": "https://api.clerk.com/v1", "col": { "xs": 24 } }
     ], "displayTitle": false, "displayDescription": false } }

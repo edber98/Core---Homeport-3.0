@@ -332,7 +332,7 @@
       "title": "Home Assistant",
       "iconClass": "fa-solid fa-house-signal",
       "iconUrl": "https://cdn.simpleicons.org/homeassistant",
-      "color": "#41BDF5",
+      "color": "#d5f3ff",
       "tags": ["domotique", "iot", "automation"],
       "categories": ["Automatisation"],
       "hasCredentials": true,
