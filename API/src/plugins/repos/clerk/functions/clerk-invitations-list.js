@@ -1,0 +1,11 @@
+const { utils } = require("./utils");
+
+module.exports = {
+  async clerk_invitations_list(node, msg, inputs, opts) {
+    const d = inputs || {};
+    const res = await utils.clerkRequest(opts, "/invitations", { query: { limit: utils.toInt(d.pageSize, 50), offset: utils.toInt(d.offset, 0), status: d.status } });
+    if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
+    const invitations = utils.listData(res.data).map(utils.compactInvitation);
+    return { ok: true, invitations, totalCount: res.data?.total_count || invitations.length };
+  }
+};

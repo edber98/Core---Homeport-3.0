@@ -1,0 +1,153 @@
+{
+  "repo": { "name": "fireblocks", "type": "local", "label": "Fireblocks" },
+  "variables": {
+    "fireblocks_vault_account": {
+      "title": "Compte vault Fireblocks",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "text", "key": "id", "label": "ID", "col": { "xs": 24 } },
+        { "type": "text", "key": "name", "label": "Nom", "col": { "xs": 24 } },
+        { "type": "text", "key": "hiddenOnUI", "label": "Masqué UI", "col": { "xs": 24 } },
+        { "type": "text", "key": "customerRefId", "label": "Référence client", "col": { "xs": 24 } },
+        { "type": "text", "key": "autoFuel", "label": "Auto fuel", "col": { "xs": 24 } },
+        { "type": "textarea", "key": "assets", "label": "Actifs JSON", "col": { "xs": 24 } }
+      ]
+    },
+    "fireblocks_vault_accounts": {
+      "title": "Comptes vault Fireblocks",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "number", "key": "totalCount", "label": "Nombre total", "col": { "xs": 24 } },
+        { "type": "text", "key": "before", "label": "Before", "col": { "xs": 24 } },
+        { "type": "text", "key": "after", "label": "After", "col": { "xs": 24 } },
+        { "type": "section", "title": "Comptes", "key": "accounts", "mode": "array", "array": { "initialItems": 0, "minItems": 0 }, "fields": [
+          { "type": "text", "key": "id", "label": "ID", "col": { "xs": 24 } },
+          { "type": "text", "key": "name", "label": "Nom", "col": { "xs": 24 } },
+          { "type": "text", "key": "customerRefId", "label": "Référence client", "col": { "xs": 24 } }
+        ], "col": { "xs": 24 } }
+      ]
+    },
+    "fireblocks_vault_asset": {
+      "title": "Actif vault Fireblocks",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "text", "key": "id", "label": "ID", "col": { "xs": 24 } },
+        { "type": "text", "key": "assetId", "label": "ID actif", "col": { "xs": 24 } },
+        { "type": "text", "key": "total", "label": "Total", "col": { "xs": 24 } },
+        { "type": "text", "key": "balance", "label": "Solde", "col": { "xs": 24 } },
+        { "type": "text", "key": "available", "label": "Disponible", "col": { "xs": 24 } },
+        { "type": "text", "key": "pending", "label": "En attente", "col": { "xs": 24 } },
+        { "type": "text", "key": "lockedAmount", "label": "Verrouillé", "col": { "xs": 24 } }
+      ]
+    },
+    "fireblocks_transaction": {
+      "title": "Transaction Fireblocks",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "text", "key": "id", "label": "ID", "col": { "xs": 24 } },
+        { "type": "text", "key": "status", "label": "Statut", "col": { "xs": 24 } },
+        { "type": "text", "key": "subStatus", "label": "Sous-statut", "col": { "xs": 24 } },
+        { "type": "text", "key": "assetId", "label": "Actif", "col": { "xs": 24 } },
+        { "type": "text", "key": "amount", "label": "Montant", "col": { "xs": 24 } },
+        { "type": "text", "key": "sourceType", "label": "Type source", "col": { "xs": 24 } },
+        { "type": "text", "key": "sourceId", "label": "ID source", "col": { "xs": 24 } },
+        { "type": "text", "key": "destinationType", "label": "Type destination", "col": { "xs": 24 } },
+        { "type": "text", "key": "destinationId", "label": "ID destination", "col": { "xs": 24 } },
+        { "type": "text", "key": "txHash", "label": "Hash", "col": { "xs": 24 } },
+        { "type": "date", "key": "createdAt", "label": "Date de création", "col": { "xs": 24 } }
+      ]
+    },
+    "fireblocks_transactions": {
+      "title": "Transactions Fireblocks",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "number", "key": "totalCount", "label": "Nombre total", "col": { "xs": 24 } },
+        { "type": "section", "title": "Transactions", "key": "transactions", "mode": "array", "array": { "initialItems": 0, "minItems": 0 }, "fields": [
+          { "type": "text", "key": "id", "label": "ID", "col": { "xs": 24 } },
+          { "type": "text", "key": "status", "label": "Statut", "col": { "xs": 24 } },
+          { "type": "text", "key": "assetId", "label": "Actif", "col": { "xs": 24 } },
+          { "type": "text", "key": "amount", "label": "Montant", "col": { "xs": 24 } },
+          { "type": "text", "key": "txHash", "label": "Hash", "col": { "xs": 24 } }
+        ], "col": { "xs": 24 } }
+      ]
+    },
+    "fireblocks_result": {
+      "title": "Résultat Fireblocks",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "text", "key": "id", "label": "ID", "col": { "xs": 24 } },
+        { "type": "text", "key": "success", "label": "Succès", "col": { "xs": 24 } }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "fireblocks",
+      "name": "Fireblocks",
+      "title": "Fireblocks",
+      "iconUrl": "https://cdn.simpleicons.org/fireblocks",
+      "iconClass": "fa-solid fa-vault",
+      "color": "#4f46e5",
+      "tags": ["fireblocks", "crypto", "custody"],
+      "categories": ["Finance"],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Fireblocks",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "apiKey", "label": "Clé API", "validators": [{ "type": "required" }], "col": { "xs": 24 } },
+          { "type": "textarea", "key": "privateKey", "label": "Clé privée RSA", "secret": true, "validators": [{ "type": "required" }], "col": { "xs": 24 } },
+          { "type": "text", "key": "baseUrl", "label": "URL API", "default": "https://api.fireblocks.io/v1", "col": { "xs": 24 } }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    }
+  ],
+  "nodeTemplates": [
+    { "key": "fireblocks_vault_accounts_list", "name": "fireblocksVaultAccountsList", "schemaVersion": 2, "title": "Lister les comptes vault", "subtitle": "Vault", "icon": "fa-solid fa-list", "type": "function", "nodeKind": "function", "category": "Fireblocks", "providerKey": "fireblocks", "tags": ["lecture", "vault"], "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }], "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:fireblocks_vault_accounts" }], "authorize_catch_error": true, "description": "Liste les comptes vault Fireblocks.", "args": { "fields": [
+      { "type": "text", "key": "namePrefix", "label": "Préfixe nom", "col": { "xs": 24 } },
+      { "type": "number", "key": "pageSize", "label": "Limite", "default": 50, "col": { "xs": 12 } },
+      { "type": "text", "key": "before", "label": "Before", "col": { "xs": 24 } },
+      { "type": "text", "key": "after", "label": "After", "col": { "xs": 24 } }
+    ] }, "group": "Vault" },
+    { "key": "fireblocks_vault_account_get", "name": "fireblocksVaultAccountGet", "schemaVersion": 2, "title": "Récupérer un compte vault", "subtitle": "Vault", "icon": "fa-solid fa-eye", "type": "function", "nodeKind": "function", "category": "Fireblocks", "providerKey": "fireblocks", "tags": ["lecture", "vault"], "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }], "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:fireblocks_vault_account" }], "authorize_catch_error": true, "description": "Récupère un compte vault.", "args": { "fields": [{ "type": "text", "key": "vaultAccountId", "label": "ID compte vault", "validators": [{ "type": "required" }], "col": { "xs": 24 } }] }, "group": "Vault" },
+    { "key": "fireblocks_vault_account_create", "name": "fireblocksVaultAccountCreate", "schemaVersion": 2, "title": "Créer un compte vault", "subtitle": "Vault", "icon": "fa-solid fa-plus", "type": "function", "nodeKind": "function", "category": "Fireblocks", "providerKey": "fireblocks", "tags": ["création", "vault"], "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }], "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:fireblocks_vault_account" }], "authorize_catch_error": true, "description": "Crée un compte vault Fireblocks.", "args": { "fields": [
+      { "type": "text", "key": "name", "label": "Nom", "validators": [{ "type": "required" }], "col": { "xs": 24 } },
+      { "type": "text", "key": "customerRefId", "label": "Référence client", "col": { "xs": 24 } },
+      { "type": "checkbox", "key": "hiddenOnUI", "label": "Masquer dans l'UI", "col": { "xs": 24 } },
+      { "type": "checkbox", "key": "autoFuel", "label": "Auto fuel", "col": { "xs": 24 } },
+      { "type": "text", "key": "idempotencyKey", "label": "Clé idempotence", "col": { "xs": 24 } }
+    ] }, "group": "Vault" },
+    { "key": "fireblocks_vault_account_update", "name": "fireblocksVaultAccountUpdate", "schemaVersion": 2, "title": "Modifier un compte vault", "subtitle": "Vault", "icon": "fa-solid fa-pen", "type": "function", "nodeKind": "function", "category": "Fireblocks", "providerKey": "fireblocks", "tags": ["modification", "vault"], "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }], "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:fireblocks_vault_account" }], "authorize_catch_error": true, "description": "Modifie un compte vault.", "args": { "fields": [
+      { "type": "text", "key": "vaultAccountId", "label": "ID compte vault", "validators": [{ "type": "required" }], "col": { "xs": 24 } },
+      { "type": "text", "key": "name", "label": "Nom", "col": { "xs": 24 } },
+      { "type": "text", "key": "customerRefId", "label": "Référence client", "col": { "xs": 24 } },
+      { "type": "checkbox", "key": "autoFuel", "label": "Auto fuel", "col": { "xs": 24 } }
+    ] }, "group": "Vault" },
+    { "key": "fireblocks_vault_asset_get", "name": "fireblocksVaultAssetGet", "schemaVersion": 2, "title": "Récupérer un actif vault", "subtitle": "Vault", "icon": "fa-solid fa-coins", "type": "function", "nodeKind": "function", "category": "Fireblocks", "providerKey": "fireblocks", "tags": ["lecture", "actif"], "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }], "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:fireblocks_vault_asset" }], "authorize_catch_error": true, "description": "Récupère le solde d'un actif vault.", "args": { "fields": [
+      { "type": "text", "key": "vaultAccountId", "label": "ID compte vault", "validators": [{ "type": "required" }], "col": { "xs": 24 } },
+      { "type": "text", "key": "assetId", "label": "ID actif", "validators": [{ "type": "required" }], "col": { "xs": 24 } }
+    ] }, "group": "Vault" },
+    { "key": "fireblocks_vault_asset_create", "name": "fireblocksVaultAssetCreate", "schemaVersion": 2, "title": "Ajouter un actif vault", "subtitle": "Vault", "icon": "fa-solid fa-plus", "type": "function", "nodeKind": "function", "category": "Fireblocks", "providerKey": "fireblocks", "tags": ["création", "actif"], "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }], "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:fireblocks_vault_asset" }], "authorize_catch_error": true, "description": "Ajoute un actif à un compte vault.", "args": { "fields": [
+      { "type": "text", "key": "vaultAccountId", "label": "ID compte vault", "validators": [{ "type": "required" }], "col": { "xs": 24 } },
+      { "type": "text", "key": "assetId", "label": "ID actif", "validators": [{ "type": "required" }], "col": { "xs": 24 } },
+      { "type": "text", "key": "idempotencyKey", "label": "Clé idempotence", "col": { "xs": 24 } }
+    ] }, "group": "Vault" },
+    { "key": "fireblocks_transactions_list", "name": "fireblocksTransactionsList", "schemaVersion": 2, "title": "Lister les transactions", "subtitle": "Transactions", "icon": "fa-solid fa-list", "type": "function", "nodeKind": "function", "category": "Fireblocks", "providerKey": "fireblocks", "tags": ["lecture", "transaction"], "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }], "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:fireblocks_transactions" }], "authorize_catch_error": true, "description": "Liste les transactions Fireblocks.", "args": { "fields": [
+      { "type": "number", "key": "pageSize", "label": "Limite", "default": 50, "col": { "xs": 12 } },
+      { "type": "text", "key": "before", "label": "Before", "col": { "xs": 24 } },
+      { "type": "text", "key": "after", "label": "After", "col": { "xs": 24 } },
+      { "type": "text", "key": "status", "label": "Statut", "col": { "xs": 24 } },
+      { "type": "text", "key": "assets", "label": "Actifs", "description": "Liste séparée par virgules selon l'API.", "col": { "xs": 24 } },
+      { "type": "text", "key": "sourceType", "label": "Type source", "col": { "xs": 24 } },
+      { "type": "text", "key": "destType", "label": "Type destination", "col": { "xs": 24 } }
+    ] }, "group": "Transactions" },
+    { "key": "fireblocks_transaction_get", "name": "fireblocksTransactionGet", "schemaVersion": 2, "title": "Récupérer une transaction", "subtitle": "Transactions", "icon": "fa-solid fa-eye", "type": "function", "nodeKind": "function", "category": "Fireblocks", "providerKey": "fireblocks", "tags": ["lecture", "transaction"], "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }], "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:fireblocks_transaction" }], "authorize_catch_error": true, "description": "Récupère une transaction.", "args": { "fields": [{ "type": "text", "key": "transactionId", "label": "ID transaction", "validators": [{ "type": "required" }], "col": { "xs": 24 } }] }, "group": "Transactions" },
+    { "key": "fireblocks_transaction_create", "name": "fireblocksTransactionCreate", "schemaVersion": 2, "title": "Créer une transaction", "subtitle": "Transactions", "icon": "fa-solid fa-paper-plane", "type": "function", "nodeKind": "function", "category": "Fireblocks", "providerKey": "fireblocks", "tags": ["création", "transaction"], "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }], "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:fireblocks_transaction" }], "authorize_catch_error": true, "description": "Crée une transaction Fireblocks depuis un payload JSON.", "args": { "fields": [
+      { "type": "textarea", "key": "transaction", "label": "Transaction JSON", "validators": [{ "type": "required" }], "col": { "xs": 24 } },
+      { "type": "text", "key": "idempotencyKey", "label": "Clé idempotence", "col": { "xs": 24 } }
+    ] }, "group": "Transactions" },
+    { "key": "fireblocks_transaction_cancel", "name": "fireblocksTransactionCancel", "schemaVersion": 2, "title": "Annuler une transaction", "subtitle": "Transactions", "icon": "fa-solid fa-ban", "type": "function", "nodeKind": "function", "category": "Fireblocks", "providerKey": "fireblocks", "tags": ["annulation", "transaction"], "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }], "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:fireblocks_result" }], "authorize_catch_error": true, "description": "Annule une transaction Fireblocks.", "args": { "fields": [{ "type": "text", "key": "transactionId", "label": "ID transaction", "validators": [{ "type": "required" }], "col": { "xs": 24 } }] }, "group": "Transactions" }
+  ]
+}

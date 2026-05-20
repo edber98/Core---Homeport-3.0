@@ -15,6 +15,7 @@
 | calendars | Oui |
 | calendly | Oui |
 | checkout-com | Oui |
+| clerk | Oui |
 | cloudflare | Oui |
 | clickup | Oui |
 | datadog | Oui |
@@ -26,6 +27,7 @@
 | email | Non |
 | facebook | Oui |
 | firebase | Oui |
+| fireblocks | Oui |
 | footstep | Oui |
 | freshdesk | Oui |
 | github | Oui |
