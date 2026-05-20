@@ -14,6 +14,8 @@
 | brevo | Oui |
 | calendars | Oui |
 | calendly | Oui |
+| checkout-com | Oui |
+| cloudflare | Oui |
 | clickup | Oui |
 | datadog | Oui |
 | digiforma | Oui |
@@ -23,6 +25,7 @@
 | dropbox | Oui |
 | email | Non |
 | facebook | Oui |
+| firebase | Oui |
 | footstep | Oui |
 | freshdesk | Oui |
 | github | Oui |
@@ -61,6 +64,7 @@
 | postman | Oui |
 | prestashop | Oui |
 | quickbooks | Oui |
+| resend | Oui |
 | salesforce | Oui |
 | sap | Oui |
 | se-ranking | Oui |
