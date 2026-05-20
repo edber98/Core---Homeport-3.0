@@ -1,0 +1,1470 @@
+{
+  "repo": {
+    "name": "vercel",
+    "type": "local",
+    "label": "Vercel"
+  },
+  "variables": {
+    "vercel_response": {
+      "title": "Réponse Vercel",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom ou titre retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "url",
+          "key": "url",
+          "label": "URL",
+          "description": "URL retournée.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "text",
+          "label": "Texte",
+          "description": "Texte principal retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "result_json",
+          "label": "Résultat JSON",
+          "description": "Résultat complet au format JSON.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "vercel_items": {
+      "title": "Vercel - liste",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre d'éléments retournés.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextCursor",
+          "label": "Curseur suivant",
+          "description": "Curseur de pagination.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Éléments",
+          "description": "Liste des éléments retournés.",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom ou titre.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "url",
+              "key": "url",
+              "label": "URL",
+              "description": "URL.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "text",
+              "label": "Texte",
+              "description": "Texte ou résumé.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "result_json",
+              "label": "Données JSON",
+              "description": "Données au format JSON.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "vercel",
+      "name": "Vercel",
+      "title": "Vercel",
+      "iconClass": "fa-solid fa-cloud",
+      "iconUrl": "https://cdn.simpleicons.org/vercel/000000",
+      "color": "#f2f2f2",
+      "tags": [
+        "vercel",
+        "automation"
+      ],
+      "categories": [
+        "Productivité"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Vercel",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "apiKey",
+            "label": "Clé API",
+            "description": "Clé API Vercel.",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "baseUrl",
+            "label": "URL de base",
+            "description": "URL de base de l'API.",
+            "col": {
+              "xs": 24
+            },
+            "defaultValue": "https://api.vercel.com"
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "vercel_projects_list",
+      "name": "vercelProjectsList",
+      "schemaVersion": 2,
+      "title": "Lister les projets",
+      "subtitle": "Projets",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Vercel",
+      "providerKey": "vercel",
+      "tags": [
+        "vercel",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:vercel_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les projets Vercel.",
+      "args": {
+        "title": "Lister les projets",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "teamId",
+            "label": "ID équipe",
+            "description": "Team ID optionnel.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "pageSize",
+            "label": "Taille page",
+            "description": "Nombre d'éléments.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "cursor",
+            "label": "Curseur",
+            "description": "Curseur de pagination.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Projets"
+    },
+    {
+      "key": "vercel_project_get",
+      "name": "vercelProjectGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un projet",
+      "subtitle": "Projets",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Vercel",
+      "providerKey": "vercel",
+      "tags": [
+        "vercel",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:vercel_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère un projet.",
+      "args": {
+        "title": "Récupérer un projet",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "ID projet",
+            "description": "ID ou nom du projet.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "teamId",
+            "label": "ID équipe",
+            "description": "Team ID optionnel.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Projets"
+    },
+    {
+      "key": "vercel_project_create",
+      "name": "vercelProjectCreate",
+      "schemaVersion": 2,
+      "title": "Créer un projet",
+      "subtitle": "Projets",
+      "icon": "fa-solid fa-plus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Vercel",
+      "providerKey": "vercel",
+      "tags": [
+        "vercel",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:vercel_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Crée un projet Vercel.",
+      "args": {
+        "title": "Créer un projet",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nom du projet.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "framework",
+            "label": "Framework",
+            "description": "Framework Vercel.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "gitRepository",
+            "label": "Git JSON",
+            "description": "Repository Git optionnel.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "teamId",
+            "label": "ID équipe",
+            "description": "Team ID optionnel.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Projets"
+    },
+    {
+      "key": "vercel_project_delete",
+      "name": "vercelProjectDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un projet",
+      "subtitle": "Projets",
+      "icon": "fa-solid fa-trash",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Vercel",
+      "providerKey": "vercel",
+      "tags": [
+        "vercel",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:vercel_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Supprime un projet.",
+      "args": {
+        "title": "Supprimer un projet",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "ID projet",
+            "description": "ID ou nom du projet.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "teamId",
+            "label": "ID équipe",
+            "description": "Team ID optionnel.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Projets"
+    },
+    {
+      "key": "vercel_deployments_list",
+      "name": "vercelDeploymentsList",
+      "schemaVersion": 2,
+      "title": "Lister les déploiements",
+      "subtitle": "Déploiements",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Vercel",
+      "providerKey": "vercel",
+      "tags": [
+        "vercel",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:vercel_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les déploiements.",
+      "args": {
+        "title": "Lister les déploiements",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "ID projet",
+            "description": "Filtre projet.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "state",
+            "label": "État",
+            "description": "Filtre état.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "teamId",
+            "label": "ID équipe",
+            "description": "Team ID optionnel.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "pageSize",
+            "label": "Taille page",
+            "description": "Nombre d'éléments.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "cursor",
+            "label": "Curseur",
+            "description": "Curseur de pagination.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Déploiements"
+    },
+    {
+      "key": "vercel_deployment_get",
+      "name": "vercelDeploymentGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un déploiement",
+      "subtitle": "Déploiements",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Vercel",
+      "providerKey": "vercel",
+      "tags": [
+        "vercel",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:vercel_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère un déploiement.",
+      "args": {
+        "title": "Récupérer un déploiement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "deploymentId",
+            "label": "ID déploiement",
+            "description": "Identifiant du déploiement.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "teamId",
+            "label": "ID équipe",
+            "description": "Team ID optionnel.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Déploiements"
+    },
+    {
+      "key": "vercel_deployment_create",
+      "name": "vercelDeploymentCreate",
+      "schemaVersion": 2,
+      "title": "Créer un déploiement",
+      "subtitle": "Déploiements",
+      "icon": "fa-solid fa-upload",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Vercel",
+      "providerKey": "vercel",
+      "tags": [
+        "vercel",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:vercel_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Crée un déploiement via payload Vercel.",
+      "args": {
+        "title": "Créer un déploiement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "payload",
+            "label": "Payload JSON",
+            "description": "Payload Vercel complet.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "teamId",
+            "label": "ID équipe",
+            "description": "Team ID optionnel.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Déploiements"
+    },
+    {
+      "key": "vercel_deployment_cancel",
+      "name": "vercelDeploymentCancel",
+      "schemaVersion": 2,
+      "title": "Annuler un déploiement",
+      "subtitle": "Déploiements",
+      "icon": "fa-solid fa-ban",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Vercel",
+      "providerKey": "vercel",
+      "tags": [
+        "vercel",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:vercel_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Annule un déploiement.",
+      "args": {
+        "title": "Annuler un déploiement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "deploymentId",
+            "label": "ID déploiement",
+            "description": "Identifiant du déploiement.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "teamId",
+            "label": "ID équipe",
+            "description": "Team ID optionnel.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Déploiements"
+    },
+    {
+      "key": "vercel_env_list",
+      "name": "vercelEnvList",
+      "schemaVersion": 2,
+      "title": "Lister les variables",
+      "subtitle": "Environnement",
+      "icon": "fa-solid fa-key",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Vercel",
+      "providerKey": "vercel",
+      "tags": [
+        "vercel",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:vercel_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les variables d'environnement d'un projet.",
+      "args": {
+        "title": "Lister les variables",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "ID projet",
+            "description": "ID projet.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "teamId",
+            "label": "ID équipe",
+            "description": "Team ID optionnel.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Environnement"
+    },
+    {
+      "key": "vercel_env_create",
+      "name": "vercelEnvCreate",
+      "schemaVersion": 2,
+      "title": "Créer une variable",
+      "subtitle": "Environnement",
+      "icon": "fa-solid fa-plus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Vercel",
+      "providerKey": "vercel",
+      "tags": [
+        "vercel",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:vercel_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Crée une variable d'environnement.",
+      "args": {
+        "title": "Créer une variable",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "ID projet",
+            "description": "ID projet.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "key",
+            "label": "Clé",
+            "description": "Nom de la variable.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "value",
+            "label": "Valeur",
+            "description": "Valeur.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "target",
+            "label": "Cibles",
+            "description": "production, preview, development.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "type",
+            "label": "Type",
+            "description": "encrypted ou plain.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "teamId",
+            "label": "ID équipe",
+            "description": "Team ID optionnel.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Environnement"
+    },
+    {
+      "key": "vercel_project_domains_list",
+      "name": "vercelProjectDomainsList",
+      "schemaVersion": 2,
+      "title": "Lister les domaines projet",
+      "subtitle": "Domaines",
+      "icon": "fa-solid fa-globe",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Vercel",
+      "providerKey": "vercel",
+      "tags": [
+        "vercel",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:vercel_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les domaines d'un projet.",
+      "args": {
+        "title": "Lister les domaines projet",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "ID projet",
+            "description": "ID projet.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "teamId",
+            "label": "ID équipe",
+            "description": "Team ID optionnel.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Domaines"
+    },
+    {
+      "key": "vercel_project_domain_add",
+      "name": "vercelProjectDomainAdd",
+      "schemaVersion": 2,
+      "title": "Ajouter un domaine projet",
+      "subtitle": "Domaines",
+      "icon": "fa-solid fa-plus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Vercel",
+      "providerKey": "vercel",
+      "tags": [
+        "vercel",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:vercel_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Ajoute un domaine à un projet.",
+      "args": {
+        "title": "Ajouter un domaine projet",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "ID projet",
+            "description": "ID projet.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Domaine",
+            "description": "Nom de domaine.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "teamId",
+            "label": "ID équipe",
+            "description": "Team ID optionnel.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Domaines"
+    },
+    {
+      "key": "vercel_env_update",
+      "name": "vercelEnvUpdate",
+      "schemaVersion": 2,
+      "title": "Mettre à jour une variable",
+      "subtitle": "Environnement",
+      "icon": "fa-solid fa-pen",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Vercel",
+      "providerKey": "vercel",
+      "tags": [
+        "vercel",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:vercel_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Met à jour une variable d'environnement.",
+      "args": {
+        "title": "Mettre à jour une variable",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "ID projet",
+            "description": "ID projet.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "envId",
+            "label": "ID variable",
+            "description": "Identifiant variable.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "value",
+            "label": "Valeur",
+            "description": "Nouvelle valeur.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "teamId",
+            "label": "ID équipe",
+            "description": "Team ID optionnel.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Environnement"
+    },
+    {
+      "key": "vercel_env_delete",
+      "name": "vercelEnvDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer une variable",
+      "subtitle": "Environnement",
+      "icon": "fa-solid fa-trash",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Vercel",
+      "providerKey": "vercel",
+      "tags": [
+        "vercel",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:vercel_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Supprime une variable d'environnement.",
+      "args": {
+        "title": "Supprimer une variable",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "ID projet",
+            "description": "ID projet.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "envId",
+            "label": "ID variable",
+            "description": "Identifiant variable.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "teamId",
+            "label": "ID équipe",
+            "description": "Team ID optionnel.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Environnement"
+    },
+    {
+      "key": "vercel_project_domain_remove",
+      "name": "vercelProjectDomainRemove",
+      "schemaVersion": 2,
+      "title": "Retirer un domaine projet",
+      "subtitle": "Domaines",
+      "icon": "fa-solid fa-trash",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Vercel",
+      "providerKey": "vercel",
+      "tags": [
+        "vercel",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:vercel_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Retire un domaine d'un projet.",
+      "args": {
+        "title": "Retirer un domaine projet",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "ID projet",
+            "description": "ID projet.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "domain",
+            "label": "Domaine",
+            "description": "Nom de domaine.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "teamId",
+            "label": "ID équipe",
+            "description": "Team ID optionnel.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Domaines"
+    }
+  ]
+}

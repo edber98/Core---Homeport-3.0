@@ -1,0 +1,955 @@
+{
+  "repo": {
+    "name": "apify",
+    "type": "local",
+    "label": "Apify"
+  },
+  "variables": {
+    "apify_response": {
+      "title": "Réponse Apify",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom ou titre retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "url",
+          "key": "url",
+          "label": "URL",
+          "description": "URL retournée.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "text",
+          "label": "Texte",
+          "description": "Texte principal retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "result_json",
+          "label": "Résultat JSON",
+          "description": "Résultat complet au format JSON.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "apify_items": {
+      "title": "Apify - liste",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre d'éléments retournés.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextCursor",
+          "label": "Curseur suivant",
+          "description": "Curseur de pagination.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Éléments",
+          "description": "Liste des éléments retournés.",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom ou titre.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "url",
+              "key": "url",
+              "label": "URL",
+              "description": "URL.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "text",
+              "label": "Texte",
+              "description": "Texte ou résumé.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "result_json",
+              "label": "Données JSON",
+              "description": "Données au format JSON.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "apify",
+      "name": "Apify",
+      "title": "Apify",
+      "iconClass": "fa-solid fa-robot",
+      "iconUrl": "https://apify.com/favicon.ico",
+      "color": "#f3fae8",
+      "tags": [
+        "apify",
+        "automation"
+      ],
+      "categories": [
+        "Productivité"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Apify",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "apiKey",
+            "label": "Clé API",
+            "description": "Clé API Apify.",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "baseUrl",
+            "label": "URL de base",
+            "description": "URL de base de l'API.",
+            "col": {
+              "xs": 24
+            },
+            "defaultValue": "https://api.apify.com/v2"
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "apify_actor_run_start",
+      "name": "apifyActorRunStart",
+      "schemaVersion": 2,
+      "title": "Démarrer un acteur",
+      "subtitle": "Acteurs",
+      "icon": "fa-solid fa-play",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Apify",
+      "providerKey": "apify",
+      "tags": [
+        "apify",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:apify_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Démarre un Actor Apify.",
+      "args": {
+        "title": "Démarrer un acteur",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "actorId",
+            "label": "ID acteur",
+            "description": "ID ou username~actor.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "input",
+            "label": "Entrée JSON",
+            "description": "Input de l'acteur.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "waitForFinish",
+            "label": "Attente",
+            "description": "Secondes à attendre.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Acteurs"
+    },
+    {
+      "key": "apify_actor_run_sync_items",
+      "name": "apifyActorRunSyncItems",
+      "schemaVersion": 2,
+      "title": "Exécuter et lire les résultats",
+      "subtitle": "Acteurs",
+      "icon": "fa-solid fa-forward",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Apify",
+      "providerKey": "apify",
+      "tags": [
+        "apify",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:apify_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Exécute un Actor et retourne les items du dataset.",
+      "args": {
+        "title": "Exécuter et lire les résultats",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "actorId",
+            "label": "ID acteur",
+            "description": "ID ou username~actor.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "input",
+            "label": "Entrée JSON",
+            "description": "Input de l'acteur.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Acteurs"
+    },
+    {
+      "key": "apify_run_get",
+      "name": "apifyRunGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un run",
+      "subtitle": "Runs",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Apify",
+      "providerKey": "apify",
+      "tags": [
+        "apify",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:apify_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère l'état d'un run.",
+      "args": {
+        "title": "Récupérer un run",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "runId",
+            "label": "ID run",
+            "description": "Identifiant du run.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Runs"
+    },
+    {
+      "key": "apify_run_abort",
+      "name": "apifyRunAbort",
+      "schemaVersion": 2,
+      "title": "Arrêter un run",
+      "subtitle": "Runs",
+      "icon": "fa-solid fa-ban",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Apify",
+      "providerKey": "apify",
+      "tags": [
+        "apify",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:apify_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Arrête un run en cours.",
+      "args": {
+        "title": "Arrêter un run",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "runId",
+            "label": "ID run",
+            "description": "Identifiant du run.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Runs"
+    },
+    {
+      "key": "apify_dataset_items_list",
+      "name": "apifyDatasetItemsList",
+      "schemaVersion": 2,
+      "title": "Lister les items dataset",
+      "subtitle": "Datasets",
+      "icon": "fa-solid fa-table",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Apify",
+      "providerKey": "apify",
+      "tags": [
+        "apify",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:apify_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les items d'un dataset.",
+      "args": {
+        "title": "Lister les items dataset",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "datasetId",
+            "label": "ID dataset",
+            "description": "Identifiant du dataset.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre d'items.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "offset",
+            "label": "Offset",
+            "description": "Décalage.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Datasets"
+    },
+    {
+      "key": "apify_dataset_get",
+      "name": "apifyDatasetGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un dataset",
+      "subtitle": "Datasets",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Apify",
+      "providerKey": "apify",
+      "tags": [
+        "apify",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:apify_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère les métadonnées d'un dataset.",
+      "args": {
+        "title": "Récupérer un dataset",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "datasetId",
+            "label": "ID dataset",
+            "description": "Identifiant du dataset.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Datasets"
+    },
+    {
+      "key": "apify_kv_record_get",
+      "name": "apifyKvRecordGet",
+      "schemaVersion": 2,
+      "title": "Lire un record KV",
+      "subtitle": "Key-value store",
+      "icon": "fa-solid fa-key",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Apify",
+      "providerKey": "apify",
+      "tags": [
+        "apify",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:apify_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lit un record de key-value store.",
+      "args": {
+        "title": "Lire un record KV",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "storeId",
+            "label": "ID store",
+            "description": "Identifiant du store.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "recordKey",
+            "label": "Clé",
+            "description": "Clé du record.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Key-value store"
+    },
+    {
+      "key": "apify_kv_record_put",
+      "name": "apifyKvRecordPut",
+      "schemaVersion": 2,
+      "title": "Écrire un record KV",
+      "subtitle": "Key-value store",
+      "icon": "fa-solid fa-pen",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Apify",
+      "providerKey": "apify",
+      "tags": [
+        "apify",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:apify_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Écrit un record JSON dans un key-value store.",
+      "args": {
+        "title": "Écrire un record KV",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "storeId",
+            "label": "ID store",
+            "description": "Identifiant du store.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "recordKey",
+            "label": "Clé",
+            "description": "Clé du record.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "value",
+            "label": "Valeur JSON",
+            "description": "Valeur JSON à écrire.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Key-value store"
+    },
+    {
+      "key": "apify_task_run_start",
+      "name": "apifyTaskRunStart",
+      "schemaVersion": 2,
+      "title": "Démarrer une tâche",
+      "subtitle": "Tâches",
+      "icon": "fa-solid fa-play",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Apify",
+      "providerKey": "apify",
+      "tags": [
+        "apify",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:apify_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Démarre une Actor task.",
+      "args": {
+        "title": "Démarrer une tâche",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "taskId",
+            "label": "ID tâche",
+            "description": "Identifiant de la tâche.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "input",
+            "label": "Entrée JSON",
+            "description": "Input optionnel.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Tâches"
+    },
+    {
+      "key": "apify_user_actors_list",
+      "name": "apifyUserActorsList",
+      "schemaVersion": 2,
+      "title": "Lister mes acteurs",
+      "subtitle": "Acteurs",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Apify",
+      "providerKey": "apify",
+      "tags": [
+        "apify",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:apify_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les Actors de l'utilisateur.",
+      "args": {
+        "title": "Lister mes acteurs",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "pageSize",
+            "label": "Taille page",
+            "description": "Nombre d'éléments.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "cursor",
+            "label": "Curseur",
+            "description": "Curseur de pagination.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Acteurs"
+    }
+  ]
+}

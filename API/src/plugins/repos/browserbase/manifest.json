@@ -1,0 +1,826 @@
+{
+  "repo": {
+    "name": "browserbase",
+    "type": "local",
+    "label": "Browserbase"
+  },
+  "variables": {
+    "browserbase_response": {
+      "title": "Réponse Browserbase",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom ou titre retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "url",
+          "key": "url",
+          "label": "URL",
+          "description": "URL retournée.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "text",
+          "label": "Texte",
+          "description": "Texte principal retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "result_json",
+          "label": "Résultat JSON",
+          "description": "Résultat complet au format JSON.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "browserbase_items": {
+      "title": "Browserbase - liste",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre d'éléments retournés.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextCursor",
+          "label": "Curseur suivant",
+          "description": "Curseur de pagination.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Éléments",
+          "description": "Liste des éléments retournés.",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom ou titre.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "url",
+              "key": "url",
+              "label": "URL",
+              "description": "URL.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "text",
+              "label": "Texte",
+              "description": "Texte ou résumé.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "result_json",
+              "label": "Données JSON",
+              "description": "Données au format JSON.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "browserbase",
+      "name": "Browserbase",
+      "title": "Browserbase",
+      "iconClass": "fa-solid fa-window-maximize",
+      "iconUrl": "https://www.browserbase.com/favicon.ico",
+      "color": "#eef0f4",
+      "tags": [
+        "browserbase",
+        "automation"
+      ],
+      "categories": [
+        "Productivité"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Browserbase",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "apiKey",
+            "label": "Clé API",
+            "description": "Clé API Browserbase.",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "baseUrl",
+            "label": "URL de base",
+            "description": "URL de base de l'API.",
+            "col": {
+              "xs": 24
+            },
+            "defaultValue": "https://api.browserbase.com"
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "browserbase_session_create",
+      "name": "browserbaseSessionCreate",
+      "schemaVersion": 2,
+      "title": "Créer une session",
+      "subtitle": "Sessions",
+      "icon": "fa-solid fa-plus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Browserbase",
+      "providerKey": "browserbase",
+      "tags": [
+        "browserbase",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:browserbase_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Crée une session navigateur.",
+      "args": {
+        "title": "Créer une session",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "ID projet",
+            "description": "Projet Browserbase.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "region",
+            "label": "Région",
+            "description": "Région de session.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "keepAlive",
+            "label": "Keep alive",
+            "description": "true ou false.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "userMetadata",
+            "label": "Métadonnées JSON",
+            "description": "Métadonnées utilisateur.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Sessions"
+    },
+    {
+      "key": "browserbase_sessions_list",
+      "name": "browserbaseSessionsList",
+      "schemaVersion": 2,
+      "title": "Lister les sessions",
+      "subtitle": "Sessions",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Browserbase",
+      "providerKey": "browserbase",
+      "tags": [
+        "browserbase",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:browserbase_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les sessions Browserbase.",
+      "args": {
+        "title": "Lister les sessions",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "pageSize",
+            "label": "Taille page",
+            "description": "Nombre d'éléments.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "cursor",
+            "label": "Curseur",
+            "description": "Curseur de pagination.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Sessions"
+    },
+    {
+      "key": "browserbase_session_get",
+      "name": "browserbaseSessionGet",
+      "schemaVersion": 2,
+      "title": "Récupérer une session",
+      "subtitle": "Sessions",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Browserbase",
+      "providerKey": "browserbase",
+      "tags": [
+        "browserbase",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:browserbase_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère les détails d'une session.",
+      "args": {
+        "title": "Récupérer une session",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "sessionId",
+            "label": "ID session",
+            "description": "Identifiant de la session.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Sessions"
+    },
+    {
+      "key": "browserbase_session_complete",
+      "name": "browserbaseSessionComplete",
+      "schemaVersion": 2,
+      "title": "Terminer une session",
+      "subtitle": "Sessions",
+      "icon": "fa-solid fa-check",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Browserbase",
+      "providerKey": "browserbase",
+      "tags": [
+        "browserbase",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:browserbase_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Termine une session Browserbase.",
+      "args": {
+        "title": "Terminer une session",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "sessionId",
+            "label": "ID session",
+            "description": "Identifiant de la session.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Sessions"
+    },
+    {
+      "key": "browserbase_session_logs_get",
+      "name": "browserbaseSessionLogsGet",
+      "schemaVersion": 2,
+      "title": "Lire les logs session",
+      "subtitle": "Sessions",
+      "icon": "fa-solid fa-file-lines",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Browserbase",
+      "providerKey": "browserbase",
+      "tags": [
+        "browserbase",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:browserbase_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère les logs d'une session.",
+      "args": {
+        "title": "Lire les logs session",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "sessionId",
+            "label": "ID session",
+            "description": "Identifiant de la session.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Sessions"
+    },
+    {
+      "key": "browserbase_contexts_list",
+      "name": "browserbaseContextsList",
+      "schemaVersion": 2,
+      "title": "Lister les contextes",
+      "subtitle": "Contextes",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Browserbase",
+      "providerKey": "browserbase",
+      "tags": [
+        "browserbase",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:browserbase_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les contextes de navigateur.",
+      "args": {
+        "title": "Lister les contextes",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "pageSize",
+            "label": "Taille page",
+            "description": "Nombre d'éléments.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "cursor",
+            "label": "Curseur",
+            "description": "Curseur de pagination.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Contextes"
+    },
+    {
+      "key": "browserbase_context_create",
+      "name": "browserbaseContextCreate",
+      "schemaVersion": 2,
+      "title": "Créer un contexte",
+      "subtitle": "Contextes",
+      "icon": "fa-solid fa-plus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Browserbase",
+      "providerKey": "browserbase",
+      "tags": [
+        "browserbase",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:browserbase_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Crée un contexte persistant.",
+      "args": {
+        "title": "Créer un contexte",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "ID projet",
+            "description": "Projet Browserbase.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nom du contexte.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Contextes"
+    },
+    {
+      "key": "browserbase_context_get",
+      "name": "browserbaseContextGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un contexte",
+      "subtitle": "Contextes",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Browserbase",
+      "providerKey": "browserbase",
+      "tags": [
+        "browserbase",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:browserbase_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère un contexte.",
+      "args": {
+        "title": "Récupérer un contexte",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "contextId",
+            "label": "ID contexte",
+            "description": "Identifiant du contexte.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Contextes"
+    },
+    {
+      "key": "browserbase_context_delete",
+      "name": "browserbaseContextDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un contexte",
+      "subtitle": "Contextes",
+      "icon": "fa-solid fa-trash",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Browserbase",
+      "providerKey": "browserbase",
+      "tags": [
+        "browserbase",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:browserbase_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Supprime un contexte.",
+      "args": {
+        "title": "Supprimer un contexte",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "contextId",
+            "label": "ID contexte",
+            "description": "Identifiant du contexte.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Contextes"
+    }
+  ]
+}

@@ -1,0 +1,1040 @@
+{
+  "repo": {
+    "name": "crisp",
+    "type": "local",
+    "label": "Crisp"
+  },
+  "variables": {
+    "crisp_response": {
+      "title": "Réponse Crisp",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom ou titre retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "url",
+          "key": "url",
+          "label": "URL",
+          "description": "URL retournée.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "text",
+          "label": "Texte",
+          "description": "Texte principal retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "result_json",
+          "label": "Résultat JSON",
+          "description": "Résultat complet au format JSON.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "crisp_items": {
+      "title": "Crisp - liste",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre d'éléments retournés.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextCursor",
+          "label": "Curseur suivant",
+          "description": "Curseur de pagination.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Éléments",
+          "description": "Liste des éléments retournés.",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom ou titre.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "url",
+              "key": "url",
+              "label": "URL",
+              "description": "URL.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "text",
+              "label": "Texte",
+              "description": "Texte ou résumé.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "result_json",
+              "label": "Données JSON",
+              "description": "Données au format JSON.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "crisp",
+      "name": "Crisp",
+      "title": "Crisp",
+      "iconClass": "fa-solid fa-comments",
+      "iconUrl": "https://crisp.chat/favicon.ico",
+      "color": "#eaf6ff",
+      "tags": [
+        "crisp",
+        "automation"
+      ],
+      "categories": [
+        "Productivité"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Crisp",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "identifier",
+            "label": "Identifiant",
+            "description": "Identifiant API Crisp.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "apiKey",
+            "label": "Clé API",
+            "description": "Clé API Crisp.",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "tier",
+            "label": "Tier",
+            "description": "Tier Crisp à utiliser, généralement plugin.",
+            "col": {
+              "xs": 24
+            },
+            "defaultValue": "plugin"
+          },
+          {
+            "type": "text",
+            "key": "baseUrl",
+            "label": "URL de base",
+            "description": "URL de base de l'API.",
+            "col": {
+              "xs": 24
+            },
+            "defaultValue": "https://api.crisp.chat/v1"
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "crisp_conversations_list",
+      "name": "crispConversationsList",
+      "schemaVersion": 2,
+      "title": "Lister les conversations",
+      "subtitle": "Conversations",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Crisp",
+      "providerKey": "crisp",
+      "tags": [
+        "crisp",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:crisp_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les conversations d'un site.",
+      "args": {
+        "title": "Lister les conversations",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "websiteId",
+            "label": "ID site",
+            "description": "Identifiant du site Crisp.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "pageSize",
+            "label": "Taille page",
+            "description": "Nombre d'éléments.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "cursor",
+            "label": "Curseur",
+            "description": "Curseur de pagination.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Conversations"
+    },
+    {
+      "key": "crisp_conversation_get",
+      "name": "crispConversationGet",
+      "schemaVersion": 2,
+      "title": "Récupérer une conversation",
+      "subtitle": "Conversations",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Crisp",
+      "providerKey": "crisp",
+      "tags": [
+        "crisp",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:crisp_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère une conversation.",
+      "args": {
+        "title": "Récupérer une conversation",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "websiteId",
+            "label": "ID site",
+            "description": "Identifiant du site.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "sessionId",
+            "label": "ID session",
+            "description": "Session conversation.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Conversations"
+    },
+    {
+      "key": "crisp_messages_list",
+      "name": "crispMessagesList",
+      "schemaVersion": 2,
+      "title": "Lister les messages",
+      "subtitle": "Messages",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Crisp",
+      "providerKey": "crisp",
+      "tags": [
+        "crisp",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:crisp_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les messages d'une conversation.",
+      "args": {
+        "title": "Lister les messages",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "websiteId",
+            "label": "ID site",
+            "description": "Identifiant du site.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "sessionId",
+            "label": "ID session",
+            "description": "Session conversation.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "pageSize",
+            "label": "Taille page",
+            "description": "Nombre d'éléments.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "cursor",
+            "label": "Curseur",
+            "description": "Curseur de pagination.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Messages"
+    },
+    {
+      "key": "crisp_message_send",
+      "name": "crispMessageSend",
+      "schemaVersion": 2,
+      "title": "Envoyer un message",
+      "subtitle": "Messages",
+      "icon": "fa-solid fa-paper-plane",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Crisp",
+      "providerKey": "crisp",
+      "tags": [
+        "crisp",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:crisp_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Envoie un message dans une conversation.",
+      "args": {
+        "title": "Envoyer un message",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "websiteId",
+            "label": "ID site",
+            "description": "Identifiant du site.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "sessionId",
+            "label": "ID session",
+            "description": "Session conversation.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "content",
+            "label": "Contenu",
+            "description": "Contenu du message.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "from",
+            "label": "Émetteur",
+            "description": "operator ou user.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "type",
+            "label": "Type",
+            "description": "text par défaut.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Messages"
+    },
+    {
+      "key": "crisp_people_profiles_list",
+      "name": "crispPeopleProfilesList",
+      "schemaVersion": 2,
+      "title": "Lister les contacts",
+      "subtitle": "Contacts",
+      "icon": "fa-solid fa-address-book",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Crisp",
+      "providerKey": "crisp",
+      "tags": [
+        "crisp",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:crisp_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les profils people.",
+      "args": {
+        "title": "Lister les contacts",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "websiteId",
+            "label": "ID site",
+            "description": "Identifiant du site.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "search",
+            "label": "Recherche",
+            "description": "Recherche contact.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "pageSize",
+            "label": "Taille page",
+            "description": "Nombre d'éléments.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "cursor",
+            "label": "Curseur",
+            "description": "Curseur de pagination.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Contacts"
+    },
+    {
+      "key": "crisp_people_profile_get",
+      "name": "crispPeopleProfileGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un contact",
+      "subtitle": "Contacts",
+      "icon": "fa-solid fa-user",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Crisp",
+      "providerKey": "crisp",
+      "tags": [
+        "crisp",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:crisp_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère un profil people.",
+      "args": {
+        "title": "Récupérer un contact",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "websiteId",
+            "label": "ID site",
+            "description": "Identifiant du site.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "peopleId",
+            "label": "ID contact",
+            "description": "Identifiant people.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Contacts"
+    },
+    {
+      "key": "crisp_people_profile_create",
+      "name": "crispPeopleProfileCreate",
+      "schemaVersion": 2,
+      "title": "Créer un contact",
+      "subtitle": "Contacts",
+      "icon": "fa-solid fa-user-plus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Crisp",
+      "providerKey": "crisp",
+      "tags": [
+        "crisp",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:crisp_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Crée un profil people.",
+      "args": {
+        "title": "Créer un contact",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "websiteId",
+            "label": "ID site",
+            "description": "Identifiant du site.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "email",
+            "label": "Email",
+            "description": "Email du contact.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "nickname",
+            "label": "Nom",
+            "description": "Nom affiché.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "data",
+            "label": "Données JSON",
+            "description": "Données profil optionnelles.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Contacts"
+    },
+    {
+      "key": "crisp_people_profile_update",
+      "name": "crispPeopleProfileUpdate",
+      "schemaVersion": 2,
+      "title": "Mettre à jour un contact",
+      "subtitle": "Contacts",
+      "icon": "fa-solid fa-user-pen",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Crisp",
+      "providerKey": "crisp",
+      "tags": [
+        "crisp",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:crisp_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Met à jour un profil people.",
+      "args": {
+        "title": "Mettre à jour un contact",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "websiteId",
+            "label": "ID site",
+            "description": "Identifiant du site.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "peopleId",
+            "label": "ID contact",
+            "description": "Identifiant people.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "email",
+            "label": "Email",
+            "description": "Email.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "nickname",
+            "label": "Nom",
+            "description": "Nom affiché.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "data",
+            "label": "Données JSON",
+            "description": "Données profil.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Contacts"
+    },
+    {
+      "key": "crisp_operators_list",
+      "name": "crispOperatorsList",
+      "schemaVersion": 2,
+      "title": "Lister les opérateurs",
+      "subtitle": "Équipe",
+      "icon": "fa-solid fa-users",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Crisp",
+      "providerKey": "crisp",
+      "tags": [
+        "crisp",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:crisp_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les opérateurs du site.",
+      "args": {
+        "title": "Lister les opérateurs",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "websiteId",
+            "label": "ID site",
+            "description": "Identifiant du site.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Équipe"
+    }
+  ]
+}
