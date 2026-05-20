@@ -1,0 +1,556 @@
+{
+  "repo": {
+    "name": "perplexity",
+    "type": "local",
+    "label": "Perplexity"
+  },
+  "variables": {
+    "perplexity_response": {
+      "title": "Réponse Perplexity",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom ou modèle utilisé.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "url",
+          "key": "url",
+          "label": "URL",
+          "description": "URL retournée.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "text",
+          "label": "Texte",
+          "description": "Texte principal retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "result_json",
+          "label": "Résultat JSON",
+          "description": "Résultat normalisé au format JSON.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "perplexity_items": {
+      "title": "Perplexity - liste",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre d'éléments retournés.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextCursor",
+          "label": "Curseur suivant",
+          "description": "Curseur de pagination suivant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Éléments",
+          "description": "Liste des éléments retournés.",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "url",
+              "key": "url",
+              "label": "URL",
+              "description": "URL.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "result_json",
+              "label": "Données JSON",
+              "description": "Données normalisées au format JSON.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "perplexity",
+      "name": "Perplexity",
+      "title": "Perplexity",
+      "iconClass": "fa-solid fa-magnifying-glass",
+      "iconUrl": "https://cdn.simpleicons.org/perplexity",
+      "color": "#e8f8fa",
+      "tags": [
+        "perplexity",
+        "recherche",
+        "ia"
+      ],
+      "categories": [
+        "IA"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Perplexity",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "apiKey",
+            "label": "Clé API Perplexity",
+            "description": "Clé API Perplexity.",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "baseUrl",
+            "label": "URL de base",
+            "description": "URL de base de l'API.",
+            "col": {
+              "xs": 24
+            },
+            "defaultValue": "https://api.perplexity.ai"
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "perplexity_chat_create",
+      "name": "perplexityChatCreate",
+      "schemaVersion": 2,
+      "title": "Créer une réponse de recherche",
+      "subtitle": "Recherche",
+      "icon": "fa-solid fa-magnifying-glass",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Perplexity",
+      "providerKey": "perplexity",
+      "tags": [
+        "perplexity",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:perplexity_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Interroge Perplexity avec un prompt et retourne la réponse sourcée.",
+      "args": {
+        "title": "Créer une réponse de recherche",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "prompt",
+            "label": "Prompt",
+            "description": "Instruction ou question à envoyer.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Modèle",
+            "description": "Nom du modèle à utiliser.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "messages",
+            "label": "Messages JSON",
+            "description": "Tableau JSON de messages compatible chat.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "maxTokens",
+            "label": "Tokens maximum",
+            "description": "Nombre maximum de tokens en sortie.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "temperature",
+            "label": "Température",
+            "description": "Créativité de la génération.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "responseFormat",
+            "label": "Format de réponse",
+            "description": "Optionnel : json_object pour demander du JSON.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Recherche"
+    },
+    {
+      "key": "perplexity_search_run",
+      "name": "perplexitySearchRun",
+      "schemaVersion": 2,
+      "title": "Rechercher sur le web",
+      "subtitle": "Recherche",
+      "icon": "fa-solid fa-magnifying-glass",
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "perplexity",
+      "tags": [
+        "perplexity",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:perplexity_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lance une recherche Perplexity et retourne les résultats.",
+      "args": {
+        "title": "Rechercher sur le web",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "query",
+            "label": "Requête",
+            "description": "Requête de recherche.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre de résultats.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "options",
+            "label": "Options JSON",
+            "description": "Options de recherche supplémentaires.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Recherche"
+    },
+    {
+      "key": "perplexity_async_chat_create",
+      "name": "perplexityAsyncChatCreate",
+      "schemaVersion": 2,
+      "title": "Créer une recherche longue",
+      "subtitle": "Async",
+      "icon": "fa-solid fa-clock",
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "perplexity",
+      "tags": [
+        "perplexity",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:perplexity_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Démarre une complétion asynchrone pour les recherches longues.",
+      "args": {
+        "title": "Créer une recherche longue",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "prompt",
+            "label": "Prompt",
+            "description": "Instruction ou question à envoyer.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Modèle",
+            "description": "Modèle Perplexity.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "messages",
+            "label": "Messages JSON",
+            "description": "Messages chat optionnels.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "maxTokens",
+            "label": "Tokens maximum",
+            "description": "Nombre maximum de tokens.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Async"
+    },
+    {
+      "key": "perplexity_async_chat_get",
+      "name": "perplexityAsyncChatGet",
+      "schemaVersion": 2,
+      "title": "Récupérer une recherche longue",
+      "subtitle": "Async",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "perplexity",
+      "tags": [
+        "perplexity",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:perplexity_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère une complétion asynchrone.",
+      "args": {
+        "title": "Récupérer une recherche longue",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "requestId",
+            "label": "ID requête",
+            "description": "Identifiant de la requête asynchrone.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Async"
+    }
+  ]
+}

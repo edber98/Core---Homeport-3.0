@@ -1,6 +1,6 @@
 ---
 name: kinn-connector-creator
-description: 'Create or extend Kinn/Homeport workflow builder connectors in API/src/plugins/repos. Use when asked in French or English to add a connector, integration, provider, plugin, API app, actions, triggers, or endpoints in Kinn. Enforces the Notion-style connector structure: manifest.json plus one handler file per action, shared utils.js, useful workflow-only endpoints, complete output schemas, and validation.'
+description: 'Create or extend Kinn/Homeport workflow builder connectors in API/src/plugins/repos. Use when asked in French or English to add a connector, integration, provider, plugin, API app, actions, triggers, or endpoints in Kinn. Enforces the Notion-style connector structure, complete coverage of automation-useful API surfaces, one handler file per action, shared utils.js, complete output schemas, and validation.'
 ---
 
 # Kinn Connector Creator
@@ -39,20 +39,27 @@ Prefer the Notion connector style, not the GitLab monolithic style:
    - several Notion action files
    - a broad connector like `gitlab` only to understand endpoint coverage and resource grouping.
 2. Research the target API from official/current docs when endpoint details are not already provided. Keep source notes in your reasoning, but do not paste large docs into the repo.
-3. Select only endpoints that are useful in workflow automation. Do not mirror the entire public API.
-4. Create or update `API/src/plugins/repos/{connector}` using the Notion-style file layout.
-5. Implement `manifest.json`, `functions/utils.js`, and one handler file per action.
-6. Run the validation script bundled with this skill:
+3. Build a coverage inventory before editing:
+   - primary workflow objects;
+   - lifecycle actions for each object;
+   - workflow-specific actions such as send, comment, assign, tag, move, trigger, search, crawl, transcribe, generate, embed, deploy, query, or upsert;
+   - incoming webhook/event surfaces;
+   - intentionally excluded surfaces with a short reason.
+4. Implement complete useful automation coverage from that inventory. Do not mirror the entire public API, but do not stop at a thin starter subset when obvious workflow actions exist.
+5. Create or update `API/src/plugins/repos/{connector}` using the Notion-style file layout.
+6. Implement `manifest.json`, `functions/utils.js`, and one handler file per action.
+7. Run the validation script bundled with this skill:
 
 ```bash
 node .agents/skills/kinn-connector-creator/scripts/check-connector.js {connector}
 ```
 
-7. Run any relevant project tests or import checks available locally. If none exist, state that validation was limited to static checks.
+8. Run any relevant project tests or import checks available locally. If none exist, state that validation was limited to static checks.
+9. In the final answer, state the coverage level honestly: list the resource groups implemented and call out useful automation surfaces intentionally left out because they are unsafe, admin-only, duplicative, unsupported by docs, or requested for a later pass.
 
 ## What Counts as Useful
 
-Include nodes that a workflow builder user can combine with other steps:
+Include every documented, stable node that a workflow builder user can realistically combine with other steps:
 
 - list/search/get records;
 - create/update/delete/archive/restore records;
@@ -60,6 +67,9 @@ Include nodes that a workflow builder user can combine with other steps:
 - upload/download/list files when file handling is supported;
 - trigger/webhook event nodes when the API supports incoming events;
 - relationship actions that unlock automation, such as assigning, linking, moving, tagging, changing status.
+- provider-specific automation verbs, such as run, crawl, scrape, extract, generate, transcribe, synthesize, deploy, upsert, query, rerank, embed, monitor, alert, or trigger, when those are central to the product.
+
+Coverage should be complete for the useful surface of the provider, not merely representative. For a connector with central objects like issues, contacts, projects, tasks, files, runs, deployments, transcripts, vectors, or messages, include the supported lifecycle and action nodes users would naturally expect in workflows.
 
 Usually exclude:
 
@@ -97,4 +107,3 @@ Load only what you need:
 - [references/manifest-patterns.md](references/manifest-patterns.md): manifest, provider, variable, and node template patterns.
 - [references/handler-patterns.md](references/handler-patterns.md): `utils.js` and per-action handler patterns.
 - [references/validation.md](references/validation.md): checks before handing off the connector.
-

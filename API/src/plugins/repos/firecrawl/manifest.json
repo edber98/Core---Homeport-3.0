@@ -1,0 +1,953 @@
+{
+  "repo": {
+    "name": "firecrawl",
+    "type": "local",
+    "label": "Firecrawl"
+  },
+  "variables": {
+    "firecrawl_response": {
+      "title": "Réponse Firecrawl",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom ou modèle utilisé.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "url",
+          "key": "url",
+          "label": "URL",
+          "description": "URL retournée.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "text",
+          "label": "Texte",
+          "description": "Texte principal retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "result_json",
+          "label": "Résultat JSON",
+          "description": "Résultat normalisé au format JSON.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "firecrawl_items": {
+      "title": "Firecrawl - liste",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre d'éléments retournés.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextCursor",
+          "label": "Curseur suivant",
+          "description": "Curseur de pagination suivant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Éléments",
+          "description": "Liste des éléments retournés.",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "url",
+              "key": "url",
+              "label": "URL",
+              "description": "URL.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "result_json",
+              "label": "Données JSON",
+              "description": "Données normalisées au format JSON.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "firecrawl",
+      "name": "Firecrawl",
+      "title": "Firecrawl",
+      "iconClass": "fa-solid fa-fire",
+      "iconUrl": "https://firecrawl.dev/favicon.ico",
+      "color": "#fdecec",
+      "tags": [
+        "firecrawl",
+        "scraping"
+      ],
+      "categories": [
+        "IA"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Firecrawl",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "apiKey",
+            "label": "Clé API Firecrawl",
+            "description": "Clé API Firecrawl.",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "baseUrl",
+            "label": "URL de base",
+            "description": "URL de base de l'API.",
+            "col": {
+              "xs": 24
+            },
+            "defaultValue": "https://api.firecrawl.dev"
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "firecrawl_page_scrape",
+      "name": "firecrawlPageScrape",
+      "schemaVersion": 2,
+      "title": "Scraper une page",
+      "subtitle": "Scraping",
+      "icon": "fa-solid fa-file-lines",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Firecrawl",
+      "providerKey": "firecrawl",
+      "tags": [
+        "firecrawl",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:firecrawl_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Extrait le contenu d'une URL.",
+      "args": {
+        "title": "Scraper une page",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "url",
+            "key": "url",
+            "label": "URL",
+            "description": "URL à scraper.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "formats",
+            "label": "Formats JSON",
+            "description": "Tableau JSON des formats souhaités.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "options",
+            "label": "Options JSON",
+            "description": "Options Firecrawl supplémentaires.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Scraping"
+    },
+    {
+      "key": "firecrawl_site_map",
+      "name": "firecrawlSiteMap",
+      "schemaVersion": 2,
+      "title": "Cartographier un site",
+      "subtitle": "Découverte",
+      "icon": "fa-solid fa-sitemap",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Firecrawl",
+      "providerKey": "firecrawl",
+      "tags": [
+        "firecrawl",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:firecrawl_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Découvre les URLs d'un site.",
+      "args": {
+        "title": "Cartographier un site",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "url",
+            "key": "url",
+            "label": "URL",
+            "description": "URL de départ.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre maximum d'URLs.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "options",
+            "label": "Options JSON",
+            "description": "Options Firecrawl supplémentaires.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Découverte"
+    },
+    {
+      "key": "firecrawl_crawl_start",
+      "name": "firecrawlCrawlStart",
+      "schemaVersion": 2,
+      "title": "Démarrer un crawl",
+      "subtitle": "Crawl",
+      "icon": "fa-solid fa-play",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Firecrawl",
+      "providerKey": "firecrawl",
+      "tags": [
+        "firecrawl",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:firecrawl_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Démarre un crawl asynchrone.",
+      "args": {
+        "title": "Démarrer un crawl",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "url",
+            "key": "url",
+            "label": "URL",
+            "description": "URL de départ.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre maximum de pages.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "options",
+            "label": "Options JSON",
+            "description": "Options Firecrawl supplémentaires.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Crawl"
+    },
+    {
+      "key": "firecrawl_crawl_get",
+      "name": "firecrawlCrawlGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un crawl",
+      "subtitle": "Crawl",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Firecrawl",
+      "providerKey": "firecrawl",
+      "tags": [
+        "firecrawl",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:firecrawl_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère l'état et les résultats d'un crawl.",
+      "args": {
+        "title": "Récupérer un crawl",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "crawlId",
+            "label": "ID du crawl",
+            "description": "Identifiant du crawl.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Crawl"
+    },
+    {
+      "key": "firecrawl_search_run",
+      "name": "firecrawlSearchRun",
+      "schemaVersion": 2,
+      "title": "Rechercher et scraper",
+      "subtitle": "Recherche",
+      "icon": "fa-solid fa-magnifying-glass",
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "firecrawl",
+      "tags": [
+        "firecrawl",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:firecrawl_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Recherche le web et peut scraper les résultats.",
+      "args": {
+        "title": "Rechercher et scraper",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "query",
+            "label": "Requête",
+            "description": "Requête de recherche.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre de résultats.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "options",
+            "label": "Options JSON",
+            "description": "Options Firecrawl supplémentaires.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Recherche"
+    },
+    {
+      "key": "firecrawl_extract_run",
+      "name": "firecrawlExtractRun",
+      "schemaVersion": 2,
+      "title": "Extraire des données",
+      "subtitle": "Extraction",
+      "icon": "fa-solid fa-wand-magic-sparkles",
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "firecrawl",
+      "tags": [
+        "firecrawl",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:firecrawl_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Extrait des données structurées depuis des URLs.",
+      "args": {
+        "title": "Extraire des données",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "urls",
+            "label": "URLs JSON",
+            "description": "Tableau JSON d'URLs.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "prompt",
+            "label": "Prompt",
+            "description": "Instruction d'extraction.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "schema",
+            "label": "Schéma JSON",
+            "description": "Schéma JSON attendu.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "options",
+            "label": "Options JSON",
+            "description": "Options Firecrawl supplémentaires.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Extraction"
+    },
+    {
+      "key": "firecrawl_batch_scrape_start",
+      "name": "firecrawlBatchScrapeStart",
+      "schemaVersion": 2,
+      "title": "Démarrer un batch scrape",
+      "subtitle": "Batch",
+      "icon": "fa-solid fa-layer-group",
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "firecrawl",
+      "tags": [
+        "firecrawl",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:firecrawl_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Démarre un scraping asynchrone de plusieurs URLs.",
+      "args": {
+        "title": "Démarrer un batch scrape",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "urls",
+            "label": "URLs JSON",
+            "description": "Tableau JSON d'URLs.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "options",
+            "label": "Options JSON",
+            "description": "Options de scraping supplémentaires.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Batch"
+    },
+    {
+      "key": "firecrawl_batch_scrape_get",
+      "name": "firecrawlBatchScrapeGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un batch scrape",
+      "subtitle": "Batch",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "firecrawl",
+      "tags": [
+        "firecrawl",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:firecrawl_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère l'état et les résultats d'un batch scrape.",
+      "args": {
+        "title": "Récupérer un batch scrape",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "jobId",
+            "label": "ID job",
+            "description": "Identifiant du batch.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Batch"
+    },
+    {
+      "key": "firecrawl_batch_scrape_cancel",
+      "name": "firecrawlBatchScrapeCancel",
+      "schemaVersion": 2,
+      "title": "Annuler un batch scrape",
+      "subtitle": "Batch",
+      "icon": "fa-solid fa-ban",
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "firecrawl",
+      "tags": [
+        "firecrawl",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:firecrawl_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Annule un batch scrape en cours.",
+      "args": {
+        "title": "Annuler un batch scrape",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "jobId",
+            "label": "ID job",
+            "description": "Identifiant du batch.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Batch"
+    },
+    {
+      "key": "firecrawl_crawl_cancel",
+      "name": "firecrawlCrawlCancel",
+      "schemaVersion": 2,
+      "title": "Annuler un crawl",
+      "subtitle": "Crawl",
+      "icon": "fa-solid fa-ban",
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "firecrawl",
+      "tags": [
+        "firecrawl",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:firecrawl_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Annule un crawl en cours.",
+      "args": {
+        "title": "Annuler un crawl",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "crawlId",
+            "label": "ID du crawl",
+            "description": "Identifiant du crawl.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Crawl"
+    }
+  ]
+}

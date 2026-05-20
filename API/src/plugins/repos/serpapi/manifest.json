@@ -1,0 +1,467 @@
+{
+  "repo": {
+    "name": "serpapi",
+    "type": "local",
+    "label": "SerpAPI"
+  },
+  "variables": {
+    "serpapi_response": {
+      "title": "Réponse SerpAPI",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom ou modèle utilisé.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "url",
+          "key": "url",
+          "label": "URL",
+          "description": "URL retournée.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "text",
+          "label": "Texte",
+          "description": "Texte principal retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "result_json",
+          "label": "Résultat JSON",
+          "description": "Résultat normalisé au format JSON.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "serpapi_items": {
+      "title": "SerpAPI - liste",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre d'éléments retournés.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextCursor",
+          "label": "Curseur suivant",
+          "description": "Curseur de pagination suivant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Éléments",
+          "description": "Liste des éléments retournés.",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "url",
+              "key": "url",
+              "label": "URL",
+              "description": "URL.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "result_json",
+              "label": "Données JSON",
+              "description": "Données normalisées au format JSON.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "serpapi",
+      "name": "SerpAPI",
+      "title": "SerpAPI",
+      "iconClass": "fa-solid fa-magnifying-glass",
+      "iconUrl": "https://serpapi.com/favicon.ico",
+      "color": "#edf4ff",
+      "tags": [
+        "serpapi",
+        "recherche"
+      ],
+      "categories": [
+        "Recherche"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants SerpAPI",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "apiKey",
+            "label": "Clé API SerpAPI",
+            "description": "Clé API SerpAPI.",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "baseUrl",
+            "label": "URL de base",
+            "description": "URL de base de l'API.",
+            "col": {
+              "xs": 24
+            },
+            "defaultValue": "https://serpapi.com"
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "serpapi_search_run",
+      "name": "serpapiSearchRun",
+      "schemaVersion": 2,
+      "title": "Lancer une recherche",
+      "subtitle": "Recherche",
+      "icon": "fa-solid fa-magnifying-glass",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SerpAPI",
+      "providerKey": "serpapi",
+      "tags": [
+        "serpapi",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:serpapi_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Exécute une recherche via SerpAPI.",
+      "args": {
+        "title": "Lancer une recherche",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "query",
+            "label": "Requête",
+            "description": "Requête de recherche.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "engine",
+            "label": "Moteur",
+            "description": "Moteur SerpAPI, par exemple google.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "location",
+            "label": "Localisation",
+            "description": "Localisation de recherche.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "hl",
+            "label": "Langue",
+            "description": "Code langue.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "gl",
+            "label": "Pays",
+            "description": "Code pays.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Recherche"
+    },
+    {
+      "key": "serpapi_search_results_list",
+      "name": "serpapiSearchResultsList",
+      "schemaVersion": 2,
+      "title": "Lister les résultats organiques",
+      "subtitle": "Recherche",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SerpAPI",
+      "providerKey": "serpapi",
+      "tags": [
+        "serpapi",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:serpapi_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Retourne les résultats organiques d'une recherche.",
+      "args": {
+        "title": "Lister les résultats organiques",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "query",
+            "label": "Requête",
+            "description": "Requête de recherche.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "engine",
+            "label": "Moteur",
+            "description": "Moteur SerpAPI, par exemple google.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "num",
+            "label": "Nombre",
+            "description": "Nombre de résultats.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Recherche"
+    },
+    {
+      "key": "serpapi_search_archive_get",
+      "name": "serpapiSearchArchiveGet",
+      "schemaVersion": 2,
+      "title": "Récupérer une recherche archivée",
+      "subtitle": "Recherche",
+      "icon": "fa-solid fa-box-archive",
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "serpapi",
+      "tags": [
+        "serpapi",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:serpapi_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère une recherche SerpAPI par ID.",
+      "args": {
+        "title": "Récupérer une recherche archivée",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "searchId",
+            "label": "ID recherche",
+            "description": "Identifiant de recherche SerpAPI.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "output",
+            "label": "Sortie",
+            "description": "json, html ou json_with_pixel_position.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Recherche"
+    }
+  ]
+}

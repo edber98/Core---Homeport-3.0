@@ -1,0 +1,778 @@
+{
+  "repo": {
+    "name": "assemblyai",
+    "type": "local",
+    "label": "AssemblyAI"
+  },
+  "variables": {
+    "assemblyai_response": {
+      "title": "Réponse AssemblyAI",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom ou modèle utilisé.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "url",
+          "key": "url",
+          "label": "URL",
+          "description": "URL retournée.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "text",
+          "label": "Texte",
+          "description": "Texte principal retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "result_json",
+          "label": "Résultat JSON",
+          "description": "Résultat normalisé au format JSON.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "assemblyai_items": {
+      "title": "AssemblyAI - liste",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre d'éléments retournés.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextCursor",
+          "label": "Curseur suivant",
+          "description": "Curseur de pagination suivant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Éléments",
+          "description": "Liste des éléments retournés.",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "url",
+              "key": "url",
+              "label": "URL",
+              "description": "URL.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "result_json",
+              "label": "Données JSON",
+              "description": "Données normalisées au format JSON.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "assemblyai",
+      "name": "AssemblyAI",
+      "title": "AssemblyAI",
+      "iconClass": "fa-solid fa-file-audio",
+      "iconUrl": "https://cdn.jsdelivr.net/npm/@lobehub/icons-static-png@1.90.0/dark/assemblyai-color.png",
+      "color": "#eef0f4",
+      "tags": [
+        "assemblyai",
+        "transcription"
+      ],
+      "categories": [
+        "IA"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants AssemblyAI",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "apiKey",
+            "label": "Clé API AssemblyAI",
+            "description": "Clé API AssemblyAI.",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "baseUrl",
+            "label": "URL de base",
+            "description": "URL de base de l'API.",
+            "col": {
+              "xs": 24
+            },
+            "defaultValue": "https://api.assemblyai.com/v2"
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "assemblyai_transcript_create",
+      "name": "assemblyaiTranscriptCreate",
+      "schemaVersion": 2,
+      "title": "Créer une transcription",
+      "subtitle": "Transcriptions",
+      "icon": "fa-solid fa-file-audio",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AssemblyAI",
+      "providerKey": "assemblyai",
+      "tags": [
+        "assemblyai",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:assemblyai_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lance la transcription d'un fichier audio par URL.",
+      "args": {
+        "title": "Créer une transcription",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "url",
+            "key": "audioUrl",
+            "label": "URL audio",
+            "description": "URL du fichier audio.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "languageCode",
+            "label": "Langue",
+            "description": "Code langue optionnel.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "options",
+            "label": "Options JSON",
+            "description": "Options de transcription supplémentaires.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Transcriptions"
+    },
+    {
+      "key": "assemblyai_transcript_get",
+      "name": "assemblyaiTranscriptGet",
+      "schemaVersion": 2,
+      "title": "Récupérer une transcription",
+      "subtitle": "Transcriptions",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AssemblyAI",
+      "providerKey": "assemblyai",
+      "tags": [
+        "assemblyai",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:assemblyai_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère une transcription.",
+      "args": {
+        "title": "Récupérer une transcription",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "transcriptId",
+            "label": "ID transcription",
+            "description": "Identifiant de la transcription.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Transcriptions"
+    },
+    {
+      "key": "assemblyai_transcripts_list",
+      "name": "assemblyaiTranscriptsList",
+      "schemaVersion": 2,
+      "title": "Lister les transcriptions",
+      "subtitle": "Transcriptions",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AssemblyAI",
+      "providerKey": "assemblyai",
+      "tags": [
+        "assemblyai",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:assemblyai_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les transcriptions récentes.",
+      "args": {
+        "title": "Lister les transcriptions",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre d'éléments.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "status",
+            "label": "Statut",
+            "description": "Filtre de statut.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Transcriptions"
+    },
+    {
+      "key": "assemblyai_transcript_delete",
+      "name": "assemblyaiTranscriptDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer une transcription",
+      "subtitle": "Transcriptions",
+      "icon": "fa-solid fa-trash",
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "assemblyai",
+      "tags": [
+        "assemblyai",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:assemblyai_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Supprime une transcription.",
+      "args": {
+        "title": "Supprimer une transcription",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "transcriptId",
+            "label": "ID transcription",
+            "description": "Identifiant de la transcription.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Transcriptions"
+    },
+    {
+      "key": "assemblyai_transcript_sentences_get",
+      "name": "assemblyaiTranscriptSentencesGet",
+      "schemaVersion": 2,
+      "title": "Récupérer les phrases",
+      "subtitle": "Transcriptions",
+      "icon": "fa-solid fa-align-left",
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "assemblyai",
+      "tags": [
+        "assemblyai",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:assemblyai_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère les phrases horodatées d'une transcription.",
+      "args": {
+        "title": "Récupérer les phrases",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "transcriptId",
+            "label": "ID transcription",
+            "description": "Identifiant de la transcription.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Transcriptions"
+    },
+    {
+      "key": "assemblyai_transcript_paragraphs_get",
+      "name": "assemblyaiTranscriptParagraphsGet",
+      "schemaVersion": 2,
+      "title": "Récupérer les paragraphes",
+      "subtitle": "Transcriptions",
+      "icon": "fa-solid fa-paragraph",
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "assemblyai",
+      "tags": [
+        "assemblyai",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:assemblyai_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère les paragraphes horodatés d'une transcription.",
+      "args": {
+        "title": "Récupérer les paragraphes",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "transcriptId",
+            "label": "ID transcription",
+            "description": "Identifiant de la transcription.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Transcriptions"
+    },
+    {
+      "key": "assemblyai_transcript_subtitles_get",
+      "name": "assemblyaiTranscriptSubtitlesGet",
+      "schemaVersion": 2,
+      "title": "Récupérer les sous-titres",
+      "subtitle": "Transcriptions",
+      "icon": "fa-solid fa-closed-captioning",
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "assemblyai",
+      "tags": [
+        "assemblyai",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:assemblyai_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère les sous-titres SRT ou VTT.",
+      "args": {
+        "title": "Récupérer les sous-titres",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "transcriptId",
+            "label": "ID transcription",
+            "description": "Identifiant de la transcription.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "format",
+            "label": "Format",
+            "description": "srt ou vtt.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Transcriptions"
+    },
+    {
+      "key": "assemblyai_lemur_task_create",
+      "name": "assemblyaiLemurTaskCreate",
+      "schemaVersion": 2,
+      "title": "Lancer une tâche LeMUR",
+      "subtitle": "LeMUR",
+      "icon": "fa-solid fa-brain",
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "assemblyai",
+      "tags": [
+        "assemblyai",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:assemblyai_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Analyse une ou plusieurs transcriptions avec LeMUR.",
+      "args": {
+        "title": "Lancer une tâche LeMUR",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "transcriptIds",
+            "label": "IDs JSON",
+            "description": "Tableau JSON d'IDs de transcription.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "prompt",
+            "label": "Prompt",
+            "description": "Instruction d'analyse.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Modèle",
+            "description": "Modèle LeMUR.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "context",
+            "label": "Contexte",
+            "description": "Contexte optionnel.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "LeMUR"
+    }
+  ]
+}

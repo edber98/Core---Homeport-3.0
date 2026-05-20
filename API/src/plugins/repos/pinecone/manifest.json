@@ -1,0 +1,756 @@
+{
+  "repo": {
+    "name": "pinecone",
+    "type": "local",
+    "label": "Pinecone"
+  },
+  "variables": {
+    "pinecone_response": {
+      "title": "Réponse Pinecone",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom ou modèle utilisé.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "url",
+          "key": "url",
+          "label": "URL",
+          "description": "URL retournée.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "text",
+          "label": "Texte",
+          "description": "Texte principal retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "result_json",
+          "label": "Résultat JSON",
+          "description": "Résultat normalisé au format JSON.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "pinecone_items": {
+      "title": "Pinecone - liste",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre d'éléments retournés.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextCursor",
+          "label": "Curseur suivant",
+          "description": "Curseur de pagination suivant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Éléments",
+          "description": "Liste des éléments retournés.",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "url",
+              "key": "url",
+              "label": "URL",
+              "description": "URL.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "result_json",
+              "label": "Données JSON",
+              "description": "Données normalisées au format JSON.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "pinecone",
+      "name": "Pinecone",
+      "title": "Pinecone",
+      "iconClass": "fa-solid fa-database",
+      "iconUrl": "https://www.pinecone.io/favicon.ico",
+      "color": "#f2f2f2",
+      "tags": [
+        "pinecone",
+        "vecteurs"
+      ],
+      "categories": [
+        "Données"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Pinecone",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "apiKey",
+            "label": "Clé API Pinecone",
+            "description": "Clé API Pinecone.",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "baseUrl",
+            "label": "Hôte d'index",
+            "description": "URL complète de l'hôte d'index Pinecone.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "pinecone_vectors_upsert",
+      "name": "pineconeVectorsUpsert",
+      "schemaVersion": 2,
+      "title": "Upserter des vecteurs",
+      "subtitle": "Vecteurs",
+      "icon": "fa-solid fa-upload",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Pinecone",
+      "providerKey": "pinecone",
+      "tags": [
+        "pinecone",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pinecone_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Insère ou met à jour des vecteurs dans un index.",
+      "args": {
+        "title": "Upserter des vecteurs",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "vectors",
+            "label": "Vecteurs JSON",
+            "description": "Tableau JSON de vecteurs Pinecone.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "namespace",
+            "label": "Namespace",
+            "description": "Namespace Pinecone.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Vecteurs"
+    },
+    {
+      "key": "pinecone_vectors_query",
+      "name": "pineconeVectorsQuery",
+      "schemaVersion": 2,
+      "title": "Rechercher des vecteurs",
+      "subtitle": "Vecteurs",
+      "icon": "fa-solid fa-magnifying-glass",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Pinecone",
+      "providerKey": "pinecone",
+      "tags": [
+        "pinecone",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pinecone_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Recherche les vecteurs les plus proches.",
+      "args": {
+        "title": "Rechercher des vecteurs",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "vector",
+            "label": "Vecteur JSON",
+            "description": "Vecteur de requête.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "topK",
+            "label": "Top K",
+            "description": "Nombre de résultats.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "namespace",
+            "label": "Namespace",
+            "description": "Namespace Pinecone.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "filter",
+            "label": "Filtre JSON",
+            "description": "Filtre metadata optionnel.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Vecteurs"
+    },
+    {
+      "key": "pinecone_vectors_fetch",
+      "name": "pineconeVectorsFetch",
+      "schemaVersion": 2,
+      "title": "Récupérer des vecteurs",
+      "subtitle": "Vecteurs",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Pinecone",
+      "providerKey": "pinecone",
+      "tags": [
+        "pinecone",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pinecone_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère des vecteurs par ID.",
+      "args": {
+        "title": "Récupérer des vecteurs",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "ids",
+            "label": "IDs JSON",
+            "description": "Tableau JSON d'identifiants.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "namespace",
+            "label": "Namespace",
+            "description": "Namespace Pinecone.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Vecteurs"
+    },
+    {
+      "key": "pinecone_vectors_delete",
+      "name": "pineconeVectorsDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer des vecteurs",
+      "subtitle": "Vecteurs",
+      "icon": "fa-solid fa-trash",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Pinecone",
+      "providerKey": "pinecone",
+      "tags": [
+        "pinecone",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pinecone_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Supprime des vecteurs par ID.",
+      "args": {
+        "title": "Supprimer des vecteurs",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "ids",
+            "label": "IDs JSON",
+            "description": "Tableau JSON d'identifiants.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "namespace",
+            "label": "Namespace",
+            "description": "Namespace Pinecone.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Vecteurs"
+    },
+    {
+      "key": "pinecone_index_stats_get",
+      "name": "pineconeIndexStatsGet",
+      "schemaVersion": 2,
+      "title": "Lire les statistiques",
+      "subtitle": "Index",
+      "icon": "fa-solid fa-chart-simple",
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "pinecone",
+      "tags": [
+        "pinecone",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pinecone_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère les statistiques d'un index Pinecone.",
+      "args": {
+        "title": "Lire les statistiques",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "filter",
+            "label": "Filtre JSON",
+            "description": "Filtre metadata optionnel.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Index"
+    },
+    {
+      "key": "pinecone_vectors_list",
+      "name": "pineconeVectorsList",
+      "schemaVersion": 2,
+      "title": "Lister les IDs vecteurs",
+      "subtitle": "Vecteurs",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "pinecone",
+      "tags": [
+        "pinecone",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pinecone_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les identifiants de vecteurs d'un namespace.",
+      "args": {
+        "title": "Lister les IDs vecteurs",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "namespace",
+            "label": "Namespace",
+            "description": "Namespace Pinecone.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "prefix",
+            "label": "Préfixe",
+            "description": "Préfixe d'ID.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre d'IDs.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "paginationToken",
+            "label": "Jeton page",
+            "description": "Jeton de pagination.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Vecteurs"
+    },
+    {
+      "key": "pinecone_vector_update",
+      "name": "pineconeVectorUpdate",
+      "schemaVersion": 2,
+      "title": "Mettre à jour un vecteur",
+      "subtitle": "Vecteurs",
+      "icon": "fa-solid fa-pen",
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "pinecone",
+      "tags": [
+        "pinecone",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pinecone_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Met à jour les valeurs ou métadonnées d'un vecteur.",
+      "args": {
+        "title": "Mettre à jour un vecteur",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "id",
+            "label": "ID vecteur",
+            "description": "Identifiant du vecteur.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "values",
+            "label": "Valeurs JSON",
+            "description": "Nouveau vecteur optionnel.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "metadata",
+            "label": "Métadonnées JSON",
+            "description": "Métadonnées à définir.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "namespace",
+            "label": "Namespace",
+            "description": "Namespace Pinecone.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Vecteurs"
+    }
+  ]
+}
