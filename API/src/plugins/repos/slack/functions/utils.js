@@ -1,3 +1,14 @@
+async function readJsonResponse(res) {
+  if (res && typeof res.json === "function") return res.json();
+  const text = res && typeof res.text === "function" ? await res.text() : "";
+  if (!text) return {};
+  try {
+    return JSON.parse(text);
+  } catch {
+    return {};
+  }
+}
+
 async function slackRequest(opts, method, body = {}) {
   const credentials = (opts && opts.credentials) || {};
   const botToken = credentials.botToken;
@@ -12,7 +23,7 @@ async function slackRequest(opts, method, body = {}) {
     body: JSON.stringify(body)
   });
 
-  const data = await res.json();
+  const data = await readJsonResponse(res);
   if (!data.ok) return { ok: false, error: data.error || "Slack API error", details: data };
   return { ok: true, data };
 }
@@ -35,7 +46,7 @@ async function slackUpload(opts, { channels, content, filename, title }) {
       length: lenBuf.length
     })
   });
-  const urlData = await getUrl.json();
+  const urlData = await readJsonResponse(getUrl);
   if (!urlData.ok) return { ok: false, error: urlData.error || "Failed to get upload URL", details: urlData };
 
   // Step 2: upload content
@@ -60,11 +71,11 @@ async function slackUpload(opts, { channels, content, filename, title }) {
     },
     body: JSON.stringify(completeBody)
   });
-  const completeData = await complete.json();
+  const completeData = await readJsonResponse(complete);
   if (!completeData.ok) return { ok: false, error: completeData.error || "Failed to complete upload", details: completeData };
 
   const f = (completeData.files && completeData.files[0]) || {};
   return { ok: true, data: { file: f } };
 }
 
-module.exports = { utils: { slackRequest, slackUpload } };
+module.exports = { utils: { slackRequest, slackUpload, readJsonResponse } };
