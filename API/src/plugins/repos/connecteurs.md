@@ -8,6 +8,7 @@
 | asana | Oui |
 | atera | Oui |
 | aws | Oui |
+| bill | Oui |
 | brevo | Oui |
 | calendars | Oui |
 | calendly | Oui |
@@ -54,6 +55,7 @@
 | paypal | Oui |
 | pennylane | Oui |
 | pipedrive | Oui |
+| plaid | Oui |
 | postman | Oui |
 | prestashop | Oui |
 | quickbooks | Oui |

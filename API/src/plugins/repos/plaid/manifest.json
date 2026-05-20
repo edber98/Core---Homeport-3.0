@@ -1,0 +1,166 @@
+{
+  "repo": {
+    "name": "plaid",
+    "type": "local",
+    "label": "Plaid"
+  },
+  "variables": {
+    "plaid_link_token": {
+      "title": "Link token Plaid",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "text", "key": "linkToken", "label": "Link token", "description": "Jeton Plaid Link.", "col": { "xs": 24 } },
+        { "type": "date", "key": "expiration", "label": "Expiration", "description": "Date d'expiration.", "col": { "xs": 24 } },
+        { "type": "text", "key": "requestId", "label": "Request ID", "description": "Identifiant de requête.", "col": { "xs": 24 } }
+      ]
+    },
+    "plaid_access_token": {
+      "title": "Access token Plaid",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "text", "key": "accessToken", "label": "Access token", "description": "Jeton d'accès Plaid.", "col": { "xs": 24 } },
+        { "type": "text", "key": "itemId", "label": "Item ID", "description": "Identifiant Item.", "col": { "xs": 24 } },
+        { "type": "text", "key": "requestId", "label": "Request ID", "description": "Identifiant de requête.", "col": { "xs": 24 } }
+      ]
+    },
+    "plaid_item": {
+      "title": "Item Plaid",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "text", "key": "itemId", "label": "Item ID", "description": "Identifiant Item.", "col": { "xs": 24 } },
+        { "type": "text", "key": "institutionId", "label": "Institution", "description": "Institution Plaid.", "col": { "xs": 24 } },
+        { "type": "text", "key": "webhook", "label": "Webhook", "description": "URL webhook.", "col": { "xs": 24 } },
+        { "type": "text", "key": "error", "label": "Erreur", "description": "Erreur éventuelle.", "col": { "xs": 24 } }
+      ]
+    },
+    "plaid_status": {
+      "title": "Statut Plaid",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "text", "key": "removed", "label": "Supprimé", "description": "Statut de suppression.", "col": { "xs": 24 } },
+        { "type": "text", "key": "requestId", "label": "Request ID", "description": "Identifiant de requête.", "col": { "xs": 24 } }
+      ]
+    },
+    "plaid_accounts": {
+      "title": "Comptes Plaid",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "text", "key": "totalCount", "label": "Nombre total", "description": "Nombre de comptes.", "col": { "xs": 24 } },
+        { "type": "section", "title": "Comptes", "description": "Liste des comptes.", "mode": "array", "key": "accounts", "array": { "initialItems": 0, "minItems": 0 }, "fields": [
+          { "type": "text", "key": "id", "label": "ID", "description": "Identifiant du compte.", "col": { "xs": 24 } },
+          { "type": "text", "key": "name", "label": "Nom", "description": "Nom.", "col": { "xs": 24 } },
+          { "type": "text", "key": "officialName", "label": "Nom officiel", "description": "Nom officiel.", "col": { "xs": 24 } },
+          { "type": "text", "key": "type", "label": "Type", "description": "Type.", "col": { "xs": 24 } },
+          { "type": "text", "key": "subtype", "label": "Sous-type", "description": "Sous-type.", "col": { "xs": 24 } },
+          { "type": "number", "key": "current", "label": "Solde courant", "description": "Solde courant.", "col": { "xs": 24 } },
+          { "type": "number", "key": "available", "label": "Disponible", "description": "Solde disponible.", "col": { "xs": 24 } },
+          { "type": "text", "key": "currency", "label": "Devise", "description": "Devise.", "col": { "xs": 24 } }
+        ], "col": { "xs": 24 } }
+      ]
+    },
+    "plaid_transactions": {
+      "title": "Transactions Plaid",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "text", "key": "totalCount", "label": "Nombre total", "description": "Nombre de transactions.", "col": { "xs": 24 } },
+        { "type": "text", "key": "addedCount", "label": "Ajoutées", "description": "Transactions ajoutées.", "col": { "xs": 12 } },
+        { "type": "text", "key": "modifiedCount", "label": "Modifiées", "description": "Transactions modifiées.", "col": { "xs": 12 } },
+        { "type": "text", "key": "removedCount", "label": "Supprimées", "description": "Transactions supprimées.", "col": { "xs": 12 } },
+        { "type": "text", "key": "nextCursor", "label": "Curseur suivant", "description": "Curseur de pagination.", "col": { "xs": 12 } },
+        { "type": "text", "key": "hasMore", "label": "Suite", "description": "Plus de résultats.", "col": { "xs": 12 } },
+        { "type": "section", "title": "Transactions", "description": "Liste des transactions.", "mode": "array", "key": "transactions", "array": { "initialItems": 0, "minItems": 0 }, "fields": [
+          { "type": "text", "key": "id", "label": "ID", "description": "Identifiant.", "col": { "xs": 24 } },
+          { "type": "text", "key": "accountId", "label": "Compte", "description": "ID compte.", "col": { "xs": 24 } },
+          { "type": "text", "key": "name", "label": "Nom", "description": "Libellé.", "col": { "xs": 24 } },
+          { "type": "number", "key": "amount", "label": "Montant", "description": "Montant.", "col": { "xs": 24 } },
+          { "type": "date", "key": "date", "label": "Date", "description": "Date.", "col": { "xs": 24 } },
+          { "type": "text", "key": "pending", "label": "En attente", "description": "Transaction en attente.", "col": { "xs": 24 } }
+        ], "col": { "xs": 24 } },
+        { "type": "section", "title": "Ajoutées", "description": "Transactions ajoutées par sync.", "mode": "array", "key": "added", "array": { "initialItems": 0, "minItems": 0 }, "fields": [
+          { "type": "text", "key": "id", "label": "ID", "description": "Identifiant.", "col": { "xs": 24 } },
+          { "type": "text", "key": "accountId", "label": "Compte", "description": "ID compte.", "col": { "xs": 24 } },
+          { "type": "text", "key": "name", "label": "Nom", "description": "Libellé.", "col": { "xs": 24 } },
+          { "type": "number", "key": "amount", "label": "Montant", "description": "Montant.", "col": { "xs": 24 } },
+          { "type": "date", "key": "date", "label": "Date", "description": "Date.", "col": { "xs": 24 } }
+        ], "col": { "xs": 24 } },
+        { "type": "section", "title": "Modifiées", "description": "Transactions modifiées par sync.", "mode": "array", "key": "modified", "array": { "initialItems": 0, "minItems": 0 }, "fields": [
+          { "type": "text", "key": "id", "label": "ID", "description": "Identifiant.", "col": { "xs": 24 } },
+          { "type": "text", "key": "accountId", "label": "Compte", "description": "ID compte.", "col": { "xs": 24 } },
+          { "type": "text", "key": "name", "label": "Nom", "description": "Libellé.", "col": { "xs": 24 } },
+          { "type": "number", "key": "amount", "label": "Montant", "description": "Montant.", "col": { "xs": 24 } },
+          { "type": "date", "key": "date", "label": "Date", "description": "Date.", "col": { "xs": 24 } }
+        ], "col": { "xs": 24 } },
+        { "type": "section", "title": "Supprimées", "description": "Transactions supprimées par sync.", "mode": "array", "key": "removed", "array": { "initialItems": 0, "minItems": 0 }, "fields": [
+          { "type": "text", "key": "id", "label": "ID", "description": "Identifiant.", "col": { "xs": 24 } },
+          { "type": "text", "key": "accountId", "label": "Compte", "description": "ID compte.", "col": { "xs": 24 } }
+        ], "col": { "xs": 24 } }
+      ]
+    },
+    "plaid_identity": {
+      "title": "Identité Plaid",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "text", "key": "totalCount", "label": "Nombre total", "description": "Nombre de comptes.", "col": { "xs": 24 } },
+        { "type": "text", "key": "numbers", "label": "Numéros", "description": "Données Auth brutes.", "col": { "xs": 24 } },
+        { "type": "section", "title": "Comptes", "description": "Comptes et titulaires.", "mode": "array", "key": "accounts", "array": { "initialItems": 0, "minItems": 0 }, "fields": [
+          { "type": "text", "key": "id", "label": "ID", "description": "Identifiant.", "col": { "xs": 24 } },
+          { "type": "text", "key": "name", "label": "Nom", "description": "Nom du compte.", "col": { "xs": 24 } },
+          { "type": "text", "key": "owners", "label": "Titulaires", "description": "Titulaires JSON.", "col": { "xs": 24 } }
+        ], "col": { "xs": 24 } }
+      ]
+    },
+    "plaid_institutions": {
+      "title": "Institutions Plaid",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "text", "key": "totalCount", "label": "Nombre total", "description": "Nombre d'institutions.", "col": { "xs": 24 } },
+        { "type": "section", "title": "Institutions", "description": "Liste des institutions.", "mode": "array", "key": "institutions", "array": { "initialItems": 0, "minItems": 0 }, "fields": [
+          { "type": "text", "key": "id", "label": "ID", "description": "Identifiant Plaid.", "col": { "xs": 24 } },
+          { "type": "text", "key": "name", "label": "Nom", "description": "Nom.", "col": { "xs": 24 } },
+          { "type": "text", "key": "products", "label": "Produits", "description": "Produits supportés.", "col": { "xs": 24 } },
+          { "type": "text", "key": "countryCodes", "label": "Pays", "description": "Codes pays.", "col": { "xs": 24 } }
+        ], "col": { "xs": 24 } }
+      ]
+    },
+    "plaid_webhook": {
+      "title": "Événement Plaid",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "text", "key": "webhookType", "label": "Type", "description": "Type webhook.", "col": { "xs": 24 } },
+        { "type": "text", "key": "webhookCode", "label": "Code", "description": "Code webhook.", "col": { "xs": 24 } },
+        { "type": "text", "key": "itemId", "label": "Item ID", "description": "Identifiant Item.", "col": { "xs": 24 } },
+        { "type": "text", "key": "payload", "label": "Payload", "description": "Payload brut.", "col": { "xs": 24 } }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "plaid",
+      "name": "Plaid",
+      "hasCredentials": true,
+      "credentialsForm": {
+        "fields": [
+          { "type": "select", "key": "environment", "label": "Environnement", "default": "sandbox", "options": [ { "label": "Sandbox", "value": "sandbox" }, { "label": "Development", "value": "development" }, { "label": "Production", "value": "production" } ], "col": { "xs": 24 } },
+          { "type": "password", "key": "clientId", "label": "Client ID", "description": "Client ID Plaid.", "col": { "xs": 24 } },
+          { "type": "password", "key": "secret", "label": "Secret", "description": "Secret Plaid.", "col": { "xs": 24 } }
+        ]
+      }
+    }
+  ],
+  "nodeTemplates": [
+    { "key": "plaid_link_token_create", "name": "plaidLinkTokenCreate", "title": "Créer un Link token", "subtitle": "Initialiser Plaid Link", "schemaVersion": 2, "type": "function", "nodeKind": "function", "providerKey": "plaid", "authorize_catch_error": true, "args": { "fields": [ { "type": "text", "key": "clientName", "label": "Nom client", "default": "Kinn" }, { "type": "text", "key": "userId", "label": "Utilisateur" }, { "type": "text", "key": "products", "label": "Produits", "default": "transactions" }, { "type": "text", "key": "countryCodes", "label": "Pays", "default": "US" }, { "type": "text", "key": "language", "label": "Langue", "default": "en" }, { "type": "text", "key": "redirectUri", "label": "Redirect URI" }, { "type": "text", "key": "webhook", "label": "Webhook" }, { "type": "text", "key": "accessToken", "label": "Access token update mode" } ] }, "outputHandles": [ { "id": "ok", "type": "payload", "schema": "$var:plaid_link_token" }, { "id": "err", "type": "error" } ] },
+    { "key": "plaid_public_token_exchange", "name": "plaidPublicTokenExchange", "title": "Échanger un public token", "subtitle": "Obtenir un access token", "schemaVersion": 2, "type": "function", "nodeKind": "function", "providerKey": "plaid", "authorize_catch_error": true, "args": { "fields": [ { "type": "text", "key": "publicToken", "label": "Public token" } ] }, "outputHandles": [ { "id": "ok", "type": "payload", "schema": "$var:plaid_access_token" }, { "id": "err", "type": "error" } ] },
+    { "key": "plaid_item_get", "name": "plaidItemGet", "title": "Obtenir un Item", "subtitle": "Lire les métadonnées Item", "schemaVersion": 2, "type": "function", "nodeKind": "function", "providerKey": "plaid", "authorize_catch_error": true, "args": { "fields": [ { "type": "password", "key": "accessToken", "label": "Access token" } ] }, "outputHandles": [ { "id": "ok", "type": "payload", "schema": "$var:plaid_item" }, { "id": "err", "type": "error" } ] },
+    { "key": "plaid_item_remove", "name": "plaidItemRemove", "title": "Supprimer un Item", "subtitle": "Révoquer un Item Plaid", "schemaVersion": 2, "type": "function", "nodeKind": "function", "providerKey": "plaid", "authorize_catch_error": true, "args": { "fields": [ { "type": "password", "key": "accessToken", "label": "Access token" } ] }, "outputHandles": [ { "id": "ok", "type": "payload", "schema": "$var:plaid_status" }, { "id": "err", "type": "error" } ] },
+    { "key": "plaid_item_webhook_update", "name": "plaidItemWebhookUpdate", "title": "Mettre à jour le webhook", "subtitle": "Changer l'URL webhook d'un Item", "schemaVersion": 2, "type": "function", "nodeKind": "function", "providerKey": "plaid", "authorize_catch_error": true, "args": { "fields": [ { "type": "password", "key": "accessToken", "label": "Access token" }, { "type": "text", "key": "webhook", "label": "Webhook" } ] }, "outputHandles": [ { "id": "ok", "type": "payload", "schema": "$var:plaid_item" }, { "id": "err", "type": "error" } ] },
+    { "key": "plaid_accounts_get", "name": "plaidAccountsGet", "title": "Lister les comptes", "subtitle": "Récupérer les comptes Plaid", "schemaVersion": 2, "type": "function", "nodeKind": "function", "providerKey": "plaid", "authorize_catch_error": true, "args": { "fields": [ { "type": "password", "key": "accessToken", "label": "Access token" } ] }, "outputHandles": [ { "id": "ok", "type": "payload", "schema": "$var:plaid_accounts" }, { "id": "err", "type": "error" } ] },
+    { "key": "plaid_balances_get", "name": "plaidBalancesGet", "title": "Obtenir les soldes", "subtitle": "Récupérer les soldes temps réel", "schemaVersion": 2, "type": "function", "nodeKind": "function", "providerKey": "plaid", "authorize_catch_error": true, "args": { "fields": [ { "type": "password", "key": "accessToken", "label": "Access token" }, { "type": "text", "key": "accountIds", "label": "Comptes" } ] }, "outputHandles": [ { "id": "ok", "type": "payload", "schema": "$var:plaid_accounts" }, { "id": "err", "type": "error" } ] },
+    { "key": "plaid_transactions_sync", "name": "plaidTransactionsSync", "title": "Synchroniser les transactions", "subtitle": "Utiliser /transactions/sync", "schemaVersion": 2, "type": "function", "nodeKind": "function", "providerKey": "plaid", "authorize_catch_error": true, "args": { "fields": [ { "type": "password", "key": "accessToken", "label": "Access token" }, { "type": "text", "key": "cursor", "label": "Curseur" }, { "type": "number", "key": "count", "label": "Limite", "default": 100 } ] }, "outputHandles": [ { "id": "ok", "type": "payload", "schema": "$var:plaid_transactions" }, { "id": "err", "type": "error" } ] },
+    { "key": "plaid_transactions_get", "name": "plaidTransactionsGet", "title": "Lister les transactions", "subtitle": "Récupérer les transactions par période", "schemaVersion": 2, "type": "function", "nodeKind": "function", "providerKey": "plaid", "authorize_catch_error": true, "args": { "fields": [ { "type": "password", "key": "accessToken", "label": "Access token" }, { "type": "date", "key": "startDate", "label": "Début" }, { "type": "date", "key": "endDate", "label": "Fin" }, { "type": "number", "key": "count", "label": "Limite", "default": 100 }, { "type": "number", "key": "offset", "label": "Offset", "default": 0 }, { "type": "text", "key": "accountIds", "label": "Comptes" } ] }, "outputHandles": [ { "id": "ok", "type": "payload", "schema": "$var:plaid_transactions" }, { "id": "err", "type": "error" } ] },
+    { "key": "plaid_transactions_refresh", "name": "plaidTransactionsRefresh", "title": "Rafraîchir les transactions", "subtitle": "Demander un refresh Plaid", "schemaVersion": 2, "type": "function", "nodeKind": "function", "providerKey": "plaid", "authorize_catch_error": true, "args": { "fields": [ { "type": "password", "key": "accessToken", "label": "Access token" } ] }, "outputHandles": [ { "id": "ok", "type": "payload", "schema": "$var:plaid_status" }, { "id": "err", "type": "error" } ] },
+    { "key": "plaid_identity_get", "name": "plaidIdentityGet", "title": "Obtenir l'identité", "subtitle": "Récupérer les titulaires de comptes", "schemaVersion": 2, "type": "function", "nodeKind": "function", "providerKey": "plaid", "authorize_catch_error": true, "args": { "fields": [ { "type": "password", "key": "accessToken", "label": "Access token" } ] }, "outputHandles": [ { "id": "ok", "type": "payload", "schema": "$var:plaid_identity" }, { "id": "err", "type": "error" } ] },
+    { "key": "plaid_auth_get", "name": "plaidAuthGet", "title": "Obtenir les données Auth", "subtitle": "Récupérer comptes et numéros bancaires", "schemaVersion": 2, "type": "function", "nodeKind": "function", "providerKey": "plaid", "authorize_catch_error": true, "args": { "fields": [ { "type": "password", "key": "accessToken", "label": "Access token" } ] }, "outputHandles": [ { "id": "ok", "type": "payload", "schema": "$var:plaid_identity" }, { "id": "err", "type": "error" } ] },
+    { "key": "plaid_institutions_search", "name": "plaidInstitutionsSearch", "title": "Rechercher des institutions", "subtitle": "Trouver les banques compatibles", "schemaVersion": 2, "type": "function", "nodeKind": "function", "providerKey": "plaid", "authorize_catch_error": true, "args": { "fields": [ { "type": "text", "key": "query", "label": "Recherche" }, { "type": "text", "key": "products", "label": "Produits", "default": "transactions" }, { "type": "text", "key": "countryCodes", "label": "Pays", "default": "US" } ] }, "outputHandles": [ { "id": "ok", "type": "payload", "schema": "$var:plaid_institutions" }, { "id": "err", "type": "error" } ] },
+    { "key": "plaid_webhook_event", "name": "plaidWebhookEvent", "title": "Événement webhook", "subtitle": "Recevoir un événement Plaid", "schemaVersion": 2, "type": "event", "nodeKind": "event", "providerKey": "plaid", "outputHandles": [ { "id": "ok", "type": "payload", "schema": "$var:plaid_webhook" } ] }
+  ]
+}
