@@ -3,12 +3,14 @@
 | Connecteur | Testé |
 | --- | --- |
 | adyen | Oui |
+| ahrefs | Oui |
 | airtable | Oui |
 | anthropic | Oui |
 | asana | Oui |
 | atera | Oui |
 | aws | Oui |
 | bill | Oui |
+| box | Oui |
 | brevo | Oui |
 | calendars | Oui |
 | calendly | Oui |
@@ -61,6 +63,8 @@
 | quickbooks | Oui |
 | salesforce | Oui |
 | sap | Oui |
+| se-ranking | Oui |
+| semrush | Oui |
 | shopify | Oui |
 | slack | Oui |
 | sql-database | Non |

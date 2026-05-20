@@ -1,0 +1,49 @@
+{
+  "repo": {
+    "name": "semrush",
+    "type": "local",
+    "label": "Semrush"
+  },
+  "variables": {
+    "semrush_report": {
+      "title": "Rapport Semrush",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "text", "key": "totalCount", "label": "Nombre total", "description": "Nombre de lignes.", "col": { "xs": 24 } },
+        { "type": "textarea", "key": "raw", "label": "CSV brut", "description": "Réponse CSV brute.", "col": { "xs": 24 } },
+        { "type": "section", "title": "Lignes", "description": "Lignes du rapport.", "mode": "array", "key": "rows", "array": { "initialItems": 0, "minItems": 0 }, "fields": [
+          { "type": "text", "key": "Ph", "label": "Mot-clé", "description": "Phrase ou mot-clé.", "col": { "xs": 24 } },
+          { "type": "text", "key": "Dn", "label": "Domaine", "description": "Domaine.", "col": { "xs": 24 } },
+          { "type": "text", "key": "Po", "label": "Position", "description": "Position.", "col": { "xs": 24 } },
+          { "type": "text", "key": "Nq", "label": "Volume", "description": "Volume de recherche.", "col": { "xs": 24 } },
+          { "type": "text", "key": "Tr", "label": "Trafic", "description": "Trafic estimé.", "col": { "xs": 24 } },
+          { "type": "text", "key": "Kd", "label": "Difficulté", "description": "Difficulté du mot-clé.", "col": { "xs": 24 } }
+        ], "col": { "xs": 24 } }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "semrush",
+      "name": "Semrush",
+      "hasCredentials": true,
+      "credentialsForm": {
+        "fields": [
+          { "type": "password", "key": "apiKey", "label": "Clé API", "description": "Clé API Semrush.", "col": { "xs": 24 } }
+        ]
+      }
+    }
+  ],
+  "nodeTemplates": [
+    { "key": "semrush_domain_overview", "name": "semrushDomainOverview", "title": "Vue d'ensemble domaine", "subtitle": "Rapport Domain Overview", "schemaVersion": 2, "type": "function", "nodeKind": "function", "providerKey": "semrush", "authorize_catch_error": true, "args": { "fields": [ { "type": "text", "key": "domain", "label": "Domaine" }, { "type": "text", "key": "database", "label": "Base", "default": "us" }, { "type": "text", "key": "columns", "label": "Colonnes" } ] }, "outputHandles": [ { "id": "ok", "type": "payload", "schema": "$var:semrush_report" }, { "id": "err", "type": "error" } ] },
+    { "key": "semrush_domain_organic_keywords", "name": "semrushDomainOrganicKeywords", "title": "Mots-clés organiques", "subtitle": "Rapport Domain Organic", "schemaVersion": 2, "type": "function", "nodeKind": "function", "providerKey": "semrush", "authorize_catch_error": true, "args": { "fields": [ { "type": "text", "key": "domain", "label": "Domaine" }, { "type": "text", "key": "database", "label": "Base", "default": "us" }, { "type": "number", "key": "limit", "label": "Limite", "default": 10 }, { "type": "text", "key": "sort", "label": "Tri", "default": "tr_desc" }, { "type": "text", "key": "columns", "label": "Colonnes" } ] }, "outputHandles": [ { "id": "ok", "type": "payload", "schema": "$var:semrush_report" }, { "id": "err", "type": "error" } ] },
+    { "key": "semrush_domain_paid_keywords", "name": "semrushDomainPaidKeywords", "title": "Mots-clés payants", "subtitle": "Rapport Paid Search", "schemaVersion": 2, "type": "function", "nodeKind": "function", "providerKey": "semrush", "authorize_catch_error": true, "args": { "fields": [ { "type": "text", "key": "domain", "label": "Domaine" }, { "type": "text", "key": "database", "label": "Base", "default": "us" }, { "type": "number", "key": "limit", "label": "Limite", "default": 10 }, { "type": "text", "key": "sort", "label": "Tri", "default": "tr_desc" }, { "type": "text", "key": "columns", "label": "Colonnes" } ] }, "outputHandles": [ { "id": "ok", "type": "payload", "schema": "$var:semrush_report" }, { "id": "err", "type": "error" } ] },
+    { "key": "semrush_domain_competitors", "name": "semrushDomainCompetitors", "title": "Concurrents domaine", "subtitle": "Concurrents organiques ou payants", "schemaVersion": 2, "type": "function", "nodeKind": "function", "providerKey": "semrush", "authorize_catch_error": true, "args": { "fields": [ { "type": "text", "key": "domain", "label": "Domaine" }, { "type": "text", "key": "database", "label": "Base", "default": "us" }, { "type": "number", "key": "limit", "label": "Limite", "default": 10 }, { "type": "checkbox", "key": "paid", "label": "Recherche payante" }, { "type": "text", "key": "columns", "label": "Colonnes" } ] }, "outputHandles": [ { "id": "ok", "type": "payload", "schema": "$var:semrush_report" }, { "id": "err", "type": "error" } ] },
+    { "key": "semrush_keyword_overview", "name": "semrushKeywordOverview", "title": "Vue d'ensemble mot-clé", "subtitle": "Rapport Keyword Overview", "schemaVersion": 2, "type": "function", "nodeKind": "function", "providerKey": "semrush", "authorize_catch_error": true, "args": { "fields": [ { "type": "text", "key": "keyword", "label": "Mot-clé" }, { "type": "text", "key": "database", "label": "Base", "default": "us" }, { "type": "text", "key": "columns", "label": "Colonnes" } ] }, "outputHandles": [ { "id": "ok", "type": "payload", "schema": "$var:semrush_report" }, { "id": "err", "type": "error" } ] },
+    { "key": "semrush_keyword_related", "name": "semrushKeywordRelated", "title": "Mots-clés associés", "subtitle": "Rapport Related Keywords", "schemaVersion": 2, "type": "function", "nodeKind": "function", "providerKey": "semrush", "authorize_catch_error": true, "args": { "fields": [ { "type": "text", "key": "keyword", "label": "Mot-clé" }, { "type": "text", "key": "database", "label": "Base", "default": "us" }, { "type": "number", "key": "limit", "label": "Limite", "default": 10 }, { "type": "text", "key": "columns", "label": "Colonnes" } ] }, "outputHandles": [ { "id": "ok", "type": "payload", "schema": "$var:semrush_report" }, { "id": "err", "type": "error" } ] },
+    { "key": "semrush_keyword_difficulty", "name": "semrushKeywordDifficulty", "title": "Difficulté mot-clé", "subtitle": "Rapport Keyword Difficulty", "schemaVersion": 2, "type": "function", "nodeKind": "function", "providerKey": "semrush", "authorize_catch_error": true, "args": { "fields": [ { "type": "text", "key": "keyword", "label": "Mot-clé" }, { "type": "text", "key": "database", "label": "Base", "default": "us" }, { "type": "text", "key": "columns", "label": "Colonnes" } ] }, "outputHandles": [ { "id": "ok", "type": "payload", "schema": "$var:semrush_report" }, { "id": "err", "type": "error" } ] },
+    { "key": "semrush_backlinks_overview", "name": "semrushBacklinksOverview", "title": "Vue d'ensemble backlinks", "subtitle": "Résumé Backlink Analytics", "schemaVersion": 2, "type": "function", "nodeKind": "function", "providerKey": "semrush", "authorize_catch_error": true, "args": { "fields": [ { "type": "text", "key": "target", "label": "Cible" }, { "type": "text", "key": "targetType", "label": "Type cible", "default": "root_domain" }, { "type": "text", "key": "columns", "label": "Colonnes" } ] }, "outputHandles": [ { "id": "ok", "type": "payload", "schema": "$var:semrush_report" }, { "id": "err", "type": "error" } ] },
+    { "key": "semrush_backlinks_list", "name": "semrushBacklinksList", "title": "Lister les backlinks", "subtitle": "Rapport backlinks", "schemaVersion": 2, "type": "function", "nodeKind": "function", "providerKey": "semrush", "authorize_catch_error": true, "args": { "fields": [ { "type": "text", "key": "target", "label": "Cible" }, { "type": "text", "key": "targetType", "label": "Type cible", "default": "root_domain" }, { "type": "number", "key": "limit", "label": "Limite", "default": 10 }, { "type": "text", "key": "columns", "label": "Colonnes" } ] }, "outputHandles": [ { "id": "ok", "type": "payload", "schema": "$var:semrush_report" }, { "id": "err", "type": "error" } ] },
+    { "key": "semrush_units_balance", "name": "semrushUnitsBalance", "title": "Solde d'unités", "subtitle": "Consulter le solde API", "schemaVersion": 2, "type": "function", "nodeKind": "function", "providerKey": "semrush", "authorize_catch_error": true, "args": { "fields": [] }, "outputHandles": [ { "id": "ok", "type": "payload", "schema": "$var:semrush_report" }, { "id": "err", "type": "error" } ] }
+  ]
+}

@@ -1,0 +1,101 @@
+{
+  "repo": {
+    "name": "box",
+    "type": "local",
+    "label": "Box"
+  },
+  "variables": {
+    "box_item": {
+      "title": "Élément Box",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "text", "key": "id", "label": "ID", "description": "Identifiant Box.", "col": { "xs": 24 } },
+        { "type": "text", "key": "type", "label": "Type", "description": "Type d'élément.", "col": { "xs": 24 } },
+        { "type": "text", "key": "name", "label": "Nom", "description": "Nom.", "col": { "xs": 24 } },
+        { "type": "number", "key": "size", "label": "Taille", "description": "Taille en octets.", "col": { "xs": 24 } },
+        { "type": "text", "key": "parentId", "label": "Parent", "description": "ID du parent.", "col": { "xs": 24 } },
+        { "type": "date", "key": "createdAt", "label": "Date création", "description": "Date de création.", "col": { "xs": 24 } },
+        { "type": "date", "key": "modifiedAt", "label": "Date modification", "description": "Date de modification.", "col": { "xs": 24 } },
+        { "type": "text", "key": "url", "label": "URL", "description": "Lien partagé.", "col": { "xs": 24 } },
+        { "type": "text", "key": "status", "label": "Statut", "description": "Statut de l'action.", "col": { "xs": 24 } }
+      ]
+    },
+    "box_items": {
+      "title": "Éléments Box",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "text", "key": "totalCount", "label": "Nombre total", "description": "Nombre d'éléments.", "col": { "xs": 24 } },
+        { "type": "section", "title": "Éléments", "description": "Liste des éléments Box.", "mode": "array", "key": "items", "array": { "initialItems": 0, "minItems": 0 }, "fields": [
+          { "type": "text", "key": "id", "label": "ID", "description": "Identifiant.", "col": { "xs": 24 } },
+          { "type": "text", "key": "type", "label": "Type", "description": "Type.", "col": { "xs": 24 } },
+          { "type": "text", "key": "name", "label": "Nom", "description": "Nom.", "col": { "xs": 24 } },
+          { "type": "number", "key": "size", "label": "Taille", "description": "Taille.", "col": { "xs": 24 } },
+          { "type": "text", "key": "parentId", "label": "Parent", "description": "ID parent.", "col": { "xs": 24 } },
+          { "type": "date", "key": "modifiedAt", "label": "Modifié", "description": "Date de modification.", "col": { "xs": 24 } }
+        ], "col": { "xs": 24 } }
+      ]
+    },
+    "box_comments": {
+      "title": "Commentaires Box",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "text", "key": "totalCount", "label": "Nombre total", "description": "Nombre de commentaires.", "col": { "xs": 24 } },
+        { "type": "section", "title": "Commentaires", "description": "Liste des commentaires.", "mode": "array", "key": "comments", "array": { "initialItems": 0, "minItems": 0 }, "fields": [
+          { "type": "text", "key": "id", "label": "ID", "description": "Identifiant.", "col": { "xs": 24 } },
+          { "type": "text", "key": "message", "label": "Message", "description": "Message.", "col": { "xs": 24 } },
+          { "type": "date", "key": "createdAt", "label": "Date création", "description": "Date de création.", "col": { "xs": 24 } },
+          { "type": "text", "key": "createdBy", "label": "Auteur", "description": "Auteur.", "col": { "xs": 24 } }
+        ], "col": { "xs": 24 } }
+      ]
+    },
+    "box_comment": {
+      "title": "Commentaire Box",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "text", "key": "id", "label": "ID", "description": "Identifiant.", "col": { "xs": 24 } },
+        { "type": "text", "key": "message", "label": "Message", "description": "Message.", "col": { "xs": 24 } },
+        { "type": "date", "key": "createdAt", "label": "Date création", "description": "Date de création.", "col": { "xs": 24 } },
+        { "type": "text", "key": "createdBy", "label": "Auteur", "description": "Auteur.", "col": { "xs": 24 } }
+      ]
+    },
+    "box_webhook": {
+      "title": "Événement Box",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "text", "key": "eventType", "label": "Type", "description": "Type d'événement.", "col": { "xs": 24 } },
+        { "type": "text", "key": "itemId", "label": "Élément", "description": "ID élément.", "col": { "xs": 24 } },
+        { "type": "text", "key": "itemType", "label": "Type élément", "description": "Type élément.", "col": { "xs": 24 } },
+        { "type": "text", "key": "payload", "label": "Payload", "description": "Payload brut.", "col": { "xs": 24 } }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "box",
+      "name": "Box",
+      "hasCredentials": true,
+      "credentialsForm": {
+        "fields": [
+          { "type": "password", "key": "accessToken", "label": "Access token", "description": "Jeton OAuth 2.0 Box.", "col": { "xs": 24 } }
+        ]
+      }
+    }
+  ],
+  "nodeTemplates": [
+    { "key": "box_folder_items_list", "name": "boxFolderItemsList", "title": "Lister un dossier", "subtitle": "Lister les fichiers et dossiers", "schemaVersion": 2, "type": "function", "nodeKind": "function", "providerKey": "box", "authorize_catch_error": true, "args": { "fields": [ { "type": "text", "key": "folderId", "label": "ID dossier", "default": "0" }, { "type": "number", "key": "limit", "label": "Limite", "default": 100 }, { "type": "number", "key": "offset", "label": "Offset", "default": 0 }, { "type": "text", "key": "fields", "label": "Champs" } ] }, "outputHandles": [ { "id": "ok", "type": "payload", "schema": "$var:box_items" }, { "id": "err", "type": "error" } ] },
+    { "key": "box_folder_get", "name": "boxFolderGet", "title": "Obtenir un dossier", "subtitle": "Lire un dossier Box", "schemaVersion": 2, "type": "function", "nodeKind": "function", "providerKey": "box", "authorize_catch_error": true, "args": { "fields": [ { "type": "text", "key": "folderId", "label": "ID dossier", "default": "0" } ] }, "outputHandles": [ { "id": "ok", "type": "payload", "schema": "$var:box_item" }, { "id": "err", "type": "error" } ] },
+    { "key": "box_folder_create", "name": "boxFolderCreate", "title": "Créer un dossier", "subtitle": "Créer un dossier Box", "schemaVersion": 2, "type": "function", "nodeKind": "function", "providerKey": "box", "authorize_catch_error": true, "args": { "fields": [ { "type": "text", "key": "name", "label": "Nom" }, { "type": "text", "key": "parentId", "label": "Parent", "default": "0" } ] }, "outputHandles": [ { "id": "ok", "type": "payload", "schema": "$var:box_item" }, { "id": "err", "type": "error" } ] },
+    { "key": "box_folder_update", "name": "boxFolderUpdate", "title": "Mettre à jour un dossier", "subtitle": "Renommer ou déplacer un dossier", "schemaVersion": 2, "type": "function", "nodeKind": "function", "providerKey": "box", "authorize_catch_error": true, "args": { "fields": [ { "type": "text", "key": "folderId", "label": "ID dossier" }, { "type": "text", "key": "name", "label": "Nom" }, { "type": "text", "key": "description", "label": "Description" }, { "type": "text", "key": "parentId", "label": "Nouveau parent" } ] }, "outputHandles": [ { "id": "ok", "type": "payload", "schema": "$var:box_item" }, { "id": "err", "type": "error" } ] },
+    { "key": "box_folder_delete", "name": "boxFolderDelete", "title": "Supprimer un dossier", "subtitle": "Mettre un dossier à la corbeille", "schemaVersion": 2, "type": "function", "nodeKind": "function", "providerKey": "box", "authorize_catch_error": true, "args": { "fields": [ { "type": "text", "key": "folderId", "label": "ID dossier" }, { "type": "checkbox", "key": "recursive", "label": "Récursif" } ] }, "outputHandles": [ { "id": "ok", "type": "payload", "schema": "$var:box_item" }, { "id": "err", "type": "error" } ] },
+    { "key": "box_file_get", "name": "boxFileGet", "title": "Obtenir un fichier", "subtitle": "Lire les métadonnées d'un fichier", "schemaVersion": 2, "type": "function", "nodeKind": "function", "providerKey": "box", "authorize_catch_error": true, "args": { "fields": [ { "type": "text", "key": "fileId", "label": "ID fichier" } ] }, "outputHandles": [ { "id": "ok", "type": "payload", "schema": "$var:box_item" }, { "id": "err", "type": "error" } ] },
+    { "key": "box_file_upload", "name": "boxFileUpload", "title": "Téléverser un fichier", "subtitle": "Envoyer un fichier dans Box", "schemaVersion": 2, "type": "function", "nodeKind": "function", "providerKey": "box", "authorize_catch_error": true, "args": { "fields": [ { "type": "text", "key": "name", "label": "Nom" }, { "type": "text", "key": "parentId", "label": "Dossier parent", "default": "0" }, { "type": "text", "key": "file", "label": "Fichier ou contenu" }, { "type": "text", "key": "content", "label": "Contenu" }, { "type": "text", "key": "mimeType", "label": "MIME type" } ] }, "outputHandles": [ { "id": "ok", "type": "payload", "schema": "$var:box_item" }, { "id": "err", "type": "error" } ] },
+    { "key": "box_file_update", "name": "boxFileUpdate", "title": "Mettre à jour un fichier", "subtitle": "Renommer ou déplacer un fichier", "schemaVersion": 2, "type": "function", "nodeKind": "function", "providerKey": "box", "authorize_catch_error": true, "args": { "fields": [ { "type": "text", "key": "fileId", "label": "ID fichier" }, { "type": "text", "key": "name", "label": "Nom" }, { "type": "text", "key": "description", "label": "Description" }, { "type": "text", "key": "parentId", "label": "Nouveau parent" } ] }, "outputHandles": [ { "id": "ok", "type": "payload", "schema": "$var:box_item" }, { "id": "err", "type": "error" } ] },
+    { "key": "box_file_delete", "name": "boxFileDelete", "title": "Supprimer un fichier", "subtitle": "Mettre un fichier à la corbeille", "schemaVersion": 2, "type": "function", "nodeKind": "function", "providerKey": "box", "authorize_catch_error": true, "args": { "fields": [ { "type": "text", "key": "fileId", "label": "ID fichier" } ] }, "outputHandles": [ { "id": "ok", "type": "payload", "schema": "$var:box_item" }, { "id": "err", "type": "error" } ] },
+    { "key": "box_file_comments_list", "name": "boxFileCommentsList", "title": "Lister les commentaires", "subtitle": "Commentaires d'un fichier", "schemaVersion": 2, "type": "function", "nodeKind": "function", "providerKey": "box", "authorize_catch_error": true, "args": { "fields": [ { "type": "text", "key": "fileId", "label": "ID fichier" } ] }, "outputHandles": [ { "id": "ok", "type": "payload", "schema": "$var:box_comments" }, { "id": "err", "type": "error" } ] },
+    { "key": "box_comment_create", "name": "boxCommentCreate", "title": "Créer un commentaire", "subtitle": "Commenter un fichier", "schemaVersion": 2, "type": "function", "nodeKind": "function", "providerKey": "box", "authorize_catch_error": true, "args": { "fields": [ { "type": "text", "key": "fileId", "label": "ID fichier" }, { "type": "textarea", "key": "message", "label": "Message" } ] }, "outputHandles": [ { "id": "ok", "type": "payload", "schema": "$var:box_comment" }, { "id": "err", "type": "error" } ] },
+    { "key": "box_search", "name": "boxSearch", "title": "Rechercher", "subtitle": "Rechercher fichiers et dossiers", "schemaVersion": 2, "type": "function", "nodeKind": "function", "providerKey": "box", "authorize_catch_error": true, "args": { "fields": [ { "type": "text", "key": "query", "label": "Recherche" }, { "type": "select", "key": "type", "label": "Type", "options": [ { "label": "Tous", "value": "" }, { "label": "Fichiers", "value": "file" }, { "label": "Dossiers", "value": "folder" } ] }, { "type": "text", "key": "folderIds", "label": "Dossiers ancêtres" }, { "type": "number", "key": "limit", "label": "Limite", "default": 25 }, { "type": "number", "key": "offset", "label": "Offset", "default": 0 } ] }, "outputHandles": [ { "id": "ok", "type": "payload", "schema": "$var:box_items" }, { "id": "err", "type": "error" } ] },
+    { "key": "box_shared_link_create", "name": "boxSharedLinkCreate", "title": "Créer un lien partagé", "subtitle": "Partager un fichier ou dossier", "schemaVersion": 2, "type": "function", "nodeKind": "function", "providerKey": "box", "authorize_catch_error": true, "args": { "fields": [ { "type": "select", "key": "itemType", "label": "Type", "options": [ { "label": "Fichier", "value": "file" }, { "label": "Dossier", "value": "folder" } ] }, { "type": "text", "key": "itemId", "label": "ID élément" }, { "type": "select", "key": "access", "label": "Accès", "default": "open", "options": [ { "label": "Ouvert", "value": "open" }, { "label": "Entreprise", "value": "company" }, { "label": "Collaborateurs", "value": "collaborators" } ] }, { "type": "password", "key": "password", "label": "Mot de passe" } ] }, "outputHandles": [ { "id": "ok", "type": "payload", "schema": "$var:box_item" }, { "id": "err", "type": "error" } ] },
+    { "key": "box_collaboration_create", "name": "boxCollaborationCreate", "title": "Ajouter un collaborateur", "subtitle": "Partager avec un utilisateur", "schemaVersion": 2, "type": "function", "nodeKind": "function", "providerKey": "box", "authorize_catch_error": true, "args": { "fields": [ { "type": "select", "key": "itemType", "label": "Type", "options": [ { "label": "Fichier", "value": "file" }, { "label": "Dossier", "value": "folder" } ] }, { "type": "text", "key": "itemId", "label": "ID élément" }, { "type": "text", "key": "login", "label": "E-mail" }, { "type": "select", "key": "role", "label": "Rôle", "default": "viewer", "options": [ { "label": "Viewer", "value": "viewer" }, { "label": "Editor", "value": "editor" }, { "label": "Uploader", "value": "uploader" }, { "label": "Previewer", "value": "previewer" } ] } ] }, "outputHandles": [ { "id": "ok", "type": "payload", "schema": "$var:box_item" }, { "id": "err", "type": "error" } ] },
+    { "key": "box_webhook_event", "name": "boxWebhookEvent", "title": "Événement webhook", "subtitle": "Recevoir un événement Box", "schemaVersion": 2, "type": "event", "nodeKind": "event", "providerKey": "box", "outputHandles": [ { "id": "ok", "type": "payload", "schema": "$var:box_webhook" } ] }
+  ]
+}
