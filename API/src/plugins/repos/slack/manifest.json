@@ -1061,6 +1061,7 @@
       "name": "Slack",
       "title": "Slack",
       "iconClass": "fa-brands fa-slack",
+      "iconUrl": "https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/slack/default.svg",
       "color": "#fdcdff",
       "tags": [
         "slack",
@@ -1097,8 +1098,7 @@
         ],
         "displayTitle": false,
         "displayDescription": false
-      },
-      "iconUrl": "https://cdn.simpleicons.org/slack"
+      }
     }
   ],
   "nodeTemplates": [

@@ -137,6 +137,10 @@
     {
       "key": "plaid",
       "name": "Plaid",
+      "title": "Plaid",
+      "iconClass": "fa-solid fa-building-columns",
+      "iconUrl": "https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/plaid/default.svg",
+      "color": "#ececff",
       "hasCredentials": true,
       "credentialsForm": {
         "fields": [

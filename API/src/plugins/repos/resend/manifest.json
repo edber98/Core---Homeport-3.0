@@ -96,7 +96,7 @@
       "title": "Resend",
       "iconUrl": "https://cdn.simpleicons.org/resend",
       "iconClass": "fa-solid fa-envelope",
-      "color": "#111111",
+      "color": "#dadada",
       "tags": ["email", "transactionnel"],
       "categories": ["Communication"],
       "hasCredentials": true,
