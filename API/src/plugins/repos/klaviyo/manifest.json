@@ -1,0 +1,1703 @@
+{
+  "repo": {
+    "name": "klaviyo",
+    "type": "local",
+    "label": "Klaviyo"
+  },
+  "variables": {
+    "klaviyo_response": {
+      "title": "Réponse Klaviyo",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "url",
+          "key": "url",
+          "label": "URL",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "text",
+          "label": "Texte",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "data",
+          "label": "Données",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "result_json",
+          "label": "Résultat JSON",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "klaviyo_items": {
+      "title": "Klaviyo - liste",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "col": {
+            "xs": 12
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextCursor",
+          "label": "Curseur suivant",
+          "col": {
+            "xs": 12
+          }
+        },
+        {
+          "type": "section",
+          "title": "Éléments",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "url",
+              "key": "url",
+              "label": "URL",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "text",
+              "label": "Texte",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "result_json",
+              "label": "Données JSON",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "klaviyo_webhook": {
+      "title": "Webhook Klaviyo",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "event",
+          "label": "Événement",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "payload",
+          "label": "Payload",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "klaviyo",
+      "name": "Klaviyo",
+      "title": "Klaviyo",
+      "iconClass": "fa-solid fa-envelope",
+      "iconUrl": "https://cdn.simpleicons.org/klaviyo",
+      "color": "#e8d8ff",
+      "tags": [
+        "klaviyo",
+        "marketing"
+      ],
+      "categories": [
+        "Marketing"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Klaviyo",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "apiKey",
+            "label": "Clé API privée",
+            "secret": true,
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "revision",
+            "label": "Révision API",
+            "defaultValue": "2026-01-15",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "baseUrl",
+            "label": "URL de base",
+            "defaultValue": "https://a.klaviyo.com/api",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "klaviyo_profiles_list",
+      "name": "klaviyoProfilesList",
+      "schemaVersion": 2,
+      "title": "Lister les profils",
+      "subtitle": "profiles",
+      "icon": "fa-solid fa-users",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Klaviyo",
+      "providerKey": "klaviyo",
+      "tags": [
+        "klaviyo",
+        "profiles"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:klaviyo_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lister les profils",
+      "args": {
+        "title": "Lister les profils",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "filter",
+            "label": "Filtre",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "page[size]",
+            "label": "Taille page",
+            "default": 50,
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "page[cursor]",
+            "label": "Curseur",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Profils"
+    },
+    {
+      "key": "klaviyo_profile_get",
+      "name": "klaviyoProfileGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un profil",
+      "subtitle": "profile",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Klaviyo",
+      "providerKey": "klaviyo",
+      "tags": [
+        "klaviyo",
+        "profile"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:klaviyo_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupérer un profil",
+      "args": {
+        "title": "Récupérer un profil",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "profileId",
+            "label": "ID profil",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Profils"
+    },
+    {
+      "key": "klaviyo_profile_create",
+      "name": "klaviyoProfileCreate",
+      "schemaVersion": 2,
+      "title": "Créer un profil",
+      "subtitle": "profile",
+      "icon": "fa-solid fa-plus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Klaviyo",
+      "providerKey": "klaviyo",
+      "tags": [
+        "klaviyo",
+        "profile"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:klaviyo_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Créer un profil",
+      "args": {
+        "title": "Créer un profil",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "email",
+            "label": "Email",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "phone_number",
+            "label": "Téléphone",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "properties",
+            "label": "Propriétés",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "payload",
+            "label": "Payload JSON",
+            "description": "Données avancées à envoyer à l'API.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Profils"
+    },
+    {
+      "key": "klaviyo_profile_update",
+      "name": "klaviyoProfileUpdate",
+      "schemaVersion": 2,
+      "title": "Mettre à jour un profil",
+      "subtitle": "profile",
+      "icon": "fa-solid fa-pen",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Klaviyo",
+      "providerKey": "klaviyo",
+      "tags": [
+        "klaviyo",
+        "profile"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:klaviyo_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Mettre à jour un profil",
+      "args": {
+        "title": "Mettre à jour un profil",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "profileId",
+            "label": "ID profil",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "email",
+            "label": "Email",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "properties",
+            "label": "Propriétés",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "payload",
+            "label": "Payload JSON",
+            "description": "Données avancées à envoyer à l'API.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Profils"
+    },
+    {
+      "key": "klaviyo_profile_delete",
+      "name": "klaviyoProfileDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un profil",
+      "subtitle": "profile",
+      "icon": "fa-solid fa-trash",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Klaviyo",
+      "providerKey": "klaviyo",
+      "tags": [
+        "klaviyo",
+        "profile"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:klaviyo_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Supprimer un profil",
+      "args": {
+        "title": "Supprimer un profil",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "profileId",
+            "label": "ID profil",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Profils"
+    },
+    {
+      "key": "klaviyo_event_create",
+      "name": "klaviyoEventCreate",
+      "schemaVersion": 2,
+      "title": "Créer un événement",
+      "subtitle": "event",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Klaviyo",
+      "providerKey": "klaviyo",
+      "tags": [
+        "klaviyo",
+        "event"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:klaviyo_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Créer un événement",
+      "args": {
+        "title": "Créer un événement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "metricName",
+            "label": "Nom métrique",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "email",
+            "label": "Email profil",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "properties",
+            "label": "Propriétés",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "payload",
+            "label": "Payload JSON",
+            "description": "Données avancées à envoyer à l'API.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Événements"
+    },
+    {
+      "key": "klaviyo_events_list",
+      "name": "klaviyoEventsList",
+      "schemaVersion": 2,
+      "title": "Lister les événements",
+      "subtitle": "events",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Klaviyo",
+      "providerKey": "klaviyo",
+      "tags": [
+        "klaviyo",
+        "events"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:klaviyo_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lister les événements",
+      "args": {
+        "title": "Lister les événements",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "filter",
+            "label": "Filtre",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "page[size]",
+            "label": "Taille page",
+            "default": 50,
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "page[cursor]",
+            "label": "Curseur",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Événements"
+    },
+    {
+      "key": "klaviyo_metrics_list",
+      "name": "klaviyoMetricsList",
+      "schemaVersion": 2,
+      "title": "Lister les métriques",
+      "subtitle": "metrics",
+      "icon": "fa-solid fa-chart-line",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Klaviyo",
+      "providerKey": "klaviyo",
+      "tags": [
+        "klaviyo",
+        "metrics"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:klaviyo_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lister les métriques",
+      "args": {
+        "title": "Lister les métriques",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "filter",
+            "label": "Filtre",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "page[size]",
+            "label": "Taille page",
+            "default": 50,
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "page[cursor]",
+            "label": "Curseur",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Métriques"
+    },
+    {
+      "key": "klaviyo_lists_list",
+      "name": "klaviyoListsList",
+      "schemaVersion": 2,
+      "title": "Lister les listes",
+      "subtitle": "lists",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Klaviyo",
+      "providerKey": "klaviyo",
+      "tags": [
+        "klaviyo",
+        "lists"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:klaviyo_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lister les listes",
+      "args": {
+        "title": "Lister les listes",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "filter",
+            "label": "Filtre",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "page[size]",
+            "label": "Taille page",
+            "default": 50,
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "page[cursor]",
+            "label": "Curseur",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Listes"
+    },
+    {
+      "key": "klaviyo_list_get",
+      "name": "klaviyoListGet",
+      "schemaVersion": 2,
+      "title": "Récupérer une liste",
+      "subtitle": "list",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Klaviyo",
+      "providerKey": "klaviyo",
+      "tags": [
+        "klaviyo",
+        "list"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:klaviyo_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupérer une liste",
+      "args": {
+        "title": "Récupérer une liste",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "listId",
+            "label": "ID liste",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Listes"
+    },
+    {
+      "key": "klaviyo_list_profiles_add",
+      "name": "klaviyoListProfilesAdd",
+      "schemaVersion": 2,
+      "title": "Ajouter des profils à une liste",
+      "subtitle": "list",
+      "icon": "fa-solid fa-user-plus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Klaviyo",
+      "providerKey": "klaviyo",
+      "tags": [
+        "klaviyo",
+        "list"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:klaviyo_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Ajouter des profils à une liste",
+      "args": {
+        "title": "Ajouter des profils à une liste",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "listId",
+            "label": "ID liste",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "data",
+            "label": "Relations profils",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "payload",
+            "label": "Payload JSON",
+            "description": "Données avancées à envoyer à l'API.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Listes"
+    },
+    {
+      "key": "klaviyo_list_profiles_remove",
+      "name": "klaviyoListProfilesRemove",
+      "schemaVersion": 2,
+      "title": "Retirer des profils d'une liste",
+      "subtitle": "list",
+      "icon": "fa-solid fa-user-minus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Klaviyo",
+      "providerKey": "klaviyo",
+      "tags": [
+        "klaviyo",
+        "list"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:klaviyo_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Retirer des profils d'une liste",
+      "args": {
+        "title": "Retirer des profils d'une liste",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "listId",
+            "label": "ID liste",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "data",
+            "label": "Relations profils",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "payload",
+            "label": "Payload JSON",
+            "description": "Données avancées à envoyer à l'API.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Listes"
+    },
+    {
+      "key": "klaviyo_segments_list",
+      "name": "klaviyoSegmentsList",
+      "schemaVersion": 2,
+      "title": "Lister les segments",
+      "subtitle": "segments",
+      "icon": "fa-solid fa-layer-group",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Klaviyo",
+      "providerKey": "klaviyo",
+      "tags": [
+        "klaviyo",
+        "segments"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:klaviyo_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lister les segments",
+      "args": {
+        "title": "Lister les segments",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "filter",
+            "label": "Filtre",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "page[size]",
+            "label": "Taille page",
+            "default": 50,
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "page[cursor]",
+            "label": "Curseur",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Segments"
+    },
+    {
+      "key": "klaviyo_campaigns_list",
+      "name": "klaviyoCampaignsList",
+      "schemaVersion": 2,
+      "title": "Lister les campagnes",
+      "subtitle": "campaigns",
+      "icon": "fa-solid fa-bullhorn",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Klaviyo",
+      "providerKey": "klaviyo",
+      "tags": [
+        "klaviyo",
+        "campaigns"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:klaviyo_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lister les campagnes",
+      "args": {
+        "title": "Lister les campagnes",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "filter",
+            "label": "Filtre",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "page[size]",
+            "label": "Taille page",
+            "default": 50,
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "page[cursor]",
+            "label": "Curseur",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Campagnes"
+    },
+    {
+      "key": "klaviyo_campaign_get",
+      "name": "klaviyoCampaignGet",
+      "schemaVersion": 2,
+      "title": "Récupérer une campagne",
+      "subtitle": "campaign",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Klaviyo",
+      "providerKey": "klaviyo",
+      "tags": [
+        "klaviyo",
+        "campaign"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:klaviyo_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupérer une campagne",
+      "args": {
+        "title": "Récupérer une campagne",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "campaignId",
+            "label": "ID campagne",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Campagnes"
+    },
+    {
+      "key": "klaviyo_campaign_create",
+      "name": "klaviyoCampaignCreate",
+      "schemaVersion": 2,
+      "title": "Créer une campagne",
+      "subtitle": "campaign",
+      "icon": "fa-solid fa-plus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Klaviyo",
+      "providerKey": "klaviyo",
+      "tags": [
+        "klaviyo",
+        "campaign"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:klaviyo_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Créer une campagne",
+      "args": {
+        "title": "Créer une campagne",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "channel",
+            "label": "Canal",
+            "default": "email",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "payload",
+            "label": "Payload JSON",
+            "description": "Données avancées à envoyer à l'API.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Campagnes"
+    },
+    {
+      "key": "klaviyo_campaign_send",
+      "name": "klaviyoCampaignSend",
+      "schemaVersion": 2,
+      "title": "Envoyer une campagne",
+      "subtitle": "campaign",
+      "icon": "fa-solid fa-paper-plane",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Klaviyo",
+      "providerKey": "klaviyo",
+      "tags": [
+        "klaviyo",
+        "campaign"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:klaviyo_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Envoyer une campagne",
+      "args": {
+        "title": "Envoyer une campagne",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "campaignId",
+            "label": "ID campagne",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "payload",
+            "label": "Payload JSON",
+            "description": "Données avancées à envoyer à l'API.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Campagnes"
+    },
+    {
+      "key": "klaviyo_flows_list",
+      "name": "klaviyoFlowsList",
+      "schemaVersion": 2,
+      "title": "Lister les flows",
+      "subtitle": "flows",
+      "icon": "fa-solid fa-diagram-project",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Klaviyo",
+      "providerKey": "klaviyo",
+      "tags": [
+        "klaviyo",
+        "flows"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:klaviyo_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lister les flows",
+      "args": {
+        "title": "Lister les flows",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "filter",
+            "label": "Filtre",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "page[size]",
+            "label": "Taille page",
+            "default": 50,
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "page[cursor]",
+            "label": "Curseur",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Flows"
+    },
+    {
+      "key": "klaviyo_templates_list",
+      "name": "klaviyoTemplatesList",
+      "schemaVersion": 2,
+      "title": "Lister les modèles",
+      "subtitle": "templates",
+      "icon": "fa-solid fa-envelope-open-text",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Klaviyo",
+      "providerKey": "klaviyo",
+      "tags": [
+        "klaviyo",
+        "templates"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:klaviyo_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lister les modèles",
+      "args": {
+        "title": "Lister les modèles",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "filter",
+            "label": "Filtre",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "page[size]",
+            "label": "Taille page",
+            "default": 50,
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "page[cursor]",
+            "label": "Curseur",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Modèles"
+    },
+    {
+      "key": "klaviyo_webhook_event",
+      "name": "klaviyoWebhookEvent",
+      "schemaVersion": 2,
+      "title": "Événement webhook",
+      "subtitle": "Webhook",
+      "icon": "fa-solid fa-bolt",
+      "type": "event",
+      "nodeKind": "event",
+      "category": "Klaviyo",
+      "providerKey": "klaviyo",
+      "tags": [
+        "klaviyo"
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:klaviyo_webhook"
+        }
+      ],
+      "description": "Reçoit un événement Klaviyo.",
+      "group": "Webhook"
+    }
+  ]
+}

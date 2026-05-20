@@ -1,0 +1,1112 @@
+{
+  "repo": {
+    "name": "playwright",
+    "type": "local",
+    "label": "Playwright"
+  },
+  "variables": {
+    "playwright_response": {
+      "title": "Réponse Playwright",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "url",
+          "key": "url",
+          "label": "URL",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "text",
+          "label": "Texte",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "data",
+          "label": "Données",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "result_json",
+          "label": "Résultat JSON",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "playwright_items": {
+      "title": "Playwright - liste",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "col": {
+            "xs": 12
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextCursor",
+          "label": "Curseur suivant",
+          "col": {
+            "xs": 12
+          }
+        },
+        {
+          "type": "section",
+          "title": "Éléments",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "url",
+              "key": "url",
+              "label": "URL",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "text",
+              "label": "Texte",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "result_json",
+              "label": "Données JSON",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "playwright_webhook": {
+      "title": "Webhook Playwright",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "event",
+          "label": "Événement",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "payload",
+          "label": "Payload",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "playwright",
+      "name": "Playwright",
+      "title": "Playwright",
+      "iconClass": "fa-solid fa-window-maximize",
+      "iconUrl": "https://cdn.simpleicons.org/playwright",
+      "color": "#e3f7df",
+      "tags": [
+        "playwright",
+        "navigateur",
+        "automation"
+      ],
+      "categories": [
+        "Développement"
+      ],
+      "hasCredentials": false,
+      "credentialsForm": {
+        "title": "Identifiants Playwright",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "playwright_page_screenshot",
+      "name": "playwrightPageScreenshot",
+      "schemaVersion": 2,
+      "title": "Capturer une page",
+      "subtitle": "Captures",
+      "icon": "fa-solid fa-window-maximize",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Playwright",
+      "providerKey": "playwright",
+      "tags": [
+        "playwright"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:playwright_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Capturer une page",
+      "args": {
+        "title": "Capturer une page",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "url",
+            "key": "url",
+            "label": "URL",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "browser",
+            "label": "Navigateur",
+            "default": "chromium",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "timeout",
+            "label": "Timeout ms",
+            "default": 30000,
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "fullPage",
+            "label": "Page entière",
+            "default": true,
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "selector",
+            "label": "Sélecteur",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Captures"
+    },
+    {
+      "key": "playwright_page_pdf",
+      "name": "playwrightPagePdf",
+      "schemaVersion": 2,
+      "title": "Exporter une page en PDF",
+      "subtitle": "Captures",
+      "icon": "fa-solid fa-window-maximize",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Playwright",
+      "providerKey": "playwright",
+      "tags": [
+        "playwright"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:playwright_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Exporter une page en PDF",
+      "args": {
+        "title": "Exporter une page en PDF",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "url",
+            "key": "url",
+            "label": "URL",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "browser",
+            "label": "Navigateur",
+            "default": "chromium",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "timeout",
+            "label": "Timeout ms",
+            "default": 30000,
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "format",
+            "label": "Format",
+            "default": "A4",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Captures"
+    },
+    {
+      "key": "playwright_page_text_extract",
+      "name": "playwrightPageTextExtract",
+      "schemaVersion": 2,
+      "title": "Extraire le texte",
+      "subtitle": "Extraction",
+      "icon": "fa-solid fa-window-maximize",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Playwright",
+      "providerKey": "playwright",
+      "tags": [
+        "playwright"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:playwright_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Extraire le texte",
+      "args": {
+        "title": "Extraire le texte",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "url",
+            "key": "url",
+            "label": "URL",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "browser",
+            "label": "Navigateur",
+            "default": "chromium",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "timeout",
+            "label": "Timeout ms",
+            "default": 30000,
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Extraction"
+    },
+    {
+      "key": "playwright_page_html_extract",
+      "name": "playwrightPageHtmlExtract",
+      "schemaVersion": 2,
+      "title": "Extraire le HTML",
+      "subtitle": "Extraction",
+      "icon": "fa-solid fa-window-maximize",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Playwright",
+      "providerKey": "playwright",
+      "tags": [
+        "playwright"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:playwright_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Extraire le HTML",
+      "args": {
+        "title": "Extraire le HTML",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "url",
+            "key": "url",
+            "label": "URL",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "browser",
+            "label": "Navigateur",
+            "default": "chromium",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "timeout",
+            "label": "Timeout ms",
+            "default": 30000,
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Extraction"
+    },
+    {
+      "key": "playwright_links_extract",
+      "name": "playwrightLinksExtract",
+      "schemaVersion": 2,
+      "title": "Extraire les liens",
+      "subtitle": "Extraction",
+      "icon": "fa-solid fa-window-maximize",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Playwright",
+      "providerKey": "playwright",
+      "tags": [
+        "playwright"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:playwright_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Extraire les liens",
+      "args": {
+        "title": "Extraire les liens",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "url",
+            "key": "url",
+            "label": "URL",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "browser",
+            "label": "Navigateur",
+            "default": "chromium",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "timeout",
+            "label": "Timeout ms",
+            "default": 30000,
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Extraction"
+    },
+    {
+      "key": "playwright_page_evaluate",
+      "name": "playwrightPageEvaluate",
+      "schemaVersion": 2,
+      "title": "Évaluer du JavaScript",
+      "subtitle": "Scripts",
+      "icon": "fa-solid fa-window-maximize",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Playwright",
+      "providerKey": "playwright",
+      "tags": [
+        "playwright"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:playwright_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Évaluer du JavaScript",
+      "args": {
+        "title": "Évaluer du JavaScript",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "url",
+            "key": "url",
+            "label": "URL",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "browser",
+            "label": "Navigateur",
+            "default": "chromium",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "timeout",
+            "label": "Timeout ms",
+            "default": 30000,
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "script",
+            "label": "Script",
+            "default": "() => document.title",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Scripts"
+    },
+    {
+      "key": "playwright_form_submit",
+      "name": "playwrightFormSubmit",
+      "schemaVersion": 2,
+      "title": "Remplir et soumettre un formulaire",
+      "subtitle": "Interactions",
+      "icon": "fa-solid fa-window-maximize",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Playwright",
+      "providerKey": "playwright",
+      "tags": [
+        "playwright"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:playwright_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Remplir et soumettre un formulaire",
+      "args": {
+        "title": "Remplir et soumettre un formulaire",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "url",
+            "key": "url",
+            "label": "URL",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "browser",
+            "label": "Navigateur",
+            "default": "chromium",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "timeout",
+            "label": "Timeout ms",
+            "default": 30000,
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "fields",
+            "label": "Champs",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "submitSelector",
+            "label": "Sélecteur bouton",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Interactions"
+    },
+    {
+      "key": "playwright_click_and_extract",
+      "name": "playwrightClickAndExtract",
+      "schemaVersion": 2,
+      "title": "Cliquer puis extraire",
+      "subtitle": "Interactions",
+      "icon": "fa-solid fa-window-maximize",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Playwright",
+      "providerKey": "playwright",
+      "tags": [
+        "playwright"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:playwright_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Cliquer puis extraire",
+      "args": {
+        "title": "Cliquer puis extraire",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "url",
+            "key": "url",
+            "label": "URL",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "browser",
+            "label": "Navigateur",
+            "default": "chromium",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "timeout",
+            "label": "Timeout ms",
+            "default": 30000,
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "selector",
+            "label": "Sélecteur",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "extractSelector",
+            "label": "Sélecteur à extraire",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Interactions"
+    },
+    {
+      "key": "playwright_status_check",
+      "name": "playwrightStatusCheck",
+      "schemaVersion": 2,
+      "title": "Contrôler le statut d'une page",
+      "subtitle": "Monitoring",
+      "icon": "fa-solid fa-window-maximize",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Playwright",
+      "providerKey": "playwright",
+      "tags": [
+        "playwright"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:playwright_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Contrôler le statut d'une page",
+      "args": {
+        "title": "Contrôler le statut d'une page",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "url",
+            "key": "url",
+            "label": "URL",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "browser",
+            "label": "Navigateur",
+            "default": "chromium",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "timeout",
+            "label": "Timeout ms",
+            "default": 30000,
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Monitoring"
+    },
+    {
+      "key": "playwright_script_run",
+      "name": "playwrightScriptRun",
+      "schemaVersion": 2,
+      "title": "Exécuter un scénario",
+      "subtitle": "Scripts",
+      "icon": "fa-solid fa-window-maximize",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Playwright",
+      "providerKey": "playwright",
+      "tags": [
+        "playwright"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:playwright_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Exécuter un scénario",
+      "args": {
+        "title": "Exécuter un scénario",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "url",
+            "key": "url",
+            "label": "URL",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "browser",
+            "label": "Navigateur",
+            "default": "chromium",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "timeout",
+            "label": "Timeout ms",
+            "default": 30000,
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "steps",
+            "label": "Étapes",
+            "default": [
+              {
+                "action": "click",
+                "selector": "button"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Scripts"
+    }
+  ]
+}

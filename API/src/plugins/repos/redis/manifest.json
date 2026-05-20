@@ -1,0 +1,1502 @@
+{
+  "repo": {
+    "name": "redis",
+    "type": "local",
+    "label": "Redis"
+  },
+  "variables": {
+    "redis_response": {
+      "title": "Réponse Redis",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "url",
+          "key": "url",
+          "label": "URL",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "text",
+          "label": "Texte",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "data",
+          "label": "Données",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "result_json",
+          "label": "Résultat JSON",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "redis_items": {
+      "title": "Redis - liste",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "col": {
+            "xs": 12
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextCursor",
+          "label": "Curseur suivant",
+          "col": {
+            "xs": 12
+          }
+        },
+        {
+          "type": "section",
+          "title": "Éléments",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "url",
+              "key": "url",
+              "label": "URL",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "text",
+              "label": "Texte",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "result_json",
+              "label": "Données JSON",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "redis_webhook": {
+      "title": "Webhook Redis",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "event",
+          "label": "Événement",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "payload",
+          "label": "Payload",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "redis",
+      "name": "Redis",
+      "title": "Redis",
+      "iconClass": "fa-solid fa-server",
+      "iconUrl": "https://cdn.simpleicons.org/redis",
+      "color": "#ffdede",
+      "tags": [
+        "redis",
+        "cache",
+        "base de données"
+      ],
+      "categories": [
+        "Base de données"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Redis",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "host",
+            "label": "Hôte",
+            "default": "127.0.0.1",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "port",
+            "label": "Port",
+            "default": 6379,
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "username",
+            "label": "Utilisateur",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "password",
+            "label": "Mot de passe",
+            "secret": true,
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "database",
+            "label": "Base",
+            "default": 0,
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "tls",
+            "label": "Utiliser TLS",
+            "default": false,
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "timeout",
+            "label": "Timeout ms",
+            "default": 10000,
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "redis_key_get",
+      "name": "redisKeyGet",
+      "schemaVersion": 2,
+      "title": "Lire une clé",
+      "subtitle": "Clés",
+      "icon": "fa-solid fa-server",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Redis",
+      "providerKey": "redis",
+      "tags": [
+        "redis"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:redis_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lire une clé",
+      "args": {
+        "title": "Lire une clé",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "keyName",
+            "label": "Clé",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Clés"
+    },
+    {
+      "key": "redis_key_set",
+      "name": "redisKeySet",
+      "schemaVersion": 2,
+      "title": "Écrire une clé",
+      "subtitle": "Clés",
+      "icon": "fa-solid fa-server",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Redis",
+      "providerKey": "redis",
+      "tags": [
+        "redis"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:redis_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Écrire une clé",
+      "args": {
+        "title": "Écrire une clé",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "keyName",
+            "label": "Clé",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "value",
+            "label": "Valeur",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "ttl",
+            "label": "TTL secondes",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Clés"
+    },
+    {
+      "key": "redis_key_delete",
+      "name": "redisKeyDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer des clés",
+      "subtitle": "Clés",
+      "icon": "fa-solid fa-server",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Redis",
+      "providerKey": "redis",
+      "tags": [
+        "redis"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:redis_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Supprimer des clés",
+      "args": {
+        "title": "Supprimer des clés",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "keys",
+            "label": "Clés séparées par des virgules",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Clés"
+    },
+    {
+      "key": "redis_key_exists",
+      "name": "redisKeyExists",
+      "schemaVersion": 2,
+      "title": "Tester l'existence",
+      "subtitle": "Clés",
+      "icon": "fa-solid fa-server",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Redis",
+      "providerKey": "redis",
+      "tags": [
+        "redis"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:redis_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Tester l'existence",
+      "args": {
+        "title": "Tester l'existence",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "keyName",
+            "label": "Clé",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Clés"
+    },
+    {
+      "key": "redis_key_expire",
+      "name": "redisKeyExpire",
+      "schemaVersion": 2,
+      "title": "Définir l'expiration",
+      "subtitle": "Clés",
+      "icon": "fa-solid fa-server",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Redis",
+      "providerKey": "redis",
+      "tags": [
+        "redis"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:redis_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Définir l'expiration",
+      "args": {
+        "title": "Définir l'expiration",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "keyName",
+            "label": "Clé",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "seconds",
+            "label": "Secondes",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Clés"
+    },
+    {
+      "key": "redis_keys_scan",
+      "name": "redisKeysScan",
+      "schemaVersion": 2,
+      "title": "Scanner les clés",
+      "subtitle": "Clés",
+      "icon": "fa-solid fa-server",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Redis",
+      "providerKey": "redis",
+      "tags": [
+        "redis"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:redis_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Scanner les clés",
+      "args": {
+        "title": "Scanner les clés",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "pattern",
+            "label": "Motif",
+            "default": "*",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "count",
+            "label": "Nombre",
+            "default": 100,
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Clés"
+    },
+    {
+      "key": "redis_hash_get",
+      "name": "redisHashGet",
+      "schemaVersion": 2,
+      "title": "Lire un hash",
+      "subtitle": "Hash",
+      "icon": "fa-solid fa-server",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Redis",
+      "providerKey": "redis",
+      "tags": [
+        "redis"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:redis_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lire un hash",
+      "args": {
+        "title": "Lire un hash",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "keyName",
+            "label": "Clé",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Hash"
+    },
+    {
+      "key": "redis_hash_set",
+      "name": "redisHashSet",
+      "schemaVersion": 2,
+      "title": "Écrire dans un hash",
+      "subtitle": "Hash",
+      "icon": "fa-solid fa-server",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Redis",
+      "providerKey": "redis",
+      "tags": [
+        "redis"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:redis_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Écrire dans un hash",
+      "args": {
+        "title": "Écrire dans un hash",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "keyName",
+            "label": "Clé",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "data",
+            "label": "Champs",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Hash"
+    },
+    {
+      "key": "redis_hash_delete",
+      "name": "redisHashDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer des champs hash",
+      "subtitle": "Hash",
+      "icon": "fa-solid fa-server",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Redis",
+      "providerKey": "redis",
+      "tags": [
+        "redis"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:redis_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Supprimer des champs hash",
+      "args": {
+        "title": "Supprimer des champs hash",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "keyName",
+            "label": "Clé",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "fields",
+            "label": "Champs séparés par des virgules",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Hash"
+    },
+    {
+      "key": "redis_list_push",
+      "name": "redisListPush",
+      "schemaVersion": 2,
+      "title": "Ajouter à une liste",
+      "subtitle": "Listes",
+      "icon": "fa-solid fa-server",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Redis",
+      "providerKey": "redis",
+      "tags": [
+        "redis"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:redis_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Ajouter à une liste",
+      "args": {
+        "title": "Ajouter à une liste",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "keyName",
+            "label": "Clé",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "value",
+            "label": "Valeur",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "side",
+            "label": "Côté",
+            "default": "right",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Listes"
+    },
+    {
+      "key": "redis_list_range",
+      "name": "redisListRange",
+      "schemaVersion": 2,
+      "title": "Lire une liste",
+      "subtitle": "Listes",
+      "icon": "fa-solid fa-server",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Redis",
+      "providerKey": "redis",
+      "tags": [
+        "redis"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:redis_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lire une liste",
+      "args": {
+        "title": "Lire une liste",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "keyName",
+            "label": "Clé",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "start",
+            "label": "Début",
+            "default": 0,
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "stop",
+            "label": "Fin",
+            "default": 99,
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Listes"
+    },
+    {
+      "key": "redis_set_add",
+      "name": "redisSetAdd",
+      "schemaVersion": 2,
+      "title": "Ajouter à un set",
+      "subtitle": "Sets",
+      "icon": "fa-solid fa-server",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Redis",
+      "providerKey": "redis",
+      "tags": [
+        "redis"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:redis_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Ajouter à un set",
+      "args": {
+        "title": "Ajouter à un set",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "keyName",
+            "label": "Clé",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "members",
+            "label": "Membres séparés par des virgules",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Sets"
+    },
+    {
+      "key": "redis_set_members",
+      "name": "redisSetMembers",
+      "schemaVersion": 2,
+      "title": "Lister un set",
+      "subtitle": "Sets",
+      "icon": "fa-solid fa-server",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Redis",
+      "providerKey": "redis",
+      "tags": [
+        "redis"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:redis_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lister un set",
+      "args": {
+        "title": "Lister un set",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "keyName",
+            "label": "Clé",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Sets"
+    },
+    {
+      "key": "redis_stream_add",
+      "name": "redisStreamAdd",
+      "schemaVersion": 2,
+      "title": "Ajouter à un stream",
+      "subtitle": "Streams",
+      "icon": "fa-solid fa-server",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Redis",
+      "providerKey": "redis",
+      "tags": [
+        "redis"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:redis_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Ajouter à un stream",
+      "args": {
+        "title": "Ajouter à un stream",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "keyName",
+            "label": "Stream",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "data",
+            "label": "Champs",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Streams"
+    },
+    {
+      "key": "redis_stream_read",
+      "name": "redisStreamRead",
+      "schemaVersion": 2,
+      "title": "Lire un stream",
+      "subtitle": "Streams",
+      "icon": "fa-solid fa-server",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Redis",
+      "providerKey": "redis",
+      "tags": [
+        "redis"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:redis_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lire un stream",
+      "args": {
+        "title": "Lire un stream",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "keyName",
+            "label": "Stream",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "lastId",
+            "label": "Dernier ID",
+            "default": "0",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "count",
+            "label": "Nombre",
+            "default": 10,
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Streams"
+    },
+    {
+      "key": "redis_publish",
+      "name": "redisPublish",
+      "schemaVersion": 2,
+      "title": "Publier un message",
+      "subtitle": "Pub/Sub",
+      "icon": "fa-solid fa-server",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Redis",
+      "providerKey": "redis",
+      "tags": [
+        "redis"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:redis_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Publier un message",
+      "args": {
+        "title": "Publier un message",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "channel",
+            "label": "Canal",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "message",
+            "label": "Message",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Pub/Sub"
+    },
+    {
+      "key": "redis_command_execute",
+      "name": "redisCommandExecute",
+      "schemaVersion": 2,
+      "title": "Exécuter une commande",
+      "subtitle": "Commande",
+      "icon": "fa-solid fa-server",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Redis",
+      "providerKey": "redis",
+      "tags": [
+        "redis"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:redis_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Exécuter une commande",
+      "args": {
+        "title": "Exécuter une commande",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "command",
+            "label": "Commande",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "args",
+            "label": "Arguments",
+            "default": [],
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Commande"
+    }
+  ]
+}

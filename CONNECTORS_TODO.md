@@ -2,35 +2,35 @@
 
 Connecteurs ajoutés via le skill `kinn-connector-creator`. Les cases cochées ont un dossier `API/src/plugins/repos/{connector}`, un manifeste, des handlers séparés et une validation statique.
 
-- [ ] PostgreSQL
+- [x] PostgreSQL
 - [x] Figma
-- [ ] Loom
+- [x] Loom
 - [x] Miro
 - [x] Perplexity
 - [x] Firecrawl
 - [x] Apify
 - [x] Browserbase
-- [ ] Playwright
+- [x] Playwright
 - [x] DeepSeek
 - [x] Groq
 - [x] Cohere
 - [x] Replicate
 - [x] Hugging Face
 - [x] AssemblyAI
-- [ ] Runway
+- [x] Runway
 - [x] Pinecone
 - [x] Weaviate
 - [x] Qdrant
-- [ ] Redis
+- [x] Redis
 - [x] Vercel
 - [x] Sentry
-- [ ] Apollo
-- [ ] Clay
-- [ ] Klaviyo
-- [ ] Qonto
+- [x] Apollo
+- [x] Clay
+- [x] Klaviyo
+- [x] Qonto
 - [x] Wise
 - [x] Crisp
-- [ ] LangChain
+- [x] LangChain
 - [x] SerpAPI
 - [x] ElevenLabs
-- [ ] Docker
+- [x] Docker
