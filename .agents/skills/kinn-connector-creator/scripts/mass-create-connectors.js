@@ -6,6 +6,7 @@ const { execFileSync } = require('child_process');
 const { scaffoldConnector } = require('./scaffold-connector');
 const { generateFromSpec } = require('./generate-actions-from-spec');
 const { readInput, toSnake, toKebab } = require('./lib/bulk-utils');
+const { buildSpecFromOpenApi } = require('./lib/endpoint-selector');
 
 function parseArgs(argv) {
   const opts = {
@@ -17,7 +18,9 @@ function parseArgs(argv) {
     noActions: false,
     keepSampleNode: false,
     skipExisting: true,
-    defaultColor: '#f2f2f2'
+    defaultColor: '#f2f2f2',
+    includeDeprecated: false,
+    strictAutomation: true
   };
   const positional = [];
 
@@ -36,8 +39,10 @@ function parseArgs(argv) {
     if (a === '--no-actions') { opts.noActions = true; continue; }
     if (a === '--keep-sample-node') { opts.keepSampleNode = true; continue; }
     if (a === '--no-skip-existing') { opts.skipExisting = false; continue; }
+    if (a === '--include-deprecated') { opts.includeDeprecated = true; continue; }
+    if (a === '--no-strict-automation') { opts.strictAutomation = false; continue; }
 
-    const key = a.slice(2);
+    const key = a.slice(2).replace(/-([a-z0-9])/g, (_, c) => c.toUpperCase());
     const next = argv[i + 1];
     if (next === undefined || next.startsWith('--')) throw new Error(`Option --${key} requiert une valeur.`);
     opts[key] = next;
@@ -76,10 +81,32 @@ function runCheck(connector, opts) {
   execFileSync(process.execPath, [checkScript, connector], { stdio: 'pipe' });
 }
 
-function buildSpec(item, connector, invBaseDir) {
+function enforceStrictCoverage(report) {
+  const failures = [];
+  for (const [resource, row] of Object.entries((report && report.coverage) || {})) {
+    if (!row.hasRead) failures.push(`${resource}: aucune action de lecture (list/search/get)`);
+    if (row.writeCandidate && !row.hasWrite) failures.push(`${resource}: aucune action d'écriture (create/update/delete/...)`);
+  }
+  return failures;
+}
+
+function buildSpec(item, connector, invBaseDir, opts) {
   if (item.specFile) {
     const specPath = path.resolve(invBaseDir, item.specFile);
     return JSON.parse(fs.readFileSync(specPath, 'utf8'));
+  }
+  if (item.openapiFile) {
+    const openapiPath = path.resolve(invBaseDir, item.openapiFile);
+    const openapi = JSON.parse(fs.readFileSync(openapiPath, 'utf8'));
+    const out = buildSpecFromOpenApi(openapi, {
+      connector,
+      providerKey: item.providerKey,
+      providerName: item.providerName,
+      includePatterns: item.includePatterns,
+      excludePatterns: item.excludePatterns,
+      includeDeprecated: item.includeDeprecated !== undefined ? item.includeDeprecated === true : !!opts.includeDeprecated
+    });
+    return out;
   }
   if (Array.isArray(item.resources) && item.resources.length) {
     return {
@@ -119,8 +146,19 @@ function runOne(item, opts, invBaseDir) {
   }
 
   if (!opts.noActions) {
-    const spec = buildSpec(item, connector, invBaseDir);
-    if (spec) {
+    const specOrBundle = buildSpec(item, connector, invBaseDir, opts);
+    if (specOrBundle) {
+      let spec = specOrBundle;
+      if (specOrBundle.spec && specOrBundle.report) {
+        const strictOn = item.strictAutomation !== undefined ? !!item.strictAutomation : !!opts.strictAutomation;
+        if (strictOn) {
+          const strictFailures = enforceStrictCoverage(specOrBundle.report);
+          if (strictFailures.length) {
+            throw new Error(`Coverage automation insuffisante:\\n- ${strictFailures.join('\\n- ')}`);
+          }
+        }
+        spec = specOrBundle.spec;
+      }
       const manifestExistsNow = fs.existsSync(mPath);
       if (opts.dryRun && !manifestExistsNow) {
         // In dry-run we do not materialize scaffold files, so action generation is only announced.
@@ -190,7 +228,7 @@ function main() {
   } catch (e) {
     console.error(`Erreur: ${e.message}`);
     console.error('\nUsage:');
-    console.error('  node .agents/skills/kinn-connector-creator/scripts/mass-create-connectors.js <inventory.json|.jsonl> [--dry-run] [--force] [--continue-on-error] [--no-logo] [--no-check] [--no-actions] [--keep-sample-node]');
+    console.error('  node .agents/skills/kinn-connector-creator/scripts/mass-create-connectors.js <inventory.json|.jsonl> [--dry-run] [--force] [--continue-on-error] [--no-logo] [--no-check] [--no-actions] [--keep-sample-node] [--include-deprecated] [--no-strict-automation]');
     process.exit(1);
   }
 }

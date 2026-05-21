@@ -15,6 +15,7 @@
       ],
       "actions": [
         {
+          "key": "upsert_contact",
           "action": "upsert",
           "method": "POST",
           "path": "/contacts/upsert",
@@ -38,7 +39,36 @@
       "title": "deal",
       "titlePlural": "deals",
       "basePath": "/deals",
-      "defaultActions": ["list", "get", "create", "update", "delete"]
+      "defaultActions": ["list", "get", "create", "update", "delete"],
+      "actions": [
+        {
+          "key": "list_live_deals",
+          "action": "list",
+          "method": "GET",
+          "path": "/deals/live",
+          "title": "Lister les deals live",
+          "output": "list",
+          "disableDefaultArgs": true,
+          "args": [
+            {
+              "key": "limit",
+              "type": "number",
+              "label": "Limite",
+              "description": "Nombre max d'éléments.",
+              "required": false,
+              "in": "query"
+            },
+            {
+              "key": "offset",
+              "type": "number",
+              "label": "Offset",
+              "description": "Décalage de pagination.",
+              "required": false,
+              "in": "query"
+            }
+          ]
+        }
+      ]
     }
   ]
 }

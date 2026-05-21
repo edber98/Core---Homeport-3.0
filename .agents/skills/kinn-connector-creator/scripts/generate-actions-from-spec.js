@@ -16,6 +16,10 @@ const {
 
 const DEFAULT_ACTIONS = ['list', 'get', 'create', 'update', 'delete'];
 
+function resolveActionKey(actionDef) {
+  return toSnake(actionDef && (actionDef.key || actionDef.action || actionDef.name));
+}
+
 function parseArgs(argv) {
   const options = {
     force: false,
@@ -34,7 +38,7 @@ function parseArgs(argv) {
     if (a === '--dry-run') { options.dryRun = true; continue; }
     if (a === '--keep-sample-node') { options.removeSampleNode = false; continue; }
 
-    const key = a.slice(2);
+    const key = a.slice(2).replace(/-([a-z0-9])/g, (_, c) => c.toUpperCase());
     const next = argv[i + 1];
     if (next === undefined || next.startsWith('--')) throw new Error(`Option --${key} requiert une valeur.`);
     options[key] = next;
@@ -129,14 +133,14 @@ function expandActions(resourceDef) {
     : (explicit.length ? [] : DEFAULT_ACTIONS);
 
   const materialized = [];
-  for (const a of defaultList) materialized.push({ action: a });
+  for (const a of defaultList) materialized.push({ key: toSnake(a), action: a });
   for (const a of explicit) materialized.push(a);
 
   const dedup = new Map();
   for (const actionDef of materialized) {
-    const actionKey = toSnake(actionDef.action || actionDef.name || actionDef.key);
+    const actionKey = resolveActionKey(actionDef);
     if (!actionKey) continue;
-    dedup.set(actionKey, actionDef);
+    dedup.set(actionKey, { ...actionDef, key: actionKey });
   }
   return [...dedup.values()];
 }
@@ -401,7 +405,7 @@ function generateFromSpec(specInput, opts = {}) {
 
     const actions = expandActions(resource);
     for (const actionRaw of actions) {
-      const actionKey = toSnake(actionRaw.action || actionRaw.name || actionRaw.key);
+      const actionKey = resolveActionKey(actionRaw);
       if (!actionKey) continue;
 
       const method = String(actionRaw.method || defaultMethod(actionKey)).toUpperCase();
@@ -411,7 +415,9 @@ function generateFromSpec(specInput, opts = {}) {
 
       const explicitArgs = Array.isArray(actionRaw.args) ? actionRaw.args.map(normalizeField).filter(Boolean) : [];
       const byKey = new Map();
-      for (const a of defaultArgsFor(actionKey, outputMode, reqPath, method)) byKey.set(a.key, a);
+      if (actionRaw.disableDefaultArgs !== true) {
+        for (const a of defaultArgsFor(actionKey, outputMode, reqPath, method)) byKey.set(a.key, a);
+      }
       for (const a of explicitArgs) byKey.set(a.key, { ...byKey.get(a.key), ...a });
       for (const a of byKey.values()) args.push(a);
 

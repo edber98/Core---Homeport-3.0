@@ -59,7 +59,7 @@ function parseArgs(argv) {
       continue;
     }
 
-    const key = a.slice(2);
+    const key = a.slice(2).replace(/-([a-z0-9])/g, (_, c) => c.toUpperCase());
     const next = argv[i + 1];
     if (next === undefined || next.startsWith('--')) {
       throw new Error(`Option --${key} requiert une valeur.`);

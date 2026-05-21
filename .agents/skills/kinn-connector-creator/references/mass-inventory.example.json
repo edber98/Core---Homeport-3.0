@@ -7,22 +7,10 @@
     "color": "#ffe9dd",
     "tags": ["crm", "sales"],
     "categories": ["CRM"],
-    "resources": [
-      {
-        "key": "contact",
-        "title": "contact",
-        "titlePlural": "contacts",
-        "basePath": "/contacts",
-        "defaultActions": ["list", "get", "create", "update", "delete", "search", "upsert"]
-      },
-      {
-        "key": "company",
-        "title": "company",
-        "titlePlural": "companies",
-        "basePath": "/companies",
-        "defaultActions": ["list", "get", "create", "update", "delete"]
-      }
-    ]
+    "openapiFile": "openapi/acme-crm.openapi.json",
+    "strictAutomation": true,
+    "excludePatterns": ["/admin", "/billing", "/audit"],
+    "includePatterns": ["/contacts/.*/assign", "/contacts/.*/notes"]
   },
   {
     "connector": "acme-support",
@@ -30,14 +18,7 @@
     "iconUrl": "https://cdn.simpleicons.org/zendesk",
     "iconClass": "fa-solid fa-life-ring",
     "color": "#e9f9f2",
-    "resources": [
-      {
-        "key": "ticket",
-        "title": "ticket",
-        "titlePlural": "tickets",
-        "basePath": "/tickets",
-        "defaultActions": ["list", "get", "create", "update", "delete", "search"]
-      }
-    ]
+    "openapiFile": "openapi/acme-support.openapi.json",
+    "strictAutomation": true
   }
 ]

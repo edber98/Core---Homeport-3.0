@@ -1,15 +1,19 @@
 #!/usr/bin/env node
 
 const path = require('path');
+const fs = require('fs');
 const { readInput } = require('./lib/bulk-utils');
 const { generateFromSpec } = require('./generate-actions-from-spec');
+const { buildSpecFromOpenApi } = require('./lib/endpoint-selector');
 
 function parseArgs(argv) {
   const opts = {
     force: false,
     dryRun: false,
     continueOnError: false,
-    keepSampleNode: false
+    keepSampleNode: false,
+    includeDeprecated: false,
+    strictAutomation: true
   };
   const positional = [];
 
@@ -24,6 +28,8 @@ function parseArgs(argv) {
     if (a === '--dry-run') { opts.dryRun = true; continue; }
     if (a === '--continue-on-error') { opts.continueOnError = true; continue; }
     if (a === '--keep-sample-node') { opts.keepSampleNode = true; continue; }
+    if (a === '--include-deprecated') { opts.includeDeprecated = true; continue; }
+    if (a === '--no-strict-automation') { opts.strictAutomation = false; continue; }
 
     throw new Error(`Option inconnue: ${a}`);
   }
@@ -33,7 +39,24 @@ function parseArgs(argv) {
   return opts;
 }
 
-function resolveItem(item, baseDir) {
+function resolveItem(item, baseDir, opts) {
+  if (item.openapiFile) {
+    const openapiPath = path.resolve(baseDir, item.openapiFile);
+    const openapi = JSON.parse(fs.readFileSync(openapiPath, 'utf8'));
+    const bundle = buildSpecFromOpenApi(openapi, {
+      connector: item.connector || item.name || item.key,
+      providerKey: item.providerKey,
+      providerName: item.providerName,
+      includePatterns: item.includePatterns,
+      excludePatterns: item.excludePatterns,
+      includeDeprecated: item.includeDeprecated !== undefined ? item.includeDeprecated === true : !!opts.includeDeprecated
+    });
+    return {
+      connector: item.connector || item.name || item.key,
+      spec: bundle.spec,
+      report: bundle.report
+    };
+  }
   if (item.specFile) {
     return {
       connector: item.connector,
@@ -44,6 +67,15 @@ function resolveItem(item, baseDir) {
     connector: item.connector || item.name || item.key,
     spec: item
   };
+}
+
+function enforceStrictCoverage(report) {
+  const failures = [];
+  for (const [resource, row] of Object.entries((report && report.coverage) || {})) {
+    if (!row.hasRead) failures.push(`${resource}: aucune action de lecture (list/search/get)`);
+    if (row.writeCandidate && !row.hasWrite) failures.push(`${resource}: aucune action d'écriture (create/update/delete/...)`);
+  }
+  return failures;
 }
 
 function main() {
@@ -60,7 +92,7 @@ function main() {
 
     for (let i = 0; i < items.length; i += 1) {
       const item = items[i] || {};
-      const row = resolveItem(item, baseDir);
+      const row = resolveItem(item, baseDir, args);
       if (!row.connector) {
         failures += 1;
         rows.push({ ok: false, connector: `item_${i + 1}`, error: 'connector manquant' });
@@ -69,6 +101,14 @@ function main() {
       }
 
       try {
+        const strictOn = item.strictAutomation !== undefined ? !!item.strictAutomation : !!args.strictAutomation;
+        if (strictOn && row.report) {
+          const strictFailures = enforceStrictCoverage(row.report);
+          if (strictFailures.length) {
+            throw new Error(`Coverage automation insuffisante:\\n- ${strictFailures.join('\\n- ')}`);
+          }
+        }
+
         const out = generateFromSpec(row.spec, {
           connector: row.connector,
           rootDir: process.cwd(),
@@ -94,7 +134,7 @@ function main() {
   } catch (e) {
     console.error(`Erreur: ${e.message}`);
     console.error('\nUsage:');
-    console.error('  node .agents/skills/kinn-connector-creator/scripts/bulk-generate-actions.js <inventory.json|.jsonl> [--dry-run] [--force] [--continue-on-error] [--keep-sample-node]');
+    console.error('  node .agents/skills/kinn-connector-creator/scripts/bulk-generate-actions.js <inventory.json|.jsonl> [--dry-run] [--force] [--continue-on-error] [--keep-sample-node] [--include-deprecated] [--no-strict-automation]');
     process.exit(1);
   }
 }

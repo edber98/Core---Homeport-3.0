@@ -6,6 +6,12 @@ Run static validation after creating or editing a connector:
 node .agents/skills/kinn-connector-creator/scripts/check-connector.js {connector}
 ```
 
+If the connector is OpenAPI-generated, also keep the generation report and confirm strict automation coverage passed:
+
+```bash
+node .agents/skills/kinn-connector-creator/scripts/generate-spec-from-openapi.js <openapi.json|url> --connector {connector}
+```
+
 Also run these manual checks:
 
 1. `manifest.json` parses with `jq`.
@@ -26,4 +32,3 @@ If a connector includes webhook/event nodes:
 - include a `path` arg when the generic webhook trigger expects one.
 
 If the project has an import/bootstrap test command, run it. Otherwise, state that only static validation was run.
-

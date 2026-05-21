@@ -1,0 +1,1482 @@
+{
+  "repo": {
+    "name": "ollama",
+    "type": "local",
+    "label": "Ollama"
+  },
+  "variables": {
+    "ollama_response": {
+      "title": "Réponse Ollama",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant de la réponse.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut de génération.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Modèle",
+          "description": "Nom du modèle utilisé.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "text",
+          "label": "Texte",
+          "description": "Texte principal retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "thinking",
+          "label": "Thinking",
+          "description": "Trace de réflexion (si activée).",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "checkbox",
+          "key": "done",
+          "label": "Terminé",
+          "description": "Indique si la génération est terminée.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "created_at",
+          "label": "Date de création",
+          "description": "Horodatage de la réponse.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "total_duration",
+          "label": "Durée totale (ns)",
+          "description": "Durée totale en nanosecondes.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "prompt_eval_count",
+          "label": "Tokens prompt",
+          "description": "Nombre de tokens du prompt.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "eval_count",
+          "label": "Tokens sortie",
+          "description": "Nombre de tokens générés.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "result_json",
+          "label": "Résultat JSON",
+          "description": "Réponse complète normalisée au format JSON.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "ollama_items": {
+      "title": "Liste de modèles Ollama",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Éléments",
+          "description": "Liste des éléments retournés.",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom du modèle.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "État ou famille du modèle.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "url",
+              "key": "url",
+              "label": "URL",
+              "description": "URL de la bibliothèque Ollama.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "size",
+              "label": "Taille",
+              "description": "Taille du modèle en octets.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "modified_at",
+              "label": "Date",
+              "description": "Date de modification ou expiration.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "result_json",
+              "label": "Données JSON",
+              "description": "Données source JSON.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d’éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextCursor",
+          "label": "Curseur suivant",
+          "description": "Curseur de pagination suivant.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "ollama_embedding": {
+      "title": "Embeddings Ollama",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "model",
+          "label": "Modèle",
+          "description": "Modèle d’embedding utilisé.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "vectorsCount",
+          "label": "Nombre de vecteurs",
+          "description": "Nombre de vecteurs générés.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "dimensions",
+          "label": "Dimensions",
+          "description": "Dimensions de chaque vecteur.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "vectors_json",
+          "label": "Vecteurs JSON",
+          "description": "Vecteurs retournés au format JSON.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "total_duration",
+          "label": "Durée totale (ns)",
+          "description": "Durée totale en nanosecondes.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "prompt_eval_count",
+          "label": "Tokens entrée",
+          "description": "Nombre de tokens traités.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "ollama_status": {
+      "title": "Statut Ollama",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut retourné par Ollama.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "message",
+          "label": "Message",
+          "description": "Message de progression ou succès.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "total",
+          "label": "Total",
+          "description": "Total d’octets attendus (si disponible).",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "completed",
+          "label": "Complété",
+          "description": "Octets transférés (si disponible).",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "result_json",
+          "label": "Résultat JSON",
+          "description": "Réponse complète normalisée au format JSON.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "ollama_version": {
+      "title": "Version Ollama",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "version",
+          "label": "Version",
+          "description": "Version du serveur Ollama.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "ollama",
+      "name": "Ollama",
+      "title": "Ollama",
+      "iconClass": "fa-solid fa-robot",
+      "iconUrl": "https://cdn.simpleicons.org/ollama",
+      "color": "#eef2f5",
+      "tags": [
+        "ollama",
+        "ia",
+        "llm",
+        "automation"
+      ],
+      "categories": [
+        "IA"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Configuration Ollama",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "baseUrl",
+            "label": "URL de base",
+            "description": "URL de base de votre serveur Ollama.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "defaultValue": "http://localhost:11434"
+          },
+          {
+            "type": "text",
+            "key": "apiKey",
+            "label": "Clé API",
+            "description": "Clé API optionnelle (utile pour Ollama Cloud ou proxy sécurisé).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "ollama_chat_create",
+      "name": "ollamaChatCreate",
+      "schemaVersion": 2,
+      "title": "Créer une réponse chat",
+      "subtitle": "Chat",
+      "icon": "fa-solid fa-comments",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Ollama",
+      "providerKey": "ollama",
+      "tags": [
+        "ollama",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ollama_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Génère un message assistant via /api/chat.",
+      "args": {
+        "title": "Créer une réponse chat",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Modèle",
+            "description": "Nom du modèle Ollama (ex: llama3.2).",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "prompt",
+            "label": "Prompt",
+            "description": "Prompt utilisateur si vous ne fournissez pas messages.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "system",
+            "label": "Instruction système",
+            "description": "Instruction système optionnelle.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "messages",
+            "label": "Messages (JSON)",
+            "description": "Historique complet des messages au format JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "tools",
+            "label": "Tools (JSON)",
+            "description": "Définitions de tools au format JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "format",
+            "label": "Format",
+            "description": "\"json\" ou schéma JSON de sortie.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "options",
+            "label": "Options (JSON)",
+            "description": "Options de génération (temperature, top_p, etc.).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "think",
+            "label": "Thinking",
+            "description": "true/false ou low/medium/high.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "keepAlive",
+            "label": "Keep Alive",
+            "description": "Durée de maintien du modèle (ex: 5m, 0).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "logprobs",
+            "label": "Logprobs",
+            "description": "Inclure les logprobs si supporté.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "topLogprobs",
+            "label": "Top logprobs",
+            "description": "Nombre de tokens candidats à retourner.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Génération"
+    },
+    {
+      "key": "ollama_generate_response",
+      "name": "ollamaGenerateResponse",
+      "schemaVersion": 2,
+      "title": "Générer une réponse",
+      "subtitle": "Generate",
+      "icon": "fa-solid fa-wand-magic-sparkles",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Ollama",
+      "providerKey": "ollama",
+      "tags": [
+        "ollama",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ollama_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Génère une réponse via /api/generate.",
+      "args": {
+        "title": "Générer une réponse",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Modèle",
+            "description": "Nom du modèle Ollama.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "prompt",
+            "label": "Prompt",
+            "description": "Texte à compléter.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "system",
+            "label": "Instruction système",
+            "description": "Instruction système optionnelle.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "suffix",
+            "label": "Suffixe",
+            "description": "Suffixe pour fill-in-the-middle.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "images",
+            "label": "Images (JSON)",
+            "description": "Tableau JSON d’images Base64.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "format",
+            "label": "Format",
+            "description": "\"json\" ou schéma JSON de sortie.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "options",
+            "label": "Options (JSON)",
+            "description": "Options de génération (temperature, top_p, etc.).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "raw",
+            "label": "Mode brut",
+            "description": "Désactive le templating du prompt.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "think",
+            "label": "Thinking",
+            "description": "true/false ou low/medium/high.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "keepAlive",
+            "label": "Keep Alive",
+            "description": "Durée de maintien du modèle (ex: 5m, 0).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "logprobs",
+            "label": "Logprobs",
+            "description": "Inclure les logprobs si supporté.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "topLogprobs",
+            "label": "Top logprobs",
+            "description": "Nombre de tokens candidats à retourner.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Génération"
+    },
+    {
+      "key": "ollama_embeddings_create",
+      "name": "ollamaEmbeddingsCreate",
+      "schemaVersion": 2,
+      "title": "Créer des embeddings",
+      "subtitle": "Embed",
+      "icon": "fa-solid fa-vector-square",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Ollama",
+      "providerKey": "ollama",
+      "tags": [
+        "ollama",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ollama_embedding"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Crée des embeddings via /api/embed.",
+      "args": {
+        "title": "Créer des embeddings",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Modèle",
+            "description": "Nom du modèle d’embedding.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "input",
+            "label": "Texte",
+            "description": "Texte unique à vectoriser.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "inputs",
+            "label": "Inputs (JSON)",
+            "description": "Chaîne ou tableau JSON de textes à vectoriser.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "truncate",
+            "label": "Tronquer",
+            "description": "Tronquer si le contexte est dépassé.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "dimensions",
+            "label": "Dimensions",
+            "description": "Nombre de dimensions de sortie (si supporté).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "keepAlive",
+            "label": "Keep Alive",
+            "description": "Durée de maintien du modèle.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "options",
+            "label": "Options (JSON)",
+            "description": "Options de runtime Ollama.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Génération"
+    },
+    {
+      "key": "ollama_models_list",
+      "name": "ollamaModelsList",
+      "schemaVersion": 2,
+      "title": "Lister les modèles",
+      "subtitle": "Modèles",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Ollama",
+      "providerKey": "ollama",
+      "tags": [
+        "ollama",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ollama_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les modèles disponibles via /api/tags.",
+      "args": {
+        "title": "Lister les modèles",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Modèles"
+    },
+    {
+      "key": "ollama_models_running_list",
+      "name": "ollamaModelsRunningList",
+      "schemaVersion": 2,
+      "title": "Lister les modèles actifs",
+      "subtitle": "Runtime",
+      "icon": "fa-solid fa-memory",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Ollama",
+      "providerKey": "ollama",
+      "tags": [
+        "ollama",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ollama_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les modèles actuellement chargés via /api/ps.",
+      "args": {
+        "title": "Lister les modèles actifs",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Modèles"
+    },
+    {
+      "key": "ollama_model_show",
+      "name": "ollamaModelShow",
+      "schemaVersion": 2,
+      "title": "Afficher un modèle",
+      "subtitle": "Modèles",
+      "icon": "fa-solid fa-circle-info",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Ollama",
+      "providerKey": "ollama",
+      "tags": [
+        "ollama",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ollama_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère les détails d’un modèle via /api/show.",
+      "args": {
+        "title": "Afficher un modèle",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Modèle",
+            "description": "Nom du modèle à inspecter.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "checkbox",
+            "key": "verbose",
+            "label": "Verbose",
+            "description": "Inclure les champs détaillés volumineux.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Modèles"
+    },
+    {
+      "key": "ollama_model_pull",
+      "name": "ollamaModelPull",
+      "schemaVersion": 2,
+      "title": "Télécharger un modèle",
+      "subtitle": "Registry",
+      "icon": "fa-solid fa-download",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Ollama",
+      "providerKey": "ollama",
+      "tags": [
+        "ollama",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ollama_status"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Télécharge un modèle depuis le registry via /api/pull.",
+      "args": {
+        "title": "Télécharger un modèle",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Modèle",
+            "description": "Nom du modèle à télécharger.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "checkbox",
+            "key": "insecure",
+            "label": "Insecure",
+            "description": "Autoriser une connexion non sécurisée.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Registry"
+    },
+    {
+      "key": "ollama_model_push",
+      "name": "ollamaModelPush",
+      "schemaVersion": 2,
+      "title": "Publier un modèle",
+      "subtitle": "Registry",
+      "icon": "fa-solid fa-upload",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Ollama",
+      "providerKey": "ollama",
+      "tags": [
+        "ollama",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ollama_status"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Publie un modèle vers le registry via /api/push.",
+      "args": {
+        "title": "Publier un modèle",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Modèle",
+            "description": "Nom du modèle à publier.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "checkbox",
+            "key": "insecure",
+            "label": "Insecure",
+            "description": "Autoriser une connexion non sécurisée.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Registry"
+    },
+    {
+      "key": "ollama_model_create",
+      "name": "ollamaModelCreate",
+      "schemaVersion": 2,
+      "title": "Créer un modèle",
+      "subtitle": "Build",
+      "icon": "fa-solid fa-hammer",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Ollama",
+      "providerKey": "ollama",
+      "tags": [
+        "ollama",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ollama_status"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Construit un modèle personnalisé via /api/create.",
+      "args": {
+        "title": "Créer un modèle",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Nouveau modèle",
+            "description": "Nom du modèle à créer.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "fromModel",
+            "label": "Modèle source",
+            "description": "Nom du modèle de base (champ from).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "modelfile",
+            "label": "Modelfile",
+            "description": "Contenu Modelfile brut.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "template",
+            "label": "Template",
+            "description": "Template de prompt du modèle.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "system",
+            "label": "System",
+            "description": "Instruction système par défaut du modèle.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "license",
+            "label": "License",
+            "description": "Licence (texte ou JSON tableau).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "parameters",
+            "label": "Parameters (JSON)",
+            "description": "Paramètres du modèle au format JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "messages",
+            "label": "Messages (JSON)",
+            "description": "Messages initiaux au format JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "quantize",
+            "label": "Quantize",
+            "description": "Niveau de quantization (ex: q4_K_M).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Modèles"
+    },
+    {
+      "key": "ollama_model_copy",
+      "name": "ollamaModelCopy",
+      "schemaVersion": 2,
+      "title": "Copier un modèle",
+      "subtitle": "Modèles",
+      "icon": "fa-solid fa-copy",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Ollama",
+      "providerKey": "ollama",
+      "tags": [
+        "ollama",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ollama_status"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Copie un modèle existant via /api/copy.",
+      "args": {
+        "title": "Copier un modèle",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "source",
+            "label": "Source",
+            "description": "Nom du modèle source.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "destination",
+            "label": "Destination",
+            "description": "Nom du nouveau modèle.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Modèles"
+    },
+    {
+      "key": "ollama_model_delete",
+      "name": "ollamaModelDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un modèle",
+      "subtitle": "Modèles",
+      "icon": "fa-solid fa-trash",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Ollama",
+      "providerKey": "ollama",
+      "tags": [
+        "ollama",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ollama_status"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Supprime un modèle local via /api/delete.",
+      "args": {
+        "title": "Supprimer un modèle",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Modèle",
+            "description": "Nom du modèle à supprimer.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Modèles"
+    },
+    {
+      "key": "ollama_version_get",
+      "name": "ollamaVersionGet",
+      "schemaVersion": 2,
+      "title": "Récupérer la version",
+      "subtitle": "Système",
+      "icon": "fa-solid fa-code-branch",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Ollama",
+      "providerKey": "ollama",
+      "tags": [
+        "ollama",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ollama_version"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère la version du serveur via /api/version.",
+      "args": {
+        "title": "Récupérer la version",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Système"
+    }
+  ]
+}

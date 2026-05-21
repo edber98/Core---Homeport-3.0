@@ -22,7 +22,7 @@ function parseArgs(argv) {
     if (a === '--dry-run') { opts.dryRun = true; continue; }
     if (a === '--continue-on-error') { opts.continueOnError = true; continue; }
 
-    const key = a.slice(2);
+    const key = a.slice(2).replace(/-([a-z0-9])/g, (_, c) => c.toUpperCase());
     const next = argv[i + 1];
     if (next === undefined || next.startsWith('--')) throw new Error(`Option --${key} requiert une valeur.`);
     opts[key] = next;

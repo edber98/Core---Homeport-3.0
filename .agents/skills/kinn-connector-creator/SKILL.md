@@ -59,6 +59,36 @@ node .agents/skills/kinn-connector-creator/scripts/check-connector.js {connector
 9. Run any relevant project tests or import checks available locally. If none exist, state that validation was limited to static checks.
 10. In the final answer, state the coverage level honestly: list the resource groups implemented and call out useful automation surfaces intentionally left out because they are unsafe, admin-only, duplicative, unsupported by docs, or requested for a later pass.
 
+### Fast path (preferred)
+
+When an OpenAPI JSON is available, use script-first generation to create a connector in seconds:
+
+```bash
+# 1) Build exhaustive automation spec from OpenAPI
+node .agents/skills/kinn-connector-creator/scripts/generate-spec-from-openapi.js \
+  <openapi.json|url> \
+  --connector <connector> \
+  --provider-name "Provider Name"
+
+# 2) Create connector + actions + logo + validation
+node .agents/skills/kinn-connector-creator/scripts/mass-create-connectors.js <inventory.json>
+```
+
+Use `strictAutomation` (default true) to block thin connectors.
+
+## Coverage Gate (Mandatory)
+
+Before considering a connector "done", run this explicit gate:
+
+1. Build a checklist of all documented, stable, automation-useful actions per resource.
+2. Map each checklist action to either:
+   - an implemented node key + handler file, or
+   - a documented exclusion reason (unsafe/admin-only/non-workflow/duplicate/unsupported).
+3. If any checklist action is neither implemented nor explicitly excluded, the connector is **not complete**.
+4. Starter/minimal subsets are forbidden when obvious workflow actions exist for the provider.
+5. In the final report, include a short "missing useful actions: none" line or list remaining gaps.
+6. Prefer OpenAPI-driven endpoint selection; manual hand-picking is fallback only.
+
 ## Bulk / Scale Workflow (for many connectors)
 
 When the request targets many connectors (dozens, hundreds, thousands), use the bundled scripts first, then complete each connector with full automation coverage:
@@ -98,10 +128,11 @@ Use these scripts to industrialize connector creation at high volume:
 1. `scaffold-connector.js`: create one connector skeleton (`manifest.json`, `functions/utils.js`, sample node).
 2. `bulk-scaffold-connectors.js`: scaffold many connectors from `.json` or `.jsonl`.
 3. `generate-actions-from-spec.js`: generate manifest `nodeTemplates`, output schemas, and one handler file per action from a resource/action spec.
-4. `bulk-generate-actions.js`: run action generation for many connectors in one pass.
-5. `bulk-apply-logos.js`: apply logo branding for many connectors via the dedicated logo skill script.
-6. `bulk-check-connectors.js`: run static connector validation in batch.
-7. `mass-create-connectors.js`: orchestrate scaffold + actions + logo + validation in one command.
+4. `generate-spec-from-openapi.js`: auto-select stable automation-useful endpoints from OpenAPI JSON and build a full action spec.
+5. `bulk-generate-actions.js`: run action generation for many connectors in one pass.
+6. `bulk-apply-logos.js`: apply logo branding for many connectors via the dedicated logo skill script.
+7. `bulk-check-connectors.js`: run static connector validation in batch.
+8. `mass-create-connectors.js`: orchestrate scaffold + actions + logo + validation in one command (supports `openapiFile` inventory entries).
 
 ### Typical high-volume pipeline
 
@@ -143,6 +174,14 @@ Include every documented, stable node that a workflow builder user can realistic
 - provider-specific automation verbs, such as run, crawl, scrape, extract, generate, transcribe, synthesize, deploy, upsert, query, rerank, embed, monitor, alert, or trigger, when those are central to the product.
 
 Coverage should be complete for the useful surface of the provider, not merely representative. For a connector with central objects like issues, contacts, projects, tasks, files, runs, deployments, transcripts, vectors, or messages, include the supported lifecycle and action nodes users would naturally expect in workflows.
+
+For analytics providers specifically (Mixpanel, PostHog, Amplitude-like), "useful surface" includes at minimum:
+
+- event capture/import and identity aliasing;
+- profile lifecycle and mutation operators (`set`, `unset`, `delete`, `increment`, list add/remove/union-style operations);
+- group lifecycle and mutation operators (set/unset/remove/delete when available);
+- monetization-related profile helpers (charges/transactions) when documented and stable;
+- query/report nodes that are workflow-usable (segmentation variants, funnels, retention, profile query), with date windows and filtering inputs.
 
 Do not skip a stable automation-useful function only because it is "not common". If it can unlock a realistic workflow, include it.
 

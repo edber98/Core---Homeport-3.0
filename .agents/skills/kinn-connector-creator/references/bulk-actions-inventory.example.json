@@ -1,18 +1,14 @@
 [
   {
     "connector": "acme-crm",
-    "specFile": "action-spec.example.json"
+    "specFile": "action-spec.example.json",
+    "strictAutomation": true
   },
   {
     "connector": "acme-helpdesk",
-    "resources": [
-      {
-        "key": "ticket",
-        "title": "ticket",
-        "titlePlural": "tickets",
-        "basePath": "/tickets",
-        "defaultActions": ["list", "get", "create", "update", "delete", "search"]
-      }
-    ]
+    "providerName": "Acme Helpdesk",
+    "openapiFile": "openapi/acme-helpdesk.openapi.json",
+    "strictAutomation": true,
+    "excludePatterns": ["/admin", "/billing"]
   }
 ]
