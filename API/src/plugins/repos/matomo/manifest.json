@@ -1,0 +1,1611 @@
+{
+  "repo": {
+    "name": "matomo",
+    "type": "local",
+    "label": "Matomo"
+  },
+  "variables": {
+    "matomo_action_result": {
+      "title": "Résultat action",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "Succès",
+          "description": "Indique si l’action est réussie.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Code HTTP",
+          "description": "Code HTTP retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "message",
+          "label": "Message",
+          "description": "Message de statut.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Données brutes",
+          "description": "Réponse API brute.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "matomo_report": {
+      "title": "rapport Matomo",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "url",
+          "label": "URL",
+          "description": "URL.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "created_at",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "updated_at",
+          "label": "Date modification",
+          "description": "Date de modification.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Données brutes",
+          "description": "Réponse API brute.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "matomo_reports": {
+      "title": "rapports Matomo",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Éléments",
+          "description": "Liste des éléments",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "url",
+              "label": "URL",
+              "description": "URL.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "created_at",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "updated_at",
+              "label": "Date modification",
+              "description": "Date de modification.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "json",
+              "key": "raw",
+              "label": "Données brutes",
+              "description": "Réponse API brute.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d’éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextCursor",
+          "label": "Cursor suivant",
+          "description": "Cursor de page suivant.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "matomo_tracking": {
+      "title": "tracking Matomo",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "url",
+          "label": "URL",
+          "description": "URL.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "created_at",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "updated_at",
+          "label": "Date modification",
+          "description": "Date de modification.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Données brutes",
+          "description": "Réponse API brute.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "matomo_trackings": {
+      "title": "tracking Matomo",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Éléments",
+          "description": "Liste des éléments",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "url",
+              "label": "URL",
+              "description": "URL.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "created_at",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "updated_at",
+              "label": "Date modification",
+              "description": "Date de modification.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "json",
+              "key": "raw",
+              "label": "Données brutes",
+              "description": "Réponse API brute.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d’éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextCursor",
+          "label": "Cursor suivant",
+          "description": "Cursor de page suivant.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "matomo",
+      "name": "Matomo",
+      "title": "Matomo",
+      "iconClass": "fa-solid fa-chart-pie",
+      "iconUrl": "https://cdn.simpleicons.org/matomo",
+      "color": "#e6edff",
+      "tags": [
+        "matomo",
+        "analytics",
+        "tracking"
+      ],
+      "categories": [
+        "Analyse"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Matomo",
+        "displayTitle": false,
+        "displayDescription": false,
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "baseUrl",
+            "label": "URL de base Matomo",
+            "description": "URL de votre instance Matomo.",
+            "col": {
+              "xs": 24
+            },
+            "default": "https://matomo.example.com",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "tokenAuth",
+            "label": "Token auth",
+            "description": "Token d’authentification Matomo (Reporting API / Tracking sécurisé).",
+            "col": {
+              "xs": 24
+            },
+            "secret": true
+          }
+        ]
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "matomo_report_query",
+      "name": "matomoReportQuery",
+      "schemaVersion": 2,
+      "title": "Interroger un rapport Matomo",
+      "subtitle": "rapports",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Matomo",
+      "providerKey": "matomo",
+      "tags": [
+        "matomo",
+        "report",
+        "query"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:matomo_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action query sur rapport.",
+      "args": {
+        "title": "Interroger un rapport Matomo",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "method",
+            "label": "Méthode API",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "default": "VisitsSummary.get",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "idsite",
+            "label": "ID site",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "period",
+            "label": "Période",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "default": "day"
+          },
+          {
+            "type": "text",
+            "key": "date",
+            "label": "Date",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "default": "today"
+          },
+          {
+            "type": "text",
+            "key": "segment",
+            "label": "Segment",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "filter_limit",
+            "label": "Limite",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "rapports"
+    },
+    {
+      "key": "matomo_report_bulk_query",
+      "name": "matomoReportBulkQuery",
+      "schemaVersion": 2,
+      "title": "Interroger plusieurs rapports (bulk)",
+      "subtitle": "rapports",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Matomo",
+      "providerKey": "matomo",
+      "tags": [
+        "matomo",
+        "report",
+        "bulk_query"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:matomo_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action bulk_query sur rapport.",
+      "args": {
+        "title": "Interroger plusieurs rapports (bulk)",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "json",
+            "key": "urls",
+            "label": "Requêtes encodées",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "rapports"
+    },
+    {
+      "key": "matomo_report_list_sites",
+      "name": "matomoReportListSites",
+      "schemaVersion": 2,
+      "title": "Lister les sites",
+      "subtitle": "rapports",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Matomo",
+      "providerKey": "matomo",
+      "tags": [
+        "matomo",
+        "report",
+        "list_sites"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:matomo_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action list_sites sur rapport.",
+      "args": {
+        "title": "Lister les sites",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "method",
+            "label": "Méthode API",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "default": "SitesManager.getAllSites",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "rapports"
+    },
+    {
+      "key": "matomo_report_last_visits",
+      "name": "matomoReportLastVisits",
+      "schemaVersion": 2,
+      "title": "Récupérer les dernières visites",
+      "subtitle": "rapports",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Matomo",
+      "providerKey": "matomo",
+      "tags": [
+        "matomo",
+        "report",
+        "last_visits"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:matomo_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action last_visits sur rapport.",
+      "args": {
+        "title": "Récupérer les dernières visites",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "method",
+            "label": "Méthode API",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "default": "Live.getLastVisitsDetails",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "idsite",
+            "label": "ID site",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "period",
+            "label": "Période",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "default": "day"
+          },
+          {
+            "type": "text",
+            "key": "date",
+            "label": "Date",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "default": "today"
+          },
+          {
+            "type": "text",
+            "key": "segment",
+            "label": "Segment",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "countvisitorstofetch",
+            "label": "Nombre de visites",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "rapports"
+    },
+    {
+      "key": "matomo_tracking_track_event",
+      "name": "matomoTrackingTrackEvent",
+      "schemaVersion": 2,
+      "title": "Tracker un événement",
+      "subtitle": "tracking",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Matomo",
+      "providerKey": "matomo",
+      "tags": [
+        "matomo",
+        "tracking",
+        "track_event"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:matomo_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action track_event sur tracking.",
+      "args": {
+        "title": "Tracker un événement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "idsite",
+            "label": "ID site",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "rec",
+            "label": "Record",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "default": 1
+          },
+          {
+            "type": "text",
+            "key": "url",
+            "label": "URL",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "action_name",
+            "label": "Nom action",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "e_c",
+            "label": "Catégorie événement",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "e_a",
+            "label": "Action événement",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "e_n",
+            "label": "Nom événement",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "e_v",
+            "label": "Valeur événement",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "uid",
+            "label": "User ID",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "cid",
+            "label": "Visitor ID",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "tracking"
+    },
+    {
+      "key": "matomo_tracking_track_pageview",
+      "name": "matomoTrackingTrackPageview",
+      "schemaVersion": 2,
+      "title": "Tracker une page vue",
+      "subtitle": "tracking",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Matomo",
+      "providerKey": "matomo",
+      "tags": [
+        "matomo",
+        "tracking",
+        "track_pageview"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:matomo_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action track_pageview sur tracking.",
+      "args": {
+        "title": "Tracker une page vue",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "idsite",
+            "label": "ID site",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "rec",
+            "label": "Record",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "default": 1
+          },
+          {
+            "type": "text",
+            "key": "url",
+            "label": "URL",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "action_name",
+            "label": "Nom page",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "uid",
+            "label": "User ID",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "cid",
+            "label": "Visitor ID",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "tracking"
+    },
+    {
+      "key": "matomo_api_request",
+      "name": "matomoApiRequest",
+      "schemaVersion": 2,
+      "title": "Appeler un endpoint API",
+      "subtitle": "API",
+      "icon": "fa-solid fa-code",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Matomo",
+      "providerKey": "matomo",
+      "tags": [
+        "matomo",
+        "api",
+        "request"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:matomo_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Appeler un endpoint API.",
+      "args": {
+        "title": "Appeler un endpoint API",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "method",
+            "label": "Méthode HTTP",
+            "description": "GET, POST, PUT, PATCH, DELETE.",
+            "col": {
+              "xs": 24
+            },
+            "default": "GET",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Chemin endpoint",
+            "description": "Ex: /v2/users",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "query",
+            "label": "Query params",
+            "description": "Objet JSON des query params.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "headers",
+            "label": "En-têtes",
+            "description": "Objet JSON d’en-têtes HTTP.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "body",
+            "label": "Body JSON",
+            "description": "Payload JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "body_text",
+            "label": "Body texte",
+            "description": "Corps brut (prioritaire sur body).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Utilitaires API"
+    },
+    {
+      "key": "matomo_tracking_track_goal",
+      "name": "matomoTrackingTrackGoal",
+      "schemaVersion": 2,
+      "title": "Tracker une conversion objectif",
+      "subtitle": "Tracking",
+      "icon": "fa-solid fa-bullseye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Matomo",
+      "providerKey": "matomo",
+      "tags": [
+        "matomo",
+        "tracking",
+        "track",
+        "goal"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:matomo_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Tracker une conversion objectif.",
+      "args": {
+        "title": "Tracker une conversion objectif",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "idsite",
+            "label": "ID site",
+            "description": "Identifiant du site.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "url",
+            "label": "URL",
+            "description": "URL de la visite.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "uid",
+            "label": "User ID",
+            "description": "Identifiant utilisateur.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "cid",
+            "label": "Visitor ID",
+            "description": "Identifiant visiteur.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "idgoal",
+            "label": "ID objectif",
+            "description": "ID de l’objectif.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "revenue",
+            "label": "Revenu",
+            "description": "Montant associé.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Tracking"
+    },
+    {
+      "key": "matomo_tracking_track_ecommerce_order",
+      "name": "matomoTrackingTrackEcommerceOrder",
+      "schemaVersion": 2,
+      "title": "Tracker une commande ecommerce",
+      "subtitle": "Tracking",
+      "icon": "fa-solid fa-cart-shopping",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Matomo",
+      "providerKey": "matomo",
+      "tags": [
+        "matomo",
+        "tracking",
+        "track",
+        "ecommerce",
+        "order"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:matomo_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Tracker une commande ecommerce.",
+      "args": {
+        "title": "Tracker une commande ecommerce",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "idsite",
+            "label": "ID site",
+            "description": "Identifiant du site.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "url",
+            "label": "URL",
+            "description": "URL de la visite.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "uid",
+            "label": "User ID",
+            "description": "Identifiant utilisateur.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "cid",
+            "label": "Visitor ID",
+            "description": "Identifiant visiteur.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "ec_id",
+            "label": "ID commande",
+            "description": "Identifiant commande.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "revenue",
+            "label": "Revenu total",
+            "description": "Montant total.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "ec_st",
+            "label": "Sous-total",
+            "description": "Sous-total.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "ec_tx",
+            "label": "Taxe",
+            "description": "Taxe.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "ec_sh",
+            "label": "Livraison",
+            "description": "Frais de livraison.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "ec_dt",
+            "label": "Remise",
+            "description": "Remise.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Tracking"
+    },
+    {
+      "key": "matomo_tracking_track_ecommerce_cart_update",
+      "name": "matomoTrackingTrackEcommerceCartUpdate",
+      "schemaVersion": 2,
+      "title": "Tracker une mise à jour panier",
+      "subtitle": "Tracking",
+      "icon": "fa-solid fa-cart-plus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Matomo",
+      "providerKey": "matomo",
+      "tags": [
+        "matomo",
+        "tracking",
+        "track",
+        "ecommerce",
+        "cart",
+        "update"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:matomo_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Tracker une mise à jour panier.",
+      "args": {
+        "title": "Tracker une mise à jour panier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "idsite",
+            "label": "ID site",
+            "description": "Identifiant du site.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "url",
+            "label": "URL",
+            "description": "URL de la visite.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "uid",
+            "label": "User ID",
+            "description": "Identifiant utilisateur.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "cid",
+            "label": "Visitor ID",
+            "description": "Identifiant visiteur.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "revenue",
+            "label": "Valeur panier",
+            "description": "Valeur du panier.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Tracking"
+    }
+  ]
+}

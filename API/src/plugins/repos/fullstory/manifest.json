@@ -1,0 +1,2188 @@
+{
+  "repo": {
+    "name": "fullstory",
+    "type": "local",
+    "label": "Fullstory"
+  },
+  "variables": {
+    "fullstory_action_result": {
+      "title": "Résultat action",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "Succès",
+          "description": "Indique si l’action est réussie.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Code HTTP",
+          "description": "Code HTTP retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "message",
+          "label": "Message",
+          "description": "Message de statut.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Données brutes",
+          "description": "Réponse API brute.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "fullstory_user": {
+      "title": "utilisateur Fullstory",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "uid",
+          "label": "UID",
+          "description": "",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "email",
+          "key": "email",
+          "label": "Email",
+          "description": "",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "display_name",
+          "label": "Nom affiché",
+          "description": "",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "app_url",
+          "label": "URL App",
+          "description": "",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "url",
+          "label": "URL",
+          "description": "URL.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "created_at",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "updated_at",
+          "label": "Date modification",
+          "description": "Date de modification.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Données brutes",
+          "description": "Réponse API brute.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "fullstory_users": {
+      "title": "utilisateurs Fullstory",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Éléments",
+          "description": "Liste des éléments",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "uid",
+              "label": "UID",
+              "description": "",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "email",
+              "key": "email",
+              "label": "Email",
+              "description": "",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "display_name",
+              "label": "Nom affiché",
+              "description": "",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "app_url",
+              "label": "URL App",
+              "description": "",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "url",
+              "label": "URL",
+              "description": "URL.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "created_at",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "updated_at",
+              "label": "Date modification",
+              "description": "Date de modification.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "json",
+              "key": "raw",
+              "label": "Données brutes",
+              "description": "Réponse API brute.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d’éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextCursor",
+          "label": "Cursor suivant",
+          "description": "Cursor de page suivant.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "fullstory_event": {
+      "title": "événement Fullstory",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "url",
+          "label": "URL",
+          "description": "URL.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "created_at",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "updated_at",
+          "label": "Date modification",
+          "description": "Date de modification.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Données brutes",
+          "description": "Réponse API brute.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "fullstory_events": {
+      "title": "événements Fullstory",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Éléments",
+          "description": "Liste des éléments",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "url",
+              "label": "URL",
+              "description": "URL.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "created_at",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "updated_at",
+              "label": "Date modification",
+              "description": "Date de modification.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "json",
+              "key": "raw",
+              "label": "Données brutes",
+              "description": "Réponse API brute.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d’éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextCursor",
+          "label": "Cursor suivant",
+          "description": "Cursor de page suivant.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "fullstory_session": {
+      "title": "session Fullstory",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "url",
+          "label": "URL",
+          "description": "URL.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "created_at",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "updated_at",
+          "label": "Date modification",
+          "description": "Date de modification.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Données brutes",
+          "description": "Réponse API brute.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "fullstory_sessions": {
+      "title": "sessions Fullstory",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Éléments",
+          "description": "Liste des éléments",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "url",
+              "label": "URL",
+              "description": "URL.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "created_at",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "updated_at",
+              "label": "Date modification",
+              "description": "Date de modification.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "json",
+              "key": "raw",
+              "label": "Données brutes",
+              "description": "Réponse API brute.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d’éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextCursor",
+          "label": "Cursor suivant",
+          "description": "Cursor de page suivant.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "fullstory",
+      "name": "FullStory",
+      "title": "FullStory",
+      "iconClass": "fa-solid fa-clapperboard",
+      "iconUrl": "https://cdn.simpleicons.org/fullstory",
+      "color": "#ffe8ef",
+      "tags": [
+        "fullstory",
+        "session-replay",
+        "analytics"
+      ],
+      "categories": [
+        "Analyse"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants FullStory",
+        "displayTitle": false,
+        "displayDescription": false,
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "apiKey",
+            "label": "API Key",
+            "description": "Clé API FullStory (sans préfixe ou avec Basic ...).",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "baseUrl",
+            "label": "URL de base API",
+            "description": "URL de base FullStory Server API.",
+            "col": {
+              "xs": 24
+            },
+            "default": "https://api.fullstory.com"
+          }
+        ]
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "fullstory_user_list",
+      "name": "fullstoryUserList",
+      "schemaVersion": 2,
+      "title": "Lister les utilisateurs",
+      "subtitle": "utilisateurs",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Fullstory",
+      "providerKey": "fullstory",
+      "tags": [
+        "fullstory",
+        "user",
+        "list"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:fullstory_users"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action list sur utilisateur.",
+      "args": {
+        "title": "Lister les utilisateurs",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "pageSize",
+            "label": "Taille de page",
+            "description": "Nombre max par page.",
+            "col": {
+              "xs": 24
+            },
+            "default": 50
+          },
+          {
+            "type": "number",
+            "key": "page",
+            "label": "Page",
+            "description": "Numéro de page.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "utilisateurs"
+    },
+    {
+      "key": "fullstory_user_get",
+      "name": "fullstoryUserGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un utilisateur",
+      "subtitle": "utilisateurs",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Fullstory",
+      "providerKey": "fullstory",
+      "tags": [
+        "fullstory",
+        "user",
+        "get"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:fullstory_user"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action get sur utilisateur.",
+      "args": {
+        "title": "Récupérer un utilisateur",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "id",
+            "label": "Id",
+            "description": "Valeur de chemin id.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "utilisateurs"
+    },
+    {
+      "key": "fullstory_user_create",
+      "name": "fullstoryUserCreate",
+      "schemaVersion": 2,
+      "title": "Créer un utilisateur",
+      "subtitle": "utilisateurs",
+      "icon": "fa-solid fa-plus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Fullstory",
+      "providerKey": "fullstory",
+      "tags": [
+        "fullstory",
+        "user",
+        "create"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:fullstory_user"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action create sur utilisateur.",
+      "args": {
+        "title": "Créer un utilisateur",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "json",
+            "key": "body",
+            "label": "Payload",
+            "description": "Corps JSON de la requête.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "utilisateurs"
+    },
+    {
+      "key": "fullstory_user_update",
+      "name": "fullstoryUserUpdate",
+      "schemaVersion": 2,
+      "title": "Mettre à jour un utilisateur",
+      "subtitle": "utilisateurs",
+      "icon": "fa-solid fa-pen",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Fullstory",
+      "providerKey": "fullstory",
+      "tags": [
+        "fullstory",
+        "user",
+        "update"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:fullstory_user"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action update sur utilisateur.",
+      "args": {
+        "title": "Mettre à jour un utilisateur",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "id",
+            "label": "Id",
+            "description": "Valeur de chemin id.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "body",
+            "label": "Payload",
+            "description": "Corps JSON de la requête.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "utilisateurs"
+    },
+    {
+      "key": "fullstory_user_delete",
+      "name": "fullstoryUserDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un utilisateur",
+      "subtitle": "utilisateurs",
+      "icon": "fa-solid fa-trash",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Fullstory",
+      "providerKey": "fullstory",
+      "tags": [
+        "fullstory",
+        "user",
+        "delete"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:fullstory_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action delete sur utilisateur.",
+      "args": {
+        "title": "Supprimer un utilisateur",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "id",
+            "label": "Id",
+            "description": "Valeur de chemin id.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "utilisateurs"
+    },
+    {
+      "key": "fullstory_user_delete_by_uid",
+      "name": "fullstoryUserDeleteByUid",
+      "schemaVersion": 2,
+      "title": "Supprimer un utilisateur par UID",
+      "subtitle": "utilisateurs",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Fullstory",
+      "providerKey": "fullstory",
+      "tags": [
+        "fullstory",
+        "user",
+        "delete_by_uid"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:fullstory_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action delete_by_uid sur utilisateur.",
+      "args": {
+        "title": "Supprimer un utilisateur par UID",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "uid",
+            "label": "UID",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "utilisateurs"
+    },
+    {
+      "key": "fullstory_user_batch_create",
+      "name": "fullstoryUserBatchCreate",
+      "schemaVersion": 2,
+      "title": "Créer ou mettre à jour des utilisateurs (lot)",
+      "subtitle": "utilisateurs",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Fullstory",
+      "providerKey": "fullstory",
+      "tags": [
+        "fullstory",
+        "user",
+        "batch_create"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:fullstory_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action batch_create sur utilisateur.",
+      "args": {
+        "title": "Créer ou mettre à jour des utilisateurs (lot)",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "json",
+            "key": "requests",
+            "label": "Tableau requests",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "utilisateurs"
+    },
+    {
+      "key": "fullstory_user_batch_status",
+      "name": "fullstoryUserBatchStatus",
+      "schemaVersion": 2,
+      "title": "Récupérer le statut d’un lot utilisateurs",
+      "subtitle": "utilisateurs",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Fullstory",
+      "providerKey": "fullstory",
+      "tags": [
+        "fullstory",
+        "user",
+        "batch_status"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:fullstory_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action batch_status sur utilisateur.",
+      "args": {
+        "title": "Récupérer le statut d’un lot utilisateurs",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "job_id",
+            "label": "Job Id",
+            "description": "Valeur de chemin job_id.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "utilisateurs"
+    },
+    {
+      "key": "fullstory_user_batch_imports",
+      "name": "fullstoryUserBatchImports",
+      "schemaVersion": 2,
+      "title": "Récupérer les imports utilisateurs réussis",
+      "subtitle": "utilisateurs",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Fullstory",
+      "providerKey": "fullstory",
+      "tags": [
+        "fullstory",
+        "user",
+        "batch_imports"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:fullstory_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action batch_imports sur utilisateur.",
+      "args": {
+        "title": "Récupérer les imports utilisateurs réussis",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "job_id",
+            "label": "Job Id",
+            "description": "Valeur de chemin job_id.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "utilisateurs"
+    },
+    {
+      "key": "fullstory_user_batch_errors",
+      "name": "fullstoryUserBatchErrors",
+      "schemaVersion": 2,
+      "title": "Récupérer les erreurs d’import utilisateurs",
+      "subtitle": "utilisateurs",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Fullstory",
+      "providerKey": "fullstory",
+      "tags": [
+        "fullstory",
+        "user",
+        "batch_errors"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:fullstory_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action batch_errors sur utilisateur.",
+      "args": {
+        "title": "Récupérer les erreurs d’import utilisateurs",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "job_id",
+            "label": "Job Id",
+            "description": "Valeur de chemin job_id.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "utilisateurs"
+    },
+    {
+      "key": "fullstory_user_stream_create",
+      "name": "fullstoryUserStreamCreate",
+      "schemaVersion": 2,
+      "title": "Créer un utilisateur en stream asynchrone",
+      "subtitle": "utilisateurs",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Fullstory",
+      "providerKey": "fullstory",
+      "tags": [
+        "fullstory",
+        "user",
+        "stream_create"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:fullstory_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action stream_create sur utilisateur.",
+      "args": {
+        "title": "Créer un utilisateur en stream asynchrone",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "uid",
+            "label": "UID",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "display_name",
+            "label": "Nom affiché",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "email",
+            "key": "email",
+            "label": "Email",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "properties",
+            "label": "Propriétés",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "schema",
+            "label": "Schéma",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "utilisateurs"
+    },
+    {
+      "key": "fullstory_event_create",
+      "name": "fullstoryEventCreate",
+      "schemaVersion": 2,
+      "title": "Créer un événement",
+      "subtitle": "événements",
+      "icon": "fa-solid fa-plus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Fullstory",
+      "providerKey": "fullstory",
+      "tags": [
+        "fullstory",
+        "event",
+        "create"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:fullstory_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action create sur événement.",
+      "args": {
+        "title": "Créer un événement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "json",
+            "key": "event",
+            "label": "Événement",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "événements"
+    },
+    {
+      "key": "fullstory_event_batch_create",
+      "name": "fullstoryEventBatchCreate",
+      "schemaVersion": 2,
+      "title": "Créer des événements (lot)",
+      "subtitle": "événements",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Fullstory",
+      "providerKey": "fullstory",
+      "tags": [
+        "fullstory",
+        "event",
+        "batch_create"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:fullstory_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action batch_create sur événement.",
+      "args": {
+        "title": "Créer des événements (lot)",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "json",
+            "key": "requests",
+            "label": "Tableau requests",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "événements"
+    },
+    {
+      "key": "fullstory_event_batch_status",
+      "name": "fullstoryEventBatchStatus",
+      "schemaVersion": 2,
+      "title": "Récupérer le statut d’un lot événements",
+      "subtitle": "événements",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Fullstory",
+      "providerKey": "fullstory",
+      "tags": [
+        "fullstory",
+        "event",
+        "batch_status"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:fullstory_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action batch_status sur événement.",
+      "args": {
+        "title": "Récupérer le statut d’un lot événements",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "job_id",
+            "label": "Job Id",
+            "description": "Valeur de chemin job_id.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "événements"
+    },
+    {
+      "key": "fullstory_event_batch_imports",
+      "name": "fullstoryEventBatchImports",
+      "schemaVersion": 2,
+      "title": "Récupérer les imports événements réussis",
+      "subtitle": "événements",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Fullstory",
+      "providerKey": "fullstory",
+      "tags": [
+        "fullstory",
+        "event",
+        "batch_imports"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:fullstory_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action batch_imports sur événement.",
+      "args": {
+        "title": "Récupérer les imports événements réussis",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "job_id",
+            "label": "Job Id",
+            "description": "Valeur de chemin job_id.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "événements"
+    },
+    {
+      "key": "fullstory_event_batch_errors",
+      "name": "fullstoryEventBatchErrors",
+      "schemaVersion": 2,
+      "title": "Récupérer les erreurs d’import événements",
+      "subtitle": "événements",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Fullstory",
+      "providerKey": "fullstory",
+      "tags": [
+        "fullstory",
+        "event",
+        "batch_errors"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:fullstory_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action batch_errors sur événement.",
+      "args": {
+        "title": "Récupérer les erreurs d’import événements",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "job_id",
+            "label": "Job Id",
+            "description": "Valeur de chemin job_id.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "événements"
+    },
+    {
+      "key": "fullstory_session_list",
+      "name": "fullstorySessionList",
+      "schemaVersion": 2,
+      "title": "Lister les sessions par uid/email",
+      "subtitle": "sessions",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Fullstory",
+      "providerKey": "fullstory",
+      "tags": [
+        "fullstory",
+        "session",
+        "list"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:fullstory_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action list sur session.",
+      "args": {
+        "title": "Lister les sessions par uid/email",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "uid",
+            "label": "UID",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "email",
+            "key": "email",
+            "label": "Email",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "sessions"
+    },
+    {
+      "key": "fullstory_session_get_events",
+      "name": "fullstorySessionGetEvents",
+      "schemaVersion": 2,
+      "title": "Récupérer les événements d’une session",
+      "subtitle": "sessions",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Fullstory",
+      "providerKey": "fullstory",
+      "tags": [
+        "fullstory",
+        "session",
+        "get_events"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:fullstory_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action get_events sur session.",
+      "args": {
+        "title": "Récupérer les événements d’une session",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "session_id",
+            "label": "Session Id",
+            "description": "Valeur de chemin session_id.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "sessions"
+    },
+    {
+      "key": "fullstory_session_generate_context",
+      "name": "fullstorySessionGenerateContext",
+      "schemaVersion": 2,
+      "title": "Générer le contexte IA d’une session",
+      "subtitle": "sessions",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Fullstory",
+      "providerKey": "fullstory",
+      "tags": [
+        "fullstory",
+        "session",
+        "generate_context"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:fullstory_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action generate_context sur session.",
+      "args": {
+        "title": "Générer le contexte IA d’une session",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "session_id",
+            "label": "Session Id",
+            "description": "Valeur de chemin session_id.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "body",
+            "label": "Payload",
+            "description": "Corps JSON de la requête.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "sessions"
+    },
+    {
+      "key": "fullstory_session_generate_summary",
+      "name": "fullstorySessionGenerateSummary",
+      "schemaVersion": 2,
+      "title": "Générer un résumé IA de session",
+      "subtitle": "sessions",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Fullstory",
+      "providerKey": "fullstory",
+      "tags": [
+        "fullstory",
+        "session",
+        "generate_summary"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:fullstory_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action generate_summary sur session.",
+      "args": {
+        "title": "Générer un résumé IA de session",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "session_id",
+            "label": "Session Id",
+            "description": "Valeur de chemin session_id.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "body",
+            "label": "Payload",
+            "description": "Corps JSON de la requête.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "sessions"
+    },
+    {
+      "key": "fullstory_api_request",
+      "name": "fullstoryApiRequest",
+      "schemaVersion": 2,
+      "title": "Appeler un endpoint API",
+      "subtitle": "API",
+      "icon": "fa-solid fa-code",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "FullStory",
+      "providerKey": "fullstory",
+      "tags": [
+        "fullstory",
+        "api",
+        "request"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:fullstory_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Appeler un endpoint API.",
+      "args": {
+        "title": "Appeler un endpoint API",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "method",
+            "label": "Méthode HTTP",
+            "description": "GET, POST, PUT, PATCH, DELETE.",
+            "col": {
+              "xs": 24
+            },
+            "default": "GET",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Chemin endpoint",
+            "description": "Ex: /v2/users",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "query",
+            "label": "Query params",
+            "description": "Objet JSON des query params.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "headers",
+            "label": "En-têtes",
+            "description": "Objet JSON d’en-têtes HTTP.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "body",
+            "label": "Body JSON",
+            "description": "Payload JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "body_text",
+            "label": "Body texte",
+            "description": "Corps brut (prioritaire sur body).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Utilitaires API"
+    }
+  ]
+}

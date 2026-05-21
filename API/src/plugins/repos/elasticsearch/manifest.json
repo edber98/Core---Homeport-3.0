@@ -1,0 +1,2312 @@
+{
+  "repo": {
+    "name": "elasticsearch",
+    "type": "local",
+    "label": "Elasticsearch"
+  },
+  "variables": {
+    "elasticsearch_action_result": {
+      "title": "Résultat action",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "Succès",
+          "description": "Indique si l’action est réussie.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Code HTTP",
+          "description": "Code HTTP retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "message",
+          "label": "Message",
+          "description": "Message de statut.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Données brutes",
+          "description": "Réponse API brute.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "elasticsearch_index": {
+      "title": "index Elasticsearch",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "url",
+          "label": "URL",
+          "description": "URL.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "created_at",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "updated_at",
+          "label": "Date modification",
+          "description": "Date de modification.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Données brutes",
+          "description": "Réponse API brute.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "elasticsearch_indexs": {
+      "title": "indexes Elasticsearch",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Éléments",
+          "description": "Liste des éléments",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "url",
+              "label": "URL",
+              "description": "URL.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "created_at",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "updated_at",
+              "label": "Date modification",
+              "description": "Date de modification.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "json",
+              "key": "raw",
+              "label": "Données brutes",
+              "description": "Réponse API brute.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d’éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextCursor",
+          "label": "Cursor suivant",
+          "description": "Cursor de page suivant.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "elasticsearch_document": {
+      "title": "document Elasticsearch",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "url",
+          "label": "URL",
+          "description": "URL.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "created_at",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "updated_at",
+          "label": "Date modification",
+          "description": "Date de modification.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Données brutes",
+          "description": "Réponse API brute.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "elasticsearch_documents": {
+      "title": "documents Elasticsearch",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Éléments",
+          "description": "Liste des éléments",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "url",
+              "label": "URL",
+              "description": "URL.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "created_at",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "updated_at",
+              "label": "Date modification",
+              "description": "Date de modification.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "json",
+              "key": "raw",
+              "label": "Données brutes",
+              "description": "Réponse API brute.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d’éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextCursor",
+          "label": "Cursor suivant",
+          "description": "Cursor de page suivant.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "elasticsearch_search": {
+      "title": "recherche Elasticsearch",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "url",
+          "label": "URL",
+          "description": "URL.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "created_at",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "updated_at",
+          "label": "Date modification",
+          "description": "Date de modification.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Données brutes",
+          "description": "Réponse API brute.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "elasticsearch_searchs": {
+      "title": "recherches Elasticsearch",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Éléments",
+          "description": "Liste des éléments",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "url",
+              "label": "URL",
+              "description": "URL.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "created_at",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "updated_at",
+              "label": "Date modification",
+              "description": "Date de modification.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "json",
+              "key": "raw",
+              "label": "Données brutes",
+              "description": "Réponse API brute.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d’éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextCursor",
+          "label": "Cursor suivant",
+          "description": "Cursor de page suivant.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "elasticsearch",
+      "name": "Elasticsearch",
+      "title": "Elasticsearch",
+      "iconClass": "fa-solid fa-magnifying-glass",
+      "iconUrl": "https://cdn.simpleicons.org/elasticsearch",
+      "color": "#e3f3f8",
+      "tags": [
+        "elasticsearch",
+        "search",
+        "index"
+      ],
+      "categories": [
+        "Base de données"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Elasticsearch",
+        "displayTitle": false,
+        "displayDescription": false,
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "baseUrl",
+            "label": "URL API",
+            "description": "Ex: https://cluster.example.com",
+            "col": {
+              "xs": 24
+            },
+            "default": "http://localhost:9200",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "apiKey",
+            "label": "API Key",
+            "description": "API Key Elasticsearch (format brut ou préfixé ApiKey ...).",
+            "col": {
+              "xs": 24
+            },
+            "secret": true
+          },
+          {
+            "type": "text",
+            "key": "bearerToken",
+            "label": "Bearer token",
+            "description": "Token Bearer alternatif.",
+            "col": {
+              "xs": 24
+            },
+            "secret": true
+          },
+          {
+            "type": "text",
+            "key": "username",
+            "label": "Utilisateur",
+            "description": "Utilisateur Basic Auth.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "password",
+            "label": "Mot de passe",
+            "description": "Mot de passe Basic Auth.",
+            "col": {
+              "xs": 24
+            },
+            "secret": true
+          }
+        ]
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "elasticsearch_index_create",
+      "name": "elasticsearchIndexCreate",
+      "schemaVersion": 2,
+      "title": "Créer un index",
+      "subtitle": "indexes",
+      "icon": "fa-solid fa-plus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Elasticsearch",
+      "providerKey": "elasticsearch",
+      "tags": [
+        "elasticsearch",
+        "index",
+        "create"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:elasticsearch_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action create sur index.",
+      "args": {
+        "title": "Créer un index",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "index",
+            "label": "Index",
+            "description": "Valeur de chemin index.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "body",
+            "label": "Payload",
+            "description": "Corps JSON de la requête.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "indexes"
+    },
+    {
+      "key": "elasticsearch_index_get",
+      "name": "elasticsearchIndexGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un index",
+      "subtitle": "indexes",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Elasticsearch",
+      "providerKey": "elasticsearch",
+      "tags": [
+        "elasticsearch",
+        "index",
+        "get"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:elasticsearch_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action get sur index.",
+      "args": {
+        "title": "Récupérer un index",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "index",
+            "label": "Index",
+            "description": "Valeur de chemin index.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "indexes"
+    },
+    {
+      "key": "elasticsearch_index_delete",
+      "name": "elasticsearchIndexDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un index",
+      "subtitle": "indexes",
+      "icon": "fa-solid fa-trash",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Elasticsearch",
+      "providerKey": "elasticsearch",
+      "tags": [
+        "elasticsearch",
+        "index",
+        "delete"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:elasticsearch_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action delete sur index.",
+      "args": {
+        "title": "Supprimer un index",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "index",
+            "label": "Index",
+            "description": "Valeur de chemin index.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "indexes"
+    },
+    {
+      "key": "elasticsearch_index_get_mapping",
+      "name": "elasticsearchIndexGetMapping",
+      "schemaVersion": 2,
+      "title": "Récupérer le mapping",
+      "subtitle": "indexes",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Elasticsearch",
+      "providerKey": "elasticsearch",
+      "tags": [
+        "elasticsearch",
+        "index",
+        "get_mapping"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:elasticsearch_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action get_mapping sur index.",
+      "args": {
+        "title": "Récupérer le mapping",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "index",
+            "label": "Index",
+            "description": "Valeur de chemin index.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "indexes"
+    },
+    {
+      "key": "elasticsearch_index_update_mapping",
+      "name": "elasticsearchIndexUpdateMapping",
+      "schemaVersion": 2,
+      "title": "Mettre à jour le mapping",
+      "subtitle": "indexes",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Elasticsearch",
+      "providerKey": "elasticsearch",
+      "tags": [
+        "elasticsearch",
+        "index",
+        "update_mapping"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:elasticsearch_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action update_mapping sur index.",
+      "args": {
+        "title": "Mettre à jour le mapping",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "index",
+            "label": "Index",
+            "description": "Valeur de chemin index.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "body",
+            "label": "Payload",
+            "description": "Corps JSON de la requête.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "indexes"
+    },
+    {
+      "key": "elasticsearch_document_index",
+      "name": "elasticsearchDocumentIndex",
+      "schemaVersion": 2,
+      "title": "Indexer un document",
+      "subtitle": "documents",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Elasticsearch",
+      "providerKey": "elasticsearch",
+      "tags": [
+        "elasticsearch",
+        "document",
+        "index"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:elasticsearch_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action index sur document.",
+      "args": {
+        "title": "Indexer un document",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "index",
+            "label": "Index",
+            "description": "Valeur de chemin index.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "body",
+            "label": "Payload",
+            "description": "Corps JSON de la requête.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "documents"
+    },
+    {
+      "key": "elasticsearch_document_upsert",
+      "name": "elasticsearchDocumentUpsert",
+      "schemaVersion": 2,
+      "title": "Créer/mettre à jour un document",
+      "subtitle": "documents",
+      "icon": "fa-solid fa-code-compare",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Elasticsearch",
+      "providerKey": "elasticsearch",
+      "tags": [
+        "elasticsearch",
+        "document",
+        "upsert"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:elasticsearch_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action upsert sur document.",
+      "args": {
+        "title": "Créer/mettre à jour un document",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "index",
+            "label": "Index",
+            "description": "Valeur de chemin index.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "id",
+            "label": "Id",
+            "description": "Valeur de chemin id.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "body",
+            "label": "Payload",
+            "description": "Corps JSON de la requête.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "documents"
+    },
+    {
+      "key": "elasticsearch_document_get",
+      "name": "elasticsearchDocumentGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un document",
+      "subtitle": "documents",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Elasticsearch",
+      "providerKey": "elasticsearch",
+      "tags": [
+        "elasticsearch",
+        "document",
+        "get"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:elasticsearch_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action get sur document.",
+      "args": {
+        "title": "Récupérer un document",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "index",
+            "label": "Index",
+            "description": "Valeur de chemin index.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "id",
+            "label": "Id",
+            "description": "Valeur de chemin id.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "documents"
+    },
+    {
+      "key": "elasticsearch_document_update",
+      "name": "elasticsearchDocumentUpdate",
+      "schemaVersion": 2,
+      "title": "Mettre à jour partiellement un document",
+      "subtitle": "documents",
+      "icon": "fa-solid fa-pen",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Elasticsearch",
+      "providerKey": "elasticsearch",
+      "tags": [
+        "elasticsearch",
+        "document",
+        "update"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:elasticsearch_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action update sur document.",
+      "args": {
+        "title": "Mettre à jour partiellement un document",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "index",
+            "label": "Index",
+            "description": "Valeur de chemin index.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "id",
+            "label": "Id",
+            "description": "Valeur de chemin id.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "body",
+            "label": "Payload",
+            "description": "Corps JSON de la requête.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "documents"
+    },
+    {
+      "key": "elasticsearch_document_delete",
+      "name": "elasticsearchDocumentDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un document",
+      "subtitle": "documents",
+      "icon": "fa-solid fa-trash",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Elasticsearch",
+      "providerKey": "elasticsearch",
+      "tags": [
+        "elasticsearch",
+        "document",
+        "delete"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:elasticsearch_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action delete sur document.",
+      "args": {
+        "title": "Supprimer un document",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "index",
+            "label": "Index",
+            "description": "Valeur de chemin index.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "id",
+            "label": "Id",
+            "description": "Valeur de chemin id.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "documents"
+    },
+    {
+      "key": "elasticsearch_search_query",
+      "name": "elasticsearchSearchQuery",
+      "schemaVersion": 2,
+      "title": "Rechercher",
+      "subtitle": "recherches",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Elasticsearch",
+      "providerKey": "elasticsearch",
+      "tags": [
+        "elasticsearch",
+        "search",
+        "query"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:elasticsearch_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action query sur recherche.",
+      "args": {
+        "title": "Rechercher",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "index",
+            "label": "Index",
+            "description": "Valeur de chemin index.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "body",
+            "label": "Payload",
+            "description": "Corps JSON de la requête.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "recherches"
+    },
+    {
+      "key": "elasticsearch_search_count",
+      "name": "elasticsearchSearchCount",
+      "schemaVersion": 2,
+      "title": "Compter",
+      "subtitle": "recherches",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Elasticsearch",
+      "providerKey": "elasticsearch",
+      "tags": [
+        "elasticsearch",
+        "search",
+        "count"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:elasticsearch_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action count sur recherche.",
+      "args": {
+        "title": "Compter",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "index",
+            "label": "Index",
+            "description": "Valeur de chemin index.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "recherches"
+    },
+    {
+      "key": "elasticsearch_search_delete_by_query",
+      "name": "elasticsearchSearchDeleteByQuery",
+      "schemaVersion": 2,
+      "title": "Supprimer par requête",
+      "subtitle": "recherches",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Elasticsearch",
+      "providerKey": "elasticsearch",
+      "tags": [
+        "elasticsearch",
+        "search",
+        "delete_by_query"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:elasticsearch_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action delete_by_query sur recherche.",
+      "args": {
+        "title": "Supprimer par requête",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "index",
+            "label": "Index",
+            "description": "Valeur de chemin index.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "body",
+            "label": "Payload",
+            "description": "Corps JSON de la requête.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "recherches"
+    },
+    {
+      "key": "elasticsearch_search_msearch",
+      "name": "elasticsearchSearchMsearch",
+      "schemaVersion": 2,
+      "title": "Requêtes multiples",
+      "subtitle": "recherches",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Elasticsearch",
+      "providerKey": "elasticsearch",
+      "tags": [
+        "elasticsearch",
+        "search",
+        "msearch"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:elasticsearch_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action msearch sur recherche.",
+      "args": {
+        "title": "Requêtes multiples",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "index",
+            "label": "Index",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "ndjson",
+            "label": "Payload NDJSON",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "recherches"
+    },
+    {
+      "key": "elasticsearch_search_bulk",
+      "name": "elasticsearchSearchBulk",
+      "schemaVersion": 2,
+      "title": "Bulk index/update/delete",
+      "subtitle": "recherches",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Elasticsearch",
+      "providerKey": "elasticsearch",
+      "tags": [
+        "elasticsearch",
+        "search",
+        "bulk"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:elasticsearch_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action bulk sur recherche.",
+      "args": {
+        "title": "Bulk index/update/delete",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "ndjson",
+            "label": "Payload NDJSON",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "recherches"
+    },
+    {
+      "key": "elasticsearch_api_request",
+      "name": "elasticsearchApiRequest",
+      "schemaVersion": 2,
+      "title": "Appeler un endpoint API",
+      "subtitle": "API",
+      "icon": "fa-solid fa-code",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Elasticsearch",
+      "providerKey": "elasticsearch",
+      "tags": [
+        "elasticsearch",
+        "api",
+        "request"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:elasticsearch_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Appeler un endpoint API.",
+      "args": {
+        "title": "Appeler un endpoint API",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "method",
+            "label": "Méthode HTTP",
+            "description": "GET, POST, PUT, PATCH, DELETE.",
+            "col": {
+              "xs": 24
+            },
+            "default": "GET",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Chemin endpoint",
+            "description": "Ex: /v2/users",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "query",
+            "label": "Query params",
+            "description": "Objet JSON des query params.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "headers",
+            "label": "En-têtes",
+            "description": "Objet JSON d’en-têtes HTTP.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "body",
+            "label": "Body JSON",
+            "description": "Payload JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "body_text",
+            "label": "Body texte",
+            "description": "Corps brut (prioritaire sur body).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Utilitaires API"
+    },
+    {
+      "key": "elasticsearch_search_update_by_query",
+      "name": "elasticsearchSearchUpdateByQuery",
+      "schemaVersion": 2,
+      "title": "Mettre à jour par requête",
+      "subtitle": "Recherches",
+      "icon": "fa-solid fa-pen-to-square",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Elasticsearch",
+      "providerKey": "elasticsearch",
+      "tags": [
+        "elasticsearch",
+        "search",
+        "update",
+        "by",
+        "query"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:elasticsearch_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Mettre à jour par requête.",
+      "args": {
+        "title": "Mettre à jour par requête",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "index",
+            "label": "Index",
+            "description": "Nom de l’index.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "body",
+            "label": "Requête",
+            "description": "Corps JSON.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "checkbox",
+            "key": "refresh",
+            "label": "Refresh",
+            "description": "Forcer le refresh.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Recherches"
+    },
+    {
+      "key": "elasticsearch_search_reindex",
+      "name": "elasticsearchSearchReindex",
+      "schemaVersion": 2,
+      "title": "Reindexer des documents",
+      "subtitle": "Recherches",
+      "icon": "fa-solid fa-shuffle",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Elasticsearch",
+      "providerKey": "elasticsearch",
+      "tags": [
+        "elasticsearch",
+        "search",
+        "reindex"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:elasticsearch_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Reindexer des documents.",
+      "args": {
+        "title": "Reindexer des documents",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "json",
+            "key": "body",
+            "label": "Requête",
+            "description": "Corps JSON reindex.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Recherches"
+    },
+    {
+      "key": "elasticsearch_alias_get",
+      "name": "elasticsearchAliasGet",
+      "schemaVersion": 2,
+      "title": "Récupérer les alias",
+      "subtitle": "Aliases",
+      "icon": "fa-solid fa-link",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Elasticsearch",
+      "providerKey": "elasticsearch",
+      "tags": [
+        "elasticsearch",
+        "alias",
+        "get"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:elasticsearch_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupérer les alias.",
+      "args": {
+        "title": "Récupérer les alias",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom alias",
+            "description": "Nom d’alias (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Aliases"
+    },
+    {
+      "key": "elasticsearch_alias_update",
+      "name": "elasticsearchAliasUpdate",
+      "schemaVersion": 2,
+      "title": "Mettre à jour les alias",
+      "subtitle": "Aliases",
+      "icon": "fa-solid fa-pen",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Elasticsearch",
+      "providerKey": "elasticsearch",
+      "tags": [
+        "elasticsearch",
+        "alias",
+        "update"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:elasticsearch_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Mettre à jour les alias.",
+      "args": {
+        "title": "Mettre à jour les alias",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "json",
+            "key": "body",
+            "label": "Actions alias",
+            "description": "Corps JSON.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Aliases"
+    },
+    {
+      "key": "elasticsearch_index_get_settings",
+      "name": "elasticsearchIndexGetSettings",
+      "schemaVersion": 2,
+      "title": "Récupérer les settings index",
+      "subtitle": "Indexes",
+      "icon": "fa-solid fa-sliders",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Elasticsearch",
+      "providerKey": "elasticsearch",
+      "tags": [
+        "elasticsearch",
+        "index",
+        "get",
+        "settings"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:elasticsearch_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupérer les settings index.",
+      "args": {
+        "title": "Récupérer les settings index",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "index",
+            "label": "Index",
+            "description": "Nom de l’index.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Indexes"
+    },
+    {
+      "key": "elasticsearch_index_update_settings",
+      "name": "elasticsearchIndexUpdateSettings",
+      "schemaVersion": 2,
+      "title": "Mettre à jour les settings index",
+      "subtitle": "Indexes",
+      "icon": "fa-solid fa-wrench",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Elasticsearch",
+      "providerKey": "elasticsearch",
+      "tags": [
+        "elasticsearch",
+        "index",
+        "update",
+        "settings"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:elasticsearch_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Mettre à jour les settings index.",
+      "args": {
+        "title": "Mettre à jour les settings index",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "index",
+            "label": "Index",
+            "description": "Nom de l’index.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "body",
+            "label": "Settings",
+            "description": "Corps JSON.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Indexes"
+    }
+  ]
+}
