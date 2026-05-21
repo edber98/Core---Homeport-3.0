@@ -1,0 +1,2504 @@
+{
+  "repo": {
+    "name": "amplitude_api",
+    "type": "local",
+    "label": "Amplitude Api"
+  },
+  "variables": {
+    "amplitude_api_action_result": {
+      "title": "Résultat action",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "Succès",
+          "description": "Indique si l’action est réussie.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Code HTTP",
+          "description": "Code HTTP retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "message",
+          "label": "Message",
+          "description": "Message de statut.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Données brutes",
+          "description": "Réponse API brute.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "amplitude_api_ingestion": {
+      "title": "ingestion Amplitude API",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "url",
+          "label": "URL",
+          "description": "URL.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "created_at",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "updated_at",
+          "label": "Date modification",
+          "description": "Date de modification.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Données brutes",
+          "description": "Réponse API brute.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "amplitude_api_ingestions": {
+      "title": "ingestion Amplitude API",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Éléments",
+          "description": "Liste des éléments",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "url",
+              "label": "URL",
+              "description": "URL.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "created_at",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "updated_at",
+              "label": "Date modification",
+              "description": "Date de modification.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "json",
+              "key": "raw",
+              "label": "Données brutes",
+              "description": "Réponse API brute.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d’éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextCursor",
+          "label": "Cursor suivant",
+          "description": "Cursor de page suivant.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "amplitude_api_cohort": {
+      "title": "cohorte Amplitude API",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "url",
+          "label": "URL",
+          "description": "URL.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "created_at",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "updated_at",
+          "label": "Date modification",
+          "description": "Date de modification.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Données brutes",
+          "description": "Réponse API brute.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "amplitude_api_cohorts": {
+      "title": "cohortes Amplitude API",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Éléments",
+          "description": "Liste des éléments",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "url",
+              "label": "URL",
+              "description": "URL.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "created_at",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "updated_at",
+              "label": "Date modification",
+              "description": "Date de modification.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "json",
+              "key": "raw",
+              "label": "Données brutes",
+              "description": "Réponse API brute.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d’éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextCursor",
+          "label": "Cursor suivant",
+          "description": "Cursor de page suivant.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "amplitude_api_dashboard": {
+      "title": "dashboard Amplitude API",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "url",
+          "label": "URL",
+          "description": "URL.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "created_at",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "updated_at",
+          "label": "Date modification",
+          "description": "Date de modification.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Données brutes",
+          "description": "Réponse API brute.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "amplitude_api_dashboards": {
+      "title": "dashboard Amplitude API",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Éléments",
+          "description": "Liste des éléments",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "url",
+              "label": "URL",
+              "description": "URL.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "created_at",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "updated_at",
+              "label": "Date modification",
+              "description": "Date de modification.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "json",
+              "key": "raw",
+              "label": "Données brutes",
+              "description": "Réponse API brute.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d’éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextCursor",
+          "label": "Cursor suivant",
+          "description": "Cursor de page suivant.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "amplitude_api",
+      "name": "Amplitude API",
+      "title": "Amplitude API",
+      "iconClass": "fa-solid fa-chart-simple",
+      "iconUrl": "https://cdn.simpleicons.org/amplitude",
+      "color": "#f3f0ff",
+      "tags": [
+        "amplitude",
+        "analytics",
+        "product"
+      ],
+      "categories": [
+        "Analyse"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Amplitude API",
+        "displayTitle": false,
+        "displayDescription": false,
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "apiKey",
+            "label": "API Key",
+            "description": "Clé API Amplitude.",
+            "secret": true,
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "secretKey",
+            "label": "Secret Key",
+            "description": "Secret Key (requise pour les endpoints Dashboard/Cohorts).",
+            "secret": true,
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "ingestBaseUrl",
+            "label": "Base URL ingestion",
+            "description": "Base URL pour HTTP V2 / Identify / Group Identify / User Map.",
+            "default": "https://api2.amplitude.com",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "analyticsBaseUrl",
+            "label": "Base URL analytics",
+            "description": "Base URL pour Dashboard REST et Cohorts.",
+            "default": "https://amplitude.com",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "defaultHeaders",
+            "label": "Headers par défaut (JSON)",
+            "description": "Headers additionnels appliqués à toutes les requêtes.",
+            "col": {
+              "xs": 24
+            },
+            "default": "{}"
+          }
+        ]
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "amplitude_api_ingestion_events_ingest",
+      "name": "amplitudeApiIngestionEventsIngest",
+      "schemaVersion": 2,
+      "title": "Envoyer des événements HTTP V2",
+      "subtitle": "ingestion",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Amplitude API",
+      "providerKey": "amplitude_api",
+      "tags": [
+        "amplitude_api",
+        "ingestion",
+        "events_ingest"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:amplitude_api_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action events_ingest sur ingestion.",
+      "args": {
+        "title": "Envoyer des événements HTTP V2",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "json",
+            "key": "body",
+            "label": "Payload",
+            "description": "Corps JSON de la requête.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "query",
+            "label": "Query (JSON)",
+            "description": "Paramètres de query supplémentaires au format JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "headers",
+            "label": "Headers (JSON)",
+            "description": "Headers HTTP additionnels au format JSON.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "ingestion"
+    },
+    {
+      "key": "amplitude_api_ingestion_identify",
+      "name": "amplitudeApiIngestionIdentify",
+      "schemaVersion": 2,
+      "title": "Mettre à jour les propriétés utilisateur",
+      "subtitle": "ingestion",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Amplitude API",
+      "providerKey": "amplitude_api",
+      "tags": [
+        "amplitude_api",
+        "ingestion",
+        "identify"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:amplitude_api_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action identify sur ingestion.",
+      "args": {
+        "title": "Mettre à jour les propriétés utilisateur",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "json",
+            "key": "body",
+            "label": "Payload",
+            "description": "Corps JSON de la requête.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "query",
+            "label": "Query (JSON)",
+            "description": "Paramètres de query supplémentaires au format JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "headers",
+            "label": "Headers (JSON)",
+            "description": "Headers HTTP additionnels au format JSON.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "ingestion"
+    },
+    {
+      "key": "amplitude_api_ingestion_group_identify",
+      "name": "amplitudeApiIngestionGroupIdentify",
+      "schemaVersion": 2,
+      "title": "Mettre à jour les propriétés de groupe",
+      "subtitle": "ingestion",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Amplitude API",
+      "providerKey": "amplitude_api",
+      "tags": [
+        "amplitude_api",
+        "ingestion",
+        "group_identify"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:amplitude_api_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action group_identify sur ingestion.",
+      "args": {
+        "title": "Mettre à jour les propriétés de groupe",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "json",
+            "key": "body",
+            "label": "Payload",
+            "description": "Corps JSON de la requête.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "query",
+            "label": "Query (JSON)",
+            "description": "Paramètres de query supplémentaires au format JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "headers",
+            "label": "Headers (JSON)",
+            "description": "Headers HTTP additionnels au format JSON.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "ingestion"
+    },
+    {
+      "key": "amplitude_api_ingestion_user_map",
+      "name": "amplitudeApiIngestionUserMap",
+      "schemaVersion": 2,
+      "title": "Mapper / unmapper des utilisateurs",
+      "subtitle": "ingestion",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Amplitude API",
+      "providerKey": "amplitude_api",
+      "tags": [
+        "amplitude_api",
+        "ingestion",
+        "user_map"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:amplitude_api_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action user_map sur ingestion.",
+      "args": {
+        "title": "Mapper / unmapper des utilisateurs",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "json",
+            "key": "body",
+            "label": "Payload",
+            "description": "Corps JSON de la requête.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "query",
+            "label": "Query (JSON)",
+            "description": "Paramètres de query supplémentaires au format JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "headers",
+            "label": "Headers (JSON)",
+            "description": "Headers HTTP additionnels au format JSON.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "ingestion"
+    },
+    {
+      "key": "amplitude_api_cohort_list",
+      "name": "amplitudeApiCohortList",
+      "schemaVersion": 2,
+      "title": "Lister les cohortes",
+      "subtitle": "cohortes",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Amplitude API",
+      "providerKey": "amplitude_api",
+      "tags": [
+        "amplitude_api",
+        "cohort",
+        "list"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:amplitude_api_cohorts"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action list sur cohorte.",
+      "args": {
+        "title": "Lister les cohortes",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "pageSize",
+            "label": "Taille de page",
+            "description": "Nombre max par page.",
+            "col": {
+              "xs": 24
+            },
+            "default": 50
+          },
+          {
+            "type": "number",
+            "key": "page",
+            "label": "Page",
+            "description": "Numéro de page.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "query",
+            "label": "Query (JSON)",
+            "description": "Paramètres de query supplémentaires au format JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "headers",
+            "label": "Headers (JSON)",
+            "description": "Headers HTTP additionnels au format JSON.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "cohortes"
+    },
+    {
+      "key": "amplitude_api_cohort_get",
+      "name": "amplitudeApiCohortGet",
+      "schemaVersion": 2,
+      "title": "Demander l'export d'une cohorte",
+      "subtitle": "cohortes",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Amplitude API",
+      "providerKey": "amplitude_api",
+      "tags": [
+        "amplitude_api",
+        "cohort",
+        "get"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:amplitude_api_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action get sur cohorte.",
+      "args": {
+        "title": "Demander l'export d'une cohorte",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "id",
+            "label": "Cohort ID",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "query",
+            "label": "Query (JSON)",
+            "description": "Paramètres de query supplémentaires au format JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "headers",
+            "label": "Headers (JSON)",
+            "description": "Headers HTTP additionnels au format JSON.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "cohortes"
+    },
+    {
+      "key": "amplitude_api_cohort_request_status",
+      "name": "amplitudeApiCohortRequestStatus",
+      "schemaVersion": 2,
+      "title": "Statut de requête cohorte",
+      "subtitle": "cohortes",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Amplitude API",
+      "providerKey": "amplitude_api",
+      "tags": [
+        "amplitude_api",
+        "cohort",
+        "request_status"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:amplitude_api_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action request_status sur cohorte.",
+      "args": {
+        "title": "Statut de requête cohorte",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "request_id",
+            "label": "Request ID",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "query",
+            "label": "Query (JSON)",
+            "description": "Paramètres de query supplémentaires au format JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "headers",
+            "label": "Headers (JSON)",
+            "description": "Headers HTTP additionnels au format JSON.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "cohortes"
+    },
+    {
+      "key": "amplitude_api_cohort_download",
+      "name": "amplitudeApiCohortDownload",
+      "schemaVersion": 2,
+      "title": "Télécharger une cohorte",
+      "subtitle": "cohortes",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Amplitude API",
+      "providerKey": "amplitude_api",
+      "tags": [
+        "amplitude_api",
+        "cohort",
+        "download"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:amplitude_api_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action download sur cohorte.",
+      "args": {
+        "title": "Télécharger une cohorte",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "request_id",
+            "label": "Request ID",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "query",
+            "label": "Query (JSON)",
+            "description": "Paramètres de query supplémentaires au format JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "headers",
+            "label": "Headers (JSON)",
+            "description": "Headers HTTP additionnels au format JSON.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "cohortes"
+    },
+    {
+      "key": "amplitude_api_cohort_usage",
+      "name": "amplitudeApiCohortUsage",
+      "schemaVersion": 2,
+      "title": "Consommation API cohortes",
+      "subtitle": "cohortes",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Amplitude API",
+      "providerKey": "amplitude_api",
+      "tags": [
+        "amplitude_api",
+        "cohort",
+        "usage"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:amplitude_api_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action usage sur cohorte.",
+      "args": {
+        "title": "Consommation API cohortes",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "json",
+            "key": "query",
+            "label": "Query (JSON)",
+            "description": "Paramètres de query supplémentaires au format JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "headers",
+            "label": "Headers (JSON)",
+            "description": "Headers HTTP additionnels au format JSON.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "cohortes"
+    },
+    {
+      "key": "amplitude_api_cohort_upload",
+      "name": "amplitudeApiCohortUpload",
+      "schemaVersion": 2,
+      "title": "Créer / remplacer une cohorte",
+      "subtitle": "cohortes",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Amplitude API",
+      "providerKey": "amplitude_api",
+      "tags": [
+        "amplitude_api",
+        "cohort",
+        "upload"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:amplitude_api_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action upload sur cohorte.",
+      "args": {
+        "title": "Créer / remplacer une cohorte",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "json",
+            "key": "body",
+            "label": "Payload",
+            "description": "Corps JSON de la requête.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "query",
+            "label": "Query (JSON)",
+            "description": "Paramètres de query supplémentaires au format JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "headers",
+            "label": "Headers (JSON)",
+            "description": "Headers HTTP additionnels au format JSON.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "cohortes"
+    },
+    {
+      "key": "amplitude_api_cohort_membership_update",
+      "name": "amplitudeApiCohortMembershipUpdate",
+      "schemaVersion": 2,
+      "title": "Mettre à jour la membership d'une cohorte",
+      "subtitle": "cohortes",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Amplitude API",
+      "providerKey": "amplitude_api",
+      "tags": [
+        "amplitude_api",
+        "cohort",
+        "membership_update"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:amplitude_api_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action membership_update sur cohorte.",
+      "args": {
+        "title": "Mettre à jour la membership d'une cohorte",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "json",
+            "key": "body",
+            "label": "Payload",
+            "description": "Corps JSON de la requête.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "query",
+            "label": "Query (JSON)",
+            "description": "Paramètres de query supplémentaires au format JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "headers",
+            "label": "Headers (JSON)",
+            "description": "Headers HTTP additionnels au format JSON.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "cohortes"
+    },
+    {
+      "key": "amplitude_api_dashboard_chart_csv",
+      "name": "amplitudeApiDashboardChartCsv",
+      "schemaVersion": 2,
+      "title": "Récupérer les résultats d'un chart",
+      "subtitle": "dashboard",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Amplitude API",
+      "providerKey": "amplitude_api",
+      "tags": [
+        "amplitude_api",
+        "dashboard",
+        "chart_csv"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:amplitude_api_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action chart_csv sur dashboard.",
+      "args": {
+        "title": "Récupérer les résultats d'un chart",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "chart_id",
+            "label": "Chart ID",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "query",
+            "label": "Query (JSON)",
+            "description": "Paramètres de query supplémentaires au format JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "headers",
+            "label": "Headers (JSON)",
+            "description": "Headers HTTP additionnels au format JSON.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "dashboard"
+    },
+    {
+      "key": "amplitude_api_dashboard_users",
+      "name": "amplitudeApiDashboardUsers",
+      "schemaVersion": 2,
+      "title": "Utilisateurs actifs / nouveaux",
+      "subtitle": "dashboard",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Amplitude API",
+      "providerKey": "amplitude_api",
+      "tags": [
+        "amplitude_api",
+        "dashboard",
+        "users"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:amplitude_api_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action users sur dashboard.",
+      "args": {
+        "title": "Utilisateurs actifs / nouveaux",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "json",
+            "key": "query",
+            "label": "Query (JSON)",
+            "description": "Paramètres de query supplémentaires au format JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "headers",
+            "label": "Headers (JSON)",
+            "description": "Headers HTTP additionnels au format JSON.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "dashboard"
+    },
+    {
+      "key": "amplitude_api_dashboard_sessions_length",
+      "name": "amplitudeApiDashboardSessionsLength",
+      "schemaVersion": 2,
+      "title": "Distribution des durées de session",
+      "subtitle": "dashboard",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Amplitude API",
+      "providerKey": "amplitude_api",
+      "tags": [
+        "amplitude_api",
+        "dashboard",
+        "sessions_length"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:amplitude_api_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action sessions_length sur dashboard.",
+      "args": {
+        "title": "Distribution des durées de session",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "json",
+            "key": "query",
+            "label": "Query (JSON)",
+            "description": "Paramètres de query supplémentaires au format JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "headers",
+            "label": "Headers (JSON)",
+            "description": "Headers HTTP additionnels au format JSON.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "dashboard"
+    },
+    {
+      "key": "amplitude_api_dashboard_sessions_average",
+      "name": "amplitudeApiDashboardSessionsAverage",
+      "schemaVersion": 2,
+      "title": "Durée moyenne de session",
+      "subtitle": "dashboard",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Amplitude API",
+      "providerKey": "amplitude_api",
+      "tags": [
+        "amplitude_api",
+        "dashboard",
+        "sessions_average"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:amplitude_api_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action sessions_average sur dashboard.",
+      "args": {
+        "title": "Durée moyenne de session",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "json",
+            "key": "query",
+            "label": "Query (JSON)",
+            "description": "Paramètres de query supplémentaires au format JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "headers",
+            "label": "Headers (JSON)",
+            "description": "Headers HTTP additionnels au format JSON.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "dashboard"
+    },
+    {
+      "key": "amplitude_api_dashboard_sessions_per_user",
+      "name": "amplitudeApiDashboardSessionsPerUser",
+      "schemaVersion": 2,
+      "title": "Sessions moyennes par utilisateur",
+      "subtitle": "dashboard",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Amplitude API",
+      "providerKey": "amplitude_api",
+      "tags": [
+        "amplitude_api",
+        "dashboard",
+        "sessions_per_user"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:amplitude_api_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action sessions_per_user sur dashboard.",
+      "args": {
+        "title": "Sessions moyennes par utilisateur",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "json",
+            "key": "query",
+            "label": "Query (JSON)",
+            "description": "Paramètres de query supplémentaires au format JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "headers",
+            "label": "Headers (JSON)",
+            "description": "Headers HTTP additionnels au format JSON.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "dashboard"
+    },
+    {
+      "key": "amplitude_api_dashboard_composition",
+      "name": "amplitudeApiDashboardComposition",
+      "schemaVersion": 2,
+      "title": "Composition utilisateurs",
+      "subtitle": "dashboard",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Amplitude API",
+      "providerKey": "amplitude_api",
+      "tags": [
+        "amplitude_api",
+        "dashboard",
+        "composition"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:amplitude_api_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action composition sur dashboard.",
+      "args": {
+        "title": "Composition utilisateurs",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "json",
+            "key": "query",
+            "label": "Query (JSON)",
+            "description": "Paramètres de query supplémentaires au format JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "headers",
+            "label": "Headers (JSON)",
+            "description": "Headers HTTP additionnels au format JSON.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "dashboard"
+    },
+    {
+      "key": "amplitude_api_dashboard_events_list",
+      "name": "amplitudeApiDashboardEventsList",
+      "schemaVersion": 2,
+      "title": "Lister les événements",
+      "subtitle": "dashboard",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Amplitude API",
+      "providerKey": "amplitude_api",
+      "tags": [
+        "amplitude_api",
+        "dashboard",
+        "events_list"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:amplitude_api_dashboards"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action events_list sur dashboard.",
+      "args": {
+        "title": "Lister les événements",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "json",
+            "key": "query",
+            "label": "Query (JSON)",
+            "description": "Paramètres de query supplémentaires au format JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "headers",
+            "label": "Headers (JSON)",
+            "description": "Headers HTTP additionnels au format JSON.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "dashboard"
+    },
+    {
+      "key": "amplitude_api_dashboard_event_segmentation",
+      "name": "amplitudeApiDashboardEventSegmentation",
+      "schemaVersion": 2,
+      "title": "Segmentation d'événements",
+      "subtitle": "dashboard",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Amplitude API",
+      "providerKey": "amplitude_api",
+      "tags": [
+        "amplitude_api",
+        "dashboard",
+        "event_segmentation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:amplitude_api_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action event_segmentation sur dashboard.",
+      "args": {
+        "title": "Segmentation d'événements",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "json",
+            "key": "query",
+            "label": "Query (JSON)",
+            "description": "Paramètres de query supplémentaires au format JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "headers",
+            "label": "Headers (JSON)",
+            "description": "Headers HTTP additionnels au format JSON.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "dashboard"
+    },
+    {
+      "key": "amplitude_api_dashboard_funnels",
+      "name": "amplitudeApiDashboardFunnels",
+      "schemaVersion": 2,
+      "title": "Analyse de funnel",
+      "subtitle": "dashboard",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Amplitude API",
+      "providerKey": "amplitude_api",
+      "tags": [
+        "amplitude_api",
+        "dashboard",
+        "funnels"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:amplitude_api_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action funnels sur dashboard.",
+      "args": {
+        "title": "Analyse de funnel",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "json",
+            "key": "query",
+            "label": "Query (JSON)",
+            "description": "Paramètres de query supplémentaires au format JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "headers",
+            "label": "Headers (JSON)",
+            "description": "Headers HTTP additionnels au format JSON.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "dashboard"
+    },
+    {
+      "key": "amplitude_api_dashboard_retention",
+      "name": "amplitudeApiDashboardRetention",
+      "schemaVersion": 2,
+      "title": "Analyse de rétention",
+      "subtitle": "dashboard",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Amplitude API",
+      "providerKey": "amplitude_api",
+      "tags": [
+        "amplitude_api",
+        "dashboard",
+        "retention"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:amplitude_api_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action retention sur dashboard.",
+      "args": {
+        "title": "Analyse de rétention",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "json",
+            "key": "query",
+            "label": "Query (JSON)",
+            "description": "Paramètres de query supplémentaires au format JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "headers",
+            "label": "Headers (JSON)",
+            "description": "Headers HTTP additionnels au format JSON.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "dashboard"
+    },
+    {
+      "key": "amplitude_api_dashboard_user_activity",
+      "name": "amplitudeApiDashboardUserActivity",
+      "schemaVersion": 2,
+      "title": "Activité utilisateur",
+      "subtitle": "dashboard",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Amplitude API",
+      "providerKey": "amplitude_api",
+      "tags": [
+        "amplitude_api",
+        "dashboard",
+        "user_activity"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:amplitude_api_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action user_activity sur dashboard.",
+      "args": {
+        "title": "Activité utilisateur",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "json",
+            "key": "query",
+            "label": "Query (JSON)",
+            "description": "Paramètres de query supplémentaires au format JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "headers",
+            "label": "Headers (JSON)",
+            "description": "Headers HTTP additionnels au format JSON.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "dashboard"
+    },
+    {
+      "key": "amplitude_api_dashboard_user_search",
+      "name": "amplitudeApiDashboardUserSearch",
+      "schemaVersion": 2,
+      "title": "Recherche utilisateur",
+      "subtitle": "dashboard",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Amplitude API",
+      "providerKey": "amplitude_api",
+      "tags": [
+        "amplitude_api",
+        "dashboard",
+        "user_search"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:amplitude_api_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action user_search sur dashboard.",
+      "args": {
+        "title": "Recherche utilisateur",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "json",
+            "key": "query",
+            "label": "Query (JSON)",
+            "description": "Paramètres de query supplémentaires au format JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "headers",
+            "label": "Headers (JSON)",
+            "description": "Headers HTTP additionnels au format JSON.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "dashboard"
+    },
+    {
+      "key": "amplitude_api_dashboard_realtime",
+      "name": "amplitudeApiDashboardRealtime",
+      "schemaVersion": 2,
+      "title": "Utilisateurs actifs temps réel",
+      "subtitle": "dashboard",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Amplitude API",
+      "providerKey": "amplitude_api",
+      "tags": [
+        "amplitude_api",
+        "dashboard",
+        "realtime"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:amplitude_api_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action realtime sur dashboard.",
+      "args": {
+        "title": "Utilisateurs actifs temps réel",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "json",
+            "key": "query",
+            "label": "Query (JSON)",
+            "description": "Paramètres de query supplémentaires au format JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "headers",
+            "label": "Headers (JSON)",
+            "description": "Headers HTTP additionnels au format JSON.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "dashboard"
+    },
+    {
+      "key": "amplitude_api_dashboard_revenue_ltv",
+      "name": "amplitudeApiDashboardRevenueLtv",
+      "schemaVersion": 2,
+      "title": "Valeur vie client",
+      "subtitle": "dashboard",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Amplitude API",
+      "providerKey": "amplitude_api",
+      "tags": [
+        "amplitude_api",
+        "dashboard",
+        "revenue_ltv"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:amplitude_api_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action revenue_ltv sur dashboard.",
+      "args": {
+        "title": "Valeur vie client",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "json",
+            "key": "query",
+            "label": "Query (JSON)",
+            "description": "Paramètres de query supplémentaires au format JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "headers",
+            "label": "Headers (JSON)",
+            "description": "Headers HTTP additionnels au format JSON.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "dashboard"
+    }
+  ]
+}

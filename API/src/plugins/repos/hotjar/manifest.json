@@ -1,0 +1,1145 @@
+{
+  "repo": {
+    "name": "hotjar",
+    "type": "local",
+    "label": "Hotjar"
+  },
+  "variables": {
+    "hotjar_action_result": {
+      "title": "Résultat action",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "Succès",
+          "description": "Indique si l’action est réussie.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Code HTTP",
+          "description": "Code HTTP retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "message",
+          "label": "Message",
+          "description": "Message de statut.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Données brutes",
+          "description": "Réponse API brute.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "hotjar_auth": {
+      "title": "auth Hotjar",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "url",
+          "label": "URL",
+          "description": "URL.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "created_at",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "updated_at",
+          "label": "Date modification",
+          "description": "Date de modification.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Données brutes",
+          "description": "Réponse API brute.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "hotjar_auths": {
+      "title": "auth Hotjar",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Éléments",
+          "description": "Liste des éléments",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "url",
+              "label": "URL",
+              "description": "URL.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "created_at",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "updated_at",
+              "label": "Date modification",
+              "description": "Date de modification.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "json",
+              "key": "raw",
+              "label": "Données brutes",
+              "description": "Réponse API brute.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d’éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextCursor",
+          "label": "Cursor suivant",
+          "description": "Cursor de page suivant.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "hotjar_survey": {
+      "title": "survey Hotjar",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "url",
+          "label": "URL",
+          "description": "URL.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "created_at",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "updated_at",
+          "label": "Date modification",
+          "description": "Date de modification.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Données brutes",
+          "description": "Réponse API brute.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "hotjar_surveies": {
+      "title": "surveys Hotjar",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Éléments",
+          "description": "Liste des éléments",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "url",
+              "label": "URL",
+              "description": "URL.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "created_at",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "updated_at",
+              "label": "Date modification",
+              "description": "Date de modification.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "json",
+              "key": "raw",
+              "label": "Données brutes",
+              "description": "Réponse API brute.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d’éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextCursor",
+          "label": "Cursor suivant",
+          "description": "Cursor de page suivant.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "hotjar_user_lookup": {
+      "title": "user lookup Hotjar",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "url",
+          "label": "URL",
+          "description": "URL.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "created_at",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "updated_at",
+          "label": "Date modification",
+          "description": "Date de modification.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Données brutes",
+          "description": "Réponse API brute.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "hotjar_user_lookups": {
+      "title": "user lookups Hotjar",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Éléments",
+          "description": "Liste des éléments",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "url",
+              "label": "URL",
+              "description": "URL.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "created_at",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "updated_at",
+              "label": "Date modification",
+              "description": "Date de modification.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "json",
+              "key": "raw",
+              "label": "Données brutes",
+              "description": "Réponse API brute.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d’éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextCursor",
+          "label": "Cursor suivant",
+          "description": "Cursor de page suivant.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "hotjar",
+      "name": "Hotjar",
+      "title": "Hotjar",
+      "iconClass": "fa-solid fa-fire",
+      "iconUrl": "https://cdn.simpleicons.org/hotjar",
+      "color": "#fff0ea",
+      "tags": [
+        "hotjar",
+        "survey",
+        "ux"
+      ],
+      "categories": [
+        "Analyse"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Hotjar",
+        "displayTitle": false,
+        "displayDescription": false,
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "clientId",
+            "label": "Client ID",
+            "description": "Client ID de la clé API Hotjar.",
+            "secret": true,
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "clientSecret",
+            "label": "Client Secret",
+            "description": "Client Secret de la clé API Hotjar.",
+            "secret": true,
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "accessToken",
+            "label": "Bearer token",
+            "description": "Token bearer déjà généré (optionnel si clientId/clientSecret fournis).",
+            "secret": true,
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "baseUrl",
+            "label": "Base URL API",
+            "description": "Base URL API Hotjar.",
+            "default": "https://api.hotjar.io",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "defaultHeaders",
+            "label": "Headers par défaut (JSON)",
+            "description": "Headers additionnels appliqués à toutes les requêtes.",
+            "col": {
+              "xs": 24
+            },
+            "default": "{}"
+          }
+        ]
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "hotjar_auth_token",
+      "name": "hotjarAuthToken",
+      "schemaVersion": 2,
+      "title": "Générer un bearer token",
+      "subtitle": "auth",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Hotjar",
+      "providerKey": "hotjar",
+      "tags": [
+        "hotjar",
+        "auth",
+        "token"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:hotjar_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action token sur auth.",
+      "args": {
+        "title": "Générer un bearer token",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "json",
+            "key": "body",
+            "label": "Payload",
+            "description": "Corps JSON de la requête.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "query",
+            "label": "Query (JSON)",
+            "description": "Paramètres de query supplémentaires au format JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "headers",
+            "label": "Headers (JSON)",
+            "description": "Headers HTTP additionnels au format JSON.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "auth"
+    },
+    {
+      "key": "hotjar_survey_list",
+      "name": "hotjarSurveyList",
+      "schemaVersion": 2,
+      "title": "Lister les surveys",
+      "subtitle": "surveys",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Hotjar",
+      "providerKey": "hotjar",
+      "tags": [
+        "hotjar",
+        "survey",
+        "list"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:hotjar_surveies"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action list sur survey.",
+      "args": {
+        "title": "Lister les surveys",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "site_id",
+            "label": "Site ID",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "pageSize",
+            "label": "Taille de page",
+            "description": "Nombre max par page.",
+            "col": {
+              "xs": 24
+            },
+            "default": 50
+          },
+          {
+            "type": "number",
+            "key": "page",
+            "label": "Page",
+            "description": "Numéro de page.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "query",
+            "label": "Query (JSON)",
+            "description": "Paramètres de query supplémentaires au format JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "headers",
+            "label": "Headers (JSON)",
+            "description": "Headers HTTP additionnels au format JSON.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "surveys"
+    },
+    {
+      "key": "hotjar_survey_get",
+      "name": "hotjarSurveyGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un survey",
+      "subtitle": "surveys",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Hotjar",
+      "providerKey": "hotjar",
+      "tags": [
+        "hotjar",
+        "survey",
+        "get"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:hotjar_survey"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action get sur survey.",
+      "args": {
+        "title": "Récupérer un survey",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "site_id",
+            "label": "Site ID",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "survey_id",
+            "label": "Survey ID",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "id",
+            "label": "ID",
+            "description": "Identifiant.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "query",
+            "label": "Query (JSON)",
+            "description": "Paramètres de query supplémentaires au format JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "headers",
+            "label": "Headers (JSON)",
+            "description": "Headers HTTP additionnels au format JSON.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "surveys"
+    },
+    {
+      "key": "hotjar_survey_responses_list",
+      "name": "hotjarSurveyResponsesList",
+      "schemaVersion": 2,
+      "title": "Lister les réponses de survey",
+      "subtitle": "surveys",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Hotjar",
+      "providerKey": "hotjar",
+      "tags": [
+        "hotjar",
+        "survey",
+        "responses_list"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:hotjar_surveies"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action responses_list sur survey.",
+      "args": {
+        "title": "Lister les réponses de survey",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "site_id",
+            "label": "Site ID",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "survey_id",
+            "label": "Survey ID",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "query",
+            "label": "Query (JSON)",
+            "description": "Paramètres de query supplémentaires au format JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "headers",
+            "label": "Headers (JSON)",
+            "description": "Headers HTTP additionnels au format JSON.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "surveys"
+    },
+    {
+      "key": "hotjar_user_lookup_perform",
+      "name": "hotjarUserLookupPerform",
+      "schemaVersion": 2,
+      "title": "Lancer un user lookup",
+      "subtitle": "user lookups",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Hotjar",
+      "providerKey": "hotjar",
+      "tags": [
+        "hotjar",
+        "user_lookup",
+        "perform"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:hotjar_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action perform sur user lookup.",
+      "args": {
+        "title": "Lancer un user lookup",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "organization_id",
+            "label": "Organization ID",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "body",
+            "label": "Payload",
+            "description": "Corps JSON de la requête.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "query",
+            "label": "Query (JSON)",
+            "description": "Paramètres de query supplémentaires au format JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "headers",
+            "label": "Headers (JSON)",
+            "description": "Headers HTTP additionnels au format JSON.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "user lookups"
+    }
+  ]
+}
