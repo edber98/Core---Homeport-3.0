@@ -1,0 +1,951 @@
+{
+  "repo": {
+    "name": "planetscale",
+    "type": "local",
+    "label": "PlanetScale"
+  },
+  "variables": {
+    "planetscale_rows": {
+      "title": "Lignes PlanetScale",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "number",
+          "key": "rowCount",
+          "label": "Nombre de lignes",
+          "col": {
+            "xs": 12
+          }
+        },
+        {
+          "type": "json",
+          "key": "fields",
+          "label": "Colonnes",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "rows",
+          "label": "Lignes",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Réponse brute",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "planetscale_tables": {
+      "title": "Tables PlanetScale",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "col": {
+            "xs": 12
+          }
+        },
+        {
+          "type": "json",
+          "key": "tables",
+          "label": "Tables",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Réponse brute",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "planetscale_columns": {
+      "title": "Colonnes PlanetScale",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "col": {
+            "xs": 12
+          }
+        },
+        {
+          "type": "json",
+          "key": "columns",
+          "label": "Colonnes",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Réponse brute",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "planetscale_write_result": {
+      "title": "Résultat PlanetScale",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "textarea",
+          "key": "message",
+          "label": "Message",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "affectedRows",
+          "label": "Lignes affectées",
+          "col": {
+            "xs": 12
+          }
+        },
+        {
+          "type": "number",
+          "key": "insertId",
+          "label": "ID inséré",
+          "col": {
+            "xs": 12
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Réponse brute",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "planetscale",
+      "name": "PlanetScale",
+      "title": "PlanetScale",
+      "iconClass": "fa-solid fa-database",
+      "iconUrl": "https://cdn.simpleicons.org/planetscale",
+      "color": "#c8e3f7",
+      "tags": [
+        "planetscale",
+        "sql",
+        "base de données"
+      ],
+      "categories": [
+        "Base de données"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants PlanetScale",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "host",
+            "label": "Hôte",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "port",
+            "label": "Port",
+            "default": 3306,
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "text",
+            "key": "database",
+            "label": "Base",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "username",
+            "label": "Utilisateur",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "password",
+            "label": "Mot de passe",
+            "secret": true,
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "ssl",
+            "label": "Utiliser SSL",
+            "default": false,
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "planetscale_query_execute",
+      "name": "planetscaleQueryExecute",
+      "schemaVersion": 2,
+      "title": "Exécuter une requête",
+      "subtitle": "SQL",
+      "icon": "fa-solid fa-terminal",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "PlanetScale",
+      "providerKey": "planetscale",
+      "tags": [
+        "planetscale",
+        "sql"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:planetscale_rows"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Exécute une requête SQL PlanetScale paramétrée.",
+      "args": {
+        "title": "Exécuter une requête",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "query",
+            "label": "Requête",
+            "default": "SELECT 1",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "params",
+            "label": "Paramètres",
+            "default": [],
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "SQL"
+    },
+    {
+      "key": "planetscale_tables_list",
+      "name": "planetscaleTablesList",
+      "schemaVersion": 2,
+      "title": "Lister les tables",
+      "subtitle": "Tables",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "PlanetScale",
+      "providerKey": "planetscale",
+      "tags": [
+        "planetscale",
+        "tables"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:planetscale_tables"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les tables de la base PlanetScale.",
+      "args": {
+        "title": "Lister les tables",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Tables"
+    },
+    {
+      "key": "planetscale_table_describe",
+      "name": "planetscaleTableDescribe",
+      "schemaVersion": 2,
+      "title": "Décrire une table",
+      "subtitle": "Tables",
+      "icon": "fa-solid fa-table",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "PlanetScale",
+      "providerKey": "planetscale",
+      "tags": [
+        "planetscale",
+        "table"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:planetscale_columns"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Décrit les colonnes d'une table PlanetScale.",
+      "args": {
+        "title": "Décrire une table",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "table",
+            "label": "Table",
+            "default": "users",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Tables"
+    },
+    {
+      "key": "planetscale_records_select",
+      "name": "planetscaleRecordsSelect",
+      "schemaVersion": 2,
+      "title": "Sélectionner des lignes",
+      "subtitle": "Données",
+      "icon": "fa-solid fa-magnifying-glass",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "PlanetScale",
+      "providerKey": "planetscale",
+      "tags": [
+        "planetscale",
+        "select"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:planetscale_rows"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Sélectionne des lignes dans une table PlanetScale.",
+      "args": {
+        "title": "Sélectionner des lignes",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "table",
+            "label": "Table",
+            "default": "users",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "columns",
+            "label": "Colonnes",
+            "default": "*",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "where",
+            "label": "WHERE",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "orderBy",
+            "label": "ORDER BY",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "default": 100,
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "number",
+            "key": "offset",
+            "label": "Offset",
+            "col": {
+              "xs": 12
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Données"
+    },
+    {
+      "key": "planetscale_record_insert",
+      "name": "planetscaleRecordInsert",
+      "schemaVersion": 2,
+      "title": "Insérer une ligne",
+      "subtitle": "Données",
+      "icon": "fa-solid fa-plus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "PlanetScale",
+      "providerKey": "planetscale",
+      "tags": [
+        "planetscale",
+        "insert"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:planetscale_write_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Insère une ligne dans une table PlanetScale.",
+      "args": {
+        "title": "Insérer une ligne",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "table",
+            "label": "Table",
+            "default": "users",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "data",
+            "label": "Données",
+            "default": {
+              "name": "Alice"
+            },
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Données"
+    },
+    {
+      "key": "planetscale_records_update",
+      "name": "planetscaleRecordsUpdate",
+      "schemaVersion": 2,
+      "title": "Mettre à jour des lignes",
+      "subtitle": "Données",
+      "icon": "fa-solid fa-pen",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "PlanetScale",
+      "providerKey": "planetscale",
+      "tags": [
+        "planetscale",
+        "update"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:planetscale_write_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Met à jour des lignes dans une table PlanetScale.",
+      "args": {
+        "title": "Mettre à jour des lignes",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "table",
+            "label": "Table",
+            "default": "users",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "data",
+            "label": "Données",
+            "default": {
+              "name": "Alice"
+            },
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "where",
+            "label": "WHERE",
+            "default": "id = 1",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Données"
+    },
+    {
+      "key": "planetscale_records_delete",
+      "name": "planetscaleRecordsDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer des lignes",
+      "subtitle": "Données",
+      "icon": "fa-solid fa-trash",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "PlanetScale",
+      "providerKey": "planetscale",
+      "tags": [
+        "planetscale",
+        "delete"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:planetscale_write_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Supprime des lignes dans une table PlanetScale.",
+      "args": {
+        "title": "Supprimer des lignes",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "table",
+            "label": "Table",
+            "default": "users",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "where",
+            "label": "WHERE",
+            "default": "id = 1",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Données"
+    },
+    {
+      "key": "planetscale_record_upsert",
+      "name": "planetscaleRecordUpsert",
+      "schemaVersion": 2,
+      "title": "Upsert une ligne",
+      "subtitle": "Données",
+      "icon": "fa-solid fa-code-compare",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "PlanetScale",
+      "providerKey": "planetscale",
+      "tags": [
+        "planetscale",
+        "upsert"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:planetscale_write_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Insère ou met à jour une ligne via ON DUPLICATE KEY.",
+      "args": {
+        "title": "Upsert une ligne",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "table",
+            "label": "Table",
+            "col": {
+              "xs": 24
+            },
+            "default": "users",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "data",
+            "label": "Données",
+            "col": {
+              "xs": 24
+            },
+            "default": {
+              "id": 1,
+              "name": "Alice"
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "updateColumns",
+            "label": "Colonnes à mettre à jour",
+            "col": {
+              "xs": 24
+            },
+            "default": "name"
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Données"
+    },
+    {
+      "key": "planetscale_transaction_execute",
+      "name": "planetscaleTransactionExecute",
+      "schemaVersion": 2,
+      "title": "Exécuter une transaction SQL",
+      "subtitle": "SQL",
+      "icon": "fa-solid fa-layer-group",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "PlanetScale",
+      "providerKey": "planetscale",
+      "tags": [
+        "planetscale",
+        "transaction"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:planetscale_rows"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Exécute une suite de requêtes dans une transaction.",
+      "args": {
+        "title": "Exécuter une transaction SQL",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "json",
+            "key": "queries",
+            "label": "Requêtes",
+            "col": {
+              "xs": 24
+            },
+            "default": [
+              {
+                "query": "UPDATE users SET active = 1 WHERE id = ?",
+                "params": [
+                  1
+                ]
+              }
+            ],
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "SQL"
+    }
+  ]
+}

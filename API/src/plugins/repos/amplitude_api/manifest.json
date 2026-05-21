@@ -591,8 +591,8 @@
       "name": "Amplitude API",
       "title": "Amplitude API",
       "iconClass": "fa-solid fa-chart-simple",
-      "iconUrl": "https://cdn.simpleicons.org/amplitude",
-      "color": "#f3f0ff",
+      "iconUrl": "https://www.vectorlogo.zone/logos/amplitude/amplitude-icon.svg",
+      "color": "#eef2ff",
       "tags": [
         "amplitude",
         "analytics",

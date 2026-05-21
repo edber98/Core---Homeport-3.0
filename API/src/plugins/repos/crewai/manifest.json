@@ -1,11 +1,11 @@
 {
   "repo": {
-    "name": "heap",
+    "name": "crewai",
     "type": "local",
-    "label": "Heap"
+    "label": "CrewAI"
   },
   "variables": {
-    "heap_action_result": {
+    "crewai_action_result": {
       "title": "Résultat action",
       "ui": {
         "layout": "vertical",
@@ -50,8 +50,8 @@
         }
       ]
     },
-    "heap_event": {
-      "title": "événement Heap",
+    "crewai_input": {
+      "title": "input CrewAI",
       "ui": {
         "layout": "vertical",
         "labelsOnTop": true
@@ -122,8 +122,8 @@
         }
       ]
     },
-    "heap_events": {
-      "title": "événements Heap",
+    "crewai_inputs": {
+      "title": "inputs CrewAI",
       "ui": {
         "layout": "vertical",
         "labelsOnTop": true
@@ -228,8 +228,8 @@
         }
       ]
     },
-    "heap_user": {
-      "title": "utilisateur Heap",
+    "crewai_kickoff": {
+      "title": "kickoff CrewAI",
       "ui": {
         "layout": "vertical",
         "labelsOnTop": true
@@ -300,8 +300,8 @@
         }
       ]
     },
-    "heap_users": {
-      "title": "utilisateurs Heap",
+    "crewai_kickoffs": {
+      "title": "kickoffs CrewAI",
       "ui": {
         "layout": "vertical",
         "labelsOnTop": true
@@ -406,8 +406,8 @@
         }
       ]
     },
-    "heap_account": {
-      "title": "compte Heap",
+    "crewai_resume": {
+      "title": "resume CrewAI",
       "ui": {
         "layout": "vertical",
         "labelsOnTop": true
@@ -478,8 +478,8 @@
         }
       ]
     },
-    "heap_accounts": {
-      "title": "comptes Heap",
+    "crewai_resumes": {
+      "title": "resumes CrewAI",
       "ui": {
         "layout": "vertical",
         "labelsOnTop": true
@@ -584,8 +584,8 @@
         }
       ]
     },
-    "heap_identity": {
-      "title": "identité Heap",
+    "crewai_statu": {
+      "title": "statu CrewAI",
       "ui": {
         "layout": "vertical",
         "labelsOnTop": true
@@ -656,8 +656,8 @@
         }
       ]
     },
-    "heap_identities": {
-      "title": "identités Heap",
+    "crewai_status": {
+      "title": "status CrewAI",
       "ui": {
         "layout": "vertical",
         "labelsOnTop": true
@@ -765,25 +765,23 @@
   },
   "providers": [
     {
-      "key": "heap",
-      "name": "Heap",
-      "title": "Heap",
-      "iconClass": "fa-solid fa-chart-line",
-      "iconUrl": "https://www.vectorlogo.zone/logos/heapanalytics/heapanalytics-icon.svg",
-      "color": "#f2f2f2",
+      "key": "crewai",
+      "name": "CrewAI",
+      "title": "CrewAI",
+      "iconClass": "fa-solid fa-people-group",
+      "iconUrl": "https://cdn.simpleicons.org/crewai",
+      "color": "#eaf3ff",
       "tags": [
-        "heap",
-        "analytics",
-        "tracking"
+        "crewai",
+        "agents",
+        "automation"
       ],
       "categories": [
-        "Analyse"
+        "IA"
       ],
       "hasCredentials": true,
       "credentialsForm": {
-        "title": "Identifiants Heap",
-        "displayTitle": false,
-        "displayDescription": false,
+        "title": "Identifiants CrewAI",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -791,58 +789,55 @@
         "fields": [
           {
             "type": "text",
-            "key": "appId",
-            "label": "App ID",
-            "description": "Identifiant de l’environnement Heap.",
+            "key": "apiKey",
+            "label": "Bearer token",
+            "description": "Token Bearer CrewAI AMP.",
             "col": {
               "xs": 24
             },
+            "secret": true,
             "validators": [
               {
                 "type": "required"
               }
             ]
-          },
-          {
-            "type": "text",
-            "key": "apiKey",
-            "label": "Clé API",
-            "description": "Clé API Heap (optionnelle selon endpoint).",
-            "col": {
-              "xs": 24
-            },
-            "secret": true
           },
           {
             "type": "text",
             "key": "baseUrl",
             "label": "URL de base API",
-            "description": "URL de base Heap.",
+            "description": "URL de votre crew (ex: https://your-crew-name.crewai.com).",
             "col": {
               "xs": 24
             },
-            "default": "https://heapanalytics.com"
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       }
     }
   ],
   "nodeTemplates": [
     {
-      "key": "heap_event_track",
-      "name": "heapEventTrack",
+      "key": "crewai_input_list_getrequiredinputs",
+      "name": "crewaiInputListGetrequiredinputs",
       "schemaVersion": 2,
-      "title": "Envoyer un événement",
-      "subtitle": "événements",
+      "title": "List input",
+      "subtitle": "inputs",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
-      "category": "Heap",
-      "providerKey": "heap",
+      "category": "CrewAI",
+      "providerKey": "crewai",
       "tags": [
-        "heap",
-        "event",
-        "track"
+        "crewai",
+        "input",
+        "list_getrequiredinputs"
       ],
       "inputHandles": [
         {
@@ -860,107 +855,38 @@
           "id": "ok",
           "name": "Success",
           "type": "payload",
-          "schema": "$var:heap_action_result"
+          "schema": "$var:crewai_inputs"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action track sur événement.",
+      "description": "Action list_getrequiredinputs sur input.",
       "args": {
-        "title": "Envoyer un événement",
+        "title": "List input",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
         },
-        "fields": [
-          {
-            "type": "text",
-            "key": "event",
-            "label": "Nom d’événement",
-            "description": "",
-            "col": {
-              "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
-          },
-          {
-            "type": "text",
-            "key": "identity",
-            "label": "Identité",
-            "description": "",
-            "col": {
-              "xs": 24
-            }
-          },
-          {
-            "type": "text",
-            "key": "user_id",
-            "label": "User ID",
-            "description": "",
-            "col": {
-              "xs": 24
-            }
-          },
-          {
-            "type": "text",
-            "key": "session_id",
-            "label": "Session ID",
-            "description": "",
-            "col": {
-              "xs": 24
-            }
-          },
-          {
-            "type": "text",
-            "key": "timestamp",
-            "label": "Timestamp ISO8601",
-            "description": "",
-            "col": {
-              "xs": 24
-            }
-          },
-          {
-            "type": "text",
-            "key": "idempotency_key",
-            "label": "Clé d’idempotence",
-            "description": "",
-            "col": {
-              "xs": 24
-            }
-          },
-          {
-            "type": "json",
-            "key": "properties",
-            "label": "Propriétés événement",
-            "description": "",
-            "col": {
-              "xs": 24
-            }
-          }
-        ],
+        "fields": [],
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "événements"
+      "group": "inputs"
     },
     {
-      "key": "heap_event_bulk_track",
-      "name": "heapEventBulkTrack",
+      "key": "crewai_kickoff_create_startcrewexecution",
+      "name": "crewaiKickoffCreateStartcrewexecution",
       "schemaVersion": 2,
-      "title": "Envoyer des événements en lot",
-      "subtitle": "événements",
+      "title": "Create kickoff",
+      "subtitle": "kickoffs",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
-      "category": "Heap",
-      "providerKey": "heap",
+      "category": "CrewAI",
+      "providerKey": "crewai",
       "tags": [
-        "heap",
-        "event",
-        "bulk_track"
+        "crewai",
+        "kickoff",
+        "create_startcrewexecution"
       ],
       "inputHandles": [
         {
@@ -978,413 +904,165 @@
           "id": "ok",
           "name": "Success",
           "type": "payload",
-          "schema": "$var:heap_action_result"
+          "schema": "$var:crewai_kickoff"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action bulk_track sur événement.",
+      "description": "Action create_startcrewexecution sur kickoff.",
       "args": {
-        "title": "Envoyer des événements en lot",
+        "title": "Create kickoff",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
         },
         "fields": [
-          {
-            "type": "json",
-            "key": "events",
-            "label": "Événements",
-            "description": "",
-            "col": {
-              "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
-          }
-        ],
-        "displayTitle": false,
-        "displayDescription": false
-      },
-      "group": "événements"
-    },
-    {
-      "key": "heap_user_add_properties",
-      "name": "heapUserAddProperties",
-      "schemaVersion": 2,
-      "title": "Ajouter des propriétés utilisateur",
-      "subtitle": "utilisateurs",
-      "icon": "fa-solid fa-bolt",
-      "type": "function",
-      "nodeKind": "function",
-      "category": "Heap",
-      "providerKey": "heap",
-      "tags": [
-        "heap",
-        "user",
-        "add_properties"
-      ],
-      "inputHandles": [
-        {
-          "id": "in",
-          "name": "In",
-          "type": "any",
-          "accepts": [
-            "any",
-            "payload"
-          ]
-        }
-      ],
-      "outputHandles": [
-        {
-          "id": "ok",
-          "name": "Success",
-          "type": "payload",
-          "schema": "$var:heap_action_result"
-        }
-      ],
-      "authorize_catch_error": true,
-      "description": "Action add_properties sur utilisateur.",
-      "args": {
-        "title": "Ajouter des propriétés utilisateur",
-        "ui": {
-          "layout": "vertical",
-          "labelsOnTop": true
-        },
-        "fields": [
-          {
-            "type": "text",
-            "key": "identity",
-            "label": "Identité",
-            "description": "",
-            "col": {
-              "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
-          },
-          {
-            "type": "text",
-            "key": "timestamp",
-            "label": "Timestamp ISO8601",
-            "description": "",
-            "col": {
-              "xs": 24
-            }
-          },
-          {
-            "type": "json",
-            "key": "properties",
-            "label": "Propriétés utilisateur",
-            "description": "",
-            "col": {
-              "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
-          }
-        ],
-        "displayTitle": false,
-        "displayDescription": false
-      },
-      "group": "utilisateurs"
-    },
-    {
-      "key": "heap_account_add_properties",
-      "name": "heapAccountAddProperties",
-      "schemaVersion": 2,
-      "title": "Ajouter des propriétés compte",
-      "subtitle": "comptes",
-      "icon": "fa-solid fa-bolt",
-      "type": "function",
-      "nodeKind": "function",
-      "category": "Heap",
-      "providerKey": "heap",
-      "tags": [
-        "heap",
-        "account",
-        "add_properties"
-      ],
-      "inputHandles": [
-        {
-          "id": "in",
-          "name": "In",
-          "type": "any",
-          "accepts": [
-            "any",
-            "payload"
-          ]
-        }
-      ],
-      "outputHandles": [
-        {
-          "id": "ok",
-          "name": "Success",
-          "type": "payload",
-          "schema": "$var:heap_action_result"
-        }
-      ],
-      "authorize_catch_error": true,
-      "description": "Action add_properties sur compte.",
-      "args": {
-        "title": "Ajouter des propriétés compte",
-        "ui": {
-          "layout": "vertical",
-          "labelsOnTop": true
-        },
-        "fields": [
-          {
-            "type": "text",
-            "key": "identity",
-            "label": "Identité compte",
-            "description": "",
-            "col": {
-              "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
-          },
-          {
-            "type": "text",
-            "key": "timestamp",
-            "label": "Timestamp ISO8601",
-            "description": "",
-            "col": {
-              "xs": 24
-            }
-          },
-          {
-            "type": "json",
-            "key": "properties",
-            "label": "Propriétés compte",
-            "description": "",
-            "col": {
-              "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
-          }
-        ],
-        "displayTitle": false,
-        "displayDescription": false
-      },
-      "group": "comptes"
-    },
-    {
-      "key": "heap_identity_identify",
-      "name": "heapIdentityIdentify",
-      "schemaVersion": 2,
-      "title": "Associer user_id et identité",
-      "subtitle": "identités",
-      "icon": "fa-solid fa-bolt",
-      "type": "function",
-      "nodeKind": "function",
-      "category": "Heap",
-      "providerKey": "heap",
-      "tags": [
-        "heap",
-        "identity",
-        "identify"
-      ],
-      "inputHandles": [
-        {
-          "id": "in",
-          "name": "In",
-          "type": "any",
-          "accepts": [
-            "any",
-            "payload"
-          ]
-        }
-      ],
-      "outputHandles": [
-        {
-          "id": "ok",
-          "name": "Success",
-          "type": "payload",
-          "schema": "$var:heap_action_result"
-        }
-      ],
-      "authorize_catch_error": true,
-      "description": "Action identify sur identité.",
-      "args": {
-        "title": "Associer user_id et identité",
-        "ui": {
-          "layout": "vertical",
-          "labelsOnTop": true
-        },
-        "fields": [
-          {
-            "type": "text",
-            "key": "user_id",
-            "label": "User ID",
-            "description": "",
-            "col": {
-              "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
-          },
-          {
-            "type": "text",
-            "key": "identity",
-            "label": "Identité",
-            "description": "",
-            "col": {
-              "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
-          },
-          {
-            "type": "text",
-            "key": "timestamp",
-            "label": "Timestamp ISO8601",
-            "description": "",
-            "col": {
-              "xs": 24
-            }
-          }
-        ],
-        "displayTitle": false,
-        "displayDescription": false
-      },
-      "group": "identités"
-    },
-    {
-      "key": "heap_api_request",
-      "name": "heapApiRequest",
-      "schemaVersion": 2,
-      "title": "Appeler un endpoint API",
-      "subtitle": "API",
-      "icon": "fa-solid fa-code",
-      "type": "function",
-      "nodeKind": "function",
-      "category": "Heap",
-      "providerKey": "heap",
-      "tags": [
-        "heap",
-        "api",
-        "request"
-      ],
-      "inputHandles": [
-        {
-          "id": "in",
-          "name": "In",
-          "type": "any",
-          "accepts": [
-            "any",
-            "payload"
-          ]
-        }
-      ],
-      "outputHandles": [
-        {
-          "id": "ok",
-          "name": "Success",
-          "type": "payload",
-          "schema": "$var:heap_action_result"
-        }
-      ],
-      "authorize_catch_error": true,
-      "description": "Appeler un endpoint API.",
-      "args": {
-        "title": "Appeler un endpoint API",
-        "ui": {
-          "layout": "vertical",
-          "labelsOnTop": true
-        },
-        "fields": [
-          {
-            "type": "text",
-            "key": "method",
-            "label": "Méthode HTTP",
-            "description": "GET, POST, PUT, PATCH, DELETE.",
-            "col": {
-              "xs": 24
-            },
-            "default": "GET",
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
-          },
-          {
-            "type": "text",
-            "key": "path",
-            "label": "Chemin endpoint",
-            "description": "Ex: /v2/users",
-            "col": {
-              "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
-          },
-          {
-            "type": "json",
-            "key": "query",
-            "label": "Query params",
-            "description": "Objet JSON des query params.",
-            "col": {
-              "xs": 24
-            }
-          },
-          {
-            "type": "json",
-            "key": "headers",
-            "label": "En-têtes",
-            "description": "Objet JSON d’en-têtes HTTP.",
-            "col": {
-              "xs": 24
-            }
-          },
           {
             "type": "json",
             "key": "body",
-            "label": "Body JSON",
-            "description": "Payload JSON.",
+            "label": "Payload",
+            "description": "Corps JSON de la requête.",
             "col": {
               "xs": 24
-            }
-          },
-          {
-            "type": "textarea",
-            "key": "body_text",
-            "label": "Body texte",
-            "description": "Corps brut (prioritaire sur body).",
-            "col": {
-              "xs": 24
-            }
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
           }
         ],
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Utilitaires API"
+      "group": "kickoffs"
+    },
+    {
+      "key": "crewai_resume_create_resumecrewexecution",
+      "name": "crewaiResumeCreateResumecrewexecution",
+      "schemaVersion": 2,
+      "title": "Create resume",
+      "subtitle": "resumes",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "CrewAI",
+      "providerKey": "crewai",
+      "tags": [
+        "crewai",
+        "resume",
+        "create_resumecrewexecution"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:crewai_resume"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action create_resumecrewexecution sur resume.",
+      "args": {
+        "title": "Create resume",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "json",
+            "key": "body",
+            "label": "Payload",
+            "description": "Corps JSON de la requête.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "resumes"
+    },
+    {
+      "key": "crewai_statu_get_getexecutionstatus",
+      "name": "crewaiStatuGetGetexecutionstatus",
+      "schemaVersion": 2,
+      "title": "Get statu",
+      "subtitle": "status",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "CrewAI",
+      "providerKey": "crewai",
+      "tags": [
+        "crewai",
+        "statu",
+        "get_getexecutionstatus"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:crewai_statu"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action get_getexecutionstatus sur statu.",
+      "args": {
+        "title": "Get statu",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "kickoff_id",
+            "label": "Kickoff Id",
+            "description": "The kickoff ID returned from the /kickoff endpoint",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "status"
     }
   ]
 }

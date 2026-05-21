@@ -1,0 +1,818 @@
+{
+  "repo": {
+    "name": "rabbitmq",
+    "type": "local",
+    "label": "RabbitMQ"
+  },
+  "variables": {
+    "rabbitmq_action_result": {
+      "title": "Résultat RabbitMQ",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "Succès",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Statut",
+          "col": {
+            "xs": 12
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "message",
+          "label": "Message",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Données brutes",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "rabbitmq_rows": {
+      "title": "Lignes RabbitMQ",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "number",
+          "key": "rowCount",
+          "label": "Nombre de lignes",
+          "col": {
+            "xs": 12
+          }
+        },
+        {
+          "type": "json",
+          "key": "fields",
+          "label": "Colonnes",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "rows",
+          "label": "Lignes",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Réponse brute",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "rabbitmq_items": {
+      "title": "Liste RabbitMQ",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "col": {
+            "xs": 12
+          }
+        },
+        {
+          "type": "json",
+          "key": "items",
+          "label": "Éléments",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Réponse brute",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "rabbitmq_record": {
+      "title": "Élément RabbitMQ",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "properties",
+          "label": "Propriétés",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Réponse brute",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "rabbitmq",
+      "name": "RabbitMQ",
+      "title": "RabbitMQ",
+      "iconClass": "fa-solid fa-envelope",
+      "iconUrl": "https://cdn.simpleicons.org/rabbitmq",
+      "color": "#ffeede",
+      "tags": [
+        "rabbitmq",
+        "queue",
+        "amqp"
+      ],
+      "categories": [
+        "Base de données"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants RabbitMQ",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "url",
+            "label": "URL AMQP",
+            "description": "Ex: amqp://user:pass@host:5672/vhost",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "defaultQueue",
+            "label": "Queue par défaut",
+            "description": "Queue par défaut optionnelle.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "defaultExchange",
+            "label": "Exchange par défaut",
+            "description": "Exchange par défaut optionnel.",
+            "col": {
+              "xs": 24
+            },
+            "default": ""
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "rabbitmq_publish_queue",
+      "name": "rabbitmqPublishQueue",
+      "schemaVersion": 2,
+      "title": "Publier dans une queue",
+      "subtitle": "Publication",
+      "icon": "fa-solid fa-paper-plane",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "RabbitMQ",
+      "providerKey": "rabbitmq",
+      "tags": [
+        "rabbitmq",
+        "publish"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:rabbitmq_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Publie un message directement dans une queue.",
+      "args": {
+        "title": "Publier dans une queue",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "queue",
+            "label": "Queue",
+            "description": "Nom de la queue (optionnel si défaut credentials).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "payload",
+            "label": "Payload",
+            "description": "Contenu du message.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "checkbox",
+            "key": "persistent",
+            "label": "Persistant",
+            "description": "Marquer le message persistant.",
+            "col": {
+              "xs": 24
+            },
+            "default": true
+          },
+          {
+            "type": "text",
+            "key": "contentType",
+            "label": "Content-Type",
+            "description": "Ex: application/json",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Publication"
+    },
+    {
+      "key": "rabbitmq_publish_exchange",
+      "name": "rabbitmqPublishExchange",
+      "schemaVersion": 2,
+      "title": "Publier dans un exchange",
+      "subtitle": "Publication",
+      "icon": "fa-solid fa-share",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "RabbitMQ",
+      "providerKey": "rabbitmq",
+      "tags": [
+        "rabbitmq",
+        "publish"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:rabbitmq_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Publie un message vers un exchange + routing key.",
+      "args": {
+        "title": "Publier dans un exchange",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "exchange",
+            "label": "Exchange",
+            "description": "Exchange cible (optionnel si défaut credentials).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "routingKey",
+            "label": "Routing key",
+            "description": "Routing key.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "payload",
+            "label": "Payload",
+            "description": "Contenu du message.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "checkbox",
+            "key": "persistent",
+            "label": "Persistant",
+            "description": "Marquer le message persistant.",
+            "col": {
+              "xs": 24
+            },
+            "default": true
+          },
+          {
+            "type": "text",
+            "key": "contentType",
+            "label": "Content-Type",
+            "description": "Ex: application/json",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Publication"
+    },
+    {
+      "key": "rabbitmq_publish_json",
+      "name": "rabbitmqPublishJson",
+      "schemaVersion": 2,
+      "title": "Publier un JSON",
+      "subtitle": "Publication",
+      "icon": "fa-solid fa-code",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "RabbitMQ",
+      "providerKey": "rabbitmq",
+      "tags": [
+        "rabbitmq",
+        "publish",
+        "json"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:rabbitmq_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Publie un payload JSON dans queue ou exchange.",
+      "args": {
+        "title": "Publier un JSON",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "queue",
+            "label": "Queue",
+            "description": "Queue cible (si publication directe).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "exchange",
+            "label": "Exchange",
+            "description": "Exchange cible (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "routingKey",
+            "label": "Routing key",
+            "description": "Routing key pour exchange.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "payload",
+            "label": "Payload JSON",
+            "description": "Objet JSON à publier.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "checkbox",
+            "key": "persistent",
+            "label": "Persistant",
+            "description": "Marquer le message persistant.",
+            "col": {
+              "xs": 24
+            },
+            "default": true
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Publication"
+    },
+    {
+      "key": "rabbitmq_message_get",
+      "name": "rabbitmqMessageGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un message (pull)",
+      "subtitle": "Consommation",
+      "icon": "fa-solid fa-inbox",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "RabbitMQ",
+      "providerKey": "rabbitmq",
+      "tags": [
+        "rabbitmq",
+        "consume"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:rabbitmq_record"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lit un message sans consumer continu.",
+      "args": {
+        "title": "Récupérer un message (pull)",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "queue",
+            "label": "Queue",
+            "description": "Queue cible (optionnel si défaut credentials).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "noAck",
+            "label": "Auto-ack",
+            "description": "Si vrai: message acquitté immédiatement.",
+            "col": {
+              "xs": 24
+            },
+            "default": false
+          },
+          {
+            "type": "checkbox",
+            "key": "requeueOnNack",
+            "label": "Requeue si non ack",
+            "description": "Si pas ack, remet en queue.",
+            "col": {
+              "xs": 24
+            },
+            "default": true
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Consommation"
+    },
+    {
+      "key": "rabbitmq_messages_get_batch",
+      "name": "rabbitmqMessagesGetBatch",
+      "schemaVersion": 2,
+      "title": "Récupérer plusieurs messages",
+      "subtitle": "Consommation",
+      "icon": "fa-solid fa-box-open",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "RabbitMQ",
+      "providerKey": "rabbitmq",
+      "tags": [
+        "rabbitmq",
+        "consume",
+        "batch"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:rabbitmq_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lit un lot de messages via pull.",
+      "args": {
+        "title": "Récupérer plusieurs messages",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "queue",
+            "label": "Queue",
+            "description": "Queue cible (optionnel si défaut credentials).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre de messages à lire.",
+            "col": {
+              "xs": 24
+            },
+            "default": 10
+          },
+          {
+            "type": "checkbox",
+            "key": "noAck",
+            "label": "Auto-ack",
+            "description": "Auto-ack des messages.",
+            "col": {
+              "xs": 24
+            },
+            "default": false
+          },
+          {
+            "type": "checkbox",
+            "key": "requeueOnNack",
+            "label": "Requeue si non ack",
+            "description": "Si pas ack, remet en queue.",
+            "col": {
+              "xs": 24
+            },
+            "default": true
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Consommation"
+    },
+    {
+      "key": "rabbitmq_queue_check",
+      "name": "rabbitmqQueueCheck",
+      "schemaVersion": 2,
+      "title": "Inspecter une queue",
+      "subtitle": "Observabilité",
+      "icon": "fa-solid fa-chart-column",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "RabbitMQ",
+      "providerKey": "rabbitmq",
+      "tags": [
+        "rabbitmq",
+        "inspect"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:rabbitmq_record"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Retourne compteurs de messages d’une queue.",
+      "args": {
+        "title": "Inspecter une queue",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "queue",
+            "label": "Queue",
+            "description": "Queue cible (optionnel si défaut credentials).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Observabilité"
+    },
+    {
+      "key": "rabbitmq_queue_purge",
+      "name": "rabbitmqQueuePurge",
+      "schemaVersion": 2,
+      "title": "Purger une queue",
+      "subtitle": "Maintenance",
+      "icon": "fa-solid fa-broom",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "RabbitMQ",
+      "providerKey": "rabbitmq",
+      "tags": [
+        "rabbitmq",
+        "purge"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:rabbitmq_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Supprime les messages en attente dans une queue.",
+      "args": {
+        "title": "Purger une queue",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "queue",
+            "label": "Queue",
+            "description": "Queue cible (optionnel si défaut credentials).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Maintenance"
+    }
+  ]
+}

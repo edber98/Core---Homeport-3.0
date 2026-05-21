@@ -663,8 +663,8 @@
       "name": "FullStory",
       "title": "FullStory",
       "iconClass": "fa-solid fa-clapperboard",
-      "iconUrl": "https://cdn.simpleicons.org/fullstory",
-      "color": "#ffe8ef",
+      "iconUrl": "https://www.vectorlogo.zone/logos/fullstory/fullstory-icon.svg",
+      "color": "#ffeef3",
       "tags": [
         "fullstory",
         "session-replay",

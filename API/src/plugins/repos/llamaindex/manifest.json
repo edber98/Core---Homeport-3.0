@@ -1,11 +1,11 @@
 {
   "repo": {
-    "name": "heap",
+    "name": "llamaindex",
     "type": "local",
-    "label": "Heap"
+    "label": "LlamaIndex"
   },
   "variables": {
-    "heap_action_result": {
+    "llamaindex_action_result": {
       "title": "Résultat action",
       "ui": {
         "layout": "vertical",
@@ -50,8 +50,8 @@
         }
       ]
     },
-    "heap_event": {
-      "title": "événement Heap",
+    "llamaindex_pipeline": {
+      "title": "pipeline LlamaIndex",
       "ui": {
         "layout": "vertical",
         "labelsOnTop": true
@@ -122,8 +122,8 @@
         }
       ]
     },
-    "heap_events": {
-      "title": "événements Heap",
+    "llamaindex_pipelines": {
+      "title": "pipelines LlamaIndex",
       "ui": {
         "layout": "vertical",
         "labelsOnTop": true
@@ -228,8 +228,8 @@
         }
       ]
     },
-    "heap_user": {
-      "title": "utilisateur Heap",
+    "llamaindex_chat": {
+      "title": "chat LlamaIndex",
       "ui": {
         "layout": "vertical",
         "labelsOnTop": true
@@ -300,364 +300,8 @@
         }
       ]
     },
-    "heap_users": {
-      "title": "utilisateurs Heap",
-      "ui": {
-        "layout": "vertical",
-        "labelsOnTop": true
-      },
-      "fields": [
-        {
-          "type": "section",
-          "title": "Éléments",
-          "description": "Liste des éléments",
-          "mode": "array",
-          "key": "items",
-          "array": {
-            "initialItems": 0,
-            "minItems": 0
-          },
-          "fields": [
-            {
-              "type": "text",
-              "key": "id",
-              "label": "ID",
-              "description": "Identifiant.",
-              "col": {
-                "xs": 24
-              }
-            },
-            {
-              "type": "text",
-              "key": "name",
-              "label": "Nom",
-              "description": "Nom.",
-              "col": {
-                "xs": 24
-              }
-            },
-            {
-              "type": "text",
-              "key": "url",
-              "label": "URL",
-              "description": "URL.",
-              "col": {
-                "xs": 24
-              }
-            },
-            {
-              "type": "text",
-              "key": "status",
-              "label": "Statut",
-              "description": "Statut.",
-              "col": {
-                "xs": 24
-              }
-            },
-            {
-              "type": "date",
-              "key": "created_at",
-              "label": "Date création",
-              "description": "Date de création.",
-              "col": {
-                "xs": 24
-              }
-            },
-            {
-              "type": "date",
-              "key": "updated_at",
-              "label": "Date modification",
-              "description": "Date de modification.",
-              "col": {
-                "xs": 24
-              }
-            },
-            {
-              "type": "json",
-              "key": "raw",
-              "label": "Données brutes",
-              "description": "Réponse API brute.",
-              "col": {
-                "xs": 24
-              }
-            }
-          ],
-          "col": {
-            "xs": 24
-          }
-        },
-        {
-          "type": "number",
-          "key": "totalCount",
-          "label": "Nombre total",
-          "description": "Nombre total d’éléments.",
-          "col": {
-            "xs": 24
-          }
-        },
-        {
-          "type": "text",
-          "key": "nextCursor",
-          "label": "Cursor suivant",
-          "description": "Cursor de page suivant.",
-          "col": {
-            "xs": 24
-          }
-        }
-      ]
-    },
-    "heap_account": {
-      "title": "compte Heap",
-      "ui": {
-        "layout": "vertical",
-        "labelsOnTop": true
-      },
-      "fields": [
-        {
-          "type": "text",
-          "key": "id",
-          "label": "ID",
-          "description": "Identifiant.",
-          "col": {
-            "xs": 24
-          }
-        },
-        {
-          "type": "text",
-          "key": "name",
-          "label": "Nom",
-          "description": "Nom.",
-          "col": {
-            "xs": 24
-          }
-        },
-        {
-          "type": "text",
-          "key": "url",
-          "label": "URL",
-          "description": "URL.",
-          "col": {
-            "xs": 24
-          }
-        },
-        {
-          "type": "text",
-          "key": "status",
-          "label": "Statut",
-          "description": "Statut.",
-          "col": {
-            "xs": 24
-          }
-        },
-        {
-          "type": "date",
-          "key": "created_at",
-          "label": "Date création",
-          "description": "Date de création.",
-          "col": {
-            "xs": 24
-          }
-        },
-        {
-          "type": "date",
-          "key": "updated_at",
-          "label": "Date modification",
-          "description": "Date de modification.",
-          "col": {
-            "xs": 24
-          }
-        },
-        {
-          "type": "json",
-          "key": "raw",
-          "label": "Données brutes",
-          "description": "Réponse API brute.",
-          "col": {
-            "xs": 24
-          }
-        }
-      ]
-    },
-    "heap_accounts": {
-      "title": "comptes Heap",
-      "ui": {
-        "layout": "vertical",
-        "labelsOnTop": true
-      },
-      "fields": [
-        {
-          "type": "section",
-          "title": "Éléments",
-          "description": "Liste des éléments",
-          "mode": "array",
-          "key": "items",
-          "array": {
-            "initialItems": 0,
-            "minItems": 0
-          },
-          "fields": [
-            {
-              "type": "text",
-              "key": "id",
-              "label": "ID",
-              "description": "Identifiant.",
-              "col": {
-                "xs": 24
-              }
-            },
-            {
-              "type": "text",
-              "key": "name",
-              "label": "Nom",
-              "description": "Nom.",
-              "col": {
-                "xs": 24
-              }
-            },
-            {
-              "type": "text",
-              "key": "url",
-              "label": "URL",
-              "description": "URL.",
-              "col": {
-                "xs": 24
-              }
-            },
-            {
-              "type": "text",
-              "key": "status",
-              "label": "Statut",
-              "description": "Statut.",
-              "col": {
-                "xs": 24
-              }
-            },
-            {
-              "type": "date",
-              "key": "created_at",
-              "label": "Date création",
-              "description": "Date de création.",
-              "col": {
-                "xs": 24
-              }
-            },
-            {
-              "type": "date",
-              "key": "updated_at",
-              "label": "Date modification",
-              "description": "Date de modification.",
-              "col": {
-                "xs": 24
-              }
-            },
-            {
-              "type": "json",
-              "key": "raw",
-              "label": "Données brutes",
-              "description": "Réponse API brute.",
-              "col": {
-                "xs": 24
-              }
-            }
-          ],
-          "col": {
-            "xs": 24
-          }
-        },
-        {
-          "type": "number",
-          "key": "totalCount",
-          "label": "Nombre total",
-          "description": "Nombre total d’éléments.",
-          "col": {
-            "xs": 24
-          }
-        },
-        {
-          "type": "text",
-          "key": "nextCursor",
-          "label": "Cursor suivant",
-          "description": "Cursor de page suivant.",
-          "col": {
-            "xs": 24
-          }
-        }
-      ]
-    },
-    "heap_identity": {
-      "title": "identité Heap",
-      "ui": {
-        "layout": "vertical",
-        "labelsOnTop": true
-      },
-      "fields": [
-        {
-          "type": "text",
-          "key": "id",
-          "label": "ID",
-          "description": "Identifiant.",
-          "col": {
-            "xs": 24
-          }
-        },
-        {
-          "type": "text",
-          "key": "name",
-          "label": "Nom",
-          "description": "Nom.",
-          "col": {
-            "xs": 24
-          }
-        },
-        {
-          "type": "text",
-          "key": "url",
-          "label": "URL",
-          "description": "URL.",
-          "col": {
-            "xs": 24
-          }
-        },
-        {
-          "type": "text",
-          "key": "status",
-          "label": "Statut",
-          "description": "Statut.",
-          "col": {
-            "xs": 24
-          }
-        },
-        {
-          "type": "date",
-          "key": "created_at",
-          "label": "Date création",
-          "description": "Date de création.",
-          "col": {
-            "xs": 24
-          }
-        },
-        {
-          "type": "date",
-          "key": "updated_at",
-          "label": "Date modification",
-          "description": "Date de modification.",
-          "col": {
-            "xs": 24
-          }
-        },
-        {
-          "type": "json",
-          "key": "raw",
-          "label": "Données brutes",
-          "description": "Réponse API brute.",
-          "col": {
-            "xs": 24
-          }
-        }
-      ]
-    },
-    "heap_identities": {
-      "title": "identités Heap",
+    "llamaindex_chats": {
+      "title": "chats LlamaIndex",
       "ui": {
         "layout": "vertical",
         "labelsOnTop": true
@@ -765,25 +409,23 @@
   },
   "providers": [
     {
-      "key": "heap",
-      "name": "Heap",
-      "title": "Heap",
-      "iconClass": "fa-solid fa-chart-line",
-      "iconUrl": "https://www.vectorlogo.zone/logos/heapanalytics/heapanalytics-icon.svg",
-      "color": "#f2f2f2",
+      "key": "llamaindex",
+      "name": "LlamaIndex",
+      "title": "LlamaIndex",
+      "iconClass": "fa-solid fa-diagram-project",
+      "iconUrl": "https://www.llamaindex.ai/favicon.ico",
+      "color": "#eff5ff",
       "tags": [
-        "heap",
-        "analytics",
-        "tracking"
+        "llamaindex",
+        "llamacloud",
+        "rag"
       ],
       "categories": [
-        "Analyse"
+        "IA"
       ],
       "hasCredentials": true,
       "credentialsForm": {
-        "title": "Identifiants Heap",
-        "displayTitle": false,
-        "displayDescription": false,
+        "title": "Identifiants LlamaIndex",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -791,12 +433,13 @@
         "fields": [
           {
             "type": "text",
-            "key": "appId",
-            "label": "App ID",
-            "description": "Identifiant de l’environnement Heap.",
+            "key": "apiKey",
+            "label": "Clé API",
+            "description": "Clé API LlamaCloud.",
             "col": {
               "xs": 24
             },
+            "secret": true,
             "validators": [
               {
                 "type": "required"
@@ -805,44 +448,36 @@
           },
           {
             "type": "text",
-            "key": "apiKey",
-            "label": "Clé API",
-            "description": "Clé API Heap (optionnelle selon endpoint).",
-            "col": {
-              "xs": 24
-            },
-            "secret": true
-          },
-          {
-            "type": "text",
             "key": "baseUrl",
             "label": "URL de base API",
-            "description": "URL de base Heap.",
+            "description": "URL de base LlamaIndex API.",
             "col": {
               "xs": 24
             },
-            "default": "https://heapanalytics.com"
+            "default": "https://api.cloud.llamaindex.ai"
           }
-        ]
+        ],
+        "displayTitle": false,
+        "displayDescription": false
       }
     }
   ],
   "nodeTemplates": [
     {
-      "key": "heap_event_track",
-      "name": "heapEventTrack",
+      "key": "llamaindex_pipeline_list",
+      "name": "llamaindexPipelineList",
       "schemaVersion": 2,
-      "title": "Envoyer un événement",
-      "subtitle": "événements",
-      "icon": "fa-solid fa-bolt",
+      "title": "Lister les pipelines",
+      "subtitle": "pipelines",
+      "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
-      "category": "Heap",
-      "providerKey": "heap",
+      "category": "LlamaIndex",
+      "providerKey": "llamaindex",
       "tags": [
-        "heap",
-        "event",
-        "track"
+        "llamaindex",
+        "pipeline",
+        "list"
       ],
       "inputHandles": [
         {
@@ -860,13 +495,62 @@
           "id": "ok",
           "name": "Success",
           "type": "payload",
-          "schema": "$var:heap_action_result"
+          "schema": "$var:llamaindex_pipelines"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action track sur événement.",
+      "description": "Action list sur pipeline.",
       "args": {
-        "title": "Envoyer un événement",
+        "title": "Lister les pipelines",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "pipelines"
+    },
+    {
+      "key": "llamaindex_pipeline_get",
+      "name": "llamaindexPipelineGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un pipeline",
+      "subtitle": "pipelines",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "LlamaIndex",
+      "providerKey": "llamaindex",
+      "tags": [
+        "llamaindex",
+        "pipeline",
+        "get"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:llamaindex_pipeline"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action get sur pipeline.",
+      "args": {
+        "title": "Récupérer un pipeline",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -874,8 +558,8 @@
         "fields": [
           {
             "type": "text",
-            "key": "event",
-            "label": "Nom d’événement",
+            "key": "pipeline_id",
+            "label": "Pipeline ID",
             "description": "",
             "col": {
               "xs": 24
@@ -888,22 +572,576 @@
           },
           {
             "type": "text",
-            "key": "identity",
-            "label": "Identité",
+            "key": "id",
+            "label": "ID",
+            "description": "Identifiant.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "pipelines"
+    },
+    {
+      "key": "llamaindex_pipeline_retrieve",
+      "name": "llamaindexPipelineRetrieve",
+      "schemaVersion": 2,
+      "title": "Récupérer des chunks",
+      "subtitle": "pipelines",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "LlamaIndex",
+      "providerKey": "llamaindex",
+      "tags": [
+        "llamaindex",
+        "pipeline",
+        "retrieve"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:llamaindex_pipelines"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action retrieve sur pipeline.",
+      "args": {
+        "title": "Récupérer des chunks",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "pipeline_id",
+            "label": "Pipeline ID",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "query",
+            "label": "Query",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "top_k",
+            "label": "Top K",
             "description": "",
             "col": {
               "xs": 24
             }
           },
           {
-            "type": "text",
-            "key": "user_id",
-            "label": "User ID",
+            "type": "json",
+            "key": "filters",
+            "label": "Filtres",
             "description": "",
             "col": {
               "xs": 24
             }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "pipelines"
+    },
+    {
+      "key": "llamaindex_pipeline_documents_list",
+      "name": "llamaindexPipelineDocumentsList",
+      "schemaVersion": 2,
+      "title": "Lister les documents",
+      "subtitle": "pipelines",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "LlamaIndex",
+      "providerKey": "llamaindex",
+      "tags": [
+        "llamaindex",
+        "pipeline",
+        "documents_list"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:llamaindex_pipelines"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action documents_list sur pipeline.",
+      "args": {
+        "title": "Lister les documents",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "pipeline_id",
+            "label": "Pipeline ID",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "pipelines"
+    },
+    {
+      "key": "llamaindex_pipeline_document_get",
+      "name": "llamaindexPipelineDocumentGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un document",
+      "subtitle": "pipelines",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "LlamaIndex",
+      "providerKey": "llamaindex",
+      "tags": [
+        "llamaindex",
+        "pipeline",
+        "document_get"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:llamaindex_pipeline"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action document_get sur pipeline.",
+      "args": {
+        "title": "Récupérer un document",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "pipeline_id",
+            "label": "Pipeline ID",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
           },
+          {
+            "type": "text",
+            "key": "document_id",
+            "label": "Document ID",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "pipelines"
+    },
+    {
+      "key": "llamaindex_pipeline_document_chunks",
+      "name": "llamaindexPipelineDocumentChunks",
+      "schemaVersion": 2,
+      "title": "Lister les chunks d'un document",
+      "subtitle": "pipelines",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "LlamaIndex",
+      "providerKey": "llamaindex",
+      "tags": [
+        "llamaindex",
+        "pipeline",
+        "document_chunks"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:llamaindex_pipelines"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action document_chunks sur pipeline.",
+      "args": {
+        "title": "Lister les chunks d'un document",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "pipeline_id",
+            "label": "Pipeline ID",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "document_id",
+            "label": "Document ID",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "pipelines"
+    },
+    {
+      "key": "llamaindex_pipeline_sync",
+      "name": "llamaindexPipelineSync",
+      "schemaVersion": 2,
+      "title": "Lancer une synchronisation",
+      "subtitle": "pipelines",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "LlamaIndex",
+      "providerKey": "llamaindex",
+      "tags": [
+        "llamaindex",
+        "pipeline",
+        "sync"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:llamaindex_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action sync sur pipeline.",
+      "args": {
+        "title": "Lancer une synchronisation",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "pipeline_id",
+            "label": "Pipeline ID",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "pipelines"
+    },
+    {
+      "key": "llamaindex_pipeline_sync_cancel",
+      "name": "llamaindexPipelineSyncCancel",
+      "schemaVersion": 2,
+      "title": "Annuler la synchronisation",
+      "subtitle": "pipelines",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "LlamaIndex",
+      "providerKey": "llamaindex",
+      "tags": [
+        "llamaindex",
+        "pipeline",
+        "sync_cancel"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:llamaindex_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action sync_cancel sur pipeline.",
+      "args": {
+        "title": "Annuler la synchronisation",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "pipeline_id",
+            "label": "Pipeline ID",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "pipelines"
+    },
+    {
+      "key": "llamaindex_chat_create",
+      "name": "llamaindexChatCreate",
+      "schemaVersion": 2,
+      "title": "Créer une session de chat",
+      "subtitle": "chats",
+      "icon": "fa-solid fa-plus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "LlamaIndex",
+      "providerKey": "llamaindex",
+      "tags": [
+        "llamaindex",
+        "chat",
+        "create"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:llamaindex_chat"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action create sur chat.",
+      "args": {
+        "title": "Créer une session de chat",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "json",
+            "key": "body",
+            "label": "Payload",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "chats"
+    },
+    {
+      "key": "llamaindex_chat_get",
+      "name": "llamaindexChatGet",
+      "schemaVersion": 2,
+      "title": "Récupérer une session de chat",
+      "subtitle": "chats",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "LlamaIndex",
+      "providerKey": "llamaindex",
+      "tags": [
+        "llamaindex",
+        "chat",
+        "get"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:llamaindex_chat"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action get sur chat.",
+      "args": {
+        "title": "Récupérer une session de chat",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
           {
             "type": "text",
             "key": "session_id",
@@ -911,56 +1149,48 @@
             "description": "",
             "col": {
               "xs": 24
-            }
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
           },
           {
             "type": "text",
-            "key": "timestamp",
-            "label": "Timestamp ISO8601",
-            "description": "",
+            "key": "id",
+            "label": "ID",
+            "description": "Identifiant.",
             "col": {
               "xs": 24
-            }
-          },
-          {
-            "type": "text",
-            "key": "idempotency_key",
-            "label": "Clé d’idempotence",
-            "description": "",
-            "col": {
-              "xs": 24
-            }
-          },
-          {
-            "type": "json",
-            "key": "properties",
-            "label": "Propriétés événement",
-            "description": "",
-            "col": {
-              "xs": 24
-            }
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
           }
         ],
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "événements"
+      "group": "chats"
     },
     {
-      "key": "heap_event_bulk_track",
-      "name": "heapEventBulkTrack",
+      "key": "llamaindex_chat_delete",
+      "name": "llamaindexChatDelete",
       "schemaVersion": 2,
-      "title": "Envoyer des événements en lot",
-      "subtitle": "événements",
-      "icon": "fa-solid fa-bolt",
+      "title": "Supprimer une session de chat",
+      "subtitle": "chats",
+      "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
-      "category": "Heap",
-      "providerKey": "heap",
+      "category": "LlamaIndex",
+      "providerKey": "llamaindex",
       "tags": [
-        "heap",
-        "event",
-        "bulk_track"
+        "llamaindex",
+        "chat",
+        "delete"
       ],
       "inputHandles": [
         {
@@ -978,22 +1208,22 @@
           "id": "ok",
           "name": "Success",
           "type": "payload",
-          "schema": "$var:heap_action_result"
+          "schema": "$var:llamaindex_action_result"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action bulk_track sur événement.",
+      "description": "Action delete sur chat.",
       "args": {
-        "title": "Envoyer des événements en lot",
+        "title": "Supprimer une session de chat",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
         },
         "fields": [
           {
-            "type": "json",
-            "key": "events",
-            "label": "Événements",
+            "type": "text",
+            "key": "session_id",
+            "label": "Session ID",
             "description": "",
             "col": {
               "xs": 24
@@ -1008,383 +1238,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "événements"
-    },
-    {
-      "key": "heap_user_add_properties",
-      "name": "heapUserAddProperties",
-      "schemaVersion": 2,
-      "title": "Ajouter des propriétés utilisateur",
-      "subtitle": "utilisateurs",
-      "icon": "fa-solid fa-bolt",
-      "type": "function",
-      "nodeKind": "function",
-      "category": "Heap",
-      "providerKey": "heap",
-      "tags": [
-        "heap",
-        "user",
-        "add_properties"
-      ],
-      "inputHandles": [
-        {
-          "id": "in",
-          "name": "In",
-          "type": "any",
-          "accepts": [
-            "any",
-            "payload"
-          ]
-        }
-      ],
-      "outputHandles": [
-        {
-          "id": "ok",
-          "name": "Success",
-          "type": "payload",
-          "schema": "$var:heap_action_result"
-        }
-      ],
-      "authorize_catch_error": true,
-      "description": "Action add_properties sur utilisateur.",
-      "args": {
-        "title": "Ajouter des propriétés utilisateur",
-        "ui": {
-          "layout": "vertical",
-          "labelsOnTop": true
-        },
-        "fields": [
-          {
-            "type": "text",
-            "key": "identity",
-            "label": "Identité",
-            "description": "",
-            "col": {
-              "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
-          },
-          {
-            "type": "text",
-            "key": "timestamp",
-            "label": "Timestamp ISO8601",
-            "description": "",
-            "col": {
-              "xs": 24
-            }
-          },
-          {
-            "type": "json",
-            "key": "properties",
-            "label": "Propriétés utilisateur",
-            "description": "",
-            "col": {
-              "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
-          }
-        ],
-        "displayTitle": false,
-        "displayDescription": false
-      },
-      "group": "utilisateurs"
-    },
-    {
-      "key": "heap_account_add_properties",
-      "name": "heapAccountAddProperties",
-      "schemaVersion": 2,
-      "title": "Ajouter des propriétés compte",
-      "subtitle": "comptes",
-      "icon": "fa-solid fa-bolt",
-      "type": "function",
-      "nodeKind": "function",
-      "category": "Heap",
-      "providerKey": "heap",
-      "tags": [
-        "heap",
-        "account",
-        "add_properties"
-      ],
-      "inputHandles": [
-        {
-          "id": "in",
-          "name": "In",
-          "type": "any",
-          "accepts": [
-            "any",
-            "payload"
-          ]
-        }
-      ],
-      "outputHandles": [
-        {
-          "id": "ok",
-          "name": "Success",
-          "type": "payload",
-          "schema": "$var:heap_action_result"
-        }
-      ],
-      "authorize_catch_error": true,
-      "description": "Action add_properties sur compte.",
-      "args": {
-        "title": "Ajouter des propriétés compte",
-        "ui": {
-          "layout": "vertical",
-          "labelsOnTop": true
-        },
-        "fields": [
-          {
-            "type": "text",
-            "key": "identity",
-            "label": "Identité compte",
-            "description": "",
-            "col": {
-              "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
-          },
-          {
-            "type": "text",
-            "key": "timestamp",
-            "label": "Timestamp ISO8601",
-            "description": "",
-            "col": {
-              "xs": 24
-            }
-          },
-          {
-            "type": "json",
-            "key": "properties",
-            "label": "Propriétés compte",
-            "description": "",
-            "col": {
-              "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
-          }
-        ],
-        "displayTitle": false,
-        "displayDescription": false
-      },
-      "group": "comptes"
-    },
-    {
-      "key": "heap_identity_identify",
-      "name": "heapIdentityIdentify",
-      "schemaVersion": 2,
-      "title": "Associer user_id et identité",
-      "subtitle": "identités",
-      "icon": "fa-solid fa-bolt",
-      "type": "function",
-      "nodeKind": "function",
-      "category": "Heap",
-      "providerKey": "heap",
-      "tags": [
-        "heap",
-        "identity",
-        "identify"
-      ],
-      "inputHandles": [
-        {
-          "id": "in",
-          "name": "In",
-          "type": "any",
-          "accepts": [
-            "any",
-            "payload"
-          ]
-        }
-      ],
-      "outputHandles": [
-        {
-          "id": "ok",
-          "name": "Success",
-          "type": "payload",
-          "schema": "$var:heap_action_result"
-        }
-      ],
-      "authorize_catch_error": true,
-      "description": "Action identify sur identité.",
-      "args": {
-        "title": "Associer user_id et identité",
-        "ui": {
-          "layout": "vertical",
-          "labelsOnTop": true
-        },
-        "fields": [
-          {
-            "type": "text",
-            "key": "user_id",
-            "label": "User ID",
-            "description": "",
-            "col": {
-              "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
-          },
-          {
-            "type": "text",
-            "key": "identity",
-            "label": "Identité",
-            "description": "",
-            "col": {
-              "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
-          },
-          {
-            "type": "text",
-            "key": "timestamp",
-            "label": "Timestamp ISO8601",
-            "description": "",
-            "col": {
-              "xs": 24
-            }
-          }
-        ],
-        "displayTitle": false,
-        "displayDescription": false
-      },
-      "group": "identités"
-    },
-    {
-      "key": "heap_api_request",
-      "name": "heapApiRequest",
-      "schemaVersion": 2,
-      "title": "Appeler un endpoint API",
-      "subtitle": "API",
-      "icon": "fa-solid fa-code",
-      "type": "function",
-      "nodeKind": "function",
-      "category": "Heap",
-      "providerKey": "heap",
-      "tags": [
-        "heap",
-        "api",
-        "request"
-      ],
-      "inputHandles": [
-        {
-          "id": "in",
-          "name": "In",
-          "type": "any",
-          "accepts": [
-            "any",
-            "payload"
-          ]
-        }
-      ],
-      "outputHandles": [
-        {
-          "id": "ok",
-          "name": "Success",
-          "type": "payload",
-          "schema": "$var:heap_action_result"
-        }
-      ],
-      "authorize_catch_error": true,
-      "description": "Appeler un endpoint API.",
-      "args": {
-        "title": "Appeler un endpoint API",
-        "ui": {
-          "layout": "vertical",
-          "labelsOnTop": true
-        },
-        "fields": [
-          {
-            "type": "text",
-            "key": "method",
-            "label": "Méthode HTTP",
-            "description": "GET, POST, PUT, PATCH, DELETE.",
-            "col": {
-              "xs": 24
-            },
-            "default": "GET",
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
-          },
-          {
-            "type": "text",
-            "key": "path",
-            "label": "Chemin endpoint",
-            "description": "Ex: /v2/users",
-            "col": {
-              "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
-          },
-          {
-            "type": "json",
-            "key": "query",
-            "label": "Query params",
-            "description": "Objet JSON des query params.",
-            "col": {
-              "xs": 24
-            }
-          },
-          {
-            "type": "json",
-            "key": "headers",
-            "label": "En-têtes",
-            "description": "Objet JSON d’en-têtes HTTP.",
-            "col": {
-              "xs": 24
-            }
-          },
-          {
-            "type": "json",
-            "key": "body",
-            "label": "Body JSON",
-            "description": "Payload JSON.",
-            "col": {
-              "xs": 24
-            }
-          },
-          {
-            "type": "textarea",
-            "key": "body_text",
-            "label": "Body texte",
-            "description": "Corps brut (prioritaire sur body).",
-            "col": {
-              "xs": 24
-            }
-          }
-        ],
-        "displayTitle": false,
-        "displayDescription": false
-      },
-      "group": "Utilitaires API"
+      "group": "chats"
     }
   ]
 }

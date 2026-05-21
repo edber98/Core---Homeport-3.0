@@ -1,0 +1,997 @@
+{
+  "repo": {
+    "name": "neon",
+    "type": "local",
+    "label": "Neon"
+  },
+  "variables": {
+    "neon_rows": {
+      "title": "Lignes Neon",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "number",
+          "key": "rowCount",
+          "label": "Nombre de lignes",
+          "col": {
+            "xs": 12
+          }
+        },
+        {
+          "type": "json",
+          "key": "fields",
+          "label": "Colonnes",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "rows",
+          "label": "Lignes",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Réponse brute",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "neon_tables": {
+      "title": "Tables Neon",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "col": {
+            "xs": 12
+          }
+        },
+        {
+          "type": "json",
+          "key": "tables",
+          "label": "Tables",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Réponse brute",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "neon_columns": {
+      "title": "Colonnes Neon",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "col": {
+            "xs": 12
+          }
+        },
+        {
+          "type": "json",
+          "key": "columns",
+          "label": "Colonnes",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Réponse brute",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "neon_write_result": {
+      "title": "Résultat Neon",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "textarea",
+          "key": "message",
+          "label": "Message",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "affectedRows",
+          "label": "Lignes affectées",
+          "col": {
+            "xs": 12
+          }
+        },
+        {
+          "type": "json",
+          "key": "rows",
+          "label": "Lignes retournées",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Réponse brute",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "neon",
+      "name": "Neon",
+      "title": "Neon",
+      "iconClass": "fa-solid fa-database",
+      "iconUrl": "https://cdn.simpleicons.org/neon",
+      "color": "#dbeafe",
+      "tags": [
+        "neon",
+        "sql",
+        "base de données"
+      ],
+      "categories": [
+        "Base de données"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Neon PostgreSQL",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "host",
+            "label": "Hôte",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "port",
+            "label": "Port",
+            "default": 5432,
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "text",
+            "key": "database",
+            "label": "Base",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "username",
+            "label": "Utilisateur",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "password",
+            "label": "Mot de passe",
+            "secret": true,
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "ssl",
+            "label": "Utiliser SSL",
+            "default": false,
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "neon_query_execute",
+      "name": "neonQueryExecute",
+      "schemaVersion": 2,
+      "title": "Exécuter une requête",
+      "subtitle": "SQL",
+      "icon": "fa-solid fa-terminal",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Neon",
+      "providerKey": "neon",
+      "tags": [
+        "neon"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:neon_rows"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Exécuter une requête",
+      "args": {
+        "title": "Exécuter une requête",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "query",
+            "label": "Requête",
+            "default": "SELECT 1",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "params",
+            "label": "Paramètres",
+            "default": [],
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "SQL"
+    },
+    {
+      "key": "neon_transaction_execute",
+      "name": "neonTransactionExecute",
+      "schemaVersion": 2,
+      "title": "Exécuter une transaction",
+      "subtitle": "SQL",
+      "icon": "fa-solid fa-code",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Neon",
+      "providerKey": "neon",
+      "tags": [
+        "neon"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:neon_rows"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Exécuter une transaction",
+      "args": {
+        "title": "Exécuter une transaction",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "json",
+            "key": "queries",
+            "label": "Requêtes",
+            "default": [
+              {
+                "query": "SELECT 1",
+                "params": []
+              }
+            ],
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "SQL"
+    },
+    {
+      "key": "neon_tables_list",
+      "name": "neonTablesList",
+      "schemaVersion": 2,
+      "title": "Lister les tables",
+      "subtitle": "Tables",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Neon",
+      "providerKey": "neon",
+      "tags": [
+        "neon"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:neon_tables"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lister les tables",
+      "args": {
+        "title": "Lister les tables",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "schema",
+            "label": "Schéma",
+            "default": "public",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Tables"
+    },
+    {
+      "key": "neon_table_describe",
+      "name": "neonTableDescribe",
+      "schemaVersion": 2,
+      "title": "Décrire une table",
+      "subtitle": "Tables",
+      "icon": "fa-solid fa-table",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Neon",
+      "providerKey": "neon",
+      "tags": [
+        "neon"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:neon_columns"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Décrire une table",
+      "args": {
+        "title": "Décrire une table",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "table",
+            "label": "Table",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "schema",
+            "label": "Schéma",
+            "default": "public",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Tables"
+    },
+    {
+      "key": "neon_records_select",
+      "name": "neonRecordsSelect",
+      "schemaVersion": 2,
+      "title": "Sélectionner des lignes",
+      "subtitle": "Données",
+      "icon": "fa-solid fa-magnifying-glass",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Neon",
+      "providerKey": "neon",
+      "tags": [
+        "neon"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:neon_rows"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Sélectionner des lignes",
+      "args": {
+        "title": "Sélectionner des lignes",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "table",
+            "label": "Table",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "schema",
+            "label": "Schéma",
+            "default": "public",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "columns",
+            "label": "Colonnes",
+            "default": "*",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "where",
+            "label": "WHERE",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "orderBy",
+            "label": "ORDER BY",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "default": 100,
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "number",
+            "key": "offset",
+            "label": "Offset",
+            "col": {
+              "xs": 12
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Données"
+    },
+    {
+      "key": "neon_record_insert",
+      "name": "neonRecordInsert",
+      "schemaVersion": 2,
+      "title": "Insérer une ligne",
+      "subtitle": "Données",
+      "icon": "fa-solid fa-plus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Neon",
+      "providerKey": "neon",
+      "tags": [
+        "neon"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:neon_write_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Insérer une ligne",
+      "args": {
+        "title": "Insérer une ligne",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "table",
+            "label": "Table",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "schema",
+            "label": "Schéma",
+            "default": "public",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "data",
+            "label": "Données",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Données"
+    },
+    {
+      "key": "neon_records_update",
+      "name": "neonRecordsUpdate",
+      "schemaVersion": 2,
+      "title": "Mettre à jour des lignes",
+      "subtitle": "Données",
+      "icon": "fa-solid fa-pen",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Neon",
+      "providerKey": "neon",
+      "tags": [
+        "neon"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:neon_write_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Mettre à jour des lignes",
+      "args": {
+        "title": "Mettre à jour des lignes",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "table",
+            "label": "Table",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "schema",
+            "label": "Schéma",
+            "default": "public",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "data",
+            "label": "Données",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "where",
+            "label": "WHERE",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Données"
+    },
+    {
+      "key": "neon_records_delete",
+      "name": "neonRecordsDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer des lignes",
+      "subtitle": "Données",
+      "icon": "fa-solid fa-trash",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Neon",
+      "providerKey": "neon",
+      "tags": [
+        "neon"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:neon_write_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Supprimer des lignes",
+      "args": {
+        "title": "Supprimer des lignes",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "table",
+            "label": "Table",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "schema",
+            "label": "Schéma",
+            "default": "public",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "where",
+            "label": "WHERE",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Données"
+    },
+    {
+      "key": "neon_record_upsert",
+      "name": "neonRecordUpsert",
+      "schemaVersion": 2,
+      "title": "Upsert une ligne",
+      "subtitle": "Données",
+      "icon": "fa-solid fa-code-compare",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Neon",
+      "providerKey": "neon",
+      "tags": [
+        "neon",
+        "upsert"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:neon_write_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Insère ou met à jour une ligne via ON CONFLICT.",
+      "args": {
+        "title": "Upsert une ligne",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "schema",
+            "label": "Schéma",
+            "col": {
+              "xs": 24
+            },
+            "default": "public"
+          },
+          {
+            "type": "text",
+            "key": "table",
+            "label": "Table",
+            "col": {
+              "xs": 24
+            },
+            "default": "users",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "data",
+            "label": "Données",
+            "col": {
+              "xs": 24
+            },
+            "default": {
+              "id": 1,
+              "name": "Alice"
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "conflictColumns",
+            "label": "Colonnes de conflit",
+            "col": {
+              "xs": 24
+            },
+            "default": "id",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Données"
+    }
+  ]
+}
