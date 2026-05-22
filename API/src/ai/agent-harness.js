@@ -13,226 +13,28 @@ const { trackToolUsage } = require('./context/memory-manager');
 const { checkPermission } = require('./permissions');
 const { createPreviewSession } = require('./live-preview/preview-parser');
 const { detectPreviewType } = require('./live-preview/preview-router');
+const { createHarnessLogger } = require('./harness/logger');
+const { applySubagentRules } = require('./harness/subagent-rules');
+const { detectInfiniteLoop, buildLoopBreakMessage } = require('./harness/anti-loop');
+const { drainMailbox } = require('./harness/mailbox');
+const { detectHallucinationRisk, buildBlockedResult } = require('./harness/anti-hallucination');
+const { injectPreflightTodo, evaluateTodoNudge, buildNudgeMessage, autoCloseStaleTodos } = require('./harness/todo-control');
+const { handlePermissionGate } = require('./harness/permission-flow');
+const { detectSelfRedundancy, resetLlmChatCounter, buildBlockedResult: buildSelfRedundancyResult } = require('./harness/anti-self-redundancy');
+const { handleAskUser } = require('./harness/ask-user-flow');
+const { resolveToolLabel, summarizeArgs, summarizeToolArgs } = require('./harness/tool-label');
+const { nextWithTimeout, buildCapsuleInstructions, STREAM_TIMEOUT_MS } = require('./harness/stream-utils');
 const crypto = require('crypto');
 const { isDebug } = require('./util/debug');
 
+
 // Fallback for onboarding mode
 const { runAgent } = require('./agent-runner');
-
-function _summarizeArgs(args, maxChars = 300) {
-  try {
-    const s = JSON.stringify(args || {});
-    return s.length > maxChars ? s.slice(0, maxChars) + '…' : s;
-  } catch { return String(args || ''); }
-}
-
-// Mapping français des noms d'outils connus. Pour execute_tool, on résout
-// dynamiquement le NodeTemplate via input.key pour afficher le vrai label.
-const _STATIC_TOOL_LABELS = {
-  read_file: 'Lire un fichier',
-  write_file: 'Écrire un fichier',
-  delete_file: 'Supprimer un fichier',
-  list_directory: 'Lister un dossier',
-  execute_code: 'Exécuter du code',
-  prepare_code_environment: 'Préparer l\'environnement d\'exécution',
-  run_workflow: 'Lancer un workflow',
-  project_write_file: 'Écrire un fichier projet',
-  project_read_file: 'Lire un fichier projet',
-  project_read_batch: 'Lire plusieurs fichiers projet',
-  project_delete: 'Supprimer un fichier projet',
-  project_move: 'Déplacer un fichier projet',
-  project_create_folder: 'Créer un dossier projet',
-  project_stage_for_sandbox: 'Préparer un fichier pour la sandbox',
-  project_sync_remote: 'Synchroniser avec le distant',
-  install_package: 'Installer un package',
-  generate_document: 'Générer un document',
-  edit_document: 'Éditer un document',
-  search_tools: 'Rechercher un outil',
-  get_tool_details: 'Détails d\'un outil',
-  spawn_subagent: 'Lancer un sous-agent',
-  research_deep: 'Recherche approfondie',
-  web_search: 'Rechercher sur le web',
-  web_fetch: 'Lire une page web',
-  web_download: 'Télécharger un fichier web',
-  save_memory: 'Sauvegarder en mémoire',
-  save_project_memory: 'Sauvegarder la mémoire projet',
-  build_website: 'Construire un site web',
-};
-
-async function _resolveToolLabel(toolName, input) {
-  if (toolName === 'execute_tool' && input?.key) {
-    try {
-      const NodeTemplate = require('../db/models/node-template.model');
-      const tpl = await NodeTemplate.findOne({ key: input.key }, 'title name').lean();
-      const label = tpl?.title || tpl?.name;
-      if (label) return `${label}`;
-    } catch { /* non-fatal */ }
-    return String(input.key);
-  }
-  return _STATIC_TOOL_LABELS[toolName] || toolName;
-}
 
 // 100 tours par défaut (était 40). Pour les pipelines avec spawn_subagent +
 // dépendances + consolidation + ask_user + multiples retries, 40 saute vite
 // et coupe l'agent en plein milieu avec "Limite de boucles atteinte".
 const DEFAULT_MAX_LOOPS = parseInt(process.env.AI_DEFAULT_MAX_LOOPS || '100', 10);
-
-/**
- * Quand le harness se termine (done, abort, maxLoops, question), on vérifie
- * s'il reste des todos in_progress/pending. Si oui, on les marque comme
- * "cancelled" ou "completed" selon le contexte, pour que le frontend ne reste
- * pas en loading infini.
- *
- * COORDINATION avec job-runner._maybeResumeParent :
- * - Si des subagents sont encore actifs, on SKIP (resumeParent s'en occupera
- *   quand ils finiront, via sa propre logique d'auto-close).
- * - Si aucun subagent actif → ce harness est en fin de run simple, on ferme ici.
- * - Les deux logiques ne peuvent donc pas race grâce au guard activeSubagents > 0.
- */
-async function _autoCloseStaleTodos(threadId) {
-  if (!threadId) return;
-  try {
-    // NE PAS fermer si des subagents sont encore actifs sur ce thread.
-    const AiJob = require('../db/models/ai-job.model');
-    const activeSubagents = await AiJob.countDocuments({
-      threadId,
-      type: 'subagent',
-      subagentType: { $nin: ['memory_extractor', 'project_doc_writer'] },
-      status: { $in: ['queued', 'running', 'waiting_dependency', 'waiting_permission', 'paused'] },
-    });
-    if (activeSubagents > 0) {
-      console.log(`[harness] skip auto-close todos: ${activeSubagents} subagents encore actifs`);
-      return;
-    }
-
-    const AiMessage = require('../db/models/ai-message.model');
-    const todoMsg = await AiMessage.findOne({
-      threadId,
-      'metadata.kind': 'todo_list',
-      'metadata.widgetId': { $regex: '^session-todos' },
-    }).sort({ createdAt: -1 });
-    if (!todoMsg) return;
-    const todos = todoMsg.metadata?.todoList?.todos || [];
-    const hasOpen = todos.some(t => t.status === 'in_progress' || t.status === 'pending');
-    if (!hasOpen) return;
-    const recentWidgets = await AiMessage.countDocuments({
-      threadId,
-      createdAt: { $gt: todoMsg.createdAt },
-      'metadata.kind': { $in: ['structured', 'file_inline', 'canvas_html', 'diagram', 'image_inline'] },
-    });
-    const targetStatus = recentWidgets > 0 ? 'completed' : 'cancelled';
-    const updated = todos.map(t => ({
-      ...(t.toObject?.() || t),
-      status: (t.status === 'completed' || t.status === 'cancelled') ? t.status : targetStatus,
-    }));
-    todoMsg.metadata = {
-      ...(todoMsg.metadata?.toObject?.() || todoMsg.metadata),
-      todoList: {
-        ...(todoMsg.metadata?.todoList?.toObject?.() || todoMsg.metadata?.todoList),
-        todos: updated,
-        updatedAt: new Date(),
-      },
-      widgetUpdatedAt: new Date(),
-    };
-    await todoMsg.save();
-    const { emitThreadEvent } = require('./jobs/job-events');
-    emitThreadEvent(String(threadId), { type: 'ai.message.updated', messageId: String(todoMsg._id), kind: 'todo_list' });
-    console.log(`[harness] auto-close stale todos: ${todos.filter(t => t.status !== 'completed' && t.status !== 'cancelled').length} items → ${targetStatus}`);
-  } catch (e) {
-    console.warn('[harness] auto-close stale todos failed:', e?.message);
-  }
-}
-
-/** Résumé 1-ligne des args d'un tool pour affichage UI (hint context). */
-function _summarizeToolArgs(name, args) {
-  if (!args || typeof args !== 'object') return '';
-  if (args.query) return `"${String(args.query).slice(0, 80)}"`;
-  if (args.url) return String(args.url).replace(/^https?:\/\//, '').slice(0, 80);
-  if (args.path) return String(args.path).slice(0, 80);
-  if (args.fileId) return String(args.fileId);
-  if (args.key) return String(args.key);
-  if (args.prompt) return `"${String(args.prompt).slice(0, 80)}"`;
-  if (args.subagent_type) return String(args.subagent_type);
-  if (args.to) return String(args.to);
-  if (args.language) return `${args.language}${args.code ? ` (${String(args.code).length}c)` : ''}`;
-  return '';
-}
-// 240s per-event timeout. Opus 4.7 peut pauser > 120s durant l'extended thinking
-// sur génération de code long (docx/xlsx). Override via env AI_STREAM_TIMEOUT_MS.
-const STREAM_TIMEOUT_MS = parseInt(process.env.AI_STREAM_TIMEOUT_MS || '240000', 10);
-
-/**
- * Read next value from async iterator with timeout + abort signal.
- * Rejects immediately if signal is aborted or fires abort during wait.
- */
-function nextWithTimeout(iterator, timeoutMs, signal) {
-  return new Promise((resolve, reject) => {
-    if (signal?.aborted) return reject(new Error('Stream aborted'));
-
-    let settled = false;
-    const cleanup = () => {
-      clearTimeout(timer);
-      if (signal) signal.removeEventListener('abort', onAbort);
-    };
-    const onAbort = () => {
-      if (settled) return;
-      settled = true;
-      cleanup();
-      reject(new Error('Stream aborted'));
-    };
-    // CRITIQUE : le timer DOIT aussi cleanup() sinon le listener onAbort reste
-    // attaché au signal après timeout → fuite mémoire progressive.
-    const timer = setTimeout(() => {
-      if (settled) return;
-      settled = true;
-      cleanup();
-      reject(new Error(`LLM stream timeout: no event for ${timeoutMs / 1000}s`));
-    }, timeoutMs);
-
-    if (signal) signal.addEventListener('abort', onAbort, { once: true });
-
-    iterator.next().then(
-      r => { if (!settled) { settled = true; cleanup(); resolve(r); } },
-      e => { if (!settled) { settled = true; cleanup(); reject(e); } },
-    );
-  });
-}
-
-/**
- * Build capsule instructions for the system prompt (chat mode only).
- */
-function buildCapsuleInstructions(activeCapsules) {
-  const info = getCapsuleInfo();
-  const lines = Object.entries(info).map(([name, i]) => {
-    const active = activeCapsules.has(name) ? ' (ACTIVE)' : '';
-    return `- **${name}** : ${i.description} (${i.toolCount})${active}`;
-  });
-
-  return `
-
-## Capsules d'outils
-
-Tu disposes d'un set de base (~18 outils) toujours disponibles.
-Pour des tâches spécialisées, active une capsule avec \`activate_capsule\`.
-
-### Capsules disponibles
-${lines.join('\n')}
-
-### Quand activer
-- **workflow** : Créer ou modifier un workflow/automatisation
-- **form** : Créer ou modifier un formulaire
-- **node_args** : Configurer les arguments d'un nœud
-
-### Règles
-- **PAS de capsule** pour : questions simples, mémoire, exécutions directes (search_tools → execute_tool)
-- Active **DÈS** que nécessaire, ne demande pas la permission
-- Après activation, les outils de la capsule deviennent des **TOOL CALLS DIRECTS** dans ta liste d'outils
-- **APPELLE-LES DIRECTEMENT** : \`create_flow\`, \`add_node\`, \`connect_nodes\`, etc. — comme n'importe quel autre tool call
-- **INTERDIT** : \`search_tools("create_flow")\` ou \`get_tool_details("add_node")\` — ces outils builder ne sont PAS des NodeTemplates
-- \`search_tools\` / \`get_tool_details\` = cherche les **NodeTemplates** (actions plugin : Odoo, Slack, Email…)
-- Les outils builder = **commandes directes** déjà dans ta liste d'outils après activation
-- Après activation, utilise \`search_manual\` pour récupérer les règles détaillées du mode`;
-}
 
 /**
  * Main entry point — replaces runAgent() in ai.js.
@@ -254,6 +56,10 @@ async function* runHarness({ mode, messages, context, metadata, agentOverrides, 
     yield* runAgent({ mode, messages, context, metadata, agentOverrides });
     return;
   }
+
+  // Logger préfixé par jobId pour distinguer agent principal vs sous-agents dans les logs.
+  // [harness:1234abcd:main] vs [harness:5678efgh:research:d=1]
+  const log = createHarnessLogger(jobContext);
 
   // Side events queue (patches, snapshots, args from capsule executors)
   const sideEvents = [];
@@ -322,52 +128,9 @@ async function* runHarness({ mode, messages, context, metadata, agentOverrides, 
   if (agentOverrides?.systemPrompt) {
     systemPrompt += '\n\n## Instructions personnalisées\n' + agentOverrides.systemPrompt;
   }
-  // Règle spéciale pour les sous-agents : escalade toutes les questions / permissions
-  // à leur parent (jamais directement à l'utilisateur).
-  if (jobContext?.parentJobId) {
-    systemPrompt += `
-
-## 🤖 TU ES UN SOUS-AGENT — RÈGLES ABSOLUES (violation = bug)
-
-**Tu n'es PAS en conversation avec un humain.** Tu es un worker spécialisé qui reçoit une tâche,
-l'exécute, et rend un rapport structuré à ton agent parent. Ton output est une DONNÉE CONSOMMÉE
-par le parent, PAS un message de chat.
-
-### 🚫 PHRASES STRICTEMENT INTERDITES
-- "Y a-t-il autre chose ?"
-- "Je suis à votre disposition"
-- "Souhaitez-vous que je..."
-- "Voulez-vous que j'exécute une action supplémentaire ?"
-- "Je m'excuse pour la confusion"
-- "J'espère que ces informations vous seront utiles"
-- "N'hésitez pas à me demander"
-- Toute formule de politesse conversationnelle adressée à un utilisateur.
-
-### ✅ FORMAT DE SORTIE OBLIGATOIRE
-Ton DERNIER message doit être un rapport structuré, factuel, dense, et TERMINÉ :
-- Commence directement par le contenu (pas "Bonjour", pas "Je vais vous présenter")
-- Titres markdown (## ou ###) pour la structure
-- Puces pour les listes, tableaux pour les comparatifs
-- Sources citées avec URL si applicable
-- FIN du message = FIN. Pas d'invitation à continuer, pas de question finale.
-
-### 🎯 SI TU MANQUES D'INFO
-- N'invente PAS, n'hallucine PAS
-- Utilise \`ask_user\` (la question est escaladée au parent, pas à un humain)
-- OU déclare explicitement "information non trouvée dans les sources disponibles" dans ton rapport
-- JAMAIS de "Pouvez-vous préciser ?" en texte libre
-
-### 🔒 SÉCURITÉ CONVERSATIONNELLE
-- Tu ne vois PAS les messages de l'utilisateur humain dans ton historique.
-- Ce que tu vois dans le prompt initial = la tâche que ton parent t'a confiée. C'est une instruction, pas une conversation.
-- Le bloc "CONTEXTE (résultats des étapes précédentes)" que tu vois parfois = data upstream d'autres subagents, à CONSOMMER DIRECTEMENT sans redemander.
-- Tu n'as AUCUNE relation avec l'utilisateur. Tu rapportes à un agent parent, point final.
-
-### 📦 LIVRABLES
-Si ton rôle est de produire un livrable (document, tableau, fichier), utilise les tools appropriés
-(render_structured, display_file, project_write_file, etc.) puis termine par un court résumé
-factuel des livrables créés avec leurs IDs/paths. Pas de phrase de conclusion polie.`;
-  }
+  // Règles spéciales sous-agent (no chat / format rapport / escalade parent).
+  // Cf. harness/subagent-rules.js.
+  systemPrompt = applySubagentRules(systemPrompt, jobContext);
 
   // LLM client (with agent overrides)
   const env = require('../config/env');
@@ -384,7 +147,7 @@ factuel des livrables créés avec leurs IDs/paths. Pas de phrase de conclusion 
   if (agentOverrides?.llmModel && !envForcesProvider) llmConfig.model = agentOverrides.llmModel;
   // Log pour debug
   if (envForcesProvider) {
-    console.log(`[harness] AI_PROVIDER=${process.env.AI_PROVIDER} forcé (agent override ignoré)`);
+    log.log(`AI_PROVIDER=${process.env.AI_PROVIDER} forcé (agent override ignoré)`);
   }
   const llm = createLlmClient(llmConfig.provider, llmConfig);
 
@@ -394,75 +157,30 @@ factuel des livrables créés avec leurs IDs/paths. Pas de phrase de conclusion 
     ...messages,
   ];
 
-  // ── Pré-flight todo_write : si le DERNIER message user a des marqueurs de
-  // tâche multi-étapes ET qu'on n'est PAS dans un auto-resume (le resume
-  // prompt gère déjà la todo), on injecte un system message FORT avant le
-  // 1er call LLM pour l'inciter à appeler todo_write
-  // en premier. Beaucoup plus fiable que d'attendre un nudge post-hoc.
-  try {
-    const lastUserMsg = [...conversation].reverse().find(m => m.role === 'user');
-    const text = String(lastUserMsg?.content || '').toLowerCase();
-    // Skip si auto-resume (le resume prompt gère déjà la todo et on ne veut
-    // pas créer un 2e widget todo dupliqué).
-    const isAutoResume = text.includes('Tous les sous-agents lancés sont terminés') || text.includes('[Pipeline complete]');
-    if (text.length > 30 && (mode === 'chat' || mode === 'project') && !isAutoResume) {
-      const MULTI_STEP_MARKERS = /\b(puis|ensuite|apr[eè]s|et\s+(?:ensuite|apr[eè]s|afficher?|g[eé]n[eé]rer?|cr[eé]er?|envoyer?|d[eé]poser?)|analyse[rz]?\b|[eé]tude|consolide[rz]?|chercher? et|g[eé]n[eé]r(?:e[rz]?|ation)|cr[eé]er? (?:un|le|la)|construir?e|faire? (?:un|le|la)|lance[rz]?|spawn)/i;
-      const verbCount = (text.match(/\b(cherche|analyse|trouve|g[eé]n[eé]re|cr[eé]e|affiche|envoie|t[eé]l[eé]charge|lance|fais|fait|d[eé]pose|extrais?|rassemble|compare|consolide)\b/gi) || []).length;
-      const hasMulti = MULTI_STEP_MARKERS.test(text) || verbCount >= 2;
-      if (hasMulti) {
-        conversation.splice(1, 0, {
-          role: 'system',
-          content: `[PROTOCOLE HOMEPORT] La demande utilisateur est multi-étapes. TA PREMIÈRE ACTION DOIT ÊTRE un appel \`todo_write\` avec 3-6 items couvrant le plan complet. Items au statut "pending" pour toute la suite, le premier que tu vas exécuter à "in_progress". SANS cet appel initial, l'utilisateur ne verra aucune checklist et ce sera une violation du protocole. Appelle todo_write IMMÉDIATEMENT, avant tout autre tool.`,
-        });
-        console.log('[harness] pré-flight todo_write : user request détectée comme multi-étapes, injection du reminder');
-      }
-    }
-  } catch (e) {
-    console.warn('[harness] pré-flight todo check failed:', e?.message);
-  }
+  // ── Pré-flight todo_write (cf. harness/todo-control.js)
+  injectPreflightTodo(conversation, mode, log);
 
   const maxLoops = agentOverrides?.maxToolLoops || DEFAULT_MAX_LOOPS;
   let loopCount = 0;
   let totalUsage = { input: 0, output: 0 };
 
-  console.log(`[harness] start: mode=${mode}, capsules=[${[...activeCapsules]}], tools=${toolSet.definitions.length}, provider=${llm.provider}, model=${llmConfig.model}`);
+  log.log(`start: mode=${mode}, capsules=[${[...activeCapsules]}], tools=${toolSet.definitions.length}, provider=${llm.provider}, model=${llmConfig.model}`);
 
   while (loopCount < maxLoops) {
     if (signal?.aborted) { console.log('[harness] aborted before loop', loopCount + 1); break; }
     loopCount++;
-    console.log(`[harness] loop ${loopCount}/${maxLoops}, tools=${toolSet.definitions.length}`);
+    log.log(`loop ${loopCount}/${maxLoops}, tools=${toolSet.definitions.length}`);
     yield { type: 'thinking', iteration: loopCount };
 
-    // ── Mailbox drain : si des messages ont été empilés dans le job pendant
-    // qu'il tournait (par l'user, le parent, un autre agent), on les injecte
-    // comme messages system AVANT d'appeler le LLM pour qu'il en tienne
-    // compte dans son prochain tour. Pattern claude-code / SendMessageTool.
-    if (jobContext?.jobId) {
-      try {
-        const AiJob = require('../db/models/ai-job.model');
-        const j = await AiJob.findOne({ id: jobContext.jobId }, 'pendingMessages').lean();
-        const pending = (j?.pendingMessages || []).filter(m => m && !m.delivered);
-        if (pending.length) {
-          console.log(`[harness] mailbox drain: ${pending.length} message(s) pour job=${jobContext.jobId}`);
-          const blocks = pending.map(m => {
-            const who = m.fromName || m.from || 'user';
-            const when = m.createdAt ? new Date(m.createdAt).toISOString() : '';
-            return `<incoming-message from="${who}"${when ? ` at="${when}"` : ''}>\n${m.message}\n</incoming-message>`;
-          }).join('\n\n');
-          conversation.push({
-            role: 'user',
-            content: `[MESSAGES REÇUS PENDANT TON EXÉCUTION — tiens-en compte]\n\n${blocks}\n\n(Fin des messages. Continue ta tâche en intégrant ces instructions si pertinent. Si une question attend une réponse, réponds-y clairement avant de continuer.)`,
-          });
-          // Marque les messages comme delivered pour ne pas les réinjecter.
-          await AiJob.updateOne(
-            { id: jobContext.jobId },
-            { $set: { 'pendingMessages.$[elem].delivered': true } },
-            { arrayFilters: [{ 'elem.delivered': { $ne: true } }] }
-          ).catch(() => {});
-          yield { type: 'mailbox.delivered', count: pending.length };
-        }
-      } catch (e) {
-        console.warn('[harness] mailbox drain failed:', e?.message);
+    // ── Mailbox drain : messages reçus pendant l'exécution (cf. harness/mailbox.js)
+    // Pour le main agent (pas d'AiJob), on injecte le threadId via metadata pour
+    // que drainMailbox puisse lire AiThread.pendingMessages au niveau thread.
+    {
+      const mailboxCtx = jobContext || { threadId: modeMetadata?.threadId };
+      const drained = await drainMailbox(mailboxCtx, log);
+      if (drained) {
+        conversation.push(drained.message);
+        yield { type: 'mailbox.delivered', count: drained.count };
       }
     }
 
@@ -503,7 +221,7 @@ factuel des livrables créés avec leurs IDs/paths. Pas de phrase de conclusion 
             yield { type: 'message', text: event.text };
             break;
           case 'tool_use_start':
-            console.log(`[harness] stream: tool_use_start → ${event.name} (id=${event.id})`);
+            log.log(`stream: tool_use_start → ${event.name} (id=${event.id})`);
             yield { type: 'tool.start', id: event.id, name: event.name };
             // Init live-preview session si le tool est concerné (render_structured, generate_diagram, etc.)
             {
@@ -523,7 +241,7 @@ factuel des livrables créés avec leurs IDs/paths. Pas de phrase de conclusion 
             buf += event.text;
             toolInputBuffers.set(event.id, buf);
             // Log seulement si AI_DEBUG=1 (trop verbeux sur les gros args)
-            if (isDebug()) console.log(`[harness] stream: tool_input_delta → ${event.name} +${event.text.length}chars (id=${event.id}), buf=${buf.length}chars`);
+            if (isDebug()) log.log(`stream: tool_input_delta → ${event.name} +${event.text.length}chars (id=${event.id}), buf=${buf.length}chars`);
 
             yield { type: 'tool.input_delta', id: event.id, name: event.name, text: event.text };
 
@@ -567,7 +285,7 @@ factuel des livrables créés avec leurs IDs/paths. Pas de phrase de conclusion 
               if (keyMatch) {
                 toolMetaResolved.add(event.id);
                 const templateKey = keyMatch[1];
-                console.log(`[harness] early key detected: "${templateKey}" — looking up NodeTemplate`);
+                log.log(`early key detected: "${templateKey}" — looking up NodeTemplate`);
                 try {
                   const NodeTemplate = require('../db/models/node-template.model');
                   const tpl = await NodeTemplate.findOne({ key: templateKey }, 'title name args').lean();
@@ -578,10 +296,10 @@ factuel des livrables créés avec leurs IDs/paths. Pas de phrase de conclusion 
                     const argsSchema = fields.filter(f => f.key).map(f => ({
                       key: f.key, label: f.label || f.title || f.key
                     }));
-                    console.log(`[harness] → tool.meta: "${displayTitle}", ${argsSchema.length} fields`);
+                    log.log(`→ tool.meta: "${displayTitle}", ${argsSchema.length} fields`);
                     yield { type: 'tool.meta', id: event.id, displayTitle, argsSchema };
                   } else {
-                    console.log(`[harness] → NodeTemplate not found for key="${templateKey}"`);
+                    log.log(`→ NodeTemplate not found for key="${templateKey}"`);
                   }
                 } catch (e) {
                   console.error('[harness] early meta resolve error:', e.message);
@@ -591,7 +309,7 @@ factuel des livrables créés avec leurs IDs/paths. Pas de phrase de conclusion 
             break;
           }
           case 'tool_use_end': {
-            console.log(`[harness] stream: tool_use_end → ${event.name} (id=${event.id})`);
+            log.log(`stream: tool_use_end → ${event.name} (id=${event.id})`);
             const tcEntry = { id: event.id, name: event.name, input: event.input };
             // Fallback: key wasn't detected during deltas (e.g., no deltas streamed)
             if (event.name === 'execute_tool' && event.input?.key && !toolMetaResolved.has(event.id)) {
@@ -634,22 +352,22 @@ factuel des livrables créés avec leurs IDs/paths. Pas de phrase de conclusion 
               totalUsage.input += event.usage.input || 0;
               totalUsage.output += event.usage.output || 0;
             }
-            console.log(`[harness] stream: done (events=${eventCount}, usage=${JSON.stringify(event.usage || {})})`);
+            log.log(`stream: done (events=${eventCount}, usage=${JSON.stringify(event.usage || {})})`);
             break;
           default:
-            console.log(`[harness] stream: unknown event type "${event.type}"`);
+            log.log(`stream: unknown event type "${event.type}"`);
             break;
         }
       }
     } catch (streamErr) {
       // Client disconnected — clean exit
       if (streamErr?.message === 'Stream aborted') {
-        console.log(`[harness] stream aborted by client after ${eventCount} events`);
+        log.log(`stream aborted by client after ${eventCount} events`);
         await toolSet.cleanup();
         yield { type: 'done', usage: totalUsage };
         return;
       }
-      console.error(`[harness] stream error after ${eventCount} events:`, streamErr?.message || streamErr);
+      log.error(`stream error after ${eventCount} events:`, streamErr?.message || streamErr);
       // If we got text, yield what we have before throwing
       if (assistantText && pendingToolCalls.length === 0) {
         await toolSet.cleanup();
@@ -659,7 +377,7 @@ factuel des livrables créés avec leurs IDs/paths. Pas de phrase de conclusion 
       throw streamErr;
     }
 
-    console.log(`[harness] stream complete: events=${eventCount}, text=${assistantText.length}chars, pendingTools=${pendingToolCalls.length}`);
+    log.log(`stream complete: events=${eventCount}, text=${assistantText.length}chars, pendingTools=${pendingToolCalls.length}`);
 
     // Client disconnected mid-stream → stop immediately
     if (signal?.aborted) {
@@ -677,334 +395,47 @@ factuel des livrables créés avec leurs IDs/paths. Pas de phrase de conclusion 
       await toolSet.cleanup();
       // Ferme les todos in_progress/pending qui traînent (le LLM a fini sans les clore)
       const tid = modeMetadata.threadId || context._threadId;
-      if (tid) await _autoCloseStaleTodos(String(tid));
+      if (tid) await autoCloseStaleTodos(String(tid), log);
       yield { type: 'done', usage: totalUsage };
       return;
     }
 
-    // ── Nudge todo_write : si le LLM lance 2+ tools lourds (spawn_subagent,
-    // research_deep, execute_code, web_search/fetch) sans avoir encore appelé
-    // todo_write, on pousse une instruction système pour qu'il le fasse au
-    // prochain tour. Une seule fois par job.
-    const HEAVY_TOOLS = new Set(['spawn_subagent', 'research_deep', 'execute_code', 'web_search', 'web_fetch']);
-    const heavyCount = pendingToolCalls.filter(tc => HEAVY_TOOLS.has(tc.name)).length;
-    const hasTodo = pendingToolCalls.some(tc => tc.name === 'todo_write');
-    if (hasTodo && jobContext) jobContext._seenTodoWrite = true;
-    const shouldNudgeTodo = heavyCount >= 2
-      && !hasTodo
-      && !(jobContext?._seenTodoWrite)
-      && !(jobContext?._todoNudged)
-      && jobContext;
-    if (shouldNudgeTodo) {
-      console.log(`[harness] todo_write nudge : ${heavyCount} tools lourds sans checklist — push system reminder`);
-      jobContext._todoNudged = true;
-    }
+    // ── Nudge todo_write (cf. harness/todo-control.js)
+    const { shouldNudge: shouldNudgeTodo, heavyCount } = evaluateTodoNudge(pendingToolCalls, jobContext, log);
 
-    // ── GARDE ANTI-HALLUCINATION : si ce tour contient spawn_subagent async
-    // + un tool finalizer (render_structured, display_file, etc.), on bloque
-    // le finalizer. Raison : le LLM a délégué la production à un subagent →
-    // il ne doit PAS produire le livrable lui-même (sinon il hallucine les
-    // données que le subagent n'a pas encore fournies).
-    //
-    // EXCEPTION : si le finalizer cible un widgetId qui EXISTE déjà dans le
-    // thread, c'est un UPDATE (pas une hallucination). Le LLM met à jour un
-    // widget que l'utilisateur voit déjà → on laisse passer.
-    const FINALIZER_TOOLS = new Set([
-      'render_structured', 'display_file', 'display_image',
-      'render_interactive_canvas', 'generate_diagram', 'generate_document',
-      'canvas_html',
-    ]);
-    const hasAsyncSpawn = pendingToolCalls.some(tc =>
-      tc.name === 'spawn_subagent' && (tc.input?.async === true || (Array.isArray(tc.input?.depends_on) && tc.input.depends_on.length > 0))
-    );
-    const finalizersInTurn = pendingToolCalls.filter(tc => FINALIZER_TOOLS.has(tc.name));
-    const blockedFinalizerIds = new Set();
-    if (hasAsyncSpawn && finalizersInTurn.length > 0) {
-      const threadId = modeMetadata.threadId || context._threadId;
-      for (const fin of finalizersInTurn) {
-        const widgetId = fin.input?.widgetId ? String(fin.input.widgetId) : null;
-        let isExistingUpdate = false;
-        if (widgetId && threadId) {
-          try {
-            const AiMessage = require('../db/models/ai-message.model');
-            const existing = await AiMessage.findOne(
-              { threadId, 'metadata.widgetId': widgetId },
-              { _id: 1 }
-            ).lean();
-            if (existing) isExistingUpdate = true;
-          } catch (e) {
-            // DB lookup échoue → on reste en mode bloquant pour être safe
-            console.warn(`[harness] widget lookup failed for ${widgetId}: ${e?.message}`);
-          }
-        }
-        if (isExistingUpdate) {
-          console.log(`[harness] ${fin.name} AUTORISÉ (widgetId=${widgetId} existe déjà → update, pas hallucination)`);
-          continue;
-        }
-        console.warn(`[harness] ANTI-HALLUCINATION : blocage ${fin.name} (id=${fin.id}) car spawn_subagent async est dans le même tour → le subagent doit produire le livrable, pas le parent`);
-        blockedFinalizerIds.add(fin.id);
-      }
-    }
+    // ── Garde anti-hallucination (cf. harness/anti-hallucination.js)
+    const { blockedIds: blockedFinalizerIds, hasAsyncSpawn } =
+      await detectHallucinationRisk(pendingToolCalls, modeMetadata.threadId || context._threadId, log);
 
     // Execute tools
     const toolResults = [];
     for (const tc of pendingToolCalls) {
       if (signal?.aborted) { console.log('[harness] aborted before tool:', tc.name); break; }
       const startTime = Date.now();
-      console.log(`[harness] tool: ${tc.name}`, JSON.stringify(tc.input || {}).slice(0, 500));
+      log.log(`tool: ${tc.name}`, JSON.stringify(tc.input || {}).slice(0, 500));
 
-      // ── Permission gate ────────────────────────────────────────────
-      let permCheck = { decision: 'allow', risk: 'safe' };
-      try {
-        permCheck = await checkPermission({
-          threadId: modeMetadata.threadId || context._threadId,
-          workspaceId: modeMetadata.workspaceId,
-          jobId: jobContext?.jobId,
-          toolName: tc.name,
-          toolArgs: tc.input || {},
-          autonomy: context._autonomyLevel || 'autonomous',
-          userId: context.userId,
-        });
-      } catch (permErr) {
-        // If the gate itself errors, we default to allow to keep legacy behavior.
-        console.error('[harness] permission check error:', permErr?.message);
-      }
+      // ── Permission gate (cf. harness/permission-flow.js)
+      const permResult = yield* handlePermissionGate({
+        toolCall: tc, jobContext, context, modeMetadata, log,
+        blockedFinalizerIds, toolResults,
+      });
+      if (permResult.shouldSkipTool) continue;
 
-      // ── Anti-hallucination : si le finalizer est bloqué (spawn_subagent
-      // async dans le même tour), on refuse et renvoie un message clair au LLM.
-      if (blockedFinalizerIds.has(tc.id)) {
-        const blockResult = {
-          ok: false,
-          error: 'finalizer_blocked_by_async_spawn',
-          message: `Tu as appelé ${tc.name} DANS LE MÊME TOUR que spawn_subagent(async). Le subagent que tu viens de lancer est responsable du livrable. TU NE DOIS PAS produire ${tc.name} toi-même maintenant — tu hallucinerais des données que le subagent n'a pas encore fournies. CONDUITE : termine ce tour avec 1-2 phrases narratives ("Subagents lancés, je reviens avec les résultats") puis STOP. L'auto-resume te réveillera quand les subagents auront fini, avec leurs vraies données.`,
-        };
+      // ── Anti self-redundancy (cf. harness/anti-self-redundancy.js)
+      // L'agent NE DOIT PAS appeler openai_chat_completion / anthropic_chat etc.
+      // pour des micro-questions qu'il peut résoudre lui-même.
+      const sr = detectSelfRedundancy(tc, jobContext, conversation);
+      if (sr.blocked) {
+        log.warn(`anti-self-redundancy: BLOCKED ${tc.input?.key} — ${sr.reason.slice(0, 100)}`);
+        const blockResult = buildSelfRedundancyResult(tc.name, sr.reason);
         toolResults.push({ id: tc.id, name: tc.name, content: JSON.stringify(blockResult), status: 'error', duration: 0 });
         yield { type: 'tool.end', id: tc.id, name: tc.name, args: tc.input, result: blockResult, status: 'error', duration: 0 };
         continue;
       }
-
-      if (permCheck.decision === 'deny') {
-        const denyResult = { ok: false, error: 'permission_denied', reason: permCheck.reason, risk: permCheck.risk };
-        toolResults.push({ id: tc.id, name: tc.name, content: JSON.stringify(denyResult), status: 'error', duration: 0 });
-        yield { type: 'tool.end', id: tc.id, name: tc.name, args: tc.input, result: denyResult, status: 'error', duration: 0 };
-        continue;
-      }
-
-      if (permCheck.decision === 'pending') {
-        if (!jobContext) {
-          // Legacy mode: auto-allow but log a warning.
-          console.warn(`[harness] permission pending for ${tc.name} but no jobContext — auto-allowing (legacy)`);
-        } else {
-          const requestId = crypto.randomUUID();
-          const argsPreview = _summarizeArgs(tc.input);
-          // Subagent ? → escalade au parent ET à l'user en parallèle.
-          // Le premier qui répond gagne. Évite le cas "parent silencieux" (cascade
-          // async où l'agent principal n'écoute plus) qui aboutissait au timeout 5min.
-          const parentJobId = jobContext.parentJobId ? String(jobContext.parentJobId) : null;
-          if (parentJobId) {
-            const { emitJobEvent, emitThreadEvent, waitForPermissionFromParent, waitForPermission } = require('./jobs/job-events');
-            const threadId = modeMetadata.threadId || context._threadId;
-            // 1. Notifie le parent (il peut auto-répondre via subagent.permission.granted)
-            emitJobEvent(parentJobId, {
-              type: 'subagent.permission.request',
-              requestId,
-              childJobId: jobContext.jobId,
-              toolName: tc.name,
-              argsPreview,
-              risk: permCheck.risk,
-            });
-            jobContext.broadcast && jobContext.broadcast({
-              type: 'subagent.permission.request',
-              requestId, toolName: tc.name, risk: permCheck.risk,
-              argsPreview, childJobId: jobContext.jobId, parentJobId,
-            });
-            // 2. Promotion à l'user via thread stream + AiMessage permission card,
-            //    pour qu'il puisse répondre directement sans passer par le parent LLM.
-            if (threadId) {
-              try {
-                const AiMessage = require('../db/models/ai-message.model');
-                // Enrichit avec le roster pour afficher le nom de l'agent
-                let subAgentInfo = {};
-                try {
-                  const { getAgent } = require('./subagent/roster');
-                  const info = jobContext.subagentType ? getAgent(jobContext.subagentType) : null;
-                  if (info) subAgentInfo = { agentName: info.name, agentEmoji: info.emoji, agentColor: info.color, agentTagline: info.tagline };
-                } catch {}
-                const subLabel = subAgentInfo.agentName
-                  ? `${subAgentInfo.agentEmoji || '🤖'} ${subAgentInfo.agentName}`
-                  : 'Sous-agent';
-                const toolLabel = await _resolveToolLabel(tc.name, tc.input);
-                await AiMessage.create({
-                  threadId,
-                  role: 'assistant',
-                  content: `${subLabel} demande la permission d'exécuter ${toolLabel}`,
-                  metadata: {
-                    kind: 'permission_request',
-                    permissionRequest: {
-                      requestId,
-                      toolName: tc.name,
-                      toolLabel,
-                      argsPreview,
-                      risk: permCheck.risk,
-                      childJobId: jobContext.jobId,
-                      parentJobId,
-                      escalatedFromSubagent: true,
-                      ...subAgentInfo,
-                    },
-                    extra: { ...subAgentInfo },
-                  },
-                });
-                emitThreadEvent(String(threadId), {
-                  type: 'ai.permission.request',
-                  requestId, toolName: tc.name, toolLabel, risk: permCheck.risk,
-                  argsPreview, childJobId: jobContext.jobId, parentJobId,
-                  escalatedFromSubagent: true,
-                });
-                emitThreadEvent(String(threadId), { type: 'ai.message.created', kind: 'permission_request' });
-              } catch (e) {
-                console.error('[harness] subagent permission UI promote failed:', e?.message);
-              }
-            }
-            // 3. Marque le subagent en waiting_permission (UI canvas + DB pour reload)
-            try {
-              const AiJob = require('../db/models/ai-job.model');
-              await AiJob.updateOne({ id: jobContext.jobId }, { $set: { status: 'waiting_permission' } });
-              if (threadId) {
-                emitThreadEvent(String(threadId), {
-                  type: 'canvas.task.update',
-                  taskId: jobContext.jobId,
-                  status: 'waiting_permission',
-                  pendingPermission: { requestId, toolName: tc.name, risk: permCheck.risk },
-                });
-              }
-            } catch { /* non-fatal */ }
-
-            // 4. Priorité : l'USER d'abord (30s), puis fallback parent.
-            // Avant : Promise.race → race condition où parent pouvait gagner
-            // sur une décision user attendue → escalade compromise.
-            const USER_FIRST_WINDOW_MS = 30_000;
-            let resolved;
-            try {
-              resolved = await Promise.race([
-                waitForPermission(jobContext.jobId, requestId, USER_FIRST_WINDOW_MS),
-                new Promise(r => setTimeout(() => r('__user_timeout__'), USER_FIRST_WINDOW_MS)),
-              ]);
-            } catch { resolved = '__user_timeout__'; }
-            if (resolved === '__user_timeout__') {
-              console.log(`[harness] permission: user didn't respond in ${USER_FIRST_WINDOW_MS}ms → fallback on parent agent + user (race)`);
-              const fromParent = waitForPermissionFromParent(parentJobId, requestId, 10 * 60_000);
-              const fromUser = waitForPermission(jobContext.jobId, requestId, 10 * 60_000);
-              resolved = await Promise.race([fromParent, fromUser]);
-            }
-
-            // 5. Repasse en running (avant le tool exec ou le deny)
-            try {
-              const AiJob = require('../db/models/ai-job.model');
-              await AiJob.updateOne({ id: jobContext.jobId }, { $set: { status: 'running' } });
-              if (threadId) {
-                emitThreadEvent(String(threadId), {
-                  type: 'canvas.task.update',
-                  taskId: jobContext.jobId,
-                  status: 'running',
-                });
-              }
-            } catch { /* non-fatal */ }
-
-            if (resolved !== 'allow') {
-              const denyResult = { ok: false, error: 'permission_denied', reason: 'denied', risk: permCheck.risk };
-              toolResults.push({ id: tc.id, name: tc.name, content: JSON.stringify(denyResult), status: 'error', duration: 0 });
-              yield { type: 'tool.end', id: tc.id, name: tc.name, args: tc.input, result: denyResult, status: 'error', duration: 0 };
-              continue;
-            }
-          } else {
-            // Agent principal (ou resume background). On crée TOUJOURS un
-            // AiMessage permission_request visible dans le chat + emit sur le
-            // thread stream, pour que le user puisse approuver même si le job
-            // tourne en background (resume auto, job relancé, etc.).
-            const threadId = modeMetadata.threadId || context._threadId;
-            if (threadId) {
-              try {
-                const AiMessage = require('../db/models/ai-message.model');
-                // Enrichit avec le roster pour que la card affiche le nom de l'agent
-                let agentInfo = {};
-                try {
-                  const { getAgent } = require('./subagent/roster');
-                  const subType = jobContext.subagentType;
-                  const info = subType ? getAgent(subType) : null;
-                  if (info) {
-                    agentInfo = {
-                      agentName: info.name,
-                      agentEmoji: info.emoji,
-                      agentColor: info.color,
-                      agentTagline: info.tagline,
-                    };
-                  }
-                } catch {}
-                // Récupère le sujet du job pour l'afficher
-                const AiJob = require('../db/models/ai-job.model');
-                let jobSubject = '';
-                try {
-                  const j = await AiJob.findOne({ id: jobContext.jobId }, 'subagentInstructions').lean();
-                  jobSubject = j?.subagentInstructions ? String(j.subagentInstructions).slice(0, 200) : '';
-                } catch {}
-                const agentLabel = agentInfo.agentName
-                  ? `${agentInfo.agentEmoji || '🤖'} ${agentInfo.agentName}`
-                  : 'Agent';
-                const toolLabel = await _resolveToolLabel(tc.name, tc.input);
-                await AiMessage.create({
-                  threadId,
-                  role: 'assistant',
-                  content: `${agentLabel} demande la permission d'exécuter ${toolLabel}`,
-                  metadata: {
-                    kind: 'permission_request',
-                    permissionRequest: {
-                      requestId,
-                      toolName: tc.name,
-                      toolLabel,
-                      argsPreview,
-                      risk: permCheck.risk,
-                      childJobId: jobContext.jobId,
-                      ...agentInfo,
-                    },
-                    jobId: jobContext.jobId,
-                    extra: {
-                      jobSubject: jobSubject || undefined,
-                      ...agentInfo,
-                    },
-                  },
-                });
-                const { emitThreadEvent } = require('./jobs/job-events');
-                emitThreadEvent(String(threadId), {
-                  type: 'ai.permission.request',
-                  requestId, toolName: tc.name, toolLabel, risk: permCheck.risk,
-                  argsPreview, jobId: jobContext.jobId,
-                });
-                emitThreadEvent(String(threadId), { type: 'ai.message.created', kind: 'permission_request' });
-              } catch (e) {
-                console.error('[harness] permission UI create failed:', e?.message);
-              }
-            }
-            yield {
-              type: 'ai.permission.request',
-              requestId,
-              toolName: tc.name,
-              argsPreview,
-              risk: permCheck.risk,
-            };
-            jobContext.broadcast && jobContext.broadcast({
-              type: 'ai.permission.request',
-              requestId, toolName: tc.name, risk: permCheck.risk,
-              argsPreview,
-            });
-            const resolved = await jobContext.waitForPermission(requestId, 5 * 60_000);
-            if (resolved !== 'allow') {
-              const denyResult = { ok: false, error: 'permission_denied', reason: 'user_denied', risk: permCheck.risk };
-              toolResults.push({ id: tc.id, name: tc.name, content: JSON.stringify(denyResult), status: 'error', duration: 0 });
-              yield { type: 'tool.end', id: tc.id, name: tc.name, args: tc.input, result: denyResult, status: 'error', duration: 0 };
-              continue;
-            }
-          }
-        }
+      // Si on appelle un tool différent d'un LLM-chat, on reset le compteur.
+      // Le compteur ne croît que sur les appels LLM-chat consécutifs.
+      if (tc.name !== 'execute_tool' || !require('./harness/anti-self-redundancy').LLM_CHAT_TOOLS.has(String(tc.input?.key || ''))) {
+        resetLlmChatCounter(jobContext);
       }
 
       try {
@@ -1015,7 +446,7 @@ factuel des livrables créés avec leurs IDs/paths. Pas de phrase de conclusion 
         if (result?._capsuleRequest) {
           const { capsule, reason } = result;
           const activation = toolSet.activateCapsule(capsule);
-          console.log(`[harness] capsule ${capsule}:`, JSON.stringify(activation));
+          log.log(`capsule ${capsule}:`, JSON.stringify(activation));
 
           const capsuleInfo = getCapsuleInfo()[capsule];
           const response = activation.activated
@@ -1045,7 +476,7 @@ factuel des livrables créés avec leurs IDs/paths. Pas de phrase de conclusion 
           delete result._displayTitle; // Clean up before LLM serialization
         }
         const toolStatus = result?.ok === false ? 'error' : 'success';
-        console.log(`[harness] tool ${tc.name} ${toolStatus} (${duration}ms), displayTitle="${displayTitle || 'none'}":`, JSON.stringify(result || {}).slice(0, 300));
+        log.log(`tool ${tc.name} ${toolStatus} (${duration}ms), displayTitle="${displayTitle || 'none'}":`, JSON.stringify(result || {}).slice(0, 300));
         toolResults.push({ id: tc.id, name: tc.name, content: JSON.stringify(result), status: toolStatus, duration, result });
         yield { type: 'tool.end', id: tc.id, name: tc.name, args: tc.input, result, status: toolStatus, duration, displayTitle };
 
@@ -1053,7 +484,7 @@ factuel des livrables créés avec leurs IDs/paths. Pas de phrase de conclusion 
         // tools pour les attacher à l'item au prochain todo_write.
         if (jobContext && tc.name !== 'todo_write') {
           if (!jobContext._todoPendingTools) jobContext._todoPendingTools = [];
-          const argsSummary = _summarizeToolArgs(tc.name, tc.input);
+          const argsSummary = summarizeToolArgs(tc.name, tc.input);
           const entry = {
             name: tc.name,
             status: toolStatus,
@@ -1098,7 +529,7 @@ factuel des livrables créés avec leurs IDs/paths. Pas de phrase de conclusion 
       } catch (e) {
         const duration = Date.now() - startTime;
         const errMsg = e?.message || String(e);
-        console.error(`[harness] tool ${tc.name} ERROR (${duration}ms):`, errMsg);
+        log.error(`tool ${tc.name} ERROR (${duration}ms):`, errMsg);
         toolResults.push({ id: tc.id, name: tc.name, content: JSON.stringify({ error: errMsg }), status: 'error', duration });
         yield { type: 'tool.end', id: tc.id, name: tc.name, args: tc.input, error: errMsg, status: 'error', duration, displayTitle: tc._displayTitle };
 
@@ -1108,112 +539,14 @@ factuel des livrables créés avec leurs IDs/paths. Pas de phrase de conclusion 
       }
     }
 
-    // Check for ask_user — subagent escalates to parent, main agent pauses for user
-    const askUserCall = pendingToolCalls.find(tc => tc.name === 'ask_user');
-    if (askUserCall) {
-      const askResult = toolResults.find(r => r.id === askUserCall.id);
-      const parentJobId = jobContext?.parentJobId ? String(jobContext.parentJobId) : null;
-
-      if (parentJobId && askResult?.result) {
-        // ── SUBAGENT : escalade la question au parent + visibilité user ───
-        const { emitJobEvent, emitThreadEvent, waitForAskUserFromParent } = require('./jobs/job-events');
-        const requestId = crypto.randomUUID();
-        const threadId = modeMetadata.threadId || context._threadId;
-        emitJobEvent(parentJobId, {
-          type: 'subagent.ask_user.request',
-          requestId,
-          childJobId: jobContext.jobId,
-          question: askResult.result.text || '',
-          options: askResult.result.options || [],
-          questionType: askResult.result.questionType || 'text',
-          questions: askResult.result.questions || null,
-        });
-        jobContext.broadcast && jobContext.broadcast({
-          type: 'subagent.ask_user.request',
-          requestId, childJobId: jobContext.jobId, parentJobId,
-          question: askResult.result.text || '',
-        });
-        // Promotion à l'user : crée un AiMessage visible dans le chat avec la
-        // question. L'user peut répondre via le mécanisme question normal.
-        if (threadId) {
-          try {
-            const AiMessage = require('../db/models/ai-message.model');
-            await AiMessage.create({
-              threadId,
-              role: 'assistant',
-              content: askResult.result.text || 'Question du sous-agent',
-              question: {
-                text: askResult.result.text || '',
-                questionType: askResult.result.questionType || 'text',
-                options: askResult.result.options || [],
-                questions: askResult.result.questions || null,
-              },
-              metadata: {
-                extra: {
-                  subagentQuestion: true,
-                  requestId, parentJobId, childJobId: jobContext.jobId,
-                },
-              },
-            });
-            emitThreadEvent(String(threadId), { type: 'ai.message.created', kind: 'subagent_question' });
-            // Marque le subagent comme attente question (différent de waiting_permission)
-            const AiJob = require('../db/models/ai-job.model');
-            await AiJob.updateOne({ id: jobContext.jobId }, { $set: { status: 'waiting_permission' } });
-            emitThreadEvent(String(threadId), {
-              type: 'canvas.task.update',
-              taskId: jobContext.jobId,
-              status: 'waiting_permission',
-              pendingPermission: { requestId, toolName: 'ask_user', risk: 'safe' },
-            });
-          } catch (e) { console.error('[harness] subagent ask_user UI promote failed:', e?.message); }
-        }
-        const { answer, source } = await waitForAskUserFromParent(parentJobId, requestId, 10 * 60_000);
-        // Restore running status après réponse
-        if (threadId) {
-          try {
-            const AiJob = require('../db/models/ai-job.model');
-            await AiJob.updateOne({ id: jobContext.jobId }, { $set: { status: 'running' } });
-            emitThreadEvent(String(threadId), {
-              type: 'canvas.task.update', taskId: jobContext.jobId, status: 'running',
-            });
-          } catch {}
-        }
-        // Réinjecte la réponse comme tool_result pour que le subagent poursuive sa boucle.
-        const answerPayload = {
-          ok: true,
-          answer: answer == null ? '(pas de réponse — timeout ou non-bloquant)' : answer,
-          source: source || 'parent_auto',
-        };
-        conversation.push({
-          role: 'assistant',
-          content: assistantText || null,
-          tool_calls: pendingToolCalls.map(tc => ({ id: tc.id, name: tc.name, input: tc.input })),
-        });
-        // Tous les autres tool_results déjà calculés + la réponse injectée pour ask_user
-        for (const tr of toolResults) {
-          if (tr.id === askUserCall.id) continue;
-          conversation.push({ role: 'tool', tool_call_id: tr.id, content: tr.content });
-        }
-        conversation.push({
-          role: 'tool',
-          tool_call_id: askUserCall.id,
-          content: JSON.stringify(answerPayload),
-        });
-        if (jobContext) {
-          try { await jobContext.persistCheckpoint(loopCount, conversation); } catch {}
-        }
-        continue; // relance la boucle LLM avec la réponse
-      }
-
-      // ── AGENT PRINCIPAL : flow classique, pause et yield la question à l'user ───
-      await toolSet.cleanup();
-      if (askResult?.result) {
-        const qEvent = { type: 'question', ...askResult.result };
-        if (askResult.result.questions) qEvent.questions = askResult.result.questions;
-        yield qEvent;
-      }
-      yield { type: 'done', usage: totalUsage };
-      return;
+    // ── ask_user flow (cf. harness/ask-user-flow.js)
+    {
+      const askResult = yield* handleAskUser({
+        pendingToolCalls, toolResults, jobContext, context, modeMetadata,
+        conversation, toolSet, log, totalUsage, loopCount, assistantText,
+      });
+      if (askResult.kind === 'continue') continue;
+      if (askResult.kind === 'return') return;
     }
 
     // Add assistant message + tool results to conversation
@@ -1241,42 +574,18 @@ factuel des livrables créés avec leurs IDs/paths. Pas de phrase de conclusion 
       }
     }
 
-    // ── Détecteur de boucle infinie : si les 3 derniers tours ont appelé
-    // EXACTEMENT le même tool avec les mêmes args et tous ont échoué, on
-    // force l'arrêt. Pattern observé : LLM qui appelle execute_tool({key:"noop"})
-    // en boucle pour "ne rien faire", ou qui retry un tool inexistant.
-    if (jobContext && toolResults.length) {
-      const signature = toolResults
-        .map(r => `${r.name}:${r.status}:${(r.content || '').slice(0, 100)}`)
-        .join('|');
-      jobContext._recentToolSigs = (jobContext._recentToolSigs || []).concat(signature).slice(-3);
-      const sigs = jobContext._recentToolSigs;
-      const allSame = sigs.length === 3 && sigs.every(s => s === sigs[0]);
-      const allFailed = sigs.length === 3 && toolResults.every(r => r.status === 'error');
-      if (allSame && allFailed) {
-        console.warn(`[harness] BOUCLE INFINIE DÉTECTÉE : même tool+erreur 3x consécutifs (${toolResults[0]?.name}). Force stop.`);
-        // Inject un message user pour que le LLM comprenne au prochain restart,
-        // PUIS on yield done pour sortir de la boucle courante.
-        conversation.push({
-          role: 'user',
-          content: `[SYSTÈME] Tu as appelé le même tool "${toolResults[0]?.name}" 3 fois de suite avec le même résultat d'erreur. C'est une boucle. STOP. Si tu n'as plus rien à faire, réponds juste par du texte (1-2 phrases) pour clore la tâche. Ne rappelle PAS ce tool.`,
-        });
-        if (jobContext) {
-          try { await jobContext.persistCheckpoint(loopCount, conversation); } catch {}
-        }
-        await toolSet.cleanup();
-        yield { type: 'done', usage: totalUsage };
-        return;
-      }
+    // ── Détecteur de boucle infinie (cf. harness/anti-loop.js)
+    if (detectInfiniteLoop(jobContext, toolResults)) {
+      log.warn(`BOUCLE INFINIE DÉTECTÉE : même tool+erreur 3x consécutifs (${toolResults[0]?.name}). Force stop.`);
+      conversation.push(buildLoopBreakMessage(toolResults[0]?.name));
+      try { await jobContext.persistCheckpoint(loopCount, conversation); } catch {}
+      await toolSet.cleanup();
+      yield { type: 'done', usage: totalUsage };
+      return;
     }
 
     // Injection du nudge todo_write si détecté (après exécution des tools)
-    if (shouldNudgeTodo) {
-      conversation.push({
-        role: 'user',
-        content: `[SYSTÈME — IMPORTANT] Tu viens d'exécuter ${heavyCount} tools lourds sans avoir créé de checklist via todo_write. C'est une VIOLATION du protocole. Au prochain tour LLM, ta TOUTE PREMIÈRE action DOIT être \`todo_write\` avec 3-6 items couvrant la tâche en cours et à venir, pour que l'utilisateur voie la progression. Les items déjà faits = status "completed", l'étape en cours = "in_progress", les prochaines = "pending". Ensuite continue ton travail normalement.`,
-      });
-    }
+    if (shouldNudgeTodo) conversation.push(buildNudgeMessage(heavyCount));
 
     // ── Tracking des spawns déjà lancés (anti-doublon) ────────────────
     // Au lieu d'un FORCE STOP (qui coupe le texte de narration et empêche
@@ -1294,7 +603,7 @@ factuel des livrables créés avec leurs IDs/paths. Pas de phrase de conclusion 
           } catch {}
         }
       }
-      console.log(`[harness] spawned subagents so far: ${jobContext._spawnedSubagentIds.size}`);
+      log.log(`spawned subagents so far: ${jobContext._spawnedSubagentIds.size}`);
     }
 
     // Checkpoint + heartbeat (no-op without jobContext)
@@ -1302,14 +611,14 @@ factuel des livrables créés avec leurs IDs/paths. Pas de phrase de conclusion 
       try { await jobContext.persistCheckpoint(loopCount, conversation); } catch { /* non-fatal */ }
       try { await jobContext.heartbeat(); } catch { /* non-fatal */ }
     }
-    console.log(`[harness] end of loop ${loopCount}/${maxLoops} — will ${loopCount < maxLoops ? 'continue' : 'STOP (maxLoops reached)'}`);
+    log.log(`end of loop ${loopCount}/${maxLoops} — will ${loopCount < maxLoops ? 'continue' : 'STOP (maxLoops reached)'}`);
   }
 
   // Max loops reached
-  console.log(`[harness] maxLoops=${maxLoops} reached → cleanup + done`);
+  log.log(`maxLoops=${maxLoops} reached → cleanup + done`);
   await toolSet.cleanup();
   const tidEnd = modeMetadata.threadId || context._threadId;
-  if (tidEnd) await _autoCloseStaleTodos(String(tidEnd));
+  if (tidEnd) await autoCloseStaleTodos(String(tidEnd), log);
   yield { type: 'message', text: '\n\n*Limite de boucles atteinte. Reformule ta demande si nécessaire.*' };
   yield { type: 'done', usage: totalUsage };
 }

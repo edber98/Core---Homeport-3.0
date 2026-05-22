@@ -640,10 +640,33 @@ async function callMiniLlm({ system, userText, maxTokens = 2000 }) {
   //   WEB_MINI_PROVIDER=openai|anthropic  (défaut: anthropic si ANTHROPIC_API_KEY, sinon openai)
   //   WEB_MINI_MODEL=gpt-4o-mini|claude-haiku-4-5|...  (défaut selon provider)
   const { createLlmClient } = require('../llm');
-  const miniProvider = (process.env.WEB_MINI_PROVIDER || '').toLowerCase()
+  let miniProvider = (process.env.WEB_MINI_PROVIDER || '').toLowerCase()
     || (env.ANTHROPIC_API_KEY ? 'anthropic' : 'openai');
   const defaultModel = miniProvider === 'openai' ? 'gpt-4o-mini' : 'claude-haiku-4-5';
-  const model = process.env.WEB_MINI_MODEL || defaultModel;
+  let model = process.env.WEB_MINI_MODEL || defaultModel;
+
+  // ── Garde-fou : détecte les mismatchs provider/model dans l'env du user.
+  //   Pattern observé : WEB_MINI_PROVIDER=anthropic + WEB_MINI_MODEL=gpt-4o-mini
+  //   → l'API Anthropic reçoit un model OpenAI → 404 not_found_error.
+  //   On auto-corrige en alignant provider sur le pattern du model.
+  const isOpenAiModel = /^(gpt-|o[1-9]|chatgpt-)/i.test(model);
+  const isAnthropicModel = /^claude-/i.test(model);
+  if (miniProvider === 'anthropic' && isOpenAiModel) {
+    console.warn(`[web-mini] config mismatch : WEB_MINI_PROVIDER=anthropic mais WEB_MINI_MODEL=${model} (model OpenAI). Auto-correction : provider=openai si OPENAI_API_KEY dispo, sinon fallback claude-haiku-4-5.`);
+    if (env.OPENAI_API_KEY) {
+      miniProvider = 'openai';
+    } else {
+      model = 'claude-haiku-4-5';
+    }
+  } else if (miniProvider === 'openai' && isAnthropicModel) {
+    console.warn(`[web-mini] config mismatch : WEB_MINI_PROVIDER=openai mais WEB_MINI_MODEL=${model} (model Anthropic). Auto-correction : provider=anthropic si ANTHROPIC_API_KEY dispo, sinon fallback gpt-4o-mini.`);
+    if (env.ANTHROPIC_API_KEY) {
+      miniProvider = 'anthropic';
+    } else {
+      model = 'gpt-4o-mini';
+    }
+  }
+
   const apiKey = miniProvider === 'openai' ? env.OPENAI_API_KEY : env.ANTHROPIC_API_KEY;
   if (!apiKey) {
     return null;

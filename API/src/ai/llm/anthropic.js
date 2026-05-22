@@ -63,6 +63,7 @@ async function* streamAnthropic(messages, tools, config) {
   let currentToolName = '';
   let currentToolArgs = '';
   let usage = null;
+  let stopReasonRaw = null;
 
   while (true) {
     const { done, value } = await reader.read();
@@ -88,7 +89,15 @@ async function* streamAnthropic(messages, tools, config) {
       switch (data.type) {
         case 'message_start':
           if (data.message?.usage) {
-            usage = { input: data.message.usage.input_tokens || 0, output: 0 };
+            // Préserve les champs provider (cache_creation, cache_read) pour l'adapter.
+            usage = {
+              input: data.message.usage.input_tokens || 0,
+              output: 0,
+              input_tokens: data.message.usage.input_tokens || 0,
+              output_tokens: 0,
+              cache_creation_input_tokens: data.message.usage.cache_creation_input_tokens || 0,
+              cache_read_input_tokens: data.message.usage.cache_read_input_tokens || 0,
+            };
           }
           break;
 
@@ -129,12 +138,16 @@ async function* streamAnthropic(messages, tools, config) {
           if (data.usage) {
             if (!usage) usage = { input: 0, output: 0 };
             usage.output = data.usage.output_tokens || 0;
+            usage.output_tokens = data.usage.output_tokens || 0;
+          }
+          if (data.delta?.stop_reason) {
+            stopReasonRaw = data.delta.stop_reason;
           }
           break;
 
         case 'message_stop':
-          console.log(`[llm-anthropic] message_stop → done (usage: ${JSON.stringify(usage)})`);
-          yield { type: 'done', usage };
+          console.log(`[llm-anthropic] message_stop → done (usage: ${JSON.stringify(usage)}, stop: ${stopReasonRaw})`);
+          yield { type: 'done', usage, stopReasonRaw };
           return;
 
         case 'error':
@@ -143,7 +156,7 @@ async function* streamAnthropic(messages, tools, config) {
     }
   }
 
-  yield { type: 'done', usage };
+  yield { type: 'done', usage, stopReasonRaw };
 }
 
 // Format messages for Anthropic API

@@ -506,15 +506,88 @@ async function _runSubagentJob({
 
   // 5. Relit le job final pour récupérer summary + artifacts
   const finalJob = await AiJob.findOne({ id: job.id }).lean();
+  const fullSummary = finalJob?.result?.summary || null;
+  const widgets = Array.isArray(finalJob?.result?.widgets) ? finalJob.result.widgets : [];
+
+  // ── Pattern claude-code / openclaw ────────────────────────────────────
+  // Le summary COMPLET reste en DB (visible dans la modal sub-agent où le user
+  // voit toute la timeline). Mais ce qu'on renvoie au parent LLM est un DIGEST
+  // minimal : statut + widgets produits + 1-2 phrases. Sans ça, le parent
+  // récupère 20 000 chars et a tendance à réécrire le rapport → double
+  // résumé visible dans le chat (rapporté par l'utilisateur).
+  const digest = _buildParentDigest(fullSummary, widgets);
   return {
     ok: !runError,
     jobId: job.id,
     subagentType,
     depth: job.depth,
     status: finalJob?.status || 'error',
-    summary: finalJob?.result?.summary || null,
+    summary: digest.text,        // digest court (≤ ~300 chars + IDs widgets)
+    widgets: digest.widgets,     // [{ widgetId, kind, title }, ...] — référencables via [[WIDGET:id]]
+    fullSummaryAvailable: !!fullSummary && fullSummary.length > digest.text.length,
     artifacts: finalJob?.result?.artifacts || [],
     error: runError,
+  };
+}
+
+/**
+ * Construit un digest minimal du résultat d'un sub-agent à destination du
+ * LLM parent. Inspiré claude-code / openclaw : ne RÉPÈTE PAS le contenu,
+ * mais référence les widgets produits + statut + instruction stricte.
+ *
+ * IMPORTANT — on N'EXTRAIT PAS la 1re phrase du texte du sub-agent, qui est
+ * souvent une intro foireuse type "Je lance la recherche...". Le parent
+ * l'interprétait comme "rien fait, je relance" → boucle.
+ *
+ * Le full summary reste accessible côté UI via la modal sub-agent.
+ */
+function _buildParentDigest(fullSummary, widgets) {
+  const cleanWidgets = (widgets || [])
+    .filter(w => w && w.widgetId)
+    .map(w => ({ widgetId: String(w.widgetId), kind: w.kind || null, title: w.title || null }));
+
+  const hasContent = !!(fullSummary && String(fullSummary).trim().length > 50);
+  const hasWidgets = cleanWidgets.length > 0;
+
+  // ── Status line ──────────────────────────────────────────────────────
+  let status;
+  if (hasWidgets) {
+    status = `✅ Sub-agent TERMINÉ avec succès — ${cleanWidgets.length} widget(s) produit(s) ET ${hasContent ? 'rapport textuel détaillé' : 'pas de texte additionnel'}.`;
+  } else if (hasContent) {
+    status = `✅ Sub-agent TERMINÉ avec succès — rapport textuel produit (consultable côté UI dans la modal sub-agent).`;
+  } else {
+    status = `⚠️ Sub-agent terminé sans contenu exploitable.`;
+  }
+
+  // ── Widgets list ─────────────────────────────────────────────────────
+  const widgetsLine = hasWidgets
+    ? `\n\nWidgets disponibles à insérer dans ta réponse :\n${cleanWidgets.map(w => `- [[WIDGET:${w.widgetId}]]${w.title ? ` — ${w.title}` : ''}`).join('\n')}`
+    : '';
+
+  // ── Strict instructions to prevent the bug we just saw ───────────────
+  const instructions = [];
+  if (hasWidgets) {
+    instructions.push(
+      `Réponds à l'utilisateur en **1-2 phrases de transition** + insère le(s) widget(s) ci-dessus via [[WIDGET:id]].`,
+      `🚫 NE PAS recopier le contenu du widget — il est déjà rendu côté UI.`,
+      `🚫 NE PAS relancer spawn_subagent — la recherche est TERMINÉE et a réussi.`,
+      `🚫 NE PAS dire "le sous-agent a buggé" — c'est faux, regarde le statut ci-dessus.`,
+    );
+  } else if (hasContent) {
+    instructions.push(
+      `Réponds en **1-3 phrases** synthétisant le résultat (sans recopier le rapport complet).`,
+      `🚫 NE PAS relancer spawn_subagent — l'analyse est faite.`,
+    );
+  } else {
+    instructions.push(
+      `Le sub-agent n'a pas produit de contenu. Tu peux relancer avec un prompt plus précis, OU dire à l'user "désolé, le sub-agent n'a pas trouvé de résultat exploitable".`,
+    );
+  }
+  const instructionBlock = `\n\n📋 INSTRUCTIONS STRICTES POUR TA RÉPONSE :\n${instructions.map(l => `- ${l}`).join('\n')}`;
+
+  return {
+    text: status + widgetsLine + instructionBlock,
+    widgets: cleanWidgets,
   };
 }
 

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, computed, signal, ElementRef, inject, OnDestroy, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, computed, signal, ElementRef, inject, OnDestroy, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { AgentProfile, resolveAgentProfile } from './ai-roster';
@@ -196,7 +196,7 @@ import { AgentProfile, resolveAgentProfile } from './ai-roster';
     }
   `],
 })
-export class AiAgentBadgeComponent implements OnDestroy {
+export class AiAgentBadgeComponent implements OnDestroy, OnChanges {
   @Input() subagentType?: string | null;
   @Input() agent?: {
     subagentType?: string;
@@ -215,16 +215,21 @@ export class AiAgentBadgeComponent implements OnDestroy {
   tooltipPos = signal<{ x: number; y: number; below: boolean }>({ x: 0, y: 0, below: false });
   private _openTimer: any = null;
 
-  profile = computed<AgentProfile | null>(() => {
-    return resolveAgentProfile({
+  // Signal mis à jour via ngOnChanges. Avant : `computed()` ne se réévaluait
+  // jamais car ses dépendances étaient des @Input (pas des signals) → profile
+  // restait null → "Agent" générique affiché au lieu de l'identité réelle.
+  profile = signal<AgentProfile | null>(null);
+
+  ngOnChanges(_changes: SimpleChanges): void {
+    this.profile.set(resolveAgentProfile({
       subagentType: this.agent?.subagentType || this.subagentType || undefined,
       agentName: this.agent?.agentName,
       agentEmoji: this.agent?.agentEmoji,
       agentColor: this.agent?.agentColor,
       agentTagline: this.agent?.agentTagline,
       agentFigure: this.agent?.agentFigure,
-    });
-  });
+    }));
+  }
 
   openTooltip() {
     clearTimeout(this._openTimer);

@@ -128,10 +128,13 @@ export function resolveAgentProfile(partial: {
   agentFigure?: string;
 }): AgentProfile | null {
   const fromType = getAgentProfile(partial.subagentType);
-  if (!partial.agentName && !fromType) return null;
+  // Si AUCUNE info : retourne null (l'appelant peut afficher un fallback générique)
+  if (!partial.agentName && !partial.agentEmoji && !partial.subagentType && !fromType) return null;
+  // Au moins le subagentType est présent → on construit un profile partiel
+  // (mieux que de retourner null + afficher "Agent" générique).
   return {
     type: partial.subagentType || fromType?.type || 'unknown',
-    name: partial.agentName || fromType?.name || 'Agent',
+    name: partial.agentName || fromType?.name || partial.subagentType || 'Sous-agent',
     emoji: partial.agentEmoji || fromType?.emoji || '🤖',
     color: partial.agentColor || fromType?.color || '#e61982',
     tagline: partial.agentTagline || fromType?.tagline || '',

@@ -921,6 +921,12 @@ export class FlowViewerComponent implements AfterViewInit, OnDestroy, OnChanges 
       args: {
         title: 'Conditions', ui: { layout: 'vertical', labelsOnTop: true },
         fields: [
+          { type: 'select', key: 'evaluation_mode', label: "Mode d'évaluation", default: 'exclusive',
+            options: [
+              { label: 'Exclusif — première branche qui matche', value: 'exclusive' },
+              { label: 'Cumulatif — toutes les branches qui matchent (parallèle)', value: 'parallel' }
+            ], col: { xs: 24 }
+          },
           { type: 'section', title: 'Branches', key: 'items', mode: 'array',
             array: { initialItems: 1, minItems: 0, controls: { add: { kind: 'text', text: 'Ajouter' }, remove: { kind: 'text', text: 'Supprimer' } } },
             fields: [

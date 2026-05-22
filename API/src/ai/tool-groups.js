@@ -21,7 +21,7 @@ const PRIMITIVE_GROUPS = {
   workflow_search:  ['search_workflows', 'run_workflow', 'deploy_flow', 'undeploy_flow', 'get_deployment_status', 'list_runs', 'get_run_stats'],
   project_memory:  ['save_project_memory', 'get_project_memory'],
   project_knowledge: ['get_project_knowledge', 'set_project_knowledge'],
-  thread:          ['compact_and_transfer'],
+  thread:          ['compact_and_transfer', 'attach_thread_to_flow', 'attach_thread_to_form', 'detach_thread'],
   manual:          ['search_manual', 'get_manual_section'],
   subagent:        ['spawn_subagent', 'research_deep'],
   // Outils internes réservés aux subagents (jamais exposés au LLM principal).

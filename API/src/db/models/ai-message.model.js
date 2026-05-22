@@ -206,7 +206,7 @@ const TodoListSchema = new Schema({
 }, { _id: false });
 
 const MessageMetadataSchema = new Schema({
-  kind: { type: String, enum: ['permission_request', 'cache_sync_request', 'comment', 'system_note', 'system_hint', 'structured', 'plan_proposal', 'diagram', 'image_inline', 'agent_report', 'canvas_html', 'file_inline', 'todo_list', 'resume_stream'] },
+  kind: { type: String, enum: ['permission_request', 'cache_sync_request', 'comment', 'system_note', 'system_hint', 'structured', 'plan_proposal', 'diagram', 'image_inline', 'agent_report', 'canvas_html', 'file_inline', 'todo_list', 'resume_stream', 'mailbox', 'subagent_question', 'parent_child_exchange'] },
   todoList: { type: TodoListSchema, default: undefined },
   permissionRequest: { type: PermissionRequestSchema, default: undefined },
   cacheSyncRequest: { type: CacheSyncRequestSchema, default: undefined },

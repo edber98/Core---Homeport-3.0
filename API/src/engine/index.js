@@ -122,7 +122,14 @@ function findStartNode(nodesById){ for (const n of nodesById.values()){ const tO
 
 function evaluateCondition(node, initialContext, msg){
   const ctx = node.model?.context || {};
-  const mode = String(ctx.mode || 'firstMatch');
+  // evaluation_mode (UI: 'exclusive' | 'parallel') supersedes legacy ctx.mode.
+  // 'parallel' → all matching branches fire simultaneously (allMatches).
+  // 'exclusive' (default) → first matching branch wins (firstMatch).
+  const evalMode = String(ctx.evaluation_mode || '').toLowerCase();
+  let mode;
+  if (evalMode === 'parallel') mode = 'allMatches';
+  else if (evalMode === 'exclusive') mode = 'firstMatch';
+  else mode = String(ctx.mode || 'firstMatch');
   const items = Array.isArray(ctx.items) ? ctx.items : [];
   const matches = [];
   for (const it of items){

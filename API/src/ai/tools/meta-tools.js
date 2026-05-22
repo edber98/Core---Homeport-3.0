@@ -22,12 +22,20 @@ const AiMessage = require('../../db/models/ai-message.model');
  * via `ai.message.created` → reloadThreadMessages → le widget apparaît live.
  * Sans ça, l'utilisateur doit refresh pour voir le tableau/image/pdf.
  */
-function _notifyInlineMessage(threadId, kind) {
+// Notify le frontend qu'un AiMessage vient d'être créé/mis à jour.
+// Inclut le messageId pour que emitThreadEvent puisse auto-hydrater le payload
+// (le message complet est attaché à l'event → le frontend l'applique direct
+// sans refetch). Cf. job-events.js _hydrateMessageEvent.
+function _notifyInlineMessage(threadId, kind, messageId) {
   if (!threadId) return;
   try {
     const { emitThreadEvent } = require('../jobs/job-events');
-    console.log(`[meta-tools] emit ai.message.created kind=${kind} threadId=${threadId}`);
-    emitThreadEvent(String(threadId), { type: 'ai.message.created', kind: kind || 'inline' });
+    console.log(`[meta-tools] emit ai.message.created kind=${kind} messageId=${messageId} threadId=${threadId}`);
+    emitThreadEvent(String(threadId), {
+      type: 'ai.message.created',
+      kind: kind || 'inline',
+      messageId: messageId ? String(messageId) : undefined,
+    });
   } catch (e) {
     console.warn('[meta-tools] notifyInlineMessage failed:', e?.message);
   }
@@ -368,7 +376,7 @@ const META_TOOL_DEFINITIONS = [
   },
   {
     name: 'compact_and_transfer',
-    description: 'Compacte la conversation actuelle en un résumé et crée un nouveau thread avec ce contexte. Utilise quand l\'utilisateur veut travailler sur un NOUVEL élément (workflow/formulaire) depuis une conversation liée à un autre élément. Le résumé sera le premier message du nouveau thread. IMPORTANT : si le nouveau thread concerne un élément existant (workflow/formulaire), passe le flowId ou formId pour maintenir le lien.',
+    description: 'Compacte la conversation en un résumé et crée un NOUVEAU thread (pour démarrer un sujet vraiment différent). N\'UTILISE PAS pour changer le contexte d\'un thread existant — utilise plutôt attach_thread_to_flow / attach_thread_to_form qui modifient le thread COURANT sans en créer un nouveau.',
     parameters: {
       type: 'object',
       properties: {
@@ -376,11 +384,38 @@ const META_TOOL_DEFINITIONS = [
         newMode: { type: 'string', enum: ['chat', 'workflow', 'form'], description: 'Mode du nouveau thread' },
         newTitle: { type: 'string', description: 'Titre du nouveau thread (ex: "Création workflow envoi mail")' },
         agentId: { type: 'string', description: 'Agent ID optionnel pour le nouveau thread' },
-        flowId: { type: 'string', description: 'ID du workflow à lier au nouveau thread (si mode workflow et workflow existant)' },
-        formId: { type: 'string', description: 'ID du formulaire à lier au nouveau thread (si mode form et formulaire existant)' },
+        flowId: { type: 'string', description: 'ID du workflow à lier au nouveau thread (custom flw_xxx ou ObjectId)' },
+        formId: { type: 'string', description: 'ID du formulaire à lier au nouveau thread (custom frm_xxx ou ObjectId)' },
       },
       required: ['summary', 'newMode', 'newTitle'],
     },
+  },
+  {
+    name: 'attach_thread_to_flow',
+    description: 'Lie le thread COURANT à un workflow et bascule en mode workflow. Le graph du workflow sera automatiquement disponible dans le contexte au prochain tour, et tu pourras l\'éditer directement avec les workflow_* tools. À UTILISER quand l\'utilisateur dit "charge ce workflow", "modifie ce workflow", "ouvre celui-là" depuis une conversation chat libre. Ne crée PAS de nouveau thread — modifie le courant.',
+    parameters: {
+      type: 'object',
+      properties: {
+        flowId: { type: 'string', description: 'ID du workflow (custom flw_xxx OU ObjectId Mongo). Utilise list_flows si tu dois retrouver l\'ID depuis un nom.' },
+      },
+      required: ['flowId'],
+    },
+  },
+  {
+    name: 'attach_thread_to_form',
+    description: 'Lie le thread COURANT à un formulaire et bascule en mode form. Le schema du form sera disponible au prochain tour pour édition. Ne crée PAS de nouveau thread.',
+    parameters: {
+      type: 'object',
+      properties: {
+        formId: { type: 'string', description: 'ID du form (custom frm_xxx OU ObjectId).' },
+      },
+      required: ['formId'],
+    },
+  },
+  {
+    name: 'detach_thread',
+    description: 'Détache le thread courant de tout workflow/formulaire et revient en mode chat libre. À utiliser si l\'utilisateur veut "sortir" du contexte workflow pour parler d\'autre chose dans le même thread.',
+    parameters: { type: 'object', properties: {} },
   },
   {
     name: 'open_credentials',
@@ -553,6 +588,38 @@ EXEMPLE
         summary: { type: 'string', description: 'Résumé 5-10 mots affiché dans l\'UI (facultatif)' },
       },
       required: ['to', 'message'],
+    },
+  },
+  {
+    name: 'ask_parent_agent',
+    description: `Pose une question à ton agent PARENT et attend sa réponse SYNCHRONE (≠ send_message_to_agent qui est fire-and-forget).
+
+📌 USAGE — disponible UNIQUEMENT pour les sous-agents (un parentJobId est requis).
+
+À utiliser quand :
+- Tu as besoin d'une info/décision que ton PARENT connaît (pas l'utilisateur directement)
+- Tu veux clarifier le scope d'une tâche avant de continuer
+- Tu hésites entre 2 approches et veux son avis
+
+🔄 COMPORTEMENT
+1. Le LLM parent reçoit ta question avec son propre contexte (system prompt + historique récent)
+2. Il y répond en une phrase concise
+3. Sa réponse t'est retournée comme tool_result
+4. SI le parent ne sait pas → il préfixe sa réponse par "ESCALATE_TO_USER:" et tu sais que tu dois appeler ask_user toi-même
+
+💰 COÛT : ~2-5s + tokens supplémentaires (équivalent à 1 tour LLM du parent). Préfère send_message_to_agent({to:'parent'}) pour de la communication non-bloquante (mailbox).
+
+⚠️ NE PAS l'utiliser pour :
+- Demander à l'utilisateur (→ ask_user)
+- Donner une info au parent (→ send_message_to_agent({to:'parent'}))
+- Questions internes que TU peux résoudre toi-même (→ utilise ton propre raisonnement)`,
+    parameters: {
+      type: 'object',
+      properties: {
+        question: { type: 'string', description: 'La question/clarification à poser au parent. Sois précis (1-2 phrases).' },
+        context: { type: 'string', description: 'Optionnel : ce que tu as déjà essayé, pourquoi tu hésites. Aide le parent à comprendre où tu en es.' },
+      },
+      required: ['question'],
     },
   },
   {
@@ -1014,6 +1081,38 @@ function extractFileRefs(obj, found = []) {
   return found;
 }
 
+// Résout un identifiant de Flow (custom flw_xxx OU ObjectId) vers son _id Mongo.
+// Retourne null si introuvable. Scope par workspace pour la sécurité.
+async function resolveFlowObjectId(rawId, ctx) {
+  const { Types } = require('mongoose');
+  const s = String(rawId || '').trim();
+  if (!s) return null;
+  // Tentative ObjectId direct
+  if (Types.ObjectId.isValid(s)) {
+    const f = await Flow.findOne({ _id: s, workspaceId: ctx.workspaceId }).select('_id').lean();
+    if (f) return f._id;
+  }
+  // Tentative custom ID (flw_xxx)
+  const byCustom = await Flow.findOne({ id: s, workspaceId: ctx.workspaceId }).select('_id').lean();
+  if (byCustom) return byCustom._id;
+  return null;
+}
+
+// Idem pour Form
+async function resolveFormObjectId(rawId, ctx) {
+  const { Types } = require('mongoose');
+  const Form = require('../../db/models/form.model');
+  const s = String(rawId || '').trim();
+  if (!s) return null;
+  if (Types.ObjectId.isValid(s)) {
+    const f = await Form.findOne({ _id: s, workspaceId: ctx.workspaceId }).select('_id').lean();
+    if (f) return f._id;
+  }
+  const byCustom = await Form.findOne({ id: s, workspaceId: ctx.workspaceId }).select('_id').lean();
+  if (byCustom) return byCustom._id;
+  return null;
+}
+
 // Execute a meta-tool by name
 async function executeMetaTool(name, input, ctx) {
   // Skill meta-tools (skill_list, skill_get, skill_execute) are routed to a
@@ -1420,8 +1519,16 @@ async function executeMetaTool(name, input, ctx) {
         title: newTitle || 'Suite de conversation',
         agentId: agentId || ctx._sourceThreadAgentId || undefined,
       };
-      if (flowId) threadData.flowId = flowId;
-      if (formId) threadData.metadata = { formId };
+      // Résout flowId custom (flw_xxx) → ObjectId (le schema attend ObjectId).
+      if (flowId) {
+        const resolved = await resolveFlowObjectId(flowId, ctx);
+        if (!resolved) return { ok: false, error: `Workflow "${flowId}" introuvable` };
+        threadData.flowId = resolved;
+      }
+      if (formId) {
+        const resolved = await resolveFormObjectId(formId, ctx);
+        threadData.metadata = { formId: resolved || formId };
+      }
       const newThread = await AiThread.create(threadData);
       // Add the compact summary as a system context message
       await AiMessage.create({
@@ -1436,6 +1543,66 @@ async function executeMetaTool(name, input, ctx) {
         mode: newThread.mode,
         _transfer: true, // Marker for SSE side event
       };
+    }
+
+    case 'attach_thread_to_flow': {
+      if (!ctx.threadId) return { ok: false, error: 'threadId courant manquant' };
+      const flowId = String(input.flowId || '').trim();
+      if (!flowId) return { ok: false, error: 'flowId requis' };
+      const flowObjId = await resolveFlowObjectId(flowId, ctx);
+      if (!flowObjId) return { ok: false, error: `Workflow "${flowId}" introuvable dans ce workspace` };
+      const flow = await Flow.findById(flowObjId).lean();
+      await AiThread.updateOne(
+        { _id: ctx.threadId },
+        { $set: { flowId: flowObjId, mode: 'workflow' } },
+      );
+      const nodeCount = Array.isArray(flow?.graph?.nodes) ? flow.graph.nodes.length : 0;
+      return {
+        ok: true,
+        flowId: String(flow?._id),
+        flowName: flow?.name || '',
+        nodeCount,
+        message: `Thread lié au workflow "${flow?.name}" (${nodeCount} nodes). Le graph sera disponible dans ton contexte au prochain tour pour édition.`,
+      };
+    }
+
+    case 'attach_thread_to_form': {
+      if (!ctx.threadId) return { ok: false, error: 'threadId courant manquant' };
+      const formId = String(input.formId || '').trim();
+      if (!formId) return { ok: false, error: 'formId requis' };
+      const formObjId = await resolveFormObjectId(formId, ctx);
+      if (!formObjId) return { ok: false, error: `Form "${formId}" introuvable dans ce workspace` };
+      const Form = require('../../db/models/form.model');
+      const form = await Form.findById(formObjId).lean();
+      const thread = await AiThread.findById(ctx.threadId);
+      if (thread) {
+        thread.mode = 'form';
+        thread.metadata = { ...(thread.metadata || {}), formId: String(formObjId) };
+        thread.markModified('metadata');
+        await thread.save();
+      }
+      return {
+        ok: true,
+        formId: String(form?._id),
+        formName: form?.name || '',
+        message: `Thread lié au form "${form?.name}". Le schema sera disponible au prochain tour pour édition.`,
+      };
+    }
+
+    case 'detach_thread': {
+      if (!ctx.threadId) return { ok: false, error: 'threadId courant manquant' };
+      const thread = await AiThread.findById(ctx.threadId);
+      if (!thread) return { ok: false, error: 'thread introuvable' };
+      thread.flowId = undefined;
+      thread.mode = 'chat';
+      if (thread.metadata && thread.metadata.formId) {
+        const meta = { ...thread.metadata };
+        delete meta.formId;
+        thread.metadata = meta;
+        thread.markModified('metadata');
+      }
+      await thread.save();
+      return { ok: true, message: 'Thread détaché. Mode chat libre.' };
     }
 
     case 'open_element': {
@@ -1572,9 +1739,20 @@ async function executeMetaTool(name, input, ctx) {
           widgetId = `subagent-todos-${String(jobContext.jobId).slice(-12)}`;
         } else {
           try {
+            // CRITIQUE : exclure les messages kind='mailbox' du calcul "dernier
+            // user message". Sinon : main démarre avec userMsg1 → todo widgetId
+            // basé sur userMsg1. User envoie mailbox "max 2 sources" pendant
+            // exécution → nouveau user msg → resume parent crée une todo avec
+            // un NOUVEAU widgetId, la principale devient orpheline. Fix : ne
+            // compte que les vrais prompts initiaux (pas les mailbox interim).
             const lastUserMsg = await AiMessage.findOne({
               threadId: ctx.threadId,
               role: 'user',
+              $or: [
+                { 'metadata.kind': { $exists: false } },
+                { 'metadata.kind': null },
+                { 'metadata.kind': { $nin: ['mailbox'] } },
+              ],
             }).sort({ createdAt: -1 }).select('_id').lean();
             if (lastUserMsg?._id) widgetId = `session-todos-${String(lastUserMsg._id).slice(-12)}`;
           } catch { /* fallback to default */ }
@@ -1608,6 +1786,44 @@ async function executeMetaTool(name, input, ctx) {
           updatedAt: new Date(),
         };
 
+        // ── Anti-doublon todo_write : hash le contenu et skip si identique.
+        // Pattern observé en prod : LLM ré-écrit 3-4× la même liste de todos
+        // sans changement (juste pour "confirmer son plan"). Chaque write =
+        // 1 DB write + 1 event SSE inutile.
+        try {
+          const todosForHash = todoPayload.todos.map(t => ({
+            id: t.id, content: t.content, status: t.status,
+            activeForm: t.activeForm,
+          }));
+          const newHash = crypto.createHash('sha1')
+            .update(JSON.stringify(todosForHash))
+            .digest('hex')
+            .slice(0, 16);
+          const prevHash = prevExisting?.metadata?.todoList?._contentHash;
+          if (prevHash && prevHash === newHash) {
+            console.log(`[meta-tools] todo_write dedup: hash unchanged (${newHash}) — skip persist`);
+            const inProgressNoop = todoPayload.todos.find(t => t.status === 'in_progress');
+            const completedNoop = todoPayload.todos.filter(t => t.status === 'completed').length;
+            return {
+              ok: true,
+              _silent: true,
+              deduplicated: true,
+              stats: {
+                total: todoPayload.todos.length,
+                completed: completedNoop,
+                inProgress: inProgressNoop ? 1 : 0,
+                remaining: todoPayload.todos.length - completedNoop - (inProgressNoop ? 1 : 0),
+              },
+              currentTask: inProgressNoop ? inProgressNoop.content : null,
+              hint: 'Aucun changement détecté dans la liste de todos — pas de re-persistence. Concentre-toi sur l\'exécution des steps au lieu de re-écrire la même liste.',
+            };
+          }
+          // Inject le hash dans le payload pour la prochaine comparaison
+          todoPayload._contentHash = newHash;
+        } catch (e) {
+          console.warn('[meta-tools] todo_write dedup hash failed:', e?.message);
+        }
+
         // Reset le buffer de tools après drain
         if (ctx?._jobContext) ctx._jobContext._todoPendingTools = [];
 
@@ -1625,7 +1841,7 @@ async function executeMetaTool(name, input, ctx) {
           await existing.save();
           _notifyInlineUpdate(ctx.threadId, String(existing._id), 'todo_list');
         } else {
-          await AiMessage.create({
+          const created = await AiMessage.create({
             threadId: ctx.threadId,
             workspaceId: ctx.workspaceId,
             role: 'assistant',
@@ -1638,7 +1854,7 @@ async function executeMetaTool(name, input, ctx) {
               ...(isSubagent ? { subagentJobId: String(jobContext.jobId) } : {}),
             },
           });
-          _notifyInlineMessage(ctx.threadId, 'todo_list');
+          _notifyInlineMessage(ctx.threadId, 'todo_list', created._id);
         }
         const inProgress = todos.find(t => t.status === 'in_progress');
         const completedCount = todos.filter(t => t.status === 'completed').length;
@@ -1655,6 +1871,140 @@ async function executeMetaTool(name, input, ctx) {
         };
       } catch (e) {
         return { ok: false, error: e?.message || String(e) };
+      }
+    }
+
+    case 'ask_parent_agent': {
+      // Sous-agent pose une question synchrone au parent via mini-call LLM.
+      // Cf. tool description : architecture parent↔child via LLM réel.
+      const parentJobId = ctx?._jobContext?.parentJobId;
+      if (!parentJobId) {
+        return {
+          ok: false,
+          error: 'ask_parent_agent_unavailable',
+          message: 'Ce tool est disponible UNIQUEMENT pour les sous-agents. Tu es l\'agent principal — utilise ask_user pour demander à l\'utilisateur, ou réponds toi-même.',
+        };
+      }
+      const { question, context: subContext } = input || {};
+      if (!question || typeof question !== 'string') {
+        return { ok: false, error: 'question requise' };
+      }
+
+      try {
+        const AiJob = require('../../db/models/ai-job.model');
+        const parentJob = await AiJob.findOne({ id: parentJobId }).lean();
+        if (!parentJob) return { ok: false, error: 'parent_job_not_found' };
+
+        // Mini-call LLM sur le parent — pas de tools, juste du texte court.
+        const { buildContext } = require('../context/context-builder');
+        const parentCtx = await buildContext({
+          companyId: parentJob.companyId,
+          workspaceId: parentJob.workspaceId,
+          userId: parentJob.userId,
+        });
+        const { createLlmClient } = require('../llm');
+        const llm = createLlmClient(parentCtx.llmConfig.provider, parentCtx.llmConfig);
+
+        const subAgentName = ctx._jobContext?.agentName || ctx._jobContext?.subagentType || 'subagent';
+        const miniSystem = `Tu es l'agent parent d'un sous-agent qui te pose une question pour avancer dans sa tâche.
+
+Mission : répondre concisément à sa question d'après ce que tu sais (contexte de la conversation, mémoire utilisateur, etc.).
+
+Règles :
+- Si tu CONNAIS la réponse → réponds clairement en 1-3 phrases. Pas de markdown lourd.
+- Si tu NE SAIS PAS et qu'il faut demander à l'utilisateur → réponds EXACTEMENT en commençant par "ESCALATE_TO_USER:" suivi de la question reformulée pour l'utilisateur.
+- N'invoque AUCUN outil. Juste du texte court.
+- Ne pose pas de contre-questions au sous-agent — réponds avec ce que tu sais ou escalade.`;
+
+        const userPrompt = `Sous-agent : ${subAgentName}
+Question : ${question}${subContext ? '\n\nContexte additionnel fourni par le sous-agent :\n' + subContext : ''}`;
+
+        let answer = '';
+        const stream = llm.stream(
+          [
+            { role: 'system', content: miniSystem },
+            { role: 'user', content: userPrompt },
+          ],
+          [], // pas de tools
+        );
+        for await (const ev of stream) {
+          if (ev.type === 'text_delta') answer += ev.text;
+        }
+        answer = answer.trim();
+        if (!answer) {
+          return { ok: false, error: 'empty_parent_response', message: 'Le parent n\'a rien répondu.' };
+        }
+
+        // Détecte une escalation utilisateur
+        const escalateMatch = answer.match(/^ESCALATE_TO_USER:\s*(.+)$/is);
+        const escalated = !!escalateMatch;
+        const userQuestion = escalated ? escalateMatch[1].trim() : null;
+
+        // Persist l'échange dans le thread pour visibilité chat (parent↔child déroulé)
+        const threadId = ctx?.threadId;
+        if (threadId) {
+          try {
+            const childInfo = {
+              agentName: ctx._jobContext?.agentName,
+              agentEmoji: ctx._jobContext?.agentEmoji,
+              agentColor: ctx._jobContext?.agentColor,
+              subagentType: ctx._jobContext?.subagentType,
+            };
+            // Question (badge subagent)
+            const qMsg = await AiMessage.create({
+              threadId,
+              role: 'assistant',
+              content: question,
+              metadata: {
+                kind: 'parent_child_exchange',
+                extra: {
+                  exchangeRole: 'question',
+                  fromSubagent: true,
+                  parentJobId, childJobId: ctx._jobContext.jobId,
+                  subagentContext: subContext || undefined,
+                  ...childInfo,
+                },
+              },
+            });
+            _notifyInlineMessage(threadId, 'parent_child_exchange', qMsg._id);
+            // Réponse (badge parent / escalation)
+            const aMsg = await AiMessage.create({
+              threadId,
+              role: 'assistant',
+              content: escalated ? `Je ne sais pas — je vais demander à l'utilisateur : « ${userQuestion} »` : answer,
+              metadata: {
+                kind: 'parent_child_exchange',
+                extra: {
+                  exchangeRole: 'answer',
+                  parentJobId, childJobId: ctx._jobContext.jobId,
+                  escalated, userQuestion: userQuestion || undefined,
+                  ...childInfo,
+                },
+              },
+            });
+            _notifyInlineMessage(threadId, 'parent_child_exchange', aMsg._id);
+          } catch (e) {
+            console.error('[ask_parent_agent] persist exchange failed:', e?.message);
+          }
+        }
+
+        if (escalated) {
+          return {
+            ok: true,
+            escalated_to_user: true,
+            parent_response: answer,
+            user_question: userQuestion,
+            hint: `Le parent ne connaît pas la réponse — il suggère de demander à l'utilisateur : "${userQuestion}". Tu peux maintenant appeler ask_user avec cette question.`,
+          };
+        }
+        return {
+          ok: true,
+          parent_response: answer,
+          hint: 'Le parent a répondu. Utilise sa réponse pour continuer ta tâche.',
+        };
+      } catch (e) {
+        console.error('[ask_parent_agent] error:', e?.message);
+        return { ok: false, error: e?.message || 'ask_parent_agent failed' };
       }
     }
 
@@ -1678,7 +2028,7 @@ async function executeMetaTool(name, input, ctx) {
         if (toLower === 'user' || toLower === 'utilisateur') {
           if (!ctx.threadId) return { ok: false, error: 'threadId manquant pour message à user' };
           if (!fromAgent) return { ok: false, error: "Ce tool ne peut être utilisé que par un subagent pour parler à l'utilisateur." };
-          await AiMessage.create({
+          const created = await AiMessage.create({
             threadId: ctx.threadId,
             workspaceId: ctx.workspaceId,
             role: 'assistant',
@@ -1697,7 +2047,7 @@ async function executeMetaTool(name, input, ctx) {
               },
             },
           });
-          _notifyInlineMessage(ctx.threadId, 'subagent_message');
+          _notifyInlineMessage(ctx.threadId, 'subagent_message', created._id);
           return {
             ok: true,
             delivered: true,
@@ -1810,16 +2160,59 @@ async function executeMetaTool(name, input, ctx) {
           }
         }
 
-        // Live preview: emit subagent status
+        // Live preview: emit subagent status.
+        // En mode PARALLEL, input.prompt = "placeholder" et input.subagent_type
+        // est un placeholder aussi → les vrais agents sont dans input.parallel[].
+        // On envoie maintenant un payload riche : typeLabel + promptLabel pour
+        // rétro-compat + le tableau `parallel` complet pour que l'UI affiche
+        // une vraie liste des sub-agents en cours (avec leur prénom roster,
+        // emoji, prompt individuel).
         try {
-          ctx?._emit?.({
-            type: 'ui.preview.update',
-            patch: [
-              { op: 'replace', path: '/subagentType', value: input.subagent_type || 'general' },
-              { op: 'replace', path: '/prompt', value: String(input.prompt || '').slice(0, 500) },
-              { op: 'replace', path: '/status', value: 'running' },
-            ],
-          });
+          const isParallel = Array.isArray(input.parallel) && input.parallel.length > 0;
+          let typeLabel;
+          let promptLabel;
+          let parallelPayload = null;
+          if (isParallel) {
+            const types = input.parallel.map(p => p?.subagent_type || 'agent').filter(Boolean);
+            const uniqueTypes = [...new Set(types)];
+            typeLabel = `${input.parallel.length} en parallèle`;
+            promptLabel = input.parallel
+              .map((p, i) => `[${i + 1}] ${String(p?.prompt || '').slice(0, 200)}`)
+              .join('\n')
+              .slice(0, 500);
+            // Détail par sub-agent (enrichi avec le roster si disponible)
+            let roster = null;
+            try { roster = require('../subagent/roster'); } catch { /* optionnel */ }
+            parallelPayload = input.parallel.map(p => {
+              const subagentType = p?.subagent_type || 'agent';
+              const info = roster?.getAgent?.(subagentType) || null;
+              return {
+                subagentType,
+                prompt: String(p?.prompt || '').slice(0, 280),
+                agentName: info?.name || subagentType,
+                agentEmoji: info?.emoji || '🤖',
+                agentColor: info?.color || '#999',
+                status: 'running',
+              };
+            });
+          } else {
+            typeLabel = input.subagent_type || 'general';
+            const rawPrompt = String(input.prompt || '');
+            // Filtre élargi : le LLM ajoute parfois un suffixe au placeholder
+            // ("Placeholder (sera ignoré, voir parallel)", "placeholder - utilisé en parallel", etc.).
+            // On détecte tout début par "placeholder" insensible à la casse.
+            const isPlaceholder = /^placeholder/i.test(rawPrompt.trim());
+            promptLabel = isPlaceholder ? '' : rawPrompt.slice(0, 500);
+          }
+          const patchOps = [
+            { op: 'replace', path: '/subagentType', value: typeLabel },
+            { op: 'replace', path: '/prompt', value: promptLabel },
+            { op: 'replace', path: '/status', value: 'running' },
+          ];
+          if (parallelPayload) {
+            patchOps.push({ op: 'replace', path: '/parallel', value: parallelPayload });
+          }
+          ctx?._emit?.({ type: 'ui.preview.update', patch: patchOps });
         } catch { /* non-fatal */ }
         // Permet le spawn même sans job parent — crée un job éphémère si nécessaire
         let parentJobId = jc?.jobId;
@@ -1874,10 +2267,27 @@ async function executeMetaTool(name, input, ctx) {
           parentBroadcast: jc?.broadcast,
         });
         try {
-          ctx?._emit?.({
-            type: 'ui.preview.update',
-            patch: [{ op: 'replace', path: '/status', value: 'success' }],
-          });
+          // Enrichit la live-preview avec les jobIds réels après spawn :
+          // - en mode parallel, on patch chaque entry du tableau parallel avec son jobId
+          //   pour que le frontend puisse s'abonner aux streams individuels et afficher
+          //   les tools/progression de chaque sub-agent en TEMPS RÉEL dans sa card.
+          // - le status global passe à 'success' (signifie : tools spawn_subagent a fini
+          //   son lancement, les sub-agents tournent maintenant ou ont déjà fini).
+          const patchOps = [{ op: 'replace', path: '/status', value: 'success' }];
+          const subResults = Array.isArray(res?.results) ? res.results
+            : Array.isArray(res) ? res
+            : null;
+          if (subResults && subResults.length) {
+            subResults.forEach((sub, idx) => {
+              if (sub?.jobId) {
+                patchOps.push({ op: 'replace', path: `/parallel/${idx}/jobId`, value: String(sub.jobId) });
+                patchOps.push({ op: 'replace', path: `/parallel/${idx}/status`, value: sub.status || 'running' });
+              }
+            });
+          } else if (res?.jobId) {
+            patchOps.push({ op: 'replace', path: '/jobId', value: String(res.jobId) });
+          }
+          ctx?._emit?.({ type: 'ui.preview.update', patch: patchOps });
         } catch { /* non-fatal */ }
         // Mémorise le prompt hash pour anti-doublon
         if (ctx?._jobContext) {
@@ -2030,7 +2440,7 @@ async function executeMetaTool(name, input, ctx) {
             ...(ctx._jobContext?.jobId ? { subagentJobId: String(ctx._jobContext.jobId) } : {}),
           },
         });
-        _notifyInlineMessage(ctx.threadId, 'structured');
+        _notifyInlineMessage(ctx.threadId, 'structured', doc._id);
         return {
           ok: true,
           _silent: true,
@@ -2190,7 +2600,7 @@ async function executeMetaTool(name, input, ctx) {
               ...(ctx._jobContext?.jobId ? { subagentJobId: String(ctx._jobContext.jobId) } : {}),
             },
           });
-          _notifyInlineMessage(ctx.threadId, 'diagram');
+          _notifyInlineMessage(ctx.threadId, 'diagram', doc._id);
         }
       } catch (e) {
         console.warn('[generate_diagram] AiMessage persist error:', e?.message);
@@ -2345,7 +2755,7 @@ async function executeMetaTool(name, input, ctx) {
               ...(ctx._jobContext?.jobId ? { subagentJobId: String(ctx._jobContext.jobId) } : {}),
             },
           });
-          _notifyInlineMessage(ctx.threadId, 'image_inline');
+          _notifyInlineMessage(ctx.threadId, 'image_inline', doc._id);
         }
         return {
           ok: true,
@@ -2365,6 +2775,34 @@ async function executeMetaTool(name, input, ctx) {
       const { fileId, caption } = input || {};
       if (!fileId) return { ok: false, error: 'fileId requis' };
       try {
+        // ── Anti-doublon : si ce fileId est déjà affiché dans le thread dans les
+        // 30 dernières secondes (et que le LLM ne passe pas un widgetId explicite
+        // qui forcerait l'update), on retourne silencieusement le widget existant.
+        // Pattern observé en prod : LLM appelle display_file 2× pour le même fileId
+        // avec des widgetId différents → 2 widgets visibles pour le même fichier.
+        if (!input.widgetId) {
+          const RECENT_THRESHOLD_MS = 30_000;
+          const recentlySince = new Date(Date.now() - RECENT_THRESHOLD_MS);
+          const dup = await AiMessage.findOne({
+            threadId: ctx.threadId,
+            'metadata.kind': 'file_inline',
+            'metadata.fileInline.fileId': fileId,
+            createdAt: { $gt: recentlySince },
+          }, '_id metadata.widgetId').sort({ createdAt: -1 }).lean();
+          if (dup) {
+            const dupWidgetId = dup.metadata?.widgetId || `dup_${dup._id}`;
+            console.log(`[meta-tools] display_file dedup: fileId=${fileId} already shown recently (msgId=${dup._id}, widgetId=${dupWidgetId})`);
+            return {
+              ok: true,
+              _silent: true,
+              widgetId: dupWidgetId,
+              messageId: String(dup._id),
+              inlineMarker: `[[WIDGET:${dupWidgetId}]]`,
+              hint: `Fichier déjà affiché récemment dans le chat (widgetId=${dupWidgetId}). Insère [[WIDGET:${dupWidgetId}]] dans ton texte. PAS DE NOUVEL APPEL display_file pour ce fichier.`,
+              deduplicated: true,
+            };
+          }
+        }
         const FileRecord = require('../../db/models/file.model');
         const file = await FileRecord.findOne({ id: fileId }) || (require('mongoose').Types.ObjectId.isValid(fileId) ? await FileRecord.findById(fileId) : null);
         if (!file) return { ok: false, error: `Fichier ${fileId} introuvable` };
@@ -2420,7 +2858,7 @@ async function executeMetaTool(name, input, ctx) {
               ...(ctx._jobContext?.jobId ? { subagentJobId: String(ctx._jobContext.jobId) } : {}),
             },
           });
-          _notifyInlineMessage(ctx.threadId, 'file_inline');
+          _notifyInlineMessage(ctx.threadId, 'file_inline', doc._id);
         }
         return {
           ok: true,
@@ -2496,7 +2934,7 @@ async function executeMetaTool(name, input, ctx) {
               ...(ctx._jobContext?.jobId ? { subagentJobId: String(ctx._jobContext.jobId) } : {}),
             },
           });
-          _notifyInlineMessage(ctx.threadId, 'canvas_html');
+          _notifyInlineMessage(ctx.threadId, 'canvas_html', doc._id);
         }
         return {
           ok: true,

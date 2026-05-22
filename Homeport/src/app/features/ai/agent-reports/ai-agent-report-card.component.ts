@@ -109,7 +109,11 @@ import { AiAgentBadgeComponent } from '../agents/ai-agent-badge.component';
       border-radius: 0 8px 8px 0;
       padding: 0;
       margin: 4px 0;
-      max-width: 85%;
+      /* Prend la largeur du parent (.msg-wrap → .messages-wrapper 768px max),
+         aligné comme les autres blocs assistant (texte, tools collapse, widgets).
+         Avant : 85% créait une largeur incohérente vs le reste du flow. */
+      max-width: 100%;
+      box-sizing: border-box;
       opacity: 0.85;
       overflow: hidden;
     }

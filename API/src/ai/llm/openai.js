@@ -60,6 +60,7 @@ async function* streamOpenAI(messages, tools, config) {
   // Track tool call builders: index → { id, name, arguments }
   const toolBuilders = new Map();
   let totalUsage = null;
+  let stopReasonRaw = null;
 
   while (true) {
     const { done, value } = await reader.read();
@@ -73,8 +74,8 @@ async function* streamOpenAI(messages, tools, config) {
       const trimmed = line.trim();
       if (!trimmed || trimmed === 'data: [DONE]') {
         if (trimmed === 'data: [DONE]') {
-          console.log(`[llm-openai] [DONE] → done (usage: ${JSON.stringify(totalUsage)})`);
-          yield { type: 'done', usage: totalUsage };
+          console.log(`[llm-openai] [DONE] → done (usage: ${JSON.stringify(totalUsage)}, stop: ${stopReasonRaw})`);
+          yield { type: 'done', usage: totalUsage, stopReasonRaw };
           return;
         }
         continue;
@@ -84,9 +85,15 @@ async function* streamOpenAI(messages, tools, config) {
       let chunk;
       try { chunk = JSON.parse(trimmed.slice(6)); } catch { continue; }
 
-      // Usage info (if present)
+      // Usage info (if present). Préserve les champs provider pour l'adapter.
       if (chunk.usage) {
-        totalUsage = { input: chunk.usage.prompt_tokens || 0, output: chunk.usage.completion_tokens || 0 };
+        totalUsage = {
+          input: chunk.usage.prompt_tokens || 0,
+          output: chunk.usage.completion_tokens || 0,
+          prompt_tokens: chunk.usage.prompt_tokens || 0,
+          completion_tokens: chunk.usage.completion_tokens || 0,
+          prompt_tokens_details: chunk.usage.prompt_tokens_details || null,
+        };
       }
 
       const choice = chunk.choices?.[0];
@@ -122,14 +129,17 @@ async function* streamOpenAI(messages, tools, config) {
       }
 
       // Finish reason
-      if (choice.finish_reason === 'tool_calls' || choice.finish_reason === 'stop') {
-        // Emit tool_use_end for all pending builders
-        for (const [idx, b] of toolBuilders) {
-          let input = {};
-          try { input = JSON.parse(b.arguments); } catch {}
-          yield { type: 'tool_use_end', index: idx, id: b.id, name: b.name, input };
+      if (choice.finish_reason) {
+        stopReasonRaw = choice.finish_reason;
+        if (choice.finish_reason === 'tool_calls' || choice.finish_reason === 'stop' || choice.finish_reason === 'length') {
+          // Emit tool_use_end for all pending builders
+          for (const [idx, b] of toolBuilders) {
+            let input = {};
+            try { input = JSON.parse(b.arguments); } catch {}
+            yield { type: 'tool_use_end', index: idx, id: b.id, name: b.name, input };
+          }
+          toolBuilders.clear();
         }
-        toolBuilders.clear();
         // Don't return on 'stop' — with stream_options, the usage chunk arrives
         // AFTER finish_reason. Let the loop continue to capture it, then [DONE] yields done.
       }
@@ -142,7 +152,7 @@ async function* streamOpenAI(messages, tools, config) {
     try { input = JSON.parse(b.arguments); } catch {}
     yield { type: 'tool_use_end', index: idx, id: b.id, name: b.name, input };
   }
-  yield { type: 'done', usage: totalUsage };
+  yield { type: 'done', usage: totalUsage, stopReasonRaw };
 }
 
 // Format messages for OpenAI API

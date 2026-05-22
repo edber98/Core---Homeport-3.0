@@ -128,7 +128,18 @@ async function simulateViaEngine(flow, targetNodeId, opts = {}){
       if (kind !== 'condition' && !hasDynamicOutputs) continue;
       const outs = outEdges.get(String(nid)) || [];
       const viable = outs.filter(e => ancestors.has(String(e.target)) || String(e.target) === String(targetNodeId));
-      if (viable.length){ const h = String(viable[0].sourceHandle || ''); forceBranches[String(nid)] = h; }
+      if (viable.length){
+        // Parallel-mode condition: force ALL viable handles so every matching branch fires
+        // (engine handler routes an array → Promise.all on targets). Exclusive: just pick the first.
+        const ctx = n?.data?.model?.context || {};
+        const isParallel = kind === 'condition' && String(ctx.evaluation_mode || '').toLowerCase() === 'parallel';
+        if (isParallel) {
+          const handles = viable.map(e => String(e.sourceHandle || '')).filter(Boolean);
+          forceBranches[String(nid)] = handles.length > 1 ? handles : (handles[0] || '');
+        } else {
+          forceBranches[String(nid)] = String(viable[0].sourceHandle || '');
+        }
+      }
     } catch {}
   }
   try {
@@ -460,8 +471,22 @@ async function simulateViaEngineSplit(flow, targetNodeId){
     const isAnc = (id) => ancAll.has(String(id)) || String(id)===String(targetNodeId);
     for (const nid of ancAll){
       try {
+        const n = nodeById.get(String(nid));
+        const tmpl = n?.data?.model?.templateObj || {};
+        const kind = String(tmpl.type || n?.data?.model?.nodeKind || '').toLowerCase();
+        // Seuls les VRAIS points de branchement créent des choices :
+        //   - condition (chaque output = un cas)
+        //   - classifier / function avec output_array_field (chaque branche = une catégorie)
+        // Un fan-out parallèle (même handle 'ok' vers plusieurs nodes) N'EST PAS un choice
+        // — toutes les branches s'exécutent en parallèle. Forcer un seul edge ici casse
+        // les convergences (barrier qui attend N branches reçoit 1 → hang).
+        const ctx = n?.data?.model?.context || {};
+        const isParallelCond = kind === 'condition' && String(ctx.evaluation_mode || '').toLowerCase() === 'parallel';
+        // En mode parallel, toutes les branches matchantes se déclenchent ensemble → pas de choice à enumérer
+        if (isParallelCond) continue;
+        const isBranching = kind === 'condition' || !!tmpl.output_array_field;
+        if (!isBranching) continue;
         const outs = outE.get(String(nid)) || [];
-        // Collect distinct outgoing edges towards ancestors as atomic choices (not just by handle)
         const viable = outs.filter(e => isAnc(e.target)).map(e => ({ source: String(e.source), target: String(e.target), sourceHandle: String(e.sourceHandle||'') }));
         if (viable.length > 1) map.set(String(nid), viable);
       } catch {}

@@ -73,11 +73,20 @@ export class NodeCardHeaderComponent {
     try {
       const { r, g, b: bb } = this.hexToRgb(b);
       const yiq = (r * 299 + g * 587 + bb * 114) / 1000;
-      return yiq >= 140 ? '#111' : '#fff';
-    } catch { return '#111'; }
+      // 6-char hex (cdn.simpleicons.org refuse les 3-char shorthand → 404).
+      return yiq >= 140 ? '#111111' : '#ffffff';
+    } catch { return '#111111'; }
   }
+  // Providers internes Kinn (pas d'icône sur simpleicons.org) → skip pour
+  // éviter le spam 404 dans la console.
+  private static readonly INTERNAL_PROVIDERS = new Set([
+    'events', 'logic', 'http', 'kinn', 'core', 'cron',
+  ]);
   simpleIconUrlWithColor(id: string, color?: string) {
-    const hex = (color || '#111').replace('#','');
+    if (!id || NodeCardHeaderComponent.INTERNAL_PROVIDERS.has(id.toLowerCase())) return '';
+    // Normalise la couleur : strip '#', expand 3-char → 6-char.
+    let hex = (color || '#111111').replace('#','');
+    if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
     return `https://cdn.simpleicons.org/${encodeURIComponent(id)}/${hex}`;
   }
   private hexToRgb(hex: string): { r: number; g: number; b: number } {
