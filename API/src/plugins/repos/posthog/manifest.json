@@ -1,0 +1,3008 @@
+{
+  "repo": {
+    "name": "posthog",
+    "type": "local",
+    "label": "PostHog"
+  },
+  "variables": {
+    "posthog_action_result": {
+      "title": "Résultat action PostHog",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "Succès",
+          "description": "Indique si l’action est réussie.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Code HTTP",
+          "description": "Code HTTP retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "event",
+          "label": "Événement",
+          "description": "Nom de l’événement.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "distinct_id",
+          "label": "Distinct ID",
+          "description": "Identifiant utilisateur.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "group_type",
+          "label": "Type de groupe",
+          "description": "Type de groupe PostHog.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "group_key",
+          "label": "Clé de groupe",
+          "description": "Clé du groupe PostHog.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "survey_id",
+          "label": "ID du survey",
+          "description": "Identifiant survey.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "alias",
+          "label": "Alias",
+          "description": "Alias utilisateur.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "project_id",
+          "label": "ID projet",
+          "description": "Identifiant projet.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "query_id",
+          "label": "ID query",
+          "description": "Identifiant de query PostHog.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "sentCount",
+          "label": "Nombre envoyé",
+          "description": "Nombre d’événements envoyés.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "response",
+          "label": "Réponse",
+          "description": "Réponse API brute.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Données brutes",
+          "description": "Données API brutes.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "posthog_flags_result": {
+      "title": "Résultat feature flags",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "Succès",
+          "description": "Indique si l’action est réussie.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Code HTTP",
+          "description": "Code HTTP retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "distinct_id",
+          "label": "Distinct ID",
+          "description": "Identifiant utilisateur.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "flags",
+          "label": "Flags",
+          "description": "Valeurs de flags évaluées.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "payloads",
+          "label": "Payloads",
+          "description": "Payloads associés aux flags.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "errors",
+          "label": "Erreurs",
+          "description": "Erreurs pendant l’évaluation.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Données brutes",
+          "description": "Réponse complète.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "posthog_query_result": {
+      "title": "Résultat query PostHog",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "Succès",
+          "description": "Indique si l’action est réussie.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Code HTTP",
+          "description": "Code HTTP retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "project_id",
+          "label": "ID projet",
+          "description": "Identifiant projet.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "query_id",
+          "label": "ID query",
+          "description": "Identifiant de query.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "result",
+          "label": "Résultat",
+          "description": "Résultat structuré de la query.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Données brutes",
+          "description": "Réponse complète.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "posthog_feature_flag": {
+      "title": "Feature flag PostHog",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du feature flag.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "key",
+          "label": "Clé",
+          "description": "Clé du feature flag.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom du feature flag.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "checkbox",
+          "key": "active",
+          "label": "Actif",
+          "description": "Flag actif ou non.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "checkbox",
+          "key": "deleted",
+          "label": "Archivé",
+          "description": "Flag archivé ou non.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "rollout_percentage",
+          "label": "Pourcentage rollout",
+          "description": "Pourcentage de rollout.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "created_at",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "updated_at",
+          "label": "Date modification",
+          "description": "Date de modification.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Données brutes",
+          "description": "Objet API complet.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "posthog_feature_flags": {
+      "title": "Feature flags PostHog",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total de flags.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "next",
+          "label": "Page suivante",
+          "description": "Lien pagination suivant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "previous",
+          "label": "Page précédente",
+          "description": "Lien pagination précédent.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Feature flags",
+          "description": "Liste des feature flags",
+          "mode": "array",
+          "key": "flags",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "key",
+              "label": "Clé",
+              "description": "Clé du flag.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom du flag.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "checkbox",
+              "key": "active",
+              "label": "Actif",
+              "description": "Statut actif.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "checkbox",
+              "key": "deleted",
+              "label": "Archivé",
+              "description": "Statut archivé.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "posthog_cohort": {
+      "title": "Cohorte PostHog",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant cohorte.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom de la cohorte.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "description",
+          "label": "Description",
+          "description": "Description de la cohorte.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "checkbox",
+          "key": "deleted",
+          "label": "Supprimée",
+          "description": "Cohorte supprimée ou non.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "checkbox",
+          "key": "is_static",
+          "label": "Statique",
+          "description": "Cohorte statique ou dynamique.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "count",
+          "label": "Nombre de personnes",
+          "description": "Nombre de personnes dans la cohorte.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "created_at",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Données brutes",
+          "description": "Objet API complet.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "posthog_cohorts": {
+      "title": "Cohortes PostHog",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total de cohortes.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "next",
+          "label": "Page suivante",
+          "description": "Lien pagination suivant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "previous",
+          "label": "Page précédente",
+          "description": "Lien pagination précédent.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Cohortes",
+          "description": "Liste des cohortes",
+          "mode": "array",
+          "key": "cohorts",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "checkbox",
+              "key": "deleted",
+              "label": "Supprimée",
+              "description": "Statut supprimé.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "checkbox",
+              "key": "is_static",
+              "label": "Statique",
+              "description": "Statut statique.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "count",
+              "label": "Nombre",
+              "description": "Nombre de personnes.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "posthog_person": {
+      "title": "Personne PostHog",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant personne.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "distinct_id",
+          "label": "Distinct ID",
+          "description": "Distinct ID principal.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom de la personne.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "email",
+          "key": "email",
+          "label": "Email",
+          "description": "Email de la personne.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "created_at",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Données brutes",
+          "description": "Objet API complet.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "posthog_persons": {
+      "title": "Personnes PostHog",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total de personnes.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "next",
+          "label": "Page suivante",
+          "description": "Lien pagination suivant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "previous",
+          "label": "Page précédente",
+          "description": "Lien pagination précédent.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Personnes",
+          "description": "Liste des personnes",
+          "mode": "array",
+          "key": "persons",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "distinct_id",
+              "label": "Distinct ID",
+              "description": "Distinct ID.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "email",
+              "key": "email",
+              "label": "Email",
+              "description": "Email.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "posthog",
+      "name": "PostHog",
+      "title": "PostHog",
+      "iconClass": "fa-solid fa-chart-line",
+      "iconUrl": "https://cdn.simpleicons.org/posthog",
+      "color": "#fdebd5",
+      "tags": [
+        "analytics",
+        "feature-flags",
+        "events"
+      ],
+      "categories": [
+        "Analyse"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants PostHog",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectToken",
+            "label": "Token projet",
+            "description": "Token public du projet PostHog.",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "personalApiKey",
+            "label": "Clé API personnelle",
+            "description": "Clé API personnelle pour endpoints privés.",
+            "col": {
+              "xs": 24
+            },
+            "secret": true
+          },
+          {
+            "type": "text",
+            "key": "ingestHost",
+            "label": "URL ingestion",
+            "description": "URL des endpoints publics ingestion/flags.",
+            "col": {
+              "xs": 24
+            },
+            "default": "https://us.i.posthog.com"
+          },
+          {
+            "type": "text",
+            "key": "appHost",
+            "label": "URL application",
+            "description": "URL application pour endpoints privés.",
+            "col": {
+              "xs": 24
+            },
+            "default": "https://us.posthog.com"
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "posthog_event_capture",
+      "name": "posthogEventCapture",
+      "schemaVersion": 2,
+      "title": "Capturer un événement",
+      "subtitle": "Événements",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "PostHog",
+      "providerKey": "posthog",
+      "tags": [
+        "event",
+        "capture"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:posthog_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Envoie un événement unique vers /i/v0/e.",
+      "args": {
+        "title": "Capturer un événement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "event",
+            "label": "Nom de l’événement",
+            "description": "Nom de l’événement à capturer.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "distinctId",
+            "label": "Distinct ID",
+            "description": "Identifiant utilisateur.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "properties",
+            "label": "Propriétés",
+            "description": "Objet JSON de propriétés.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "date",
+            "key": "timestamp",
+            "label": "Timestamp",
+            "description": "Date/heure ISO 8601 optionnelle.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "anonymous",
+            "label": "Événement anonyme",
+            "description": "Force $process_person_profile=false.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Événements"
+    },
+    {
+      "key": "posthog_events_batch_capture",
+      "name": "posthogEventsBatchCapture",
+      "schemaVersion": 2,
+      "title": "Capturer un batch d’événements",
+      "subtitle": "Événements",
+      "icon": "fa-solid fa-layer-group",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "PostHog",
+      "providerKey": "posthog",
+      "tags": [
+        "batch",
+        "events"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:posthog_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Envoie un lot d’événements vers /batch.",
+      "args": {
+        "title": "Capturer un batch d’événements",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "json",
+            "key": "batch",
+            "label": "Batch",
+            "description": "Tableau JSON des événements.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "checkbox",
+            "key": "historicalMigration",
+            "label": "Migration historique",
+            "description": "Active historical_migration pour imports historiques.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Événements"
+    },
+    {
+      "key": "posthog_person_identify",
+      "name": "posthogPersonIdentify",
+      "schemaVersion": 2,
+      "title": "Identifier une personne",
+      "subtitle": "Personnes",
+      "icon": "fa-solid fa-user-check",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "PostHog",
+      "providerKey": "posthog",
+      "tags": [
+        "identify",
+        "person"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:posthog_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Envoie un événement $identify avec propriétés $set/$unset.",
+      "args": {
+        "title": "Identifier une personne",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "distinctId",
+            "label": "Distinct ID",
+            "description": "Identifiant utilisateur.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "setProperties",
+            "label": "Propriétés à définir",
+            "description": "Objet JSON pour $set.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "unsetProperties",
+            "label": "Propriétés à supprimer",
+            "description": "Tableau JSON de clés pour $unset.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Personnes"
+    },
+    {
+      "key": "posthog_person_alias_create",
+      "name": "posthogPersonAliasCreate",
+      "schemaVersion": 2,
+      "title": "Créer un alias personne",
+      "subtitle": "Personnes",
+      "icon": "fa-solid fa-link",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "PostHog",
+      "providerKey": "posthog",
+      "tags": [
+        "alias",
+        "person"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:posthog_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Envoie un événement $create_alias pour fusionner des identités.",
+      "args": {
+        "title": "Créer un alias personne",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "distinctId",
+            "label": "Distinct ID source",
+            "description": "Distinct ID existant.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "alias",
+            "label": "Alias cible",
+            "description": "Alias à rattacher.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Personnes"
+    },
+    {
+      "key": "posthog_group_identify",
+      "name": "posthogGroupIdentify",
+      "schemaVersion": 2,
+      "title": "Identifier un groupe",
+      "subtitle": "Groupes",
+      "icon": "fa-solid fa-people-group",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "PostHog",
+      "providerKey": "posthog",
+      "tags": [
+        "group",
+        "identify"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:posthog_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Envoie un événement $groupidentify avec $group_set.",
+      "args": {
+        "title": "Identifier un groupe",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "groupType",
+            "label": "Type de groupe",
+            "description": "Ex: company.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "groupKey",
+            "label": "Clé de groupe",
+            "description": "Ex: acme-inc.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "distinctId",
+            "label": "Distinct ID technique",
+            "description": "ID technique, défaut: groups_setup_id.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "groupSet",
+            "label": "Propriétés de groupe",
+            "description": "Objet JSON pour $group_set.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Groupes"
+    },
+    {
+      "key": "posthog_group_event_capture",
+      "name": "posthogGroupEventCapture",
+      "schemaVersion": 2,
+      "title": "Capturer un événement groupe",
+      "subtitle": "Groupes",
+      "icon": "fa-solid fa-building",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "PostHog",
+      "providerKey": "posthog",
+      "tags": [
+        "group",
+        "event"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:posthog_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Capture un événement avec liaison groups.",
+      "args": {
+        "title": "Capturer un événement groupe",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "event",
+            "label": "Nom de l’événement",
+            "description": "Nom de l’événement.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "distinctId",
+            "label": "Distinct ID",
+            "description": "Identifiant utilisateur.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "groupType",
+            "label": "Type de groupe",
+            "description": "Ex: company.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "groupKey",
+            "label": "Clé de groupe",
+            "description": "Ex: acme-inc.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "properties",
+            "label": "Propriétés",
+            "description": "Objet JSON de propriétés événement.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "groups",
+            "label": "Groupes additionnels",
+            "description": "Objet JSON de groupes additionnels.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "date",
+            "key": "timestamp",
+            "label": "Timestamp",
+            "description": "Date/heure ISO 8601 optionnelle.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Groupes"
+    },
+    {
+      "key": "posthog_pageview_capture",
+      "name": "posthogPageviewCapture",
+      "schemaVersion": 2,
+      "title": "Capturer un pageview",
+      "subtitle": "Événements",
+      "icon": "fa-solid fa-globe",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "PostHog",
+      "providerKey": "posthog",
+      "tags": [
+        "pageview",
+        "event"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:posthog_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Envoie un événement $pageview.",
+      "args": {
+        "title": "Capturer un pageview",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "distinctId",
+            "label": "Distinct ID",
+            "description": "Identifiant utilisateur.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "currentUrl",
+            "label": "URL courante",
+            "description": "URL de page (mappée en $current_url).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "properties",
+            "label": "Propriétés",
+            "description": "Objet JSON de propriétés.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Événements"
+    },
+    {
+      "key": "posthog_screen_capture",
+      "name": "posthogScreenCapture",
+      "schemaVersion": 2,
+      "title": "Capturer un screen view",
+      "subtitle": "Événements",
+      "icon": "fa-solid fa-mobile-screen-button",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "PostHog",
+      "providerKey": "posthog",
+      "tags": [
+        "screen",
+        "mobile"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:posthog_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Envoie un événement $screen avec $screen_name.",
+      "args": {
+        "title": "Capturer un screen view",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "distinctId",
+            "label": "Distinct ID",
+            "description": "Identifiant utilisateur.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "screenName",
+            "label": "Nom de l’écran",
+            "description": "Nom de l’écran.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "properties",
+            "label": "Propriétés",
+            "description": "Objet JSON de propriétés.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Événements"
+    },
+    {
+      "key": "posthog_survey_event_capture",
+      "name": "posthogSurveyEventCapture",
+      "schemaVersion": 2,
+      "title": "Capturer un événement survey",
+      "subtitle": "Surveys",
+      "icon": "fa-solid fa-comment-dots",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "PostHog",
+      "providerKey": "posthog",
+      "tags": [
+        "survey",
+        "event"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:posthog_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Capture des événements survey sent/shown/dismissed avec $survey_id.",
+      "args": {
+        "title": "Capturer un événement survey",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "event",
+            "label": "Nom de l’événement",
+            "description": "Ex: survey sent, survey shown, survey dismissed.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "distinctId",
+            "label": "Distinct ID",
+            "description": "Identifiant utilisateur.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "surveyId",
+            "label": "ID survey",
+            "description": "Identifiant du survey.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "properties",
+            "label": "Propriétés",
+            "description": "Objet JSON de propriétés additionnelles.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Surveys"
+    },
+    {
+      "key": "posthog_flags_evaluate",
+      "name": "posthogFlagsEvaluate",
+      "schemaVersion": 2,
+      "title": "Évaluer les feature flags",
+      "subtitle": "Feature flags",
+      "icon": "fa-solid fa-flag",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "PostHog",
+      "providerKey": "posthog",
+      "tags": [
+        "flags",
+        "evaluate"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:posthog_flags_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Évalue les feature flags via /flags?v=2.",
+      "args": {
+        "title": "Évaluer les feature flags",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "distinctId",
+            "label": "Distinct ID",
+            "description": "Identifiant utilisateur.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "groups",
+            "label": "Groupes",
+            "description": "Objet JSON groups (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "personProperties",
+            "label": "Propriétés personne",
+            "description": "Objet JSON person_properties.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "groupProperties",
+            "label": "Propriétés groupes",
+            "description": "Objet JSON group_properties.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "includeConfig",
+            "label": "Inclure config",
+            "description": "Ajoute config=true dans la requête.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Feature flags"
+    },
+    {
+      "key": "posthog_query_execute",
+      "name": "posthogQueryExecute",
+      "schemaVersion": 2,
+      "title": "Exécuter une query",
+      "subtitle": "Query",
+      "icon": "fa-solid fa-database",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "PostHog",
+      "providerKey": "posthog",
+      "tags": [
+        "query",
+        "hogql"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:posthog_query_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Exécute une query PostHog via /api/projects/:project_id/query/.",
+      "args": {
+        "title": "Exécuter une query",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "ID projet",
+            "description": "Identifiant projet PostHog.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "queryKind",
+            "label": "Query kind",
+            "description": "Optionnel: appelle /query/:query_kind/.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "body",
+            "label": "Body query",
+            "description": "Payload JSON de la query.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "query",
+            "label": "Query (alias)",
+            "description": "Alias du payload query JSON.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Query"
+    },
+    {
+      "key": "posthog_feature_flags_list",
+      "name": "posthogFeatureFlagsList",
+      "schemaVersion": 2,
+      "title": "Lister les feature flags",
+      "subtitle": "Feature flags",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "PostHog",
+      "providerKey": "posthog",
+      "tags": [
+        "flags",
+        "list"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:posthog_feature_flags"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les feature flags du projet.",
+      "args": {
+        "title": "Lister les feature flags",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "ID projet",
+            "description": "Identifiant projet PostHog.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre maximum de résultats.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "offset",
+            "label": "Offset",
+            "description": "Décalage pagination.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "search",
+            "label": "Recherche",
+            "description": "Filtre de recherche.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "active",
+            "label": "Actif",
+            "description": "Filtre actif: true/false/STALE.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "type",
+            "label": "Type",
+            "description": "boolean/experiment/multivariant/remote_config.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "evaluationRuntime",
+            "label": "Runtime",
+            "description": "both/client/server.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "tags",
+            "label": "Tags",
+            "description": "Tags séparés par virgule.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Feature flags"
+    },
+    {
+      "key": "posthog_feature_flag_get",
+      "name": "posthogFeatureFlagGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un feature flag",
+      "subtitle": "Feature flags",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "PostHog",
+      "providerKey": "posthog",
+      "tags": [
+        "flags",
+        "get"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:posthog_feature_flag"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère un feature flag par ID.",
+      "args": {
+        "title": "Récupérer un feature flag",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "ID projet",
+            "description": "Identifiant projet PostHog.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "flagId",
+            "label": "ID feature flag",
+            "description": "Identifiant du flag.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Feature flags"
+    },
+    {
+      "key": "posthog_feature_flag_create",
+      "name": "posthogFeatureFlagCreate",
+      "schemaVersion": 2,
+      "title": "Créer un feature flag",
+      "subtitle": "Feature flags",
+      "icon": "fa-solid fa-plus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "PostHog",
+      "providerKey": "posthog",
+      "tags": [
+        "flags",
+        "create"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:posthog_feature_flag"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Crée un feature flag via payload JSON.",
+      "args": {
+        "title": "Créer un feature flag",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "ID projet",
+            "description": "Identifiant projet PostHog.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "payload",
+            "label": "Payload",
+            "description": "Payload JSON de création.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Feature flags"
+    },
+    {
+      "key": "posthog_feature_flag_update",
+      "name": "posthogFeatureFlagUpdate",
+      "schemaVersion": 2,
+      "title": "Mettre à jour un feature flag",
+      "subtitle": "Feature flags",
+      "icon": "fa-solid fa-pen",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "PostHog",
+      "providerKey": "posthog",
+      "tags": [
+        "flags",
+        "update"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:posthog_feature_flag"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Met à jour un feature flag via PATCH.",
+      "args": {
+        "title": "Mettre à jour un feature flag",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "ID projet",
+            "description": "Identifiant projet PostHog.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "flagId",
+            "label": "ID feature flag",
+            "description": "Identifiant du flag.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "payload",
+            "label": "Payload",
+            "description": "Payload JSON de mise à jour.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Feature flags"
+    },
+    {
+      "key": "posthog_feature_flag_archive",
+      "name": "posthogFeatureFlagArchive",
+      "schemaVersion": 2,
+      "title": "Archiver un feature flag",
+      "subtitle": "Feature flags",
+      "icon": "fa-solid fa-box-archive",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "PostHog",
+      "providerKey": "posthog",
+      "tags": [
+        "flags",
+        "archive"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:posthog_feature_flag"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Archive un feature flag (PATCH deleted=true).",
+      "args": {
+        "title": "Archiver un feature flag",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "ID projet",
+            "description": "Identifiant projet PostHog.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "flagId",
+            "label": "ID feature flag",
+            "description": "Identifiant du flag.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Feature flags"
+    },
+    {
+      "key": "posthog_cohorts_list",
+      "name": "posthogCohortsList",
+      "schemaVersion": 2,
+      "title": "Lister les cohortes",
+      "subtitle": "Cohortes",
+      "icon": "fa-solid fa-users",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "PostHog",
+      "providerKey": "posthog",
+      "tags": [
+        "cohorts",
+        "list"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:posthog_cohorts"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les cohortes du projet.",
+      "args": {
+        "title": "Lister les cohortes",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "ID projet",
+            "description": "Identifiant projet PostHog.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre maximum de résultats.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "offset",
+            "label": "Offset",
+            "description": "Décalage pagination.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Cohortes"
+    },
+    {
+      "key": "posthog_cohort_get",
+      "name": "posthogCohortGet",
+      "schemaVersion": 2,
+      "title": "Récupérer une cohorte",
+      "subtitle": "Cohortes",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "PostHog",
+      "providerKey": "posthog",
+      "tags": [
+        "cohorts",
+        "get"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:posthog_cohort"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère une cohorte par ID.",
+      "args": {
+        "title": "Récupérer une cohorte",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "ID projet",
+            "description": "Identifiant projet PostHog.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "cohortId",
+            "label": "ID cohorte",
+            "description": "Identifiant de la cohorte.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Cohortes"
+    },
+    {
+      "key": "posthog_cohort_create",
+      "name": "posthogCohortCreate",
+      "schemaVersion": 2,
+      "title": "Créer une cohorte",
+      "subtitle": "Cohortes",
+      "icon": "fa-solid fa-plus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "PostHog",
+      "providerKey": "posthog",
+      "tags": [
+        "cohorts",
+        "create"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:posthog_cohort"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Crée une cohorte via payload JSON.",
+      "args": {
+        "title": "Créer une cohorte",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "ID projet",
+            "description": "Identifiant projet PostHog.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "payload",
+            "label": "Payload",
+            "description": "Payload JSON de création.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Cohortes"
+    },
+    {
+      "key": "posthog_cohort_update",
+      "name": "posthogCohortUpdate",
+      "schemaVersion": 2,
+      "title": "Mettre à jour une cohorte",
+      "subtitle": "Cohortes",
+      "icon": "fa-solid fa-pen",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "PostHog",
+      "providerKey": "posthog",
+      "tags": [
+        "cohorts",
+        "update"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:posthog_cohort"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Met à jour une cohorte via PATCH.",
+      "args": {
+        "title": "Mettre à jour une cohorte",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "ID projet",
+            "description": "Identifiant projet PostHog.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "cohortId",
+            "label": "ID cohorte",
+            "description": "Identifiant de la cohorte.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "payload",
+            "label": "Payload",
+            "description": "Payload JSON de mise à jour.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Cohortes"
+    },
+    {
+      "key": "posthog_cohort_delete",
+      "name": "posthogCohortDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer une cohorte",
+      "subtitle": "Cohortes",
+      "icon": "fa-solid fa-trash",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "PostHog",
+      "providerKey": "posthog",
+      "tags": [
+        "cohorts",
+        "delete"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:posthog_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Supprime une cohorte.",
+      "args": {
+        "title": "Supprimer une cohorte",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "ID projet",
+            "description": "Identifiant projet PostHog.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "cohortId",
+            "label": "ID cohorte",
+            "description": "Identifiant de la cohorte.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Cohortes"
+    },
+    {
+      "key": "posthog_cohort_persons_list",
+      "name": "posthogCohortPersonsList",
+      "schemaVersion": 2,
+      "title": "Lister les personnes d’une cohorte",
+      "subtitle": "Cohortes",
+      "icon": "fa-solid fa-user-group",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "PostHog",
+      "providerKey": "posthog",
+      "tags": [
+        "cohorts",
+        "persons"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:posthog_persons"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les personnes appartenant à une cohorte.",
+      "args": {
+        "title": "Lister les personnes d’une cohorte",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "ID projet",
+            "description": "Identifiant projet PostHog.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "cohortId",
+            "label": "ID cohorte",
+            "description": "Identifiant de la cohorte.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre maximum de résultats.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "offset",
+            "label": "Offset",
+            "description": "Décalage pagination.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Cohortes"
+    },
+    {
+      "key": "posthog_cohort_add_persons",
+      "name": "posthogCohortAddPersons",
+      "schemaVersion": 2,
+      "title": "Ajouter des personnes à une cohorte statique",
+      "subtitle": "Cohortes",
+      "icon": "fa-solid fa-user-plus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "PostHog",
+      "providerKey": "posthog",
+      "tags": [
+        "cohorts",
+        "add"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:posthog_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Ajoute des personnes à une cohorte statique.",
+      "args": {
+        "title": "Ajouter des personnes à une cohorte statique",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "ID projet",
+            "description": "Identifiant projet PostHog.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "cohortId",
+            "label": "ID cohorte",
+            "description": "Identifiant de la cohorte.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "payload",
+            "label": "Payload",
+            "description": "Payload JSON avec person_ids ou person_id.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Cohortes"
+    },
+    {
+      "key": "posthog_cohort_remove_person",
+      "name": "posthogCohortRemovePerson",
+      "schemaVersion": 2,
+      "title": "Retirer une personne d’une cohorte statique",
+      "subtitle": "Cohortes",
+      "icon": "fa-solid fa-user-minus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "PostHog",
+      "providerKey": "posthog",
+      "tags": [
+        "cohorts",
+        "remove"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:posthog_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Retire une personne d’une cohorte statique.",
+      "args": {
+        "title": "Retirer une personne d’une cohorte statique",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "ID projet",
+            "description": "Identifiant projet PostHog.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "cohortId",
+            "label": "ID cohorte",
+            "description": "Identifiant de la cohorte.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "personId",
+            "label": "ID personne",
+            "description": "Identifiant de la personne.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Cohortes"
+    }
+  ]
+}

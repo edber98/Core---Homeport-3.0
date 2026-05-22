@@ -119,7 +119,7 @@ class PluginRegistry {
     }
 
     // Cleanup stale entries if enabled (separate env var to avoid overhead)
-    if (process.env.PLUGIN_CLEANUP_ENABLED === '1' && allImportJobs.length > 0){
+    if (process.env.PLUGIN_CLEANUP_ENABLED === '1'){
       try {
         // Wait for all imports to complete first
         const results = await Promise.all(allImportJobs);
@@ -142,6 +142,41 @@ class PluginRegistry {
               console.log(`[plugins] cleanup for repo ${repoId}: ${cr.templatesRemoved} template(s), ${cr.providersRemoved} provider(s) removed`);
             }
           } catch (e) { console.error('[plugins] cleanup error for repo', repoId, e && e.message || e); }
+        }
+
+        // Also cleanup repos known in DB but not imported during this reload
+        // (e.g. branch removed a provider folder/manifest).
+        try {
+          const PluginRepo = require('../db/models/plugin-repo.model');
+          const importedRepoIds = new Set([...repoMap.keys()]);
+          const isUnderBaseDirs = (p) => {
+            try {
+              if (!p) return false;
+              const abs = path.resolve(String(p));
+              return this.baseDirs.some((b) => {
+                const base = path.resolve(String(b.path));
+                return abs === base || abs.startsWith(base + path.sep);
+              });
+            } catch { return false; }
+          };
+          const knownRepos = await PluginRepo.find({ enabled: true }, { _id: 1, path: 1, type: 1 }).lean();
+          for (const repo of knownRepos){
+            const repoId = String(repo._id);
+            if (importedRepoIds.has(repoId)) continue;
+            if (repo.type === 'local' && !isUnderBaseDirs(repo.path)) continue;
+            const manifestPath = path.join(String(repo.path || ''), 'manifest.json');
+            if (repo.path && fs.existsSync(manifestPath)) continue;
+            try {
+              const cr = await cleanupStale(repoId, new Set(), new Set());
+              if (cr.templatesRemoved || cr.providersRemoved){
+                console.log(`[plugins] cleanup missing repo ${repoId}: ${cr.templatesRemoved} template(s), ${cr.providersRemoved} provider(s) removed`);
+              }
+            } catch (e) {
+              console.error('[plugins] cleanup missing repo error for repo', repoId, e && e.message || e);
+            }
+          }
+        } catch (e) {
+          console.error('[plugins] cleanup missing-repo phase error:', e && e.message || e);
         }
       } catch (e) { console.error('[plugins] cleanup phase error:', e && e.message || e); }
     }

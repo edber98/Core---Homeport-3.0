@@ -1,0 +1,1102 @@
+{
+  "repo": {
+    "name": "cassandra",
+    "type": "local",
+    "label": "Cassandra"
+  },
+  "variables": {
+    "cassandra_action_result": {
+      "title": "Résultat Cassandra",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "Succès",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Statut",
+          "col": {
+            "xs": 12
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "message",
+          "label": "Message",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Données brutes",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "cassandra_rows": {
+      "title": "Lignes Cassandra",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "number",
+          "key": "rowCount",
+          "label": "Nombre de lignes",
+          "col": {
+            "xs": 12
+          }
+        },
+        {
+          "type": "json",
+          "key": "fields",
+          "label": "Colonnes",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "rows",
+          "label": "Lignes",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Réponse brute",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "cassandra_items": {
+      "title": "Liste Cassandra",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "col": {
+            "xs": 12
+          }
+        },
+        {
+          "type": "json",
+          "key": "items",
+          "label": "Éléments",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Réponse brute",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "cassandra_record": {
+      "title": "Élément Cassandra",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "properties",
+          "label": "Propriétés",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Réponse brute",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "cassandra",
+      "name": "Cassandra",
+      "title": "Cassandra",
+      "iconClass": "fa-solid fa-database",
+      "iconUrl": "https://cdn.simpleicons.org/apachecassandra",
+      "color": "#e8f1ff",
+      "tags": [
+        "cassandra",
+        "cql",
+        "nosql"
+      ],
+      "categories": [
+        "Base de données"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Cassandra",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "contactPoints",
+            "label": "Contact points",
+            "description": "Ex: host1,host2",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "localDataCenter",
+            "label": "Data center local",
+            "description": "Ex: datacenter1",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "default": "datacenter1"
+          },
+          {
+            "type": "text",
+            "key": "keyspace",
+            "label": "Keyspace par défaut",
+            "description": "Keyspace par défaut.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "username",
+            "label": "Utilisateur",
+            "description": "Utilisateur Cassandra.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "password",
+            "label": "Mot de passe",
+            "description": "Mot de passe Cassandra.",
+            "col": {
+              "xs": 24
+            },
+            "secret": true
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "cassandra_query_execute",
+      "name": "cassandraQueryExecute",
+      "schemaVersion": 2,
+      "title": "Exécuter une requête CQL",
+      "subtitle": "Requêtes",
+      "icon": "fa-solid fa-play",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Cassandra",
+      "providerKey": "cassandra",
+      "tags": [
+        "cassandra",
+        "query"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:cassandra_rows"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Exécute une requête CQL.",
+      "args": {
+        "title": "Exécuter une requête CQL",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "query",
+            "label": "Requête CQL",
+            "description": "Requête à exécuter.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "params",
+            "label": "Paramètres JSON",
+            "description": "Tableau de paramètres.",
+            "col": {
+              "xs": 24
+            },
+            "default": "[]"
+          },
+          {
+            "type": "checkbox",
+            "key": "prepare",
+            "label": "Préparer",
+            "description": "Activer les statements préparés.",
+            "col": {
+              "xs": 24
+            },
+            "default": true
+          },
+          {
+            "type": "number",
+            "key": "pageSize",
+            "label": "Taille de page",
+            "description": "Taille de page driver.",
+            "col": {
+              "xs": 24
+            },
+            "default": 5000
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Requêtes"
+    },
+    {
+      "key": "cassandra_query_prepare_execute",
+      "name": "cassandraQueryPrepareExecute",
+      "schemaVersion": 2,
+      "title": "Exécuter une requête préparée",
+      "subtitle": "Requêtes",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Cassandra",
+      "providerKey": "cassandra",
+      "tags": [
+        "cassandra",
+        "prepared"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:cassandra_rows"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Exécute une requête CQL préparée.",
+      "args": {
+        "title": "Exécuter une requête préparée",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "query",
+            "label": "Requête CQL",
+            "description": "Requête avec placeholders ?",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "params",
+            "label": "Paramètres JSON",
+            "description": "Tableau de paramètres.",
+            "col": {
+              "xs": 24
+            },
+            "default": "[]"
+          },
+          {
+            "type": "number",
+            "key": "pageSize",
+            "label": "Taille de page",
+            "description": "Taille de page driver.",
+            "col": {
+              "xs": 24
+            },
+            "default": 5000
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Requêtes"
+    },
+    {
+      "key": "cassandra_batch_execute",
+      "name": "cassandraBatchExecute",
+      "schemaVersion": 2,
+      "title": "Exécuter un batch CQL",
+      "subtitle": "Requêtes",
+      "icon": "fa-solid fa-layer-group",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Cassandra",
+      "providerKey": "cassandra",
+      "tags": [
+        "cassandra",
+        "batch"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:cassandra_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Exécute un batch de requêtes CQL.",
+      "args": {
+        "title": "Exécuter un batch CQL",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "json",
+            "key": "queries",
+            "label": "Requêtes JSON",
+            "description": "Array: [{\"query\":\"...\",\"params\":[]}].",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "checkbox",
+            "key": "prepare",
+            "label": "Préparer",
+            "description": "Activer les statements préparés.",
+            "col": {
+              "xs": 24
+            },
+            "default": true
+          },
+          {
+            "type": "checkbox",
+            "key": "logged",
+            "label": "Batch loggué",
+            "description": "Batch logged/unlogged.",
+            "col": {
+              "xs": 24
+            },
+            "default": true
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Requêtes"
+    },
+    {
+      "key": "cassandra_keyspaces_list",
+      "name": "cassandraKeyspacesList",
+      "schemaVersion": 2,
+      "title": "Lister les keyspaces",
+      "subtitle": "Métadonnées",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Cassandra",
+      "providerKey": "cassandra",
+      "tags": [
+        "cassandra",
+        "list"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:cassandra_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les keyspaces.",
+      "args": {
+        "title": "Lister les keyspaces",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Métadonnées"
+    },
+    {
+      "key": "cassandra_tables_list",
+      "name": "cassandraTablesList",
+      "schemaVersion": 2,
+      "title": "Lister les tables",
+      "subtitle": "Métadonnées",
+      "icon": "fa-solid fa-table",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Cassandra",
+      "providerKey": "cassandra",
+      "tags": [
+        "cassandra",
+        "list"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:cassandra_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les tables d’un keyspace.",
+      "args": {
+        "title": "Lister les tables",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "keyspace",
+            "label": "Keyspace",
+            "description": "Keyspace cible (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Métadonnées"
+    },
+    {
+      "key": "cassandra_table_describe",
+      "name": "cassandraTableDescribe",
+      "schemaVersion": 2,
+      "title": "Décrire une table",
+      "subtitle": "Métadonnées",
+      "icon": "fa-solid fa-circle-info",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Cassandra",
+      "providerKey": "cassandra",
+      "tags": [
+        "cassandra",
+        "describe"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:cassandra_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère les colonnes d’une table.",
+      "args": {
+        "title": "Décrire une table",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "keyspace",
+            "label": "Keyspace",
+            "description": "Keyspace cible (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "table",
+            "label": "Table",
+            "description": "Nom de la table.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Métadonnées"
+    },
+    {
+      "key": "cassandra_rows_select",
+      "name": "cassandraRowsSelect",
+      "schemaVersion": 2,
+      "title": "Sélectionner des lignes",
+      "subtitle": "Données",
+      "icon": "fa-solid fa-database",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Cassandra",
+      "providerKey": "cassandra",
+      "tags": [
+        "cassandra",
+        "select"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:cassandra_rows"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "SELECT simplifié pour workflows.",
+      "args": {
+        "title": "Sélectionner des lignes",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "keyspace",
+            "label": "Keyspace",
+            "description": "Keyspace cible (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "table",
+            "label": "Table",
+            "description": "Table cible.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "columns",
+            "label": "Colonnes",
+            "description": "Ex: id,name",
+            "col": {
+              "xs": 24
+            },
+            "default": "*"
+          },
+          {
+            "type": "textarea",
+            "key": "where",
+            "label": "Clause WHERE",
+            "description": "Ex: id = ?",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "params",
+            "label": "Paramètres JSON",
+            "description": "Paramètres WHERE.",
+            "col": {
+              "xs": 24
+            },
+            "default": "[]"
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre max.",
+            "col": {
+              "xs": 24
+            },
+            "default": 100
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Données"
+    },
+    {
+      "key": "cassandra_row_insert",
+      "name": "cassandraRowInsert",
+      "schemaVersion": 2,
+      "title": "Insérer une ligne",
+      "subtitle": "Données",
+      "icon": "fa-solid fa-plus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Cassandra",
+      "providerKey": "cassandra",
+      "tags": [
+        "cassandra",
+        "insert"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:cassandra_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "INSERT simplifié.",
+      "args": {
+        "title": "Insérer une ligne",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "keyspace",
+            "label": "Keyspace",
+            "description": "Keyspace cible (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "table",
+            "label": "Table",
+            "description": "Table cible.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "data",
+            "label": "Données JSON",
+            "description": "Objet clé/valeur à insérer.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Données"
+    },
+    {
+      "key": "cassandra_rows_update",
+      "name": "cassandraRowsUpdate",
+      "schemaVersion": 2,
+      "title": "Mettre à jour des lignes",
+      "subtitle": "Données",
+      "icon": "fa-solid fa-pen",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Cassandra",
+      "providerKey": "cassandra",
+      "tags": [
+        "cassandra",
+        "update"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:cassandra_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "UPDATE simplifié.",
+      "args": {
+        "title": "Mettre à jour des lignes",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "keyspace",
+            "label": "Keyspace",
+            "description": "Keyspace cible (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "table",
+            "label": "Table",
+            "description": "Table cible.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "data",
+            "label": "Données JSON",
+            "description": "Colonnes à mettre à jour.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "where",
+            "label": "Clause WHERE",
+            "description": "Filtre UPDATE.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "params",
+            "label": "Paramètres JSON",
+            "description": "Paramètres WHERE.",
+            "col": {
+              "xs": 24
+            },
+            "default": "[]"
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Données"
+    },
+    {
+      "key": "cassandra_rows_delete",
+      "name": "cassandraRowsDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer des lignes",
+      "subtitle": "Données",
+      "icon": "fa-solid fa-trash",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Cassandra",
+      "providerKey": "cassandra",
+      "tags": [
+        "cassandra",
+        "delete"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:cassandra_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "DELETE simplifié.",
+      "args": {
+        "title": "Supprimer des lignes",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "keyspace",
+            "label": "Keyspace",
+            "description": "Keyspace cible (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "table",
+            "label": "Table",
+            "description": "Table cible.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "where",
+            "label": "Clause WHERE",
+            "description": "Filtre DELETE.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "params",
+            "label": "Paramètres JSON",
+            "description": "Paramètres WHERE.",
+            "col": {
+              "xs": 24
+            },
+            "default": "[]"
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Données"
+    }
+  ]
+}

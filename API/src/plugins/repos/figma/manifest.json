@@ -1,0 +1,1172 @@
+{
+  "repo": {
+    "name": "figma",
+    "type": "local",
+    "label": "Figma"
+  },
+  "variables": {
+    "figma_response": {
+      "title": "Réponse Figma",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom ou titre retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "url",
+          "key": "url",
+          "label": "URL",
+          "description": "URL retournée.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "text",
+          "label": "Texte",
+          "description": "Texte principal retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "result_json",
+          "label": "Résultat JSON",
+          "description": "Résultat complet au format JSON.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "figma_items": {
+      "title": "Figma - liste",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre d'éléments retournés.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextCursor",
+          "label": "Curseur suivant",
+          "description": "Curseur de pagination.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Éléments",
+          "description": "Liste des éléments retournés.",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom ou titre.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "url",
+              "key": "url",
+              "label": "URL",
+              "description": "URL.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "text",
+              "label": "Texte",
+              "description": "Texte ou résumé.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "result_json",
+              "label": "Données JSON",
+              "description": "Données au format JSON.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "figma",
+      "name": "Figma",
+      "title": "Figma",
+      "iconClass": "fa-brands fa-figma",
+      "iconUrl": "https://cdn.simpleicons.org/figma",
+      "color": "#fff0eb",
+      "tags": [
+        "figma",
+        "automation"
+      ],
+      "categories": [
+        "Productivité"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Figma",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "apiKey",
+            "label": "Jeton Figma",
+            "description": "Clé API Figma.",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "baseUrl",
+            "label": "URL de base",
+            "description": "URL de base de l'API.",
+            "col": {
+              "xs": 24
+            },
+            "defaultValue": "https://api.figma.com/v1"
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "figma_file_get",
+      "name": "figmaFileGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un fichier",
+      "subtitle": "Fichiers",
+      "icon": "fa-solid fa-file",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Figma",
+      "providerKey": "figma",
+      "tags": [
+        "figma",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:figma_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère le JSON et les métadonnées d'un fichier.",
+      "args": {
+        "title": "Récupérer un fichier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "fileKey",
+            "label": "Clé fichier",
+            "description": "Clé du fichier Figma.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "depth",
+            "label": "Profondeur",
+            "description": "Profondeur du document.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Fichiers"
+    },
+    {
+      "key": "figma_file_nodes_get",
+      "name": "figmaFileNodesGet",
+      "schemaVersion": 2,
+      "title": "Récupérer des nœuds",
+      "subtitle": "Fichiers",
+      "icon": "fa-solid fa-sitemap",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Figma",
+      "providerKey": "figma",
+      "tags": [
+        "figma",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:figma_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère des nœuds précis d'un fichier.",
+      "args": {
+        "title": "Récupérer des nœuds",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "fileKey",
+            "label": "Clé fichier",
+            "description": "Clé du fichier.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "ids",
+            "label": "IDs nœuds",
+            "description": "IDs séparés par des virgules.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Fichiers"
+    },
+    {
+      "key": "figma_file_images_get",
+      "name": "figmaFileImagesGet",
+      "schemaVersion": 2,
+      "title": "Exporter des images",
+      "subtitle": "Images",
+      "icon": "fa-solid fa-image",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Figma",
+      "providerKey": "figma",
+      "tags": [
+        "figma",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:figma_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Génère des URLs d'export pour des nœuds.",
+      "args": {
+        "title": "Exporter des images",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "fileKey",
+            "label": "Clé fichier",
+            "description": "Clé du fichier.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "ids",
+            "label": "IDs nœuds",
+            "description": "IDs séparés par des virgules.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "format",
+            "label": "Format",
+            "description": "jpg, png, svg ou pdf.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "scale",
+            "label": "Échelle",
+            "description": "Échelle d'export.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Images"
+    },
+    {
+      "key": "figma_file_comments_list",
+      "name": "figmaFileCommentsList",
+      "schemaVersion": 2,
+      "title": "Lister les commentaires",
+      "subtitle": "Commentaires",
+      "icon": "fa-solid fa-comments",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Figma",
+      "providerKey": "figma",
+      "tags": [
+        "figma",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:figma_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les commentaires d'un fichier.",
+      "args": {
+        "title": "Lister les commentaires",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "fileKey",
+            "label": "Clé fichier",
+            "description": "Clé du fichier.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Commentaires"
+    },
+    {
+      "key": "figma_file_comment_create",
+      "name": "figmaFileCommentCreate",
+      "schemaVersion": 2,
+      "title": "Créer un commentaire",
+      "subtitle": "Commentaires",
+      "icon": "fa-solid fa-comment-medical",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Figma",
+      "providerKey": "figma",
+      "tags": [
+        "figma",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:figma_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Ajoute un commentaire dans un fichier.",
+      "args": {
+        "title": "Créer un commentaire",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "fileKey",
+            "label": "Clé fichier",
+            "description": "Clé du fichier.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "message",
+            "label": "Message",
+            "description": "Texte du commentaire.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "clientMeta",
+            "label": "Position JSON",
+            "description": "Position ou node_id du commentaire.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Commentaires"
+    },
+    {
+      "key": "figma_file_comment_delete",
+      "name": "figmaFileCommentDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un commentaire",
+      "subtitle": "Commentaires",
+      "icon": "fa-solid fa-trash",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Figma",
+      "providerKey": "figma",
+      "tags": [
+        "figma",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:figma_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Supprime un commentaire.",
+      "args": {
+        "title": "Supprimer un commentaire",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "fileKey",
+            "label": "Clé fichier",
+            "description": "Clé du fichier.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "commentId",
+            "label": "ID commentaire",
+            "description": "Identifiant du commentaire.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Commentaires"
+    },
+    {
+      "key": "figma_file_versions_list",
+      "name": "figmaFileVersionsList",
+      "schemaVersion": 2,
+      "title": "Lister les versions",
+      "subtitle": "Versions",
+      "icon": "fa-solid fa-clock-rotate-left",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Figma",
+      "providerKey": "figma",
+      "tags": [
+        "figma",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:figma_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les versions d'un fichier.",
+      "args": {
+        "title": "Lister les versions",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "fileKey",
+            "label": "Clé fichier",
+            "description": "Clé du fichier.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Versions"
+    },
+    {
+      "key": "figma_file_components_list",
+      "name": "figmaFileComponentsList",
+      "schemaVersion": 2,
+      "title": "Lister les composants fichier",
+      "subtitle": "Design system",
+      "icon": "fa-solid fa-cubes",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Figma",
+      "providerKey": "figma",
+      "tags": [
+        "figma",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:figma_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les composants publiés dans un fichier.",
+      "args": {
+        "title": "Lister les composants fichier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "fileKey",
+            "label": "Clé fichier",
+            "description": "Clé du fichier.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Design system"
+    },
+    {
+      "key": "figma_file_styles_list",
+      "name": "figmaFileStylesList",
+      "schemaVersion": 2,
+      "title": "Lister les styles fichier",
+      "subtitle": "Design system",
+      "icon": "fa-solid fa-palette",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Figma",
+      "providerKey": "figma",
+      "tags": [
+        "figma",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:figma_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les styles publiés dans un fichier.",
+      "args": {
+        "title": "Lister les styles fichier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "fileKey",
+            "label": "Clé fichier",
+            "description": "Clé du fichier.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Design system"
+    },
+    {
+      "key": "figma_team_components_list",
+      "name": "figmaTeamComponentsList",
+      "schemaVersion": 2,
+      "title": "Lister les composants équipe",
+      "subtitle": "Design system",
+      "icon": "fa-solid fa-boxes-stacked",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Figma",
+      "providerKey": "figma",
+      "tags": [
+        "figma",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:figma_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les composants publiés d'une équipe.",
+      "args": {
+        "title": "Lister les composants équipe",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "teamId",
+            "label": "ID équipe",
+            "description": "Identifiant de l'équipe.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "pageSize",
+            "label": "Taille page",
+            "description": "Nombre d'éléments.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "cursor",
+            "label": "Curseur",
+            "description": "Curseur de pagination.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Design system"
+    },
+    {
+      "key": "figma_team_styles_list",
+      "name": "figmaTeamStylesList",
+      "schemaVersion": 2,
+      "title": "Lister les styles équipe",
+      "subtitle": "Design system",
+      "icon": "fa-solid fa-palette",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Figma",
+      "providerKey": "figma",
+      "tags": [
+        "figma",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:figma_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les styles publiés d'une équipe.",
+      "args": {
+        "title": "Lister les styles équipe",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "teamId",
+            "label": "ID équipe",
+            "description": "Identifiant de l'équipe.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "pageSize",
+            "label": "Taille page",
+            "description": "Nombre d'éléments.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "cursor",
+            "label": "Curseur",
+            "description": "Curseur de pagination.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Design system"
+    },
+    {
+      "key": "figma_component_get",
+      "name": "figmaComponentGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un composant",
+      "subtitle": "Design system",
+      "icon": "fa-solid fa-cube",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Figma",
+      "providerKey": "figma",
+      "tags": [
+        "figma",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:figma_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère un composant publié.",
+      "args": {
+        "title": "Récupérer un composant",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "key",
+            "label": "Clé composant",
+            "description": "Clé du composant.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Design system"
+    },
+    {
+      "key": "figma_style_get",
+      "name": "figmaStyleGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un style",
+      "subtitle": "Design system",
+      "icon": "fa-solid fa-brush",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Figma",
+      "providerKey": "figma",
+      "tags": [
+        "figma",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:figma_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère un style publié.",
+      "args": {
+        "title": "Récupérer un style",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "key",
+            "label": "Clé style",
+            "description": "Clé du style.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Design system"
+    }
+  ]
+}

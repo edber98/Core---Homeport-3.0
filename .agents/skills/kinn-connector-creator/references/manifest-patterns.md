@@ -138,4 +138,5 @@ For lists:
 - Use accents: `Créer`, `Récupérer`, `Supprimer`, `Événement`, `Clé API`, `Données`.
 - Sentence case: `Créer un contact`, not `Créer Un Contact`.
 - Keep descriptions factual and short.
-
+- Keep `nodeTemplates[].title` and `nodeTemplates[].args.title` in French.
+- For one `providerKey`, every node `name` and every node `title` must be unique.

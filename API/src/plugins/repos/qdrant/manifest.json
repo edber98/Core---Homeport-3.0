@@ -1,0 +1,891 @@
+{
+  "repo": {
+    "name": "qdrant",
+    "type": "local",
+    "label": "Qdrant"
+  },
+  "variables": {
+    "qdrant_response": {
+      "title": "Réponse Qdrant",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom ou modèle utilisé.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "url",
+          "key": "url",
+          "label": "URL",
+          "description": "URL retournée.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "text",
+          "label": "Texte",
+          "description": "Texte principal retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "result_json",
+          "label": "Résultat JSON",
+          "description": "Résultat normalisé au format JSON.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "qdrant_items": {
+      "title": "Qdrant - liste",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre d'éléments retournés.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextCursor",
+          "label": "Curseur suivant",
+          "description": "Curseur de pagination suivant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Éléments",
+          "description": "Liste des éléments retournés.",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "url",
+              "key": "url",
+              "label": "URL",
+              "description": "URL.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "result_json",
+              "label": "Données JSON",
+              "description": "Données normalisées au format JSON.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "qdrant",
+      "name": "Qdrant",
+      "title": "Qdrant",
+      "iconClass": "fa-solid fa-vector-square",
+      "iconUrl": "https://cdn.simpleicons.org/qdrant",
+      "color": "#fdebf0",
+      "tags": [
+        "qdrant",
+        "vecteurs"
+      ],
+      "categories": [
+        "Données"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Qdrant",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "apiKey",
+            "label": "Clé API Qdrant",
+            "description": "Clé API Qdrant.",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "baseUrl",
+            "label": "URL de base",
+            "description": "URL de base de l'API.",
+            "col": {
+              "xs": 24
+            },
+            "defaultValue": "https://api.qdrant.tech:6333"
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "qdrant_collections_list",
+      "name": "qdrantCollectionsList",
+      "schemaVersion": 2,
+      "title": "Lister les collections",
+      "subtitle": "Collections",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Qdrant",
+      "providerKey": "qdrant",
+      "tags": [
+        "qdrant",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:qdrant_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les collections Qdrant.",
+      "args": {
+        "title": "Lister les collections",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Collections"
+    },
+    {
+      "key": "qdrant_collection_create",
+      "name": "qdrantCollectionCreate",
+      "schemaVersion": 2,
+      "title": "Créer une collection",
+      "subtitle": "Collections",
+      "icon": "fa-solid fa-plus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Qdrant",
+      "providerKey": "qdrant",
+      "tags": [
+        "qdrant",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:qdrant_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Crée une collection vectorielle.",
+      "args": {
+        "title": "Créer une collection",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "collectionName",
+            "label": "Collection",
+            "description": "Nom de la collection.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "size",
+            "label": "Dimensions",
+            "description": "Nombre de dimensions.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "distance",
+            "label": "Distance",
+            "description": "Cosine, Dot ou Euclid.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Collections"
+    },
+    {
+      "key": "qdrant_points_upsert",
+      "name": "qdrantPointsUpsert",
+      "schemaVersion": 2,
+      "title": "Upserter des points",
+      "subtitle": "Points",
+      "icon": "fa-solid fa-upload",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Qdrant",
+      "providerKey": "qdrant",
+      "tags": [
+        "qdrant",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:qdrant_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Insère ou met à jour des points.",
+      "args": {
+        "title": "Upserter des points",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "collectionName",
+            "label": "Collection",
+            "description": "Nom de la collection.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "points",
+            "label": "Points JSON",
+            "description": "Tableau JSON de points.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Points"
+    },
+    {
+      "key": "qdrant_points_search",
+      "name": "qdrantPointsSearch",
+      "schemaVersion": 2,
+      "title": "Rechercher des points",
+      "subtitle": "Points",
+      "icon": "fa-solid fa-magnifying-glass",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Qdrant",
+      "providerKey": "qdrant",
+      "tags": [
+        "qdrant",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:qdrant_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Recherche les points les plus proches.",
+      "args": {
+        "title": "Rechercher des points",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "collectionName",
+            "label": "Collection",
+            "description": "Nom de la collection.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "vector",
+            "label": "Vecteur JSON",
+            "description": "Vecteur de requête.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre de résultats.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "filter",
+            "label": "Filtre JSON",
+            "description": "Filtre Qdrant optionnel.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Points"
+    },
+    {
+      "key": "qdrant_collection_get",
+      "name": "qdrantCollectionGet",
+      "schemaVersion": 2,
+      "title": "Récupérer une collection",
+      "subtitle": "Collections",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "qdrant",
+      "tags": [
+        "qdrant",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:qdrant_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère les détails d'une collection.",
+      "args": {
+        "title": "Récupérer une collection",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "collectionName",
+            "label": "Collection",
+            "description": "Nom de la collection.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Collections"
+    },
+    {
+      "key": "qdrant_collection_delete",
+      "name": "qdrantCollectionDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer une collection",
+      "subtitle": "Collections",
+      "icon": "fa-solid fa-trash",
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "qdrant",
+      "tags": [
+        "qdrant",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:qdrant_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Supprime une collection Qdrant.",
+      "args": {
+        "title": "Supprimer une collection",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "collectionName",
+            "label": "Collection",
+            "description": "Nom de la collection.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Collections"
+    },
+    {
+      "key": "qdrant_points_retrieve",
+      "name": "qdrantPointsRetrieve",
+      "schemaVersion": 2,
+      "title": "Récupérer des points",
+      "subtitle": "Points",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "qdrant",
+      "tags": [
+        "qdrant",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:qdrant_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère des points par ID.",
+      "args": {
+        "title": "Récupérer des points",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "collectionName",
+            "label": "Collection",
+            "description": "Nom de la collection.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "ids",
+            "label": "IDs JSON",
+            "description": "Tableau JSON d'IDs.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Points"
+    },
+    {
+      "key": "qdrant_points_delete",
+      "name": "qdrantPointsDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer des points",
+      "subtitle": "Points",
+      "icon": "fa-solid fa-trash",
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "qdrant",
+      "tags": [
+        "qdrant",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:qdrant_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Supprime des points par ID ou filtre.",
+      "args": {
+        "title": "Supprimer des points",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "collectionName",
+            "label": "Collection",
+            "description": "Nom de la collection.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "ids",
+            "label": "IDs JSON",
+            "description": "Tableau JSON d'IDs.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "filter",
+            "label": "Filtre JSON",
+            "description": "Filtre de suppression optionnel.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Points"
+    },
+    {
+      "key": "qdrant_points_scroll",
+      "name": "qdrantPointsScroll",
+      "schemaVersion": 2,
+      "title": "Parcourir des points",
+      "subtitle": "Points",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "qdrant",
+      "tags": [
+        "qdrant",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:qdrant_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Parcourt les points avec pagination et filtre.",
+      "args": {
+        "title": "Parcourir des points",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "collectionName",
+            "label": "Collection",
+            "description": "Nom de la collection.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "filter",
+            "label": "Filtre JSON",
+            "description": "Filtre Qdrant optionnel.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre de points.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "offset",
+            "label": "Offset",
+            "description": "Offset de pagination.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Points"
+    }
+  ]
+}

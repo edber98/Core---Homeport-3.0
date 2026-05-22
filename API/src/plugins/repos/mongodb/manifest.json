@@ -26,7 +26,7 @@
       { "type": "json", "key": "raw", "label": "Réponse brute", "col": { "xs": 24 } }
     ] }
   },
-  "providers": [{ "key": "mongodb", "name": "MongoDB", "title": "MongoDB", "iconClass": "fa-solid fa-leaf", "iconUrl": "https://cdn.simpleicons.org/mongodb", "color": "#47a248", "tags": ["mongodb", "nosql", "base de données"], "categories": ["Base de données"], "hasCredentials": true, "credentialsForm": { "title": "Identifiants MongoDB", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [
+  "providers": [{ "key": "mongodb", "name": "MongoDB", "title": "MongoDB", "iconClass": "fa-solid fa-leaf", "iconUrl": "https://cdn.simpleicons.org/mongodb", "color": "#c8fac8", "tags": ["mongodb", "nosql", "base de données"], "categories": ["Base de données"], "hasCredentials": true, "credentialsForm": { "title": "Identifiants MongoDB", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [
     { "type": "text", "key": "connectionString", "label": "URI de connexion", "description": "Exemple: mongodb://user:pass@host:27017", "col": { "xs": 24 }, "secret": true, "validators": [{ "type": "required" }] },
     { "type": "text", "key": "database", "label": "Base", "col": { "xs": 24 }, "validators": [{ "type": "required" }] }
   ], "displayTitle": false, "displayDescription": false } }],

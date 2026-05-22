@@ -1,0 +1,3999 @@
+{
+  "repo": {
+    "name": "braze",
+    "type": "local",
+    "label": "Braze"
+  },
+  "variables": {
+    "braze_action_result": {
+      "title": "Résultat action",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "Succès",
+          "description": "Indique si l’action est réussie.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Code HTTP",
+          "description": "Code HTTP retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "message",
+          "label": "Message",
+          "description": "Message de statut.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Données brutes",
+          "description": "Réponse API brute.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "braze_create": {
+      "title": "create Braze",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "url",
+          "label": "URL",
+          "description": "URL.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "created_at",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "updated_at",
+          "label": "Date modification",
+          "description": "Date de modification.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Données brutes",
+          "description": "Réponse API brute.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "braze_creates": {
+      "title": "creates Braze",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Éléments",
+          "description": "Liste des éléments",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "url",
+              "label": "URL",
+              "description": "URL.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "created_at",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "updated_at",
+              "label": "Date modification",
+              "description": "Date de modification.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "json",
+              "key": "raw",
+              "label": "Données brutes",
+              "description": "Réponse API brute.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d’éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextCursor",
+          "label": "Cursor suivant",
+          "description": "Cursor de page suivant.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "braze_data_sery": {
+      "title": "data_sery Braze",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "url",
+          "label": "URL",
+          "description": "URL.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "created_at",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "updated_at",
+          "label": "Date modification",
+          "description": "Date de modification.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Données brutes",
+          "description": "Réponse API brute.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "braze_data_series": {
+      "title": "data_series Braze",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Éléments",
+          "description": "Liste des éléments",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "url",
+              "label": "URL",
+              "description": "URL.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "created_at",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "updated_at",
+              "label": "Date modification",
+              "description": "Date de modification.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "json",
+              "key": "raw",
+              "label": "Données brutes",
+              "description": "Réponse API brute.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d’éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextCursor",
+          "label": "Cursor suivant",
+          "description": "Cursor de page suivant.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "braze_data_summary": {
+      "title": "data_summary Braze",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "url",
+          "label": "URL",
+          "description": "URL.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "created_at",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "updated_at",
+          "label": "Date modification",
+          "description": "Date de modification.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Données brutes",
+          "description": "Réponse API brute.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "braze_data_summaries": {
+      "title": "data_summaries Braze",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Éléments",
+          "description": "Liste des éléments",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "url",
+              "label": "URL",
+              "description": "URL.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "created_at",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "updated_at",
+              "label": "Date modification",
+              "description": "Date de modification.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "json",
+              "key": "raw",
+              "label": "Données brutes",
+              "description": "Réponse API brute.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d’éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextCursor",
+          "label": "Cursor suivant",
+          "description": "Cursor de page suivant.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "braze_detail": {
+      "title": "detail Braze",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "url",
+          "label": "URL",
+          "description": "URL.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "created_at",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "updated_at",
+          "label": "Date modification",
+          "description": "Date de modification.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Données brutes",
+          "description": "Réponse API brute.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "braze_details": {
+      "title": "details Braze",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Éléments",
+          "description": "Liste des éléments",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "url",
+              "label": "URL",
+              "description": "URL.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "created_at",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "updated_at",
+              "label": "Date modification",
+              "description": "Date de modification.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "json",
+              "key": "raw",
+              "label": "Données brutes",
+              "description": "Réponse API brute.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d’éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextCursor",
+          "label": "Cursor suivant",
+          "description": "Cursor de page suivant.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "braze_hard_bounce": {
+      "title": "hard_bounce Braze",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "url",
+          "label": "URL",
+          "description": "URL.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "created_at",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "updated_at",
+          "label": "Date modification",
+          "description": "Date de modification.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Données brutes",
+          "description": "Réponse API brute.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "braze_hard_bounces": {
+      "title": "hard_bounces Braze",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Éléments",
+          "description": "Liste des éléments",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "url",
+              "label": "URL",
+              "description": "URL.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "created_at",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "updated_at",
+              "label": "Date modification",
+              "description": "Date de modification.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "json",
+              "key": "raw",
+              "label": "Données brutes",
+              "description": "Réponse API brute.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d’éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextCursor",
+          "label": "Cursor suivant",
+          "description": "Cursor de page suivant.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "braze_info": {
+      "title": "info Braze",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "url",
+          "label": "URL",
+          "description": "URL.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "created_at",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "updated_at",
+          "label": "Date modification",
+          "description": "Date de modification.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Données brutes",
+          "description": "Réponse API brute.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "braze_infos": {
+      "title": "infos Braze",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Éléments",
+          "description": "Liste des éléments",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "url",
+              "label": "URL",
+              "description": "URL.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "created_at",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "updated_at",
+              "label": "Date modification",
+              "description": "Date de modification.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "json",
+              "key": "raw",
+              "label": "Données brutes",
+              "description": "Réponse API brute.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d’éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextCursor",
+          "label": "Cursor suivant",
+          "description": "Cursor de page suivant.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "braze_list": {
+      "title": "list Braze",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "url",
+          "label": "URL",
+          "description": "URL.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "created_at",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "updated_at",
+          "label": "Date modification",
+          "description": "Date de modification.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Données brutes",
+          "description": "Réponse API brute.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "braze_lists": {
+      "title": "lists Braze",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Éléments",
+          "description": "Liste des éléments",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "url",
+              "label": "URL",
+              "description": "URL.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "created_at",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "updated_at",
+              "label": "Date modification",
+              "description": "Date de modification.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "json",
+              "key": "raw",
+              "label": "Données brutes",
+              "description": "Réponse API brute.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d’éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextCursor",
+          "label": "Cursor suivant",
+          "description": "Cursor de page suivant.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "braze_scheduled_broadcast": {
+      "title": "scheduled_broadcast Braze",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "url",
+          "label": "URL",
+          "description": "URL.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "created_at",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "updated_at",
+          "label": "Date modification",
+          "description": "Date de modification.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Données brutes",
+          "description": "Réponse API brute.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "braze_scheduled_broadcasts": {
+      "title": "scheduled_broadcasts Braze",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Éléments",
+          "description": "Liste des éléments",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "url",
+              "label": "URL",
+              "description": "URL.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "created_at",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "updated_at",
+              "label": "Date modification",
+              "description": "Date de modification.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "json",
+              "key": "raw",
+              "label": "Données brutes",
+              "description": "Réponse API brute.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d’éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextCursor",
+          "label": "Cursor suivant",
+          "description": "Cursor de page suivant.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "braze_unsubscribe": {
+      "title": "unsubscribe Braze",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "url",
+          "label": "URL",
+          "description": "URL.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "created_at",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "updated_at",
+          "label": "Date modification",
+          "description": "Date de modification.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Données brutes",
+          "description": "Réponse API brute.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "braze_unsubscribes": {
+      "title": "unsubscribes Braze",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Éléments",
+          "description": "Liste des éléments",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "url",
+              "label": "URL",
+              "description": "URL.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "created_at",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "updated_at",
+              "label": "Date modification",
+              "description": "Date de modification.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "json",
+              "key": "raw",
+              "label": "Données brutes",
+              "description": "Réponse API brute.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d’éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextCursor",
+          "label": "Cursor suivant",
+          "description": "Cursor de page suivant.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "braze",
+      "name": "Braze",
+      "title": "Braze",
+      "iconClass": "fa-solid fa-bullhorn",
+      "iconUrl": "https://www.google.com/s2/favicons?domain=braze.com&sz=128",
+      "color": "#ecefff",
+      "tags": [
+        "braze",
+        "automation"
+      ],
+      "categories": [
+        "Productivité"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Braze",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "apiKey",
+            "label": "Clé API",
+            "description": "Clé API Braze.",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "baseUrl",
+            "label": "URL de base API",
+            "description": "URL de base des endpoints Braze.",
+            "col": {
+              "xs": 24
+            },
+            "default": "https://api.example.com"
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "braze_create_send_scheduleapitriggeredcanvases",
+      "name": "brazeCreateSendScheduleapitriggeredcanvases",
+      "schemaVersion": 2,
+      "title": "Créer création",
+      "subtitle": "Création",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Braze",
+      "providerKey": "braze",
+      "tags": [
+        "braze",
+        "create",
+        "send"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:braze_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Créer création.",
+      "args": {
+        "title": "Créer création",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "json",
+            "key": "body",
+            "label": "Payload",
+            "description": "Corps Json de la requête",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "créations"
+    },
+    {
+      "key": "braze_data_sery_list_campaignanalytics",
+      "name": "brazeDataSeryListCampaignanalytics",
+      "schemaVersion": 2,
+      "title": "Lister campagne analytique",
+      "subtitle": "Campagne analytique",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Braze",
+      "providerKey": "braze",
+      "tags": [
+        "braze",
+        "data_sery",
+        "list"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:braze_data_series"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lister campagne analytique.",
+      "args": {
+        "title": "Lister campagne analytique",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "campaign_id",
+            "label": "Campagne ID",
+            "description": "Required String Campagne identifier",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "length",
+            "label": "Length",
+            "description": "Required Integer Max numéro days before ending include returned series must between 1 100 inclusive",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "ending_at",
+            "label": "Ending",
+            "description": "Optional Date Time Iso 8601 string Date which données series should end defaults time",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "données series"
+    },
+    {
+      "key": "braze_data_sery_list_canvasdataseriesanalytics",
+      "name": "brazeDataSeryListCanvasdataseriesanalytics",
+      "schemaVersion": 2,
+      "title": "Lister donnée sery",
+      "subtitle": "Donnée sery",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Braze",
+      "providerKey": "braze",
+      "tags": [
+        "braze",
+        "data_sery",
+        "list"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:braze_data_series"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lister donnée sery.",
+      "args": {
+        "title": "Lister donnée sery",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "canvas_id",
+            "label": "Canvas ID",
+            "description": "Required String Canvas Identifier",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "ending_at",
+            "label": "Ending",
+            "description": "Required Date Time Iso 8601 string Date which données export should end defaults time",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "starting_at",
+            "label": "Starting",
+            "description": "Optional Date Time Iso 8601 string Date which données export should begin either length starting are required",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "length",
+            "label": "Length",
+            "description": "Optional Date Time Iso 8601 string Max numéro days before ending include returned series must between 1 14 inclusive either length starting required",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "include_variant_breakdown",
+            "label": "Include Variant Breakdown",
+            "description": "Optional Boolean Whether not include variant statistiques defaults false",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "include_step_breakdown",
+            "label": "Include Step Breakdown",
+            "description": "Optional Boolean Whether not include step statistiques defaults false",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "include_deleted_step_data",
+            "label": "Include Deleted Step Données",
+            "description": "Optional Boolean Whether not include step statistiques deleted steps defaults false",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "données series"
+    },
+    {
+      "key": "braze_data_sery_list_customeventsanalytics",
+      "name": "brazeDataSeryListCustomeventsanalytics",
+      "schemaVersion": 2,
+      "title": "Lister personnalisé événement analytique",
+      "subtitle": "Personnalisé événement analytique",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Braze",
+      "providerKey": "braze",
+      "tags": [
+        "braze",
+        "data_sery",
+        "list"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:braze_data_series"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lister personnalisé événement analytique.",
+      "args": {
+        "title": "Lister personnalisé événement analytique",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "event",
+            "label": "Événement",
+            "description": "Required String name personnalisé événement which return analytiques",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "length",
+            "label": "Length",
+            "description": "Required Integer Max numéro units days hours before ending include returned series must between 1 100 inclusive",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "unit",
+            "label": "Unit",
+            "description": "Optional String Unit time between données points can day hour defaults day",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "ending_at",
+            "label": "Ending",
+            "description": "Optional Date Time Iso 8601 string Point time when données series should end defaults time",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "app_id",
+            "label": "App ID",
+            "description": "Optional String App identifier retrieved Developer Console limit analytiques specific app",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "segment_id",
+            "label": "Segment ID",
+            "description": "Optional String Segment identifier indicating analytiques enabled segment which événement analytiques should returned",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "données series"
+    },
+    {
+      "key": "braze_data_sery_list_newsfeedcardanalytics",
+      "name": "brazeDataSeryListNewsfeedcardanalytics",
+      "schemaVersion": 2,
+      "title": "Lister donnée sery - données",
+      "subtitle": "Donnée sery",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Braze",
+      "providerKey": "braze",
+      "tags": [
+        "braze",
+        "data_sery",
+        "list"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:braze_data_series"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lister donnée sery - données.",
+      "args": {
+        "title": "Lister donnée sery - données",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "card_id",
+            "label": "Card ID",
+            "description": "Required String Card identifier",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "length",
+            "label": "Length",
+            "description": "Required Integer Max numéro units days hours before ending include returned series must between 1 100 inclusive",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "unit",
+            "label": "Unit",
+            "description": "Optional String Unit time between données points can day hour defaults day",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "ending_at",
+            "label": "Ending",
+            "description": "Optional Date Time Iso 8601 string Date which données series should end defaults time",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "données series"
+    },
+    {
+      "key": "braze_data_sery_list_dailyactiveusersbydate",
+      "name": "brazeDataSeryListDailyactiveusersbydate",
+      "schemaVersion": 2,
+      "title": "Lister donnée sery - données dailyactiveusersbydate",
+      "subtitle": "Donnée sery",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Braze",
+      "providerKey": "braze",
+      "tags": [
+        "braze",
+        "data_sery",
+        "list"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:braze_data_series"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lister donnée sery - données dailyactiveusersbydate.",
+      "args": {
+        "title": "Lister donnée sery - données dailyactiveusersbydate",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "length",
+            "label": "Length",
+            "description": "Required Integer Max numéro days before ending include returned series must between 1 100 inclusive",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "ending_at",
+            "label": "Ending",
+            "description": "Optional Date Time Iso 8601 string Point time when données series should end defaults time",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "app_id",
+            "label": "App ID",
+            "description": "Optional String App identifier if excluded résultats apps app groupe will returned",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "données series"
+    },
+    {
+      "key": "braze_data_sery_list_monthlyactiveusersforlast30days",
+      "name": "brazeDataSeryListMonthlyactiveusersforlast30days",
+      "schemaVersion": 2,
+      "title": "Lister donnée sery - données monthlyactiveusersforlast30day",
+      "subtitle": "Donnée sery",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Braze",
+      "providerKey": "braze",
+      "tags": [
+        "braze",
+        "data_sery",
+        "list"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:braze_data_series"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lister donnée sery - données monthlyactiveusersforlast30day.",
+      "args": {
+        "title": "Lister donnée sery - données monthlyactiveusersforlast30day",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "length",
+            "label": "Length",
+            "description": "Required Integer Max numéro days before ending include returned series must between 1 100 inclusive",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "ending_at",
+            "label": "Ending",
+            "description": "Optional Date Time Iso 8601 string Point time when données series should end defaults time",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "app_id",
+            "label": "App ID",
+            "description": "Optional String App identifier if excluded résultats apps app groupe will returned",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "données series"
+    },
+    {
+      "key": "braze_data_sery_list_dailynewusersbydate",
+      "name": "brazeDataSeryListDailynewusersbydate",
+      "schemaVersion": 2,
+      "title": "Lister donnée sery - données dailynewusersbydate",
+      "subtitle": "Donnée sery",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Braze",
+      "providerKey": "braze",
+      "tags": [
+        "braze",
+        "data_sery",
+        "list"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:braze_data_series"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lister donnée sery - données dailynewusersbydate.",
+      "args": {
+        "title": "Lister donnée sery - données dailynewusersbydate",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "length",
+            "label": "Length",
+            "description": "Required Integer Max numéro days before ending include returned series must between 1 100 inclusive",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "ending_at",
+            "label": "Ending",
+            "description": "Optional Date Time Iso 8601 string Point time when données series should end defaults time",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "app_id",
+            "label": "App ID",
+            "description": "Optional String App identifier if excluded résultats apps app groupe will returned",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "données series"
+    },
+    {
+      "key": "braze_data_sery_list_kpisfordailyappuninstallsbydate",
+      "name": "brazeDataSeryListKpisfordailyappuninstallsbydate",
+      "schemaVersion": 2,
+      "title": "Lister donnée sery - données kpisfordailyappuninstallsbydate",
+      "subtitle": "Donnée sery",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Braze",
+      "providerKey": "braze",
+      "tags": [
+        "braze",
+        "data_sery",
+        "list"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:braze_data_series"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lister donnée sery - données kpisfordailyappuninstallsbydate.",
+      "args": {
+        "title": "Lister donnée sery - données kpisfordailyappuninstallsbydate",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "length",
+            "label": "Length",
+            "description": "Required Integer Max numéro days before ending include returned series must between 1 100 inclusive",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "ending_at",
+            "label": "Ending",
+            "description": "Optional Date Time Iso 8601 string Point time when données series should end defaults time",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "app_id",
+            "label": "App ID",
+            "description": "Optional String App identifier if excluded résultats apps app groupe will returned",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "données series"
+    },
+    {
+      "key": "braze_data_sery_list_segmentanalytics",
+      "name": "brazeDataSeryListSegmentanalytics",
+      "schemaVersion": 2,
+      "title": "Lister donnée sery - données segmentanalytic",
+      "subtitle": "Donnée sery",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Braze",
+      "providerKey": "braze",
+      "tags": [
+        "braze",
+        "data_sery",
+        "list"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:braze_data_series"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lister donnée sery - données segmentanalytic.",
+      "args": {
+        "title": "Lister donnée sery - données segmentanalytic",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "segment_id",
+            "label": "Segment ID",
+            "description": "Required String Segment identifier",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "length",
+            "label": "Length",
+            "description": "Required Integer Max numéro days before ending include returned series must between 1 100 inclusive",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "ending_at",
+            "label": "Ending",
+            "description": "Optional Date Time Iso 8601 string Point time when données series should end defaults time",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "données series"
+    },
+    {
+      "key": "braze_data_sery_send_sendanalytics",
+      "name": "brazeDataSerySendSendanalytics",
+      "schemaVersion": 2,
+      "title": "Envoyer analytique",
+      "subtitle": "Analytique",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Braze",
+      "providerKey": "braze",
+      "tags": [
+        "braze",
+        "data_sery",
+        "send"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:braze_data_sery"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Envoyer analytique.",
+      "args": {
+        "title": "Envoyer analytique",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "campaign_id",
+            "label": "Campagne ID",
+            "description": "Required String Campagne identifier",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "send_id",
+            "label": "Send ID",
+            "description": "Required String Send identifier",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "length",
+            "label": "Length",
+            "description": "Required Integer Maximum numéro days before ending include returned series Must between 1 100 inclusive",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "ending_at",
+            "label": "Ending",
+            "description": "Optional Datetime Iso 8601 string Date which données series should end Defaults time",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "données series"
+    },
+    {
+      "key": "braze_data_sery_list_appsessionsbytime",
+      "name": "brazeDataSeryListAppsessionsbytime",
+      "schemaVersion": 2,
+      "title": "Lister donnée sery - données appsessionsbytime",
+      "subtitle": "Donnée sery",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Braze",
+      "providerKey": "braze",
+      "tags": [
+        "braze",
+        "data_sery",
+        "list"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:braze_data_series"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lister donnée sery - données appsessionsbytime.",
+      "args": {
+        "title": "Lister donnée sery - données appsessionsbytime",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "length",
+            "label": "Length",
+            "description": "Required Integer Max numéro units days hours before ending include returned series must between 1 100 inclusive",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "unit",
+            "label": "Unit",
+            "description": "Optional String Unit time between données points can day hour defaults day",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "ending_at",
+            "label": "Ending",
+            "description": "Optional Date Time Iso 8601 string Point time when données series should end defaults time",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "app_id",
+            "label": "App ID",
+            "description": "Optional String App identifier retrieved Developer Console limit analytiques specific app",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "segment_id",
+            "label": "Segment ID",
+            "description": "Optional String Segment identifier indicating analytiques enabled segment which sessions should returned",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "données series"
+    },
+    {
+      "key": "braze_data_summary_list_canvasdataanalyticssummary",
+      "name": "brazeDataSummaryListCanvasdataanalyticssummary",
+      "schemaVersion": 2,
+      "title": "Lister donnée résumé",
+      "subtitle": "Donnée résumé",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Braze",
+      "providerKey": "braze",
+      "tags": [
+        "braze",
+        "data_summary",
+        "list"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:braze_data_summaries"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lister donnée résumé.",
+      "args": {
+        "title": "Lister donnée résumé",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "canvas_id",
+            "label": "Canvas ID",
+            "description": "Required String Canvas identifier",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "ending_at",
+            "label": "Ending",
+            "description": "Required Date Time Iso 8601 string Date which données export should end defaults time",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "starting_at",
+            "label": "Starting",
+            "description": "Optional Date Time Iso 8601 string Date which données export should begin either length starting required",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "length",
+            "label": "Length",
+            "description": "Optional Integer Max numéro days before ending include returned series must between 1 14 inclusive either length starting required",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "include_variant_breakdown",
+            "label": "Include Variant Breakdown",
+            "description": "Optional Boolean Whether not include variant statistiques defaults false",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "include_step_breakdown",
+            "label": "Include Step Breakdown",
+            "description": "Optional Boolean Whether not include step statistiques defaults false",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "include_deleted_step_data",
+            "label": "Include Deleted Step Données",
+            "description": "Optional Boolean Whether not include step statistiques deleted steps defaults false",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "données résumés"
+    },
+    {
+      "key": "braze_detail_tag_campaigndetails",
+      "name": "brazeDetailTagCampaigndetails",
+      "schemaVersion": 2,
+      "title": "Taguer campagne détail",
+      "subtitle": "Campagne détail",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Braze",
+      "providerKey": "braze",
+      "tags": [
+        "braze",
+        "detail",
+        "tag"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:braze_detail"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Taguer campagne détail.",
+      "args": {
+        "title": "Taguer campagne détail",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "campaign_id",
+            "label": "Campagne ID",
+            "description": "Required String Campagne identifier",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "détails"
+    },
+    {
+      "key": "braze_detail_tag_canvasdetails",
+      "name": "brazeDetailTagCanvasdetails",
+      "schemaVersion": 2,
+      "title": "Taguer détail",
+      "subtitle": "Détail",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Braze",
+      "providerKey": "braze",
+      "tags": [
+        "braze",
+        "detail",
+        "tag"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:braze_detail"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Taguer détail.",
+      "args": {
+        "title": "Taguer détail",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "canvas_id",
+            "label": "Canvas ID",
+            "description": "Required String Canvas Identifier",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "détails"
+    },
+    {
+      "key": "braze_detail_tag_newsfeedcardsdetails",
+      "name": "brazeDetailTagNewsfeedcardsdetails",
+      "schemaVersion": 2,
+      "title": "Taguer détail - newsfeedcardsdetail",
+      "subtitle": "Détail",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Braze",
+      "providerKey": "braze",
+      "tags": [
+        "braze",
+        "detail",
+        "tag"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:braze_detail"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Taguer détail - newsfeedcardsdetail.",
+      "args": {
+        "title": "Taguer détail - newsfeedcardsdetail",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "card_id",
+            "label": "Card ID",
+            "description": "Required String Card identifier",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "détails"
+    },
+    {
+      "key": "braze_detail_tag_segmentdetails",
+      "name": "brazeDetailTagSegmentdetails",
+      "schemaVersion": 2,
+      "title": "Taguer détail - segmentdetail",
+      "subtitle": "Détail",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Braze",
+      "providerKey": "braze",
+      "tags": [
+        "braze",
+        "detail",
+        "tag"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:braze_detail"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Taguer détail - segmentdetail.",
+      "args": {
+        "title": "Taguer détail - segmentdetail",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "segment_id",
+            "label": "Segment ID",
+            "description": "Required String Segment identifier",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "détails"
+    },
+    {
+      "key": "braze_hard_bounce_search_queryhardbouncedemails",
+      "name": "brazeHardBounceSearchQueryhardbouncedemails",
+      "schemaVersion": 2,
+      "title": "Rechercher hard bounce",
+      "subtitle": "Hard bounce",
+      "icon": "fa-solid fa-magnifying-glass",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Braze",
+      "providerKey": "braze",
+      "tags": [
+        "braze",
+        "hard_bounce",
+        "search"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:braze_hard_bounces"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Rechercher hard bounce.",
+      "args": {
+        "title": "Rechercher hard bounce",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "start_date",
+            "label": "Start Date",
+            "description": "Optional String Yyyy Mm Dd format Start date range récupération hard bounces must earlier than end date treated midnight Utc time You must provide either email start date end date",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "end_date",
+            "label": "End Date",
+            "description": "Optional String Yyyy Mm Dd format String Yyyy Mm Dd format End date range récupération hard bounces treated midnight Utc time You must provide either email start date end date",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "limit",
+            "label": "Limit",
+            "description": "Optional Integer Optional champ limit numéro résultats returned Defaults 100 maximum 500",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "offset",
+            "label": "Offset",
+            "description": "Optional Integer Optional beginning point liste récupération",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "email",
+            "label": "Email",
+            "description": "Optional String If provided we will return whether not utilisateur has hard bounced You must provide either email start date end date",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "hard bounces"
+    },
+    {
+      "key": "braze_info_list_seecontentblockinformation",
+      "name": "brazeInfoListSeecontentblockinformation",
+      "schemaVersion": 2,
+      "title": "Lister information",
+      "subtitle": "Information",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Braze",
+      "providerKey": "braze",
+      "tags": [
+        "braze",
+        "info",
+        "list"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:braze_infos"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lister information.",
+      "args": {
+        "title": "Lister information",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "content_block_id",
+            "label": "Content Bloc ID",
+            "description": "Required String Content Bloc ID can found either liste Content Bloc information going Developer Console then Paramètres then scrolling bottom searching your Content Bloc Identifier",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "include_inclusion_data",
+            "label": "Include Inclusion Données",
+            "description": "Optional Boolean When set true returns back Message Variation ID Campagnes Canvases where content bloc included used subsequent appels résultats exclude archived deleted Campagnes Canvases",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "informations"
+    },
+    {
+      "key": "braze_info_list_seeemailtemplateinformation",
+      "name": "brazeInfoListSeeemailtemplateinformation",
+      "schemaVersion": 2,
+      "title": "Lister information - seeemailtemplateinformation",
+      "subtitle": "Information",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Braze",
+      "providerKey": "braze",
+      "tags": [
+        "braze",
+        "info",
+        "list"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:braze_infos"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lister information - seeemailtemplateinformation.",
+      "args": {
+        "title": "Lister information - seeemailtemplateinformation",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "email_template_id",
+            "label": "Email Modèle ID",
+            "description": "Required String Your email modèle s Identifier",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "informations"
+    },
+    {
+      "key": "braze_list_tag_campaignlist",
+      "name": "brazeListTagCampaignlist",
+      "schemaVersion": 2,
+      "title": "Lister tag campagne",
+      "subtitle": "Tag campagne",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Braze",
+      "providerKey": "braze",
+      "tags": [
+        "braze",
+        "list",
+        "tag"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:braze_list"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lister tag campagne.",
+      "args": {
+        "title": "Lister tag campagne",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "page",
+            "label": "Page",
+            "description": "Optional Integer page campagnes return defaults 0 returns first set 100",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "include_archived",
+            "label": "Include Archived",
+            "description": "Optional Boolean Whether not include archived campagnes defaults false",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "sort_direction",
+            "label": "Sort Direction",
+            "description": "Optional String Pass valeur desc sort creation time newest oldest Pass asc sort oldest newest If sort direction not included default order oldest newest",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "last_edit_time_gt",
+            "label": "Last Edit Time Gt",
+            "description": "Optional Date Time Iso 8601 string Filtres résultats only returns campagnes were edited greater than time provided till now",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "listes"
+    },
+    {
+      "key": "braze_list_tag_canvaslist",
+      "name": "brazeListTagCanvaslist",
+      "schemaVersion": 2,
+      "title": "Lister liste",
+      "subtitle": "Liste",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Braze",
+      "providerKey": "braze",
+      "tags": [
+        "braze",
+        "list",
+        "tag"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:braze_list"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lister liste.",
+      "args": {
+        "title": "Lister liste",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "page",
+            "label": "Page",
+            "description": "Optional Integer page Canvases return defaults 0 returns first set 100",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "include_archived",
+            "label": "Include Archived",
+            "description": "Optional Boolean Whether not include archived Canvases defaults false",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "sort_direction",
+            "label": "Sort Direction",
+            "description": "Optional String Pass valeur desc sort creation time newest oldest Pass asc sort oldest newest If sort direction not included default order oldest newest",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "last_edit_time_gt",
+            "label": "Last Edit Time Gt",
+            "description": "Optional Date Time Iso 8601 string Filtres résultats only returns Canvases were edited greater than time provided till now",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "listes"
+    },
+    {
+      "key": "braze_list_list_listavailablecontentblocks",
+      "name": "brazeListListListavailablecontentblocks",
+      "schemaVersion": 2,
+      "title": "Lister liste - listavailablecontentblock",
+      "subtitle": "Liste",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Braze",
+      "providerKey": "braze",
+      "tags": [
+        "braze",
+        "list",
+        "list"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:braze_lists"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lister liste - listavailablecontentblock.",
+      "args": {
+        "title": "Lister liste - listavailablecontentblock",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "modified_after",
+            "label": "Modified After",
+            "description": "Optional String Iso 8601 Récupération only content blocs updated after given time",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "modified_before",
+            "label": "Modified Before",
+            "description": "Optional String Iso 8601 Récupération only content blocs updated before given time",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "limit",
+            "label": "Limit",
+            "description": "Optional Positive Numéro Maximum numéro content blocs récupération default 100 if not provided maximum acceptable valeur 1000",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "offset",
+            "label": "Offset",
+            "description": "Optional Positive Numéro Numéro content blocs skip before returning rest modèles fit recherche criteria",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "listes"
+    },
+    {
+      "key": "braze_list_list_customeventslist",
+      "name": "brazeListListCustomeventslist",
+      "schemaVersion": 2,
+      "title": "Lister personnalisé événement",
+      "subtitle": "Personnalisé événement",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Braze",
+      "providerKey": "braze",
+      "tags": [
+        "braze",
+        "list",
+        "list"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:braze_lists"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lister personnalisé événement.",
+      "args": {
+        "title": "Lister personnalisé événement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "page",
+            "label": "Page",
+            "description": "Optional Integer page événement names return defaults 0 returns first set 250",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "listes"
+    },
+    {
+      "key": "braze_list_tag_newsfeedcardslist",
+      "name": "brazeListTagNewsfeedcardslist",
+      "schemaVersion": 2,
+      "title": "Lister liste - tag",
+      "subtitle": "Liste",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Braze",
+      "providerKey": "braze",
+      "tags": [
+        "braze",
+        "list",
+        "tag"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:braze_list"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lister liste - tag.",
+      "args": {
+        "title": "Lister liste - tag",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "page",
+            "label": "Page",
+            "description": "Optional Integer page cards return defaults 0 returns first set 100",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "include_archived",
+            "label": "Include Archived",
+            "description": "Optional Boolean Whether not include archived cards defaults false",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "sort_direction",
+            "label": "Sort Direction",
+            "description": "Optional String Pass valeur desc sort creation time newest oldest Pass asc sort oldest newest If sort direction not included default order oldest newest",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "listes"
+    },
+    {
+      "key": "braze_list_tag_segmentlist",
+      "name": "brazeListTagSegmentlist",
+      "schemaVersion": 2,
+      "title": "Lister liste - tag segmentlist",
+      "subtitle": "Liste",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Braze",
+      "providerKey": "braze",
+      "tags": [
+        "braze",
+        "list",
+        "tag"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:braze_list"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lister liste - tag segmentlist.",
+      "args": {
+        "title": "Lister liste - tag segmentlist",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "page",
+            "label": "Page",
+            "description": "Optional Integer page segments return defaults 0 returns first set 100",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "sort_direction",
+            "label": "Sort Direction",
+            "description": "Optional String Pass valeur desc sort creation time newest oldest Pass asc sort oldest newest If sort direction not included default order oldest newest",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "listes"
+    },
+    {
+      "key": "braze_list_list_listavailableemailtemplates",
+      "name": "brazeListListListavailableemailtemplates",
+      "schemaVersion": 2,
+      "title": "Lister liste - listavailableemailtemplate",
+      "subtitle": "Liste",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Braze",
+      "providerKey": "braze",
+      "tags": [
+        "braze",
+        "list",
+        "list"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:braze_lists"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lister liste - listavailableemailtemplate.",
+      "args": {
+        "title": "Lister liste - listavailableemailtemplate",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "modified_after",
+            "label": "Modified After",
+            "description": "Optional String Iso 8601 Récupération only modèles updated after given time",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "modified_before",
+            "label": "Modified Before",
+            "description": "Optional String Iso 8601 Récupération only modèles updated before given time",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "limit",
+            "label": "Limit",
+            "description": "Optional Positive Numéro Maximum numéro modèles récupération default 100 if not provided maximum acceptable valeur 1000",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "offset",
+            "label": "Offset",
+            "description": "Optional Positive Numéro Numéro modèles skip before returning rest modèles fit recherche criteria",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "listes"
+    },
+    {
+      "key": "braze_scheduled_broadcast_tag_getupcomingscheduledcampaignsandcanvases",
+      "name": "brazeScheduledBroadcastTagGetupcomingscheduledcampaignsandcanvases",
+      "schemaVersion": 2,
+      "title": "Taguer planifié broadcast",
+      "subtitle": "Planifié broadcast",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Braze",
+      "providerKey": "braze",
+      "tags": [
+        "braze",
+        "scheduled_broadcast",
+        "tag"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:braze_scheduled_broadcast"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Taguer planifié broadcast.",
+      "args": {
+        "title": "Taguer planifié broadcast",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "end_time",
+            "label": "End Time",
+            "description": "Required String Iso 8601 format End date range récupération upcoming planifiés Campagnes Canvases treated midnight Utc time",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "planifiés broadcasts"
+    },
+    {
+      "key": "braze_unsubscribe_search_querylistofunsubscribedemailaddresses",
+      "name": "brazeUnsubscribeSearchQuerylistofunsubscribedemailaddresses",
+      "schemaVersion": 2,
+      "title": "Rechercher unsubscribe",
+      "subtitle": "Unsubscribe",
+      "icon": "fa-solid fa-magnifying-glass",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Braze",
+      "providerKey": "braze",
+      "tags": [
+        "braze",
+        "unsubscribe",
+        "search"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:braze_unsubscribes"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Rechercher unsubscribe.",
+      "args": {
+        "title": "Rechercher unsubscribe",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "start_date",
+            "label": "Start Date",
+            "description": "Optional String Yyyy Mm Dd format Start date range récupération unsubscribes must earlier than end date treated midnight Utc time",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "end_date",
+            "label": "End Date",
+            "description": "Optional String Yyyy Mm Dd format End date range récupération unsubscribes treated midnight Utc time",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "limit",
+            "label": "Limit",
+            "description": "Optional Integer Optional champ limit numéro résultats returned Limit must greater than 1 Defaults 100 maximum 500",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "offset",
+            "label": "Offset",
+            "description": "Optional Integer Optional beginning point liste récupération",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "sort_direction",
+            "label": "Sort Direction",
+            "description": "Optional String Pass valeur asc sort unsubscribes oldest newest Pass desc sort newest oldest If sort direction not included default order newest oldest",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "email",
+            "label": "Email",
+            "description": "Optional String If provided we will return whether not utilisateur has désinscrit",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "unsubscribes"
+    }
+  ]
+}

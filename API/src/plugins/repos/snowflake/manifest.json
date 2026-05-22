@@ -1,0 +1,2178 @@
+{
+  "repo": {
+    "name": "snowflake",
+    "type": "local",
+    "label": "Snowflake"
+  },
+  "variables": {
+    "snowflake_action_result": {
+      "title": "Résultat action",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "Succès",
+          "description": "Indique si l’action est réussie.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Code HTTP",
+          "description": "Code HTTP retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "message",
+          "label": "Message",
+          "description": "Message de statut.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Données brutes",
+          "description": "Réponse API brute.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "snowflake_statement": {
+      "title": "requête Snowflake",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "url",
+          "label": "URL",
+          "description": "URL.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "created_at",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "updated_at",
+          "label": "Date modification",
+          "description": "Date de modification.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Données brutes",
+          "description": "Réponse API brute.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "snowflake_statements": {
+      "title": "requêtes Snowflake",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Éléments",
+          "description": "Liste des éléments",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "url",
+              "label": "URL",
+              "description": "URL.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "created_at",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "updated_at",
+              "label": "Date modification",
+              "description": "Date de modification.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "json",
+              "key": "raw",
+              "label": "Données brutes",
+              "description": "Réponse API brute.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d’éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextCursor",
+          "label": "Cursor suivant",
+          "description": "Cursor de page suivant.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "snowflake",
+      "name": "Snowflake",
+      "title": "Snowflake",
+      "iconClass": "fa-solid fa-snowflake",
+      "iconUrl": "https://cdn.simpleicons.org/snowflake",
+      "color": "#e8f8ff",
+      "tags": [
+        "snowflake",
+        "sql",
+        "data-warehouse"
+      ],
+      "categories": [
+        "Base de données"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Snowflake",
+        "displayTitle": false,
+        "displayDescription": false,
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "baseUrl",
+            "label": "URL de compte",
+            "description": "Ex: https://<account_identifier>.snowflakecomputing.com",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "token",
+            "label": "Token",
+            "description": "JWT/API token pour l’authentification Snowflake SQL API.",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "tokenType",
+            "label": "Type de token",
+            "description": "Valeur d’en-tête X-Snowflake-Authorization-Token-Type.",
+            "col": {
+              "xs": 24
+            },
+            "default": "KEYPAIR_JWT"
+          }
+        ]
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "snowflake_statement_execute",
+      "name": "snowflakeStatementExecute",
+      "schemaVersion": 2,
+      "title": "Exécuter une requête SQL",
+      "subtitle": "requêtes",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Snowflake",
+      "providerKey": "snowflake",
+      "tags": [
+        "snowflake",
+        "statement",
+        "execute"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:snowflake_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action execute sur requête.",
+      "args": {
+        "title": "Exécuter une requête SQL",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "statement",
+            "label": "SQL",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "timeout",
+            "label": "Timeout (s)",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "database",
+            "label": "Database",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "schema",
+            "label": "Schema",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "warehouse",
+            "label": "Warehouse",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "role",
+            "label": "Role",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "bindings",
+            "label": "Bindings",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "parameters",
+            "label": "Paramètres",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "async",
+            "label": "Exécution asynchrone",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "requêtes"
+    },
+    {
+      "key": "snowflake_statement_status",
+      "name": "snowflakeStatementStatus",
+      "schemaVersion": 2,
+      "title": "Récupérer le statut d’une requête",
+      "subtitle": "requêtes",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Snowflake",
+      "providerKey": "snowflake",
+      "tags": [
+        "snowflake",
+        "statement",
+        "status"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:snowflake_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action status sur requête.",
+      "args": {
+        "title": "Récupérer le statut d’une requête",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "statement_handle",
+            "label": "Statement Handle",
+            "description": "Valeur de chemin statement_handle.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "requêtes"
+    },
+    {
+      "key": "snowflake_statement_result_partition",
+      "name": "snowflakeStatementResultPartition",
+      "schemaVersion": 2,
+      "title": "Récupérer un partitionnement de résultat",
+      "subtitle": "requêtes",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Snowflake",
+      "providerKey": "snowflake",
+      "tags": [
+        "snowflake",
+        "statement",
+        "result_partition"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:snowflake_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action result_partition sur requête.",
+      "args": {
+        "title": "Récupérer un partitionnement de résultat",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "statement_handle",
+            "label": "Handle",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "partition",
+            "label": "Partition",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "requêtes"
+    },
+    {
+      "key": "snowflake_statement_cancel",
+      "name": "snowflakeStatementCancel",
+      "schemaVersion": 2,
+      "title": "Annuler une requête",
+      "subtitle": "requêtes",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Snowflake",
+      "providerKey": "snowflake",
+      "tags": [
+        "snowflake",
+        "statement",
+        "cancel"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:snowflake_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action cancel sur requête.",
+      "args": {
+        "title": "Annuler une requête",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "statement_handle",
+            "label": "Statement Handle",
+            "description": "Valeur de chemin statement_handle.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "body",
+            "label": "Payload",
+            "description": "Corps JSON de la requête.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "requêtes"
+    },
+    {
+      "key": "snowflake_api_request",
+      "name": "snowflakeApiRequest",
+      "schemaVersion": 2,
+      "title": "Appeler un endpoint API",
+      "subtitle": "API",
+      "icon": "fa-solid fa-code",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Snowflake",
+      "providerKey": "snowflake",
+      "tags": [
+        "snowflake",
+        "api",
+        "request"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:snowflake_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Appeler un endpoint API.",
+      "args": {
+        "title": "Appeler un endpoint API",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "method",
+            "label": "Méthode HTTP",
+            "description": "GET, POST, PUT, PATCH, DELETE.",
+            "col": {
+              "xs": 24
+            },
+            "default": "GET",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Chemin endpoint",
+            "description": "Ex: /v2/users",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "query",
+            "label": "Query params",
+            "description": "Objet JSON des query params.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "headers",
+            "label": "En-têtes",
+            "description": "Objet JSON d’en-têtes HTTP.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "body",
+            "label": "Body JSON",
+            "description": "Payload JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "body_text",
+            "label": "Body texte",
+            "description": "Corps brut (prioritaire sur body).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Utilitaires API"
+    },
+    {
+      "key": "snowflake_database_list",
+      "name": "snowflakeDatabaseList",
+      "schemaVersion": 2,
+      "title": "Lister les bases",
+      "subtitle": "Bases",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Snowflake",
+      "providerKey": "snowflake",
+      "tags": [
+        "snowflake",
+        "database",
+        "list"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:snowflake_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lister les bases.",
+      "args": {
+        "title": "Lister les bases",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre max d’éléments.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Bases"
+    },
+    {
+      "key": "snowflake_database_get",
+      "name": "snowflakeDatabaseGet",
+      "schemaVersion": 2,
+      "title": "Récupérer une base",
+      "subtitle": "Bases",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Snowflake",
+      "providerKey": "snowflake",
+      "tags": [
+        "snowflake",
+        "database",
+        "get"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:snowflake_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupérer une base.",
+      "args": {
+        "title": "Récupérer une base",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nom de la ressource.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Bases"
+    },
+    {
+      "key": "snowflake_database_create",
+      "name": "snowflakeDatabaseCreate",
+      "schemaVersion": 2,
+      "title": "Créer une base",
+      "subtitle": "Bases",
+      "icon": "fa-solid fa-plus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Snowflake",
+      "providerKey": "snowflake",
+      "tags": [
+        "snowflake",
+        "database",
+        "create"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:snowflake_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Créer une base.",
+      "args": {
+        "title": "Créer une base",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nom de la ressource.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "body",
+            "label": "Configuration",
+            "description": "Configuration JSON.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Bases"
+    },
+    {
+      "key": "snowflake_database_delete",
+      "name": "snowflakeDatabaseDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer une base",
+      "subtitle": "Bases",
+      "icon": "fa-solid fa-trash",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Snowflake",
+      "providerKey": "snowflake",
+      "tags": [
+        "snowflake",
+        "database",
+        "delete"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:snowflake_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Supprimer une base.",
+      "args": {
+        "title": "Supprimer une base",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nom de la ressource.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Bases"
+    },
+    {
+      "key": "snowflake_schema_list",
+      "name": "snowflakeSchemaList",
+      "schemaVersion": 2,
+      "title": "Lister les schémas",
+      "subtitle": "Schémas",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Snowflake",
+      "providerKey": "snowflake",
+      "tags": [
+        "snowflake",
+        "schema",
+        "list"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:snowflake_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lister les schémas.",
+      "args": {
+        "title": "Lister les schémas",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "database",
+            "label": "Base",
+            "description": "Nom de la base.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre max d’éléments.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Schémas"
+    },
+    {
+      "key": "snowflake_schema_get",
+      "name": "snowflakeSchemaGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un schéma",
+      "subtitle": "Schémas",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Snowflake",
+      "providerKey": "snowflake",
+      "tags": [
+        "snowflake",
+        "schema",
+        "get"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:snowflake_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupérer un schéma.",
+      "args": {
+        "title": "Récupérer un schéma",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "database",
+            "label": "Base",
+            "description": "Nom de la base.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nom du schéma.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Schémas"
+    },
+    {
+      "key": "snowflake_schema_create",
+      "name": "snowflakeSchemaCreate",
+      "schemaVersion": 2,
+      "title": "Créer un schéma",
+      "subtitle": "Schémas",
+      "icon": "fa-solid fa-plus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Snowflake",
+      "providerKey": "snowflake",
+      "tags": [
+        "snowflake",
+        "schema",
+        "create"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:snowflake_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Créer un schéma.",
+      "args": {
+        "title": "Créer un schéma",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "database",
+            "label": "Base",
+            "description": "Nom de la base.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nom du schéma.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "body",
+            "label": "Configuration",
+            "description": "Configuration JSON.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Schémas"
+    },
+    {
+      "key": "snowflake_schema_delete",
+      "name": "snowflakeSchemaDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un schéma",
+      "subtitle": "Schémas",
+      "icon": "fa-solid fa-trash",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Snowflake",
+      "providerKey": "snowflake",
+      "tags": [
+        "snowflake",
+        "schema",
+        "delete"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:snowflake_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Supprimer un schéma.",
+      "args": {
+        "title": "Supprimer un schéma",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "database",
+            "label": "Base",
+            "description": "Nom de la base.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nom du schéma.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Schémas"
+    },
+    {
+      "key": "snowflake_table_list",
+      "name": "snowflakeTableList",
+      "schemaVersion": 2,
+      "title": "Lister les tables",
+      "subtitle": "Tables",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Snowflake",
+      "providerKey": "snowflake",
+      "tags": [
+        "snowflake",
+        "table",
+        "list"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:snowflake_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lister les tables.",
+      "args": {
+        "title": "Lister les tables",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "database",
+            "label": "Base",
+            "description": "Nom de la base.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "schema",
+            "label": "Schéma",
+            "description": "Nom du schéma.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre max d’éléments.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Tables"
+    },
+    {
+      "key": "snowflake_table_get",
+      "name": "snowflakeTableGet",
+      "schemaVersion": 2,
+      "title": "Récupérer une table",
+      "subtitle": "Tables",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Snowflake",
+      "providerKey": "snowflake",
+      "tags": [
+        "snowflake",
+        "table",
+        "get"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:snowflake_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupérer une table.",
+      "args": {
+        "title": "Récupérer une table",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "database",
+            "label": "Base",
+            "description": "Nom de la base.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "schema",
+            "label": "Schéma",
+            "description": "Nom du schéma.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nom de la table.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Tables"
+    },
+    {
+      "key": "snowflake_table_create",
+      "name": "snowflakeTableCreate",
+      "schemaVersion": 2,
+      "title": "Créer une table",
+      "subtitle": "Tables",
+      "icon": "fa-solid fa-plus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Snowflake",
+      "providerKey": "snowflake",
+      "tags": [
+        "snowflake",
+        "table",
+        "create"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:snowflake_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Créer une table.",
+      "args": {
+        "title": "Créer une table",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "database",
+            "label": "Base",
+            "description": "Nom de la base.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "schema",
+            "label": "Schéma",
+            "description": "Nom du schéma.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nom de la table.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "body",
+            "label": "Configuration",
+            "description": "Configuration JSON.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Tables"
+    },
+    {
+      "key": "snowflake_table_delete",
+      "name": "snowflakeTableDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer une table",
+      "subtitle": "Tables",
+      "icon": "fa-solid fa-trash",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Snowflake",
+      "providerKey": "snowflake",
+      "tags": [
+        "snowflake",
+        "table",
+        "delete"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:snowflake_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Supprimer une table.",
+      "args": {
+        "title": "Supprimer une table",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "database",
+            "label": "Base",
+            "description": "Nom de la base.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "schema",
+            "label": "Schéma",
+            "description": "Nom du schéma.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nom de la table.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Tables"
+    },
+    {
+      "key": "snowflake_warehouse_list",
+      "name": "snowflakeWarehouseList",
+      "schemaVersion": 2,
+      "title": "Lister les warehouses",
+      "subtitle": "Warehouses",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Snowflake",
+      "providerKey": "snowflake",
+      "tags": [
+        "snowflake",
+        "warehouse",
+        "list"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:snowflake_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lister les warehouses.",
+      "args": {
+        "title": "Lister les warehouses",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre max d’éléments.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Warehouses"
+    },
+    {
+      "key": "snowflake_warehouse_get",
+      "name": "snowflakeWarehouseGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un warehouse",
+      "subtitle": "Warehouses",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Snowflake",
+      "providerKey": "snowflake",
+      "tags": [
+        "snowflake",
+        "warehouse",
+        "get"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:snowflake_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupérer un warehouse.",
+      "args": {
+        "title": "Récupérer un warehouse",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nom de la ressource.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Warehouses"
+    },
+    {
+      "key": "snowflake_warehouse_create",
+      "name": "snowflakeWarehouseCreate",
+      "schemaVersion": 2,
+      "title": "Créer un warehouse",
+      "subtitle": "Warehouses",
+      "icon": "fa-solid fa-plus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Snowflake",
+      "providerKey": "snowflake",
+      "tags": [
+        "snowflake",
+        "warehouse",
+        "create"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:snowflake_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Créer un warehouse.",
+      "args": {
+        "title": "Créer un warehouse",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nom de la ressource.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "body",
+            "label": "Configuration",
+            "description": "Configuration JSON.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Warehouses"
+    },
+    {
+      "key": "snowflake_warehouse_update",
+      "name": "snowflakeWarehouseUpdate",
+      "schemaVersion": 2,
+      "title": "Mettre à jour un warehouse",
+      "subtitle": "Warehouses",
+      "icon": "fa-solid fa-pen",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Snowflake",
+      "providerKey": "snowflake",
+      "tags": [
+        "snowflake",
+        "warehouse",
+        "update"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:snowflake_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Mettre à jour un warehouse.",
+      "args": {
+        "title": "Mettre à jour un warehouse",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nom de la ressource.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "body",
+            "label": "Configuration",
+            "description": "Configuration JSON.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Warehouses"
+    },
+    {
+      "key": "snowflake_warehouse_delete",
+      "name": "snowflakeWarehouseDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un warehouse",
+      "subtitle": "Warehouses",
+      "icon": "fa-solid fa-trash",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Snowflake",
+      "providerKey": "snowflake",
+      "tags": [
+        "snowflake",
+        "warehouse",
+        "delete"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:snowflake_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Supprimer un warehouse.",
+      "args": {
+        "title": "Supprimer un warehouse",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nom de la ressource.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Warehouses"
+    },
+    {
+      "key": "snowflake_warehouse_suspend",
+      "name": "snowflakeWarehouseSuspend",
+      "schemaVersion": 2,
+      "title": "Suspendre un warehouse",
+      "subtitle": "Warehouses",
+      "icon": "fa-solid fa-pause",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Snowflake",
+      "providerKey": "snowflake",
+      "tags": [
+        "snowflake",
+        "warehouse",
+        "suspend"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:snowflake_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Suspendre un warehouse.",
+      "args": {
+        "title": "Suspendre un warehouse",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nom de la ressource.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Warehouses"
+    },
+    {
+      "key": "snowflake_warehouse_resume",
+      "name": "snowflakeWarehouseResume",
+      "schemaVersion": 2,
+      "title": "Relancer un warehouse",
+      "subtitle": "Warehouses",
+      "icon": "fa-solid fa-play",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Snowflake",
+      "providerKey": "snowflake",
+      "tags": [
+        "snowflake",
+        "warehouse",
+        "resume"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:snowflake_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Relancer un warehouse.",
+      "args": {
+        "title": "Relancer un warehouse",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nom de la ressource.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Warehouses"
+    }
+  ]
+}

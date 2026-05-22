@@ -21,6 +21,10 @@
     {
       "key": "se_ranking",
       "name": "SE Ranking",
+      "title": "SE Ranking",
+      "iconClass": "fa-solid fa-ranking-star",
+      "iconUrl": "https://seranking.com/blog/wp-content/themes/se_theme/images/ui-kit/logos/se-ranking-logo-new.svg",
+      "color": "#d6ddff",
       "hasCredentials": true,
       "credentialsForm": {
         "fields": [

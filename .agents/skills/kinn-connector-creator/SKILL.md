@@ -1,6 +1,6 @@
 ---
 name: kinn-connector-creator
-description: 'Create or extend Kinn/Homeport workflow builder connectors in API/src/plugins/repos. Use when asked in French or English to add a connector, integration, provider, plugin, API app, actions, triggers, or endpoints in Kinn. Enforces the Notion-style connector structure: manifest.json plus one handler file per action, shared utils.js, useful workflow-only endpoints, complete output schemas, and validation.'
+description: 'Create or extend Kinn/Homeport workflow builder connectors in API/src/plugins/repos. Use when asked in French or English to add a connector, integration, provider, plugin, API app, actions, triggers, or endpoints in Kinn. Enforces the Notion-style connector structure, complete coverage of automation-useful API surfaces, one handler file per action, shared utils.js, complete output schemas, and validation.'
 ---
 
 # Kinn Connector Creator
@@ -39,20 +39,131 @@ Prefer the Notion connector style, not the GitLab monolithic style:
    - several Notion action files
    - a broad connector like `gitlab` only to understand endpoint coverage and resource grouping.
 2. Research the target API from official/current docs when endpoint details are not already provided. Keep source notes in your reasoning, but do not paste large docs into the repo.
-3. Select only endpoints that are useful in workflow automation. Do not mirror the entire public API.
-4. Create or update `API/src/plugins/repos/{connector}` using the Notion-style file layout.
-5. Implement `manifest.json`, `functions/utils.js`, and one handler file per action.
-6. Run the validation script bundled with this skill:
+3. Build a coverage inventory before editing:
+   - primary workflow objects;
+   - lifecycle actions for each object;
+   - workflow-specific actions such as send, comment, assign, tag, move, trigger, search, crawl, transcribe, generate, embed, deploy, query, or upsert;
+   - incoming webhook/event surfaces;
+   - intentionally excluded surfaces with a short reason.
+4. Implement complete useful automation coverage from that inventory. Do not mirror the entire public API, but do not stop at a thin starter subset when obvious workflow actions exist.
+   - Mandatory rule: include **all** documented, stable functions that can be useful in real automations, including less-frequent or niche actions when they provide concrete workflow value.
+5. Create or update `API/src/plugins/repos/{connector}` using the Notion-style file layout.
+6. Implement `manifest.json`, `functions/utils.js`, and one handler file per action.
+7. Ensure connector branding is set: add/fix the logo using the dedicated `kinn-connector-logo` skill (including `iconUrl`, `color`, and `iconClass` consistency in the manifest).
+8. Run the validation script bundled with this skill:
 
 ```bash
 node .agents/skills/kinn-connector-creator/scripts/check-connector.js {connector}
 ```
 
-7. Run any relevant project tests or import checks available locally. If none exist, state that validation was limited to static checks.
+9. Run any relevant project tests or import checks available locally. If none exist, state that validation was limited to static checks.
+10. In the final answer, state the coverage level honestly: list the resource groups implemented and call out useful automation surfaces intentionally left out because they are unsafe, admin-only, duplicative, unsupported by docs, or requested for a later pass.
+
+### Fast path (preferred)
+
+When an OpenAPI JSON is available, use script-first generation to create a connector in seconds:
+
+```bash
+# 1) Build exhaustive automation spec from OpenAPI
+node .agents/skills/kinn-connector-creator/scripts/generate-spec-from-openapi.js \
+  <openapi.json|url> \
+  --connector <connector> \
+  --provider-name "Provider Name"
+
+# 2) Create connector + actions + logo + validation
+node .agents/skills/kinn-connector-creator/scripts/mass-create-connectors.js <inventory.json>
+```
+
+Use `strictAutomation` (default true) to block thin connectors.
+
+## Coverage Gate (Mandatory)
+
+Before considering a connector "done", run this explicit gate:
+
+1. Build a checklist of all documented, stable, automation-useful actions per resource.
+2. Map each checklist action to either:
+   - an implemented node key + handler file, or
+   - a documented exclusion reason (unsafe/admin-only/non-workflow/duplicate/unsupported).
+3. If any checklist action is neither implemented nor explicitly excluded, the connector is **not complete**.
+4. Starter/minimal subsets are forbidden when obvious workflow actions exist for the provider.
+5. In the final report, include a short "missing useful actions: none" line or list remaining gaps.
+6. Prefer OpenAPI-driven endpoint selection; manual hand-picking is fallback only.
+
+## Bulk / Scale Workflow (for many connectors)
+
+When the request targets many connectors (dozens, hundreds, thousands), use the bundled scripts first, then complete each connector with full automation coverage:
+
+1. Scaffold one connector quickly:
+
+```bash
+node .agents/skills/kinn-connector-creator/scripts/scaffold-connector.js <connector> \
+  --provider-name "Provider Name" \
+  --icon-url "https://cdn.simpleicons.org/provider" \
+  --icon-class "fa-solid fa-puzzle-piece" \
+  --color "#f2f2f2"
+```
+
+2. Scaffold many connectors from an inventory file (`.json` or `.jsonl`):
+
+```bash
+node .agents/skills/kinn-connector-creator/scripts/bulk-scaffold-connectors.js <inventory.json> --dry-run
+node .agents/skills/kinn-connector-creator/scripts/bulk-scaffold-connectors.js <inventory.json> --continue-on-error
+```
+
+3. Use the generated skeletons as a base only, then implement the full action inventory for each provider (do not ship placeholder-only connectors).
+4. Run connector validation per connector after filling real nodes:
+
+```bash
+node .agents/skills/kinn-connector-creator/scripts/check-connector.js <connector>
+```
+
+Reference inventory sample:
+
+- [references/bulk-inventory.example.json](references/bulk-inventory.example.json)
+
+## Bulk Scripts Catalog
+
+Use these scripts to industrialize connector creation at high volume:
+
+1. `scaffold-connector.js`: create one connector skeleton (`manifest.json`, `functions/utils.js`, sample node).
+2. `bulk-scaffold-connectors.js`: scaffold many connectors from `.json` or `.jsonl`.
+3. `generate-actions-from-spec.js`: generate manifest `nodeTemplates`, output schemas, and one handler file per action from a resource/action spec.
+4. `generate-spec-from-openapi.js`: auto-select stable automation-useful endpoints from OpenAPI JSON and build a full action spec.
+5. `bulk-generate-actions.js`: run action generation for many connectors in one pass.
+6. `bulk-apply-logos.js`: apply logo branding for many connectors via the dedicated logo skill script.
+7. `bulk-check-connectors.js`: run static connector validation in batch.
+8. `mass-create-connectors.js`: orchestrate scaffold + actions + logo + validation in one command (supports `openapiFile` inventory entries).
+
+### Typical high-volume pipeline
+
+```bash
+# 1) Dry run full pipeline
+node .agents/skills/kinn-connector-creator/scripts/mass-create-connectors.js \
+  .agents/skills/kinn-connector-creator/references/mass-inventory.example.json \
+  --dry-run
+
+# 2) Execute generation in batch, keep going on individual failures
+node .agents/skills/kinn-connector-creator/scripts/mass-create-connectors.js \
+  .agents/skills/kinn-connector-creator/references/mass-inventory.example.json \
+  --continue-on-error
+
+# 3) Re-check all generated connectors listed in inventory
+node .agents/skills/kinn-connector-creator/scripts/bulk-check-connectors.js \
+  .agents/skills/kinn-connector-creator/references/mass-inventory.example.json \
+  --continue-on-error
+```
+
+### Spec and inventory examples
+
+- [references/action-spec.example.json](references/action-spec.example.json)
+- [references/bulk-actions-inventory.example.json](references/bulk-actions-inventory.example.json)
+- [references/mass-inventory.example.json](references/mass-inventory.example.json)
+
+Important: generated connectors are accelerators, not final coverage guarantees. You must still complete all stable automation-useful endpoints before considering a connector done.
 
 ## What Counts as Useful
 
-Include nodes that a workflow builder user can combine with other steps:
+Include every documented, stable node that a workflow builder user can realistically combine with other steps:
 
 - list/search/get records;
 - create/update/delete/archive/restore records;
@@ -60,6 +171,19 @@ Include nodes that a workflow builder user can combine with other steps:
 - upload/download/list files when file handling is supported;
 - trigger/webhook event nodes when the API supports incoming events;
 - relationship actions that unlock automation, such as assigning, linking, moving, tagging, changing status.
+- provider-specific automation verbs, such as run, crawl, scrape, extract, generate, transcribe, synthesize, deploy, upsert, query, rerank, embed, monitor, alert, or trigger, when those are central to the product.
+
+Coverage should be complete for the useful surface of the provider, not merely representative. For a connector with central objects like issues, contacts, projects, tasks, files, runs, deployments, transcripts, vectors, or messages, include the supported lifecycle and action nodes users would naturally expect in workflows.
+
+For analytics providers specifically (Mixpanel, PostHog, Amplitude-like), "useful surface" includes at minimum:
+
+- event capture/import and identity aliasing;
+- profile lifecycle and mutation operators (`set`, `unset`, `delete`, `increment`, list add/remove/union-style operations);
+- group lifecycle and mutation operators (set/unset/remove/delete when available);
+- monetization-related profile helpers (charges/transactions) when documented and stable;
+- query/report nodes that are workflow-usable (segmentation variants, funnels, retention, profile query), with date windows and filtering inputs.
+
+Do not skip a stable automation-useful function only because it is "not common". If it can unlock a realistic workflow, include it.
 
 Usually exclude:
 
@@ -75,6 +199,8 @@ Read [references/endpoint-selection.md](references/endpoint-selection.md) for th
 ## Implementation Rules
 
 - Use French UI text with accents in `title`, `subtitle`, `label`, `description`, group names, and credential titles.
+- In `manifest.json`, every `nodeTemplates[].title` and `nodeTemplates[].args.title` must be in French.
+- For a given `providerKey`, each node must have a distinct `name` and a distinct `title` (no duplicates).
 - Use `snake_case` keys prefixed by provider: `{provider}_{resource}_{action}`.
 - Use `camelCase` `name`.
 - Use `schemaVersion: 2`.
@@ -97,4 +223,3 @@ Load only what you need:
 - [references/manifest-patterns.md](references/manifest-patterns.md): manifest, provider, variable, and node template patterns.
 - [references/handler-patterns.md](references/handler-patterns.md): `utils.js` and per-action handler patterns.
 - [references/validation.md](references/validation.md): checks before handing off the connector.
-

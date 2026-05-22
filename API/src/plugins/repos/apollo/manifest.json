@@ -1,0 +1,1505 @@
+{
+  "repo": {
+    "name": "apollo",
+    "type": "local",
+    "label": "Apollo"
+  },
+  "variables": {
+    "apollo_response": {
+      "title": "Réponse Apollo",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "url",
+          "key": "url",
+          "label": "URL",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "text",
+          "label": "Texte",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "data",
+          "label": "Données",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "result_json",
+          "label": "Résultat JSON",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "apollo_items": {
+      "title": "Apollo - liste",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "col": {
+            "xs": 12
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextCursor",
+          "label": "Curseur suivant",
+          "col": {
+            "xs": 12
+          }
+        },
+        {
+          "type": "section",
+          "title": "Éléments",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "url",
+              "key": "url",
+              "label": "URL",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "text",
+              "label": "Texte",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "result_json",
+              "label": "Données JSON",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "apollo_webhook": {
+      "title": "Webhook Apollo",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "event",
+          "label": "Événement",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "payload",
+          "label": "Payload",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "apollo",
+      "name": "Apollo",
+      "title": "Apollo",
+      "iconClass": "fa-solid fa-magnifying-glass-chart",
+      "iconUrl": "https://www.apollo.io/favicon.ico",
+      "color": "#fff1c2",
+      "tags": [
+        "apollo",
+        "prospection",
+        "crm"
+      ],
+      "categories": [
+        "Ventes"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Apollo",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "apiKey",
+            "label": "Clé API",
+            "secret": true,
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "baseUrl",
+            "label": "URL de base",
+            "defaultValue": "https://api.apollo.io/api/v1",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "apollo_people_search",
+      "name": "apolloPeopleSearch",
+      "schemaVersion": 2,
+      "title": "Rechercher des personnes",
+      "subtitle": "people",
+      "icon": "fa-solid fa-user-magnifying-glass",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Apollo",
+      "providerKey": "apollo",
+      "tags": [
+        "apollo",
+        "people"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:apollo_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Rechercher des personnes",
+      "args": {
+        "title": "Rechercher des personnes",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "q_keywords",
+            "label": "Mots-clés",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "person_titles",
+            "label": "Titres",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "person_locations",
+            "label": "Localisations",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "page",
+            "label": "Page",
+            "default": 1,
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "number",
+            "key": "per_page",
+            "label": "Taille page",
+            "default": 50,
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "json",
+            "key": "payload",
+            "label": "Payload JSON",
+            "description": "Données avancées à envoyer à l'API.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Personnes"
+    },
+    {
+      "key": "apollo_people_match",
+      "name": "apolloPeopleMatch",
+      "schemaVersion": 2,
+      "title": "Enrichir une personne",
+      "subtitle": "people",
+      "icon": "fa-solid fa-id-card",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Apollo",
+      "providerKey": "apollo",
+      "tags": [
+        "apollo",
+        "people"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:apollo_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Enrichir une personne",
+      "args": {
+        "title": "Enrichir une personne",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "email",
+            "label": "Email",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "first_name",
+            "label": "Prénom",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "last_name",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "organization_name",
+            "label": "Entreprise",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "payload",
+            "label": "Payload JSON",
+            "description": "Données avancées à envoyer à l'API.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Personnes"
+    },
+    {
+      "key": "apollo_contacts_search",
+      "name": "apolloContactsSearch",
+      "schemaVersion": 2,
+      "title": "Rechercher des contacts",
+      "subtitle": "contacts",
+      "icon": "fa-solid fa-address-book",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Apollo",
+      "providerKey": "apollo",
+      "tags": [
+        "apollo",
+        "contacts"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:apollo_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Rechercher des contacts",
+      "args": {
+        "title": "Rechercher des contacts",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "q_keywords",
+            "label": "Mots-clés",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "page",
+            "label": "Page",
+            "default": 1,
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "number",
+            "key": "per_page",
+            "label": "Taille page",
+            "default": 50,
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "json",
+            "key": "payload",
+            "label": "Payload JSON",
+            "description": "Données avancées à envoyer à l'API.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Contacts"
+    },
+    {
+      "key": "apollo_contact_create",
+      "name": "apolloContactCreate",
+      "schemaVersion": 2,
+      "title": "Créer un contact",
+      "subtitle": "contact",
+      "icon": "fa-solid fa-plus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Apollo",
+      "providerKey": "apollo",
+      "tags": [
+        "apollo",
+        "contact"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:apollo_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Créer un contact",
+      "args": {
+        "title": "Créer un contact",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "email",
+            "label": "Email",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "first_name",
+            "label": "Prénom",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "last_name",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "account_id",
+            "label": "ID compte",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "payload",
+            "label": "Payload JSON",
+            "description": "Données avancées à envoyer à l'API.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Contacts"
+    },
+    {
+      "key": "apollo_contact_get",
+      "name": "apolloContactGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un contact",
+      "subtitle": "contact",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Apollo",
+      "providerKey": "apollo",
+      "tags": [
+        "apollo",
+        "contact"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:apollo_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupérer un contact",
+      "args": {
+        "title": "Récupérer un contact",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "contactId",
+            "label": "ID contact",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Contacts"
+    },
+    {
+      "key": "apollo_contact_update",
+      "name": "apolloContactUpdate",
+      "schemaVersion": 2,
+      "title": "Mettre à jour un contact",
+      "subtitle": "contact",
+      "icon": "fa-solid fa-pen",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Apollo",
+      "providerKey": "apollo",
+      "tags": [
+        "apollo",
+        "contact"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:apollo_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Mettre à jour un contact",
+      "args": {
+        "title": "Mettre à jour un contact",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "contactId",
+            "label": "ID contact",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "email",
+            "label": "Email",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "first_name",
+            "label": "Prénom",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "last_name",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "contact_stage_id",
+            "label": "ID étape",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "payload",
+            "label": "Payload JSON",
+            "description": "Données avancées à envoyer à l'API.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Contacts"
+    },
+    {
+      "key": "apollo_contact_delete",
+      "name": "apolloContactDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un contact",
+      "subtitle": "contact",
+      "icon": "fa-solid fa-trash",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Apollo",
+      "providerKey": "apollo",
+      "tags": [
+        "apollo",
+        "contact"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:apollo_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Supprimer un contact",
+      "args": {
+        "title": "Supprimer un contact",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "contactId",
+            "label": "ID contact",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Contacts"
+    },
+    {
+      "key": "apollo_accounts_search",
+      "name": "apolloAccountsSearch",
+      "schemaVersion": 2,
+      "title": "Rechercher des comptes",
+      "subtitle": "accounts",
+      "icon": "fa-solid fa-building",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Apollo",
+      "providerKey": "apollo",
+      "tags": [
+        "apollo",
+        "accounts"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:apollo_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Rechercher des comptes",
+      "args": {
+        "title": "Rechercher des comptes",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "q_keywords",
+            "label": "Mots-clés",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "page",
+            "label": "Page",
+            "default": 1,
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "number",
+            "key": "per_page",
+            "label": "Taille page",
+            "default": 50,
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "json",
+            "key": "payload",
+            "label": "Payload JSON",
+            "description": "Données avancées à envoyer à l'API.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Comptes"
+    },
+    {
+      "key": "apollo_account_create",
+      "name": "apolloAccountCreate",
+      "schemaVersion": 2,
+      "title": "Créer un compte",
+      "subtitle": "account",
+      "icon": "fa-solid fa-plus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Apollo",
+      "providerKey": "apollo",
+      "tags": [
+        "apollo",
+        "account"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:apollo_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Créer un compte",
+      "args": {
+        "title": "Créer un compte",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "url",
+            "key": "website_url",
+            "label": "Site web",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "domain",
+            "label": "Domaine",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "payload",
+            "label": "Payload JSON",
+            "description": "Données avancées à envoyer à l'API.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Comptes"
+    },
+    {
+      "key": "apollo_account_get",
+      "name": "apolloAccountGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un compte",
+      "subtitle": "account",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Apollo",
+      "providerKey": "apollo",
+      "tags": [
+        "apollo",
+        "account"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:apollo_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupérer un compte",
+      "args": {
+        "title": "Récupérer un compte",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "accountId",
+            "label": "ID compte",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Comptes"
+    },
+    {
+      "key": "apollo_account_update",
+      "name": "apolloAccountUpdate",
+      "schemaVersion": 2,
+      "title": "Mettre à jour un compte",
+      "subtitle": "account",
+      "icon": "fa-solid fa-pen",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Apollo",
+      "providerKey": "apollo",
+      "tags": [
+        "apollo",
+        "account"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:apollo_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Mettre à jour un compte",
+      "args": {
+        "title": "Mettre à jour un compte",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "accountId",
+            "label": "ID compte",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "url",
+            "key": "website_url",
+            "label": "Site web",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "payload",
+            "label": "Payload JSON",
+            "description": "Données avancées à envoyer à l'API.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Comptes"
+    },
+    {
+      "key": "apollo_organizations_enrich",
+      "name": "apolloOrganizationsEnrich",
+      "schemaVersion": 2,
+      "title": "Enrichir une entreprise",
+      "subtitle": "organizations",
+      "icon": "fa-solid fa-building-circle-check",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Apollo",
+      "providerKey": "apollo",
+      "tags": [
+        "apollo",
+        "organizations"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:apollo_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Enrichir une entreprise",
+      "args": {
+        "title": "Enrichir une entreprise",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "domain",
+            "label": "Domaine",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "payload",
+            "label": "Payload JSON",
+            "description": "Données avancées à envoyer à l'API.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Entreprises"
+    },
+    {
+      "key": "apollo_sequences_list",
+      "name": "apolloSequencesList",
+      "schemaVersion": 2,
+      "title": "Lister les séquences",
+      "subtitle": "sequences",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Apollo",
+      "providerKey": "apollo",
+      "tags": [
+        "apollo",
+        "sequences"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:apollo_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lister les séquences",
+      "args": {
+        "title": "Lister les séquences",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "page",
+            "label": "Page",
+            "default": 1,
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "number",
+            "key": "per_page",
+            "label": "Taille page",
+            "default": 50,
+            "col": {
+              "xs": 12
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Séquences"
+    },
+    {
+      "key": "apollo_sequence_add_contacts",
+      "name": "apolloSequenceAddContacts",
+      "schemaVersion": 2,
+      "title": "Ajouter des contacts à une séquence",
+      "subtitle": "sequence",
+      "icon": "fa-solid fa-user-plus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Apollo",
+      "providerKey": "apollo",
+      "tags": [
+        "apollo",
+        "sequence"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:apollo_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Ajouter des contacts à une séquence",
+      "args": {
+        "title": "Ajouter des contacts à une séquence",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "sequenceId",
+            "label": "ID séquence",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "contact_ids",
+            "label": "IDs contacts",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "payload",
+            "label": "Payload JSON",
+            "description": "Données avancées à envoyer à l'API.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Séquences"
+    },
+    {
+      "key": "apollo_opportunities_search",
+      "name": "apolloOpportunitiesSearch",
+      "schemaVersion": 2,
+      "title": "Rechercher des opportunités",
+      "subtitle": "opportunities",
+      "icon": "fa-solid fa-handshake",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Apollo",
+      "providerKey": "apollo",
+      "tags": [
+        "apollo",
+        "opportunities"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:apollo_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Rechercher des opportunités",
+      "args": {
+        "title": "Rechercher des opportunités",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "q_keywords",
+            "label": "Mots-clés",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "page",
+            "label": "Page",
+            "default": 1,
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "number",
+            "key": "per_page",
+            "label": "Taille page",
+            "default": 50,
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "json",
+            "key": "payload",
+            "label": "Payload JSON",
+            "description": "Données avancées à envoyer à l'API.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Opportunités"
+    },
+    {
+      "key": "apollo_webhook_event",
+      "name": "apolloWebhookEvent",
+      "schemaVersion": 2,
+      "title": "Événement webhook",
+      "subtitle": "Webhook",
+      "icon": "fa-solid fa-bolt",
+      "type": "event",
+      "nodeKind": "event",
+      "category": "Apollo",
+      "providerKey": "apollo",
+      "tags": [
+        "apollo"
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:apollo_webhook"
+        }
+      ],
+      "description": "Reçoit un événement Apollo.",
+      "group": "Webhook"
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+const { utils } = require('./utils');
+
+module.exports = {
+  async attio_status_list_list_statuses(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
+    const d = inputs || {};
+    let reqPath = "/v2/{target}/{identifier}/attributes/{attribute}/statuses";
+    const target = String(d.target || '').trim();
+    if (!target) return { ok: false, error: 'target requis.' };
+    reqPath = reqPath.replace('{target}', encodeURIComponent(target));
+    const identifier = String(d.identifier || '').trim();
+    if (!identifier) return { ok: false, error: 'identifier requis.' };
+    reqPath = reqPath.replace('{identifier}', encodeURIComponent(identifier));
+    const attribute = String(d.attribute || '').trim();
+    if (!attribute) return { ok: false, error: 'attribute requis.' };
+    reqPath = reqPath.replace('{attribute}', encodeURIComponent(attribute));
+
+    const query = {};
+    if (d.pageSize !== undefined && d.pageSize !== null && d.pageSize !== '') query.page_size = d.pageSize;
+    if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
+    if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
+
+    const body = undefined;
+
+    log('Requête en cours...');
+    const res = await utils.providerRequest(opts, reqPath, { method: 'GET', query, body });
+    if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
+
+    const payload = res.data || {};
+    const rawItems = Array.isArray(payload.items) ? payload.items : Array.isArray(payload.results) ? payload.results : Array.isArray(payload) ? payload : [];
+    const items = rawItems.map((r) => ({
+      id: r && (r.id || r.uuid || r.key || ''),
+      name: r && (r.name || r.title || ''),
+      url: r && (r.url || r.html_url || ''),
+      status: r && (r.status || r.state || ''),
+      created_at: r && (r.created_at || r.createdAt || ''),
+      updated_at: r && (r.updated_at || r.updatedAt || ''),
+      raw: r
+    }));
+
+    return {
+      ok: true,
+      items,
+      totalCount: Number(payload.total || payload.count || items.length),
+      nextCursor: payload.next_cursor || payload.next || null
+    };
+  }
+};

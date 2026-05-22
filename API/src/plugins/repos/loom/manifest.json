@@ -1,0 +1,805 @@
+{
+  "repo": {
+    "name": "loom",
+    "type": "local",
+    "label": "Loom"
+  },
+  "variables": {
+    "loom_response": {
+      "title": "Réponse Loom",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "url",
+          "key": "url",
+          "label": "URL",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "text",
+          "label": "Texte",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "data",
+          "label": "Données",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "result_json",
+          "label": "Résultat JSON",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "loom_items": {
+      "title": "Loom - liste",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "col": {
+            "xs": 12
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextCursor",
+          "label": "Curseur suivant",
+          "col": {
+            "xs": 12
+          }
+        },
+        {
+          "type": "section",
+          "title": "Éléments",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "url",
+              "key": "url",
+              "label": "URL",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "text",
+              "label": "Texte",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "result_json",
+              "label": "Données JSON",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "loom_webhook": {
+      "title": "Webhook Loom",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "event",
+          "label": "Événement",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "payload",
+          "label": "Payload",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "loom",
+      "name": "Loom",
+      "title": "Loom",
+      "iconClass": "fa-solid fa-video",
+      "iconUrl": "https://cdn.simpleicons.org/loom",
+      "color": "#f1e8ff",
+      "tags": [
+        "loom",
+        "vidéo"
+      ],
+      "categories": [
+        "Productivité"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Loom",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "apiKey",
+            "label": "Clé API",
+            "secret": true,
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "baseUrl",
+            "label": "URL de base",
+            "defaultValue": "https://api.loom.com/v1",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "loom_videos_list",
+      "name": "loomVideosList",
+      "schemaVersion": 2,
+      "title": "Lister les vidéos",
+      "subtitle": "videos",
+      "icon": "fa-solid fa-video",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Loom",
+      "providerKey": "loom",
+      "tags": [
+        "loom",
+        "videos"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:loom_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lister les vidéos",
+      "args": {
+        "title": "Lister les vidéos",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "page",
+            "label": "Page",
+            "default": 1,
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "number",
+            "key": "per_page",
+            "label": "Taille page",
+            "default": 50,
+            "col": {
+              "xs": 12
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Vidéos"
+    },
+    {
+      "key": "loom_video_get",
+      "name": "loomVideoGet",
+      "schemaVersion": 2,
+      "title": "Récupérer une vidéo",
+      "subtitle": "video",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Loom",
+      "providerKey": "loom",
+      "tags": [
+        "loom",
+        "video"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:loom_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupérer une vidéo",
+      "args": {
+        "title": "Récupérer une vidéo",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "videoId",
+            "label": "ID vidéo",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Vidéos"
+    },
+    {
+      "key": "loom_video_update",
+      "name": "loomVideoUpdate",
+      "schemaVersion": 2,
+      "title": "Mettre à jour une vidéo",
+      "subtitle": "video",
+      "icon": "fa-solid fa-pen",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Loom",
+      "providerKey": "loom",
+      "tags": [
+        "loom",
+        "video"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:loom_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Mettre à jour une vidéo",
+      "args": {
+        "title": "Mettre à jour une vidéo",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "videoId",
+            "label": "ID vidéo",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "description",
+            "label": "Description",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "payload",
+            "label": "Payload JSON",
+            "description": "Données avancées à envoyer à l'API.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Vidéos"
+    },
+    {
+      "key": "loom_video_delete",
+      "name": "loomVideoDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer une vidéo",
+      "subtitle": "video",
+      "icon": "fa-solid fa-trash",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Loom",
+      "providerKey": "loom",
+      "tags": [
+        "loom",
+        "video"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:loom_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Supprimer une vidéo",
+      "args": {
+        "title": "Supprimer une vidéo",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "videoId",
+            "label": "ID vidéo",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Vidéos"
+    },
+    {
+      "key": "loom_video_transcript_get",
+      "name": "loomVideoTranscriptGet",
+      "schemaVersion": 2,
+      "title": "Récupérer la transcription",
+      "subtitle": "video",
+      "icon": "fa-solid fa-align-left",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Loom",
+      "providerKey": "loom",
+      "tags": [
+        "loom",
+        "video"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:loom_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupérer la transcription",
+      "args": {
+        "title": "Récupérer la transcription",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "videoId",
+            "label": "ID vidéo",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Transcriptions"
+    },
+    {
+      "key": "loom_video_comments_list",
+      "name": "loomVideoCommentsList",
+      "schemaVersion": 2,
+      "title": "Lister les commentaires",
+      "subtitle": "video",
+      "icon": "fa-solid fa-comments",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Loom",
+      "providerKey": "loom",
+      "tags": [
+        "loom",
+        "video"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:loom_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lister les commentaires",
+      "args": {
+        "title": "Lister les commentaires",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "videoId",
+            "label": "ID vidéo",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Commentaires"
+    },
+    {
+      "key": "loom_folders_list",
+      "name": "loomFoldersList",
+      "schemaVersion": 2,
+      "title": "Lister les dossiers",
+      "subtitle": "folders",
+      "icon": "fa-solid fa-folder",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Loom",
+      "providerKey": "loom",
+      "tags": [
+        "loom",
+        "folders"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:loom_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lister les dossiers",
+      "args": {
+        "title": "Lister les dossiers",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "page",
+            "label": "Page",
+            "default": 1,
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "number",
+            "key": "per_page",
+            "label": "Taille page",
+            "default": 50,
+            "col": {
+              "xs": 12
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Dossiers"
+    },
+    {
+      "key": "loom_folder_videos_list",
+      "name": "loomFolderVideosList",
+      "schemaVersion": 2,
+      "title": "Lister les vidéos d'un dossier",
+      "subtitle": "folder",
+      "icon": "fa-solid fa-folder-open",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Loom",
+      "providerKey": "loom",
+      "tags": [
+        "loom",
+        "folder"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:loom_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lister les vidéos d'un dossier",
+      "args": {
+        "title": "Lister les vidéos d'un dossier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "folderId",
+            "label": "ID dossier",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Dossiers"
+    },
+    {
+      "key": "loom_webhook_event",
+      "name": "loomWebhookEvent",
+      "schemaVersion": 2,
+      "title": "Événement webhook",
+      "subtitle": "Webhook",
+      "icon": "fa-solid fa-bolt",
+      "type": "event",
+      "nodeKind": "event",
+      "category": "Loom",
+      "providerKey": "loom",
+      "tags": [
+        "loom"
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:loom_webhook"
+        }
+      ],
+      "description": "Reçoit un événement Loom.",
+      "group": "Webhook"
+    }
+  ]
+}

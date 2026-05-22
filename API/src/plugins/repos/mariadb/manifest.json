@@ -24,7 +24,7 @@
       { "type": "json", "key": "raw", "label": "Réponse brute", "col": { "xs": 24 } }
     ] }
   },
-  "providers": [{ "key": "mariadb", "name": "MariaDB", "title": "MariaDB", "iconClass": "fa-solid fa-database", "iconUrl": "https://cdn.simpleicons.org/mariadb", "color": "#003545", "tags": ["mariadb", "sql", "base de données"], "categories": ["Base de données"], "hasCredentials": true, "credentialsForm": { "title": "Identifiants MariaDB", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [
+  "providers": [{ "key": "mariadb", "name": "MariaDB", "title": "MariaDB", "iconClass": "fa-solid fa-database", "iconUrl": "https://cdn.simpleicons.org/mariadb", "color": "#95c7d5", "tags": ["mariadb", "sql", "base de données"], "categories": ["Base de données"], "hasCredentials": true, "credentialsForm": { "title": "Identifiants MariaDB", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [
     { "type": "text", "key": "host", "label": "Hôte", "col": { "xs": 24 }, "validators": [{ "type": "required" }] },
     { "type": "number", "key": "port", "label": "Port", "default": 3306, "col": { "xs": 12 } },
     { "type": "text", "key": "database", "label": "Base", "col": { "xs": 24 }, "validators": [{ "type": "required" }] },

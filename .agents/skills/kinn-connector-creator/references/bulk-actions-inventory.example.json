@@ -1,0 +1,14 @@
+[
+  {
+    "connector": "acme-crm",
+    "specFile": "action-spec.example.json",
+    "strictAutomation": true
+  },
+  {
+    "connector": "acme-helpdesk",
+    "providerName": "Acme Helpdesk",
+    "openapiFile": "openapi/acme-helpdesk.openapi.json",
+    "strictAutomation": true,
+    "excludePatterns": ["/admin", "/billing"]
+  }
+]

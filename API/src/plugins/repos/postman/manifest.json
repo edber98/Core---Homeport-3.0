@@ -62,7 +62,7 @@
       "title": "Postman",
       "iconClass": "fa-solid fa-paper-plane",
       "iconUrl": "https://cdn.simpleicons.org/postman",
-      "color": "#ff6c37",
+      "color": "#fdd9c5",
       "tags": ["postman", "api", "collections"],
       "categories": ["Développement"],
       "hasCredentials": true,
