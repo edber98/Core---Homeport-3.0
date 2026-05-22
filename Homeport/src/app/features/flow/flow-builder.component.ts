@@ -1777,7 +1777,7 @@ export class FlowBuilderComponent {
       this.modalTemplatesLoading = false;
       return;
     }
-    const params: any = { page: 1, limit: 2000 };
+    const params: any = { page: 1, limit: 10000 };
     if (!this.workspaceAllowsAllTemplates) params.keys = Array.from(this.allowedTplIds);
     this.catalog.listNodeTemplatesPage(params).subscribe({
       next: (tpls) => this.zone.run(() => {
