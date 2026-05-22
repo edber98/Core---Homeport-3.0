@@ -235,7 +235,7 @@
       "name": "Dropcontact",
       "title": "Dropcontact",
       "iconClass": "fa-solid fa-address-card",
-      "iconUrl": "https://developer.dropcontact.com/favicon.ico",
+      "iconUrl": "https://cdn.brandfetch.io/dropcontact.com/icon",
       "color": "#f1f9ff",
       "tags": [
         "dropcontact",

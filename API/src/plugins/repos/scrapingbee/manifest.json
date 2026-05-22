@@ -413,7 +413,7 @@
       "name": "ScrapingBee",
       "title": "ScrapingBee",
       "iconClass": "fa-solid fa-spider",
-      "iconUrl": "https://www.scrapingbee.com/favicon.ico",
+      "iconUrl": "https://cdn.brandfetch.io/scrapingbee.com/icon",
       "color": "#fff2d9",
       "tags": [
         "scrapingbee",
