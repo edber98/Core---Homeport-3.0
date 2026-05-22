@@ -12160,9 +12160,9 @@
       "key": "customer_io",
       "name": "Customer.io",
       "title": "Customer.io",
-      "iconClass": "fa-solid fa-puzzle-piece",
-      "iconUrl": "https://cdn.simpleicons.org/customer-io",
-      "color": "#f2f2f2",
+      "iconClass": "fa-solid fa-envelope",
+      "iconUrl": "https://www.google.com/s2/favicons?domain=customer.io&sz=128",
+      "color": "#e8f7ef",
       "tags": [
         "customer_io",
         "automation"

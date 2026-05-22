@@ -5040,9 +5040,9 @@
       "key": "beehiiv",
       "name": "Beehiiv",
       "title": "Beehiiv",
-      "iconClass": "fa-solid fa-puzzle-piece",
-      "iconUrl": "https://cdn.simpleicons.org/beehiiv",
-      "color": "#f2f2f2",
+      "iconClass": "fa-solid fa-newspaper",
+      "iconUrl": "https://www.google.com/s2/favicons?domain=beehiiv.com&sz=128",
+      "color": "#fff7cc",
       "tags": [
         "beehiiv",
         "automation"

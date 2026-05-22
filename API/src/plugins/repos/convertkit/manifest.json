@@ -3260,9 +3260,9 @@
       "key": "convertkit",
       "name": "ConvertKit",
       "title": "ConvertKit",
-      "iconClass": "fa-solid fa-puzzle-piece",
-      "iconUrl": "https://cdn.simpleicons.org/convertkit",
-      "color": "#f2f2f2",
+      "iconClass": "fa-solid fa-envelope",
+      "iconUrl": "https://www.google.com/s2/favicons?domain=convertkit.com&sz=128",
+      "color": "#ffece6",
       "tags": [
         "convertkit",
         "automation"

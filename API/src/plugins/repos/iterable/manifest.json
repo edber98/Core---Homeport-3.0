@@ -15542,9 +15542,9 @@
       "key": "iterable",
       "name": "Iterable",
       "title": "Iterable",
-      "iconClass": "fa-solid fa-puzzle-piece",
-      "iconUrl": "https://cdn.simpleicons.org/iterable",
-      "color": "#f2f2f2",
+      "iconClass": "fa-solid fa-envelope",
+      "iconUrl": "https://www.google.com/s2/favicons?domain=iterable.com&sz=128",
+      "color": "#efe9ff",
       "tags": [
         "iterable",
         "automation"
