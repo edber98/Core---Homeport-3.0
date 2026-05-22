@@ -11093,7 +11093,7 @@
       "name": "Mailgun",
       "title": "Mailgun",
       "iconClass": "fa-solid fa-paper-plane",
-      "iconUrl": "https://cdn.simpleicons.org/mailgun",
+      "iconUrl": "https://www.mailgun.com/wp-content/themes/simpletexting-theme-blank/assets/favicon/android-chrome-192x192.png",
       "color": "#fff1ef",
       "tags": [
         "email",
@@ -11146,8 +11146,8 @@
       "key": "mailgun_account_update_put_v5_accounts",
       "name": "mailgunAccountUpdatePutV5Accounts",
       "schemaVersion": 2,
-      "title": "Mettre à jour un account",
-      "subtitle": "accounts",
+      "title": "Mettre à jour un compte",
+      "subtitle": "Comptes",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -11178,9 +11178,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update sur account.",
+      "description": "Mettre à jour un compte dans Mailgun.",
       "args": {
-        "title": "Mettre à jour un account",
+        "title": "Mettre à jour un compte",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -11232,8 +11232,8 @@
       "key": "mailgun_alert_send_get_v1_thresholds_alerts_send",
       "name": "mailgunAlertSendGetV1ThresholdsAlertsSend",
       "schemaVersion": 2,
-      "title": "Envoyer un alert",
-      "subtitle": "alerts",
+      "title": "Envoyer une alerte",
+      "subtitle": "Alertes",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -11264,9 +11264,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action send sur alert.",
+      "description": "Envoyer une alerte dans Mailgun.",
       "args": {
-        "title": "Envoyer un alert",
+        "title": "Envoyer une alerte",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -11281,8 +11281,8 @@
       "key": "mailgun_alert_send_post_v1_thresholds_alerts_send",
       "name": "mailgunAlertSendPostV1ThresholdsAlertsSend",
       "schemaVersion": 2,
-      "title": "Envoyer un alert (2)",
-      "subtitle": "alerts",
+      "title": "Envoyer une alerte — variante 2",
+      "subtitle": "Alertes",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -11313,9 +11313,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action send sur alert.",
+      "description": "Envoyer une alerte dans Mailgun.",
       "args": {
-        "title": "Envoyer un alert (2)",
+        "title": "Envoyer une alerte — variante 2",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -11345,8 +11345,8 @@
       "key": "mailgun_alert_send_get_v1_thresholds_alerts_send_name",
       "name": "mailgunAlertSendGetV1ThresholdsAlertsSendName",
       "schemaVersion": 2,
-      "title": "Envoyer un alert (3)",
-      "subtitle": "alerts",
+      "title": "Envoyer une alerte — variante 3",
+      "subtitle": "Alertes",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -11377,9 +11377,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action send sur alert.",
+      "description": "Envoyer une alerte dans Mailgun.",
       "args": {
-        "title": "Envoyer un alert (3)",
+        "title": "Envoyer une alerte — variante 3",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -11409,8 +11409,8 @@
       "key": "mailgun_alert_send_put_v1_thresholds_alerts_send_name",
       "name": "mailgunAlertSendPutV1ThresholdsAlertsSendName",
       "schemaVersion": 2,
-      "title": "Envoyer un alert (4)",
-      "subtitle": "alerts",
+      "title": "Envoyer une alerte — variante 4",
+      "subtitle": "Alertes",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -11441,9 +11441,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action send sur alert.",
+      "description": "Envoyer une alerte dans Mailgun.",
       "args": {
-        "title": "Envoyer un alert (4)",
+        "title": "Envoyer une alerte — variante 4",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -11487,8 +11487,8 @@
       "key": "mailgun_alert_send_delete_v1_thresholds_alerts_send_name",
       "name": "mailgunAlertSendDeleteV1ThresholdsAlertsSendName",
       "schemaVersion": 2,
-      "title": "Envoyer un alert (5)",
-      "subtitle": "alerts",
+      "title": "Envoyer une alerte — variante 5",
+      "subtitle": "Alertes",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -11519,9 +11519,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action send sur alert.",
+      "description": "Envoyer une alerte dans Mailgun.",
       "args": {
-        "title": "Envoyer un alert (5)",
+        "title": "Envoyer une alerte — variante 5",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -11551,8 +11551,8 @@
       "key": "mailgun_all_create_post_v3_dynamic_pools_all",
       "name": "mailgunAllCreatePostV3DynamicPoolsAll",
       "schemaVersion": 2,
-      "title": "Créer un all",
-      "subtitle": "alls",
+      "title": "Créer un élément globaux",
+      "subtitle": "Éléments globaux",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -11583,9 +11583,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur all.",
+      "description": "Créer un élément globaux dans Mailgun.",
       "args": {
-        "title": "Créer un all",
+        "title": "Créer un élément globaux",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -11615,8 +11615,8 @@
       "key": "mailgun_all_delete_delete_v3_dynamic_pools_all",
       "name": "mailgunAllDeleteDeleteV3DynamicPoolsAll",
       "schemaVersion": 2,
-      "title": "Supprimer un all",
-      "subtitle": "alls",
+      "title": "Supprimer un élément globaux",
+      "subtitle": "Éléments globaux",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -11647,9 +11647,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete sur all.",
+      "description": "Supprimer un élément globaux dans Mailgun.",
       "args": {
-        "title": "Supprimer un all",
+        "title": "Supprimer un élément globaux",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -11664,8 +11664,8 @@
       "key": "mailgun_analytic_tag_put_v1_analytics_tags",
       "name": "mailgunAnalyticTagPutV1AnalyticsTags",
       "schemaVersion": 2,
-      "title": "Étiqueter un analytic",
-      "subtitle": "analytics",
+      "title": "Étiqueter une analyse — de l’étiquette",
+      "subtitle": "Analyses",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -11696,9 +11696,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action tag sur analytic.",
+      "description": "Étiqueter une analyse dans Mailgun.",
       "args": {
-        "title": "Étiqueter un analytic",
+        "title": "Étiqueter une analyse — de l’étiquette",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -11728,8 +11728,8 @@
       "key": "mailgun_analytic_tag_post_v1_analytics_tags",
       "name": "mailgunAnalyticTagPostV1AnalyticsTags",
       "schemaVersion": 2,
-      "title": "Étiqueter un analytic (2)",
-      "subtitle": "analytics",
+      "title": "Étiqueter une analyse — de l’étiquette — variante 2",
+      "subtitle": "Analyses",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -11760,9 +11760,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action tag sur analytic.",
+      "description": "Étiqueter une analyse dans Mailgun.",
       "args": {
-        "title": "Étiqueter un analytic (2)",
+        "title": "Étiqueter une analyse — de l’étiquette — variante 2",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -11792,8 +11792,8 @@
       "key": "mailgun_analytic_tag_delete_v1_analytics_tags",
       "name": "mailgunAnalyticTagDeleteV1AnalyticsTags",
       "schemaVersion": 2,
-      "title": "Étiqueter un analytic (3)",
-      "subtitle": "analytics",
+      "title": "Étiqueter une analyse — de l’étiquette — variante 3",
+      "subtitle": "Analyses",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -11824,9 +11824,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action tag sur analytic.",
+      "description": "Étiqueter une analyse dans Mailgun.",
       "args": {
-        "title": "Étiqueter un analytic (3)",
+        "title": "Étiqueter une analyse — de l’étiquette — variante 3",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -11841,8 +11841,8 @@
       "key": "mailgun_assignable_list_get_v3_domains_dynamic_pools_assignable",
       "name": "mailgunAssignableListGetV3DomainsDynamicPoolsAssignable",
       "schemaVersion": 2,
-      "title": "Lister les assignables",
-      "subtitle": "assignables",
+      "title": "Lister des éléments",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -11873,9 +11873,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur assignable.",
+      "description": "Lister des éléments dans Mailgun.",
       "args": {
-        "title": "Lister les assignables",
+        "title": "Lister des éléments",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -11909,8 +11909,8 @@
       "key": "mailgun_auth_recipient_list_get_v5_sandbox_auth_recipients",
       "name": "mailgunAuthRecipientListGetV5SandboxAuthRecipients",
       "schemaVersion": 2,
-      "title": "Lister les auth_recipients",
-      "subtitle": "auth_recipients",
+      "title": "Lister des éléments — variante 2",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -11941,9 +11941,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur auth_recipient.",
+      "description": "Lister des éléments dans Mailgun.",
       "args": {
-        "title": "Lister les auth_recipients",
+        "title": "Lister des éléments — variante 2",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -11958,8 +11958,8 @@
       "key": "mailgun_auth_recipient_create_post_v5_sandbox_auth_recipients",
       "name": "mailgunAuthRecipientCreatePostV5SandboxAuthRecipients",
       "schemaVersion": 2,
-      "title": "Créer un auth_recipient",
-      "subtitle": "auth_recipients",
+      "title": "Créer un élément",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -11990,9 +11990,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur auth_recipient.",
+      "description": "Créer un élément dans Mailgun.",
       "args": {
-        "title": "Créer un auth_recipient",
+        "title": "Créer un élément",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -12022,8 +12022,8 @@
       "key": "mailgun_auth_recipient_delete_delete_v5_sandbox_auth_recipients_email",
       "name": "mailgunAuthRecipientDeleteDeleteV5SandboxAuthRecipientsEmail",
       "schemaVersion": 2,
-      "title": "Supprimer un auth_recipient",
-      "subtitle": "auth_recipients",
+      "title": "Supprimer un élément",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -12054,9 +12054,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete sur auth_recipient.",
+      "description": "Supprimer un élément dans Mailgun.",
       "args": {
-        "title": "Supprimer un auth_recipient",
+        "title": "Supprimer un élément",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -12086,8 +12086,8 @@
       "key": "mailgun_bounce_search_get_v3_domainid_bounces_address",
       "name": "mailgunBounceSearchGetV3DomainidBouncesAddress",
       "schemaVersion": 2,
-      "title": "Rechercher des bounces",
-      "subtitle": "bounces",
+      "title": "Rechercher des rebonds",
+      "subtitle": "Rebonds",
       "icon": "fa-solid fa-magnifying-glass",
       "type": "function",
       "nodeKind": "function",
@@ -12118,9 +12118,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action search sur bounce.",
+      "description": "Rechercher des rebonds dans Mailgun.",
       "args": {
-        "title": "Rechercher des bounces",
+        "title": "Rechercher des rebonds",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -12164,8 +12164,8 @@
       "key": "mailgun_bounce_delete_delete_v3_domainid_bounces_address",
       "name": "mailgunBounceDeleteDeleteV3DomainidBouncesAddress",
       "schemaVersion": 2,
-      "title": "Supprimer un bounce",
-      "subtitle": "bounces",
+      "title": "Supprimer un rebond",
+      "subtitle": "Rebonds",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -12196,9 +12196,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete sur bounce.",
+      "description": "Supprimer un rebond dans Mailgun.",
       "args": {
-        "title": "Supprimer un bounce",
+        "title": "Supprimer un rebond",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -12242,8 +12242,8 @@
       "key": "mailgun_bounce_list_get_v3_domainid_bounces",
       "name": "mailgunBounceListGetV3DomainidBounces",
       "schemaVersion": 2,
-      "title": "Lister les bounces",
-      "subtitle": "bounces",
+      "title": "Lister des rebonds",
+      "subtitle": "Rebonds",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -12274,9 +12274,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur bounce.",
+      "description": "Lister des rebonds dans Mailgun.",
       "args": {
-        "title": "Lister les bounces",
+        "title": "Lister des rebonds",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -12348,8 +12348,8 @@
       "key": "mailgun_bounce_create_post_v3_domainid_bounces",
       "name": "mailgunBounceCreatePostV3DomainidBounces",
       "schemaVersion": 2,
-      "title": "Créer un bounce",
-      "subtitle": "bounces",
+      "title": "Créer un rebond",
+      "subtitle": "Rebonds",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -12380,9 +12380,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur bounce.",
+      "description": "Créer un rebond dans Mailgun.",
       "args": {
-        "title": "Créer un bounce",
+        "title": "Créer un rebond",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -12426,8 +12426,8 @@
       "key": "mailgun_bounce_delete_delete_v3_domainid_bounces",
       "name": "mailgunBounceDeleteDeleteV3DomainidBounces",
       "schemaVersion": 2,
-      "title": "Supprimer un bounce (2)",
-      "subtitle": "bounces",
+      "title": "Supprimer un rebond — variante 2",
+      "subtitle": "Rebonds",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -12458,9 +12458,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete sur bounce.",
+      "description": "Supprimer un rebond dans Mailgun.",
       "args": {
-        "title": "Supprimer un bounce (2)",
+        "title": "Supprimer un rebond — variante 2",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -12490,8 +12490,8 @@
       "key": "mailgun_channel_get_get_v1_alerts_slack_channels_id",
       "name": "mailgunChannelGetGetV1AlertsSlackChannelsId",
       "schemaVersion": 2,
-      "title": "Récupérer un channel",
-      "subtitle": "channels",
+      "title": "Récupérer un canaux",
+      "subtitle": "Canaux",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
@@ -12522,9 +12522,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get sur channel.",
+      "description": "Récupérer un canaux dans Mailgun.",
       "args": {
-        "title": "Récupérer un channel",
+        "title": "Récupérer un canaux",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -12554,8 +12554,8 @@
       "key": "mailgun_channel_list_get_v1_alerts_slack_channels",
       "name": "mailgunChannelListGetV1AlertsSlackChannels",
       "schemaVersion": 2,
-      "title": "Lister les channels",
-      "subtitle": "channels",
+      "title": "Lister des canaux",
+      "subtitle": "Canaux",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -12586,9 +12586,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur channel.",
+      "description": "Lister des canaux dans Mailgun.",
       "args": {
-        "title": "Lister les channels",
+        "title": "Lister des canaux",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -12622,8 +12622,8 @@
       "key": "mailgun_complaint_search_get_v3_domainid_complaints_address",
       "name": "mailgunComplaintSearchGetV3DomainidComplaintsAddress",
       "schemaVersion": 2,
-      "title": "Rechercher des complaints",
-      "subtitle": "complaints",
+      "title": "Rechercher des éléments",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-magnifying-glass",
       "type": "function",
       "nodeKind": "function",
@@ -12654,9 +12654,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action search sur complaint.",
+      "description": "Rechercher des éléments dans Mailgun.",
       "args": {
-        "title": "Rechercher des complaints",
+        "title": "Rechercher des éléments",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -12700,8 +12700,8 @@
       "key": "mailgun_complaint_delete_delete_v3_domainid_complaints_address",
       "name": "mailgunComplaintDeleteDeleteV3DomainidComplaintsAddress",
       "schemaVersion": 2,
-      "title": "Supprimer un complaint",
-      "subtitle": "complaints",
+      "title": "Supprimer un élément — variante 2",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -12732,9 +12732,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete sur complaint.",
+      "description": "Supprimer un élément dans Mailgun.",
       "args": {
-        "title": "Supprimer un complaint",
+        "title": "Supprimer un élément — variante 2",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -12778,8 +12778,8 @@
       "key": "mailgun_complaint_list_get_v3_domainid_complaints",
       "name": "mailgunComplaintListGetV3DomainidComplaints",
       "schemaVersion": 2,
-      "title": "Lister les complaints",
-      "subtitle": "complaints",
+      "title": "Lister des éléments — variante 3",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -12810,9 +12810,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur complaint.",
+      "description": "Lister des éléments dans Mailgun.",
       "args": {
-        "title": "Lister les complaints",
+        "title": "Lister des éléments — variante 3",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -12888,8 +12888,8 @@
       "key": "mailgun_complaint_create_post_v3_domainid_complaints",
       "name": "mailgunComplaintCreatePostV3DomainidComplaints",
       "schemaVersion": 2,
-      "title": "Créer un complaint",
-      "subtitle": "complaints",
+      "title": "Créer un élément — variante 2",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -12920,9 +12920,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur complaint.",
+      "description": "Créer un élément dans Mailgun.",
       "args": {
-        "title": "Créer un complaint",
+        "title": "Créer un élément — variante 2",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -12966,8 +12966,8 @@
       "key": "mailgun_complaint_delete_delete_v3_domainid_complaints",
       "name": "mailgunComplaintDeleteDeleteV3DomainidComplaints",
       "schemaVersion": 2,
-      "title": "Supprimer un complaint (2)",
-      "subtitle": "complaints",
+      "title": "Supprimer un élément — variante 3",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -12998,9 +12998,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete sur complaint.",
+      "description": "Supprimer un élément dans Mailgun.",
       "args": {
-        "title": "Supprimer un complaint (2)",
+        "title": "Supprimer un élément — variante 3",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -13030,8 +13030,8 @@
       "key": "mailgun_copy_update_put_v3_domain_name_templates_template_name_copy",
       "name": "mailgunCopyUpdatePutV3DomainNameTemplatesTemplateNameCopy",
       "schemaVersion": 2,
-      "title": "Mettre à jour un copy",
-      "subtitle": "copies",
+      "title": "Mettre à jour un élément",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -13062,9 +13062,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update sur copy.",
+      "description": "Mettre à jour un élément dans Mailgun.",
       "args": {
-        "title": "Mettre à jour un copy",
+        "title": "Mettre à jour un élément",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -13122,8 +13122,8 @@
       "key": "mailgun_copy_update_put_v3_domain_name_templates_template_name_versions_version",
       "name": "mailgunCopyUpdatePutV3DomainNameTemplatesTemplateNameVersionsVersion",
       "schemaVersion": 2,
-      "title": "Mettre à jour un copy (2)",
-      "subtitle": "copies",
+      "title": "Mettre à jour un élément — variante 2",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -13154,9 +13154,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update sur copy.",
+      "description": "Mettre à jour un élément dans Mailgun.",
       "args": {
-        "title": "Mettre à jour un copy (2)",
+        "title": "Mettre à jour un élément — variante 2",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -13237,8 +13237,8 @@
       "key": "mailgun_copy_update_put_v4_templates_template_name_copy",
       "name": "mailgunCopyUpdatePutV4TemplatesTemplateNameCopy",
       "schemaVersion": 2,
-      "title": "Mettre à jour un copy (3)",
-      "subtitle": "copies",
+      "title": "Mettre à jour un élément — variante 3",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -13269,9 +13269,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update sur copy.",
+      "description": "Mettre à jour un élément dans Mailgun.",
       "args": {
-        "title": "Mettre à jour un copy (3)",
+        "title": "Mettre à jour un élément — variante 3",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -13315,8 +13315,8 @@
       "key": "mailgun_copy_update_put_v4_templates_template_name_versions_version_name_copy_ne",
       "name": "mailgunCopyUpdatePutV4TemplatesTemplateNameVersionsVersionNameCopyNe",
       "schemaVersion": 2,
-      "title": "Mettre à jour un copy (4)",
-      "subtitle": "copies",
+      "title": "Mettre à jour un élément — variante 4",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -13347,9 +13347,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update sur copy.",
+      "description": "Mettre à jour un élément dans Mailgun.",
       "args": {
-        "title": "Mettre à jour un copy (4)",
+        "title": "Mettre à jour un élément — variante 4",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -13416,8 +13416,8 @@
       "key": "mailgun_credential_list_get_v3_domains_domain_name_credentials",
       "name": "mailgunCredentialListGetV3DomainsDomainNameCredentials",
       "schemaVersion": 2,
-      "title": "Lister les credentials",
-      "subtitle": "credentials",
+      "title": "Lister des identifiants",
+      "subtitle": "Identifiants",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -13448,9 +13448,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur credential.",
+      "description": "Lister des identifiants dans Mailgun.",
       "args": {
-        "title": "Lister les credentials",
+        "title": "Lister des identifiants",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -13498,8 +13498,8 @@
       "key": "mailgun_credential_create_post_v3_domains_domain_name_credentials",
       "name": "mailgunCredentialCreatePostV3DomainsDomainNameCredentials",
       "schemaVersion": 2,
-      "title": "Créer un credential",
-      "subtitle": "credentials",
+      "title": "Créer un identifiant",
+      "subtitle": "Identifiants",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -13530,9 +13530,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur credential.",
+      "description": "Créer un identifiant dans Mailgun.",
       "args": {
-        "title": "Créer un credential",
+        "title": "Créer un identifiant",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -13576,8 +13576,8 @@
       "key": "mailgun_credential_delete_delete_v3_domains_domain_name_credentials",
       "name": "mailgunCredentialDeleteDeleteV3DomainsDomainNameCredentials",
       "schemaVersion": 2,
-      "title": "Supprimer un credential",
-      "subtitle": "credentials",
+      "title": "Supprimer un identifiant",
+      "subtitle": "Identifiants",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -13608,9 +13608,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete sur credential.",
+      "description": "Supprimer un identifiant dans Mailgun.",
       "args": {
-        "title": "Supprimer un credential",
+        "title": "Supprimer un identifiant",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -13640,8 +13640,8 @@
       "key": "mailgun_credential_update_put_v3_domains_domain_name_credentials_spec",
       "name": "mailgunCredentialUpdatePutV3DomainsDomainNameCredentialsSpec",
       "schemaVersion": 2,
-      "title": "Mettre à jour un credential",
-      "subtitle": "credentials",
+      "title": "Mettre à jour un identifiant",
+      "subtitle": "Identifiants",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -13672,9 +13672,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update sur credential.",
+      "description": "Mettre à jour un identifiant dans Mailgun.",
       "args": {
-        "title": "Mettre à jour un credential",
+        "title": "Mettre à jour un identifiant",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -13732,8 +13732,8 @@
       "key": "mailgun_credential_delete_delete_v3_domains_domain_name_credentials_spec",
       "name": "mailgunCredentialDeleteDeleteV3DomainsDomainNameCredentialsSpec",
       "schemaVersion": 2,
-      "title": "Supprimer un credential (2)",
-      "subtitle": "credentials",
+      "title": "Supprimer un identifiant — variante 2",
+      "subtitle": "Identifiants",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -13764,9 +13764,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete sur credential.",
+      "description": "Supprimer un identifiant dans Mailgun.",
       "args": {
-        "title": "Supprimer un credential (2)",
+        "title": "Supprimer un identifiant — variante 2",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -13810,8 +13810,8 @@
       "key": "mailgun_disable_create_post_v5_accounts_subaccounts_subaccount_id_disable",
       "name": "mailgunDisableCreatePostV5AccountsSubaccountsSubaccountIdDisable",
       "schemaVersion": 2,
-      "title": "Créer un disable",
-      "subtitle": "disables",
+      "title": "Créer un élément — du compte",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -13842,9 +13842,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur disable.",
+      "description": "Créer un élément dans Mailgun.",
       "args": {
-        "title": "Créer un disable",
+        "title": "Créer un élément — du compte",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -13892,8 +13892,8 @@
       "key": "mailgun_dkim_authority_update_put_v3_domains_name_dkim_authority",
       "name": "mailgunDkimAuthorityUpdatePutV3DomainsNameDkimAuthority",
       "schemaVersion": 2,
-      "title": "Mettre à jour un dkim_authority",
-      "subtitle": "dkim_authorities",
+      "title": "Mettre à jour un élément — variante 5",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -13924,9 +13924,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update sur dkim_authority.",
+      "description": "Mettre à jour un élément dans Mailgun.",
       "args": {
-        "title": "Mettre à jour un dkim_authority",
+        "title": "Mettre à jour un élément — variante 5",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -13970,8 +13970,8 @@
       "key": "mailgun_dkim_selector_update_put_v3_domains_name_dkim_selector",
       "name": "mailgunDkimSelectorUpdatePutV3DomainsNameDkimSelector",
       "schemaVersion": 2,
-      "title": "Mettre à jour un dkim_selector",
-      "subtitle": "dkim_selectors",
+      "title": "Mettre à jour un élément — variante 6",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -14002,9 +14002,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update sur dkim_selector.",
+      "description": "Mettre à jour un élément dans Mailgun.",
       "args": {
-        "title": "Mettre à jour un dkim_selector",
+        "title": "Mettre à jour un élément — variante 6",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -14048,8 +14048,8 @@
       "key": "mailgun_domain_list_get_v4_domains",
       "name": "mailgunDomainListGetV4Domains",
       "schemaVersion": 2,
-      "title": "Lister les domains",
-      "subtitle": "domains",
+      "title": "Lister des domaines",
+      "subtitle": "Domaines",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -14080,9 +14080,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur domain.",
+      "description": "Lister des domaines dans Mailgun.",
       "args": {
-        "title": "Lister les domains",
+        "title": "Lister des domaines",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -14161,8 +14161,8 @@
       "key": "mailgun_domain_create_post_v4_domains",
       "name": "mailgunDomainCreatePostV4Domains",
       "schemaVersion": 2,
-      "title": "Créer un domain",
-      "subtitle": "domains",
+      "title": "Créer un domaine",
+      "subtitle": "Domaines",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -14193,9 +14193,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur domain.",
+      "description": "Créer un domaine dans Mailgun.",
       "args": {
-        "title": "Créer un domain",
+        "title": "Créer un domaine",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -14225,8 +14225,8 @@
       "key": "mailgun_domain_get_get_v4_domains_name",
       "name": "mailgunDomainGetGetV4DomainsName",
       "schemaVersion": 2,
-      "title": "Récupérer un domain",
-      "subtitle": "domains",
+      "title": "Récupérer un domaine",
+      "subtitle": "Domaines",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
@@ -14257,9 +14257,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get sur domain.",
+      "description": "Récupérer un domaine dans Mailgun.",
       "args": {
-        "title": "Récupérer un domain",
+        "title": "Récupérer un domaine",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -14289,8 +14289,8 @@
       "key": "mailgun_domain_update_put_v4_domains_name",
       "name": "mailgunDomainUpdatePutV4DomainsName",
       "schemaVersion": 2,
-      "title": "Mettre à jour un domain",
-      "subtitle": "domains",
+      "title": "Mettre à jour un domaine",
+      "subtitle": "Domaines",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -14321,9 +14321,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update sur domain.",
+      "description": "Mettre à jour un domaine dans Mailgun.",
       "args": {
-        "title": "Mettre à jour un domain",
+        "title": "Mettre à jour un domaine",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -14367,8 +14367,8 @@
       "key": "mailgun_domain_delete_delete_v3_domains_name",
       "name": "mailgunDomainDeleteDeleteV3DomainsName",
       "schemaVersion": 2,
-      "title": "Supprimer un domain",
-      "subtitle": "domains",
+      "title": "Supprimer un domaine",
+      "subtitle": "Domaines",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -14399,9 +14399,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete sur domain.",
+      "description": "Supprimer un domaine dans Mailgun.",
       "args": {
-        "title": "Supprimer un domain",
+        "title": "Supprimer un domaine",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -14431,8 +14431,8 @@
       "key": "mailgun_domain_list_get_v3_domains_domain_webhooks",
       "name": "mailgunDomainListGetV3DomainsDomainWebhooks",
       "schemaVersion": 2,
-      "title": "Lister les domains (2)",
-      "subtitle": "domains",
+      "title": "Lister des domaines — du webhook",
+      "subtitle": "Domaines",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -14463,9 +14463,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur domain.",
+      "description": "Lister des domaines dans Mailgun.",
       "args": {
-        "title": "Lister les domains (2)",
+        "title": "Lister des domaines — du webhook",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -14495,8 +14495,8 @@
       "key": "mailgun_domain_webhook_post_v3_domains_domain_webhooks",
       "name": "mailgunDomainWebhookPostV3DomainsDomainWebhooks",
       "schemaVersion": 2,
-      "title": "Recevoir des webhooks domains",
-      "subtitle": "domains",
+      "title": "Publier un domaine — du webhook",
+      "subtitle": "Domaines",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -14527,9 +14527,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action webhook sur domain.",
+      "description": "Publier un domaine dans Mailgun.",
       "args": {
-        "title": "Recevoir des webhooks domains",
+        "title": "Publier un domaine — du webhook",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -14573,8 +14573,8 @@
       "key": "mailgun_domain_list_get_v3_domains_domain_name_webhooks_webhook_name",
       "name": "mailgunDomainListGetV3DomainsDomainNameWebhooksWebhookName",
       "schemaVersion": 2,
-      "title": "Lister les domains (3)",
-      "subtitle": "domains",
+      "title": "Lister des domaines — du webhook — variante 2",
+      "subtitle": "Domaines",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -14605,9 +14605,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur domain.",
+      "description": "Lister des domaines dans Mailgun.",
       "args": {
-        "title": "Lister les domains (3)",
+        "title": "Lister des domaines — du webhook — variante 2",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -14651,8 +14651,8 @@
       "key": "mailgun_domain_webhook_put_v3_domains_domain_name_webhooks_webhook_name",
       "name": "mailgunDomainWebhookPutV3DomainsDomainNameWebhooksWebhookName",
       "schemaVersion": 2,
-      "title": "Recevoir des webhooks domains (2)",
-      "subtitle": "domains",
+      "title": "Lister des domaines — du webhook — variante 3",
+      "subtitle": "Domaines",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -14683,9 +14683,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action webhook sur domain.",
+      "description": "Lister des domaines dans Mailgun.",
       "args": {
-        "title": "Recevoir des webhooks domains (2)",
+        "title": "Lister des domaines — du webhook — variante 3",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -14743,8 +14743,8 @@
       "key": "mailgun_domain_webhook_delete_v3_domains_domain_name_webhooks_webhook_name",
       "name": "mailgunDomainWebhookDeleteV3DomainsDomainNameWebhooksWebhookName",
       "schemaVersion": 2,
-      "title": "Recevoir des webhooks domains (3)",
-      "subtitle": "domains",
+      "title": "Supprimer un domaine — du webhook",
+      "subtitle": "Domaines",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -14775,9 +14775,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action webhook sur domain.",
+      "description": "Supprimer un domaine dans Mailgun.",
       "args": {
-        "title": "Recevoir des webhooks domains (3)",
+        "title": "Supprimer un domaine — du webhook",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -14821,8 +14821,8 @@
       "key": "mailgun_domain_webhook_put_v4_domains_domain_webhooks",
       "name": "mailgunDomainWebhookPutV4DomainsDomainWebhooks",
       "schemaVersion": 2,
-      "title": "Recevoir des webhooks domains (4)",
-      "subtitle": "domains",
+      "title": "Lister des domaines — du webhook — variante 4",
+      "subtitle": "Domaines",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -14853,9 +14853,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action webhook sur domain.",
+      "description": "Lister des domaines dans Mailgun.",
       "args": {
-        "title": "Recevoir des webhooks domains (4)",
+        "title": "Lister des domaines — du webhook — variante 4",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -14899,8 +14899,8 @@
       "key": "mailgun_domain_webhook_post_v4_domains_domain_webhooks",
       "name": "mailgunDomainWebhookPostV4DomainsDomainWebhooks",
       "schemaVersion": 2,
-      "title": "Recevoir des webhooks domains (5)",
-      "subtitle": "domains",
+      "title": "Publier un domaine — du webhook — variante 2",
+      "subtitle": "Domaines",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -14931,9 +14931,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action webhook sur domain.",
+      "description": "Publier un domaine dans Mailgun.",
       "args": {
-        "title": "Recevoir des webhooks domains (5)",
+        "title": "Publier un domaine — du webhook — variante 2",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -14977,8 +14977,8 @@
       "key": "mailgun_domain_webhook_delete_v4_domains_domain_webhooks",
       "name": "mailgunDomainWebhookDeleteV4DomainsDomainWebhooks",
       "schemaVersion": 2,
-      "title": "Recevoir des webhooks domains (6)",
-      "subtitle": "domains",
+      "title": "Supprimer un domaine — du webhook — variante 2",
+      "subtitle": "Domaines",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -15009,9 +15009,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action webhook sur domain.",
+      "description": "Supprimer un domaine dans Mailgun.",
       "args": {
-        "title": "Recevoir des webhooks domains (6)",
+        "title": "Supprimer un domaine — du webhook — variante 2",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -15055,8 +15055,8 @@
       "key": "mailgun_domain_list_get_v1_dynamic_pools_domains",
       "name": "mailgunDomainListGetV1DynamicPoolsDomains",
       "schemaVersion": 2,
-      "title": "Lister les domains (4)",
-      "subtitle": "domains",
+      "title": "Lister des domaines — variante 2",
+      "subtitle": "Domaines",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -15087,9 +15087,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur domain.",
+      "description": "Lister des domaines dans Mailgun.",
       "args": {
-        "title": "Lister les domains (4)",
+        "title": "Lister des domaines — variante 2",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -15150,8 +15150,8 @@
       "key": "mailgun_dynamic_pool_create_post_v3_domains_name_dynamic_pools",
       "name": "mailgunDynamicPoolCreatePostV3DomainsNameDynamicPools",
       "schemaVersion": 2,
-      "title": "Créer un dynamic_pool",
-      "subtitle": "dynamic_pools",
+      "title": "Créer un élément — variante 3",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -15182,9 +15182,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur dynamic_pool.",
+      "description": "Créer un élément dans Mailgun.",
       "args": {
-        "title": "Créer un dynamic_pool",
+        "title": "Créer un élément — variante 3",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -15228,8 +15228,8 @@
       "key": "mailgun_dynamic_pool_delete_delete_v3_domains_name_dynamic_pools",
       "name": "mailgunDynamicPoolDeleteDeleteV3DomainsNameDynamicPools",
       "schemaVersion": 2,
-      "title": "Supprimer un dynamic_pool",
-      "subtitle": "dynamic_pools",
+      "title": "Supprimer un élément — variante 4",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -15260,9 +15260,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete sur dynamic_pool.",
+      "description": "Supprimer un élément dans Mailgun.",
       "args": {
-        "title": "Supprimer un dynamic_pool",
+        "title": "Supprimer un élément — variante 4",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -15320,8 +15320,8 @@
       "key": "mailgun_dynamic_pool_list_get_v3_dynamic_pools",
       "name": "mailgunDynamicPoolListGetV3DynamicPools",
       "schemaVersion": 2,
-      "title": "Lister les dynamic_pools",
-      "subtitle": "dynamic_pools",
+      "title": "Lister des éléments — variante 4",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -15352,9 +15352,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur dynamic_pool.",
+      "description": "Lister des éléments dans Mailgun.",
       "args": {
-        "title": "Lister les dynamic_pools",
+        "title": "Lister des éléments — variante 4",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -15369,8 +15369,8 @@
       "key": "mailgun_dynamic_pool_create_post_v3_dynamic_pools_pool_name_ip",
       "name": "mailgunDynamicPoolCreatePostV3DynamicPoolsPoolNameIp",
       "schemaVersion": 2,
-      "title": "Créer un dynamic_pool (2)",
-      "subtitle": "dynamic_pools",
+      "title": "Créer un élément — variante 4",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -15401,9 +15401,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur dynamic_pool.",
+      "description": "Créer un élément dans Mailgun.",
       "args": {
-        "title": "Créer un dynamic_pool (2)",
+        "title": "Créer un élément — variante 4",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -15447,8 +15447,8 @@
       "key": "mailgun_dynamic_pool_update_patch_v3_dynamic_pools_pool_name",
       "name": "mailgunDynamicPoolUpdatePatchV3DynamicPoolsPoolName",
       "schemaVersion": 2,
-      "title": "Mettre à jour un dynamic_pool",
-      "subtitle": "dynamic_pools",
+      "title": "Mettre à jour un élément — variante 7",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -15479,9 +15479,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update sur dynamic_pool.",
+      "description": "Mettre à jour un élément dans Mailgun.",
       "args": {
-        "title": "Mettre à jour un dynamic_pool",
+        "title": "Mettre à jour un élément — variante 7",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -15525,8 +15525,8 @@
       "key": "mailgun_enable_create_post_v5_accounts_subaccounts_subaccount_id_enable",
       "name": "mailgunEnableCreatePostV5AccountsSubaccountsSubaccountIdEnable",
       "schemaVersion": 2,
-      "title": "Créer un enable",
-      "subtitle": "enables",
+      "title": "Créer un élément — du compte — variante 2",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -15557,9 +15557,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur enable.",
+      "description": "Créer un élément dans Mailgun.",
       "args": {
-        "title": "Créer un enable",
+        "title": "Créer un élément — du compte — variante 2",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -15589,8 +15589,8 @@
       "key": "mailgun_enable_send_put_v5_accounts_limit_custom_enable",
       "name": "mailgunEnableSendPutV5AccountsLimitCustomEnable",
       "schemaVersion": 2,
-      "title": "Envoyer un enable",
-      "subtitle": "enables",
+      "title": "Envoyer un élément — du compte",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -15621,9 +15621,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action send sur enable.",
+      "description": "Envoyer un élément dans Mailgun.",
       "args": {
-        "title": "Envoyer un enable",
+        "title": "Envoyer un élément — du compte",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -15648,8 +15648,8 @@
       "key": "mailgun_enroll_assign_post_v3_domains_all_dynamic_pools_enroll",
       "name": "mailgunEnrollAssignPostV3DomainsAllDynamicPoolsEnroll",
       "schemaVersion": 2,
-      "title": "Assigner un enroll",
-      "subtitle": "enrolls",
+      "title": "Assigner un élément",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -15680,9 +15680,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action assign sur enroll.",
+      "description": "Assigner un élément dans Mailgun.",
       "args": {
-        "title": "Assigner un enroll",
+        "title": "Assigner un élément",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -15712,8 +15712,8 @@
       "key": "mailgun_envelope_delete_delete_v3_domain_name_envelopes",
       "name": "mailgunEnvelopeDeleteDeleteV3DomainNameEnvelopes",
       "schemaVersion": 2,
-      "title": "Supprimer un envelope",
-      "subtitle": "envelopes",
+      "title": "Supprimer un élément — variante 5",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -15744,9 +15744,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete sur envelope.",
+      "description": "Supprimer un élément dans Mailgun.",
       "args": {
-        "title": "Supprimer un envelope",
+        "title": "Supprimer un élément — variante 5",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -15776,8 +15776,8 @@
       "key": "mailgun_event_list_get_v3_domain_name_events",
       "name": "mailgunEventListGetV3DomainNameEvents",
       "schemaVersion": 2,
-      "title": "Lister les events",
-      "subtitle": "events",
+      "title": "Lister des événements — de l’événement",
+      "subtitle": "Événements",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -15808,9 +15808,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur event.",
+      "description": "Lister des événements dans Mailgun.",
       "args": {
-        "title": "Lister les events",
+        "title": "Lister des événements — de l’événement",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -15984,8 +15984,8 @@
       "key": "mailgun_event_list_get_v1_alerts_events",
       "name": "mailgunEventListGetV1AlertsEvents",
       "schemaVersion": 2,
-      "title": "Lister les events (2)",
-      "subtitle": "events",
+      "title": "Lister des événements — de l’événement — variante 2",
+      "subtitle": "Événements",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -16016,9 +16016,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur event.",
+      "description": "Lister des événements dans Mailgun.",
       "args": {
-        "title": "Lister les events (2)",
+        "title": "Lister des événements — de l’événement — variante 2",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16033,8 +16033,8 @@
       "key": "mailgun_event_send_post_v1_alerts_settings_events",
       "name": "mailgunEventSendPostV1AlertsSettingsEvents",
       "schemaVersion": 2,
-      "title": "Envoyer un event",
-      "subtitle": "events",
+      "title": "Envoyer un événement",
+      "subtitle": "Événements",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -16065,9 +16065,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action send sur event.",
+      "description": "Envoyer un événement dans Mailgun.",
       "args": {
-        "title": "Envoyer un event",
+        "title": "Envoyer un événement",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16097,8 +16097,8 @@
       "key": "mailgun_event_update_put_v1_alerts_settings_events_id",
       "name": "mailgunEventUpdatePutV1AlertsSettingsEventsId",
       "schemaVersion": 2,
-      "title": "Mettre à jour un event",
-      "subtitle": "events",
+      "title": "Mettre à jour un événement",
+      "subtitle": "Événements",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -16129,9 +16129,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update sur event.",
+      "description": "Mettre à jour un événement dans Mailgun.",
       "args": {
-        "title": "Mettre à jour un event",
+        "title": "Mettre à jour un événement",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16175,8 +16175,8 @@
       "key": "mailgun_event_delete_delete_v1_alerts_settings_events_id",
       "name": "mailgunEventDeleteDeleteV1AlertsSettingsEventsId",
       "schemaVersion": 2,
-      "title": "Supprimer un event",
-      "subtitle": "events",
+      "title": "Supprimer un événement",
+      "subtitle": "Événements",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -16207,9 +16207,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete sur event.",
+      "description": "Supprimer un événement dans Mailgun.",
       "args": {
-        "title": "Supprimer un event",
+        "title": "Supprimer un événement",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16239,8 +16239,8 @@
       "key": "mailgun_feature_update_put_v5_accounts_features",
       "name": "mailgunFeatureUpdatePutV5AccountsFeatures",
       "schemaVersion": 2,
-      "title": "Mettre à jour un feature",
-      "subtitle": "features",
+      "title": "Mettre à jour une fonctionnalité — du compte",
+      "subtitle": "Fonctionnalités",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -16271,9 +16271,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update sur feature.",
+      "description": "Mettre à jour une fonctionnalité dans Mailgun.",
       "args": {
-        "title": "Mettre à jour un feature",
+        "title": "Mettre à jour une fonctionnalité — du compte",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16298,8 +16298,8 @@
       "key": "mailgun_feature_update_put_v5_accounts_subaccounts_subaccount_id_features",
       "name": "mailgunFeatureUpdatePutV5AccountsSubaccountsSubaccountIdFeatures",
       "schemaVersion": 2,
-      "title": "Mettre à jour un feature (2)",
-      "subtitle": "features",
+      "title": "Mettre à jour une fonctionnalité — du compte — variante 2",
+      "subtitle": "Fonctionnalités",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -16330,9 +16330,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update sur feature.",
+      "description": "Mettre à jour une fonctionnalité dans Mailgun.",
       "args": {
-        "title": "Mettre à jour un feature (2)",
+        "title": "Mettre à jour une fonctionnalité — du compte — variante 2",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16371,8 +16371,8 @@
       "key": "mailgun_forward_get_get_v3_forwards_id",
       "name": "mailgunForwardGetGetV3ForwardsId",
       "schemaVersion": 2,
-      "title": "Récupérer un forward",
-      "subtitle": "forwards",
+      "title": "Récupérer un élément",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
@@ -16403,9 +16403,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get sur forward.",
+      "description": "Récupérer un élément dans Mailgun.",
       "args": {
-        "title": "Récupérer un forward",
+        "title": "Récupérer un élément",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16435,8 +16435,8 @@
       "key": "mailgun_forward_update_put_v3_forwards_id",
       "name": "mailgunForwardUpdatePutV3ForwardsId",
       "schemaVersion": 2,
-      "title": "Mettre à jour un forward",
-      "subtitle": "forwards",
+      "title": "Mettre à jour un élément — variante 8",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -16467,9 +16467,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update sur forward.",
+      "description": "Mettre à jour un élément dans Mailgun.",
       "args": {
-        "title": "Mettre à jour un forward",
+        "title": "Mettre à jour un élément — variante 8",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16555,8 +16555,8 @@
       "key": "mailgun_forward_search_delete_v3_forwards_id",
       "name": "mailgunForwardSearchDeleteV3ForwardsId",
       "schemaVersion": 2,
-      "title": "Rechercher des forwards",
-      "subtitle": "forwards",
+      "title": "Rechercher des éléments — variante 2",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-magnifying-glass",
       "type": "function",
       "nodeKind": "function",
@@ -16587,9 +16587,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action search sur forward.",
+      "description": "Rechercher des éléments dans Mailgun.",
       "args": {
-        "title": "Rechercher des forwards",
+        "title": "Rechercher des éléments — variante 2",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16628,8 +16628,8 @@
       "key": "mailgun_forward_search_get_v3_forwards",
       "name": "mailgunForwardSearchGetV3Forwards",
       "schemaVersion": 2,
-      "title": "Rechercher des forwards (2)",
-      "subtitle": "forwards",
+      "title": "Rechercher des éléments — variante 3",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-magnifying-glass",
       "type": "function",
       "nodeKind": "function",
@@ -16660,9 +16660,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action search sur forward.",
+      "description": "Rechercher des éléments dans Mailgun.",
       "args": {
-        "title": "Rechercher des forwards (2)",
+        "title": "Rechercher des éléments — variante 3",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16715,8 +16715,8 @@
       "key": "mailgun_forward_create_post_v3_forwards",
       "name": "mailgunForwardCreatePostV3Forwards",
       "schemaVersion": 2,
-      "title": "Créer un forward",
-      "subtitle": "forwards",
+      "title": "Créer un élément — variante 5",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -16747,9 +16747,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur forward.",
+      "description": "Créer un élément dans Mailgun.",
       "args": {
-        "title": "Créer un forward",
+        "title": "Créer un élément — variante 5",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16821,8 +16821,8 @@
       "key": "mailgun_history_list_get_v1_dynamic_pools_domains_name_history",
       "name": "mailgunHistoryListGetV1DynamicPoolsDomainsNameHistory",
       "schemaVersion": 2,
-      "title": "Lister les histories",
-      "subtitle": "histories",
+      "title": "Lister des historiques",
+      "subtitle": "Historiques",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -16853,9 +16853,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur history.",
+      "description": "Lister des historiques dans Mailgun.",
       "args": {
-        "title": "Lister les histories",
+        "title": "Lister des historiques",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16885,8 +16885,8 @@
       "key": "mailgun_history_list_get_v1_dynamic_pools_history",
       "name": "mailgunHistoryListGetV1DynamicPoolsHistory",
       "schemaVersion": 2,
-      "title": "Lister les histories (2)",
-      "subtitle": "histories",
+      "title": "Lister des historiques — variante 2",
+      "subtitle": "Historiques",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -16917,9 +16917,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur history.",
+      "description": "Lister des historiques dans Mailgun.",
       "args": {
-        "title": "Lister les histories (2)",
+        "title": "Lister des historiques — variante 2",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16998,8 +16998,8 @@
       "key": "mailgun_hit_list_get_v1_thresholds_hits",
       "name": "mailgunHitListGetV1ThresholdsHits",
       "schemaVersion": 2,
-      "title": "Lister les hits",
-      "subtitle": "hits",
+      "title": "Lister des éléments — variante 5",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -17030,9 +17030,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur hit.",
+      "description": "Lister des éléments dans Mailgun.",
       "args": {
-        "title": "Lister les hits",
+        "title": "Lister des éléments — variante 5",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17047,8 +17047,8 @@
       "key": "mailgun_http_signing_key_list_get_v5_accounts_http_signing_key",
       "name": "mailgunHttpSigningKeyListGetV5AccountsHttpSigningKey",
       "schemaVersion": 2,
-      "title": "Lister les http_signing_keies",
-      "subtitle": "http_signing_keies",
+      "title": "Lister des éléments — du compte",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -17079,9 +17079,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur http_signing_key.",
+      "description": "Lister des éléments dans Mailgun.",
       "args": {
-        "title": "Lister les http_signing_keies",
+        "title": "Lister des éléments — du compte",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17096,8 +17096,8 @@
       "key": "mailgun_http_signing_key_create_post_v5_accounts_http_signing_key",
       "name": "mailgunHttpSigningKeyCreatePostV5AccountsHttpSigningKey",
       "schemaVersion": 2,
-      "title": "Créer un http_signing_key",
-      "subtitle": "http_signing_keies",
+      "title": "Créer un élément — du compte — variante 3",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -17128,9 +17128,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur http_signing_key.",
+      "description": "Créer un élément dans Mailgun.",
       "args": {
-        "title": "Créer un http_signing_key",
+        "title": "Créer un élément — du compte — variante 3",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17155,8 +17155,8 @@
       "key": "mailgun_import_tag_post_v3_domainid_unsubscribes_import",
       "name": "mailgunImportTagPostV3DomainidUnsubscribesImport",
       "schemaVersion": 2,
-      "title": "Étiqueter un import",
-      "subtitle": "imports",
+      "title": "Étiqueter un élément",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -17187,9 +17187,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action tag sur import.",
+      "description": "Étiqueter un élément dans Mailgun.",
       "args": {
-        "title": "Étiqueter un import",
+        "title": "Étiqueter un élément",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17233,8 +17233,8 @@
       "key": "mailgun_import_create_post_v3_domainid_bounces_import",
       "name": "mailgunImportCreatePostV3DomainidBouncesImport",
       "schemaVersion": 2,
-      "title": "Créer un import",
-      "subtitle": "imports",
+      "title": "Créer un élément — variante 6",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -17265,9 +17265,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur import.",
+      "description": "Créer un élément dans Mailgun.",
       "args": {
-        "title": "Créer un import",
+        "title": "Créer un élément — variante 6",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17311,8 +17311,8 @@
       "key": "mailgun_import_create_post_v3_domainid_complaints_import",
       "name": "mailgunImportCreatePostV3DomainidComplaintsImport",
       "schemaVersion": 2,
-      "title": "Créer un import (2)",
-      "subtitle": "imports",
+      "title": "Créer un élément — variante 7",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -17343,9 +17343,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur import.",
+      "description": "Créer un élément dans Mailgun.",
       "args": {
-        "title": "Créer un import (2)",
+        "title": "Créer un élément — variante 7",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17389,8 +17389,8 @@
       "key": "mailgun_import_create_post_v3_domainid_whitelists_import",
       "name": "mailgunImportCreatePostV3DomainidWhitelistsImport",
       "schemaVersion": 2,
-      "title": "Créer un import (3)",
-      "subtitle": "imports",
+      "title": "Créer un élément — variante 8",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -17421,9 +17421,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur import.",
+      "description": "Créer un élément dans Mailgun.",
       "args": {
-        "title": "Créer un import (3)",
+        "title": "Créer un élément — variante 8",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17467,8 +17467,8 @@
       "key": "mailgun_limit_tag_get_v1_analytics_tags_limits",
       "name": "mailgunLimitTagGetV1AnalyticsTagsLimits",
       "schemaVersion": 2,
-      "title": "Étiqueter un limit",
-      "subtitle": "limits",
+      "title": "Étiqueter un limite",
+      "subtitle": "Limites",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -17499,9 +17499,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action tag sur limit.",
+      "description": "Étiqueter un limite dans Mailgun.",
       "args": {
-        "title": "Étiqueter un limit",
+        "title": "Étiqueter un limite",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17516,8 +17516,8 @@
       "key": "mailgun_limit_list_get_v1_thresholds_limits",
       "name": "mailgunLimitListGetV1ThresholdsLimits",
       "schemaVersion": 2,
-      "title": "Lister les limits",
-      "subtitle": "limits",
+      "title": "Lister des limites",
+      "subtitle": "Limites",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -17548,9 +17548,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur limit.",
+      "description": "Lister des limites dans Mailgun.",
       "args": {
-        "title": "Lister les limits",
+        "title": "Lister des limites",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17565,8 +17565,8 @@
       "key": "mailgun_limit_create_post_v1_thresholds_limits",
       "name": "mailgunLimitCreatePostV1ThresholdsLimits",
       "schemaVersion": 2,
-      "title": "Créer un limit",
-      "subtitle": "limits",
+      "title": "Créer un limite",
+      "subtitle": "Limites",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -17597,9 +17597,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur limit.",
+      "description": "Créer un limite dans Mailgun.",
       "args": {
-        "title": "Créer un limit",
+        "title": "Créer un limite",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17629,8 +17629,8 @@
       "key": "mailgun_limit_get_get_v1_thresholds_limits_name",
       "name": "mailgunLimitGetGetV1ThresholdsLimitsName",
       "schemaVersion": 2,
-      "title": "Récupérer un limit",
-      "subtitle": "limits",
+      "title": "Récupérer un limite",
+      "subtitle": "Limites",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
@@ -17661,9 +17661,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get sur limit.",
+      "description": "Récupérer un limite dans Mailgun.",
       "args": {
-        "title": "Récupérer un limit",
+        "title": "Récupérer un limite",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17693,8 +17693,8 @@
       "key": "mailgun_limit_update_put_v1_thresholds_limits_name",
       "name": "mailgunLimitUpdatePutV1ThresholdsLimitsName",
       "schemaVersion": 2,
-      "title": "Mettre à jour un limit",
-      "subtitle": "limits",
+      "title": "Mettre à jour un limite",
+      "subtitle": "Limites",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -17725,9 +17725,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update sur limit.",
+      "description": "Mettre à jour un limite dans Mailgun.",
       "args": {
-        "title": "Mettre à jour un limit",
+        "title": "Mettre à jour un limite",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17771,8 +17771,8 @@
       "key": "mailgun_limit_delete_delete_v1_thresholds_limits_name",
       "name": "mailgunLimitDeleteDeleteV1ThresholdsLimitsName",
       "schemaVersion": 2,
-      "title": "Supprimer un limit",
-      "subtitle": "limits",
+      "title": "Supprimer un limite",
+      "subtitle": "Limites",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -17803,9 +17803,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete sur limit.",
+      "description": "Supprimer un limite dans Mailgun.",
       "args": {
-        "title": "Supprimer un limit",
+        "title": "Supprimer un limite",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17835,8 +17835,8 @@
       "key": "mailgun_list_create_post_v3_lists",
       "name": "mailgunListCreatePostV3Lists",
       "schemaVersion": 2,
-      "title": "Créer un list",
-      "subtitle": "lists",
+      "title": "Créer une liste",
+      "subtitle": "Listes",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -17867,9 +17867,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur list.",
+      "description": "Créer une liste dans Mailgun.",
       "args": {
-        "title": "Créer un list",
+        "title": "Créer une liste",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17894,8 +17894,8 @@
       "key": "mailgun_list_list_get_v3_lists",
       "name": "mailgunListListGetV3Lists",
       "schemaVersion": 2,
-      "title": "Lister les lists",
-      "subtitle": "lists",
+      "title": "Lister des listes",
+      "subtitle": "Listes",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -17926,9 +17926,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur list.",
+      "description": "Lister des listes dans Mailgun.",
       "args": {
-        "title": "Lister les lists",
+        "title": "Lister des listes",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17971,8 +17971,8 @@
       "key": "mailgun_list_update_put_v3_lists_address",
       "name": "mailgunListUpdatePutV3ListsAddress",
       "schemaVersion": 2,
-      "title": "Mettre à jour un list",
-      "subtitle": "lists",
+      "title": "Mettre à jour une liste",
+      "subtitle": "Listes",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -18003,9 +18003,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update sur list.",
+      "description": "Mettre à jour une liste dans Mailgun.",
       "args": {
-        "title": "Mettre à jour un list",
+        "title": "Mettre à jour une liste",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -18044,8 +18044,8 @@
       "key": "mailgun_list_delete_delete_v3_lists_address",
       "name": "mailgunListDeleteDeleteV3ListsAddress",
       "schemaVersion": 2,
-      "title": "Supprimer un list",
-      "subtitle": "lists",
+      "title": "Supprimer une liste",
+      "subtitle": "Listes",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -18076,9 +18076,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete sur list.",
+      "description": "Supprimer une liste dans Mailgun.",
       "args": {
-        "title": "Supprimer un list",
+        "title": "Supprimer une liste",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -18108,8 +18108,8 @@
       "key": "mailgun_list_get_get_v3_lists_address",
       "name": "mailgunListGetGetV3ListsAddress",
       "schemaVersion": 2,
-      "title": "Récupérer un list",
-      "subtitle": "lists",
+      "title": "Récupérer une liste",
+      "subtitle": "Listes",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
@@ -18140,9 +18140,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get sur list.",
+      "description": "Récupérer une liste dans Mailgun.",
       "args": {
-        "title": "Récupérer un list",
+        "title": "Récupérer une liste",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -18172,8 +18172,8 @@
       "key": "mailgun_log_create_post_v1_analytics_logs",
       "name": "mailgunLogCreatePostV1AnalyticsLogs",
       "schemaVersion": 2,
-      "title": "Créer un log",
-      "subtitle": "logs",
+      "title": "Créer un journaux",
+      "subtitle": "Journaux",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -18204,9 +18204,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur log.",
+      "description": "Créer un journaux dans Mailgun.",
       "args": {
-        "title": "Créer un log",
+        "title": "Créer un journaux",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -18236,8 +18236,8 @@
       "key": "mailgun_match_list_get_v3_routes_match",
       "name": "mailgunMatchListGetV3RoutesMatch",
       "schemaVersion": 2,
-      "title": "Lister les matchs",
-      "subtitle": "matchs",
+      "title": "Lister des éléments — variante 6",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -18268,9 +18268,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur match.",
+      "description": "Lister des éléments dans Mailgun.",
       "args": {
-        "title": "Lister les matchs",
+        "title": "Lister des éléments — variante 6",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -18300,8 +18300,8 @@
       "key": "mailgun_me_list_get_v5_users_me",
       "name": "mailgunMeListGetV5UsersMe",
       "schemaVersion": 2,
-      "title": "Lister les mes",
-      "subtitle": "mes",
+      "title": "Lister des profil API",
+      "subtitle": "Profil API",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -18332,9 +18332,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur me.",
+      "description": "Lister des profil API dans Mailgun.",
       "args": {
-        "title": "Lister les mes",
+        "title": "Lister des profil API",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -18349,8 +18349,8 @@
       "key": "mailgun_member_list_get_lists_string_list_address_members",
       "name": "mailgunMemberListGetListsStringListAddressMembers",
       "schemaVersion": 2,
-      "title": "Lister les members",
-      "subtitle": "members",
+      "title": "Lister des membres",
+      "subtitle": "Membres",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -18381,9 +18381,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur member.",
+      "description": "Lister des membres dans Mailgun.",
       "args": {
-        "title": "Lister les members",
+        "title": "Lister des membres",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -18449,8 +18449,8 @@
       "key": "mailgun_member_create_post_lists_string_list_address_members",
       "name": "mailgunMemberCreatePostListsStringListAddressMembers",
       "schemaVersion": 2,
-      "title": "Créer un member",
-      "subtitle": "members",
+      "title": "Créer un membre",
+      "subtitle": "Membres",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -18481,9 +18481,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur member.",
+      "description": "Créer un membre dans Mailgun.",
       "args": {
-        "title": "Créer un member",
+        "title": "Créer un membre",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -18522,8 +18522,8 @@
       "key": "mailgun_member_get_get_lists_list_address_members_member_address",
       "name": "mailgunMemberGetGetListsListAddressMembersMemberAddress",
       "schemaVersion": 2,
-      "title": "Récupérer un member",
-      "subtitle": "members",
+      "title": "Récupérer un membre",
+      "subtitle": "Membres",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
@@ -18554,9 +18554,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get sur member.",
+      "description": "Récupérer un membre dans Mailgun.",
       "args": {
-        "title": "Récupérer un member",
+        "title": "Récupérer un membre",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -18600,8 +18600,8 @@
       "key": "mailgun_member_update_put_lists_list_address_members_member_address",
       "name": "mailgunMemberUpdatePutListsListAddressMembersMemberAddress",
       "schemaVersion": 2,
-      "title": "Mettre à jour un member",
-      "subtitle": "members",
+      "title": "Mettre à jour un membre",
+      "subtitle": "Membres",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -18632,9 +18632,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update sur member.",
+      "description": "Mettre à jour un membre dans Mailgun.",
       "args": {
-        "title": "Mettre à jour un member",
+        "title": "Mettre à jour un membre",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -18687,8 +18687,8 @@
       "key": "mailgun_member_delete_delete_lists_list_address_members_member_address",
       "name": "mailgunMemberDeleteDeleteListsListAddressMembersMemberAddress",
       "schemaVersion": 2,
-      "title": "Supprimer un member",
-      "subtitle": "members",
+      "title": "Supprimer un membre",
+      "subtitle": "Membres",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -18719,9 +18719,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete sur member.",
+      "description": "Supprimer un membre dans Mailgun.",
       "args": {
-        "title": "Supprimer un member",
+        "title": "Supprimer un membre",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -18765,8 +18765,8 @@
       "key": "mailgun_memberscsv_create_post_lists_list_address_members_csv",
       "name": "mailgunMemberscsvCreatePostListsListAddressMembersCsv",
       "schemaVersion": 2,
-      "title": "Créer un memberscsv",
-      "subtitle": "memberscsvs",
+      "title": "Créer un élément — variante 9",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -18797,9 +18797,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur memberscsv.",
+      "description": "Créer un élément dans Mailgun.",
       "args": {
-        "title": "Créer un memberscsv",
+        "title": "Créer un élément — variante 9",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -18838,8 +18838,8 @@
       "key": "mailgun_membersjson_create_post_lists_list_address_members_json",
       "name": "mailgunMembersjsonCreatePostListsListAddressMembersJson",
       "schemaVersion": 2,
-      "title": "Créer un membersjson",
-      "subtitle": "membersjsons",
+      "title": "Créer un élément — variante 10",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -18870,9 +18870,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur membersjson.",
+      "description": "Créer un élément dans Mailgun.",
       "args": {
-        "title": "Créer un membersjson",
+        "title": "Créer un élément — variante 10",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -18926,7 +18926,7 @@
       "name": "mailgunMessageSendPostV3DomainNameMessages",
       "schemaVersion": 2,
       "title": "Envoyer un message",
-      "subtitle": "messages",
+      "subtitle": "Messages",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -18957,7 +18957,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action send sur message.",
+      "description": "Envoyer un message dans Mailgun.",
       "args": {
         "title": "Envoyer un message",
         "ui": {
@@ -19004,7 +19004,7 @@
       "name": "mailgunMessageGetGetV3DomainsDomainNameMessagesStorageKey",
       "schemaVersion": 2,
       "title": "Récupérer un message",
-      "subtitle": "messages",
+      "subtitle": "Messages",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
@@ -19035,7 +19035,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get sur message.",
+      "description": "Récupérer un message dans Mailgun.",
       "args": {
         "title": "Récupérer un message",
         "ui": {
@@ -19082,7 +19082,7 @@
       "name": "mailgunMessageCreatePostV3DomainsDomainNameMessagesStorageKey",
       "schemaVersion": 2,
       "title": "Créer un message",
-      "subtitle": "messages",
+      "subtitle": "Messages",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -19113,7 +19113,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur message.",
+      "description": "Créer un message dans Mailgun.",
       "args": {
         "title": "Créer un message",
         "ui": {
@@ -19173,8 +19173,8 @@
       "key": "mailgun_messagesmime_send_post_v3_domain_name_messages_mime",
       "name": "mailgunMessagesmimeSendPostV3DomainNameMessagesMime",
       "schemaVersion": 2,
-      "title": "Envoyer un messagesmime",
-      "subtitle": "messagesmimes",
+      "title": "Envoyer un élément — du message",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -19205,9 +19205,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action send sur messagesmime.",
+      "description": "Envoyer un élément dans Mailgun.",
       "args": {
-        "title": "Envoyer un messagesmime",
+        "title": "Envoyer un élément — du message",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -19251,8 +19251,8 @@
       "key": "mailgun_metric_search_post_v1_analytics_metrics",
       "name": "mailgunMetricSearchPostV1AnalyticsMetrics",
       "schemaVersion": 2,
-      "title": "Rechercher des metrics",
-      "subtitle": "metrics",
+      "title": "Rechercher des métriques",
+      "subtitle": "Métriques",
       "icon": "fa-solid fa-magnifying-glass",
       "type": "function",
       "nodeKind": "function",
@@ -19283,9 +19283,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action search sur metric.",
+      "description": "Rechercher des métriques dans Mailgun.",
       "args": {
-        "title": "Rechercher des metrics",
+        "title": "Rechercher des métriques",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -19315,8 +19315,8 @@
       "key": "mailgun_metric_search_post_v1_analytics_usage_metrics",
       "name": "mailgunMetricSearchPostV1AnalyticsUsageMetrics",
       "schemaVersion": 2,
-      "title": "Rechercher des metrics (2)",
-      "subtitle": "metrics",
+      "title": "Rechercher des métriques — variante 2",
+      "subtitle": "Métriques",
       "icon": "fa-solid fa-magnifying-glass",
       "type": "function",
       "nodeKind": "function",
@@ -19347,9 +19347,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action search sur metric.",
+      "description": "Rechercher des métriques dans Mailgun.",
       "args": {
-        "title": "Rechercher des metrics (2)",
+        "title": "Rechercher des métriques — variante 2",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -19379,8 +19379,8 @@
       "key": "mailgun_metric_create_post_v2_bounce_classification_metrics",
       "name": "mailgunMetricCreatePostV2BounceClassificationMetrics",
       "schemaVersion": 2,
-      "title": "Créer un metric",
-      "subtitle": "metrics",
+      "title": "Créer un métrique",
+      "subtitle": "Métriques",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -19411,9 +19411,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur metric.",
+      "description": "Créer un métrique dans Mailgun.",
       "args": {
-        "title": "Créer un metric",
+        "title": "Créer un métrique",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -19443,8 +19443,8 @@
       "key": "mailgun_monthly_list_get_v5_accounts_subaccounts_subaccount_id_limit_custom_month",
       "name": "mailgunMonthlyListGetV5AccountsSubaccountsSubaccountIdLimitCustomMonth",
       "schemaVersion": 2,
-      "title": "Lister les monthlies",
-      "subtitle": "monthlies",
+      "title": "Lister des éléments — du compte — variante 2",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -19475,9 +19475,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur monthly.",
+      "description": "Lister des éléments dans Mailgun.",
       "args": {
-        "title": "Lister les monthlies",
+        "title": "Lister des éléments — du compte — variante 2",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -19507,8 +19507,8 @@
       "key": "mailgun_monthly_update_put_v5_accounts_subaccounts_subaccount_id_limit_custom_month",
       "name": "mailgunMonthlyUpdatePutV5AccountsSubaccountsSubaccountIdLimitCustomMonth",
       "schemaVersion": 2,
-      "title": "Mettre à jour un monthly",
-      "subtitle": "monthlies",
+      "title": "Mettre à jour un élément — du compte",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -19539,9 +19539,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update sur monthly.",
+      "description": "Mettre à jour un élément dans Mailgun.",
       "args": {
-        "title": "Mettre à jour un monthly",
+        "title": "Mettre à jour un élément — du compte",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -19585,8 +19585,8 @@
       "key": "mailgun_monthly_delete_delete_v5_accounts_subaccounts_subaccount_id_limit_custom_mo",
       "name": "mailgunMonthlyDeleteDeleteV5AccountsSubaccountsSubaccountIdLimitCustomMo",
       "schemaVersion": 2,
-      "title": "Supprimer un monthly",
-      "subtitle": "monthlies",
+      "title": "Supprimer un élément — du compte",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -19617,9 +19617,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete sur monthly.",
+      "description": "Supprimer un élément dans Mailgun.",
       "args": {
-        "title": "Supprimer un monthly",
+        "title": "Supprimer un élément — du compte",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -19649,8 +19649,8 @@
       "key": "mailgun_monthly_list_get_v5_accounts_limit_custom_monthly",
       "name": "mailgunMonthlyListGetV5AccountsLimitCustomMonthly",
       "schemaVersion": 2,
-      "title": "Lister les monthlies (2)",
-      "subtitle": "monthlies",
+      "title": "Lister des éléments — du compte — variante 3",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -19681,9 +19681,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur monthly.",
+      "description": "Lister des éléments dans Mailgun.",
       "args": {
-        "title": "Lister les monthlies (2)",
+        "title": "Lister des éléments — du compte — variante 3",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -19698,8 +19698,8 @@
       "key": "mailgun_monthly_update_put_v5_accounts_limit_custom_monthly",
       "name": "mailgunMonthlyUpdatePutV5AccountsLimitCustomMonthly",
       "schemaVersion": 2,
-      "title": "Mettre à jour un monthly (2)",
-      "subtitle": "monthlies",
+      "title": "Mettre à jour un élément — du compte — variante 2",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -19730,9 +19730,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update sur monthly.",
+      "description": "Mettre à jour un élément dans Mailgun.",
       "args": {
-        "title": "Mettre à jour un monthly (2)",
+        "title": "Mettre à jour un élément — du compte — variante 2",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -19762,8 +19762,8 @@
       "key": "mailgun_monthly_delete_delete_v5_accounts_limit_custom_monthly",
       "name": "mailgunMonthlyDeleteDeleteV5AccountsLimitCustomMonthly",
       "schemaVersion": 2,
-      "title": "Supprimer un monthly (2)",
-      "subtitle": "monthlies",
+      "title": "Supprimer un élément — du compte — variante 2",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -19794,9 +19794,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete sur monthly.",
+      "description": "Supprimer un élément dans Mailgun.",
       "args": {
-        "title": "Supprimer un monthly (2)",
+        "title": "Supprimer un élément — du compte — variante 2",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -19811,8 +19811,8 @@
       "key": "mailgun_override_update_put_v1_dynamic_pools_domains_name_override",
       "name": "mailgunOverrideUpdatePutV1DynamicPoolsDomainsNameOverride",
       "schemaVersion": 2,
-      "title": "Mettre à jour un override",
-      "subtitle": "overrides",
+      "title": "Mettre à jour un élément — variante 9",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -19843,9 +19843,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update sur override.",
+      "description": "Mettre à jour un élément dans Mailgun.",
       "args": {
-        "title": "Mettre à jour un override",
+        "title": "Mettre à jour un élément — variante 9",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -19889,8 +19889,8 @@
       "key": "mailgun_override_delete_delete_v1_dynamic_pools_domains_name_override",
       "name": "mailgunOverrideDeleteDeleteV1DynamicPoolsDomainsNameOverride",
       "schemaVersion": 2,
-      "title": "Supprimer un override",
-      "subtitle": "overrides",
+      "title": "Supprimer un élément — variante 6",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -19921,9 +19921,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete sur override.",
+      "description": "Supprimer un élément dans Mailgun.",
       "args": {
-        "title": "Supprimer un override",
+        "title": "Supprimer un élément — variante 6",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -19953,8 +19953,8 @@
       "key": "mailgun_page_list_get_v3_lists_pages",
       "name": "mailgunPageListGetV3ListsPages",
       "schemaVersion": 2,
-      "title": "Lister les pages",
-      "subtitle": "pages",
+      "title": "Lister des éléments — variante 7",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -19985,9 +19985,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur page.",
+      "description": "Lister des éléments dans Mailgun.",
       "args": {
-        "title": "Lister les pages",
+        "title": "Lister des éléments — variante 7",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -20012,8 +20012,8 @@
       "key": "mailgun_page_list_get_lists_list_address_members_pages",
       "name": "mailgunPageListGetListsListAddressMembersPages",
       "schemaVersion": 2,
-      "title": "Lister les pages (2)",
-      "subtitle": "pages",
+      "title": "Lister des éléments — variante 8",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -20044,9 +20044,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur page.",
+      "description": "Lister des éléments dans Mailgun.",
       "args": {
-        "title": "Lister les pages (2)",
+        "title": "Lister des éléments — variante 8",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -20112,8 +20112,8 @@
       "key": "mailgun_pool_search_delete_v3_domains_name_pool_ip",
       "name": "mailgunPoolSearchDeleteV3DomainsNamePoolIp",
       "schemaVersion": 2,
-      "title": "Rechercher des pools",
-      "subtitle": "pools",
+      "title": "Rechercher des éléments — variante 4",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-magnifying-glass",
       "type": "function",
       "nodeKind": "function",
@@ -20144,9 +20144,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action search sur pool.",
+      "description": "Rechercher des éléments dans Mailgun.",
       "args": {
-        "title": "Rechercher des pools",
+        "title": "Rechercher des éléments — variante 4",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -20199,8 +20199,8 @@
       "key": "mailgun_preview_list_get_v1_dynamic_pools_domains_name_preview",
       "name": "mailgunPreviewListGetV1DynamicPoolsDomainsNamePreview",
       "schemaVersion": 2,
-      "title": "Lister les previews",
-      "subtitle": "previews",
+      "title": "Lister des aperçus",
+      "subtitle": "Aperçus",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -20231,9 +20231,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur preview.",
+      "description": "Lister des aperçus dans Mailgun.",
       "args": {
-        "title": "Lister les previews",
+        "title": "Lister des aperçus",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -20263,8 +20263,8 @@
       "key": "mailgun_rename_update_put_v3_domain_name_templates_template_name_rename_new_templa",
       "name": "mailgunRenameUpdatePutV3DomainNameTemplatesTemplateNameRenameNewTempla",
       "schemaVersion": 2,
-      "title": "Mettre à jour un rename",
-      "subtitle": "renames",
+      "title": "Mettre à jour un élément — variante 10",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -20295,9 +20295,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update sur rename.",
+      "description": "Mettre à jour un élément dans Mailgun.",
       "args": {
-        "title": "Mettre à jour un rename",
+        "title": "Mettre à jour un élément — variante 10",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -20355,8 +20355,8 @@
       "key": "mailgun_rename_update_put_v4_templates_template_name_rename_new_template_name",
       "name": "mailgunRenameUpdatePutV4TemplatesTemplateNameRenameNewTemplateName",
       "schemaVersion": 2,
-      "title": "Mettre à jour un rename (2)",
-      "subtitle": "renames",
+      "title": "Mettre à jour un élément — variante 11",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -20387,9 +20387,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update sur rename.",
+      "description": "Mettre à jour un élément dans Mailgun.",
       "args": {
-        "title": "Mettre à jour un rename (2)",
+        "title": "Mettre à jour un élément — variante 11",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -20433,8 +20433,8 @@
       "key": "mailgun_resend_activation_email_create_post_v5_accounts_resend_activation_email",
       "name": "mailgunResendActivationEmailCreatePostV5AccountsResendActivationEmail",
       "schemaVersion": 2,
-      "title": "Créer un resend_activation_email",
-      "subtitle": "resend_activation_emails",
+      "title": "Créer un élément — du compte — variante 4",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -20465,9 +20465,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur resend_activation_email.",
+      "description": "Créer un élément dans Mailgun.",
       "args": {
-        "title": "Créer un resend_activation_email",
+        "title": "Créer un élément — du compte — variante 4",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -20492,8 +20492,8 @@
       "key": "mailgun_rotate_trigger_post_v1_dkim_management_domains_name_rotate",
       "name": "mailgunRotateTriggerPostV1DkimManagementDomainsNameRotate",
       "schemaVersion": 2,
-      "title": "Déclencher un rotate",
-      "subtitle": "rotates",
+      "title": "Déclencher un élément",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -20524,9 +20524,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action trigger sur rotate.",
+      "description": "Déclencher un élément dans Mailgun.",
       "args": {
-        "title": "Déclencher un rotate",
+        "title": "Déclencher un élément",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -20556,8 +20556,8 @@
       "key": "mailgun_rotation_update_put_v1_dkim_management_domains_name_rotation",
       "name": "mailgunRotationUpdatePutV1DkimManagementDomainsNameRotation",
       "schemaVersion": 2,
-      "title": "Mettre à jour un rotation",
-      "subtitle": "rotations",
+      "title": "Mettre à jour un élément — variante 12",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -20588,9 +20588,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update sur rotation.",
+      "description": "Mettre à jour un élément dans Mailgun.",
       "args": {
-        "title": "Mettre à jour un rotation",
+        "title": "Mettre à jour un élément — variante 12",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -20635,7 +20635,7 @@
       "name": "mailgunRouteCreatePostV3Routes",
       "schemaVersion": 2,
       "title": "Créer un route",
-      "subtitle": "routes",
+      "subtitle": "Routes",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -20666,7 +20666,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur route.",
+      "description": "Créer un route dans Mailgun.",
       "args": {
         "title": "Créer un route",
         "ui": {
@@ -20693,8 +20693,8 @@
       "key": "mailgun_route_list_get_v3_routes",
       "name": "mailgunRouteListGetV3Routes",
       "schemaVersion": 2,
-      "title": "Lister les routes",
-      "subtitle": "routes",
+      "title": "Lister des routes",
+      "subtitle": "Routes",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -20725,9 +20725,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur route.",
+      "description": "Lister des routes dans Mailgun.",
       "args": {
-        "title": "Lister les routes",
+        "title": "Lister des routes",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -20762,7 +20762,7 @@
       "name": "mailgunRouteGetGetV3RoutesId",
       "schemaVersion": 2,
       "title": "Récupérer un route",
-      "subtitle": "routes",
+      "subtitle": "Routes",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
@@ -20793,7 +20793,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get sur route.",
+      "description": "Récupérer un route dans Mailgun.",
       "args": {
         "title": "Récupérer un route",
         "ui": {
@@ -20826,7 +20826,7 @@
       "name": "mailgunRouteUpdatePutV3RoutesId",
       "schemaVersion": 2,
       "title": "Mettre à jour un route",
-      "subtitle": "routes",
+      "subtitle": "Routes",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -20857,7 +20857,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update sur route.",
+      "description": "Mettre à jour un route dans Mailgun.",
       "args": {
         "title": "Mettre à jour un route",
         "ui": {
@@ -20899,7 +20899,7 @@
       "name": "mailgunRouteDeleteDeleteV3RoutesId",
       "schemaVersion": 2,
       "title": "Supprimer un route",
-      "subtitle": "routes",
+      "subtitle": "Routes",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -20930,7 +20930,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete sur route.",
+      "description": "Supprimer un route dans Mailgun.",
       "args": {
         "title": "Supprimer un route",
         "ui": {
@@ -20962,8 +20962,8 @@
       "key": "mailgun_sending_queue_list_get_v3_domains_name_sending_queues",
       "name": "mailgunSendingQueueListGetV3DomainsNameSendingQueues",
       "schemaVersion": 2,
-      "title": "Lister les sending_queues",
-      "subtitle": "sending_queues",
+      "title": "Lister des éléments — de la file",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -20994,9 +20994,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur sending_queue.",
+      "description": "Lister des éléments dans Mailgun.",
       "args": {
-        "title": "Lister les sending_queues",
+        "title": "Lister des éléments — de la file",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -21026,8 +21026,8 @@
       "key": "mailgun_setting_list_get_v1_alerts_settings",
       "name": "mailgunSettingListGetV1AlertsSettings",
       "schemaVersion": 2,
-      "title": "Lister les settings",
-      "subtitle": "settings",
+      "title": "Lister des paramètres",
+      "subtitle": "Paramètres",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -21058,9 +21058,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur setting.",
+      "description": "Lister des paramètres dans Mailgun.",
       "args": {
-        "title": "Lister les settings",
+        "title": "Lister des paramètres",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -21075,8 +21075,8 @@
       "key": "mailgun_signing_key_update_put_v1_alerts_settings_webhooks_signing_key",
       "name": "mailgunSigningKeyUpdatePutV1AlertsSettingsWebhooksSigningKey",
       "schemaVersion": 2,
-      "title": "Mettre à jour un signing_key",
-      "subtitle": "signing_keies",
+      "title": "Mettre à jour un élément — du webhook",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -21107,9 +21107,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update sur signing_key.",
+      "description": "Mettre à jour un élément dans Mailgun.",
       "args": {
-        "title": "Mettre à jour un signing_key",
+        "title": "Mettre à jour un élément — du webhook",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -21134,8 +21134,8 @@
       "key": "mailgun_slack_update_put_v1_alerts_settings_slack",
       "name": "mailgunSlackUpdatePutV1AlertsSettingsSlack",
       "schemaVersion": 2,
-      "title": "Mettre à jour un slack",
-      "subtitle": "slacks",
+      "title": "Mettre à jour un élément — variante 13",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -21166,9 +21166,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update sur slack.",
+      "description": "Mettre à jour un élément dans Mailgun.",
       "args": {
-        "title": "Mettre à jour un slack",
+        "title": "Mettre à jour un élément — variante 13",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -21198,8 +21198,8 @@
       "key": "mailgun_slack_delete_delete_v1_alerts_settings_slack",
       "name": "mailgunSlackDeleteDeleteV1AlertsSettingsSlack",
       "schemaVersion": 2,
-      "title": "Supprimer un slack",
-      "subtitle": "slacks",
+      "title": "Supprimer un élément — variante 7",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -21230,9 +21230,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete sur slack.",
+      "description": "Supprimer un élément dans Mailgun.",
       "args": {
-        "title": "Supprimer un slack",
+        "title": "Supprimer un élément — variante 7",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -21247,8 +21247,8 @@
       "key": "mailgun_statu_list_get_v2_x509_domain_status",
       "name": "mailgunStatuListGetV2X509DomainStatus",
       "schemaVersion": 2,
-      "title": "Lister les status",
-      "subtitle": "status",
+      "title": "Lister des statut",
+      "subtitle": "Statut",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -21279,9 +21279,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur statu.",
+      "description": "Lister des statut dans Mailgun.",
       "args": {
-        "title": "Lister les status",
+        "title": "Lister des statut",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -21311,8 +21311,8 @@
       "key": "mailgun_subaccount_get_get_v5_accounts_subaccounts_subaccount_id",
       "name": "mailgunSubaccountGetGetV5AccountsSubaccountsSubaccountId",
       "schemaVersion": 2,
-      "title": "Récupérer un subaccount",
-      "subtitle": "subaccounts",
+      "title": "Récupérer un sous-compte",
+      "subtitle": "Sous-comptes",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
@@ -21343,9 +21343,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get sur subaccount.",
+      "description": "Récupérer un sous-compte dans Mailgun.",
       "args": {
-        "title": "Récupérer un subaccount",
+        "title": "Récupérer un sous-compte",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -21375,8 +21375,8 @@
       "key": "mailgun_subaccount_list_get_v5_accounts_subaccounts",
       "name": "mailgunSubaccountListGetV5AccountsSubaccounts",
       "schemaVersion": 2,
-      "title": "Lister les subaccounts",
-      "subtitle": "subaccounts",
+      "title": "Lister des sous-comptes",
+      "subtitle": "Sous-comptes",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -21407,9 +21407,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur subaccount.",
+      "description": "Lister des sous-comptes dans Mailgun.",
       "args": {
-        "title": "Lister les subaccounts",
+        "title": "Lister des sous-comptes",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -21479,8 +21479,8 @@
       "key": "mailgun_subaccount_create_post_v5_accounts_subaccounts",
       "name": "mailgunSubaccountCreatePostV5AccountsSubaccounts",
       "schemaVersion": 2,
-      "title": "Créer un subaccount",
-      "subtitle": "subaccounts",
+      "title": "Créer un sous-compte",
+      "subtitle": "Sous-comptes",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -21511,9 +21511,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur subaccount.",
+      "description": "Créer un sous-compte dans Mailgun.",
       "args": {
-        "title": "Créer un subaccount",
+        "title": "Créer un sous-compte",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -21543,8 +21543,8 @@
       "key": "mailgun_subaccount_delete_delete_v5_accounts_subaccounts_subaccount_id",
       "name": "mailgunSubaccountDeleteDeleteV5AccountsSubaccountsSubaccountId",
       "schemaVersion": 2,
-      "title": "Supprimer un subaccount",
-      "subtitle": "subaccounts",
+      "title": "Supprimer un sous-compte",
+      "subtitle": "Sous-comptes",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -21575,9 +21575,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete sur subaccount.",
+      "description": "Supprimer un sous-compte dans Mailgun.",
       "args": {
-        "title": "Supprimer un subaccount",
+        "title": "Supprimer un sous-compte",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -21592,8 +21592,8 @@
       "key": "mailgun_template_list_get_v3_domain_name_templates",
       "name": "mailgunTemplateListGetV3DomainNameTemplates",
       "schemaVersion": 2,
-      "title": "Lister les templates",
-      "subtitle": "templates",
+      "title": "Lister des modèles",
+      "subtitle": "Modèles",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -21624,9 +21624,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur template.",
+      "description": "Lister des modèles dans Mailgun.",
       "args": {
-        "title": "Lister les templates",
+        "title": "Lister des modèles",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -21683,8 +21683,8 @@
       "key": "mailgun_template_create_post_v3_domain_name_templates",
       "name": "mailgunTemplateCreatePostV3DomainNameTemplates",
       "schemaVersion": 2,
-      "title": "Créer un template",
-      "subtitle": "templates",
+      "title": "Créer un modèle",
+      "subtitle": "Modèles",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -21715,9 +21715,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur template.",
+      "description": "Créer un modèle dans Mailgun.",
       "args": {
-        "title": "Créer un template",
+        "title": "Créer un modèle",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -21761,8 +21761,8 @@
       "key": "mailgun_template_delete_delete_v3_domain_name_templates",
       "name": "mailgunTemplateDeleteDeleteV3DomainNameTemplates",
       "schemaVersion": 2,
-      "title": "Supprimer un template",
-      "subtitle": "templates",
+      "title": "Supprimer un modèle",
+      "subtitle": "Modèles",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -21793,9 +21793,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete sur template.",
+      "description": "Supprimer un modèle dans Mailgun.",
       "args": {
-        "title": "Supprimer un template",
+        "title": "Supprimer un modèle",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -21825,8 +21825,8 @@
       "key": "mailgun_template_get_get_v3_domain_name_templates_template_name",
       "name": "mailgunTemplateGetGetV3DomainNameTemplatesTemplateName",
       "schemaVersion": 2,
-      "title": "Récupérer un template",
-      "subtitle": "templates",
+      "title": "Récupérer un modèle",
+      "subtitle": "Modèles",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
@@ -21857,9 +21857,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get sur template.",
+      "description": "Récupérer un modèle dans Mailgun.",
       "args": {
-        "title": "Récupérer un template",
+        "title": "Récupérer un modèle",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -21912,8 +21912,8 @@
       "key": "mailgun_template_update_put_v3_domain_name_templates_template_name",
       "name": "mailgunTemplateUpdatePutV3DomainNameTemplatesTemplateName",
       "schemaVersion": 2,
-      "title": "Mettre à jour un template",
-      "subtitle": "templates",
+      "title": "Mettre à jour un modèle",
+      "subtitle": "Modèles",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -21944,9 +21944,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update sur template.",
+      "description": "Mettre à jour un modèle dans Mailgun.",
       "args": {
-        "title": "Mettre à jour un template",
+        "title": "Mettre à jour un modèle",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -22004,8 +22004,8 @@
       "key": "mailgun_template_delete_delete_v3_domain_name_templates_template_name",
       "name": "mailgunTemplateDeleteDeleteV3DomainNameTemplatesTemplateName",
       "schemaVersion": 2,
-      "title": "Supprimer un template (2)",
-      "subtitle": "templates",
+      "title": "Supprimer un modèle — variante 2",
+      "subtitle": "Modèles",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -22036,9 +22036,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete sur template.",
+      "description": "Supprimer un modèle dans Mailgun.",
       "args": {
-        "title": "Supprimer un template (2)",
+        "title": "Supprimer un modèle — variante 2",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -22082,8 +22082,8 @@
       "key": "mailgun_template_list_get_v4_templates",
       "name": "mailgunTemplateListGetV4Templates",
       "schemaVersion": 2,
-      "title": "Lister les templates (2)",
-      "subtitle": "templates",
+      "title": "Lister des modèles — variante 2",
+      "subtitle": "Modèles",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -22114,9 +22114,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur template.",
+      "description": "Lister des modèles dans Mailgun.",
       "args": {
-        "title": "Lister les templates (2)",
+        "title": "Lister des modèles — variante 2",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -22159,8 +22159,8 @@
       "key": "mailgun_template_create_post_v4_templates",
       "name": "mailgunTemplateCreatePostV4Templates",
       "schemaVersion": 2,
-      "title": "Créer un template (2)",
-      "subtitle": "templates",
+      "title": "Créer un modèle — variante 2",
+      "subtitle": "Modèles",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -22191,9 +22191,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur template.",
+      "description": "Créer un modèle dans Mailgun.",
       "args": {
-        "title": "Créer un template (2)",
+        "title": "Créer un modèle — variante 2",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -22223,8 +22223,8 @@
       "key": "mailgun_template_delete_delete_v4_templates",
       "name": "mailgunTemplateDeleteDeleteV4Templates",
       "schemaVersion": 2,
-      "title": "Supprimer un template (3)",
-      "subtitle": "templates",
+      "title": "Supprimer un modèle — variante 3",
+      "subtitle": "Modèles",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -22255,9 +22255,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete sur template.",
+      "description": "Supprimer un modèle dans Mailgun.",
       "args": {
-        "title": "Supprimer un template (3)",
+        "title": "Supprimer un modèle — variante 3",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -22272,8 +22272,8 @@
       "key": "mailgun_template_get_get_v4_templates_template_name",
       "name": "mailgunTemplateGetGetV4TemplatesTemplateName",
       "schemaVersion": 2,
-      "title": "Récupérer un template (2)",
-      "subtitle": "templates",
+      "title": "Récupérer un modèle — variante 2",
+      "subtitle": "Modèles",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
@@ -22304,9 +22304,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get sur template.",
+      "description": "Récupérer un modèle dans Mailgun.",
       "args": {
-        "title": "Récupérer un template (2)",
+        "title": "Récupérer un modèle — variante 2",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -22345,8 +22345,8 @@
       "key": "mailgun_template_update_put_v4_templates_template_name",
       "name": "mailgunTemplateUpdatePutV4TemplatesTemplateName",
       "schemaVersion": 2,
-      "title": "Mettre à jour un template (2)",
-      "subtitle": "templates",
+      "title": "Mettre à jour un modèle — variante 2",
+      "subtitle": "Modèles",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -22377,9 +22377,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update sur template.",
+      "description": "Mettre à jour un modèle dans Mailgun.",
       "args": {
-        "title": "Mettre à jour un template (2)",
+        "title": "Mettre à jour un modèle — variante 2",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -22423,8 +22423,8 @@
       "key": "mailgun_template_delete_delete_v4_templates_template_name",
       "name": "mailgunTemplateDeleteDeleteV4TemplatesTemplateName",
       "schemaVersion": 2,
-      "title": "Supprimer un template (4)",
-      "subtitle": "templates",
+      "title": "Supprimer un modèle — variante 4",
+      "subtitle": "Modèles",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -22455,9 +22455,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete sur template.",
+      "description": "Supprimer un modèle dans Mailgun.",
       "args": {
-        "title": "Supprimer un template (4)",
+        "title": "Supprimer un modèle — variante 4",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -22487,8 +22487,8 @@
       "key": "mailgun_test_create_post_v1_alerts_webhooks_test",
       "name": "mailgunTestCreatePostV1AlertsWebhooksTest",
       "schemaVersion": 2,
-      "title": "Créer un test",
-      "subtitle": "tests",
+      "title": "Créer un élément — du webhook",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -22519,9 +22519,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur test.",
+      "description": "Créer un élément dans Mailgun.",
       "args": {
-        "title": "Créer un test",
+        "title": "Créer un élément — du webhook",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -22551,8 +22551,8 @@
       "key": "mailgun_test_create_post_v1_alerts_email_test",
       "name": "mailgunTestCreatePostV1AlertsEmailTest",
       "schemaVersion": 2,
-      "title": "Créer un test (2)",
-      "subtitle": "tests",
+      "title": "Créer un élément — variante 11",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -22583,9 +22583,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur test.",
+      "description": "Créer un élément dans Mailgun.",
       "args": {
-        "title": "Créer un test (2)",
+        "title": "Créer un élément — variante 11",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -22615,8 +22615,8 @@
       "key": "mailgun_test_create_post_v1_alerts_slack_test",
       "name": "mailgunTestCreatePostV1AlertsSlackTest",
       "schemaVersion": 2,
-      "title": "Créer un test (3)",
-      "subtitle": "tests",
+      "title": "Créer un élément — variante 12",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -22647,9 +22647,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur test.",
+      "description": "Créer un élément dans Mailgun.",
       "args": {
-        "title": "Créer un test (3)",
+        "title": "Créer un élément — variante 12",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -22679,8 +22679,8 @@
       "key": "mailgun_unsubscribe_search_get_v3_domainid_unsubscribes_address",
       "name": "mailgunUnsubscribeSearchGetV3DomainidUnsubscribesAddress",
       "schemaVersion": 2,
-      "title": "Rechercher des unsubscribes",
-      "subtitle": "unsubscribes",
+      "title": "Rechercher des éléments — variante 5",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-magnifying-glass",
       "type": "function",
       "nodeKind": "function",
@@ -22711,9 +22711,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action search sur unsubscribe.",
+      "description": "Rechercher des éléments dans Mailgun.",
       "args": {
-        "title": "Rechercher des unsubscribes",
+        "title": "Rechercher des éléments — variante 5",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -22757,8 +22757,8 @@
       "key": "mailgun_unsubscribe_delete_delete_v3_domainid_unsubscribes_address",
       "name": "mailgunUnsubscribeDeleteDeleteV3DomainidUnsubscribesAddress",
       "schemaVersion": 2,
-      "title": "Supprimer un unsubscribe",
-      "subtitle": "unsubscribes",
+      "title": "Supprimer un élément — variante 8",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -22789,9 +22789,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete sur unsubscribe.",
+      "description": "Supprimer un élément dans Mailgun.",
       "args": {
-        "title": "Supprimer un unsubscribe",
+        "title": "Supprimer un élément — variante 8",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -22835,8 +22835,8 @@
       "key": "mailgun_unsubscribe_list_get_v3_domainid_unsubscribes",
       "name": "mailgunUnsubscribeListGetV3DomainidUnsubscribes",
       "schemaVersion": 2,
-      "title": "Lister les unsubscribes",
-      "subtitle": "unsubscribes",
+      "title": "Lister des éléments — variante 9",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -22867,9 +22867,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur unsubscribe.",
+      "description": "Lister des éléments dans Mailgun.",
       "args": {
-        "title": "Lister les unsubscribes",
+        "title": "Lister des éléments — variante 9",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -22945,8 +22945,8 @@
       "key": "mailgun_unsubscribe_create_post_v3_domainid_unsubscribes",
       "name": "mailgunUnsubscribeCreatePostV3DomainidUnsubscribes",
       "schemaVersion": 2,
-      "title": "Créer un unsubscribe",
-      "subtitle": "unsubscribes",
+      "title": "Créer un élément — variante 13",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -22977,9 +22977,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur unsubscribe.",
+      "description": "Créer un élément dans Mailgun.",
       "args": {
-        "title": "Créer un unsubscribe",
+        "title": "Créer un élément — variante 13",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -23023,8 +23023,8 @@
       "key": "mailgun_unsubscribe_delete_delete_v3_domainid_unsubscribes",
       "name": "mailgunUnsubscribeDeleteDeleteV3DomainidUnsubscribes",
       "schemaVersion": 2,
-      "title": "Supprimer un unsubscribe (2)",
-      "subtitle": "unsubscribes",
+      "title": "Supprimer un élément — variante 9",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -23055,9 +23055,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete sur unsubscribe.",
+      "description": "Supprimer un élément dans Mailgun.",
       "args": {
-        "title": "Supprimer un unsubscribe (2)",
+        "title": "Supprimer un élément — variante 9",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -23087,8 +23087,8 @@
       "key": "mailgun_user_list_get_v5_users",
       "name": "mailgunUserListGetV5Users",
       "schemaVersion": 2,
-      "title": "Lister les users",
-      "subtitle": "users",
+      "title": "Lister des utilisateurs",
+      "subtitle": "Utilisateurs",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -23119,9 +23119,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur user.",
+      "description": "Lister des utilisateurs dans Mailgun.",
       "args": {
-        "title": "Lister les users",
+        "title": "Lister des utilisateurs",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -23164,8 +23164,8 @@
       "key": "mailgun_user_get_get_v5_users_user_id",
       "name": "mailgunUserGetGetV5UsersUserId",
       "schemaVersion": 2,
-      "title": "Récupérer un user",
-      "subtitle": "users",
+      "title": "Récupérer un utilisateur",
+      "subtitle": "Utilisateurs",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
@@ -23196,9 +23196,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get sur user.",
+      "description": "Récupérer un utilisateur dans Mailgun.",
       "args": {
-        "title": "Récupérer un user",
+        "title": "Récupérer un utilisateur",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -23228,8 +23228,8 @@
       "key": "mailgun_verify_send_put_v4_domains_name_verify",
       "name": "mailgunVerifySendPutV4DomainsNameVerify",
       "schemaVersion": 2,
-      "title": "Envoyer un verify",
-      "subtitle": "verifies",
+      "title": "Envoyer un élément",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -23260,9 +23260,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action send sur verify.",
+      "description": "Envoyer un élément dans Mailgun.",
       "args": {
-        "title": "Envoyer un verify",
+        "title": "Envoyer un élément",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -23292,8 +23292,8 @@
       "key": "mailgun_version_list_get_v3_domain_name_templates_template_name_versions",
       "name": "mailgunVersionListGetV3DomainNameTemplatesTemplateNameVersions",
       "schemaVersion": 2,
-      "title": "Lister les versions",
-      "subtitle": "versions",
+      "title": "Lister des versions",
+      "subtitle": "Versions",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -23324,9 +23324,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur version.",
+      "description": "Lister des versions dans Mailgun.",
       "args": {
-        "title": "Lister les versions",
+        "title": "Lister des versions",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -23397,8 +23397,8 @@
       "key": "mailgun_version_create_post_v3_domain_name_templates_template_name_versions",
       "name": "mailgunVersionCreatePostV3DomainNameTemplatesTemplateNameVersions",
       "schemaVersion": 2,
-      "title": "Créer un version",
-      "subtitle": "versions",
+      "title": "Créer une version",
+      "subtitle": "Versions",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -23429,9 +23429,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur version.",
+      "description": "Créer une version dans Mailgun.",
       "args": {
-        "title": "Créer un version",
+        "title": "Créer une version",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -23489,8 +23489,8 @@
       "key": "mailgun_version_get_get_v3_domain_name_templates_template_name_versions_version",
       "name": "mailgunVersionGetGetV3DomainNameTemplatesTemplateNameVersionsVersion",
       "schemaVersion": 2,
-      "title": "Récupérer un version",
-      "subtitle": "versions",
+      "title": "Récupérer une version",
+      "subtitle": "Versions",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
@@ -23521,9 +23521,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get sur version.",
+      "description": "Récupérer une version dans Mailgun.",
       "args": {
-        "title": "Récupérer un version",
+        "title": "Récupérer une version",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -23581,8 +23581,8 @@
       "key": "mailgun_version_update_put_v3_domain_name_templates_template_name_versions_version",
       "name": "mailgunVersionUpdatePutV3DomainNameTemplatesTemplateNameVersionsVersion",
       "schemaVersion": 2,
-      "title": "Mettre à jour un version",
-      "subtitle": "versions",
+      "title": "Mettre à jour une version",
+      "subtitle": "Versions",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -23613,9 +23613,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update sur version.",
+      "description": "Mettre à jour une version dans Mailgun.",
       "args": {
-        "title": "Mettre à jour un version",
+        "title": "Mettre à jour une version",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -23687,8 +23687,8 @@
       "key": "mailgun_version_delete_delete_v3_domain_name_templates_template_name_versions_versi",
       "name": "mailgunVersionDeleteDeleteV3DomainNameTemplatesTemplateNameVersionsVersi",
       "schemaVersion": 2,
-      "title": "Supprimer un version",
-      "subtitle": "versions",
+      "title": "Supprimer une version",
+      "subtitle": "Versions",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -23719,9 +23719,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete sur version.",
+      "description": "Supprimer une version dans Mailgun.",
       "args": {
-        "title": "Supprimer un version",
+        "title": "Supprimer une version",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -23779,8 +23779,8 @@
       "key": "mailgun_version_list_get_v4_templates_template_name_versions",
       "name": "mailgunVersionListGetV4TemplatesTemplateNameVersions",
       "schemaVersion": 2,
-      "title": "Lister les versions (2)",
-      "subtitle": "versions",
+      "title": "Lister des versions — variante 2",
+      "subtitle": "Versions",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -23811,9 +23811,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur version.",
+      "description": "Lister des versions dans Mailgun.",
       "args": {
-        "title": "Lister les versions (2)",
+        "title": "Lister des versions — variante 2",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -23870,8 +23870,8 @@
       "key": "mailgun_version_create_post_v4_templates_template_name_versions",
       "name": "mailgunVersionCreatePostV4TemplatesTemplateNameVersions",
       "schemaVersion": 2,
-      "title": "Créer un version (2)",
-      "subtitle": "versions",
+      "title": "Créer une version — variante 2",
+      "subtitle": "Versions",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -23902,9 +23902,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur version.",
+      "description": "Créer une version dans Mailgun.",
       "args": {
-        "title": "Créer un version (2)",
+        "title": "Créer une version — variante 2",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -23948,8 +23948,8 @@
       "key": "mailgun_version_get_get_v4_templates_template_name_versions_version_name",
       "name": "mailgunVersionGetGetV4TemplatesTemplateNameVersionsVersionName",
       "schemaVersion": 2,
-      "title": "Récupérer un version (2)",
-      "subtitle": "versions",
+      "title": "Récupérer une version — variante 2",
+      "subtitle": "Versions",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
@@ -23980,9 +23980,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get sur version.",
+      "description": "Récupérer une version dans Mailgun.",
       "args": {
-        "title": "Récupérer un version (2)",
+        "title": "Récupérer une version — variante 2",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -24026,8 +24026,8 @@
       "key": "mailgun_version_update_put_v4_templates_template_name_versions_version_name",
       "name": "mailgunVersionUpdatePutV4TemplatesTemplateNameVersionsVersionName",
       "schemaVersion": 2,
-      "title": "Mettre à jour un version (2)",
-      "subtitle": "versions",
+      "title": "Mettre à jour une version — variante 2",
+      "subtitle": "Versions",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -24058,9 +24058,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update sur version.",
+      "description": "Mettre à jour une version dans Mailgun.",
       "args": {
-        "title": "Mettre à jour un version (2)",
+        "title": "Mettre à jour une version — variante 2",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -24118,8 +24118,8 @@
       "key": "mailgun_version_delete_delete_v4_templates_template_name_versions_version_name",
       "name": "mailgunVersionDeleteDeleteV4TemplatesTemplateNameVersionsVersionName",
       "schemaVersion": 2,
-      "title": "Supprimer un version (2)",
-      "subtitle": "versions",
+      "title": "Supprimer une version — variante 2",
+      "subtitle": "Versions",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -24150,9 +24150,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete sur version.",
+      "description": "Supprimer une version dans Mailgun.",
       "args": {
-        "title": "Supprimer un version (2)",
+        "title": "Supprimer une version — variante 2",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -24196,8 +24196,8 @@
       "key": "mailgun_webhook_list_get_v1_webhooks",
       "name": "mailgunWebhookListGetV1Webhooks",
       "schemaVersion": 2,
-      "title": "Lister les webhooks",
-      "subtitle": "webhooks",
+      "title": "Lister des webhooks — du webhook",
+      "subtitle": "Webhooks",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -24228,9 +24228,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur webhook.",
+      "description": "Lister des webhooks dans Mailgun.",
       "args": {
-        "title": "Lister les webhooks",
+        "title": "Lister des webhooks — du webhook",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -24255,8 +24255,8 @@
       "key": "mailgun_webhook_webhook_post_v1_webhooks",
       "name": "mailgunWebhookWebhookPostV1Webhooks",
       "schemaVersion": 2,
-      "title": "Recevoir des webhooks webhooks",
-      "subtitle": "webhooks",
+      "title": "Publier un webhook",
+      "subtitle": "Webhooks",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -24287,9 +24287,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action webhook sur webhook.",
+      "description": "Publier un webhook dans Mailgun.",
       "args": {
-        "title": "Recevoir des webhooks webhooks",
+        "title": "Publier un webhook",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -24319,8 +24319,8 @@
       "key": "mailgun_webhook_webhook_delete_v1_webhooks",
       "name": "mailgunWebhookWebhookDeleteV1Webhooks",
       "schemaVersion": 2,
-      "title": "Recevoir des webhooks webhooks (2)",
-      "subtitle": "webhooks",
+      "title": "Supprimer un webhook — du webhook",
+      "subtitle": "Webhooks",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -24351,9 +24351,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action webhook sur webhook.",
+      "description": "Supprimer un webhook dans Mailgun.",
       "args": {
-        "title": "Recevoir des webhooks webhooks (2)",
+        "title": "Supprimer un webhook — du webhook",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -24387,8 +24387,8 @@
       "key": "mailgun_webhook_list_get_v1_webhooks_webhook_id",
       "name": "mailgunWebhookListGetV1WebhooksWebhookId",
       "schemaVersion": 2,
-      "title": "Lister les webhooks (2)",
-      "subtitle": "webhooks",
+      "title": "Lister des webhooks — du webhook — variante 2",
+      "subtitle": "Webhooks",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -24419,9 +24419,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur webhook.",
+      "description": "Lister des webhooks dans Mailgun.",
       "args": {
-        "title": "Lister les webhooks (2)",
+        "title": "Lister des webhooks — du webhook — variante 2",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -24451,8 +24451,8 @@
       "key": "mailgun_webhook_webhook_put_v1_webhooks_webhook_id",
       "name": "mailgunWebhookWebhookPutV1WebhooksWebhookId",
       "schemaVersion": 2,
-      "title": "Recevoir des webhooks webhooks (3)",
-      "subtitle": "webhooks",
+      "title": "Lister des webhooks — du webhook — variante 3",
+      "subtitle": "Webhooks",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -24483,9 +24483,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action webhook sur webhook.",
+      "description": "Lister des webhooks dans Mailgun.",
       "args": {
-        "title": "Recevoir des webhooks webhooks (3)",
+        "title": "Lister des webhooks — du webhook — variante 3",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -24529,8 +24529,8 @@
       "key": "mailgun_webhook_webhook_delete_v1_webhooks_webhook_id",
       "name": "mailgunWebhookWebhookDeleteV1WebhooksWebhookId",
       "schemaVersion": 2,
-      "title": "Recevoir des webhooks webhooks (4)",
-      "subtitle": "webhooks",
+      "title": "Supprimer un webhook — du webhook — variante 2",
+      "subtitle": "Webhooks",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -24561,9 +24561,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action webhook sur webhook.",
+      "description": "Supprimer un webhook dans Mailgun.",
       "args": {
-        "title": "Recevoir des webhooks webhooks (4)",
+        "title": "Supprimer un webhook — du webhook — variante 2",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -24593,8 +24593,8 @@
       "key": "mailgun_whitelist_search_get_v3_domainid_whitelists_value",
       "name": "mailgunWhitelistSearchGetV3DomainidWhitelistsValue",
       "schemaVersion": 2,
-      "title": "Rechercher des whitelists",
-      "subtitle": "whitelists",
+      "title": "Rechercher des éléments — variante 6",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-magnifying-glass",
       "type": "function",
       "nodeKind": "function",
@@ -24625,9 +24625,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action search sur whitelist.",
+      "description": "Rechercher des éléments dans Mailgun.",
       "args": {
-        "title": "Rechercher des whitelists",
+        "title": "Rechercher des éléments — variante 6",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -24671,8 +24671,8 @@
       "key": "mailgun_whitelist_delete_delete_v3_domainid_whitelists_value",
       "name": "mailgunWhitelistDeleteDeleteV3DomainidWhitelistsValue",
       "schemaVersion": 2,
-      "title": "Supprimer un whitelist",
-      "subtitle": "whitelists",
+      "title": "Supprimer un élément — variante 10",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -24703,9 +24703,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete sur whitelist.",
+      "description": "Supprimer un élément dans Mailgun.",
       "args": {
-        "title": "Supprimer un whitelist",
+        "title": "Supprimer un élément — variante 10",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -24749,8 +24749,8 @@
       "key": "mailgun_whitelist_list_get_v3_domainid_whitelists",
       "name": "mailgunWhitelistListGetV3DomainidWhitelists",
       "schemaVersion": 2,
-      "title": "Lister les whitelists",
-      "subtitle": "whitelists",
+      "title": "Lister des éléments — variante 10",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -24781,9 +24781,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur whitelist.",
+      "description": "Lister des éléments dans Mailgun.",
       "args": {
-        "title": "Lister les whitelists",
+        "title": "Lister des éléments — variante 10",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -24859,8 +24859,8 @@
       "key": "mailgun_whitelist_create_post_v3_domainid_whitelists",
       "name": "mailgunWhitelistCreatePostV3DomainidWhitelists",
       "schemaVersion": 2,
-      "title": "Créer un whitelist",
-      "subtitle": "whitelists",
+      "title": "Créer un élément — variante 14",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -24891,9 +24891,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur whitelist.",
+      "description": "Créer un élément dans Mailgun.",
       "args": {
-        "title": "Créer un whitelist",
+        "title": "Créer un élément — variante 14",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -24937,8 +24937,8 @@
       "key": "mailgun_whitelist_delete_delete_v3_domainid_whitelists",
       "name": "mailgunWhitelistDeleteDeleteV3DomainidWhitelists",
       "schemaVersion": 2,
-      "title": "Supprimer un whitelist (2)",
-      "subtitle": "whitelists",
+      "title": "Supprimer un élément — variante 11",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -24969,9 +24969,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete sur whitelist.",
+      "description": "Supprimer un élément dans Mailgun.",
       "args": {
-        "title": "Supprimer un whitelist (2)",
+        "title": "Supprimer un élément — variante 11",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -25001,8 +25001,8 @@
       "key": "mailgun_x509_update_put_v2_x509_domain",
       "name": "mailgunX509UpdatePutV2X509Domain",
       "schemaVersion": 2,
-      "title": "Mettre à jour un x509",
-      "subtitle": "x509s",
+      "title": "Mettre à jour un élément — variante 14",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -25033,9 +25033,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update sur x509.",
+      "description": "Mettre à jour un élément dans Mailgun.",
       "args": {
-        "title": "Mettre à jour un x509",
+        "title": "Mettre à jour un élément — variante 14",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -25065,8 +25065,8 @@
       "key": "mailgun_x509_create_post_v2_x509_domain",
       "name": "mailgunX509CreatePostV2X509Domain",
       "schemaVersion": 2,
-      "title": "Créer un x509",
-      "subtitle": "x509s",
+      "title": "Créer un élément — variante 15",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -25097,9 +25097,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur x509.",
+      "description": "Créer un élément dans Mailgun.",
       "args": {
-        "title": "Créer un x509",
+        "title": "Créer un élément — variante 15",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true

@@ -1303,7 +1303,7 @@
       "name": "Aircall",
       "title": "Aircall",
       "iconClass": "fa-solid fa-phone",
-      "iconUrl": "https://cdn.simpleicons.org/aircall",
+      "iconUrl": "https://aircall.io/favicon.svg",
       "color": "#e8f4ff",
       "tags": [
         "voip",

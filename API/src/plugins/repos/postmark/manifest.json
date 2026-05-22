@@ -4507,7 +4507,7 @@
       "name": "Postmark",
       "title": "Postmark",
       "iconClass": "fa-solid fa-envelope-open-text",
-      "iconUrl": "https://cdn.simpleicons.org/postman",
+      "iconUrl": "https://postmarkapp.com/images/apple-touch-icon.png",
       "color": "#ffefe8",
       "tags": [
         "email",
@@ -4560,8 +4560,8 @@
       "key": "postmark_activate_update_activatebounce",
       "name": "postmarkActivateUpdateActivatebounce",
       "schemaVersion": 2,
-      "title": "Mettre à jour un activate",
-      "subtitle": "activates",
+      "title": "Mettre à jour une activation",
+      "subtitle": "Activations",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -4592,9 +4592,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update sur activate.",
+      "description": "Mettre à jour une activation dans Postmark.",
       "args": {
-        "title": "Mettre à jour un activate",
+        "title": "Mettre à jour une activation",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -4624,8 +4624,8 @@
       "key": "postmark_batch_send_sendemailbatch",
       "name": "postmarkBatchSendSendemailbatch",
       "schemaVersion": 2,
-      "title": "Envoyer un batch",
-      "subtitle": "batchs",
+      "title": "Envoyer un lot",
+      "subtitle": "Lots",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -4656,9 +4656,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action send sur batch.",
+      "description": "Envoyer un lot dans Postmark.",
       "args": {
-        "title": "Envoyer un batch",
+        "title": "Envoyer un lot",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -4683,8 +4683,8 @@
       "key": "postmark_batchwithtemplate_send_sendemailbatchwithtemplates",
       "name": "postmarkBatchwithtemplateSendSendemailbatchwithtemplates",
       "schemaVersion": 2,
-      "title": "Envoyer un batchwithtemplate",
-      "subtitle": "batchwithtemplates",
+      "title": "Envoyer un lots avec modèle",
+      "subtitle": "Lots avec modèles",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -4715,9 +4715,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action send sur batchwithtemplate.",
+      "description": "Envoyer un lots avec modèle dans Postmark.",
       "args": {
-        "title": "Envoyer un batchwithtemplate",
+        "title": "Envoyer un lots avec modèle",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -4742,8 +4742,8 @@
       "key": "postmark_bounce_list_getbounces",
       "name": "postmarkBounceListGetbounces",
       "schemaVersion": 2,
-      "title": "Lister les bounces",
-      "subtitle": "bounces",
+      "title": "Lister des rebonds",
+      "subtitle": "Rebonds",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -4774,9 +4774,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur bounce.",
+      "description": "Lister des rebonds dans Postmark.",
       "args": {
-        "title": "Lister les bounces",
+        "title": "Lister des rebonds",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -4883,8 +4883,8 @@
       "key": "postmark_bounce_get_getsinglebounce",
       "name": "postmarkBounceGetGetsinglebounce",
       "schemaVersion": 2,
-      "title": "Récupérer un bounce",
-      "subtitle": "bounces",
+      "title": "Récupérer un rebond",
+      "subtitle": "Rebonds",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
@@ -4915,9 +4915,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get sur bounce.",
+      "description": "Récupérer un rebond dans Postmark.",
       "args": {
-        "title": "Récupérer un bounce",
+        "title": "Récupérer un rebond",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -4947,8 +4947,8 @@
       "key": "postmark_bounce_list_getbouncecounts",
       "name": "postmarkBounceListGetbouncecounts",
       "schemaVersion": 2,
-      "title": "Lister les bounces (2)",
-      "subtitle": "bounces",
+      "title": "Lister des rebonds — variante 2",
+      "subtitle": "Rebonds",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -4979,9 +4979,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur bounce.",
+      "description": "Lister des rebonds dans Postmark.",
       "args": {
-        "title": "Lister les bounces (2)",
+        "title": "Lister des rebonds — variante 2",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -5024,8 +5024,8 @@
       "key": "postmark_browserfamily_list_getoutboundclickcountsbybrowserfamily",
       "name": "postmarkBrowserfamilyListGetoutboundclickcountsbybrowserfamily",
       "schemaVersion": 2,
-      "title": "Lister les browserfamilies",
-      "subtitle": "browserfamilies",
+      "title": "Lister des familles de navigateurs",
+      "subtitle": "Familles de navigateurs",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -5056,9 +5056,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur browserfamily.",
+      "description": "Lister des familles de navigateurs dans Postmark.",
       "args": {
-        "title": "Lister les browserfamilies",
+        "title": "Lister des familles de navigateurs",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -5101,8 +5101,8 @@
       "key": "postmark_bypass_update_bypassrulesforinboundmessage",
       "name": "postmarkBypassUpdateBypassrulesforinboundmessage",
       "schemaVersion": 2,
-      "title": "Mettre à jour un bypass",
-      "subtitle": "bypasses",
+      "title": "Mettre à jour un contournement",
+      "subtitle": "Contournements",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -5133,9 +5133,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update sur bypass.",
+      "description": "Mettre à jour un contournement dans Postmark.",
       "args": {
-        "title": "Mettre à jour un bypass",
+        "title": "Mettre à jour un contournement",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -5165,8 +5165,8 @@
       "key": "postmark_click_list_searchclicksforoutboundmessages",
       "name": "postmarkClickListSearchclicksforoutboundmessages",
       "schemaVersion": 2,
-      "title": "Lister les clicks",
-      "subtitle": "clicks",
+      "title": "Lister des clics — du message",
+      "subtitle": "Clics",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -5197,9 +5197,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur click.",
+      "description": "Lister des clics dans Postmark.",
       "args": {
-        "title": "Lister les clicks",
+        "title": "Lister des clics — du message",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -5351,8 +5351,8 @@
       "key": "postmark_click_get_getclicksforsingleoutboundmessage",
       "name": "postmarkClickGetGetclicksforsingleoutboundmessage",
       "schemaVersion": 2,
-      "title": "Récupérer un click",
-      "subtitle": "clicks",
+      "title": "Récupérer un clic",
+      "subtitle": "Clics",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
@@ -5383,9 +5383,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get sur click.",
+      "description": "Récupérer un clic dans Postmark.",
       "args": {
-        "title": "Récupérer un click",
+        "title": "Récupérer un clic",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -5443,8 +5443,8 @@
       "key": "postmark_click_list_getoutboundclickcounts",
       "name": "postmarkClickListGetoutboundclickcounts",
       "schemaVersion": 2,
-      "title": "Lister les clicks (2)",
-      "subtitle": "clicks",
+      "title": "Lister des clics",
+      "subtitle": "Clics",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -5475,9 +5475,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur click.",
+      "description": "Lister des clics dans Postmark.",
       "args": {
-        "title": "Lister les clicks (2)",
+        "title": "Lister des clics",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -5520,8 +5520,8 @@
       "key": "postmark_deliverystat_list_getdeliverystats",
       "name": "postmarkDeliverystatListGetdeliverystats",
       "schemaVersion": 2,
-      "title": "Lister les deliverystats",
-      "subtitle": "deliverystats",
+      "title": "Lister des statistiques de livraison",
+      "subtitle": "Statistiques de livraison",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -5552,9 +5552,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur deliverystat.",
+      "description": "Lister des statistiques de livraison dans Postmark.",
       "args": {
-        "title": "Lister les deliverystats",
+        "title": "Lister des statistiques de livraison",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -5569,8 +5569,8 @@
       "key": "postmark_detail_list_getinboundmessagedetails",
       "name": "postmarkDetailListGetinboundmessagedetails",
       "schemaVersion": 2,
-      "title": "Lister les details",
-      "subtitle": "details",
+      "title": "Lister des détails — du message",
+      "subtitle": "Détails",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -5601,9 +5601,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur detail.",
+      "description": "Lister des détails dans Postmark.",
       "args": {
-        "title": "Lister les details",
+        "title": "Lister des détails — du message",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -5633,8 +5633,8 @@
       "key": "postmark_detail_list_getoutboundmessagedetails",
       "name": "postmarkDetailListGetoutboundmessagedetails",
       "schemaVersion": 2,
-      "title": "Lister les details (2)",
-      "subtitle": "details",
+      "title": "Lister des détails — du message — variante 2",
+      "subtitle": "Détails",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -5665,9 +5665,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur detail.",
+      "description": "Lister des détails dans Postmark.",
       "args": {
-        "title": "Lister les details (2)",
+        "title": "Lister des détails — du message — variante 2",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -5697,8 +5697,8 @@
       "key": "postmark_dump_list_get_bounce_dump",
       "name": "postmarkDumpListGetBounceDump",
       "schemaVersion": 2,
-      "title": "Lister les dumps",
-      "subtitle": "dumps",
+      "title": "Lister des dumps",
+      "subtitle": "Dumps",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -5729,9 +5729,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur dump.",
+      "description": "Lister des dumps dans Postmark.",
       "args": {
-        "title": "Lister les dumps",
+        "title": "Lister des dumps",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -5761,8 +5761,8 @@
       "key": "postmark_dump_list_getoutboundmessagedump",
       "name": "postmarkDumpListGetoutboundmessagedump",
       "schemaVersion": 2,
-      "title": "Lister les dumps (2)",
-      "subtitle": "dumps",
+      "title": "Lister des dumps — du message",
+      "subtitle": "Dumps",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -5793,9 +5793,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur dump.",
+      "description": "Lister des dumps dans Postmark.",
       "args": {
-        "title": "Lister les dumps (2)",
+        "title": "Lister des dumps — du message",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -5825,8 +5825,8 @@
       "key": "postmark_email_send_sendemail",
       "name": "postmarkEmailSendSendemail",
       "schemaVersion": 2,
-      "title": "Envoyer un email",
-      "subtitle": "emails",
+      "title": "Envoyer un e-mail",
+      "subtitle": "E-mails",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -5857,9 +5857,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action send sur email.",
+      "description": "Envoyer un e-mail dans Postmark.",
       "args": {
-        "title": "Envoyer un email",
+        "title": "Envoyer un e-mail",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -5884,8 +5884,8 @@
       "key": "postmark_emailclient_list_getoutboundopencountsbyemailclient",
       "name": "postmarkEmailclientListGetoutboundopencountsbyemailclient",
       "schemaVersion": 2,
-      "title": "Lister les emailclients",
-      "subtitle": "emailclients",
+      "title": "Lister des clients e-mail",
+      "subtitle": "Clients e-mail",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -5916,9 +5916,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur emailclient.",
+      "description": "Lister des clients e-mail dans Postmark.",
       "args": {
-        "title": "Lister les emailclients",
+        "title": "Lister des clients e-mail",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -5961,8 +5961,8 @@
       "key": "postmark_inbound_search_searchinboundmessages",
       "name": "postmarkInboundSearchSearchinboundmessages",
       "schemaVersion": 2,
-      "title": "Rechercher des inbounds",
-      "subtitle": "inbounds",
+      "title": "Rechercher des éléments — du message",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-magnifying-glass",
       "type": "function",
       "nodeKind": "function",
@@ -5993,9 +5993,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action search sur inbound.",
+      "description": "Rechercher des éléments dans Postmark.",
       "args": {
-        "title": "Rechercher des inbounds",
+        "title": "Rechercher des éléments — du message",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -6111,8 +6111,8 @@
       "key": "postmark_inbound_retry_retryinboundmessageprocessing",
       "name": "postmarkInboundRetryRetryinboundmessageprocessing",
       "schemaVersion": 2,
-      "title": "Relancer un inbound",
-      "subtitle": "inbounds",
+      "title": "Lister des éléments — du message",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -6143,9 +6143,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action retry sur inbound.",
+      "description": "Lister des éléments dans Postmark.",
       "args": {
-        "title": "Relancer un inbound",
+        "title": "Lister des éléments — du message",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -6175,8 +6175,8 @@
       "key": "postmark_inboundrule_list_listinboundrules",
       "name": "postmarkInboundruleListListinboundrules",
       "schemaVersion": 2,
-      "title": "Lister les inboundrules",
-      "subtitle": "inboundrules",
+      "title": "Lister des règles entrantes",
+      "subtitle": "Règles entrantes",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -6207,9 +6207,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur inboundrule.",
+      "description": "Lister des règles entrantes dans Postmark.",
       "args": {
-        "title": "Lister les inboundrules",
+        "title": "Lister des règles entrantes",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -6253,8 +6253,8 @@
       "key": "postmark_inboundrule_trigger_createinboundrule",
       "name": "postmarkInboundruleTriggerCreateinboundrule",
       "schemaVersion": 2,
-      "title": "Déclencher un inboundrule",
-      "subtitle": "inboundrules",
+      "title": "Déclencher un règles entrante — de la règle",
+      "subtitle": "Règles entrantes",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -6285,9 +6285,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action trigger sur inboundrule.",
+      "description": "Déclencher un règles entrante dans Postmark.",
       "args": {
-        "title": "Déclencher un inboundrule",
+        "title": "Déclencher un règles entrante — de la règle",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -6312,8 +6312,8 @@
       "key": "postmark_inboundrule_trigger_deleteinboundrule",
       "name": "postmarkInboundruleTriggerDeleteinboundrule",
       "schemaVersion": 2,
-      "title": "Déclencher un inboundrule (2)",
-      "subtitle": "inboundrules",
+      "title": "Déclencher un règles entrante — de la règle — variante 2",
+      "subtitle": "Règles entrantes",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -6344,9 +6344,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action trigger sur inboundrule.",
+      "description": "Déclencher un règles entrante dans Postmark.",
       "args": {
-        "title": "Déclencher un inboundrule (2)",
+        "title": "Déclencher un règles entrante — de la règle — variante 2",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -6376,8 +6376,8 @@
       "key": "postmark_location_list_getoutboundclickcountsbylocation",
       "name": "postmarkLocationListGetoutboundclickcountsbylocation",
       "schemaVersion": 2,
-      "title": "Lister les locations",
-      "subtitle": "locations",
+      "title": "Lister des emplacements",
+      "subtitle": "Emplacements",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -6408,9 +6408,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur location.",
+      "description": "Lister des emplacements dans Postmark.",
       "args": {
-        "title": "Lister les locations",
+        "title": "Lister des emplacements",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -6453,8 +6453,8 @@
       "key": "postmark_open_list_searchopensforoutboundmessages",
       "name": "postmarkOpenListSearchopensforoutboundmessages",
       "schemaVersion": 2,
-      "title": "Lister les opens",
-      "subtitle": "opens",
+      "title": "Lister des ouvertures — du message",
+      "subtitle": "Ouvertures",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -6485,9 +6485,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur open.",
+      "description": "Lister des ouvertures dans Postmark.",
       "args": {
-        "title": "Lister les opens",
+        "title": "Lister des ouvertures — du message",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -6639,8 +6639,8 @@
       "key": "postmark_open_get_getopensforsingleoutboundmessage",
       "name": "postmarkOpenGetGetopensforsingleoutboundmessage",
       "schemaVersion": 2,
-      "title": "Récupérer un open",
-      "subtitle": "opens",
+      "title": "Récupérer une ouverture",
+      "subtitle": "Ouvertures",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
@@ -6671,9 +6671,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get sur open.",
+      "description": "Récupérer une ouverture dans Postmark.",
       "args": {
-        "title": "Récupérer un open",
+        "title": "Récupérer une ouverture",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -6731,8 +6731,8 @@
       "key": "postmark_open_list_getoutboundopencounts",
       "name": "postmarkOpenListGetoutboundopencounts",
       "schemaVersion": 2,
-      "title": "Lister les opens (2)",
-      "subtitle": "opens",
+      "title": "Lister des ouvertures",
+      "subtitle": "Ouvertures",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -6763,9 +6763,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur open.",
+      "description": "Lister des ouvertures dans Postmark.",
       "args": {
-        "title": "Lister les opens (2)",
+        "title": "Lister des ouvertures",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -6808,8 +6808,8 @@
       "key": "postmark_outbound_search_searchoutboundmessages",
       "name": "postmarkOutboundSearchSearchoutboundmessages",
       "schemaVersion": 2,
-      "title": "Rechercher des outbounds",
-      "subtitle": "outbounds",
+      "title": "Rechercher des éléments — du message — variante 2",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-magnifying-glass",
       "type": "function",
       "nodeKind": "function",
@@ -6840,9 +6840,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action search sur outbound.",
+      "description": "Rechercher des éléments dans Postmark.",
       "args": {
-        "title": "Rechercher des outbounds",
+        "title": "Rechercher des éléments — du message — variante 2",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -6940,8 +6940,8 @@
       "key": "postmark_outbound_list_getoutboundoverviewstatistics",
       "name": "postmarkOutboundListGetoutboundoverviewstatistics",
       "schemaVersion": 2,
-      "title": "Lister les outbounds",
-      "subtitle": "outbounds",
+      "title": "Lister des éléments",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -6972,9 +6972,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur outbound.",
+      "description": "Lister des éléments dans Postmark.",
       "args": {
-        "title": "Lister les outbounds",
+        "title": "Lister des éléments",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -7017,8 +7017,8 @@
       "key": "postmark_platform_list_getoutboundclickcountsbyplatform",
       "name": "postmarkPlatformListGetoutboundclickcountsbyplatform",
       "schemaVersion": 2,
-      "title": "Lister les platforms",
-      "subtitle": "platforms",
+      "title": "Lister des plateformes",
+      "subtitle": "Plateformes",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -7049,9 +7049,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur platform.",
+      "description": "Lister des plateformes dans Postmark.",
       "args": {
-        "title": "Lister les platforms",
+        "title": "Lister des plateformes",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -7094,8 +7094,8 @@
       "key": "postmark_platform_list_getoutboundopencountsbyplatform",
       "name": "postmarkPlatformListGetoutboundopencountsbyplatform",
       "schemaVersion": 2,
-      "title": "Lister les platforms (2)",
-      "subtitle": "platforms",
+      "title": "Lister des plateformes — variante 2",
+      "subtitle": "Plateformes",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -7126,9 +7126,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur platform.",
+      "description": "Lister des plateformes dans Postmark.",
       "args": {
-        "title": "Lister les platforms (2)",
+        "title": "Lister des plateformes — variante 2",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -7171,8 +7171,8 @@
       "key": "postmark_send_list_getsentcounts",
       "name": "postmarkSendListGetsentcounts",
       "schemaVersion": 2,
-      "title": "Lister les sends",
-      "subtitle": "sends",
+      "title": "Lister des éléments — variante 2",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -7203,9 +7203,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur send.",
+      "description": "Lister des éléments dans Postmark.",
       "args": {
-        "title": "Lister les sends",
+        "title": "Lister des éléments — variante 2",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -7248,8 +7248,8 @@
       "key": "postmark_server_list_getcurrentserverconfiguration",
       "name": "postmarkServerListGetcurrentserverconfiguration",
       "schemaVersion": 2,
-      "title": "Lister les servers",
-      "subtitle": "servers",
+      "title": "Lister des serveurs",
+      "subtitle": "Serveurs",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -7280,9 +7280,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur server.",
+      "description": "Lister des serveurs dans Postmark.",
       "args": {
-        "title": "Lister les servers",
+        "title": "Lister des serveurs",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -7297,8 +7297,8 @@
       "key": "postmark_server_update_editcurrentserverconfiguration",
       "name": "postmarkServerUpdateEditcurrentserverconfiguration",
       "schemaVersion": 2,
-      "title": "Mettre à jour un server",
-      "subtitle": "servers",
+      "title": "Mettre à jour un serveur",
+      "subtitle": "Serveurs",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -7329,9 +7329,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update sur server.",
+      "description": "Mettre à jour un serveur dans Postmark.",
       "args": {
-        "title": "Mettre à jour un server",
+        "title": "Mettre à jour un serveur",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -7356,8 +7356,8 @@
       "key": "postmark_spam_list_getspamcomplaints",
       "name": "postmarkSpamListGetspamcomplaints",
       "schemaVersion": 2,
-      "title": "Lister les spams",
-      "subtitle": "spams",
+      "title": "Lister des spams",
+      "subtitle": "Spams",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -7388,9 +7388,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur spam.",
+      "description": "Lister des spams dans Postmark.",
       "args": {
-        "title": "Lister les spams",
+        "title": "Lister des spams",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -7433,8 +7433,8 @@
       "key": "postmark_template_list_listtemplates",
       "name": "postmarkTemplateListListtemplates",
       "schemaVersion": 2,
-      "title": "Lister les templates",
-      "subtitle": "templates",
+      "title": "Lister des modèles",
+      "subtitle": "Modèles",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -7465,9 +7465,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur template.",
+      "description": "Lister des modèles dans Postmark.",
       "args": {
-        "title": "Lister les templates",
+        "title": "Lister des modèles",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -7511,8 +7511,8 @@
       "key": "postmark_template_create_create_a_template",
       "name": "postmarkTemplateCreateCreateATemplate",
       "schemaVersion": 2,
-      "title": "Créer un template",
-      "subtitle": "templates",
+      "title": "Créer un modèle",
+      "subtitle": "Modèles",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -7543,9 +7543,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur template.",
+      "description": "Créer un modèle dans Postmark.",
       "args": {
-        "title": "Créer un template",
+        "title": "Créer un modèle",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -7570,8 +7570,8 @@
       "key": "postmark_template_delete_deletetemplate",
       "name": "postmarkTemplateDeleteDeletetemplate",
       "schemaVersion": 2,
-      "title": "Supprimer un template",
-      "subtitle": "templates",
+      "title": "Supprimer un modèle",
+      "subtitle": "Modèles",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -7602,9 +7602,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete sur template.",
+      "description": "Supprimer un modèle dans Postmark.",
       "args": {
-        "title": "Supprimer un template",
+        "title": "Supprimer un modèle",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -7634,8 +7634,8 @@
       "key": "postmark_template_get_getsingletemplate",
       "name": "postmarkTemplateGetGetsingletemplate",
       "schemaVersion": 2,
-      "title": "Récupérer un template",
-      "subtitle": "templates",
+      "title": "Récupérer un modèle",
+      "subtitle": "Modèles",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
@@ -7666,9 +7666,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get sur template.",
+      "description": "Récupérer un modèle dans Postmark.",
       "args": {
-        "title": "Récupérer un template",
+        "title": "Récupérer un modèle",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -7698,8 +7698,8 @@
       "key": "postmark_template_update_updatetemplate",
       "name": "postmarkTemplateUpdateUpdatetemplate",
       "schemaVersion": 2,
-      "title": "Mettre à jour un template",
-      "subtitle": "templates",
+      "title": "Mettre à jour un modèle",
+      "subtitle": "Modèles",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -7730,9 +7730,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update sur template.",
+      "description": "Mettre à jour un modèle dans Postmark.",
       "args": {
-        "title": "Mettre à jour un template",
+        "title": "Mettre à jour un modèle",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -7762,8 +7762,8 @@
       "key": "postmark_tracked_list_gettrackedemailcounts",
       "name": "postmarkTrackedListGettrackedemailcounts",
       "schemaVersion": 2,
-      "title": "Lister les trackeds",
-      "subtitle": "trackeds",
+      "title": "Lister des suivis",
+      "subtitle": "Suivis",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -7794,9 +7794,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur tracked.",
+      "description": "Lister des suivis dans Postmark.",
       "args": {
-        "title": "Lister les trackeds",
+        "title": "Lister des suivis",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -7839,8 +7839,8 @@
       "key": "postmark_validate_create_testtemplatecontent",
       "name": "postmarkValidateCreateTesttemplatecontent",
       "schemaVersion": 2,
-      "title": "Créer un validate",
-      "subtitle": "validates",
+      "title": "Créer une validation",
+      "subtitle": "Validations",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -7871,9 +7871,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur validate.",
+      "description": "Créer une validation dans Postmark.",
       "args": {
-        "title": "Créer un validate",
+        "title": "Créer une validation",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -7898,8 +7898,8 @@
       "key": "postmark_withtemplate_send_sendemailwithtemplate",
       "name": "postmarkWithtemplateSendSendemailwithtemplate",
       "schemaVersion": 2,
-      "title": "Envoyer un withtemplate",
-      "subtitle": "withtemplates",
+      "title": "Envoyer un avec modèle",
+      "subtitle": "Avec modèles",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -7930,9 +7930,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action send sur withtemplate.",
+      "description": "Envoyer un avec modèle dans Postmark.",
       "args": {
-        "title": "Envoyer un withtemplate",
+        "title": "Envoyer un avec modèle",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true

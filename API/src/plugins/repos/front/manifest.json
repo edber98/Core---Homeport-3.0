@@ -9491,7 +9491,7 @@
       "name": "Front",
       "title": "Front",
       "iconClass": "fa-solid fa-inbox",
-      "iconUrl": "https://cdn.simpleicons.org/front",
+      "iconUrl": "https://front.com/apple-icon.png",
       "color": "#eef6ff",
       "tags": [
         "support",
@@ -9544,8 +9544,8 @@
       "key": "front_account_list_list_accounts",
       "name": "frontAccountListListAccounts",
       "schemaVersion": 2,
-      "title": "Lister les accounts",
-      "subtitle": "accounts",
+      "title": "Lister des comptes",
+      "subtitle": "Comptes",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -9576,9 +9576,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur account.",
+      "description": "Liste des comptes dans Front.",
       "args": {
-        "title": "Lister les accounts",
+        "title": "Lister des comptes",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -9593,8 +9593,8 @@
       "key": "front_account_create_create_account",
       "name": "frontAccountCreateCreateAccount",
       "schemaVersion": 2,
-      "title": "Créer un account",
-      "subtitle": "accounts",
+      "title": "Créer un compte",
+      "subtitle": "Comptes",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -9625,9 +9625,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur account.",
+      "description": "Crée un compte dans Front.",
       "args": {
-        "title": "Créer un account",
+        "title": "Créer un compte",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -9652,8 +9652,8 @@
       "key": "front_account_get_fetch_an_account",
       "name": "frontAccountGetFetchAnAccount",
       "schemaVersion": 2,
-      "title": "Récupérer un account",
-      "subtitle": "accounts",
+      "title": "Récupérer un compte",
+      "subtitle": "Comptes",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
@@ -9684,9 +9684,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get sur account.",
+      "description": "Récupère un compte dans Front.",
       "args": {
-        "title": "Récupérer un account",
+        "title": "Récupérer un compte",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -9716,8 +9716,8 @@
       "key": "front_account_update_update_account",
       "name": "frontAccountUpdateUpdateAccount",
       "schemaVersion": 2,
-      "title": "Mettre à jour un account",
-      "subtitle": "accounts",
+      "title": "Mettre à jour un compte",
+      "subtitle": "Comptes",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -9748,9 +9748,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update sur account.",
+      "description": "Met à jour un compte dans Front.",
       "args": {
-        "title": "Mettre à jour un account",
+        "title": "Mettre à jour un compte",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -9789,8 +9789,8 @@
       "key": "front_account_delete_delete_an_account",
       "name": "frontAccountDeleteDeleteAnAccount",
       "schemaVersion": 2,
-      "title": "Supprimer un account",
-      "subtitle": "accounts",
+      "title": "Supprimer un compte",
+      "subtitle": "Comptes",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -9821,9 +9821,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete sur account.",
+      "description": "Supprime un compte dans Front.",
       "args": {
-        "title": "Supprimer un account",
+        "title": "Supprimer un compte",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -9853,8 +9853,8 @@
       "key": "front_application_message_template_update_sync_application_message_template",
       "name": "frontApplicationMessageTemplateUpdateSyncApplicationMessageTemplate",
       "schemaVersion": 2,
-      "title": "Mettre à jour un application_message_template",
-      "subtitle": "application_message_templates",
+      "title": "Mettre à jour un modèle de message applicatif",
+      "subtitle": "Modèles de messages applicatifs",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -9885,9 +9885,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update sur application_message_template.",
+      "description": "Met à jour un modèle de message applicatif dans Front.",
       "args": {
-        "title": "Mettre à jour un application_message_template",
+        "title": "Mettre à jour un modèle de message applicatif",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -9926,8 +9926,8 @@
       "key": "front_application_message_template_update_update_application_message_template",
       "name": "frontApplicationMessageTemplateUpdateUpdateApplicationMessageTemplate",
       "schemaVersion": 2,
-      "title": "Mettre à jour un application_message_template (2)",
-      "subtitle": "application_message_templates",
+      "title": "Mettre à jour un modèle de message applicatif — message template",
+      "subtitle": "Modèles de messages applicatifs",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -9958,9 +9958,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update sur application_message_template.",
+      "description": "Met à jour un modèle de message applicatif dans Front.",
       "args": {
-        "title": "Mettre à jour un application_message_template (2)",
+        "title": "Mettre à jour un modèle de message applicatif — message template",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -10013,8 +10013,8 @@
       "key": "front_article_list_list_articles_in_a_category",
       "name": "frontArticleListListArticlesInACategory",
       "schemaVersion": 2,
-      "title": "Lister les articles",
-      "subtitle": "articles",
+      "title": "Lister des articles — dans une catégorie",
+      "subtitle": "Articles",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -10045,9 +10045,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur article.",
+      "description": "Liste des articles dans Front.",
       "args": {
-        "title": "Lister les articles",
+        "title": "Lister des articles — dans une catégorie",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -10077,8 +10077,8 @@
       "key": "front_article_list_list_articles_in_a_knowledge_base",
       "name": "frontArticleListListArticlesInAKnowledgeBase",
       "schemaVersion": 2,
-      "title": "Lister les articles (2)",
-      "subtitle": "articles",
+      "title": "Lister des articles — dans une base de connaissances",
+      "subtitle": "Articles",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -10109,9 +10109,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur article.",
+      "description": "Liste des articles dans Front.",
       "args": {
-        "title": "Lister les articles (2)",
+        "title": "Lister des articles — dans une base de connaissances",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -10141,8 +10141,8 @@
       "key": "front_article_create_create_article_in_a_knowledge_base_in_default_locale",
       "name": "frontArticleCreateCreateArticleInAKnowledgeBaseInDefaultLocale",
       "schemaVersion": 2,
-      "title": "Créer un article",
-      "subtitle": "articles",
+      "title": "Créer un article — dans une base de connaissances (locale par défaut)",
+      "subtitle": "Articles",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -10173,9 +10173,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur article.",
+      "description": "Crée un article dans Front.",
       "args": {
-        "title": "Créer un article",
+        "title": "Créer un article — dans une base de connaissances (locale par défaut)",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -10214,8 +10214,8 @@
       "key": "front_article_create_create_article_in_a_knowledge_base_in_specified_locale",
       "name": "frontArticleCreateCreateArticleInAKnowledgeBaseInSpecifiedLocale",
       "schemaVersion": 2,
-      "title": "Créer un article (2)",
-      "subtitle": "articles",
+      "title": "Créer un article — dans une base de connaissances (locale spécifiée)",
+      "subtitle": "Articles",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -10246,9 +10246,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur article.",
+      "description": "Crée un article dans Front.",
       "args": {
-        "title": "Créer un article (2)",
+        "title": "Créer un article — dans une base de connaissances (locale spécifiée)",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -10301,8 +10301,8 @@
       "key": "front_assignee_assign_update_conversation_assignee",
       "name": "frontAssigneeAssignUpdateConversationAssignee",
       "schemaVersion": 2,
-      "title": "Assigner un assignee",
-      "subtitle": "assignees",
+      "title": "Mettre à jour un assignataire",
+      "subtitle": "Assignataires",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -10333,9 +10333,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action assign sur assignee.",
+      "description": "Met à jour un assignataire dans Front.",
       "args": {
-        "title": "Assigner un assignee",
+        "title": "Mettre à jour un assignataire",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -10374,8 +10374,8 @@
       "key": "front_call_create_create_call",
       "name": "frontCallCreateCreateCall",
       "schemaVersion": 2,
-      "title": "Créer un call",
-      "subtitle": "calls",
+      "title": "Créer un appel",
+      "subtitle": "Appels",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -10406,9 +10406,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur call.",
+      "description": "Crée un appel dans Front.",
       "args": {
-        "title": "Créer un call",
+        "title": "Créer un appel",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -10447,8 +10447,8 @@
       "key": "front_call_update_update_call",
       "name": "frontCallUpdateUpdateCall",
       "schemaVersion": 2,
-      "title": "Mettre à jour un call",
-      "subtitle": "calls",
+      "title": "Mettre à jour un appel",
+      "subtitle": "Appels",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -10479,9 +10479,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update sur call.",
+      "description": "Met à jour un appel dans Front.",
       "args": {
-        "title": "Mettre à jour un call",
+        "title": "Mettre à jour un appel",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -10534,8 +10534,8 @@
       "key": "front_category_list_list_categories_in_a_knowledge_base",
       "name": "frontCategoryListListCategoriesInAKnowledgeBase",
       "schemaVersion": 2,
-      "title": "Lister les categories",
-      "subtitle": "categories",
+      "title": "Lister des catégories",
+      "subtitle": "Catégories",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -10566,9 +10566,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur category.",
+      "description": "Liste des catégories dans Front.",
       "args": {
-        "title": "Lister les categories",
+        "title": "Lister des catégories",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -10598,8 +10598,8 @@
       "key": "front_category_create_create_knowledge_base_category_in_default_locale",
       "name": "frontCategoryCreateCreateKnowledgeBaseCategoryInDefaultLocale",
       "schemaVersion": 2,
-      "title": "Créer un category",
-      "subtitle": "categories",
+      "title": "Créer une catégorie — locale par défaut",
+      "subtitle": "Catégories",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -10630,9 +10630,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur category.",
+      "description": "Crée une catégorie dans Front.",
       "args": {
-        "title": "Créer un category",
+        "title": "Créer une catégorie — locale par défaut",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -10671,8 +10671,8 @@
       "key": "front_category_create_create_knowledge_base_category_in_specified_locale",
       "name": "frontCategoryCreateCreateKnowledgeBaseCategoryInSpecifiedLocale",
       "schemaVersion": 2,
-      "title": "Créer un category (2)",
-      "subtitle": "categories",
+      "title": "Créer une catégorie — locale spécifiée",
+      "subtitle": "Catégories",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -10703,9 +10703,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur category.",
+      "description": "Crée une catégorie dans Front.",
       "args": {
-        "title": "Créer un category (2)",
+        "title": "Créer une catégorie — locale spécifiée",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -10758,8 +10758,8 @@
       "key": "front_channel_list_list_channels",
       "name": "frontChannelListListChannels",
       "schemaVersion": 2,
-      "title": "Lister les channels",
-      "subtitle": "channels",
+      "title": "Lister des canaux",
+      "subtitle": "Canaux",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -10790,9 +10790,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur channel.",
+      "description": "Liste des canaux dans Front.",
       "args": {
-        "title": "Lister les channels",
+        "title": "Lister des canaux",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -10807,8 +10807,8 @@
       "key": "front_channel_get_get_channel",
       "name": "frontChannelGetGetChannel",
       "schemaVersion": 2,
-      "title": "Récupérer un channel",
-      "subtitle": "channels",
+      "title": "Récupérer un canal",
+      "subtitle": "Canaux",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
@@ -10839,9 +10839,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get sur channel.",
+      "description": "Récupère un canal dans Front.",
       "args": {
-        "title": "Récupérer un channel",
+        "title": "Récupérer un canal",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -10871,8 +10871,8 @@
       "key": "front_channel_update_update_channel",
       "name": "frontChannelUpdateUpdateChannel",
       "schemaVersion": 2,
-      "title": "Mettre à jour un channel",
-      "subtitle": "channels",
+      "title": "Mettre à jour un canal",
+      "subtitle": "Canaux",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -10903,9 +10903,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update sur channel.",
+      "description": "Met à jour un canal dans Front.",
       "args": {
-        "title": "Mettre à jour un channel",
+        "title": "Mettre à jour un canal",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -10944,8 +10944,8 @@
       "key": "front_channel_list_list_inbox_channels",
       "name": "frontChannelListListInboxChannels",
       "schemaVersion": 2,
-      "title": "Lister les channels (2)",
-      "subtitle": "channels",
+      "title": "Lister des canaux — de la boîte de réception",
+      "subtitle": "Canaux",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -10976,9 +10976,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur channel.",
+      "description": "Liste des canaux dans Front.",
       "args": {
-        "title": "Lister les channels (2)",
+        "title": "Lister des canaux — de la boîte de réception",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -11008,8 +11008,8 @@
       "key": "front_channel_create_create_a_channel",
       "name": "frontChannelCreateCreateAChannel",
       "schemaVersion": 2,
-      "title": "Créer un channel",
-      "subtitle": "channels",
+      "title": "Créer un canal",
+      "subtitle": "Canaux",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -11040,9 +11040,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur channel.",
+      "description": "Crée un canal dans Front.",
       "args": {
-        "title": "Créer un channel",
+        "title": "Créer un canal",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -11081,8 +11081,8 @@
       "key": "front_channel_list_list_teammate_channels",
       "name": "frontChannelListListTeammateChannels",
       "schemaVersion": 2,
-      "title": "Lister les channels (3)",
-      "subtitle": "channels",
+      "title": "Lister des canaux — du coéquipier",
+      "subtitle": "Canaux",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -11113,9 +11113,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur channel.",
+      "description": "Liste des canaux dans Front.",
       "args": {
-        "title": "Lister les channels (3)",
+        "title": "Lister des canaux — du coéquipier",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -11145,8 +11145,8 @@
       "key": "front_channel_list_list_team_channels",
       "name": "frontChannelListListTeamChannels",
       "schemaVersion": 2,
-      "title": "Lister les channels (4)",
-      "subtitle": "channels",
+      "title": "Lister des canaux — de l’équipe",
+      "subtitle": "Canaux",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -11177,9 +11177,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur channel.",
+      "description": "Liste des canaux dans Front.",
       "args": {
-        "title": "Lister les channels (4)",
+        "title": "Lister des canaux — de l’équipe",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -11209,8 +11209,8 @@
       "key": "front_children_tag_list_tag_children",
       "name": "frontChildrenTagListTagChildren",
       "schemaVersion": 2,
-      "title": "Étiqueter un children",
-      "subtitle": "childrens",
+      "title": "Lister des éléments enfants",
+      "subtitle": "Éléments enfants",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -11241,9 +11241,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action tag sur children.",
+      "description": "Liste des éléments enfants dans Front.",
       "args": {
-        "title": "Étiqueter un children",
+        "title": "Lister des éléments enfants",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -11273,8 +11273,8 @@
       "key": "front_children_tag_create_child_tag",
       "name": "frontChildrenTagCreateChildTag",
       "schemaVersion": 2,
-      "title": "Étiqueter un children (2)",
-      "subtitle": "childrens",
+      "title": "Créer un élément enfant",
+      "subtitle": "Éléments enfants",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -11305,9 +11305,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action tag sur children.",
+      "description": "Crée un élément enfant dans Front.",
       "args": {
-        "title": "Étiqueter un children (2)",
+        "title": "Créer un élément enfant",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -11346,8 +11346,8 @@
       "key": "front_comment_comment_get_comment",
       "name": "frontCommentCommentGetComment",
       "schemaVersion": 2,
-      "title": "Commenter un comment",
-      "subtitle": "comments",
+      "title": "Récupérer un commentaire",
+      "subtitle": "Commentaires",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -11378,9 +11378,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action comment sur comment.",
+      "description": "Récupère un commentaire dans Front.",
       "args": {
-        "title": "Commenter un comment",
+        "title": "Récupérer un commentaire",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -11410,8 +11410,8 @@
       "key": "front_comment_comment_update_comment",
       "name": "frontCommentCommentUpdateComment",
       "schemaVersion": 2,
-      "title": "Commenter un comment (2)",
-      "subtitle": "comments",
+      "title": "Mettre à jour un commentaire",
+      "subtitle": "Commentaires",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -11442,9 +11442,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action comment sur comment.",
+      "description": "Met à jour un commentaire dans Front.",
       "args": {
-        "title": "Commenter un comment (2)",
+        "title": "Mettre à jour un commentaire",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -11483,8 +11483,8 @@
       "key": "front_contact_list_list_account_contacts",
       "name": "frontContactListListAccountContacts",
       "schemaVersion": 2,
-      "title": "Lister les contacts",
-      "subtitle": "contacts",
+      "title": "Lister des contacts — du compte",
+      "subtitle": "Contacts",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -11515,9 +11515,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur contact.",
+      "description": "Liste des contacts dans Front.",
       "args": {
-        "title": "Lister les contacts",
+        "title": "Lister des contacts — du compte",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -11547,8 +11547,8 @@
       "key": "front_contact_create_add_contact_to_account",
       "name": "frontContactCreateAddContactToAccount",
       "schemaVersion": 2,
-      "title": "Créer un contact",
-      "subtitle": "contacts",
+      "title": "Ajouter un contact — du compte",
+      "subtitle": "Contacts",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -11579,9 +11579,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur contact.",
+      "description": "Ajoute un contact dans Front.",
       "args": {
-        "title": "Créer un contact",
+        "title": "Ajouter un contact — du compte",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -11620,8 +11620,8 @@
       "key": "front_contact_delete_remove_contact_from_account",
       "name": "frontContactDeleteRemoveContactFromAccount",
       "schemaVersion": 2,
-      "title": "Supprimer un contact",
-      "subtitle": "contacts",
+      "title": "Retirer un contact — du compte",
+      "subtitle": "Contacts",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -11652,9 +11652,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete sur contact.",
+      "description": "Retire un contact dans Front.",
       "args": {
-        "title": "Supprimer un contact",
+        "title": "Retirer un contact — du compte",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -11684,8 +11684,8 @@
       "key": "front_contact_delete_remove_contacts_from_group",
       "name": "frontContactDeleteRemoveContactsFromGroup",
       "schemaVersion": 2,
-      "title": "Supprimer un contact (2)",
-      "subtitle": "contacts",
+      "title": "Retirer un contact — du groupe",
+      "subtitle": "Contacts",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -11716,9 +11716,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete sur contact.",
+      "description": "Retire un contact dans Front.",
       "args": {
-        "title": "Supprimer un contact (2)",
+        "title": "Retirer un contact — du groupe",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -11748,8 +11748,8 @@
       "key": "front_contact_list_list_contacts_in_contact_list",
       "name": "frontContactListListContactsInContactList",
       "schemaVersion": 2,
-      "title": "Lister les contacts (2)",
-      "subtitle": "contacts",
+      "title": "Lister des contacts — d’une liste de contacts",
+      "subtitle": "Contacts",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -11780,9 +11780,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur contact.",
+      "description": "Liste des contacts dans Front.",
       "args": {
-        "title": "Lister les contacts (2)",
+        "title": "Lister des contacts — d’une liste de contacts",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -11812,8 +11812,8 @@
       "key": "front_contact_create_add_contacts_to_contact_list",
       "name": "frontContactCreateAddContactsToContactList",
       "schemaVersion": 2,
-      "title": "Créer un contact (2)",
-      "subtitle": "contacts",
+      "title": "Ajouter un contact — dans une liste de contacts",
+      "subtitle": "Contacts",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -11844,9 +11844,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur contact.",
+      "description": "Ajoute un contact dans Front.",
       "args": {
-        "title": "Créer un contact (2)",
+        "title": "Ajouter un contact — dans une liste de contacts",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -11885,8 +11885,8 @@
       "key": "front_contact_delete_remove_contacts_from_contact_list",
       "name": "frontContactDeleteRemoveContactsFromContactList",
       "schemaVersion": 2,
-      "title": "Supprimer un contact (3)",
-      "subtitle": "contacts",
+      "title": "Retirer un contact — d’une liste de contacts",
+      "subtitle": "Contacts",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -11917,9 +11917,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete sur contact.",
+      "description": "Retire un contact dans Front.",
       "args": {
-        "title": "Supprimer un contact (3)",
+        "title": "Retirer un contact — d’une liste de contacts",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -11949,8 +11949,8 @@
       "key": "front_contact_list_list_contacts",
       "name": "frontContactListListContacts",
       "schemaVersion": 2,
-      "title": "Lister les contacts (3)",
-      "subtitle": "contacts",
+      "title": "Lister des contacts",
+      "subtitle": "Contacts",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -11981,9 +11981,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur contact.",
+      "description": "Liste des contacts dans Front.",
       "args": {
-        "title": "Lister les contacts (3)",
+        "title": "Lister des contacts",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -11998,8 +11998,8 @@
       "key": "front_contact_create_create_contact",
       "name": "frontContactCreateCreateContact",
       "schemaVersion": 2,
-      "title": "Créer un contact (3)",
-      "subtitle": "contacts",
+      "title": "Créer un contact",
+      "subtitle": "Contacts",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -12030,9 +12030,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur contact.",
+      "description": "Crée un contact dans Front.",
       "args": {
-        "title": "Créer un contact (3)",
+        "title": "Créer un contact",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -12058,7 +12058,7 @@
       "name": "frontContactGetGetContact",
       "schemaVersion": 2,
       "title": "Récupérer un contact",
-      "subtitle": "contacts",
+      "subtitle": "Contacts",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
@@ -12089,7 +12089,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get sur contact.",
+      "description": "Récupère un contact dans Front.",
       "args": {
         "title": "Récupérer un contact",
         "ui": {
@@ -12122,7 +12122,7 @@
       "name": "frontContactUpdateUpdateAContact",
       "schemaVersion": 2,
       "title": "Mettre à jour un contact",
-      "subtitle": "contacts",
+      "subtitle": "Contacts",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -12153,7 +12153,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update sur contact.",
+      "description": "Met à jour un contact dans Front.",
       "args": {
         "title": "Mettre à jour un contact",
         "ui": {
@@ -12194,8 +12194,8 @@
       "key": "front_contact_delete_delete_a_contact",
       "name": "frontContactDeleteDeleteAContact",
       "schemaVersion": 2,
-      "title": "Supprimer un contact (4)",
-      "subtitle": "contacts",
+      "title": "Supprimer un contact",
+      "subtitle": "Contacts",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -12226,9 +12226,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete sur contact.",
+      "description": "Supprime un contact dans Front.",
       "args": {
-        "title": "Supprimer un contact (4)",
+        "title": "Supprimer un contact",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -12258,8 +12258,8 @@
       "key": "front_contact_list_list_teammate_contacts",
       "name": "frontContactListListTeammateContacts",
       "schemaVersion": 2,
-      "title": "Lister les contacts (4)",
-      "subtitle": "contacts",
+      "title": "Lister des contacts — du coéquipier",
+      "subtitle": "Contacts",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -12290,9 +12290,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur contact.",
+      "description": "Liste des contacts dans Front.",
       "args": {
-        "title": "Lister les contacts (4)",
+        "title": "Lister des contacts — du coéquipier",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -12322,8 +12322,8 @@
       "key": "front_contact_create_create_teammate_contact",
       "name": "frontContactCreateCreateTeammateContact",
       "schemaVersion": 2,
-      "title": "Créer un contact (4)",
-      "subtitle": "contacts",
+      "title": "Créer un contact — du coéquipier",
+      "subtitle": "Contacts",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -12354,9 +12354,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur contact.",
+      "description": "Crée un contact dans Front.",
       "args": {
-        "title": "Créer un contact (4)",
+        "title": "Créer un contact — du coéquipier",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -12395,8 +12395,8 @@
       "key": "front_contact_list_list_team_contacts",
       "name": "frontContactListListTeamContacts",
       "schemaVersion": 2,
-      "title": "Lister les contacts (5)",
-      "subtitle": "contacts",
+      "title": "Lister des contacts — de l’équipe",
+      "subtitle": "Contacts",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -12427,9 +12427,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur contact.",
+      "description": "Liste des contacts dans Front.",
       "args": {
-        "title": "Lister les contacts (5)",
+        "title": "Lister des contacts — de l’équipe",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -12459,8 +12459,8 @@
       "key": "front_contact_create_create_team_contact",
       "name": "frontContactCreateCreateTeamContact",
       "schemaVersion": 2,
-      "title": "Créer un contact (5)",
-      "subtitle": "contacts",
+      "title": "Créer un contact — de l’équipe",
+      "subtitle": "Contacts",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -12491,9 +12491,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur contact.",
+      "description": "Crée un contact dans Front.",
       "args": {
-        "title": "Créer un contact (5)",
+        "title": "Créer un contact — de l’équipe",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -12532,8 +12532,8 @@
       "key": "front_contact_list_list_list_contact_lists",
       "name": "frontContactListListListContactLists",
       "schemaVersion": 2,
-      "title": "Lister les contact_lists",
-      "subtitle": "contact_lists",
+      "title": "Lister des listes de contacts",
+      "subtitle": "Listes de contacts",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -12564,9 +12564,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur contact_list.",
+      "description": "Liste des listes de contacts dans Front.",
       "args": {
-        "title": "Lister les contact_lists",
+        "title": "Lister des listes de contacts",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -12581,8 +12581,8 @@
       "key": "front_contact_list_create_create_contact_list",
       "name": "frontContactListCreateCreateContactList",
       "schemaVersion": 2,
-      "title": "Créer un contact_list",
-      "subtitle": "contact_lists",
+      "title": "Créer une liste de contacts",
+      "subtitle": "Listes de contacts",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -12613,9 +12613,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur contact_list.",
+      "description": "Crée une liste de contacts dans Front.",
       "args": {
-        "title": "Créer un contact_list",
+        "title": "Créer une liste de contacts",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -12640,8 +12640,8 @@
       "key": "front_contact_list_delete_delete_contact_list",
       "name": "frontContactListDeleteDeleteContactList",
       "schemaVersion": 2,
-      "title": "Supprimer un contact_list",
-      "subtitle": "contact_lists",
+      "title": "Supprimer une liste de contacts",
+      "subtitle": "Listes de contacts",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -12672,9 +12672,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete sur contact_list.",
+      "description": "Supprime une liste de contacts dans Front.",
       "args": {
-        "title": "Supprimer un contact_list",
+        "title": "Supprimer une liste de contacts",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -12704,8 +12704,8 @@
       "key": "front_contact_list_list_list_teammate_contact_lists",
       "name": "frontContactListListListTeammateContactLists",
       "schemaVersion": 2,
-      "title": "Lister les contact_lists (2)",
-      "subtitle": "contact_lists",
+      "title": "Lister des listes de contacts — du coéquipier",
+      "subtitle": "Listes de contacts",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -12736,9 +12736,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur contact_list.",
+      "description": "Liste des listes de contacts dans Front.",
       "args": {
-        "title": "Lister les contact_lists (2)",
+        "title": "Lister des listes de contacts — du coéquipier",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -12768,8 +12768,8 @@
       "key": "front_contact_list_create_create_teammate_contact_list",
       "name": "frontContactListCreateCreateTeammateContactList",
       "schemaVersion": 2,
-      "title": "Créer un contact_list (2)",
-      "subtitle": "contact_lists",
+      "title": "Créer une liste de contacts — du coéquipier",
+      "subtitle": "Listes de contacts",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -12800,9 +12800,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur contact_list.",
+      "description": "Crée une liste de contacts dans Front.",
       "args": {
-        "title": "Créer un contact_list (2)",
+        "title": "Créer une liste de contacts — du coéquipier",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -12841,8 +12841,8 @@
       "key": "front_contact_list_list_list_team_contact_lists",
       "name": "frontContactListListListTeamContactLists",
       "schemaVersion": 2,
-      "title": "Lister les contact_lists (3)",
-      "subtitle": "contact_lists",
+      "title": "Lister des listes de contacts — de l’équipe",
+      "subtitle": "Listes de contacts",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -12873,9 +12873,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur contact_list.",
+      "description": "Liste des listes de contacts dans Front.",
       "args": {
-        "title": "Lister les contact_lists (3)",
+        "title": "Lister des listes de contacts — de l’équipe",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -12905,8 +12905,8 @@
       "key": "front_contact_list_create_create_team_contact_list",
       "name": "frontContactListCreateCreateTeamContactList",
       "schemaVersion": 2,
-      "title": "Créer un contact_list (3)",
-      "subtitle": "contact_lists",
+      "title": "Créer une liste de contacts — de l’équipe",
+      "subtitle": "Listes de contacts",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -12937,9 +12937,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur contact_list.",
+      "description": "Crée une liste de contacts dans Front.",
       "args": {
-        "title": "Créer un contact_list (3)",
+        "title": "Créer une liste de contacts — de l’équipe",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -12978,8 +12978,8 @@
       "key": "front_content_list_get_knowledge_base_article_with_content_in_default_locale",
       "name": "frontContentListGetKnowledgeBaseArticleWithContentInDefaultLocale",
       "schemaVersion": 2,
-      "title": "Lister les contents",
-      "subtitle": "contents",
+      "title": "Récupérer un contenu — locale par défaut",
+      "subtitle": "Contenus",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -13010,9 +13010,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur content.",
+      "description": "Récupère un contenu dans Front.",
       "args": {
-        "title": "Lister les contents",
+        "title": "Récupérer un contenu — locale par défaut",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -13042,8 +13042,8 @@
       "key": "front_content_update_update_article_content_in_default_locale",
       "name": "frontContentUpdateUpdateArticleContentInDefaultLocale",
       "schemaVersion": 2,
-      "title": "Mettre à jour un content",
-      "subtitle": "contents",
+      "title": "Mettre à jour un contenu — locale par défaut",
+      "subtitle": "Contenus",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -13074,9 +13074,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update sur content.",
+      "description": "Met à jour un contenu dans Front.",
       "args": {
-        "title": "Mettre à jour un content",
+        "title": "Mettre à jour un contenu — locale par défaut",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -13115,8 +13115,8 @@
       "key": "front_content_list_get_knowledge_base_article_with_content_in_specified_locale",
       "name": "frontContentListGetKnowledgeBaseArticleWithContentInSpecifiedLocale",
       "schemaVersion": 2,
-      "title": "Lister les contents (2)",
-      "subtitle": "contents",
+      "title": "Récupérer un contenu — locale spécifiée",
+      "subtitle": "Contenus",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -13147,9 +13147,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur content.",
+      "description": "Récupère un contenu dans Front.",
       "args": {
-        "title": "Lister les contents (2)",
+        "title": "Récupérer un contenu — locale spécifiée",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -13193,8 +13193,8 @@
       "key": "front_content_update_update_article_content_in_specified_locale",
       "name": "frontContentUpdateUpdateArticleContentInSpecifiedLocale",
       "schemaVersion": 2,
-      "title": "Mettre à jour un content (2)",
-      "subtitle": "contents",
+      "title": "Mettre à jour un contenu — locale spécifiée",
+      "subtitle": "Contenus",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -13225,9 +13225,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update sur content.",
+      "description": "Met à jour un contenu dans Front.",
       "args": {
-        "title": "Mettre à jour un content (2)",
+        "title": "Mettre à jour un contenu — locale spécifiée",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -13280,8 +13280,8 @@
       "key": "front_content_list_get_knowledge_base_category_content_in_default_locale",
       "name": "frontContentListGetKnowledgeBaseCategoryContentInDefaultLocale",
       "schemaVersion": 2,
-      "title": "Lister les contents (3)",
-      "subtitle": "contents",
+      "title": "Récupérer un contenu — catégorie (locale par défaut)",
+      "subtitle": "Contenus",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -13312,9 +13312,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur content.",
+      "description": "Récupère un contenu dans Front.",
       "args": {
-        "title": "Lister les contents (3)",
+        "title": "Récupérer un contenu — catégorie (locale par défaut)",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -13344,8 +13344,8 @@
       "key": "front_content_update_update_knowledge_base_category_in_default_locale",
       "name": "frontContentUpdateUpdateKnowledgeBaseCategoryInDefaultLocale",
       "schemaVersion": 2,
-      "title": "Mettre à jour un content (3)",
-      "subtitle": "contents",
+      "title": "Mettre à jour un contenu — catégorie (locale par défaut)",
+      "subtitle": "Contenus",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -13376,9 +13376,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update sur content.",
+      "description": "Met à jour un contenu dans Front.",
       "args": {
-        "title": "Mettre à jour un content (3)",
+        "title": "Mettre à jour un contenu — catégorie (locale par défaut)",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -13417,8 +13417,8 @@
       "key": "front_content_list_get_knowledge_base_category_with_content_in_specified_locale",
       "name": "frontContentListGetKnowledgeBaseCategoryWithContentInSpecifiedLocale",
       "schemaVersion": 2,
-      "title": "Lister les contents (4)",
-      "subtitle": "contents",
+      "title": "Récupérer un contenu — catégorie (locale spécifiée)",
+      "subtitle": "Contenus",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -13449,9 +13449,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur content.",
+      "description": "Récupère un contenu dans Front.",
       "args": {
-        "title": "Lister les contents (4)",
+        "title": "Récupérer un contenu — catégorie (locale spécifiée)",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -13495,8 +13495,8 @@
       "key": "front_content_update_update_knowledge_base_category_in_specified_locale",
       "name": "frontContentUpdateUpdateKnowledgeBaseCategoryInSpecifiedLocale",
       "schemaVersion": 2,
-      "title": "Mettre à jour un content (4)",
-      "subtitle": "contents",
+      "title": "Mettre à jour un contenu — catégorie (locale spécifiée)",
+      "subtitle": "Contenus",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -13527,9 +13527,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update sur content.",
+      "description": "Met à jour un contenu dans Front.",
       "args": {
-        "title": "Mettre à jour un content (4)",
+        "title": "Mettre à jour un contenu — catégorie (locale spécifiée)",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -13582,8 +13582,8 @@
       "key": "front_content_list_get_a_knowledge_base_with_content_in_default_locale",
       "name": "frontContentListGetAKnowledgeBaseWithContentInDefaultLocale",
       "schemaVersion": 2,
-      "title": "Lister les contents (5)",
-      "subtitle": "contents",
+      "title": "Récupérer un contenu — base de connaissances (locale par défaut)",
+      "subtitle": "Contenus",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -13614,9 +13614,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur content.",
+      "description": "Récupère un contenu dans Front.",
       "args": {
-        "title": "Lister les contents (5)",
+        "title": "Récupérer un contenu — base de connaissances (locale par défaut)",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -13646,8 +13646,8 @@
       "key": "front_content_update_update_knowledge_base_in_default_locale",
       "name": "frontContentUpdateUpdateKnowledgeBaseInDefaultLocale",
       "schemaVersion": 2,
-      "title": "Mettre à jour un content (5)",
-      "subtitle": "contents",
+      "title": "Mettre à jour un contenu — base de connaissances (locale par défaut)",
+      "subtitle": "Contenus",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -13678,9 +13678,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update sur content.",
+      "description": "Met à jour un contenu dans Front.",
       "args": {
-        "title": "Mettre à jour un content (5)",
+        "title": "Mettre à jour un contenu — base de connaissances (locale par défaut)",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -13719,8 +13719,8 @@
       "key": "front_content_list_get_a_knowledge_base_with_content_in_specified_locale",
       "name": "frontContentListGetAKnowledgeBaseWithContentInSpecifiedLocale",
       "schemaVersion": 2,
-      "title": "Lister les contents (6)",
-      "subtitle": "contents",
+      "title": "Récupérer un contenu — base de connaissances (locale spécifiée)",
+      "subtitle": "Contenus",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -13751,9 +13751,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur content.",
+      "description": "Récupère un contenu dans Front.",
       "args": {
-        "title": "Lister les contents (6)",
+        "title": "Récupérer un contenu — base de connaissances (locale spécifiée)",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -13797,8 +13797,8 @@
       "key": "front_content_update_update_knowledge_base_in_specified_locale",
       "name": "frontContentUpdateUpdateKnowledgeBaseInSpecifiedLocale",
       "schemaVersion": 2,
-      "title": "Mettre à jour un content (6)",
-      "subtitle": "contents",
+      "title": "Mettre à jour un contenu — base de connaissances (locale spécifiée)",
+      "subtitle": "Contenus",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -13829,9 +13829,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update sur content.",
+      "description": "Met à jour un contenu dans Front.",
       "args": {
-        "title": "Mettre à jour un content (6)",
+        "title": "Mettre à jour un contenu — base de connaissances (locale spécifiée)",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -13884,8 +13884,8 @@
       "key": "front_conversation_search_list_contact_conversations",
       "name": "frontConversationSearchListContactConversations",
       "schemaVersion": 2,
-      "title": "Rechercher des conversations",
-      "subtitle": "conversations",
+      "title": "Lister des conversations — du contact",
+      "subtitle": "Conversations",
       "icon": "fa-solid fa-magnifying-glass",
       "type": "function",
       "nodeKind": "function",
@@ -13916,9 +13916,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action search sur conversation.",
+      "description": "Liste des conversations dans Front.",
       "args": {
-        "title": "Rechercher des conversations",
+        "title": "Lister des conversations — du contact",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -13948,8 +13948,8 @@
       "key": "front_conversation_search_list_conversations",
       "name": "frontConversationSearchListConversations",
       "schemaVersion": 2,
-      "title": "Rechercher des conversations (2)",
-      "subtitle": "conversations",
+      "title": "Lister des conversations",
+      "subtitle": "Conversations",
       "icon": "fa-solid fa-magnifying-glass",
       "type": "function",
       "nodeKind": "function",
@@ -13980,9 +13980,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action search sur conversation.",
+      "description": "Liste des conversations dans Front.",
       "args": {
-        "title": "Rechercher des conversations (2)",
+        "title": "Lister des conversations",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -13997,8 +13997,8 @@
       "key": "front_conversation_comment_create_conversation",
       "name": "frontConversationCommentCreateConversation",
       "schemaVersion": 2,
-      "title": "Commenter un conversation",
-      "subtitle": "conversations",
+      "title": "Créer une conversation",
+      "subtitle": "Conversations",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -14029,9 +14029,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action comment sur conversation.",
+      "description": "Crée une conversation dans Front.",
       "args": {
-        "title": "Commenter un conversation",
+        "title": "Créer une conversation",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -14056,8 +14056,8 @@
       "key": "front_conversation_search_search_conversations",
       "name": "frontConversationSearchSearchConversations",
       "schemaVersion": 2,
-      "title": "Rechercher des conversations (3)",
-      "subtitle": "conversations",
+      "title": "Rechercher des conversations",
+      "subtitle": "Conversations",
       "icon": "fa-solid fa-magnifying-glass",
       "type": "function",
       "nodeKind": "function",
@@ -14088,9 +14088,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action search sur conversation.",
+      "description": "Recherche des conversations dans Front.",
       "args": {
-        "title": "Rechercher des conversations (3)",
+        "title": "Rechercher des conversations",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -14120,8 +14120,8 @@
       "key": "front_conversation_get_get_conversation_by_id",
       "name": "frontConversationGetGetConversationById",
       "schemaVersion": 2,
-      "title": "Récupérer un conversation",
-      "subtitle": "conversations",
+      "title": "Récupérer une conversation",
+      "subtitle": "Conversations",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
@@ -14152,9 +14152,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get sur conversation.",
+      "description": "Récupère une conversation dans Front.",
       "args": {
-        "title": "Récupérer un conversation",
+        "title": "Récupérer une conversation",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -14184,8 +14184,8 @@
       "key": "front_conversation_update_update_conversation",
       "name": "frontConversationUpdateUpdateConversation",
       "schemaVersion": 2,
-      "title": "Mettre à jour un conversation",
-      "subtitle": "conversations",
+      "title": "Mettre à jour une conversation",
+      "subtitle": "Conversations",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -14216,9 +14216,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update sur conversation.",
+      "description": "Met à jour une conversation dans Front.",
       "args": {
-        "title": "Mettre à jour un conversation",
+        "title": "Mettre à jour une conversation",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -14257,8 +14257,8 @@
       "key": "front_conversation_delete_delete_conversation",
       "name": "frontConversationDeleteDeleteConversation",
       "schemaVersion": 2,
-      "title": "Supprimer un conversation",
-      "subtitle": "conversations",
+      "title": "Supprimer une conversation",
+      "subtitle": "Conversations",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -14289,9 +14289,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete sur conversation.",
+      "description": "Supprime une conversation dans Front.",
       "args": {
-        "title": "Supprimer un conversation",
+        "title": "Supprimer une conversation",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -14321,8 +14321,8 @@
       "key": "front_conversation_comment_list_conversation_comments",
       "name": "frontConversationCommentListConversationComments",
       "schemaVersion": 2,
-      "title": "Commenter un conversation (2)",
-      "subtitle": "conversations",
+      "title": "Lister des conversations — de la conversation",
+      "subtitle": "Conversations",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -14353,9 +14353,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action comment sur conversation.",
+      "description": "Liste des conversations dans Front.",
       "args": {
-        "title": "Commenter un conversation (2)",
+        "title": "Lister des conversations — de la conversation",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -14385,8 +14385,8 @@
       "key": "front_conversation_comment_add_comment",
       "name": "frontConversationCommentAddComment",
       "schemaVersion": 2,
-      "title": "Commenter un conversation (3)",
-      "subtitle": "conversations",
+      "title": "Ajouter une conversation — ajout de commentaire",
+      "subtitle": "Conversations",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -14417,9 +14417,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action comment sur conversation.",
+      "description": "Ajoute une conversation dans Front.",
       "args": {
-        "title": "Commenter un conversation (3)",
+        "title": "Ajouter une conversation — ajout de commentaire",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -14458,8 +14458,8 @@
       "key": "front_conversation_tag_add_conversation_tag",
       "name": "frontConversationTagAddConversationTag",
       "schemaVersion": 2,
-      "title": "Étiqueter un conversation",
-      "subtitle": "conversations",
+      "title": "Ajouter une conversation — ajout d’étiquette",
+      "subtitle": "Conversations",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -14490,9 +14490,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action tag sur conversation.",
+      "description": "Ajoute une conversation dans Front.",
       "args": {
-        "title": "Étiqueter un conversation",
+        "title": "Ajouter une conversation — ajout d’étiquette",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -14531,8 +14531,8 @@
       "key": "front_conversation_tag_remove_conversation_tag",
       "name": "frontConversationTagRemoveConversationTag",
       "schemaVersion": 2,
-      "title": "Étiqueter un conversation (2)",
-      "subtitle": "conversations",
+      "title": "Retirer une conversation",
+      "subtitle": "Conversations",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -14563,9 +14563,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action tag sur conversation.",
+      "description": "Retire une conversation dans Front.",
       "args": {
-        "title": "Étiqueter un conversation (2)",
+        "title": "Retirer une conversation",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -14595,8 +14595,8 @@
       "key": "front_conversation_search_list_inbox_conversations",
       "name": "frontConversationSearchListInboxConversations",
       "schemaVersion": 2,
-      "title": "Rechercher des conversations (4)",
-      "subtitle": "conversations",
+      "title": "Lister des conversations — de la boîte de réception",
+      "subtitle": "Conversations",
       "icon": "fa-solid fa-magnifying-glass",
       "type": "function",
       "nodeKind": "function",
@@ -14627,9 +14627,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action search sur conversation.",
+      "description": "Liste des conversations dans Front.",
       "args": {
-        "title": "Rechercher des conversations (4)",
+        "title": "Lister des conversations — de la boîte de réception",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -14659,8 +14659,8 @@
       "key": "front_conversation_search_list_link_conversations",
       "name": "frontConversationSearchListLinkConversations",
       "schemaVersion": 2,
-      "title": "Rechercher des conversations (5)",
-      "subtitle": "conversations",
+      "title": "Lister des conversations — du lien",
+      "subtitle": "Conversations",
       "icon": "fa-solid fa-magnifying-glass",
       "type": "function",
       "nodeKind": "function",
@@ -14691,9 +14691,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action search sur conversation.",
+      "description": "Liste des conversations dans Front.",
       "args": {
-        "title": "Rechercher des conversations (5)",
+        "title": "Lister des conversations — du lien",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -14723,8 +14723,8 @@
       "key": "front_conversation_search_list_tagged_conversations",
       "name": "frontConversationSearchListTaggedConversations",
       "schemaVersion": 2,
-      "title": "Rechercher des conversations (6)",
-      "subtitle": "conversations",
+      "title": "Lister des conversations — étiquetées",
+      "subtitle": "Conversations",
       "icon": "fa-solid fa-magnifying-glass",
       "type": "function",
       "nodeKind": "function",
@@ -14755,9 +14755,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action search sur conversation.",
+      "description": "Liste des conversations dans Front.",
       "args": {
-        "title": "Rechercher des conversations (6)",
+        "title": "Lister des conversations — étiquetées",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -14787,8 +14787,8 @@
       "key": "front_conversation_search_list_assigned_conversations",
       "name": "frontConversationSearchListAssignedConversations",
       "schemaVersion": 2,
-      "title": "Rechercher des conversations (7)",
-      "subtitle": "conversations",
+      "title": "Lister des conversations — assignées",
+      "subtitle": "Conversations",
       "icon": "fa-solid fa-magnifying-glass",
       "type": "function",
       "nodeKind": "function",
@@ -14819,9 +14819,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action search sur conversation.",
+      "description": "Liste des conversations dans Front.",
       "args": {
-        "title": "Rechercher des conversations (7)",
+        "title": "Lister des conversations — assignées",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -14851,8 +14851,8 @@
       "key": "front_custom_field_list_list_account_custom_fields",
       "name": "frontCustomFieldListListAccountCustomFields",
       "schemaVersion": 2,
-      "title": "Lister les custom_fields",
-      "subtitle": "custom_fields",
+      "title": "Lister des champs personnalisés — du compte",
+      "subtitle": "Champs personnalisés",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -14883,9 +14883,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur custom_field.",
+      "description": "Liste des champs personnalisés dans Front.",
       "args": {
-        "title": "Lister les custom_fields",
+        "title": "Lister des champs personnalisés — du compte",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -14900,8 +14900,8 @@
       "key": "front_custom_field_list_list_contact_custom_fields",
       "name": "frontCustomFieldListListContactCustomFields",
       "schemaVersion": 2,
-      "title": "Lister les custom_fields (2)",
-      "subtitle": "custom_fields",
+      "title": "Lister des champs personnalisés — des contacts",
+      "subtitle": "Champs personnalisés",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -14932,9 +14932,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur custom_field.",
+      "description": "Liste des champs personnalisés dans Front.",
       "args": {
-        "title": "Lister les custom_fields (2)",
+        "title": "Lister des champs personnalisés — des contacts",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -14949,8 +14949,8 @@
       "key": "front_custom_field_list_list_conversation_custom_fields",
       "name": "frontCustomFieldListListConversationCustomFields",
       "schemaVersion": 2,
-      "title": "Lister les custom_fields (3)",
-      "subtitle": "custom_fields",
+      "title": "Lister des champs personnalisés — des conversations",
+      "subtitle": "Champs personnalisés",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -14981,9 +14981,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur custom_field.",
+      "description": "Liste des champs personnalisés dans Front.",
       "args": {
-        "title": "Lister les custom_fields (3)",
+        "title": "Lister des champs personnalisés — des conversations",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -14998,8 +14998,8 @@
       "key": "front_custom_field_list_list_inbox_custom_fields",
       "name": "frontCustomFieldListListInboxCustomFields",
       "schemaVersion": 2,
-      "title": "Lister les custom_fields (4)",
-      "subtitle": "custom_fields",
+      "title": "Lister des champs personnalisés — de la boîte de réception",
+      "subtitle": "Champs personnalisés",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -15030,9 +15030,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur custom_field.",
+      "description": "Liste des champs personnalisés dans Front.",
       "args": {
-        "title": "Lister les custom_fields (4)",
+        "title": "Lister des champs personnalisés — de la boîte de réception",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -15047,8 +15047,8 @@
       "key": "front_custom_field_list_list_link_custom_fields",
       "name": "frontCustomFieldListListLinkCustomFields",
       "schemaVersion": 2,
-      "title": "Lister les custom_fields (5)",
-      "subtitle": "custom_fields",
+      "title": "Lister des champs personnalisés — du lien",
+      "subtitle": "Champs personnalisés",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -15079,9 +15079,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur custom_field.",
+      "description": "Liste des champs personnalisés dans Front.",
       "args": {
-        "title": "Lister les custom_fields (5)",
+        "title": "Lister des champs personnalisés — du lien",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -15096,8 +15096,8 @@
       "key": "front_custom_field_list_list_teammate_custom_fields",
       "name": "frontCustomFieldListListTeammateCustomFields",
       "schemaVersion": 2,
-      "title": "Lister les custom_fields (6)",
-      "subtitle": "custom_fields",
+      "title": "Lister des champs personnalisés — du coéquipier",
+      "subtitle": "Champs personnalisés",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -15128,9 +15128,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur custom_field.",
+      "description": "Liste des champs personnalisés dans Front.",
       "args": {
-        "title": "Lister les custom_fields (6)",
+        "title": "Lister des champs personnalisés — du coéquipier",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -15145,8 +15145,8 @@
       "key": "front_download_comment_download_attachment_for_a_comment",
       "name": "frontDownloadCommentDownloadAttachmentForAComment",
       "schemaVersion": 2,
-      "title": "Commenter un download",
-      "subtitle": "downloads",
+      "title": "Commenter un fichier",
+      "subtitle": "Téléchargements",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -15177,9 +15177,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action comment sur download.",
+      "description": "Commente un fichier dans Front.",
       "args": {
-        "title": "Commenter un download",
+        "title": "Commenter un fichier",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -15223,8 +15223,8 @@
       "key": "front_download_get_download_attachment",
       "name": "frontDownloadGetDownloadAttachment",
       "schemaVersion": 2,
-      "title": "Récupérer un download",
-      "subtitle": "downloads",
+      "title": "Récupérer un fichier",
+      "subtitle": "Téléchargements",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
@@ -15255,9 +15255,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get sur download.",
+      "description": "Récupère un fichier dans Front.",
       "args": {
-        "title": "Récupérer un download",
+        "title": "Récupérer un fichier",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -15287,8 +15287,8 @@
       "key": "front_download_get_download_attachment_from_an_article",
       "name": "frontDownloadGetDownloadAttachmentFromAnArticle",
       "schemaVersion": 2,
-      "title": "Récupérer un download (2)",
-      "subtitle": "downloads",
+      "title": "Récupérer un fichier — pièce jointe d’un article",
+      "subtitle": "Téléchargements",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
@@ -15319,9 +15319,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get sur download.",
+      "description": "Récupère un fichier dans Front.",
       "args": {
-        "title": "Récupérer un download (2)",
+        "title": "Récupérer un fichier — pièce jointe d’un article",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -15365,8 +15365,8 @@
       "key": "front_download_get_download_attachment_for_a_message_template",
       "name": "frontDownloadGetDownloadAttachmentForAMessageTemplate",
       "schemaVersion": 2,
-      "title": "Récupérer un download (3)",
-      "subtitle": "downloads",
+      "title": "Récupérer un fichier — pièce jointe d’un modèle de message",
+      "subtitle": "Téléchargements",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
@@ -15397,9 +15397,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get sur download.",
+      "description": "Récupère un fichier dans Front.",
       "args": {
-        "title": "Récupérer un download (3)",
+        "title": "Récupérer un fichier — pièce jointe d’un modèle de message",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -15443,8 +15443,8 @@
       "key": "front_download_get_download_attachment_for_a_message",
       "name": "frontDownloadGetDownloadAttachmentForAMessage",
       "schemaVersion": 2,
-      "title": "Récupérer un download (4)",
-      "subtitle": "downloads",
+      "title": "Récupérer un fichier — pièce jointe d’un message",
+      "subtitle": "Téléchargements",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
@@ -15475,9 +15475,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get sur download.",
+      "description": "Récupère un fichier dans Front.",
       "args": {
-        "title": "Récupérer un download (4)",
+        "title": "Récupérer un fichier — pièce jointe d’un message",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -15521,8 +15521,8 @@
       "key": "front_draft_create_create_draft",
       "name": "frontDraftCreateCreateDraft",
       "schemaVersion": 2,
-      "title": "Créer un draft",
-      "subtitle": "drafts",
+      "title": "Créer un brouillon",
+      "subtitle": "Brouillons",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -15553,9 +15553,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur draft.",
+      "description": "Crée un brouillon dans Front.",
       "args": {
-        "title": "Créer un draft",
+        "title": "Créer un brouillon",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -15594,8 +15594,8 @@
       "key": "front_draft_list_list_conversation_drafts",
       "name": "frontDraftListListConversationDrafts",
       "schemaVersion": 2,
-      "title": "Lister les drafts",
-      "subtitle": "drafts",
+      "title": "Lister des brouillons",
+      "subtitle": "Brouillons",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -15626,9 +15626,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur draft.",
+      "description": "Liste des brouillons dans Front.",
       "args": {
-        "title": "Lister les drafts",
+        "title": "Lister des brouillons",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -15658,8 +15658,8 @@
       "key": "front_draft_create_create_draft_reply",
       "name": "frontDraftCreateCreateDraftReply",
       "schemaVersion": 2,
-      "title": "Créer un draft (2)",
-      "subtitle": "drafts",
+      "title": "Créer un brouillon — réponse",
+      "subtitle": "Brouillons",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -15690,9 +15690,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur draft.",
+      "description": "Crée un brouillon dans Front.",
       "args": {
-        "title": "Créer un draft (2)",
+        "title": "Créer un brouillon — réponse",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -15731,8 +15731,8 @@
       "key": "front_draft_delete_delete_draft",
       "name": "frontDraftDeleteDeleteDraft",
       "schemaVersion": 2,
-      "title": "Supprimer un draft",
-      "subtitle": "drafts",
+      "title": "Supprimer un brouillon",
+      "subtitle": "Brouillons",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -15763,9 +15763,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete sur draft.",
+      "description": "Supprime un brouillon dans Front.",
       "args": {
-        "title": "Supprimer un draft",
+        "title": "Supprimer un brouillon",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -15795,8 +15795,8 @@
       "key": "front_draft_update_edit_draft",
       "name": "frontDraftUpdateEditDraft",
       "schemaVersion": 2,
-      "title": "Mettre à jour un draft",
-      "subtitle": "drafts",
+      "title": "Modifier un brouillon",
+      "subtitle": "Brouillons",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -15827,9 +15827,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update sur draft.",
+      "description": "Modifie un brouillon dans Front.",
       "args": {
-        "title": "Mettre à jour un draft",
+        "title": "Modifier un brouillon",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -15868,8 +15868,8 @@
       "key": "front_event_trigger_trigger_app_event",
       "name": "frontEventTriggerTriggerAppEvent",
       "schemaVersion": 2,
-      "title": "Déclencher un event",
-      "subtitle": "events",
+      "title": "Déclencher un événement",
+      "subtitle": "Événements",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -15900,9 +15900,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action trigger sur event.",
+      "description": "Déclenche un événement dans Front.",
       "args": {
-        "title": "Déclencher un event",
+        "title": "Déclencher un événement",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -15941,8 +15941,8 @@
       "key": "front_event_list_list_conversation_events",
       "name": "frontEventListListConversationEvents",
       "schemaVersion": 2,
-      "title": "Lister les events",
-      "subtitle": "events",
+      "title": "Lister des événements — de la conversation",
+      "subtitle": "Événements",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -15973,9 +15973,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur event.",
+      "description": "Liste des événements dans Front.",
       "args": {
-        "title": "Lister les events",
+        "title": "Lister des événements — de la conversation",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16005,8 +16005,8 @@
       "key": "front_event_list_list_events",
       "name": "frontEventListListEvents",
       "schemaVersion": 2,
-      "title": "Lister les events (2)",
-      "subtitle": "events",
+      "title": "Lister des événements — globaux",
+      "subtitle": "Événements",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -16037,9 +16037,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur event.",
+      "description": "Liste des événements dans Front.",
       "args": {
-        "title": "Lister les events (2)",
+        "title": "Lister des événements — globaux",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16064,8 +16064,8 @@
       "key": "front_event_get_get_event",
       "name": "frontEventGetGetEvent",
       "schemaVersion": 2,
-      "title": "Récupérer un event",
-      "subtitle": "events",
+      "title": "Récupérer un événement",
+      "subtitle": "Événements",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
@@ -16096,9 +16096,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get sur event.",
+      "description": "Récupère un événement dans Front.",
       "args": {
-        "title": "Récupérer un event",
+        "title": "Récupérer un événement",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16128,8 +16128,8 @@
       "key": "front_follower_list_list_conversation_followers",
       "name": "frontFollowerListListConversationFollowers",
       "schemaVersion": 2,
-      "title": "Lister les followers",
-      "subtitle": "followers",
+      "title": "Lister des abonnés",
+      "subtitle": "Abonnés",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -16160,9 +16160,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur follower.",
+      "description": "Liste des abonnés dans Front.",
       "args": {
-        "title": "Lister les followers",
+        "title": "Lister des abonnés",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16192,8 +16192,8 @@
       "key": "front_follower_create_add_conversation_followers",
       "name": "frontFollowerCreateAddConversationFollowers",
       "schemaVersion": 2,
-      "title": "Créer un follower",
-      "subtitle": "followers",
+      "title": "Ajouter un abonné",
+      "subtitle": "Abonnés",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -16224,9 +16224,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur follower.",
+      "description": "Ajoute un abonné dans Front.",
       "args": {
-        "title": "Créer un follower",
+        "title": "Ajouter un abonné",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16274,8 +16274,8 @@
       "key": "front_follower_delete_delete_conversation_followers",
       "name": "frontFollowerDeleteDeleteConversationFollowers",
       "schemaVersion": 2,
-      "title": "Supprimer un follower",
-      "subtitle": "followers",
+      "title": "Supprimer un abonné",
+      "subtitle": "Abonnés",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -16306,9 +16306,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete sur follower.",
+      "description": "Supprime un abonné dans Front.",
       "args": {
-        "title": "Supprimer un follower",
+        "title": "Supprimer un abonné",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16338,8 +16338,8 @@
       "key": "front_handle_create_add_contact_handle",
       "name": "frontHandleCreateAddContactHandle",
       "schemaVersion": 2,
-      "title": "Créer un handle",
-      "subtitle": "handles",
+      "title": "Ajouter un identifiant de contact",
+      "subtitle": "Identifiants de contact",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -16370,9 +16370,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur handle.",
+      "description": "Ajoute un identifiant de contact dans Front.",
       "args": {
-        "title": "Créer un handle",
+        "title": "Ajouter un identifiant de contact",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16411,8 +16411,8 @@
       "key": "front_handle_delete_delete_contact_handle",
       "name": "frontHandleDeleteDeleteContactHandle",
       "schemaVersion": 2,
-      "title": "Supprimer un handle",
-      "subtitle": "handles",
+      "title": "Supprimer un identifiant de contact",
+      "subtitle": "Identifiants de contact",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -16443,9 +16443,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete sur handle.",
+      "description": "Supprime un identifiant de contact dans Front.",
       "args": {
-        "title": "Supprimer un handle",
+        "title": "Supprimer un identifiant de contact",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16475,8 +16475,8 @@
       "key": "front_imported_message_send_import_inbox_message",
       "name": "frontImportedMessageSendImportInboxMessage",
       "schemaVersion": 2,
-      "title": "Envoyer un imported_message",
-      "subtitle": "imported_messages",
+      "title": "Envoyer un message importé",
+      "subtitle": "Messages importés",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -16507,9 +16507,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action send sur imported_message.",
+      "description": "Envoie un message importé via Front.",
       "args": {
-        "title": "Envoyer un imported_message",
+        "title": "Envoyer un message importé",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16548,8 +16548,8 @@
       "key": "front_inbound_message_create_sync_inbound_message",
       "name": "frontInboundMessageCreateSyncInboundMessage",
       "schemaVersion": 2,
-      "title": "Créer un inbound_message",
-      "subtitle": "inbound_messages",
+      "title": "Créer un message entrant",
+      "subtitle": "Messages entrants",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -16580,9 +16580,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur inbound_message.",
+      "description": "Crée un message entrant dans Front.",
       "args": {
-        "title": "Créer un inbound_message",
+        "title": "Créer un message entrant",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16621,8 +16621,8 @@
       "key": "front_inboxe_list_list_conversation_inboxes",
       "name": "frontInboxeListListConversationInboxes",
       "schemaVersion": 2,
-      "title": "Lister les inboxes",
-      "subtitle": "inboxes",
+      "title": "Lister des boîtes de réception — de la conversation",
+      "subtitle": "Boîtes de réception",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -16653,9 +16653,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur inboxe.",
+      "description": "Liste des boîtes de réception dans Front.",
       "args": {
-        "title": "Lister les inboxes",
+        "title": "Lister des boîtes de réception — de la conversation",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16685,8 +16685,8 @@
       "key": "front_inboxe_list_list_inboxes",
       "name": "frontInboxeListListInboxes",
       "schemaVersion": 2,
-      "title": "Lister les inboxes (2)",
-      "subtitle": "inboxes",
+      "title": "Lister des boîtes de réception",
+      "subtitle": "Boîtes de réception",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -16717,9 +16717,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur inboxe.",
+      "description": "Liste des boîtes de réception dans Front.",
       "args": {
-        "title": "Lister les inboxes (2)",
+        "title": "Lister des boîtes de réception",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16734,8 +16734,8 @@
       "key": "front_inboxe_create_create_inbox",
       "name": "frontInboxeCreateCreateInbox",
       "schemaVersion": 2,
-      "title": "Créer un inboxe",
-      "subtitle": "inboxes",
+      "title": "Créer une boîte de réception",
+      "subtitle": "Boîtes de réception",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -16766,9 +16766,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur inboxe.",
+      "description": "Crée une boîte de réception dans Front.",
       "args": {
-        "title": "Créer un inboxe",
+        "title": "Créer une boîte de réception",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16793,8 +16793,8 @@
       "key": "front_inboxe_get_get_inbox",
       "name": "frontInboxeGetGetInbox",
       "schemaVersion": 2,
-      "title": "Récupérer un inboxe",
-      "subtitle": "inboxes",
+      "title": "Récupérer une boîte de réception",
+      "subtitle": "Boîtes de réception",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
@@ -16825,9 +16825,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get sur inboxe.",
+      "description": "Récupère une boîte de réception dans Front.",
       "args": {
-        "title": "Récupérer un inboxe",
+        "title": "Récupérer une boîte de réception",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16857,8 +16857,8 @@
       "key": "front_inboxe_list_list_company_teammate_group_team_inboxes",
       "name": "frontInboxeListListCompanyTeammateGroupTeamInboxes",
       "schemaVersion": 2,
-      "title": "Lister les inboxes (3)",
-      "subtitle": "inboxes",
+      "title": "Lister des boîtes de réception — de l’entreprise/groupe/équipe",
+      "subtitle": "Boîtes de réception",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -16889,9 +16889,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur inboxe.",
+      "description": "Liste des boîtes de réception dans Front.",
       "args": {
-        "title": "Lister les inboxes (3)",
+        "title": "Lister des boîtes de réception — de l’entreprise/groupe/équipe",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16921,8 +16921,8 @@
       "key": "front_inboxe_create_add_company_teammate_group_team_inboxes",
       "name": "frontInboxeCreateAddCompanyTeammateGroupTeamInboxes",
       "schemaVersion": 2,
-      "title": "Créer un inboxe (2)",
-      "subtitle": "inboxes",
+      "title": "Ajouter une boîte de réception",
+      "subtitle": "Boîtes de réception",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -16953,9 +16953,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur inboxe.",
+      "description": "Ajoute une boîte de réception dans Front.",
       "args": {
-        "title": "Créer un inboxe (2)",
+        "title": "Ajouter une boîte de réception",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16994,8 +16994,8 @@
       "key": "front_inboxe_delete_remove_company_teammate_group_team_inboxes",
       "name": "frontInboxeDeleteRemoveCompanyTeammateGroupTeamInboxes",
       "schemaVersion": 2,
-      "title": "Supprimer un inboxe",
-      "subtitle": "inboxes",
+      "title": "Retirer une boîte de réception",
+      "subtitle": "Boîtes de réception",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -17026,9 +17026,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete sur inboxe.",
+      "description": "Retire une boîte de réception dans Front.",
       "args": {
-        "title": "Supprimer un inboxe",
+        "title": "Retirer une boîte de réception",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17058,8 +17058,8 @@
       "key": "front_inboxe_list_list_team_inboxes",
       "name": "frontInboxeListListTeamInboxes",
       "schemaVersion": 2,
-      "title": "Lister les inboxes (4)",
-      "subtitle": "inboxes",
+      "title": "Lister des boîtes de réception — de l’équipe",
+      "subtitle": "Boîtes de réception",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -17090,9 +17090,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur inboxe.",
+      "description": "Liste des boîtes de réception dans Front.",
       "args": {
-        "title": "Lister les inboxes (4)",
+        "title": "Lister des boîtes de réception — de l’équipe",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17122,8 +17122,8 @@
       "key": "front_inboxe_create_create_team_inbox",
       "name": "frontInboxeCreateCreateTeamInbox",
       "schemaVersion": 2,
-      "title": "Créer un inboxe (3)",
-      "subtitle": "inboxes",
+      "title": "Créer une boîte de réception — de l’équipe",
+      "subtitle": "Boîtes de réception",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -17154,9 +17154,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur inboxe.",
+      "description": "Crée une boîte de réception dans Front.",
       "args": {
-        "title": "Créer un inboxe (3)",
+        "title": "Créer une boîte de réception — de l’équipe",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17195,8 +17195,8 @@
       "key": "front_incoming_message_create_receive_custom_messages",
       "name": "frontIncomingMessageCreateReceiveCustomMessages",
       "schemaVersion": 2,
-      "title": "Créer un incoming_message",
-      "subtitle": "incoming_messages",
+      "title": "Créer un message entrant — custom messages",
+      "subtitle": "Messages entrants",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -17227,9 +17227,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur incoming_message.",
+      "description": "Crée un message entrant dans Front.",
       "args": {
-        "title": "Créer un incoming_message",
+        "title": "Créer un message entrant — custom messages",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17268,8 +17268,8 @@
       "key": "front_knowledge_bas_list_list_knowledge_bases",
       "name": "frontKnowledgeBasListListKnowledgeBases",
       "schemaVersion": 2,
-      "title": "Lister les knowledge_bases",
-      "subtitle": "knowledge_bases",
+      "title": "Lister des bases de connaissances",
+      "subtitle": "Bases de connaissances",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -17300,9 +17300,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur knowledge_bas.",
+      "description": "Liste des bases de connaissances dans Front.",
       "args": {
-        "title": "Lister les knowledge_bases",
+        "title": "Lister des bases de connaissances",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17317,8 +17317,8 @@
       "key": "front_knowledge_bas_create_create_a_knowledge_base",
       "name": "frontKnowledgeBasCreateCreateAKnowledgeBase",
       "schemaVersion": 2,
-      "title": "Créer un knowledge_bas",
-      "subtitle": "knowledge_bases",
+      "title": "Créer une base de connaissances",
+      "subtitle": "Bases de connaissances",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -17349,9 +17349,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur knowledge_bas.",
+      "description": "Crée une base de connaissances dans Front.",
       "args": {
-        "title": "Créer un knowledge_bas",
+        "title": "Créer une base de connaissances",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17376,8 +17376,8 @@
       "key": "front_knowledge_bas_get_get_a_knowledge_base",
       "name": "frontKnowledgeBasGetGetAKnowledgeBase",
       "schemaVersion": 2,
-      "title": "Récupérer un knowledge_bas",
-      "subtitle": "knowledge_bases",
+      "title": "Récupérer une base de connaissances",
+      "subtitle": "Bases de connaissances",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
@@ -17408,9 +17408,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get sur knowledge_bas.",
+      "description": "Récupère une base de connaissances dans Front.",
       "args": {
-        "title": "Récupérer un knowledge_bas",
+        "title": "Récupérer une base de connaissances",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17440,8 +17440,8 @@
       "key": "front_knowledge_base_article_get_get_a_knowledge_base_article",
       "name": "frontKnowledgeBaseArticleGetGetAKnowledgeBaseArticle",
       "schemaVersion": 2,
-      "title": "Récupérer un knowledge_base_article",
-      "subtitle": "knowledge_base_articles",
+      "title": "Récupérer un article de base de connaissances",
+      "subtitle": "Articles de base de connaissances",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
@@ -17472,9 +17472,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get sur knowledge_base_article.",
+      "description": "Récupère un article de base de connaissances dans Front.",
       "args": {
-        "title": "Récupérer un knowledge_base_article",
+        "title": "Récupérer un article de base de connaissances",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17504,8 +17504,8 @@
       "key": "front_knowledge_base_article_delete_delete_an_article",
       "name": "frontKnowledgeBaseArticleDeleteDeleteAnArticle",
       "schemaVersion": 2,
-      "title": "Supprimer un knowledge_base_article",
-      "subtitle": "knowledge_base_articles",
+      "title": "Supprimer un article de base de connaissances",
+      "subtitle": "Articles de base de connaissances",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -17536,9 +17536,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete sur knowledge_base_article.",
+      "description": "Supprime un article de base de connaissances dans Front.",
       "args": {
-        "title": "Supprimer un knowledge_base_article",
+        "title": "Supprimer un article de base de connaissances",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17568,8 +17568,8 @@
       "key": "front_knowledge_base_category_get_get_a_knowledge_base_category",
       "name": "frontKnowledgeBaseCategoryGetGetAKnowledgeBaseCategory",
       "schemaVersion": 2,
-      "title": "Récupérer un knowledge_base_category",
-      "subtitle": "knowledge_base_categories",
+      "title": "Récupérer une catégorie de base de connaissances",
+      "subtitle": "Catégories de base de connaissances",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
@@ -17600,9 +17600,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get sur knowledge_base_category.",
+      "description": "Récupère une catégorie de base de connaissances dans Front.",
       "args": {
-        "title": "Récupérer un knowledge_base_category",
+        "title": "Récupérer une catégorie de base de connaissances",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17632,8 +17632,8 @@
       "key": "front_knowledge_base_category_delete_delete_a_knowledge_base_category",
       "name": "frontKnowledgeBaseCategoryDeleteDeleteAKnowledgeBaseCategory",
       "schemaVersion": 2,
-      "title": "Supprimer un knowledge_base_category",
-      "subtitle": "knowledge_base_categories",
+      "title": "Supprimer une catégorie de base de connaissances",
+      "subtitle": "Catégories de base de connaissances",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -17664,9 +17664,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete sur knowledge_base_category.",
+      "description": "Supprime une catégorie de base de connaissances dans Front.",
       "args": {
-        "title": "Supprimer un knowledge_base_category",
+        "title": "Supprimer une catégorie de base de connaissances",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17696,8 +17696,8 @@
       "key": "front_link_create_add_conversation_link",
       "name": "frontLinkCreateAddConversationLink",
       "schemaVersion": 2,
-      "title": "Créer un link",
-      "subtitle": "links",
+      "title": "Ajouter un lien",
+      "subtitle": "Liens",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -17728,9 +17728,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur link.",
+      "description": "Ajoute un lien dans Front.",
       "args": {
-        "title": "Créer un link",
+        "title": "Ajouter un lien",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17769,8 +17769,8 @@
       "key": "front_link_delete_remove_conversation_links",
       "name": "frontLinkDeleteRemoveConversationLinks",
       "schemaVersion": 2,
-      "title": "Supprimer un link",
-      "subtitle": "links",
+      "title": "Retirer un lien",
+      "subtitle": "Liens",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -17801,9 +17801,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete sur link.",
+      "description": "Retire un lien dans Front.",
       "args": {
-        "title": "Supprimer un link",
+        "title": "Retirer un lien",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17833,8 +17833,8 @@
       "key": "front_link_list_list_links",
       "name": "frontLinkListListLinks",
       "schemaVersion": 2,
-      "title": "Lister les links",
-      "subtitle": "links",
+      "title": "Lister des liens",
+      "subtitle": "Liens",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -17865,9 +17865,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur link.",
+      "description": "Liste des liens dans Front.",
       "args": {
-        "title": "Lister les links",
+        "title": "Lister des liens",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17882,8 +17882,8 @@
       "key": "front_link_create_create_link",
       "name": "frontLinkCreateCreateLink",
       "schemaVersion": 2,
-      "title": "Créer un link (2)",
-      "subtitle": "links",
+      "title": "Créer un lien",
+      "subtitle": "Liens",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -17914,9 +17914,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur link.",
+      "description": "Crée un lien dans Front.",
       "args": {
-        "title": "Créer un link (2)",
+        "title": "Créer un lien",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17941,8 +17941,8 @@
       "key": "front_link_get_get_link",
       "name": "frontLinkGetGetLink",
       "schemaVersion": 2,
-      "title": "Récupérer un link",
-      "subtitle": "links",
+      "title": "Récupérer un lien",
+      "subtitle": "Liens",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
@@ -17973,9 +17973,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get sur link.",
+      "description": "Récupère un lien dans Front.",
       "args": {
-        "title": "Récupérer un link",
+        "title": "Récupérer un lien",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -18005,8 +18005,8 @@
       "key": "front_link_update_update_a_link",
       "name": "frontLinkUpdateUpdateALink",
       "schemaVersion": 2,
-      "title": "Mettre à jour un link",
-      "subtitle": "links",
+      "title": "Mettre à jour un lien",
+      "subtitle": "Liens",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -18037,9 +18037,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update sur link.",
+      "description": "Met à jour un lien dans Front.",
       "args": {
-        "title": "Mettre à jour un link",
+        "title": "Mettre à jour un lien",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -18078,8 +18078,8 @@
       "key": "front_me_list_api_token_details",
       "name": "frontMeListApiTokenDetails",
       "schemaVersion": 2,
-      "title": "Lister les mes",
-      "subtitle": "mes",
+      "title": "Lister les profils API",
+      "subtitle": "Profil API",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -18110,9 +18110,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur me.",
+      "description": "Liste les profils API dans Front.",
       "args": {
-        "title": "Lister les mes",
+        "title": "Lister les profils API",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -18127,8 +18127,8 @@
       "key": "front_mention_comment_list_comment_mentions",
       "name": "frontMentionCommentListCommentMentions",
       "schemaVersion": 2,
-      "title": "Commenter un mention",
-      "subtitle": "mentions",
+      "title": "Lister des mentions",
+      "subtitle": "Mentions",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -18159,9 +18159,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action comment sur mention.",
+      "description": "Liste des mentions dans Front.",
       "args": {
-        "title": "Commenter un mention",
+        "title": "Lister des mentions",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -18191,8 +18191,8 @@
       "key": "front_merge_create_merge_contacts",
       "name": "frontMergeCreateMergeContacts",
       "schemaVersion": 2,
-      "title": "Créer un merge",
-      "subtitle": "merges",
+      "title": "Créer une fusion de contacts",
+      "subtitle": "Fusions de contacts",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -18223,9 +18223,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur merge.",
+      "description": "Crée une fusion de contacts dans Front.",
       "args": {
-        "title": "Créer un merge",
+        "title": "Créer une fusion de contacts",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -18250,8 +18250,8 @@
       "key": "front_message_send_create_message",
       "name": "frontMessageSendCreateMessage",
       "schemaVersion": 2,
-      "title": "Envoyer un message",
-      "subtitle": "messages",
+      "title": "Créer un message",
+      "subtitle": "Messages",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -18282,9 +18282,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action send sur message.",
+      "description": "Crée un message dans Front.",
       "args": {
-        "title": "Envoyer un message",
+        "title": "Créer un message",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -18323,8 +18323,8 @@
       "key": "front_message_list_list_conversation_messages",
       "name": "frontMessageListListConversationMessages",
       "schemaVersion": 2,
-      "title": "Lister les messages",
-      "subtitle": "messages",
+      "title": "Lister des messages",
+      "subtitle": "Messages",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -18355,9 +18355,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur message.",
+      "description": "Liste des messages dans Front.",
       "args": {
-        "title": "Lister les messages",
+        "title": "Lister des messages",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -18387,8 +18387,8 @@
       "key": "front_message_send_create_message_reply",
       "name": "frontMessageSendCreateMessageReply",
       "schemaVersion": 2,
-      "title": "Envoyer un message (2)",
-      "subtitle": "messages",
+      "title": "Créer un message — réponse",
+      "subtitle": "Messages",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -18419,9 +18419,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action send sur message.",
+      "description": "Crée un message dans Front.",
       "args": {
-        "title": "Envoyer un message (2)",
+        "title": "Créer un message — réponse",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -18461,7 +18461,7 @@
       "name": "frontMessageGetGetMessage",
       "schemaVersion": 2,
       "title": "Récupérer un message",
-      "subtitle": "messages",
+      "subtitle": "Messages",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
@@ -18492,7 +18492,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get sur message.",
+      "description": "Récupère un message dans Front.",
       "args": {
         "title": "Récupérer un message",
         "ui": {
@@ -18524,8 +18524,8 @@
       "key": "front_message_template_list_get_child_templates",
       "name": "frontMessageTemplateListGetChildTemplates",
       "schemaVersion": 2,
-      "title": "Lister les message_templates",
-      "subtitle": "message_templates",
+      "title": "Lister des modèles de message — enfants",
+      "subtitle": "Modèles de message",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -18556,9 +18556,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur message_template.",
+      "description": "Liste des modèles de message dans Front.",
       "args": {
-        "title": "Lister les message_templates",
+        "title": "Lister des modèles de message — enfants",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -18588,8 +18588,8 @@
       "key": "front_message_template_create_create_child_template",
       "name": "frontMessageTemplateCreateCreateChildTemplate",
       "schemaVersion": 2,
-      "title": "Créer un message_template",
-      "subtitle": "message_templates",
+      "title": "Créer un modèle de message — enfant",
+      "subtitle": "Modèles de message",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -18620,9 +18620,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur message_template.",
+      "description": "Crée un modèle de message dans Front.",
       "args": {
-        "title": "Créer un message_template",
+        "title": "Créer un modèle de message — enfant",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -18661,8 +18661,8 @@
       "key": "front_message_template_list_list_message_templates",
       "name": "frontMessageTemplateListListMessageTemplates",
       "schemaVersion": 2,
-      "title": "Lister les message_templates (2)",
-      "subtitle": "message_templates",
+      "title": "Lister des modèles de message",
+      "subtitle": "Modèles de message",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -18693,9 +18693,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur message_template.",
+      "description": "Liste des modèles de message dans Front.",
       "args": {
-        "title": "Lister les message_templates (2)",
+        "title": "Lister des modèles de message",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -18710,8 +18710,8 @@
       "key": "front_message_template_create_create_message_template",
       "name": "frontMessageTemplateCreateCreateMessageTemplate",
       "schemaVersion": 2,
-      "title": "Créer un message_template (2)",
-      "subtitle": "message_templates",
+      "title": "Créer un modèle de message",
+      "subtitle": "Modèles de message",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -18742,9 +18742,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur message_template.",
+      "description": "Crée un modèle de message dans Front.",
       "args": {
-        "title": "Créer un message_template (2)",
+        "title": "Créer un modèle de message",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -18769,8 +18769,8 @@
       "key": "front_message_template_get_get_message_template",
       "name": "frontMessageTemplateGetGetMessageTemplate",
       "schemaVersion": 2,
-      "title": "Récupérer un message_template",
-      "subtitle": "message_templates",
+      "title": "Récupérer un modèle de message",
+      "subtitle": "Modèles de message",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
@@ -18801,9 +18801,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get sur message_template.",
+      "description": "Récupère un modèle de message dans Front.",
       "args": {
-        "title": "Récupérer un message_template",
+        "title": "Récupérer un modèle de message",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -18833,8 +18833,8 @@
       "key": "front_message_template_update_update_message_template",
       "name": "frontMessageTemplateUpdateUpdateMessageTemplate",
       "schemaVersion": 2,
-      "title": "Mettre à jour un message_template",
-      "subtitle": "message_templates",
+      "title": "Mettre à jour un modèle de message",
+      "subtitle": "Modèles de message",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -18865,9 +18865,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update sur message_template.",
+      "description": "Met à jour un modèle de message dans Front.",
       "args": {
-        "title": "Mettre à jour un message_template",
+        "title": "Mettre à jour un modèle de message",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -18897,8 +18897,8 @@
       "key": "front_message_template_delete_delete_message_template",
       "name": "frontMessageTemplateDeleteDeleteMessageTemplate",
       "schemaVersion": 2,
-      "title": "Supprimer un message_template",
-      "subtitle": "message_templates",
+      "title": "Supprimer un modèle de message",
+      "subtitle": "Modèles de message",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -18929,9 +18929,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete sur message_template.",
+      "description": "Supprime un modèle de message dans Front.",
       "args": {
-        "title": "Supprimer un message_template",
+        "title": "Supprimer un modèle de message",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -18961,8 +18961,8 @@
       "key": "front_message_template_list_list_teammate_message_templates",
       "name": "frontMessageTemplateListListTeammateMessageTemplates",
       "schemaVersion": 2,
-      "title": "Lister les message_templates (3)",
-      "subtitle": "message_templates",
+      "title": "Lister des modèles de message — du coéquipier",
+      "subtitle": "Modèles de message",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -18993,9 +18993,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur message_template.",
+      "description": "Liste des modèles de message dans Front.",
       "args": {
-        "title": "Lister les message_templates (3)",
+        "title": "Lister des modèles de message — du coéquipier",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -19025,8 +19025,8 @@
       "key": "front_message_template_create_create_teammate_message_template",
       "name": "frontMessageTemplateCreateCreateTeammateMessageTemplate",
       "schemaVersion": 2,
-      "title": "Créer un message_template (3)",
-      "subtitle": "message_templates",
+      "title": "Créer un modèle de message — du coéquipier",
+      "subtitle": "Modèles de message",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -19057,9 +19057,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur message_template.",
+      "description": "Crée un modèle de message dans Front.",
       "args": {
-        "title": "Créer un message_template (3)",
+        "title": "Créer un modèle de message — du coéquipier",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -19098,8 +19098,8 @@
       "key": "front_message_template_list_list_team_message_templates",
       "name": "frontMessageTemplateListListTeamMessageTemplates",
       "schemaVersion": 2,
-      "title": "Lister les message_templates (4)",
-      "subtitle": "message_templates",
+      "title": "Lister des modèles de message — de l’équipe",
+      "subtitle": "Modèles de message",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -19130,9 +19130,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur message_template.",
+      "description": "Liste des modèles de message dans Front.",
       "args": {
-        "title": "Lister les message_templates (4)",
+        "title": "Lister des modèles de message — de l’équipe",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -19162,8 +19162,8 @@
       "key": "front_message_template_create_create_team_message_template",
       "name": "frontMessageTemplateCreateCreateTeamMessageTemplate",
       "schemaVersion": 2,
-      "title": "Créer un message_template (4)",
-      "subtitle": "message_templates",
+      "title": "Créer un modèle de message — de l’équipe",
+      "subtitle": "Modèles de message",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -19194,9 +19194,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur message_template.",
+      "description": "Crée un modèle de message dans Front.",
       "args": {
-        "title": "Créer un message_template (4)",
+        "title": "Créer un modèle de message — de l’équipe",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -19235,8 +19235,8 @@
       "key": "front_message_template_folder_list_list_folders",
       "name": "frontMessageTemplateFolderListListFolders",
       "schemaVersion": 2,
-      "title": "Lister les message_template_folders",
-      "subtitle": "message_template_folders",
+      "title": "Lister des dossiers de modèles de message",
+      "subtitle": "Dossiers de modèles de message",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -19267,9 +19267,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur message_template_folder.",
+      "description": "Liste des dossiers de modèles de message dans Front.",
       "args": {
-        "title": "Lister les message_template_folders",
+        "title": "Lister des dossiers de modèles de message",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -19284,8 +19284,8 @@
       "key": "front_message_template_folder_create_create_folder",
       "name": "frontMessageTemplateFolderCreateCreateFolder",
       "schemaVersion": 2,
-      "title": "Créer un message_template_folder",
-      "subtitle": "message_template_folders",
+      "title": "Créer un dossier de modèles de message",
+      "subtitle": "Dossiers de modèles de message",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -19316,9 +19316,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur message_template_folder.",
+      "description": "Crée un dossier de modèles de message dans Front.",
       "args": {
-        "title": "Créer un message_template_folder",
+        "title": "Créer un dossier de modèles de message",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -19343,8 +19343,8 @@
       "key": "front_message_template_folder_get_get_folder",
       "name": "frontMessageTemplateFolderGetGetFolder",
       "schemaVersion": 2,
-      "title": "Récupérer un message_template_folder",
-      "subtitle": "message_template_folders",
+      "title": "Récupérer un dossier de modèles de message",
+      "subtitle": "Dossiers de modèles de message",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
@@ -19375,9 +19375,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get sur message_template_folder.",
+      "description": "Récupère un dossier de modèles de message dans Front.",
       "args": {
-        "title": "Récupérer un message_template_folder",
+        "title": "Récupérer un dossier de modèles de message",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -19407,8 +19407,8 @@
       "key": "front_message_template_folder_update_update_folder",
       "name": "frontMessageTemplateFolderUpdateUpdateFolder",
       "schemaVersion": 2,
-      "title": "Mettre à jour un message_template_folder",
-      "subtitle": "message_template_folders",
+      "title": "Mettre à jour un dossier de modèles de message",
+      "subtitle": "Dossiers de modèles de message",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -19439,9 +19439,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update sur message_template_folder.",
+      "description": "Met à jour un dossier de modèles de message dans Front.",
       "args": {
-        "title": "Mettre à jour un message_template_folder",
+        "title": "Mettre à jour un dossier de modèles de message",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -19480,8 +19480,8 @@
       "key": "front_message_template_folder_delete_delete_folder",
       "name": "frontMessageTemplateFolderDeleteDeleteFolder",
       "schemaVersion": 2,
-      "title": "Supprimer un message_template_folder",
-      "subtitle": "message_template_folders",
+      "title": "Supprimer un dossier de modèles de message",
+      "subtitle": "Dossiers de modèles de message",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -19512,9 +19512,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete sur message_template_folder.",
+      "description": "Supprime un dossier de modèles de message dans Front.",
       "args": {
-        "title": "Supprimer un message_template_folder",
+        "title": "Supprimer un dossier de modèles de message",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -19544,8 +19544,8 @@
       "key": "front_message_template_folder_list_get_child_folders",
       "name": "frontMessageTemplateFolderListGetChildFolders",
       "schemaVersion": 2,
-      "title": "Lister les message_template_folders (2)",
-      "subtitle": "message_template_folders",
+      "title": "Lister des dossiers de modèles de message — enfants",
+      "subtitle": "Dossiers de modèles de message",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -19576,9 +19576,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur message_template_folder.",
+      "description": "Liste des dossiers de modèles de message dans Front.",
       "args": {
-        "title": "Lister les message_template_folders (2)",
+        "title": "Lister des dossiers de modèles de message — enfants",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -19608,8 +19608,8 @@
       "key": "front_message_template_folder_create_create_child_folder",
       "name": "frontMessageTemplateFolderCreateCreateChildFolder",
       "schemaVersion": 2,
-      "title": "Créer un message_template_folder (2)",
-      "subtitle": "message_template_folders",
+      "title": "Créer un dossier de modèles de message — enfant",
+      "subtitle": "Dossiers de modèles de message",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -19640,9 +19640,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur message_template_folder.",
+      "description": "Crée un dossier de modèles de message dans Front.",
       "args": {
-        "title": "Créer un message_template_folder (2)",
+        "title": "Créer un dossier de modèles de message — enfant",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -19681,8 +19681,8 @@
       "key": "front_message_template_folder_list_list_teammate_folders",
       "name": "frontMessageTemplateFolderListListTeammateFolders",
       "schemaVersion": 2,
-      "title": "Lister les message_template_folders (3)",
-      "subtitle": "message_template_folders",
+      "title": "Lister des dossiers de modèles de message — du coéquipier",
+      "subtitle": "Dossiers de modèles de message",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -19713,9 +19713,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur message_template_folder.",
+      "description": "Liste des dossiers de modèles de message dans Front.",
       "args": {
-        "title": "Lister les message_template_folders (3)",
+        "title": "Lister des dossiers de modèles de message — du coéquipier",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -19745,8 +19745,8 @@
       "key": "front_message_template_folder_create_create_teammate_folder",
       "name": "frontMessageTemplateFolderCreateCreateTeammateFolder",
       "schemaVersion": 2,
-      "title": "Créer un message_template_folder (3)",
-      "subtitle": "message_template_folders",
+      "title": "Créer un dossier de modèles de message — du coéquipier",
+      "subtitle": "Dossiers de modèles de message",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -19777,9 +19777,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur message_template_folder.",
+      "description": "Crée un dossier de modèles de message dans Front.",
       "args": {
-        "title": "Créer un message_template_folder (3)",
+        "title": "Créer un dossier de modèles de message — du coéquipier",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -19818,8 +19818,8 @@
       "key": "front_message_template_folder_list_list_team_folders",
       "name": "frontMessageTemplateFolderListListTeamFolders",
       "schemaVersion": 2,
-      "title": "Lister les message_template_folders (4)",
-      "subtitle": "message_template_folders",
+      "title": "Lister des dossiers de modèles de message — de l’équipe",
+      "subtitle": "Dossiers de modèles de message",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -19850,9 +19850,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur message_template_folder.",
+      "description": "Liste des dossiers de modèles de message dans Front.",
       "args": {
-        "title": "Lister les message_template_folders (4)",
+        "title": "Lister des dossiers de modèles de message — de l’équipe",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -19882,8 +19882,8 @@
       "key": "front_message_template_folder_create_create_team_folder",
       "name": "frontMessageTemplateFolderCreateCreateTeamFolder",
       "schemaVersion": 2,
-      "title": "Créer un message_template_folder (4)",
-      "subtitle": "message_template_folders",
+      "title": "Créer un dossier de modèles de message — de l’équipe",
+      "subtitle": "Dossiers de modèles de message",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -19914,9 +19914,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur message_template_folder.",
+      "description": "Crée un dossier de modèles de message dans Front.",
       "args": {
-        "title": "Créer un message_template_folder (4)",
+        "title": "Créer un dossier de modèles de message — de l’équipe",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -19955,8 +19955,8 @@
       "key": "front_note_list_list_notes",
       "name": "frontNoteListListNotes",
       "schemaVersion": 2,
-      "title": "Lister les notes",
-      "subtitle": "notes",
+      "title": "Lister des notes",
+      "subtitle": "Notes",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -19987,9 +19987,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur note.",
+      "description": "Liste des notes dans Front.",
       "args": {
-        "title": "Lister les notes",
+        "title": "Lister des notes",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -20019,8 +20019,8 @@
       "key": "front_note_create_add_note",
       "name": "frontNoteCreateAddNote",
       "schemaVersion": 2,
-      "title": "Créer un note",
-      "subtitle": "notes",
+      "title": "Ajouter une note",
+      "subtitle": "Notes",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -20051,9 +20051,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur note.",
+      "description": "Ajoute une note dans Front.",
       "args": {
-        "title": "Créer un note",
+        "title": "Ajouter une note",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -20092,8 +20092,8 @@
       "key": "front_outbound_message_create_sync_outbound_message",
       "name": "frontOutboundMessageCreateSyncOutboundMessage",
       "schemaVersion": 2,
-      "title": "Créer un outbound_message",
-      "subtitle": "outbound_messages",
+      "title": "Créer un message sortant",
+      "subtitle": "Messages sortants",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -20124,9 +20124,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur outbound_message.",
+      "description": "Crée un message sortant dans Front.",
       "args": {
-        "title": "Créer un outbound_message",
+        "title": "Créer un message sortant",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -20165,8 +20165,8 @@
       "key": "front_private_inboxe_list_list_teammate_private_inboxes",
       "name": "frontPrivateInboxeListListTeammatePrivateInboxes",
       "schemaVersion": 2,
-      "title": "Lister les private_inboxes",
-      "subtitle": "private_inboxes",
+      "title": "Lister des boîtes de réception privées",
+      "subtitle": "Boîtes de réception privées",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -20197,9 +20197,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur private_inboxe.",
+      "description": "Liste des boîtes de réception privées dans Front.",
       "args": {
-        "title": "Lister les private_inboxes",
+        "title": "Lister des boîtes de réception privées",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -20229,8 +20229,8 @@
       "key": "front_private_inboxe_create_create_teammate_private_inbox",
       "name": "frontPrivateInboxeCreateCreateTeammatePrivateInbox",
       "schemaVersion": 2,
-      "title": "Créer un private_inboxe",
-      "subtitle": "private_inboxes",
+      "title": "Créer une boîte de réception privée",
+      "subtitle": "Boîtes de réception privées",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -20261,9 +20261,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur private_inboxe.",
+      "description": "Crée une boîte de réception privée dans Front.",
       "args": {
-        "title": "Créer un private_inboxe",
+        "title": "Créer une boîte de réception privée",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -20302,8 +20302,8 @@
       "key": "front_recording_send_add_call_recording",
       "name": "frontRecordingSendAddCallRecording",
       "schemaVersion": 2,
-      "title": "Envoyer un recording",
-      "subtitle": "recordings",
+      "title": "Ajouter un enregistrement d’appel",
+      "subtitle": "Enregistrements d’appel",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -20334,9 +20334,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action send sur recording.",
+      "description": "Ajoute un enregistrement d’appel dans Front.",
       "args": {
-        "title": "Envoyer un recording",
+        "title": "Ajouter un enregistrement d’appel",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -20389,8 +20389,8 @@
       "key": "front_reminder_update_update_conversation_reminders",
       "name": "frontReminderUpdateUpdateConversationReminders",
       "schemaVersion": 2,
-      "title": "Mettre à jour un reminder",
-      "subtitle": "reminders",
+      "title": "Mettre à jour un rappel",
+      "subtitle": "Rappels",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -20421,9 +20421,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update sur reminder.",
+      "description": "Met à jour un rappel dans Front.",
       "args": {
-        "title": "Mettre à jour un reminder",
+        "title": "Mettre à jour un rappel",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -20462,8 +20462,8 @@
       "key": "front_reply_comment_add_comment_reply",
       "name": "frontReplyCommentAddCommentReply",
       "schemaVersion": 2,
-      "title": "Commenter un reply",
-      "subtitle": "replies",
+      "title": "Ajouter une réponse",
+      "subtitle": "Réponses",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -20494,9 +20494,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action comment sur reply.",
+      "description": "Ajoute une réponse dans Front.",
       "args": {
-        "title": "Commenter un reply",
+        "title": "Ajouter une réponse",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -20535,8 +20535,8 @@
       "key": "front_rule_list_list_rules",
       "name": "frontRuleListListRules",
       "schemaVersion": 2,
-      "title": "Lister les rules",
-      "subtitle": "rules",
+      "title": "Lister des règles",
+      "subtitle": "Règles",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -20567,9 +20567,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur rule.",
+      "description": "Liste des règles dans Front.",
       "args": {
-        "title": "Lister les rules",
+        "title": "Lister des règles",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -20584,8 +20584,8 @@
       "key": "front_rule_get_get_rule",
       "name": "frontRuleGetGetRule",
       "schemaVersion": 2,
-      "title": "Récupérer un rule",
-      "subtitle": "rules",
+      "title": "Récupérer une règle",
+      "subtitle": "Règles",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
@@ -20616,9 +20616,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get sur rule.",
+      "description": "Récupère une règle dans Front.",
       "args": {
-        "title": "Récupérer un rule",
+        "title": "Récupérer une règle",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -20648,8 +20648,8 @@
       "key": "front_rule_list_list_teammate_rules",
       "name": "frontRuleListListTeammateRules",
       "schemaVersion": 2,
-      "title": "Lister les rules (2)",
-      "subtitle": "rules",
+      "title": "Lister des règles — du coéquipier",
+      "subtitle": "Règles",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -20680,9 +20680,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur rule.",
+      "description": "Liste des règles dans Front.",
       "args": {
-        "title": "Lister les rules (2)",
+        "title": "Lister des règles — du coéquipier",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -20712,8 +20712,8 @@
       "key": "front_rule_list_list_team_rules",
       "name": "frontRuleListListTeamRules",
       "schemaVersion": 2,
-      "title": "Lister les rules (3)",
-      "subtitle": "rules",
+      "title": "Lister des règles — de l’équipe",
+      "subtitle": "Règles",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -20744,9 +20744,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur rule.",
+      "description": "Liste des règles dans Front.",
       "args": {
-        "title": "Lister les rules (3)",
+        "title": "Lister des règles — de l’équipe",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -20776,8 +20776,8 @@
       "key": "front_seen_list_get_message_seen_status",
       "name": "frontSeenListGetMessageSeenStatus",
       "schemaVersion": 2,
-      "title": "Lister les seens",
-      "subtitle": "seens",
+      "title": "Récupérer un statut de lecture",
+      "subtitle": "Statuts de lecture",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -20808,9 +20808,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur seen.",
+      "description": "Récupère un statut de lecture dans Front.",
       "args": {
-        "title": "Lister les seens",
+        "title": "Récupérer un statut de lecture",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -20840,8 +20840,8 @@
       "key": "front_seen_create_mark_message_seen",
       "name": "frontSeenCreateMarkMessageSeen",
       "schemaVersion": 2,
-      "title": "Créer un seen",
-      "subtitle": "seens",
+      "title": "Marquer un statut de lecture",
+      "subtitle": "Statuts de lecture",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -20872,9 +20872,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur seen.",
+      "description": "Marque un statut de lecture dans Front.",
       "args": {
-        "title": "Créer un seen",
+        "title": "Marquer un statut de lecture",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -20913,8 +20913,8 @@
       "key": "front_shift_list_list_shifts",
       "name": "frontShiftListListShifts",
       "schemaVersion": 2,
-      "title": "Lister les shifts",
-      "subtitle": "shifts",
+      "title": "Lister des plages horaires",
+      "subtitle": "Plages horaires",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -20945,9 +20945,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur shift.",
+      "description": "Liste des plages horaires dans Front.",
       "args": {
-        "title": "Lister les shifts",
+        "title": "Lister des plages horaires",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -20962,8 +20962,8 @@
       "key": "front_shift_create_create_shift",
       "name": "frontShiftCreateCreateShift",
       "schemaVersion": 2,
-      "title": "Créer un shift",
-      "subtitle": "shifts",
+      "title": "Créer une plage horaire",
+      "subtitle": "Plages horaires",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -20994,9 +20994,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur shift.",
+      "description": "Crée une plage horaire dans Front.",
       "args": {
-        "title": "Créer un shift",
+        "title": "Créer une plage horaire",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -21021,8 +21021,8 @@
       "key": "front_shift_get_get_shift",
       "name": "frontShiftGetGetShift",
       "schemaVersion": 2,
-      "title": "Récupérer un shift",
-      "subtitle": "shifts",
+      "title": "Récupérer une plage horaire",
+      "subtitle": "Plages horaires",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
@@ -21053,9 +21053,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get sur shift.",
+      "description": "Récupère une plage horaire dans Front.",
       "args": {
-        "title": "Récupérer un shift",
+        "title": "Récupérer une plage horaire",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -21085,8 +21085,8 @@
       "key": "front_shift_update_update_shift",
       "name": "frontShiftUpdateUpdateShift",
       "schemaVersion": 2,
-      "title": "Mettre à jour un shift",
-      "subtitle": "shifts",
+      "title": "Mettre à jour une plage horaire",
+      "subtitle": "Plages horaires",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -21117,9 +21117,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update sur shift.",
+      "description": "Met à jour une plage horaire dans Front.",
       "args": {
-        "title": "Mettre à jour un shift",
+        "title": "Mettre à jour une plage horaire",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -21158,8 +21158,8 @@
       "key": "front_shift_list_list_teammate_shifts",
       "name": "frontShiftListListTeammateShifts",
       "schemaVersion": 2,
-      "title": "Lister les shifts (2)",
-      "subtitle": "shifts",
+      "title": "Lister des plages horaires — du coéquipier",
+      "subtitle": "Plages horaires",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -21190,9 +21190,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur shift.",
+      "description": "Liste des plages horaires dans Front.",
       "args": {
-        "title": "Lister les shifts (2)",
+        "title": "Lister des plages horaires — du coéquipier",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -21222,8 +21222,8 @@
       "key": "front_shift_list_list_team_shifts",
       "name": "frontShiftListListTeamShifts",
       "schemaVersion": 2,
-      "title": "Lister les shifts (3)",
-      "subtitle": "shifts",
+      "title": "Lister des plages horaires — de l’équipe",
+      "subtitle": "Plages horaires",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -21254,9 +21254,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur shift.",
+      "description": "Liste des plages horaires dans Front.",
       "args": {
-        "title": "Lister les shifts (3)",
+        "title": "Lister des plages horaires — de l’équipe",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -21286,8 +21286,8 @@
       "key": "front_shift_create_create_team_shift",
       "name": "frontShiftCreateCreateTeamShift",
       "schemaVersion": 2,
-      "title": "Créer un shift (2)",
-      "subtitle": "shifts",
+      "title": "Créer une plage horaire — de l’équipe",
+      "subtitle": "Plages horaires",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -21318,9 +21318,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur shift.",
+      "description": "Crée une plage horaire dans Front.",
       "args": {
-        "title": "Créer un shift (2)",
+        "title": "Créer une plage horaire — de l’équipe",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -21359,8 +21359,8 @@
       "key": "front_signature_get_get_signatures",
       "name": "frontSignatureGetGetSignatures",
       "schemaVersion": 2,
-      "title": "Récupérer un signature",
-      "subtitle": "signatures",
+      "title": "Récupérer une signature",
+      "subtitle": "Signatures",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
@@ -21391,9 +21391,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get sur signature.",
+      "description": "Récupère une signature dans Front.",
       "args": {
-        "title": "Récupérer un signature",
+        "title": "Récupérer une signature",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -21423,8 +21423,8 @@
       "key": "front_signature_update_update_signature",
       "name": "frontSignatureUpdateUpdateSignature",
       "schemaVersion": 2,
-      "title": "Mettre à jour un signature",
-      "subtitle": "signatures",
+      "title": "Mettre à jour une signature",
+      "subtitle": "Signatures",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -21455,9 +21455,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update sur signature.",
+      "description": "Met à jour une signature dans Front.",
       "args": {
-        "title": "Mettre à jour un signature",
+        "title": "Mettre à jour une signature",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -21496,8 +21496,8 @@
       "key": "front_signature_delete_delete_signature",
       "name": "frontSignatureDeleteDeleteSignature",
       "schemaVersion": 2,
-      "title": "Supprimer un signature",
-      "subtitle": "signatures",
+      "title": "Supprimer une signature",
+      "subtitle": "Signatures",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -21528,9 +21528,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete sur signature.",
+      "description": "Supprime une signature dans Front.",
       "args": {
-        "title": "Supprimer un signature",
+        "title": "Supprimer une signature",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -21560,8 +21560,8 @@
       "key": "front_signature_list_list_teammate_signatures",
       "name": "frontSignatureListListTeammateSignatures",
       "schemaVersion": 2,
-      "title": "Lister les signatures",
-      "subtitle": "signatures",
+      "title": "Lister des signatures — du coéquipier",
+      "subtitle": "Signatures",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -21592,9 +21592,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur signature.",
+      "description": "Liste des signatures dans Front.",
       "args": {
-        "title": "Lister les signatures",
+        "title": "Lister des signatures — du coéquipier",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -21624,8 +21624,8 @@
       "key": "front_signature_create_create_teammate_signature",
       "name": "frontSignatureCreateCreateTeammateSignature",
       "schemaVersion": 2,
-      "title": "Créer un signature",
-      "subtitle": "signatures",
+      "title": "Créer une signature — du coéquipier",
+      "subtitle": "Signatures",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -21656,9 +21656,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur signature.",
+      "description": "Crée une signature dans Front.",
       "args": {
-        "title": "Créer un signature",
+        "title": "Créer une signature — du coéquipier",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -21697,8 +21697,8 @@
       "key": "front_signature_list_list_team_signatures",
       "name": "frontSignatureListListTeamSignatures",
       "schemaVersion": 2,
-      "title": "Lister les signatures (2)",
-      "subtitle": "signatures",
+      "title": "Lister des signatures — de l’équipe",
+      "subtitle": "Signatures",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -21729,9 +21729,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur signature.",
+      "description": "Liste des signatures dans Front.",
       "args": {
-        "title": "Lister les signatures (2)",
+        "title": "Lister des signatures — de l’équipe",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -21761,8 +21761,8 @@
       "key": "front_signature_create_create_team_signature",
       "name": "frontSignatureCreateCreateTeamSignature",
       "schemaVersion": 2,
-      "title": "Créer un signature (2)",
-      "subtitle": "signatures",
+      "title": "Créer une signature — de l’équipe",
+      "subtitle": "Signatures",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -21793,9 +21793,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur signature.",
+      "description": "Crée une signature dans Front.",
       "args": {
-        "title": "Créer un signature (2)",
+        "title": "Créer une signature — de l’équipe",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -21834,8 +21834,8 @@
       "key": "front_statu_update_update_external_message_status",
       "name": "frontStatuUpdateUpdateExternalMessageStatus",
       "schemaVersion": 2,
-      "title": "Mettre à jour un statu",
-      "subtitle": "status",
+      "title": "Mettre à jour un statut",
+      "subtitle": "Statuts",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -21866,9 +21866,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update sur statu.",
+      "description": "Met à jour un statut dans Front.",
       "args": {
-        "title": "Mettre à jour un statu",
+        "title": "Mettre à jour un statut",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -21935,8 +21935,8 @@
       "key": "front_summary_create_add_call_summary",
       "name": "frontSummaryCreateAddCallSummary",
       "schemaVersion": 2,
-      "title": "Créer un summary",
-      "subtitle": "summaries",
+      "title": "Ajouter un résumé d’appel",
+      "subtitle": "Résumés d’appel",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -21967,9 +21967,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur summary.",
+      "description": "Ajoute un résumé d’appel dans Front.",
       "args": {
-        "title": "Créer un summary",
+        "title": "Ajouter un résumé d’appel",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -22022,8 +22022,8 @@
       "key": "front_tag_tag_list_tags",
       "name": "frontTagTagListTags",
       "schemaVersion": 2,
-      "title": "Étiqueter un tag",
-      "subtitle": "tags",
+      "title": "Lister des étiquettes",
+      "subtitle": "Étiquettes",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -22054,9 +22054,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action tag sur tag.",
+      "description": "Liste des étiquettes dans Front.",
       "args": {
-        "title": "Étiqueter un tag",
+        "title": "Lister des étiquettes",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -22071,8 +22071,8 @@
       "key": "front_tag_tag_create_tag",
       "name": "frontTagTagCreateTag",
       "schemaVersion": 2,
-      "title": "Étiqueter un tag (2)",
-      "subtitle": "tags",
+      "title": "Créer une étiquette",
+      "subtitle": "Étiquettes",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -22103,9 +22103,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action tag sur tag.",
+      "description": "Crée une étiquette dans Front.",
       "args": {
-        "title": "Étiqueter un tag (2)",
+        "title": "Créer une étiquette",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -22130,8 +22130,8 @@
       "key": "front_tag_tag_get_tag",
       "name": "frontTagTagGetTag",
       "schemaVersion": 2,
-      "title": "Étiqueter un tag (3)",
-      "subtitle": "tags",
+      "title": "Récupérer une étiquette",
+      "subtitle": "Étiquettes",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -22162,9 +22162,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action tag sur tag.",
+      "description": "Récupère une étiquette dans Front.",
       "args": {
-        "title": "Étiqueter un tag (3)",
+        "title": "Récupérer une étiquette",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -22194,8 +22194,8 @@
       "key": "front_tag_tag_update_a_tag",
       "name": "frontTagTagUpdateATag",
       "schemaVersion": 2,
-      "title": "Étiqueter un tag (4)",
-      "subtitle": "tags",
+      "title": "Mettre à jour une étiquette",
+      "subtitle": "Étiquettes",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -22226,9 +22226,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action tag sur tag.",
+      "description": "Met à jour une étiquette dans Front.",
       "args": {
-        "title": "Étiqueter un tag (4)",
+        "title": "Mettre à jour une étiquette",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -22267,8 +22267,8 @@
       "key": "front_tag_tag_delete_tag",
       "name": "frontTagTagDeleteTag",
       "schemaVersion": 2,
-      "title": "Étiqueter un tag (5)",
-      "subtitle": "tags",
+      "title": "Supprimer une étiquette",
+      "subtitle": "Étiquettes",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -22299,9 +22299,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action tag sur tag.",
+      "description": "Supprime une étiquette dans Front.",
       "args": {
-        "title": "Étiqueter un tag (5)",
+        "title": "Supprimer une étiquette",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -22331,8 +22331,8 @@
       "key": "front_team_list_list_company_teammate_group_teams",
       "name": "frontTeamListListCompanyTeammateGroupTeams",
       "schemaVersion": 2,
-      "title": "Lister les teams",
-      "subtitle": "teams",
+      "title": "Lister des équipes — de l’entreprise/groupe",
+      "subtitle": "Équipes",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -22363,9 +22363,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur team.",
+      "description": "Liste des équipes dans Front.",
       "args": {
-        "title": "Lister les teams",
+        "title": "Lister des équipes — de l’entreprise/groupe",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -22395,8 +22395,8 @@
       "key": "front_team_create_add_company_teammate_group_teams",
       "name": "frontTeamCreateAddCompanyTeammateGroupTeams",
       "schemaVersion": 2,
-      "title": "Créer un team",
-      "subtitle": "teams",
+      "title": "Ajouter une équipe",
+      "subtitle": "Équipes",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -22427,9 +22427,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur team.",
+      "description": "Ajoute une équipe dans Front.",
       "args": {
-        "title": "Créer un team",
+        "title": "Ajouter une équipe",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -22468,8 +22468,8 @@
       "key": "front_team_delete_remove_company_teammate_group_teams",
       "name": "frontTeamDeleteRemoveCompanyTeammateGroupTeams",
       "schemaVersion": 2,
-      "title": "Supprimer un team",
-      "subtitle": "teams",
+      "title": "Retirer une équipe",
+      "subtitle": "Équipes",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -22500,9 +22500,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete sur team.",
+      "description": "Retire une équipe dans Front.",
       "args": {
-        "title": "Supprimer un team",
+        "title": "Retirer une équipe",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -22532,8 +22532,8 @@
       "key": "front_team_list_list_teams",
       "name": "frontTeamListListTeams",
       "schemaVersion": 2,
-      "title": "Lister les teams (2)",
-      "subtitle": "teams",
+      "title": "Lister des équipes",
+      "subtitle": "Équipes",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -22564,9 +22564,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur team.",
+      "description": "Liste des équipes dans Front.",
       "args": {
-        "title": "Lister les teams (2)",
+        "title": "Lister des équipes",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -22581,8 +22581,8 @@
       "key": "front_team_get_get_team",
       "name": "frontTeamGetGetTeam",
       "schemaVersion": 2,
-      "title": "Récupérer un team",
-      "subtitle": "teams",
+      "title": "Récupérer une équipe",
+      "subtitle": "Équipes",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
@@ -22613,9 +22613,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get sur team.",
+      "description": "Récupère une équipe dans Front.",
       "args": {
-        "title": "Récupérer un team",
+        "title": "Récupérer une équipe",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -22645,8 +22645,8 @@
       "key": "front_team_tag_list_team_tags",
       "name": "frontTeamTagListTeamTags",
       "schemaVersion": 2,
-      "title": "Étiqueter un team",
-      "subtitle": "teams",
+      "title": "Lister des équipes — de l’équipe",
+      "subtitle": "Équipes",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -22677,9 +22677,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action tag sur team.",
+      "description": "Liste des équipes dans Front.",
       "args": {
-        "title": "Étiqueter un team",
+        "title": "Lister des équipes — de l’équipe",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -22709,8 +22709,8 @@
       "key": "front_team_tag_create_team_tag",
       "name": "frontTeamTagCreateTeamTag",
       "schemaVersion": 2,
-      "title": "Étiqueter un team (2)",
-      "subtitle": "teams",
+      "title": "Créer une équipe",
+      "subtitle": "Équipes",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -22741,9 +22741,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action tag sur team.",
+      "description": "Crée une équipe dans Front.",
       "args": {
-        "title": "Étiqueter un team (2)",
+        "title": "Créer une équipe",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -22782,8 +22782,8 @@
       "key": "front_teammate_list_list_inbox_access",
       "name": "frontTeammateListListInboxAccess",
       "schemaVersion": 2,
-      "title": "Lister les teammates",
-      "subtitle": "teammates",
+      "title": "Lister des coéquipiers — accès à la boîte de réception",
+      "subtitle": "Coéquipiers",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -22814,9 +22814,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur teammate.",
+      "description": "Liste des coéquipiers dans Front.",
       "args": {
-        "title": "Lister les teammates",
+        "title": "Lister des coéquipiers — accès à la boîte de réception",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -22846,8 +22846,8 @@
       "key": "front_teammate_create_add_inbox_access",
       "name": "frontTeammateCreateAddInboxAccess",
       "schemaVersion": 2,
-      "title": "Créer un teammate",
-      "subtitle": "teammates",
+      "title": "Ajouter un coéquipier — accès à la boîte de réception",
+      "subtitle": "Coéquipiers",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -22878,9 +22878,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur teammate.",
+      "description": "Ajoute un coéquipier dans Front.",
       "args": {
-        "title": "Créer un teammate",
+        "title": "Ajouter un coéquipier — accès à la boîte de réception",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -22919,8 +22919,8 @@
       "key": "front_teammate_delete_removes_inbox_access",
       "name": "frontTeammateDeleteRemovesInboxAccess",
       "schemaVersion": 2,
-      "title": "Supprimer un teammate",
-      "subtitle": "teammates",
+      "title": "Supprimer un coéquipier",
+      "subtitle": "Coéquipiers",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -22951,9 +22951,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete sur teammate.",
+      "description": "Supprime un coéquipier dans Front.",
       "args": {
-        "title": "Supprimer un teammate",
+        "title": "Supprimer un coéquipier",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -22983,8 +22983,8 @@
       "key": "front_teammate_list_list_shifts_teammates",
       "name": "frontTeammateListListShiftsTeammates",
       "schemaVersion": 2,
-      "title": "Lister les teammates (2)",
-      "subtitle": "teammates",
+      "title": "Lister des coéquipiers — de la plage horaire",
+      "subtitle": "Coéquipiers",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -23015,9 +23015,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur teammate.",
+      "description": "Liste des coéquipiers dans Front.",
       "args": {
-        "title": "Lister les teammates (2)",
+        "title": "Lister des coéquipiers — de la plage horaire",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -23047,8 +23047,8 @@
       "key": "front_teammate_create_add_teammates_to_shift",
       "name": "frontTeammateCreateAddTeammatesToShift",
       "schemaVersion": 2,
-      "title": "Créer un teammate (2)",
-      "subtitle": "teammates",
+      "title": "Ajouter un coéquipier — à la plage horaire",
+      "subtitle": "Coéquipiers",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -23079,9 +23079,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur teammate.",
+      "description": "Ajoute un coéquipier dans Front.",
       "args": {
-        "title": "Créer un teammate (2)",
+        "title": "Ajouter un coéquipier — à la plage horaire",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -23120,8 +23120,8 @@
       "key": "front_teammate_delete_remove_teammates_from_shift",
       "name": "frontTeammateDeleteRemoveTeammatesFromShift",
       "schemaVersion": 2,
-      "title": "Supprimer un teammate (2)",
-      "subtitle": "teammates",
+      "title": "Retirer un coéquipier — de la plage horaire",
+      "subtitle": "Coéquipiers",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -23152,9 +23152,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete sur teammate.",
+      "description": "Retire un coéquipier dans Front.",
       "args": {
-        "title": "Supprimer un teammate (2)",
+        "title": "Retirer un coéquipier — de la plage horaire",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -23184,8 +23184,8 @@
       "key": "front_teammate_list_list_company_teammate_group_teammates",
       "name": "frontTeammateListListCompanyTeammateGroupTeammates",
       "schemaVersion": 2,
-      "title": "Lister les teammates (3)",
-      "subtitle": "teammates",
+      "title": "Lister des coéquipiers — de l’entreprise/groupe",
+      "subtitle": "Coéquipiers",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -23216,9 +23216,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur teammate.",
+      "description": "Liste des coéquipiers dans Front.",
       "args": {
-        "title": "Lister les teammates (3)",
+        "title": "Lister des coéquipiers — de l’entreprise/groupe",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -23248,8 +23248,8 @@
       "key": "front_teammate_create_add_company_teammate_group_teammates",
       "name": "frontTeammateCreateAddCompanyTeammateGroupTeammates",
       "schemaVersion": 2,
-      "title": "Créer un teammate (3)",
-      "subtitle": "teammates",
+      "title": "Ajouter un coéquipier — à l’entreprise/groupe",
+      "subtitle": "Coéquipiers",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -23280,9 +23280,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur teammate.",
+      "description": "Ajoute un coéquipier dans Front.",
       "args": {
-        "title": "Créer un teammate (3)",
+        "title": "Ajouter un coéquipier — à l’entreprise/groupe",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -23321,8 +23321,8 @@
       "key": "front_teammate_delete_remove_company_teammate_group_teammates",
       "name": "frontTeammateDeleteRemoveCompanyTeammateGroupTeammates",
       "schemaVersion": 2,
-      "title": "Supprimer un teammate (3)",
-      "subtitle": "teammates",
+      "title": "Retirer un coéquipier — de l’entreprise/groupe",
+      "subtitle": "Coéquipiers",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -23353,9 +23353,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete sur teammate.",
+      "description": "Retire un coéquipier dans Front.",
       "args": {
-        "title": "Supprimer un teammate (3)",
+        "title": "Retirer un coéquipier — de l’entreprise/groupe",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -23385,8 +23385,8 @@
       "key": "front_teammate_list_list_teammates",
       "name": "frontTeammateListListTeammates",
       "schemaVersion": 2,
-      "title": "Lister les teammates (4)",
-      "subtitle": "teammates",
+      "title": "Lister des coéquipiers",
+      "subtitle": "Coéquipiers",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -23417,9 +23417,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur teammate.",
+      "description": "Liste des coéquipiers dans Front.",
       "args": {
-        "title": "Lister les teammates (4)",
+        "title": "Lister des coéquipiers",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -23434,8 +23434,8 @@
       "key": "front_teammate_get_get_teammate",
       "name": "frontTeammateGetGetTeammate",
       "schemaVersion": 2,
-      "title": "Récupérer un teammate",
-      "subtitle": "teammates",
+      "title": "Récupérer un coéquipier",
+      "subtitle": "Coéquipiers",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
@@ -23466,9 +23466,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get sur teammate.",
+      "description": "Récupère un coéquipier dans Front.",
       "args": {
-        "title": "Récupérer un teammate",
+        "title": "Récupérer un coéquipier",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -23498,8 +23498,8 @@
       "key": "front_teammate_update_update_teammate",
       "name": "frontTeammateUpdateUpdateTeammate",
       "schemaVersion": 2,
-      "title": "Mettre à jour un teammate",
-      "subtitle": "teammates",
+      "title": "Mettre à jour un coéquipier",
+      "subtitle": "Coéquipiers",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -23530,9 +23530,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update sur teammate.",
+      "description": "Met à jour un coéquipier dans Front.",
       "args": {
-        "title": "Mettre à jour un teammate",
+        "title": "Mettre à jour un coéquipier",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -23571,8 +23571,8 @@
       "key": "front_teammate_tag_list_teammate_tags",
       "name": "frontTeammateTagListTeammateTags",
       "schemaVersion": 2,
-      "title": "Étiqueter un teammate",
-      "subtitle": "teammates",
+      "title": "Lister des coéquipiers — du coéquipier",
+      "subtitle": "Coéquipiers",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -23603,9 +23603,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action tag sur teammate.",
+      "description": "Liste des coéquipiers dans Front.",
       "args": {
-        "title": "Étiqueter un teammate",
+        "title": "Lister des coéquipiers — du coéquipier",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -23635,8 +23635,8 @@
       "key": "front_teammate_tag_create_teammate_tag",
       "name": "frontTeammateTagCreateTeammateTag",
       "schemaVersion": 2,
-      "title": "Étiqueter un teammate (2)",
-      "subtitle": "teammates",
+      "title": "Créer un coéquipier",
+      "subtitle": "Coéquipiers",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -23667,9 +23667,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action tag sur teammate.",
+      "description": "Crée un coéquipier dans Front.",
       "args": {
-        "title": "Étiqueter un teammate (2)",
+        "title": "Créer un coéquipier",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -23708,8 +23708,8 @@
       "key": "front_teammate_create_add_teammates_to_team",
       "name": "frontTeammateCreateAddTeammatesToTeam",
       "schemaVersion": 2,
-      "title": "Créer un teammate (4)",
-      "subtitle": "teammates",
+      "title": "Ajouter un coéquipier — à l’équipe",
+      "subtitle": "Coéquipiers",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -23740,9 +23740,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur teammate.",
+      "description": "Ajoute un coéquipier dans Front.",
       "args": {
-        "title": "Créer un teammate (4)",
+        "title": "Ajouter un coéquipier — à l’équipe",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -23781,8 +23781,8 @@
       "key": "front_teammate_delete_remove_teammates_from_team",
       "name": "frontTeammateDeleteRemoveTeammatesFromTeam",
       "schemaVersion": 2,
-      "title": "Supprimer un teammate (4)",
-      "subtitle": "teammates",
+      "title": "Retirer un coéquipier — de l’équipe",
+      "subtitle": "Coéquipiers",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -23813,9 +23813,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete sur teammate.",
+      "description": "Retire un coéquipier dans Front.",
       "args": {
-        "title": "Supprimer un teammate (4)",
+        "title": "Retirer un coéquipier — de l’équipe",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -23845,8 +23845,8 @@
       "key": "front_teammate_create_add_view_teammates",
       "name": "frontTeammateCreateAddViewTeammates",
       "schemaVersion": 2,
-      "title": "Créer un teammate (5)",
-      "subtitle": "teammates",
+      "title": "Ajouter un coéquipier — à une vue",
+      "subtitle": "Coéquipiers",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -23877,9 +23877,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur teammate.",
+      "description": "Ajoute un coéquipier dans Front.",
       "args": {
-        "title": "Créer un teammate (5)",
+        "title": "Ajouter un coéquipier — à une vue",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -23918,8 +23918,8 @@
       "key": "front_teammate_group_list_list_company_teammate_groups",
       "name": "frontTeammateGroupListListCompanyTeammateGroups",
       "schemaVersion": 2,
-      "title": "Lister les teammate_groups",
-      "subtitle": "teammate_groups",
+      "title": "Lister des groupes de coéquipiers",
+      "subtitle": "Groupes de coéquipiers",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -23950,9 +23950,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur teammate_group.",
+      "description": "Liste des groupes de coéquipiers dans Front.",
       "args": {
-        "title": "Lister les teammate_groups",
+        "title": "Lister des groupes de coéquipiers",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -23967,8 +23967,8 @@
       "key": "front_teammate_group_create_create_company_teammate_group",
       "name": "frontTeammateGroupCreateCreateCompanyTeammateGroup",
       "schemaVersion": 2,
-      "title": "Créer un teammate_group",
-      "subtitle": "teammate_groups",
+      "title": "Créer un groupe de coéquipiers",
+      "subtitle": "Groupes de coéquipiers",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -23999,9 +23999,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur teammate_group.",
+      "description": "Crée un groupe de coéquipiers dans Front.",
       "args": {
-        "title": "Créer un teammate_group",
+        "title": "Créer un groupe de coéquipiers",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -24026,8 +24026,8 @@
       "key": "front_teammate_group_get_get_company_teammate_group",
       "name": "frontTeammateGroupGetGetCompanyTeammateGroup",
       "schemaVersion": 2,
-      "title": "Récupérer un teammate_group",
-      "subtitle": "teammate_groups",
+      "title": "Récupérer un groupe de coéquipiers",
+      "subtitle": "Groupes de coéquipiers",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
@@ -24058,9 +24058,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get sur teammate_group.",
+      "description": "Récupère un groupe de coéquipiers dans Front.",
       "args": {
-        "title": "Récupérer un teammate_group",
+        "title": "Récupérer un groupe de coéquipiers",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -24090,8 +24090,8 @@
       "key": "front_teammate_group_update_update_a_company_teammate_group",
       "name": "frontTeammateGroupUpdateUpdateACompanyTeammateGroup",
       "schemaVersion": 2,
-      "title": "Mettre à jour un teammate_group",
-      "subtitle": "teammate_groups",
+      "title": "Mettre à jour un groupe de coéquipiers",
+      "subtitle": "Groupes de coéquipiers",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -24122,9 +24122,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update sur teammate_group.",
+      "description": "Met à jour un groupe de coéquipiers dans Front.",
       "args": {
-        "title": "Mettre à jour un teammate_group",
+        "title": "Mettre à jour un groupe de coéquipiers",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -24163,8 +24163,8 @@
       "key": "front_teammate_group_delete_delete_company_teammate_group",
       "name": "frontTeammateGroupDeleteDeleteCompanyTeammateGroup",
       "schemaVersion": 2,
-      "title": "Supprimer un teammate_group",
-      "subtitle": "teammate_groups",
+      "title": "Supprimer un groupe de coéquipiers",
+      "subtitle": "Groupes de coéquipiers",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -24195,9 +24195,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete sur teammate_group.",
+      "description": "Supprime un groupe de coéquipiers dans Front.",
       "args": {
-        "title": "Supprimer un teammate_group",
+        "title": "Supprimer un groupe de coéquipiers",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -24227,8 +24227,8 @@
       "key": "front_time_off_list_list_teammate_time_offs",
       "name": "frontTimeOffListListTeammateTimeOffs",
       "schemaVersion": 2,
-      "title": "Lister les time_offs",
-      "subtitle": "time_offs",
+      "title": "Lister des absences — du coéquipier",
+      "subtitle": "Absences",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -24259,9 +24259,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur time_off.",
+      "description": "Liste des absences dans Front.",
       "args": {
-        "title": "Lister les time_offs",
+        "title": "Lister des absences — du coéquipier",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -24291,8 +24291,8 @@
       "key": "front_time_off_create_create_time_off",
       "name": "frontTimeOffCreateCreateTimeOff",
       "schemaVersion": 2,
-      "title": "Créer un time_off",
-      "subtitle": "time_offs",
+      "title": "Créer une absence",
+      "subtitle": "Absences",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -24323,9 +24323,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur time_off.",
+      "description": "Crée une absence dans Front.",
       "args": {
-        "title": "Créer un time_off",
+        "title": "Créer une absence",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -24369,8 +24369,8 @@
       "key": "front_time_off_list_list_team_time_offs",
       "name": "frontTimeOffListListTeamTimeOffs",
       "schemaVersion": 2,
-      "title": "Lister les time_offs (2)",
-      "subtitle": "time_offs",
+      "title": "Lister des absences — de l’équipe",
+      "subtitle": "Absences",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -24401,9 +24401,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur time_off.",
+      "description": "Liste des absences dans Front.",
       "args": {
-        "title": "Lister les time_offs (2)",
+        "title": "Lister des absences — de l’équipe",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -24433,8 +24433,8 @@
       "key": "front_time_off_get_get_time_off",
       "name": "frontTimeOffGetGetTimeOff",
       "schemaVersion": 2,
-      "title": "Récupérer un time_off",
-      "subtitle": "time_offs",
+      "title": "Récupérer une absence",
+      "subtitle": "Absences",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
@@ -24465,9 +24465,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get sur time_off.",
+      "description": "Récupère une absence dans Front.",
       "args": {
-        "title": "Récupérer un time_off",
+        "title": "Récupérer une absence",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -24497,8 +24497,8 @@
       "key": "front_time_off_update_update_time_off",
       "name": "frontTimeOffUpdateUpdateTimeOff",
       "schemaVersion": 2,
-      "title": "Mettre à jour un time_off",
-      "subtitle": "time_offs",
+      "title": "Mettre à jour une absence",
+      "subtitle": "Absences",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -24529,9 +24529,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update sur time_off.",
+      "description": "Met à jour une absence dans Front.",
       "args": {
-        "title": "Mettre à jour un time_off",
+        "title": "Mettre à jour une absence",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -24575,8 +24575,8 @@
       "key": "front_time_off_delete_delete_time_off",
       "name": "frontTimeOffDeleteDeleteTimeOff",
       "schemaVersion": 2,
-      "title": "Supprimer un time_off",
-      "subtitle": "time_offs",
+      "title": "Supprimer une absence",
+      "subtitle": "Absences",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -24607,9 +24607,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete sur time_off.",
+      "description": "Supprime une absence dans Front.",
       "args": {
-        "title": "Supprimer un time_off",
+        "title": "Supprimer une absence",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -24639,8 +24639,8 @@
       "key": "front_transcript_create_add_call_transcript",
       "name": "frontTranscriptCreateAddCallTranscript",
       "schemaVersion": 2,
-      "title": "Créer un transcript",
-      "subtitle": "transcripts",
+      "title": "Ajouter une transcription",
+      "subtitle": "Transcriptions",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -24671,9 +24671,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur transcript.",
+      "description": "Ajoute une transcription dans Front.",
       "args": {
-        "title": "Créer un transcript",
+        "title": "Ajouter une transcription",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -24726,8 +24726,8 @@
       "key": "front_validate_create_validate_channel",
       "name": "frontValidateCreateValidateChannel",
       "schemaVersion": 2,
-      "title": "Créer un validate",
-      "subtitle": "validates",
+      "title": "Créer une validation de canal",
+      "subtitle": "Validations de canal",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -24758,9 +24758,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur validate.",
+      "description": "Crée une validation de canal dans Front.",
       "args": {
-        "title": "Créer un validate",
+        "title": "Créer une validation de canal",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -24790,8 +24790,8 @@
       "key": "front_view_list_list_team_views",
       "name": "frontViewListListTeamViews",
       "schemaVersion": 2,
-      "title": "Lister les views",
-      "subtitle": "views",
+      "title": "Lister des vues — de l’équipe",
+      "subtitle": "Vues",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -24822,9 +24822,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur view.",
+      "description": "Liste des vues dans Front.",
       "args": {
-        "title": "Lister les views",
+        "title": "Lister des vues — de l’équipe",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -24854,8 +24854,8 @@
       "key": "front_view_create_create_team_view",
       "name": "frontViewCreateCreateTeamView",
       "schemaVersion": 2,
-      "title": "Créer un view",
-      "subtitle": "views",
+      "title": "Créer une vue",
+      "subtitle": "Vues",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -24886,9 +24886,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur view.",
+      "description": "Crée une vue dans Front.",
       "args": {
-        "title": "Créer un view",
+        "title": "Créer une vue",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -24927,8 +24927,8 @@
       "key": "front_view_list_list_views",
       "name": "frontViewListListViews",
       "schemaVersion": 2,
-      "title": "Lister les views (2)",
-      "subtitle": "views",
+      "title": "Lister des vues",
+      "subtitle": "Vues",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -24959,9 +24959,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur view.",
+      "description": "Liste des vues dans Front.",
       "args": {
-        "title": "Lister les views (2)",
+        "title": "Lister des vues",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -24976,8 +24976,8 @@
       "key": "front_view_get_get_view",
       "name": "frontViewGetGetView",
       "schemaVersion": 2,
-      "title": "Récupérer un view",
-      "subtitle": "views",
+      "title": "Récupérer une vue",
+      "subtitle": "Vues",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
@@ -25008,9 +25008,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get sur view.",
+      "description": "Récupère une vue dans Front.",
       "args": {
-        "title": "Récupérer un view",
+        "title": "Récupérer une vue",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -25040,8 +25040,8 @@
       "key": "front_view_update_update_view",
       "name": "frontViewUpdateUpdateView",
       "schemaVersion": 2,
-      "title": "Mettre à jour un view",
-      "subtitle": "views",
+      "title": "Mettre à jour une vue",
+      "subtitle": "Vues",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -25072,9 +25072,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update sur view.",
+      "description": "Met à jour une vue dans Front.",
       "args": {
-        "title": "Mettre à jour un view",
+        "title": "Mettre à jour une vue",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true

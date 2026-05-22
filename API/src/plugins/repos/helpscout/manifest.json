@@ -2,7 +2,7 @@
   "repo": {
     "name": "helpscout",
     "type": "local",
-    "label": "HelpScout"
+    "label": "Help Scout"
   },
   "variables": {
     "helpscout_action_result": {
@@ -51,7 +51,7 @@
       ]
     },
     "helpscout_mailbox": {
-      "title": "boîte HelpScout",
+      "title": "boîte Help Scout",
       "ui": {
         "layout": "vertical",
         "labelsOnTop": true
@@ -123,7 +123,7 @@
       ]
     },
     "helpscout_mailboxs": {
-      "title": "boîtes HelpScout",
+      "title": "boîtes Help Scout",
       "ui": {
         "layout": "vertical",
         "labelsOnTop": true
@@ -229,7 +229,7 @@
       ]
     },
     "helpscout_conversation": {
-      "title": "conversation HelpScout",
+      "title": "conversation Help Scout",
       "ui": {
         "layout": "vertical",
         "labelsOnTop": true
@@ -301,7 +301,7 @@
       ]
     },
     "helpscout_conversations": {
-      "title": "conversations HelpScout",
+      "title": "conversations Help Scout",
       "ui": {
         "layout": "vertical",
         "labelsOnTop": true
@@ -407,7 +407,7 @@
       ]
     },
     "helpscout_thread": {
-      "title": "thread HelpScout",
+      "title": "thread Help Scout",
       "ui": {
         "layout": "vertical",
         "labelsOnTop": true
@@ -479,7 +479,7 @@
       ]
     },
     "helpscout_threads": {
-      "title": "threads HelpScout",
+      "title": "threads Help Scout",
       "ui": {
         "layout": "vertical",
         "labelsOnTop": true
@@ -585,7 +585,7 @@
       ]
     },
     "helpscout_customer": {
-      "title": "client HelpScout",
+      "title": "client Help Scout",
       "ui": {
         "layout": "vertical",
         "labelsOnTop": true
@@ -657,7 +657,7 @@
       ]
     },
     "helpscout_customers": {
-      "title": "clients HelpScout",
+      "title": "clients Help Scout",
       "ui": {
         "layout": "vertical",
         "labelsOnTop": true
@@ -763,7 +763,7 @@
       ]
     },
     "helpscout_tag": {
-      "title": "tag HelpScout",
+      "title": "tag Help Scout",
       "ui": {
         "layout": "vertical",
         "labelsOnTop": true
@@ -835,7 +835,7 @@
       ]
     },
     "helpscout_tags": {
-      "title": "tags HelpScout",
+      "title": "tags Help Scout",
       "ui": {
         "layout": "vertical",
         "labelsOnTop": true
@@ -941,7 +941,7 @@
       ]
     },
     "helpscout_conversation_tag": {
-      "title": "tag de conversation HelpScout",
+      "title": "tag de conversation Help Scout",
       "ui": {
         "layout": "vertical",
         "labelsOnTop": true
@@ -1013,7 +1013,7 @@
       ]
     },
     "helpscout_conversation_tags": {
-      "title": "tags de conversation HelpScout",
+      "title": "tags de conversation Help Scout",
       "ui": {
         "layout": "vertical",
         "labelsOnTop": true
@@ -1119,7 +1119,7 @@
       ]
     },
     "helpscout_webhook": {
-      "title": "webhook HelpScout",
+      "title": "webhook Help Scout",
       "ui": {
         "layout": "vertical",
         "labelsOnTop": true
@@ -1191,7 +1191,7 @@
       ]
     },
     "helpscout_webhooks": {
-      "title": "webhooks HelpScout",
+      "title": "webhooks Help Scout",
       "ui": {
         "layout": "vertical",
         "labelsOnTop": true
@@ -1300,10 +1300,10 @@
   "providers": [
     {
       "key": "helpscout",
-      "name": "HelpScout",
-      "title": "HelpScout",
+      "name": "Help Scout",
+      "title": "Help Scout",
       "iconClass": "fa-solid fa-headset",
-      "iconUrl": "https://cdn.simpleicons.org/helpscout",
+      "iconUrl": "https://www.helpscout.com/images/favicon/favicon.svg",
       "color": "#eaf8ee",
       "tags": [
         "support",
@@ -1314,7 +1314,7 @@
       ],
       "hasCredentials": true,
       "credentialsForm": {
-        "title": "Identifiants HelpScout",
+        "title": "Identifiants Help Scout",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -1324,7 +1324,7 @@
             "type": "text",
             "key": "apiKey",
             "label": "Clé API",
-            "description": "Clé API HelpScout.",
+            "description": "Clé API Help Scout.",
             "col": {
               "xs": 24
             },
@@ -1339,7 +1339,7 @@
             "type": "text",
             "key": "baseUrl",
             "label": "URL de base API",
-            "description": "URL de base des endpoints HelpScout.",
+            "description": "URL de base des endpoints Help Scout.",
             "col": {
               "xs": 24
             },
@@ -1356,12 +1356,12 @@
       "key": "helpscout_mailbox_list",
       "name": "helpscoutMailboxList",
       "schemaVersion": 2,
-      "title": "Lister les boîtes",
-      "subtitle": "boîtes",
+      "title": "Lister des boîtes",
+      "subtitle": "Boîtes",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
-      "category": "HelpScout",
+      "category": "Help Scout",
       "providerKey": "helpscout",
       "tags": [
         "helpscout",
@@ -1388,9 +1388,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur boîte.",
+      "description": "Lister des boîtes dans Help Scout.",
       "args": {
-        "title": "Lister les boîtes",
+        "title": "Lister des boîtes",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -1425,12 +1425,12 @@
       "key": "helpscout_mailbox_get",
       "name": "helpscoutMailboxGet",
       "schemaVersion": 2,
-      "title": "Récupérer un boîte",
-      "subtitle": "boîtes",
+      "title": "Récupérer une boîte",
+      "subtitle": "Boîtes",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
-      "category": "HelpScout",
+      "category": "Help Scout",
       "providerKey": "helpscout",
       "tags": [
         "helpscout",
@@ -1457,9 +1457,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get sur boîte.",
+      "description": "Récupérer une boîte dans Help Scout.",
       "args": {
-        "title": "Récupérer un boîte",
+        "title": "Récupérer une boîte",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -1489,12 +1489,12 @@
       "key": "helpscout_conversation_list",
       "name": "helpscoutConversationList",
       "schemaVersion": 2,
-      "title": "Lister les conversations",
-      "subtitle": "conversations",
+      "title": "Lister des conversations — de la conversation",
+      "subtitle": "Conversations",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
-      "category": "HelpScout",
+      "category": "Help Scout",
       "providerKey": "helpscout",
       "tags": [
         "helpscout",
@@ -1521,9 +1521,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur conversation.",
+      "description": "Lister des conversations dans Help Scout.",
       "args": {
-        "title": "Lister les conversations",
+        "title": "Lister des conversations — de la conversation",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -1558,12 +1558,12 @@
       "key": "helpscout_conversation_get",
       "name": "helpscoutConversationGet",
       "schemaVersion": 2,
-      "title": "Récupérer un conversation",
-      "subtitle": "conversations",
+      "title": "Récupérer une conversation",
+      "subtitle": "Conversations",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
-      "category": "HelpScout",
+      "category": "Help Scout",
       "providerKey": "helpscout",
       "tags": [
         "helpscout",
@@ -1590,9 +1590,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get sur conversation.",
+      "description": "Récupérer une conversation dans Help Scout.",
       "args": {
-        "title": "Récupérer un conversation",
+        "title": "Récupérer une conversation",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -1622,12 +1622,12 @@
       "key": "helpscout_conversation_create",
       "name": "helpscoutConversationCreate",
       "schemaVersion": 2,
-      "title": "Créer un conversation",
-      "subtitle": "conversations",
+      "title": "Créer une conversation",
+      "subtitle": "Conversations",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
-      "category": "HelpScout",
+      "category": "Help Scout",
       "providerKey": "helpscout",
       "tags": [
         "helpscout",
@@ -1654,9 +1654,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur conversation.",
+      "description": "Créer une conversation dans Help Scout.",
       "args": {
-        "title": "Créer un conversation",
+        "title": "Créer une conversation",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -1686,12 +1686,12 @@
       "key": "helpscout_conversation_update",
       "name": "helpscoutConversationUpdate",
       "schemaVersion": 2,
-      "title": "Mettre à jour un conversation",
-      "subtitle": "conversations",
+      "title": "Mettre à jour une conversation",
+      "subtitle": "Conversations",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
-      "category": "HelpScout",
+      "category": "Help Scout",
       "providerKey": "helpscout",
       "tags": [
         "helpscout",
@@ -1718,9 +1718,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update sur conversation.",
+      "description": "Mettre à jour une conversation dans Help Scout.",
       "args": {
-        "title": "Mettre à jour un conversation",
+        "title": "Mettre à jour une conversation",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -1760,11 +1760,11 @@
       "name": "helpscoutConversationSearch",
       "schemaVersion": 2,
       "title": "Rechercher des conversations",
-      "subtitle": "conversations",
+      "subtitle": "Conversations",
       "icon": "fa-solid fa-magnifying-glass",
       "type": "function",
       "nodeKind": "function",
-      "category": "HelpScout",
+      "category": "Help Scout",
       "providerKey": "helpscout",
       "tags": [
         "helpscout",
@@ -1791,7 +1791,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action search sur conversation.",
+      "description": "Rechercher des conversations dans Help Scout.",
       "args": {
         "title": "Rechercher des conversations",
         "ui": {
@@ -1837,12 +1837,12 @@
       "key": "helpscout_conversation_reply",
       "name": "helpscoutConversationReply",
       "schemaVersion": 2,
-      "title": "Répondre à une conversation",
-      "subtitle": "conversations",
+      "title": "Envoyer une conversation",
+      "subtitle": "Conversations",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
-      "category": "HelpScout",
+      "category": "Help Scout",
       "providerKey": "helpscout",
       "tags": [
         "helpscout",
@@ -1869,9 +1869,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action send sur conversation.",
+      "description": "Envoyer une conversation dans Help Scout.",
       "args": {
-        "title": "Répondre à une conversation",
+        "title": "Envoyer une conversation",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -1910,12 +1910,12 @@
       "key": "helpscout_conversation_note",
       "name": "helpscoutConversationNote",
       "schemaVersion": 2,
-      "title": "Ajouter une note interne",
-      "subtitle": "conversations",
+      "title": "Commenter une conversation",
+      "subtitle": "Conversations",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
-      "category": "HelpScout",
+      "category": "Help Scout",
       "providerKey": "helpscout",
       "tags": [
         "helpscout",
@@ -1942,9 +1942,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action comment sur conversation.",
+      "description": "Commenter une conversation dans Help Scout.",
       "args": {
-        "title": "Ajouter une note interne",
+        "title": "Commenter une conversation",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -1984,11 +1984,11 @@
       "name": "helpscoutConversationAssign",
       "schemaVersion": 2,
       "title": "Assigner une conversation",
-      "subtitle": "conversations",
+      "subtitle": "Conversations",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
-      "category": "HelpScout",
+      "category": "Help Scout",
       "providerKey": "helpscout",
       "tags": [
         "helpscout",
@@ -2015,7 +2015,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action assign sur conversation.",
+      "description": "Assigner une conversation dans Help Scout.",
       "args": {
         "title": "Assigner une conversation",
         "ui": {
@@ -2056,12 +2056,12 @@
       "key": "helpscout_conversation_close",
       "name": "helpscoutConversationClose",
       "schemaVersion": 2,
-      "title": "Clore une conversation",
-      "subtitle": "conversations",
+      "title": "Archiver une conversation",
+      "subtitle": "Conversations",
       "icon": "fa-solid fa-box-archive",
       "type": "function",
       "nodeKind": "function",
-      "category": "HelpScout",
+      "category": "Help Scout",
       "providerKey": "helpscout",
       "tags": [
         "helpscout",
@@ -2088,9 +2088,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action archive sur conversation.",
+      "description": "Archiver une conversation dans Help Scout.",
       "args": {
-        "title": "Clore une conversation",
+        "title": "Archiver une conversation",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -2129,12 +2129,12 @@
       "key": "helpscout_conversation_reopen",
       "name": "helpscoutConversationReopen",
       "schemaVersion": 2,
-      "title": "Rouvrir une conversation",
-      "subtitle": "conversations",
+      "title": "Lister des conversations — de la conversation — variante 2",
+      "subtitle": "Conversations",
       "icon": "fa-solid fa-rotate-left",
       "type": "function",
       "nodeKind": "function",
-      "category": "HelpScout",
+      "category": "Help Scout",
       "providerKey": "helpscout",
       "tags": [
         "helpscout",
@@ -2161,9 +2161,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action restore sur conversation.",
+      "description": "Lister des conversations dans Help Scout.",
       "args": {
-        "title": "Rouvrir une conversation",
+        "title": "Lister des conversations — de la conversation — variante 2",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -2202,12 +2202,12 @@
       "key": "helpscout_thread_list",
       "name": "helpscoutThreadList",
       "schemaVersion": 2,
-      "title": "Lister les threads",
-      "subtitle": "threads",
+      "title": "Lister des fils",
+      "subtitle": "Fils",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
-      "category": "HelpScout",
+      "category": "Help Scout",
       "providerKey": "helpscout",
       "tags": [
         "helpscout",
@@ -2234,9 +2234,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur thread.",
+      "description": "Lister des fils dans Help Scout.",
       "args": {
-        "title": "Lister les threads",
+        "title": "Lister des fils",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -2285,12 +2285,12 @@
       "key": "helpscout_thread_get",
       "name": "helpscoutThreadGet",
       "schemaVersion": 2,
-      "title": "Récupérer un thread",
-      "subtitle": "threads",
+      "title": "Récupérer un fil",
+      "subtitle": "Fils",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
-      "category": "HelpScout",
+      "category": "Help Scout",
       "providerKey": "helpscout",
       "tags": [
         "helpscout",
@@ -2317,9 +2317,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get sur thread.",
+      "description": "Récupérer un fil dans Help Scout.",
       "args": {
-        "title": "Récupérer un thread",
+        "title": "Récupérer un fil",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -2349,12 +2349,12 @@
       "key": "helpscout_customer_list",
       "name": "helpscoutCustomerList",
       "schemaVersion": 2,
-      "title": "Lister les clients",
-      "subtitle": "clients",
+      "title": "Lister des clients",
+      "subtitle": "Clients",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
-      "category": "HelpScout",
+      "category": "Help Scout",
       "providerKey": "helpscout",
       "tags": [
         "helpscout",
@@ -2381,9 +2381,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur client.",
+      "description": "Lister des clients dans Help Scout.",
       "args": {
-        "title": "Lister les clients",
+        "title": "Lister des clients",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -2419,11 +2419,11 @@
       "name": "helpscoutCustomerGet",
       "schemaVersion": 2,
       "title": "Récupérer un client",
-      "subtitle": "clients",
+      "subtitle": "Clients",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
-      "category": "HelpScout",
+      "category": "Help Scout",
       "providerKey": "helpscout",
       "tags": [
         "helpscout",
@@ -2450,7 +2450,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get sur client.",
+      "description": "Récupérer un client dans Help Scout.",
       "args": {
         "title": "Récupérer un client",
         "ui": {
@@ -2483,11 +2483,11 @@
       "name": "helpscoutCustomerCreate",
       "schemaVersion": 2,
       "title": "Créer un client",
-      "subtitle": "clients",
+      "subtitle": "Clients",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
-      "category": "HelpScout",
+      "category": "Help Scout",
       "providerKey": "helpscout",
       "tags": [
         "helpscout",
@@ -2514,7 +2514,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur client.",
+      "description": "Créer un client dans Help Scout.",
       "args": {
         "title": "Créer un client",
         "ui": {
@@ -2547,11 +2547,11 @@
       "name": "helpscoutCustomerUpdate",
       "schemaVersion": 2,
       "title": "Mettre à jour un client",
-      "subtitle": "clients",
+      "subtitle": "Clients",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
-      "category": "HelpScout",
+      "category": "Help Scout",
       "providerKey": "helpscout",
       "tags": [
         "helpscout",
@@ -2578,7 +2578,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update sur client.",
+      "description": "Mettre à jour un client dans Help Scout.",
       "args": {
         "title": "Mettre à jour un client",
         "ui": {
@@ -2620,11 +2620,11 @@
       "name": "helpscoutCustomerSearch",
       "schemaVersion": 2,
       "title": "Rechercher des clients",
-      "subtitle": "clients",
+      "subtitle": "Clients",
       "icon": "fa-solid fa-magnifying-glass",
       "type": "function",
       "nodeKind": "function",
-      "category": "HelpScout",
+      "category": "Help Scout",
       "providerKey": "helpscout",
       "tags": [
         "helpscout",
@@ -2651,7 +2651,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action search sur client.",
+      "description": "Rechercher des clients dans Help Scout.",
       "args": {
         "title": "Rechercher des clients",
         "ui": {
@@ -2697,12 +2697,12 @@
       "key": "helpscout_tag_list",
       "name": "helpscoutTagList",
       "schemaVersion": 2,
-      "title": "Lister les tags",
-      "subtitle": "tags",
+      "title": "Lister des étiquettes",
+      "subtitle": "Étiquettes",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
-      "category": "HelpScout",
+      "category": "Help Scout",
       "providerKey": "helpscout",
       "tags": [
         "helpscout",
@@ -2729,9 +2729,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur tag.",
+      "description": "Lister des étiquettes dans Help Scout.",
       "args": {
-        "title": "Lister les tags",
+        "title": "Lister des étiquettes",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -2766,12 +2766,12 @@
       "key": "helpscout_tag_get",
       "name": "helpscoutTagGet",
       "schemaVersion": 2,
-      "title": "Récupérer un tag",
-      "subtitle": "tags",
+      "title": "Récupérer un étiquette",
+      "subtitle": "Étiquettes",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
-      "category": "HelpScout",
+      "category": "Help Scout",
       "providerKey": "helpscout",
       "tags": [
         "helpscout",
@@ -2798,9 +2798,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get sur tag.",
+      "description": "Récupérer un étiquette dans Help Scout.",
       "args": {
-        "title": "Récupérer un tag",
+        "title": "Récupérer un étiquette",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -2830,12 +2830,12 @@
       "key": "helpscout_tag_create",
       "name": "helpscoutTagCreate",
       "schemaVersion": 2,
-      "title": "Créer un tag",
-      "subtitle": "tags",
+      "title": "Créer un étiquette",
+      "subtitle": "Étiquettes",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
-      "category": "HelpScout",
+      "category": "Help Scout",
       "providerKey": "helpscout",
       "tags": [
         "helpscout",
@@ -2862,9 +2862,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur tag.",
+      "description": "Créer un étiquette dans Help Scout.",
       "args": {
-        "title": "Créer un tag",
+        "title": "Créer un étiquette",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -2894,12 +2894,12 @@
       "key": "helpscout_tag_update",
       "name": "helpscoutTagUpdate",
       "schemaVersion": 2,
-      "title": "Mettre à jour un tag",
-      "subtitle": "tags",
+      "title": "Mettre à jour un étiquette",
+      "subtitle": "Étiquettes",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
-      "category": "HelpScout",
+      "category": "Help Scout",
       "providerKey": "helpscout",
       "tags": [
         "helpscout",
@@ -2926,9 +2926,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update sur tag.",
+      "description": "Mettre à jour un étiquette dans Help Scout.",
       "args": {
-        "title": "Mettre à jour un tag",
+        "title": "Mettre à jour un étiquette",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -2967,12 +2967,12 @@
       "key": "helpscout_tag_delete",
       "name": "helpscoutTagDelete",
       "schemaVersion": 2,
-      "title": "Supprimer un tag",
-      "subtitle": "tags",
+      "title": "Supprimer un étiquette",
+      "subtitle": "Étiquettes",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
-      "category": "HelpScout",
+      "category": "Help Scout",
       "providerKey": "helpscout",
       "tags": [
         "helpscout",
@@ -2999,9 +2999,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete sur tag.",
+      "description": "Supprimer un étiquette dans Help Scout.",
       "args": {
-        "title": "Supprimer un tag",
+        "title": "Supprimer un étiquette",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3031,12 +3031,12 @@
       "key": "helpscout_conversation_tag_list",
       "name": "helpscoutConversationTagList",
       "schemaVersion": 2,
-      "title": "Lister les tags de conversation",
-      "subtitle": "tags de conversation",
+      "title": "Étiqueter un élément — de la conversation / de l’étiquette",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
-      "category": "HelpScout",
+      "category": "Help Scout",
       "providerKey": "helpscout",
       "tags": [
         "helpscout",
@@ -3063,9 +3063,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur tag de conversation.",
+      "description": "Étiqueter un élément dans Help Scout.",
       "args": {
-        "title": "Lister les tags de conversation",
+        "title": "Étiqueter un élément — de la conversation / de l’étiquette",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3114,12 +3114,12 @@
       "key": "helpscout_conversation_tag_attach",
       "name": "helpscoutConversationTagAttach",
       "schemaVersion": 2,
-      "title": "Associer des tags à une conversation",
-      "subtitle": "tags de conversation",
+      "title": "Étiqueter un élément — de la conversation / de l’étiquette — variante 2",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
-      "category": "HelpScout",
+      "category": "Help Scout",
       "providerKey": "helpscout",
       "tags": [
         "helpscout",
@@ -3146,9 +3146,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action tag sur tag de conversation.",
+      "description": "Étiqueter un élément dans Help Scout.",
       "args": {
-        "title": "Associer des tags à une conversation",
+        "title": "Étiqueter un élément — de la conversation / de l’étiquette — variante 2",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3187,12 +3187,12 @@
       "key": "helpscout_conversation_tag_detach",
       "name": "helpscoutConversationTagDetach",
       "schemaVersion": 2,
-      "title": "Retirer un tag d’une conversation",
-      "subtitle": "tags de conversation",
+      "title": "Étiqueter un élément — de la conversation / de l’étiquette — variante 3",
+      "subtitle": "Ressources",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
-      "category": "HelpScout",
+      "category": "Help Scout",
       "providerKey": "helpscout",
       "tags": [
         "helpscout",
@@ -3219,9 +3219,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action remove sur tag de conversation.",
+      "description": "Étiqueter un élément dans Help Scout.",
       "args": {
-        "title": "Retirer un tag d’une conversation",
+        "title": "Étiqueter un élément — de la conversation / de l’étiquette — variante 3",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3265,12 +3265,12 @@
       "key": "helpscout_webhook_list",
       "name": "helpscoutWebhookList",
       "schemaVersion": 2,
-      "title": "Lister les webhooks",
-      "subtitle": "webhooks",
+      "title": "Lister des webhooks",
+      "subtitle": "Webhooks",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
-      "category": "HelpScout",
+      "category": "Help Scout",
       "providerKey": "helpscout",
       "tags": [
         "helpscout",
@@ -3297,9 +3297,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list sur webhook.",
+      "description": "Lister des webhooks dans Help Scout.",
       "args": {
-        "title": "Lister les webhooks",
+        "title": "Lister des webhooks",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3335,11 +3335,11 @@
       "name": "helpscoutWebhookGet",
       "schemaVersion": 2,
       "title": "Récupérer un webhook",
-      "subtitle": "webhooks",
+      "subtitle": "Webhooks",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
-      "category": "HelpScout",
+      "category": "Help Scout",
       "providerKey": "helpscout",
       "tags": [
         "helpscout",
@@ -3366,7 +3366,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get sur webhook.",
+      "description": "Récupérer un webhook dans Help Scout.",
       "args": {
         "title": "Récupérer un webhook",
         "ui": {
@@ -3399,11 +3399,11 @@
       "name": "helpscoutWebhookCreate",
       "schemaVersion": 2,
       "title": "Créer un webhook",
-      "subtitle": "webhooks",
+      "subtitle": "Webhooks",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
-      "category": "HelpScout",
+      "category": "Help Scout",
       "providerKey": "helpscout",
       "tags": [
         "helpscout",
@@ -3430,7 +3430,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create sur webhook.",
+      "description": "Créer un webhook dans Help Scout.",
       "args": {
         "title": "Créer un webhook",
         "ui": {
@@ -3463,11 +3463,11 @@
       "name": "helpscoutWebhookUpdate",
       "schemaVersion": 2,
       "title": "Mettre à jour un webhook",
-      "subtitle": "webhooks",
+      "subtitle": "Webhooks",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
-      "category": "HelpScout",
+      "category": "Help Scout",
       "providerKey": "helpscout",
       "tags": [
         "helpscout",
@@ -3494,7 +3494,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update sur webhook.",
+      "description": "Mettre à jour un webhook dans Help Scout.",
       "args": {
         "title": "Mettre à jour un webhook",
         "ui": {
@@ -3536,11 +3536,11 @@
       "name": "helpscoutWebhookDelete",
       "schemaVersion": 2,
       "title": "Supprimer un webhook",
-      "subtitle": "webhooks",
+      "subtitle": "Webhooks",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
-      "category": "HelpScout",
+      "category": "Help Scout",
       "providerKey": "helpscout",
       "tags": [
         "helpscout",
@@ -3567,7 +3567,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete sur webhook.",
+      "description": "Supprimer un webhook dans Help Scout.",
       "args": {
         "title": "Supprimer un webhook",
         "ui": {
