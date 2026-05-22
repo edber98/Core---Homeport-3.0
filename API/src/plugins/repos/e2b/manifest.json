@@ -2434,8 +2434,8 @@
       "key": "e2b_access_token_create_post_access_tokens",
       "name": "e2bAccessTokenCreatePostAccessTokens",
       "schemaVersion": 2,
-      "title": "Create access_token",
-      "subtitle": "access_tokens",
+      "title": "Créer jetons d accès",
+      "subtitle": "Jetons d accès",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -2449,7 +2449,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -2460,15 +2460,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:e2b_access_token"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_post_access_tokens sur access_token.",
+      "description": "Créer jetons d accès.",
       "args": {
-        "title": "Create access_token",
+        "title": "Créer jetons d accès",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -2478,7 +2478,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             },
@@ -2492,14 +2492,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "access_tokens"
+      "group": "jetons d accès"
     },
     {
       "key": "e2b_access_token_delete_delete_access_tokens_accesstokenid",
       "name": "e2bAccessTokenDeleteDeleteAccessTokensAccesstokenid",
       "schemaVersion": 2,
-      "title": "Delete access_token",
-      "subtitle": "access_tokens",
+      "title": "Supprimer accès jeton jeton d'accès ID",
+      "subtitle": "Accès jeton jeton d'accès ID",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -2513,7 +2513,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -2524,15 +2524,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:e2b_action_result"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete_delete_access_tokens_accesstokenid sur access_token.",
+      "description": "Supprimer accès jeton jeton d'accès ID.",
       "args": {
-        "title": "Delete access_token",
+        "title": "Supprimer accès jeton jeton d'accès ID",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -2541,8 +2541,8 @@
           {
             "type": "text",
             "key": "accesstokenid",
-            "label": "Accesstokenid",
-            "description": "Valeur de chemin accesstokenid.",
+            "label": "Jeton d accès ID",
+            "description": "Valeur de chemin jeton d accès ID",
             "col": {
               "xs": 24
             },
@@ -2556,14 +2556,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "access_tokens"
+      "group": "jetons d accès"
     },
     {
       "key": "e2b_connect_create_post_sandboxes_sandboxid_connect",
       "name": "e2bConnectCreatePostSandboxesSandboxidConnect",
       "schemaVersion": 2,
-      "title": "Create connect",
-      "subtitle": "connects",
+      "title": "Créer sandbox sandbox ID connexion",
+      "subtitle": "Sandbox sandbox ID connexion",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -2577,7 +2577,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -2588,15 +2588,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:e2b_connect"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_post_sandboxes_sandboxid_connect sur connect.",
+      "description": "Créer sandbox sandbox ID connexion.",
       "args": {
-        "title": "Create connect",
+        "title": "Créer sandbox sandbox ID connexion",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -2606,7 +2606,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             },
@@ -2620,14 +2620,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "connects"
+      "group": "connexions"
     },
     {
       "key": "e2b_health_list_get_health",
       "name": "e2bHealthListGetHealth",
       "schemaVersion": 2,
-      "title": "List health",
-      "subtitle": "healths",
+      "title": "Lister santé",
+      "subtitle": "Santé",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -2641,7 +2641,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -2652,15 +2652,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:e2b_healths"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_get_health sur health.",
+      "description": "Lister santé.",
       "args": {
-        "title": "List health",
+        "title": "Lister santé",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -2669,14 +2669,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "healths"
+      "group": "santés"
     },
     {
       "key": "e2b_log_list_get_v2_sandboxes_sandboxid_logs",
       "name": "e2bLogListGetV2SandboxesSandboxidLogs",
       "schemaVersion": 2,
-      "title": "List log",
-      "subtitle": "logs",
+      "title": "Lister sandbox sandbox ID journal",
+      "subtitle": "Sandbox sandbox ID journal",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -2690,7 +2690,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -2701,15 +2701,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:e2b_logs"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_get_v2_sandboxes_sandboxid_logs sur log.",
+      "description": "Lister sandbox sandbox ID journal.",
       "args": {
-        "title": "List log",
+        "title": "Lister sandbox sandbox ID journal",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -2719,7 +2719,7 @@
             "type": "number",
             "key": "cursor",
             "label": "Cursor",
-            "description": "Starting timestamp of the logs that should be returned in milliseconds",
+            "description": "Starting timestamp journaux should returned milliseconds",
             "col": {
               "xs": 24
             }
@@ -2728,7 +2728,7 @@
             "type": "number",
             "key": "limit",
             "label": "Limit",
-            "description": "Maximum number of logs that should be returned",
+            "description": "Maximum numéro journaux should returned",
             "col": {
               "xs": 24
             }
@@ -2737,7 +2737,7 @@
             "type": "text",
             "key": "direction",
             "label": "Direction",
-            "description": "Direction of the logs that should be returned",
+            "description": "Direction journaux should returned",
             "col": {
               "xs": 24
             }
@@ -2746,7 +2746,7 @@
             "type": "text",
             "key": "level",
             "label": "Level",
-            "description": "Minimum log level to return. Logs below this level are excluded",
+            "description": "Minimum journal level return Journaux below level are excluded",
             "col": {
               "xs": 24
             }
@@ -2754,8 +2754,8 @@
           {
             "type": "text",
             "key": "search",
-            "label": "Search",
-            "description": "Case-sensitive substring match on log message content",
+            "label": "Recherche",
+            "description": "Case sensitive substring match journal message content",
             "col": {
               "xs": 24
             }
@@ -2764,14 +2764,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "logs"
+      "group": "journaux"
     },
     {
       "key": "e2b_metric_list_get_sandboxes_metrics",
       "name": "e2bMetricListGetSandboxesMetrics",
       "schemaVersion": 2,
-      "title": "List metric",
-      "subtitle": "metrics",
+      "title": "Lister sandbox métrique",
+      "subtitle": "Sandbox métrique",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -2785,7 +2785,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -2796,15 +2796,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:e2b_metrics"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_get_sandboxes_metrics sur metric.",
+      "description": "Lister sandbox métrique.",
       "args": {
-        "title": "List metric",
+        "title": "Lister sandbox métrique",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -2814,7 +2814,7 @@
             "type": "json",
             "key": "sandbox_ids",
             "label": "Sandbox Ids",
-            "description": "Comma-separated list of sandbox IDs to get metrics for",
+            "description": "Comma separated liste sandbox Ids récupération métriques",
             "col": {
               "xs": 24
             },
@@ -2828,14 +2828,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "metrics"
+      "group": "métriques"
     },
     {
       "key": "e2b_metric_list_get_sandboxes_sandboxid_metrics",
       "name": "e2bMetricListGetSandboxesSandboxidMetrics",
       "schemaVersion": 2,
-      "title": "List metric",
-      "subtitle": "metrics",
+      "title": "Lister sandbox sandbox ID métrique",
+      "subtitle": "Sandbox sandbox ID métrique",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -2849,7 +2849,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -2860,15 +2860,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:e2b_metrics"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_get_sandboxes_sandboxid_metrics sur metric.",
+      "description": "Lister sandbox sandbox ID métrique.",
       "args": {
-        "title": "List metric",
+        "title": "Lister sandbox sandbox ID métrique",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -2878,7 +2878,7 @@
             "type": "number",
             "key": "start",
             "label": "Start",
-            "description": "Unix timestamp for the start of the interval, in seconds, for which the metrics",
+            "description": "Unix timestamp start interval seconds which métriques",
             "col": {
               "xs": 24
             }
@@ -2887,7 +2887,7 @@
             "type": "number",
             "key": "end",
             "label": "End",
-            "description": "Paramètre de requête end.",
+            "description": "Paramètre de requête end",
             "col": {
               "xs": 24
             }
@@ -2896,14 +2896,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "metrics"
+      "group": "métriques"
     },
     {
       "key": "e2b_network_update_put_sandboxes_sandboxid_network",
       "name": "e2bNetworkUpdatePutSandboxesSandboxidNetwork",
       "schemaVersion": 2,
-      "title": "Update network",
-      "subtitle": "networks",
+      "title": "Mettre à jour sandbox sandbox ID réseau",
+      "subtitle": "Sandbox sandbox ID réseau",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -2917,7 +2917,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -2928,15 +2928,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:e2b_network"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update_put_sandboxes_sandboxid_network sur network.",
+      "description": "Mettre à jour sandbox sandbox ID réseau.",
       "args": {
-        "title": "Update network",
+        "title": "Mettre à jour sandbox sandbox ID réseau",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -2946,7 +2946,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             },
@@ -2960,14 +2960,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "networks"
+      "group": "réseaus"
     },
     {
       "key": "e2b_node_list_get_nodes",
       "name": "e2bNodeListGetNodes",
       "schemaVersion": 2,
-      "title": "List node",
-      "subtitle": "nodes",
+      "title": "Lister noeud",
+      "subtitle": "Noeud",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -2981,7 +2981,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -2992,15 +2992,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:e2b_nodes"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_get_nodes sur node.",
+      "description": "Lister noeud.",
       "args": {
-        "title": "List node",
+        "title": "Lister noeud",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3010,7 +3010,7 @@
             "type": "text",
             "key": "clusterid",
             "label": "Clusterid",
-            "description": "Identifier of the cluster",
+            "description": "Identifier cluster",
             "col": {
               "xs": 24
             }
@@ -3019,14 +3019,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "nodes"
+      "group": "noeuds"
     },
     {
       "key": "e2b_node_get_get_nodes_nodeid",
       "name": "e2bNodeGetGetNodesNodeid",
       "schemaVersion": 2,
-      "title": "Get node",
-      "subtitle": "nodes",
+      "title": "Récupérer noeud noeud ID",
+      "subtitle": "Noeud noeud ID",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -3040,7 +3040,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -3051,15 +3051,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:e2b_node"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get_get_nodes_nodeid sur node.",
+      "description": "Récupérer noeud noeud ID.",
       "args": {
-        "title": "Get node",
+        "title": "Récupérer noeud noeud ID",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3069,7 +3069,7 @@
             "type": "text",
             "key": "clusterid",
             "label": "Clusterid",
-            "description": "Identifier of the cluster",
+            "description": "Identifier cluster",
             "col": {
               "xs": 24
             }
@@ -3078,14 +3078,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "nodes"
+      "group": "noeuds"
     },
     {
       "key": "e2b_node_create_post_nodes_nodeid",
       "name": "e2bNodeCreatePostNodesNodeid",
       "schemaVersion": 2,
-      "title": "Create node",
-      "subtitle": "nodes",
+      "title": "Créer noeud noeud ID",
+      "subtitle": "Noeud noeud ID",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -3099,7 +3099,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -3110,15 +3110,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:e2b_node"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_post_nodes_nodeid sur node.",
+      "description": "Créer noeud noeud ID.",
       "args": {
-        "title": "Create node",
+        "title": "Créer noeud noeud ID",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3128,7 +3128,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -3137,14 +3137,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "nodes"
+      "group": "noeuds"
     },
     {
       "key": "e2b_pause_create_post_sandboxes_sandboxid_pause",
       "name": "e2bPauseCreatePostSandboxesSandboxidPause",
       "schemaVersion": 2,
-      "title": "Create pause",
-      "subtitle": "pauses",
+      "title": "Créer sandbox sandbox ID",
+      "subtitle": "Sandbox sandbox ID",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -3158,7 +3158,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -3169,15 +3169,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:e2b_pause"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_post_sandboxes_sandboxid_pause sur pause.",
+      "description": "Créer sandbox sandbox ID.",
       "args": {
-        "title": "Create pause",
+        "title": "Créer sandbox sandbox ID",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3186,8 +3186,8 @@
           {
             "type": "text",
             "key": "sandboxid",
-            "label": "Sandboxid",
-            "description": "Valeur de chemin sandboxid.",
+            "label": "Sandbox ID",
+            "description": "Valeur de chemin sandbox ID",
             "col": {
               "xs": 24
             },
@@ -3201,7 +3201,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -3216,8 +3216,8 @@
       "key": "e2b_refreshe_create_post_sandboxes_sandboxid_refreshes",
       "name": "e2bRefresheCreatePostSandboxesSandboxidRefreshes",
       "schemaVersion": 2,
-      "title": "Create refreshe",
-      "subtitle": "refreshes",
+      "title": "Créer sandbox sandbox ID rafraîchissement",
+      "subtitle": "Sandbox sandbox ID rafraîchissement",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -3231,7 +3231,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -3242,15 +3242,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:e2b_refreshe"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_post_sandboxes_sandboxid_refreshes sur refreshe.",
+      "description": "Créer sandbox sandbox ID rafraîchissement.",
       "args": {
-        "title": "Create refreshe",
+        "title": "Créer sandbox sandbox ID rafraîchissement",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3260,7 +3260,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -3269,14 +3269,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "refreshes"
+      "group": "rafraîchissements"
     },
     {
       "key": "e2b_sandboxe_list_get_sandboxes",
       "name": "e2bSandboxeListGetSandboxes",
       "schemaVersion": 2,
-      "title": "List sandboxe",
-      "subtitle": "sandboxes",
+      "title": "Lister sandbox",
+      "subtitle": "Sandbox",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -3290,7 +3290,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -3301,15 +3301,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:e2b_sandboxes"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_get_sandboxes sur sandboxe.",
+      "description": "Lister sandbox.",
       "args": {
-        "title": "List sandboxe",
+        "title": "Lister sandbox",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3318,8 +3318,8 @@
           {
             "type": "text",
             "key": "metadata",
-            "label": "Metadata",
-            "description": "Metadata query used to filter the sandboxes (e.g. \"user=abc&app=prod\"). Each key and values must be URL encoded.",
+            "label": "Métadonnées",
+            "description": "Métadonnées query used filtre sandboxes e g utilisateur abc app prod Each key valeurs must URL encoded",
             "col": {
               "xs": 24
             }
@@ -3334,8 +3334,8 @@
       "key": "e2b_sandboxe_create_post_sandboxes",
       "name": "e2bSandboxeCreatePostSandboxes",
       "schemaVersion": 2,
-      "title": "Create sandboxe",
-      "subtitle": "sandboxes",
+      "title": "Créer sandbox",
+      "subtitle": "Sandbox",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -3349,7 +3349,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -3360,15 +3360,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:e2b_sandboxe"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_post_sandboxes sur sandboxe.",
+      "description": "Créer sandbox.",
       "args": {
-        "title": "Create sandboxe",
+        "title": "Créer sandbox",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3378,7 +3378,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             },
@@ -3398,8 +3398,8 @@
       "key": "e2b_sandboxe_list_get_v2_sandboxes",
       "name": "e2bSandboxeListGetV2Sandboxes",
       "schemaVersion": 2,
-      "title": "List sandboxe",
-      "subtitle": "sandboxes",
+      "title": "Lister sandbox - sandbox",
+      "subtitle": "Sandbox",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -3413,7 +3413,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -3424,15 +3424,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:e2b_sandboxes"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_get_v2_sandboxes sur sandboxe.",
+      "description": "Lister sandbox - sandbox.",
       "args": {
-        "title": "List sandboxe",
+        "title": "Lister sandbox - sandbox",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3441,8 +3441,8 @@
           {
             "type": "text",
             "key": "metadata",
-            "label": "Metadata",
-            "description": "Metadata query used to filter the sandboxes (e.g. \"user=abc&app=prod\"). Each key and values must be URL encoded.",
+            "label": "Métadonnées",
+            "description": "Métadonnées query used filtre sandboxes e g utilisateur abc app prod Each key valeurs must URL encoded",
             "col": {
               "xs": 24
             }
@@ -3451,7 +3451,7 @@
             "type": "json",
             "key": "state",
             "label": "State",
-            "description": "Filter sandboxes by one or more states",
+            "description": "Filtre sandboxes more states",
             "col": {
               "xs": 24
             }
@@ -3466,8 +3466,8 @@
       "key": "e2b_sandboxe_get_get_sandboxes_sandboxid",
       "name": "e2bSandboxeGetGetSandboxesSandboxid",
       "schemaVersion": 2,
-      "title": "Get sandboxe",
-      "subtitle": "sandboxes",
+      "title": "Récupérer sandbox sandbox ID",
+      "subtitle": "Sandbox sandbox ID",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -3481,7 +3481,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -3492,15 +3492,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:e2b_sandboxe"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get_get_sandboxes_sandboxid sur sandboxe.",
+      "description": "Récupérer sandbox sandbox ID.",
       "args": {
-        "title": "Get sandboxe",
+        "title": "Récupérer sandbox sandbox ID",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3509,8 +3509,8 @@
           {
             "type": "text",
             "key": "sandboxid",
-            "label": "Sandboxid",
-            "description": "Valeur de chemin sandboxid.",
+            "label": "Sandbox ID",
+            "description": "Valeur de chemin sandbox ID",
             "col": {
               "xs": 24
             },
@@ -3530,8 +3530,8 @@
       "key": "e2b_sandboxe_delete_delete_sandboxes_sandboxid",
       "name": "e2bSandboxeDeleteDeleteSandboxesSandboxid",
       "schemaVersion": 2,
-      "title": "Delete sandboxe",
-      "subtitle": "sandboxes",
+      "title": "Supprimer sandbox sandbox ID",
+      "subtitle": "Sandbox sandbox ID",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -3545,7 +3545,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -3556,15 +3556,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:e2b_action_result"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete_delete_sandboxes_sandboxid sur sandboxe.",
+      "description": "Supprimer sandbox sandbox ID.",
       "args": {
-        "title": "Delete sandboxe",
+        "title": "Supprimer sandbox sandbox ID",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3573,8 +3573,8 @@
           {
             "type": "text",
             "key": "sandboxid",
-            "label": "Sandboxid",
-            "description": "Valeur de chemin sandboxid.",
+            "label": "Sandbox ID",
+            "description": "Valeur de chemin sandbox ID",
             "col": {
               "xs": 24
             },
@@ -3594,8 +3594,8 @@
       "key": "e2b_snapshot_create_post_sandboxes_sandboxid_snapshots",
       "name": "e2bSnapshotCreatePostSandboxesSandboxidSnapshots",
       "schemaVersion": 2,
-      "title": "Create snapshot",
-      "subtitle": "snapshots",
+      "title": "Créer sandbox sandbox ID instantané",
+      "subtitle": "Sandbox sandbox ID instantané",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -3609,7 +3609,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -3620,15 +3620,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:e2b_snapshot"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_post_sandboxes_sandboxid_snapshots sur snapshot.",
+      "description": "Créer sandbox sandbox ID instantané.",
       "args": {
-        "title": "Create snapshot",
+        "title": "Créer sandbox sandbox ID instantané",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3638,7 +3638,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             },
@@ -3652,14 +3652,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "snapshots"
+      "group": "instantanés"
     },
     {
       "key": "e2b_snapshot_list_get_snapshots",
       "name": "e2bSnapshotListGetSnapshots",
       "schemaVersion": 2,
-      "title": "List snapshot",
-      "subtitle": "snapshots",
+      "title": "Lister instantané",
+      "subtitle": "Instantané",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -3673,7 +3673,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -3684,15 +3684,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:e2b_snapshots"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_get_snapshots sur snapshot.",
+      "description": "Lister instantané.",
       "args": {
-        "title": "List snapshot",
+        "title": "Lister instantané",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3701,8 +3701,8 @@
           {
             "type": "text",
             "key": "sandboxid",
-            "label": "Sandboxid",
-            "description": "Paramètre de requête sandboxid.",
+            "label": "Sandbox ID",
+            "description": "Paramètre de requête sandbox ID",
             "col": {
               "xs": 24
             }
@@ -3711,14 +3711,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "snapshots"
+      "group": "instantanés"
     },
     {
       "key": "e2b_timeout_create_post_sandboxes_sandboxid_timeout",
       "name": "e2bTimeoutCreatePostSandboxesSandboxidTimeout",
       "schemaVersion": 2,
-      "title": "Create timeout",
-      "subtitle": "timeouts",
+      "title": "Créer sandbox sandbox ID délai d'attente",
+      "subtitle": "Sandbox sandbox ID délai d'attente",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -3732,7 +3732,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -3743,15 +3743,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:e2b_timeout"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_post_sandboxes_sandboxid_timeout sur timeout.",
+      "description": "Créer sandbox sandbox ID délai d'attente.",
       "args": {
-        "title": "Create timeout",
+        "title": "Créer sandbox sandbox ID délai d'attente",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3761,7 +3761,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -3770,14 +3770,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "timeouts"
+      "group": "délai d attentes"
     },
     {
       "key": "e2b_volume_list_get_volumes",
       "name": "e2bVolumeListGetVolumes",
       "schemaVersion": 2,
-      "title": "List volume",
-      "subtitle": "volumes",
+      "title": "Lister volume",
+      "subtitle": "Volume",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -3791,7 +3791,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -3802,15 +3802,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:e2b_volumes"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_get_volumes sur volume.",
+      "description": "Lister volume.",
       "args": {
-        "title": "List volume",
+        "title": "Lister volume",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3825,8 +3825,8 @@
       "key": "e2b_volume_create_post_volumes",
       "name": "e2bVolumeCreatePostVolumes",
       "schemaVersion": 2,
-      "title": "Create volume",
-      "subtitle": "volumes",
+      "title": "Créer volume",
+      "subtitle": "Volume",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -3840,7 +3840,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -3851,15 +3851,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:e2b_volume"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_post_volumes sur volume.",
+      "description": "Créer volume.",
       "args": {
-        "title": "Create volume",
+        "title": "Créer volume",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3869,7 +3869,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             },
@@ -3889,8 +3889,8 @@
       "key": "e2b_volume_get_get_volumes_volumeid",
       "name": "e2bVolumeGetGetVolumesVolumeid",
       "schemaVersion": 2,
-      "title": "Get volume",
-      "subtitle": "volumes",
+      "title": "Récupérer volume volume ID",
+      "subtitle": "Volume volume ID",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -3904,7 +3904,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -3915,15 +3915,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:e2b_volume"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get_get_volumes_volumeid sur volume.",
+      "description": "Récupérer volume volume ID.",
       "args": {
-        "title": "Get volume",
+        "title": "Récupérer volume volume ID",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3932,8 +3932,8 @@
           {
             "type": "text",
             "key": "volumeid",
-            "label": "Volumeid",
-            "description": "Valeur de chemin volumeid.",
+            "label": "Volume ID",
+            "description": "Valeur de chemin volume ID",
             "col": {
               "xs": 24
             },
@@ -3953,8 +3953,8 @@
       "key": "e2b_volume_delete_delete_volumes_volumeid",
       "name": "e2bVolumeDeleteDeleteVolumesVolumeid",
       "schemaVersion": 2,
-      "title": "Delete volume",
-      "subtitle": "volumes",
+      "title": "Supprimer volume volume ID",
+      "subtitle": "Volume volume ID",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -3968,7 +3968,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -3979,15 +3979,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:e2b_action_result"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete_delete_volumes_volumeid sur volume.",
+      "description": "Supprimer volume volume ID.",
       "args": {
-        "title": "Delete volume",
+        "title": "Supprimer volume volume ID",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3996,8 +3996,8 @@
           {
             "type": "text",
             "key": "volumeid",
-            "label": "Volumeid",
-            "description": "Valeur de chemin volumeid.",
+            "label": "Volume ID",
+            "description": "Valeur de chemin volume ID",
             "col": {
               "xs": 24
             },

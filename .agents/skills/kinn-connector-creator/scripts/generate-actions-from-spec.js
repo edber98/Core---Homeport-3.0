@@ -101,8 +101,24 @@ function defaultTitle(action, resourceTitle, resourceTitlePlural) {
   if (a === 'delete') return `Supprimer un ${resourceTitle}`;
   if (a === 'archive') return `Archiver un ${resourceTitle}`;
   if (a === 'restore') return `Restaurer un ${resourceTitle}`;
-  if (a === 'upsert') return `Upsert un ${resourceTitle}`;
-  return `${titleCase(a)} ${resourceTitle}`;
+  if (a === 'upsert') return `Mettre à jour ou créer un ${resourceTitle}`;
+  if (a === 'publish') return `Publier un ${resourceTitle}`;
+  if (a === 'unpublish') return `Dépublier un ${resourceTitle}`;
+  if (a === 'assign') return `Assigner un ${resourceTitle}`;
+  if (a === 'move') return `Déplacer un ${resourceTitle}`;
+  if (a === 'send') return `Envoyer un ${resourceTitle}`;
+  if (a === 'comment') return `Commenter un ${resourceTitle}`;
+  if (a === 'tag') return `Étiqueter un ${resourceTitle}`;
+  if (a === 'trigger') return `Déclencher un ${resourceTitle}`;
+  if (a === 'run' || a === 'execute') return `Exécuter un ${resourceTitle}`;
+  if (a === 'deploy') return `Déployer un ${resourceTitle}`;
+  if (a === 'cancel') return `Annuler un ${resourceTitle}`;
+  if (a === 'retry') return `Relancer un ${resourceTitle}`;
+  if (a === 'approve') return `Approuver un ${resourceTitle}`;
+  if (a === 'reject') return `Rejeter un ${resourceTitle}`;
+  if (a === 'query') return `Interroger les ${resourceTitlePlural}`;
+  if (a === 'webhook') return `Recevoir des webhooks ${resourceTitlePlural}`;
+  return `Exécuter ${titleCase(a.replace(/_/g, ' '))} sur ${resourceTitle}`;
 }
 
 function defaultIcon(action) {
@@ -322,33 +338,34 @@ module.exports = {
 }
 
 function makeNodeTemplate(providerKey, providerTitle, resource, actionDef, args, schema) {
-  const actionKey = toSnake(actionDef.action || actionDef.name || actionDef.key);
+  const actionToken = resolveActionKey(actionDef) || 'custom';
+  const actionVerb = toSnake(actionDef.action || actionToken);
   const resourceKey = toSnake(resource.key || resource.resource || resource.name);
   const resourceTitle = resource.title || titleCase(resourceKey);
   const resourceTitlePlural = resource.titlePlural || pluralize(resourceTitle);
 
-  const templateKey = `${providerKey}_${resourceKey}_${actionKey}`;
+  const templateKey = `${providerKey}_${resourceKey}_${actionToken}`;
   const templateName = toCamel(templateKey);
-  const outputMode = actionDef.output || defaultOutput(actionKey);
+  const outputMode = actionDef.output || defaultOutput(actionVerb);
 
   return {
     key: templateKey,
     name: templateName,
     schemaVersion: 2,
-    title: actionDef.title || defaultTitle(actionKey, resourceTitle, resourceTitlePlural),
+    title: actionDef.title || defaultTitle(actionVerb, resourceTitle, resourceTitlePlural),
     subtitle: actionDef.subtitle || resourceTitlePlural,
-    icon: actionDef.icon || defaultIcon(actionKey),
+    icon: actionDef.icon || defaultIcon(actionVerb),
     type: 'function',
     nodeKind: 'function',
     category: providerTitle,
     providerKey,
-    tags: Array.isArray(actionDef.tags) && actionDef.tags.length ? actionDef.tags : [providerKey, resourceKey, actionKey],
+    tags: Array.isArray(actionDef.tags) && actionDef.tags.length ? actionDef.tags : [providerKey, resourceKey, actionVerb],
     inputHandles: [{ id: 'in', name: 'In', type: 'any', accepts: ['any', 'payload'] }],
     outputHandles: [{ id: 'ok', name: 'Success', type: 'payload', schema: `$var:${schema}` }],
     authorize_catch_error: true,
-    description: actionDef.description || `Action ${actionKey} sur ${resourceTitle}.`,
+    description: actionDef.description || `Action ${actionVerb} sur ${resourceTitle}.`,
     args: {
-      title: actionDef.title || defaultTitle(actionKey, resourceTitle, resourceTitlePlural),
+      title: actionDef.title || defaultTitle(actionVerb, resourceTitle, resourceTitlePlural),
       ui: { layout: 'vertical', labelsOnTop: true },
       fields: args.map(templateField),
       displayTitle: false,
@@ -356,6 +373,33 @@ function makeNodeTemplate(providerKey, providerTitle, resource, actionDef, args,
     },
     group: actionDef.group || resource.group || resourceTitlePlural
   };
+}
+
+function uniqueValue(base, used, format) {
+  const normalizedBase = String(base || '').trim();
+  const start = normalizedBase || 'node';
+  let candidate = start;
+  let n = 2;
+  while (used.has(candidate)) {
+    candidate = format(start, n);
+    n += 1;
+  }
+  used.add(candidate);
+  return candidate;
+}
+
+function ensureUniqueNodeNamesAndTitles(manifest, providerKey) {
+  const templates = Array.isArray(manifest.nodeTemplates) ? manifest.nodeTemplates : [];
+  const nodes = templates.filter((t) => t && t.providerKey === providerKey);
+  const usedNames = new Set();
+  const usedTitles = new Set();
+
+  for (const node of nodes) {
+    node.name = uniqueValue(node.name || toCamel(node.key || 'node'), usedNames, (base, n) => `${base}${n}`);
+    const uniqueTitle = uniqueValue(node.title || 'Action', usedTitles, (base, n) => `${base} (${n})`);
+    node.title = uniqueTitle;
+    if (node.args && typeof node.args === 'object') node.args.title = uniqueTitle;
+  }
 }
 
 function generateFromSpec(specInput, opts = {}) {
@@ -429,7 +473,8 @@ function generateFromSpec(specInput, opts = {}) {
 
       const tpl = makeNodeTemplate(providerKey, providerTitle, resource, {
         ...actionRaw,
-        action: actionKey,
+        key: actionKey,
+        action: toSnake(actionRaw.action || actionKey),
         method,
         path: reqPath,
         output: outputMode
@@ -457,6 +502,8 @@ function generateFromSpec(specInput, opts = {}) {
     const sampleKeys = new Set((manifest.nodeTemplates || []).filter((t) => /_health_ping$/.test(String(t.key || ''))).map((t) => t.key));
     manifest.nodeTemplates = (manifest.nodeTemplates || []).filter((t) => !sampleKeys.has(t.key));
   }
+
+  ensureUniqueNodeNamesAndTitles(manifest, providerKey);
 
   if (!opts.dryRun) writeJson(manifestPath, manifest);
 

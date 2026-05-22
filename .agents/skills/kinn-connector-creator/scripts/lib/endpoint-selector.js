@@ -192,6 +192,36 @@ function inferOutput(actionKey, method) {
   return 'action_result';
 }
 
+function defaultFrenchNodeTitle(actionKey, resourceTitle, resourceTitlePlural) {
+  const a = toSnake(actionKey);
+  if (a === 'list') return `Lister les ${resourceTitlePlural}`;
+  if (a === 'search') return `Rechercher des ${resourceTitlePlural}`;
+  if (a === 'get') return `Récupérer un ${resourceTitle}`;
+  if (a === 'create') return `Créer un ${resourceTitle}`;
+  if (a === 'update') return `Mettre à jour un ${resourceTitle}`;
+  if (a === 'delete') return `Supprimer un ${resourceTitle}`;
+  if (a === 'archive') return `Archiver un ${resourceTitle}`;
+  if (a === 'restore') return `Restaurer un ${resourceTitle}`;
+  if (a === 'upsert') return `Mettre à jour ou créer un ${resourceTitle}`;
+  if (a === 'publish') return `Publier un ${resourceTitle}`;
+  if (a === 'unpublish') return `Dépublier un ${resourceTitle}`;
+  if (a === 'assign') return `Assigner un ${resourceTitle}`;
+  if (a === 'move') return `Déplacer un ${resourceTitle}`;
+  if (a === 'send') return `Envoyer un ${resourceTitle}`;
+  if (a === 'comment') return `Commenter un ${resourceTitle}`;
+  if (a === 'tag') return `Étiqueter un ${resourceTitle}`;
+  if (a === 'trigger') return `Déclencher un ${resourceTitle}`;
+  if (a === 'run' || a === 'execute') return `Exécuter un ${resourceTitle}`;
+  if (a === 'deploy') return `Déployer un ${resourceTitle}`;
+  if (a === 'cancel') return `Annuler un ${resourceTitle}`;
+  if (a === 'retry') return `Relancer un ${resourceTitle}`;
+  if (a === 'approve') return `Approuver un ${resourceTitle}`;
+  if (a === 'reject') return `Rejeter un ${resourceTitle}`;
+  if (a === 'query') return `Interroger les ${resourceTitlePlural}`;
+  if (a === 'webhook') return `Recevoir des webhooks ${resourceTitlePlural}`;
+  return `Exécuter ${titleCase(a.replace(/_/g, ' '))} sur ${resourceTitle}`;
+}
+
 function shouldExclude(pathname, includeRegexes, excludeRegexes) {
   const pathLc = String(pathname || '').toLowerCase();
   if (includeRegexes.some((re) => re.test(pathLc))) return { excluded: false };
@@ -266,8 +296,6 @@ function buildSpecFromOpenApi(openapi, options = {}) {
       const detectedAction = detectAction(pathname, methodLc, operation);
       let actionKey = toSnake(detectedAction.actionKey || detectedAction.action || 'custom');
       if (!actionKey) actionKey = 'custom';
-
-      const actionTitleSuffix = titleCase(actionKey.replace(/_/g, ' '));
       const variant = toSnake(operation.operationId || operation.summary || `${methodLc}_${pathname}`)
         .replace(/^_+|_+$/g, '')
         .slice(0, 60);
@@ -315,7 +343,7 @@ function buildSpecFromOpenApi(openapi, options = {}) {
         action: actionKey,
         method: methodLc.toUpperCase(),
         path: pathname,
-        title: `${actionTitleSuffix} ${resource.title}`,
+        title: defaultFrenchNodeTitle(actionKey, resource.title, resource.titlePlural),
         output,
         args,
         disableDefaultArgs: args.length > 0

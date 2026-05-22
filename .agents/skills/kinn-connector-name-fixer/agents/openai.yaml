@@ -1,0 +1,4 @@
+interface:
+  display_name: "Kinn connector name fixer"
+  short_description: "Translate node names to French and deduplicate titles/names."
+  default_prompt: "corrige les noms de notion"

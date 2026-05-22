@@ -2959,8 +2959,8 @@
       "key": "mem0_add_create_memories_add_v3",
       "name": "mem0AddCreateMemoriesAddV3",
       "schemaVersion": 2,
-      "title": "Create add",
-      "subtitle": "adds",
+      "title": "Créer mémoire",
+      "subtitle": "Mémoire",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -2974,7 +2974,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -2985,15 +2985,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:mem0_add"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_memories_add_v3 sur add.",
+      "description": "Créer mémoire.",
       "args": {
-        "title": "Create add",
+        "title": "Créer mémoire",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3003,7 +3003,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             },
@@ -3017,14 +3017,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "adds"
+      "group": "ajouts"
     },
     {
       "key": "mem0_agent_create_agents_create",
       "name": "mem0AgentCreateAgentsCreate",
       "schemaVersion": 2,
-      "title": "Create agent",
-      "subtitle": "agents",
+      "title": "Créer agent",
+      "subtitle": "Agent",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -3038,7 +3038,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -3049,15 +3049,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:mem0_agent"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_agents_create sur agent.",
+      "description": "Créer agent.",
       "args": {
-        "title": "Create agent",
+        "title": "Créer agent",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3067,7 +3067,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             },
@@ -3087,8 +3087,8 @@
       "key": "mem0_app_create_apps_create",
       "name": "mem0AppCreateAppsCreate",
       "schemaVersion": 2,
-      "title": "Create app",
-      "subtitle": "apps",
+      "title": "Créer app",
+      "subtitle": "App",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -3102,7 +3102,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -3113,15 +3113,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:mem0_app"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_apps_create sur app.",
+      "description": "Créer app.",
       "args": {
-        "title": "Create app",
+        "title": "Créer app",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3131,7 +3131,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             },
@@ -3151,8 +3151,8 @@
       "key": "mem0_batch_update_memories_batch_update",
       "name": "mem0BatchUpdateMemoriesBatchUpdate",
       "schemaVersion": 2,
-      "title": "Update batch",
-      "subtitle": "batchs",
+      "title": "Mettre à jour mémoire lot",
+      "subtitle": "Mémoire lot",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -3166,7 +3166,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -3177,15 +3177,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:mem0_batch"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update_memories_batch_update sur batch.",
+      "description": "Mettre à jour mémoire lot.",
       "args": {
-        "title": "Update batch",
+        "title": "Mettre à jour mémoire lot",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3195,7 +3195,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             },
@@ -3209,14 +3209,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "batchs"
+      "group": "lots"
     },
     {
       "key": "mem0_batch_delete_memories_batch_delete",
       "name": "mem0BatchDeleteMemoriesBatchDelete",
       "schemaVersion": 2,
-      "title": "Delete batch",
-      "subtitle": "batchs",
+      "title": "Supprimer mémoire lot",
+      "subtitle": "Mémoire lot",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -3230,7 +3230,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -3241,15 +3241,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:mem0_action_result"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete_memories_batch_delete sur batch.",
+      "description": "Supprimer mémoire lot.",
       "args": {
-        "title": "Delete batch",
+        "title": "Supprimer mémoire lot",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3258,14 +3258,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "batchs"
+      "group": "lots"
     },
     {
       "key": "mem0_entity_list_entities_list",
       "name": "mem0EntityListEntitiesList",
       "schemaVersion": 2,
-      "title": "List entity",
-      "subtitle": "entities",
+      "title": "Lister entité",
+      "subtitle": "Entité",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -3279,7 +3279,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -3290,15 +3290,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:mem0_entities"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_entities_list sur entity.",
+      "description": "Lister entité.",
       "args": {
-        "title": "List entity",
+        "title": "Lister entité",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3307,8 +3307,8 @@
           {
             "type": "text",
             "key": "org_id",
-            "label": "Org Id",
-            "description": "Filter entities by organization ID.",
+            "label": "Org ID",
+            "description": "Filtre entités organization ID",
             "col": {
               "xs": 24
             }
@@ -3316,8 +3316,8 @@
           {
             "type": "text",
             "key": "project_id",
-            "label": "Project Id",
-            "description": "Filter entities by project ID.",
+            "label": "Projet ID",
+            "description": "Filtre entités projet ID",
             "col": {
               "xs": 24
             }
@@ -3326,14 +3326,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "entities"
+      "group": "entités"
     },
     {
       "key": "mem0_entity_get_entities_read",
       "name": "mem0EntityGetEntitiesRead",
       "schemaVersion": 2,
-      "title": "Get entity",
-      "subtitle": "entities",
+      "title": "Récupérer entité",
+      "subtitle": "Entité",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -3347,7 +3347,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -3358,15 +3358,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:mem0_entity"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get_entities_read sur entity.",
+      "description": "Récupérer entité.",
       "args": {
-        "title": "Get entity",
+        "title": "Récupérer entité",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3375,8 +3375,8 @@
           {
             "type": "text",
             "key": "entity_type",
-            "label": "Entity Type",
-            "description": "The type of the entity (user, agent, app, or run).",
+            "label": "Entité Type",
+            "description": "type entité utilisateur agent app run",
             "col": {
               "xs": 24
             },
@@ -3389,8 +3389,8 @@
           {
             "type": "text",
             "key": "entity_id",
-            "label": "Entity Id",
-            "description": "The unique identifier of the entity.",
+            "label": "Entité ID",
+            "description": "unique identifier entité",
             "col": {
               "xs": 24
             },
@@ -3404,14 +3404,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "entities"
+      "group": "entités"
     },
     {
       "key": "mem0_entity_delete_entities_delete",
       "name": "mem0EntityDeleteEntitiesDelete",
       "schemaVersion": 2,
-      "title": "Delete entity",
-      "subtitle": "entities",
+      "title": "Supprimer entité",
+      "subtitle": "Entité",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -3425,7 +3425,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -3436,15 +3436,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:mem0_action_result"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete_entities_delete sur entity.",
+      "description": "Supprimer entité.",
       "args": {
-        "title": "Delete entity",
+        "title": "Supprimer entité",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3453,8 +3453,8 @@
           {
             "type": "text",
             "key": "entity_type",
-            "label": "Entity Type",
-            "description": "The type of the entity (user, agent, app, or run).",
+            "label": "Entité Type",
+            "description": "type entité utilisateur agent app run",
             "col": {
               "xs": 24
             },
@@ -3467,8 +3467,8 @@
           {
             "type": "text",
             "key": "entity_id",
-            "label": "Entity Id",
-            "description": "The unique identifier of the entity.",
+            "label": "Entité ID",
+            "description": "unique identifier entité",
             "col": {
               "xs": 24
             },
@@ -3482,14 +3482,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "entities"
+      "group": "entités"
     },
     {
       "key": "mem0_event_list_events_list",
       "name": "mem0EventListEventsList",
       "schemaVersion": 2,
-      "title": "List event",
-      "subtitle": "events",
+      "title": "Lister événement",
+      "subtitle": "Événement",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -3503,7 +3503,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -3514,15 +3514,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:mem0_events"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_events_list sur event.",
+      "description": "Lister événement.",
       "args": {
-        "title": "List event",
+        "title": "Lister événement",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3531,14 +3531,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "events"
+      "group": "événements"
     },
     {
       "key": "mem0_event_get_event_read",
       "name": "mem0EventGetEventRead",
       "schemaVersion": 2,
-      "title": "Get event",
-      "subtitle": "events",
+      "title": "Récupérer événement",
+      "subtitle": "Événement",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -3552,7 +3552,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -3563,15 +3563,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:mem0_event"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get_event_read sur event.",
+      "description": "Récupérer événement.",
       "args": {
-        "title": "Get event",
+        "title": "Récupérer événement",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3580,8 +3580,8 @@
           {
             "type": "text",
             "key": "event_id",
-            "label": "Event Id",
-            "description": "The unique identifier of the event (UUID).",
+            "label": "événement ID",
+            "description": "unique identifier événement Uuid",
             "col": {
               "xs": 24
             },
@@ -3595,14 +3595,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "events"
+      "group": "événements"
     },
     {
       "key": "mem0_event_list_memories_events_list",
       "name": "mem0EventListMemoriesEventsList",
       "schemaVersion": 2,
-      "title": "List event",
-      "subtitle": "events",
+      "title": "Lister mémoire événement",
+      "subtitle": "Mémoire événement",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -3616,7 +3616,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -3627,15 +3627,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:mem0_events"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_memories_events_list sur event.",
+      "description": "Lister mémoire événement.",
       "args": {
-        "title": "List event",
+        "title": "Lister mémoire événement",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3644,14 +3644,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "events"
+      "group": "événements"
     },
     {
       "key": "mem0_export_create_exports_create",
       "name": "mem0ExportCreateExportsCreate",
       "schemaVersion": 2,
-      "title": "Create export",
-      "subtitle": "exports",
+      "title": "Créer export",
+      "subtitle": "Export",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -3665,7 +3665,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -3676,15 +3676,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:mem0_export"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_exports_create sur export.",
+      "description": "Créer export.",
       "args": {
-        "title": "Create export",
+        "title": "Créer export",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3694,7 +3694,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             },
@@ -3714,8 +3714,8 @@
       "key": "mem0_feedback_create_submit_feedback",
       "name": "mem0FeedbackCreateSubmitFeedback",
       "schemaVersion": 2,
-      "title": "Create feedback",
-      "subtitle": "feedbacks",
+      "title": "Créer feedback",
+      "subtitle": "Feedback",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -3729,7 +3729,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -3740,15 +3740,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:mem0_feedback"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_submit_feedback sur feedback.",
+      "description": "Créer feedback.",
       "args": {
-        "title": "Create feedback",
+        "title": "Créer feedback",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3758,7 +3758,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             },
@@ -3778,8 +3778,8 @@
       "key": "mem0_filter_list_entities_filters_list",
       "name": "mem0FilterListEntitiesFiltersList",
       "schemaVersion": 2,
-      "title": "List filter",
-      "subtitle": "filters",
+      "title": "Lister entité filtre",
+      "subtitle": "Entité filtre",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -3793,7 +3793,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -3804,15 +3804,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:mem0_filters"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_entities_filters_list sur filter.",
+      "description": "Lister entité filtre.",
       "args": {
-        "title": "List filter",
+        "title": "Lister entité filtre",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3821,14 +3821,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "filters"
+      "group": "filtres"
     },
     {
       "key": "mem0_get_create_exports_list",
       "name": "mem0GetCreateExportsList",
       "schemaVersion": 2,
-      "title": "Create get",
-      "subtitle": "gets",
+      "title": "Récupérer export",
+      "subtitle": "Export",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -3842,7 +3842,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -3853,15 +3853,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:mem0_get"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_exports_list sur get.",
+      "description": "Récupérer export.",
       "args": {
-        "title": "Create get",
+        "title": "Récupérer export",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3871,7 +3871,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -3880,14 +3880,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "gets"
+      "group": "récupérations"
     },
     {
       "key": "mem0_history_list_memories_history_list",
       "name": "mem0HistoryListMemoriesHistoryList",
       "schemaVersion": 2,
-      "title": "List history",
-      "subtitle": "histories",
+      "title": "Lister mémoire historique",
+      "subtitle": "Mémoire historique",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -3901,7 +3901,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -3912,15 +3912,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:mem0_histories"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_memories_history_list sur history.",
+      "description": "Lister mémoire historique.",
       "args": {
-        "title": "List history",
+        "title": "Lister mémoire historique",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3929,8 +3929,8 @@
           {
             "type": "text",
             "key": "memory_id",
-            "label": "Memory Id",
-            "description": "The unique identifier of the memory to retrieve.",
+            "label": "Mémoire ID",
+            "description": "unique identifier mémoire récupération",
             "col": {
               "xs": 24
             },
@@ -3944,14 +3944,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "histories"
+      "group": "historiques"
     },
     {
       "key": "mem0_memory_list_memories_list",
       "name": "mem0MemoryListMemoriesList",
       "schemaVersion": 2,
-      "title": "List memory",
-      "subtitle": "memories",
+      "title": "Lister mémoire",
+      "subtitle": "Mémoire",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -3965,7 +3965,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -3976,15 +3976,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:mem0_memories"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_memories_list sur memory.",
+      "description": "Lister mémoire.",
       "args": {
-        "title": "List memory",
+        "title": "Lister mémoire",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3993,8 +3993,8 @@
           {
             "type": "text",
             "key": "user_id",
-            "label": "User Id",
-            "description": "Filter memories by user ID.",
+            "label": "Utilisateur ID",
+            "description": "Filtre mémoires utilisateur ID",
             "col": {
               "xs": 24
             }
@@ -4002,8 +4002,8 @@
           {
             "type": "text",
             "key": "agent_id",
-            "label": "Agent Id",
-            "description": "Filter memories by agent ID.",
+            "label": "Agent ID",
+            "description": "Filtre mémoires agent ID",
             "col": {
               "xs": 24
             }
@@ -4011,8 +4011,8 @@
           {
             "type": "text",
             "key": "app_id",
-            "label": "App Id",
-            "description": "Filter memories by app ID.",
+            "label": "App ID",
+            "description": "Filtre mémoires app ID",
             "col": {
               "xs": 24
             }
@@ -4020,8 +4020,8 @@
           {
             "type": "text",
             "key": "run_id",
-            "label": "Run Id",
-            "description": "Filter memories by run ID.",
+            "label": "Exécuter ID",
+            "description": "Filtre mémoires run ID",
             "col": {
               "xs": 24
             }
@@ -4029,8 +4029,8 @@
           {
             "type": "json",
             "key": "metadata",
-            "label": "Metadata",
-            "description": "Filter memories by metadata (JSON string).",
+            "label": "Métadonnées",
+            "description": "Filtre mémoires métadonnées Json string",
             "col": {
               "xs": 24
             }
@@ -4039,7 +4039,7 @@
             "type": "json",
             "key": "categories",
             "label": "Categories",
-            "description": "Filter memories by categories.",
+            "description": "Filtre mémoires categories",
             "col": {
               "xs": 24
             }
@@ -4047,8 +4047,8 @@
           {
             "type": "text",
             "key": "org_id",
-            "label": "Org Id",
-            "description": "Filter memories by organization ID.",
+            "label": "Org ID",
+            "description": "Filtre mémoires organization ID",
             "col": {
               "xs": 24
             }
@@ -4056,8 +4056,8 @@
           {
             "type": "text",
             "key": "project_id",
-            "label": "Project Id",
-            "description": "Filter memories by project ID.",
+            "label": "Projet ID",
+            "description": "Filtre mémoires projet ID",
             "col": {
               "xs": 24
             }
@@ -4065,8 +4065,8 @@
           {
             "type": "json",
             "key": "fields",
-            "label": "Fields",
-            "description": "Filter memories by fields.",
+            "label": "Champs",
+            "description": "Filtre mémoires champs",
             "col": {
               "xs": 24
             }
@@ -4075,7 +4075,7 @@
             "type": "text",
             "key": "keywords",
             "label": "Keywords",
-            "description": "Filter memories by keywords.",
+            "description": "Filtre mémoires keywords",
             "col": {
               "xs": 24
             }
@@ -4084,7 +4084,7 @@
             "type": "number",
             "key": "page",
             "label": "Page",
-            "description": "Page number for pagination. Default: 1.",
+            "description": "Page numéro pagination Default 1",
             "col": {
               "xs": 24
             }
@@ -4093,7 +4093,7 @@
             "type": "number",
             "key": "page_size",
             "label": "Page Size",
-            "description": "Number of items per page. Default: 100.",
+            "description": "Numéro items per page Default 100",
             "col": {
               "xs": 24
             }
@@ -4102,7 +4102,7 @@
             "type": "text",
             "key": "start_date",
             "label": "Start Date",
-            "description": "Filter memories by start date.",
+            "description": "Filtre mémoires start date",
             "col": {
               "xs": 24
             }
@@ -4111,7 +4111,7 @@
             "type": "text",
             "key": "end_date",
             "label": "End Date",
-            "description": "Filter memories by end date.",
+            "description": "Filtre mémoires end date",
             "col": {
               "xs": 24
             }
@@ -4120,14 +4120,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "memories"
+      "group": "mémoires"
     },
     {
       "key": "mem0_memory_create_memories_create",
       "name": "mem0MemoryCreateMemoriesCreate",
       "schemaVersion": 2,
-      "title": "Create memory",
-      "subtitle": "memories",
+      "title": "Créer mémoire - mémoire",
+      "subtitle": "Mémoire",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -4141,7 +4141,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -4152,15 +4152,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:mem0_memory"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_memories_create sur memory.",
+      "description": "Créer mémoire - mémoire.",
       "args": {
-        "title": "Create memory",
+        "title": "Créer mémoire - mémoire",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -4170,7 +4170,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             },
@@ -4184,14 +4184,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "memories"
+      "group": "mémoires"
     },
     {
       "key": "mem0_memory_delete_memories_delete_all",
       "name": "mem0MemoryDeleteMemoriesDeleteAll",
       "schemaVersion": 2,
-      "title": "Delete memory",
-      "subtitle": "memories",
+      "title": "Supprimer mémoire",
+      "subtitle": "Mémoire",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -4205,7 +4205,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -4216,15 +4216,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:mem0_action_result"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete_memories_delete_all sur memory.",
+      "description": "Supprimer mémoire.",
       "args": {
-        "title": "Delete memory",
+        "title": "Supprimer mémoire",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -4233,8 +4233,8 @@
           {
             "type": "text",
             "key": "user_id",
-            "label": "User Id",
-            "description": "Filter by user ID. Pass `*` to delete memories for all users.",
+            "label": "Utilisateur ID",
+            "description": "Filtre utilisateur ID Pass suppression mémoires utilisateurs",
             "col": {
               "xs": 24
             }
@@ -4242,8 +4242,8 @@
           {
             "type": "text",
             "key": "agent_id",
-            "label": "Agent Id",
-            "description": "Filter by agent ID. Pass `*` to delete memories for all agents.",
+            "label": "Agent ID",
+            "description": "Filtre agent ID Pass suppression mémoires agents",
             "col": {
               "xs": 24
             }
@@ -4251,8 +4251,8 @@
           {
             "type": "text",
             "key": "app_id",
-            "label": "App Id",
-            "description": "Filter by app ID. Pass `*` to delete memories for all apps.",
+            "label": "App ID",
+            "description": "Filtre app ID Pass suppression mémoires apps",
             "col": {
               "xs": 24
             }
@@ -4260,8 +4260,8 @@
           {
             "type": "text",
             "key": "run_id",
-            "label": "Run Id",
-            "description": "Filter by run ID. Pass `*` to delete memories for all runs.",
+            "label": "Exécuter ID",
+            "description": "Filtre run ID Pass suppression mémoires runs",
             "col": {
               "xs": 24
             }
@@ -4269,8 +4269,8 @@
           {
             "type": "json",
             "key": "metadata",
-            "label": "Metadata",
-            "description": "Filter memories by metadata (JSON string).",
+            "label": "Métadonnées",
+            "description": "Filtre mémoires métadonnées Json string",
             "col": {
               "xs": 24
             }
@@ -4278,8 +4278,8 @@
           {
             "type": "text",
             "key": "org_id",
-            "label": "Org Id",
-            "description": "Filter memories by organization ID.",
+            "label": "Org ID",
+            "description": "Filtre mémoires organization ID",
             "col": {
               "xs": 24
             }
@@ -4287,8 +4287,8 @@
           {
             "type": "text",
             "key": "project_id",
-            "label": "Project Id",
-            "description": "Filter memories by project ID.",
+            "label": "Projet ID",
+            "description": "Filtre mémoires projet ID",
             "col": {
               "xs": 24
             }
@@ -4297,14 +4297,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "memories"
+      "group": "mémoires"
     },
     {
       "key": "mem0_memory_create_memories_list_v2",
       "name": "mem0MemoryCreateMemoriesListV2",
       "schemaVersion": 2,
-      "title": "Create memory",
-      "subtitle": "memories",
+      "title": "Créer mémoire mémoire",
+      "subtitle": "Mémoire",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -4318,7 +4318,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -4329,15 +4329,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:mem0_memory"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_memories_list_v2 sur memory.",
+      "description": "Créer mémoire mémoire.",
       "args": {
-        "title": "Create memory",
+        "title": "Créer mémoire mémoire",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -4347,7 +4347,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             },
@@ -4361,14 +4361,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "memories"
+      "group": "mémoires"
     },
     {
       "key": "mem0_memory_search_memories_search_create",
       "name": "mem0MemorySearchMemoriesSearchCreate",
       "schemaVersion": 2,
-      "title": "Search memory",
-      "subtitle": "memories",
+      "title": "Rechercher mémoire",
+      "subtitle": "Mémoire",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -4382,7 +4382,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -4393,15 +4393,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:mem0_memories"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action search_memories_search_create sur memory.",
+      "description": "Rechercher mémoire.",
       "args": {
-        "title": "Search memory",
+        "title": "Rechercher mémoire",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -4411,7 +4411,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             },
@@ -4425,14 +4425,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "memories"
+      "group": "mémoires"
     },
     {
       "key": "mem0_memory_search_memories_search_v2",
       "name": "mem0MemorySearchMemoriesSearchV2",
       "schemaVersion": 2,
-      "title": "Search memory",
-      "subtitle": "memories",
+      "title": "Rechercher mémoire - mémoire",
+      "subtitle": "Mémoire",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -4446,7 +4446,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -4457,15 +4457,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:mem0_memories"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action search_memories_search_v2 sur memory.",
+      "description": "Rechercher mémoire - mémoire.",
       "args": {
-        "title": "Search memory",
+        "title": "Rechercher mémoire - mémoire",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -4475,7 +4475,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             },
@@ -4489,14 +4489,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "memories"
+      "group": "mémoires"
     },
     {
       "key": "mem0_memory_search_memories_list_v3",
       "name": "mem0MemorySearchMemoriesListV3",
       "schemaVersion": 2,
-      "title": "Search memory",
-      "subtitle": "memories",
+      "title": "Rechercher mémoire 3",
+      "subtitle": "Mémoire",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -4510,7 +4510,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -4521,15 +4521,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:mem0_memories"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action search_memories_list_v3 sur memory.",
+      "description": "Rechercher mémoire 3.",
       "args": {
-        "title": "Search memory",
+        "title": "Rechercher mémoire 3",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -4539,7 +4539,7 @@
             "type": "number",
             "key": "page",
             "label": "Page",
-            "description": "1-indexed page number.",
+            "description": "1 indexed page numéro",
             "col": {
               "xs": 24
             }
@@ -4548,7 +4548,7 @@
             "type": "number",
             "key": "page_size",
             "label": "Page Size",
-            "description": "Results per page.",
+            "description": "Résultats per page",
             "col": {
               "xs": 24
             }
@@ -4557,7 +4557,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             },
@@ -4571,14 +4571,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "memories"
+      "group": "mémoires"
     },
     {
       "key": "mem0_memory_search_memories_search_v3",
       "name": "mem0MemorySearchMemoriesSearchV3",
       "schemaVersion": 2,
-      "title": "Search memory",
-      "subtitle": "memories",
+      "title": "Rechercher mémoire mémoire",
+      "subtitle": "Mémoire",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -4592,7 +4592,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -4603,15 +4603,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:mem0_memories"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action search_memories_search_v3 sur memory.",
+      "description": "Rechercher mémoire mémoire.",
       "args": {
-        "title": "Search memory",
+        "title": "Rechercher mémoire mémoire",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -4621,7 +4621,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             },
@@ -4635,14 +4635,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "memories"
+      "group": "mémoires"
     },
     {
       "key": "mem0_memory_get_memories_entity_read",
       "name": "mem0MemoryGetMemoriesEntityRead",
       "schemaVersion": 2,
-      "title": "Get memory",
-      "subtitle": "memories",
+      "title": "Récupérer mémoire entité",
+      "subtitle": "Mémoire entité",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -4656,7 +4656,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -4667,15 +4667,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:mem0_memory"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get_memories_entity_read sur memory.",
+      "description": "Récupérer mémoire entité.",
       "args": {
-        "title": "Get memory",
+        "title": "Récupérer mémoire entité",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -4684,8 +4684,8 @@
           {
             "type": "text",
             "key": "entity_type",
-            "label": "Entity Type",
-            "description": "Paramètre de chemin entity_type.",
+            "label": "Entité Type",
+            "description": "Paramètre de chemin entité type",
             "col": {
               "xs": 24
             },
@@ -4698,8 +4698,8 @@
           {
             "type": "text",
             "key": "entity_id",
-            "label": "Entity Id",
-            "description": "Paramètre de chemin entity_id.",
+            "label": "Entité ID",
+            "description": "Paramètre de chemin entité ID",
             "col": {
               "xs": 24
             },
@@ -4713,14 +4713,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "memories"
+      "group": "mémoires"
     },
     {
       "key": "mem0_memory_get_memories_read",
       "name": "mem0MemoryGetMemoriesRead",
       "schemaVersion": 2,
-      "title": "Get memory",
-      "subtitle": "memories",
+      "title": "Récupérer mémoire",
+      "subtitle": "Mémoire",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -4734,7 +4734,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -4745,15 +4745,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:mem0_memory"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get_memories_read sur memory.",
+      "description": "Récupérer mémoire.",
       "args": {
-        "title": "Get memory",
+        "title": "Récupérer mémoire",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -4762,8 +4762,8 @@
           {
             "type": "text",
             "key": "memory_id",
-            "label": "Memory Id",
-            "description": "The unique identifier of the memory to retrieve.",
+            "label": "Mémoire ID",
+            "description": "unique identifier mémoire récupération",
             "col": {
               "xs": 24
             },
@@ -4777,14 +4777,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "memories"
+      "group": "mémoires"
     },
     {
       "key": "mem0_memory_update_memories_update",
       "name": "mem0MemoryUpdateMemoriesUpdate",
       "schemaVersion": 2,
-      "title": "Update memory",
-      "subtitle": "memories",
+      "title": "Mettre à jour mémoire",
+      "subtitle": "Mémoire",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -4798,7 +4798,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -4809,15 +4809,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:mem0_memory"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update_memories_update sur memory.",
+      "description": "Mettre à jour mémoire.",
       "args": {
-        "title": "Update memory",
+        "title": "Mettre à jour mémoire",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -4826,8 +4826,8 @@
           {
             "type": "text",
             "key": "memory_id",
-            "label": "Memory Id",
-            "description": "The unique identifier of the memory to retrieve.",
+            "label": "Mémoire ID",
+            "description": "unique identifier mémoire récupération",
             "col": {
               "xs": 24
             },
@@ -4841,7 +4841,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -4850,14 +4850,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "memories"
+      "group": "mémoires"
     },
     {
       "key": "mem0_memory_delete_memories_delete",
       "name": "mem0MemoryDeleteMemoriesDelete",
       "schemaVersion": 2,
-      "title": "Delete memory",
-      "subtitle": "memories",
+      "title": "Supprimer mémoire - mémoire",
+      "subtitle": "Mémoire",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -4871,7 +4871,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -4882,15 +4882,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:mem0_action_result"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete_memories_delete sur memory.",
+      "description": "Supprimer mémoire - mémoire.",
       "args": {
-        "title": "Delete memory",
+        "title": "Supprimer mémoire - mémoire",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -4899,8 +4899,8 @@
           {
             "type": "text",
             "key": "memory_id",
-            "label": "Memory Id",
-            "description": "The unique identifier of the memory to retrieve.",
+            "label": "Mémoire ID",
+            "description": "unique identifier mémoire récupération",
             "col": {
               "xs": 24
             },
@@ -4914,14 +4914,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "memories"
+      "group": "mémoires"
     },
     {
       "key": "mem0_run_run_runs_create",
       "name": "mem0RunRunRunsCreate",
       "schemaVersion": 2,
-      "title": "Run run",
-      "subtitle": "runs",
+      "title": "Créer run",
+      "subtitle": "Run",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -4935,7 +4935,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -4946,15 +4946,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:mem0_action_result"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action run_runs_create sur run.",
+      "description": "Créer run.",
       "args": {
-        "title": "Run run",
+        "title": "Créer run",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -4964,7 +4964,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             },
@@ -4984,8 +4984,8 @@
       "key": "mem0_stat_search_stats_list",
       "name": "mem0StatSearchStatsList",
       "schemaVersion": 2,
-      "title": "Search stat",
-      "subtitle": "stats",
+      "title": "Rechercher stat",
+      "subtitle": "Stat",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -4999,7 +4999,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -5010,15 +5010,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:mem0_stats"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action search_stats_list sur stat.",
+      "description": "Rechercher stat.",
       "args": {
-        "title": "Search stat",
+        "title": "Rechercher stat",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -5027,14 +5027,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "stats"
+      "group": "statistiques"
     },
     {
       "key": "mem0_user_create_users_create",
       "name": "mem0UserCreateUsersCreate",
       "schemaVersion": 2,
-      "title": "Create user",
-      "subtitle": "users",
+      "title": "Créer utilisateur",
+      "subtitle": "Utilisateur",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -5048,7 +5048,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -5059,15 +5059,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:mem0_user"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_users_create sur user.",
+      "description": "Créer utilisateur.",
       "args": {
-        "title": "Create user",
+        "title": "Créer utilisateur",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -5077,7 +5077,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             },
@@ -5091,14 +5091,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "users"
+      "group": "utilisateurs"
     },
     {
       "key": "mem0_webhook_webhook_update_webhook",
       "name": "mem0WebhookWebhookUpdateWebhook",
       "schemaVersion": 2,
-      "title": "Webhook webhook",
-      "subtitle": "webhooks",
+      "title": "Mettre à jour webhook",
+      "subtitle": "Webhook",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -5112,7 +5112,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -5123,15 +5123,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:mem0_action_result"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action webhook_update_webhook sur webhook.",
+      "description": "Mettre à jour webhook.",
       "args": {
-        "title": "Webhook webhook",
+        "title": "Mettre à jour webhook",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -5140,8 +5140,8 @@
           {
             "type": "text",
             "key": "webhook_id",
-            "label": "Webhook Id",
-            "description": "Unique identifier of the webhook.",
+            "label": "Webhook ID",
+            "description": "Unique identifier webhook",
             "col": {
               "xs": 24
             },
@@ -5155,7 +5155,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             },
@@ -5175,8 +5175,8 @@
       "key": "mem0_webhook_webhook_delete_webhook",
       "name": "mem0WebhookWebhookDeleteWebhook",
       "schemaVersion": 2,
-      "title": "Webhook webhook",
-      "subtitle": "webhooks",
+      "title": "Supprimer webhook",
+      "subtitle": "Webhook",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -5190,7 +5190,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -5201,15 +5201,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:mem0_action_result"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action webhook_delete_webhook sur webhook.",
+      "description": "Supprimer webhook.",
       "args": {
-        "title": "Webhook webhook",
+        "title": "Supprimer webhook",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -5218,8 +5218,8 @@
           {
             "type": "text",
             "key": "webhook_id",
-            "label": "Webhook Id",
-            "description": "Unique identifier of the webhook.",
+            "label": "Webhook ID",
+            "description": "Unique identifier webhook",
             "col": {
               "xs": 24
             },

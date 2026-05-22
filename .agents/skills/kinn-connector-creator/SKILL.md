@@ -199,6 +199,8 @@ Read [references/endpoint-selection.md](references/endpoint-selection.md) for th
 ## Implementation Rules
 
 - Use French UI text with accents in `title`, `subtitle`, `label`, `description`, group names, and credential titles.
+- In `manifest.json`, every `nodeTemplates[].title` and `nodeTemplates[].args.title` must be in French.
+- For a given `providerKey`, each node must have a distinct `name` and a distinct `title` (no duplicates).
 - Use `snake_case` keys prefixed by provider: `{provider}_{resource}_{action}`.
 - Use `camelCase` `name`.
 - Use `schemaVersion: 2`.

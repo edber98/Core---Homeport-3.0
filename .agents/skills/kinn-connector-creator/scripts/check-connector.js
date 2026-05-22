@@ -48,6 +48,8 @@ if (manifest) {
   const variableKeys = new Set(Object.keys(variables));
   const providerKeys = new Set((manifest.providers || []).map((p) => p && p.key).filter(Boolean));
   const templateKeys = new Set();
+  const namesByProvider = new Map();
+  const titlesByProvider = new Map();
 
   for (const t of manifest.nodeTemplates || []) {
     if (!t || !t.key) {
@@ -63,6 +65,25 @@ if (manifest) {
     if (!t.providerKey) fail(`providerKey is required: ${t.key}`);
     if (t.providerKey && providerKeys.size && !providerKeys.has(t.providerKey)) {
       fail(`providerKey '${t.providerKey}' has no matching provider for ${t.key}`);
+    }
+
+    const providerKey = String(t.providerKey || "");
+    if (providerKey) {
+      if (!namesByProvider.has(providerKey)) namesByProvider.set(providerKey, new Set());
+      if (!titlesByProvider.has(providerKey)) titlesByProvider.set(providerKey, new Set());
+
+      const providerNames = namesByProvider.get(providerKey);
+      const providerTitles = titlesByProvider.get(providerKey);
+
+      if (t.name) {
+        if (providerNames.has(t.name)) fail(`duplicate nodeTemplate.name for provider '${providerKey}': ${t.name}`);
+        providerNames.add(t.name);
+      }
+
+      if (t.title) {
+        if (providerTitles.has(t.title)) fail(`duplicate nodeTemplate.title for provider '${providerKey}': ${t.title}`);
+        providerTitles.add(t.title);
+      }
     }
 
     for (const h of t.outputHandles || []) {

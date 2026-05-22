@@ -2780,8 +2780,8 @@
       "key": "proxycurl_credit_balance_list_getcreditbalance",
       "name": "proxycurlCreditBalanceListGetcreditbalance",
       "schemaVersion": 2,
-      "title": "List credit_balance",
-      "subtitle": "credit_balances",
+      "title": "Lister credit balance",
+      "subtitle": "Credit balance",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -2795,7 +2795,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -2806,15 +2806,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:proxycurl_credit_balances"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_getcreditbalance sur credit_balance.",
+      "description": "Lister credit balance.",
       "args": {
-        "title": "List credit_balance",
+        "title": "Lister credit balance",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -2823,14 +2823,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "credit_balances"
+      "group": "credit balances"
     },
     {
       "key": "proxycurl_detail_list_getcompanydetails",
       "name": "proxycurlDetailListGetcompanydetails",
       "schemaVersion": 2,
-      "title": "List detail",
-      "subtitle": "details",
+      "title": "Lister entreprise détail",
+      "subtitle": "Entreprise détail",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -2844,7 +2844,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -2855,15 +2855,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:proxycurl_details"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_getcompanydetails sur detail.",
+      "description": "Lister entreprise détail.",
       "args": {
-        "title": "List detail",
+        "title": "Lister entreprise détail",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -2873,7 +2873,7 @@
             "type": "text",
             "key": "website",
             "label": "Website",
-            "description": "The website URL or company name of the target company. A website URL (e.g. `https://www.stripe.com`) is strongly recommended for precision.",
+            "description": "website URL entreprise name target entreprise website URL e g www stripe com strongly recommended precision",
             "col": {
               "xs": 24
             },
@@ -2887,7 +2887,7 @@
             "type": "checkbox",
             "key": "include_employee_count",
             "label": "Include Employee Count",
-            "description": "Fetch fresh employee count data via web search. Adds 2 credits.",
+            "description": "Fetch fresh employee count données web recherche Ajouts 2 credits",
             "col": {
               "xs": 24
             }
@@ -2896,7 +2896,7 @@
             "type": "text",
             "key": "follower_count",
             "label": "Follower Count",
-            "description": "Set to 'include' to fetch Twitter/X follower and following counts. Adds 1 credit.",
+            "description": "Set include fetch Twitter X follower following counts Ajouts 1 credit",
             "col": {
               "xs": 24
             }
@@ -2904,8 +2904,8 @@
           {
             "type": "text",
             "key": "use_cache",
-            "label": "Use Cache",
-            "description": "Controls cache usage. Case-insensitive. Values: `if-recent` (default; use cached data when the last scrape is within 29 days, otherwise enrich live), `if-present` (return cache first, enrich live if absent), `if-present-only` (return cache only; return 404 if absent), `never` (always enrich live). Invalid values fall back to the endpoint default.",
+            "label": "Cache",
+            "description": "Controls cache usage Case insensitive Valeurs if recent default cached données when last scrape within 29 days otherwise enrich live if present return cache first enrich live if absent if present only return cache only return 404 if absent never always enrich live Invalid valeurs fall back default",
             "col": {
               "xs": 24
             }
@@ -2914,14 +2914,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "details"
+      "group": "détails"
     },
     {
       "key": "proxycurl_disposable_email_list_checkdisposableemail",
       "name": "proxycurlDisposableEmailListCheckdisposableemail",
       "schemaVersion": 2,
-      "title": "List disposable_email",
-      "subtitle": "disposable_emails",
+      "title": "Lister disposable email",
+      "subtitle": "Disposable email",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -2935,7 +2935,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -2946,15 +2946,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:proxycurl_disposable_emails"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_checkdisposableemail sur disposable_email.",
+      "description": "Lister disposable email.",
       "args": {
-        "title": "List disposable_email",
+        "title": "Lister disposable email",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -2964,7 +2964,7 @@
             "type": "text",
             "key": "email",
             "label": "Email",
-            "description": "The email address to check",
+            "description": "email address check",
             "col": {
               "xs": 24
             },
@@ -2978,14 +2978,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "disposable_emails"
+      "group": "disposable emails"
     },
     {
       "key": "proxycurl_employee_search_searchemployees",
       "name": "proxycurlEmployeeSearchSearchemployees",
       "schemaVersion": 2,
-      "title": "Search employee",
-      "subtitle": "employees",
+      "title": "Rechercher employee",
+      "subtitle": "Employee",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -2999,7 +2999,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -3010,15 +3010,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:proxycurl_employees"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action search_searchemployees sur employee.",
+      "description": "Rechercher employee.",
       "args": {
-        "title": "Search employee",
+        "title": "Rechercher employee",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3027,8 +3027,8 @@
           {
             "type": "text",
             "key": "company_website",
-            "label": "Company Website",
-            "description": "Target company. Bare domain (`stripe.com`), full URL, or company name. A website URL is strongly recommended for precision.",
+            "label": "Entreprise Website",
+            "description": "Target entreprise Bare domain stripe com full URL entreprise name website URL strongly recommended precision",
             "col": {
               "xs": 24
             },
@@ -3042,7 +3042,7 @@
             "type": "text",
             "key": "role",
             "label": "Role",
-            "description": "Job role to narrow the search. Matches related role variants (e.g. `VP of Engineering` also matches `Vice President, Engineering`).",
+            "description": "Tâche role narrow recherche Matches related role variants e g Vp Engineering also matches Vice President Engineering",
             "col": {
               "xs": 24
             },
@@ -3056,7 +3056,7 @@
             "type": "text",
             "key": "country",
             "label": "Country",
-            "description": "ISO 3166-1 alpha-2 country code.",
+            "description": "Iso 3166 1 alpha 2 country code",
             "col": {
               "xs": 24
             }
@@ -3065,7 +3065,7 @@
             "type": "text",
             "key": "state",
             "label": "State",
-            "description": "State or region to constrain by (freeform).",
+            "description": "State region constrain freeform",
             "col": {
               "xs": 24
             }
@@ -3074,7 +3074,7 @@
             "type": "text",
             "key": "city",
             "label": "City",
-            "description": "City to constrain by (freeform).",
+            "description": "City constrain freeform",
             "col": {
               "xs": 24
             }
@@ -3082,8 +3082,8 @@
           {
             "type": "text",
             "key": "use_cache",
-            "label": "Use Cache",
-            "description": "Controls cache usage. Case-insensitive. Values: `if-recent` (default; use cached data when the last scrape is within 29 days, otherwise enrich live), `if-present` (return cache first, enrich live if absent), `if-present-only` (return cache only; return 404 if absent), `never` (always enrich live). Invalid values fall back to the endpoint default.",
+            "label": "Cache",
+            "description": "Controls cache usage Case insensitive Valeurs if recent default cached données when last scrape within 29 days otherwise enrich live if present return cache first enrich live if absent if present only return cache only return 404 if absent never always enrich live Invalid valeurs fall back default",
             "col": {
               "xs": 24
             }
@@ -3098,8 +3098,8 @@
       "key": "proxycurl_employee_count_search_getemployeecount",
       "name": "proxycurlEmployeeCountSearchGetemployeecount",
       "schemaVersion": 2,
-      "title": "Search employee_count",
-      "subtitle": "employee_counts",
+      "title": "Rechercher employee count",
+      "subtitle": "Employee count",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -3113,7 +3113,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -3124,15 +3124,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:proxycurl_employee_counts"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action search_getemployeecount sur employee_count.",
+      "description": "Rechercher employee count.",
       "args": {
-        "title": "Search employee_count",
+        "title": "Rechercher employee count",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3142,7 +3142,7 @@
             "type": "text",
             "key": "website",
             "label": "Website",
-            "description": "The website URL or company name of the target company. A website URL (e.g. `https://www.stripe.com`) is strongly recommended for precision.",
+            "description": "website URL entreprise name target entreprise website URL e g www stripe com strongly recommended precision",
             "col": {
               "xs": 24
             },
@@ -3155,8 +3155,8 @@
           {
             "type": "text",
             "key": "use_cache",
-            "label": "Use Cache",
-            "description": "Controls cache usage. Case-insensitive. Values: `if-recent` (default; use cached data when the last scrape is within 29 days, otherwise enrich live), `if-present` (return cache first, enrich live if absent), `if-present-only` (return cache only; return 404 if absent), `never` (always enrich live). Invalid values fall back to the endpoint default.",
+            "label": "Cache",
+            "description": "Controls cache usage Case insensitive Valeurs if recent default cached données when last scrape within 29 days otherwise enrich live if present return cache first enrich live if absent if present only return cache only return 404 if absent never always enrich live Invalid valeurs fall back default",
             "col": {
               "xs": 24
             }
@@ -3165,14 +3165,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "employee_counts"
+      "group": "employee counts"
     },
     {
       "key": "proxycurl_feed_list_listfeeds",
       "name": "proxycurlFeedListListfeeds",
       "schemaVersion": 2,
-      "title": "List feed",
-      "subtitle": "feeds",
+      "title": "Lister listfeed",
+      "subtitle": "Listfeed",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -3186,7 +3186,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -3197,15 +3197,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:proxycurl_feeds"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_listfeeds sur feed.",
+      "description": "Lister listfeed.",
       "args": {
-        "title": "List feed",
+        "title": "Lister listfeed",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3220,8 +3220,8 @@
       "key": "proxycurl_feed_create_createfeed",
       "name": "proxycurlFeedCreateCreatefeed",
       "schemaVersion": 2,
-      "title": "Create feed",
-      "subtitle": "feeds",
+      "title": "Créer feed",
+      "subtitle": "Feed",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -3235,7 +3235,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -3246,15 +3246,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:proxycurl_feed"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_createfeed sur feed.",
+      "description": "Créer feed.",
       "args": {
-        "title": "Create feed",
+        "title": "Créer feed",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3264,7 +3264,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             },
@@ -3284,8 +3284,8 @@
       "key": "proxycurl_feed_get_getfeed",
       "name": "proxycurlFeedGetGetfeed",
       "schemaVersion": 2,
-      "title": "Get feed",
-      "subtitle": "feeds",
+      "title": "Récupérer getfeed",
+      "subtitle": "Getfeed",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -3299,7 +3299,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -3310,15 +3310,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:proxycurl_feed"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get_getfeed sur feed.",
+      "description": "Récupérer getfeed.",
       "args": {
-        "title": "Get feed",
+        "title": "Récupérer getfeed",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3327,8 +3327,8 @@
           {
             "type": "text",
             "key": "feed_id",
-            "label": "Feed Id",
-            "description": "Feed identifier (e.g. feed_abc123xyz)",
+            "label": "Feed ID",
+            "description": "Feed identifier e g feed abc123xyz",
             "col": {
               "xs": 24
             },
@@ -3348,8 +3348,8 @@
       "key": "proxycurl_feed_update_updatefeed",
       "name": "proxycurlFeedUpdateUpdatefeed",
       "schemaVersion": 2,
-      "title": "Update feed",
-      "subtitle": "feeds",
+      "title": "Mettre à jour feed",
+      "subtitle": "Feed",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -3363,7 +3363,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -3374,15 +3374,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:proxycurl_feed"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update_updatefeed sur feed.",
+      "description": "Mettre à jour feed.",
       "args": {
-        "title": "Update feed",
+        "title": "Mettre à jour feed",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3391,8 +3391,8 @@
           {
             "type": "text",
             "key": "feed_id",
-            "label": "Feed Id",
-            "description": "Feed identifier (e.g. feed_abc123xyz)",
+            "label": "Feed ID",
+            "description": "Feed identifier e g feed abc123xyz",
             "col": {
               "xs": 24
             },
@@ -3406,7 +3406,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             },
@@ -3426,8 +3426,8 @@
       "key": "proxycurl_feed_delete_deletefeed",
       "name": "proxycurlFeedDeleteDeletefeed",
       "schemaVersion": 2,
-      "title": "Delete feed",
-      "subtitle": "feeds",
+      "title": "Supprimer feed",
+      "subtitle": "Feed",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -3441,7 +3441,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -3452,15 +3452,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:proxycurl_action_result"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete_deletefeed sur feed.",
+      "description": "Supprimer feed.",
       "args": {
-        "title": "Delete feed",
+        "title": "Supprimer feed",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3469,8 +3469,8 @@
           {
             "type": "text",
             "key": "feed_id",
-            "label": "Feed Id",
-            "description": "Feed identifier (e.g. feed_abc123xyz)",
+            "label": "Feed ID",
+            "description": "Feed identifier e g feed abc123xyz",
             "col": {
               "xs": 24
             },
@@ -3490,8 +3490,8 @@
       "key": "proxycurl_funding_run_getcompanyfunding",
       "name": "proxycurlFundingRunGetcompanyfunding",
       "schemaVersion": 2,
-      "title": "Run funding",
-      "subtitle": "fundings",
+      "title": "Exécuter funding",
+      "subtitle": "Funding",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -3505,7 +3505,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -3516,15 +3516,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:proxycurl_funding"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action run_getcompanyfunding sur funding.",
+      "description": "Exécuter funding.",
       "args": {
-        "title": "Run funding",
+        "title": "Exécuter funding",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3534,7 +3534,7 @@
             "type": "text",
             "key": "website",
             "label": "Website",
-            "description": "The website URL or company name of the target company. A website URL (e.g. `https://www.stripe.com`) is strongly recommended for precision.",
+            "description": "website URL entreprise name target entreprise website URL e g www stripe com strongly recommended precision",
             "col": {
               "xs": 24
             },
@@ -3547,8 +3547,8 @@
           {
             "type": "text",
             "key": "use_cache",
-            "label": "Use Cache",
-            "description": "Controls cache usage. Case-insensitive. Values: `if-recent` (default; use cached data when the last scrape is within 29 days, otherwise enrich live), `if-present` (return cache first, enrich live if absent), `if-present-only` (return cache only; return 404 if absent), `never` (always enrich live). Invalid values fall back to the endpoint default.",
+            "label": "Cache",
+            "description": "Controls cache usage Case insensitive Valeurs if recent default cached données when last scrape within 29 days otherwise enrich live if present return cache first enrich live if absent if present only return cache only return 404 if absent never always enrich live Invalid valeurs fall back default",
             "col": {
               "xs": 24
             }
@@ -3563,8 +3563,8 @@
       "key": "proxycurl_listing_list_getcustomerlisting",
       "name": "proxycurlListingListGetcustomerlisting",
       "schemaVersion": 2,
-      "title": "List listing",
-      "subtitle": "listings",
+      "title": "Lister liste",
+      "subtitle": "Liste",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -3578,7 +3578,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -3589,15 +3589,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:proxycurl_listings"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_getcustomerlisting sur listing.",
+      "description": "Lister liste.",
       "args": {
-        "title": "List listing",
+        "title": "Lister liste",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3607,7 +3607,7 @@
             "type": "text",
             "key": "website",
             "label": "Website",
-            "description": "The website URL or company name of the target company. A website URL (e.g. `https://www.stripe.com`) is strongly recommended for precision.",
+            "description": "website URL entreprise name target entreprise website URL e g www stripe com strongly recommended precision",
             "col": {
               "xs": 24
             },
@@ -3621,7 +3621,7 @@
             "type": "text",
             "key": "cursor",
             "label": "Cursor",
-            "description": "Pagination cursor from `next_page` in a previous response",
+            "description": "Pagination cursor next page previous",
             "col": {
               "xs": 24
             }
@@ -3630,7 +3630,7 @@
             "type": "number",
             "key": "page_size",
             "label": "Page Size",
-            "description": "Number of results per page (1-200, default 200)",
+            "description": "Numéro résultats per page 1 200 default 200",
             "col": {
               "xs": 24
             }
@@ -3638,8 +3638,8 @@
           {
             "type": "checkbox",
             "key": "quality_filter",
-            "label": "Quality Filter",
-            "description": "Filter out low-quality results (junk TLDs and unreachable websites)",
+            "label": "Quality Filtre",
+            "description": "Filtre out low quality résultats junk Tlds unreachable websites",
             "col": {
               "xs": 24
             }
@@ -3647,8 +3647,8 @@
           {
             "type": "text",
             "key": "use_cache",
-            "label": "Use Cache",
-            "description": "Controls cache usage. Case-insensitive. Values: `if-recent` (use cached data when the last scrape is within 29 days, otherwise enrich live), `if-present` (default; return cache first, enrich live if absent), `if-present-only` (return cache only; return 404 if absent), `never` (always enrich live). Invalid values fall back to the endpoint default.",
+            "label": "Cache",
+            "description": "Controls cache usage Case insensitive Valeurs if recent cached données when last scrape within 29 days otherwise enrich live if present default return cache first enrich live if absent if present only return cache only return 404 if absent never always enrich live Invalid valeurs fall back default",
             "col": {
               "xs": 24
             }
@@ -3657,14 +3657,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "listings"
+      "group": "listes"
     },
     {
       "key": "proxycurl_listing_list_getcompetitorlisting",
       "name": "proxycurlListingListGetcompetitorlisting",
       "schemaVersion": 2,
-      "title": "List listing",
-      "subtitle": "listings",
+      "title": "Lister concurrent",
+      "subtitle": "Concurrent",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -3678,7 +3678,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -3689,15 +3689,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:proxycurl_listings"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_getcompetitorlisting sur listing.",
+      "description": "Lister concurrent.",
       "args": {
-        "title": "List listing",
+        "title": "Lister concurrent",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3707,7 +3707,7 @@
             "type": "text",
             "key": "website",
             "label": "Website",
-            "description": "The website URL or company name of the target company. A website URL (e.g. `https://www.stripe.com`) is strongly recommended for precision.",
+            "description": "website URL entreprise name target entreprise website URL e g www stripe com strongly recommended precision",
             "col": {
               "xs": 24
             },
@@ -3720,8 +3720,8 @@
           {
             "type": "text",
             "key": "use_cache",
-            "label": "Use Cache",
-            "description": "Controls cache usage. Case-insensitive. Values: `if-recent` (use cached data when the last scrape is within 29 days, otherwise enrich live), `if-present` (default; return cache first, enrich live if absent), `if-present-only` (return cache only; return 404 if absent), `never` (always enrich live). Invalid values fall back to the endpoint default.",
+            "label": "Cache",
+            "description": "Controls cache usage Case insensitive Valeurs if recent cached données when last scrape within 29 days otherwise enrich live if present default return cache first enrich live if absent if present only return cache only return 404 if absent never always enrich live Invalid valeurs fall back default",
             "col": {
               "xs": 24
             }
@@ -3730,14 +3730,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "listings"
+      "group": "listes"
     },
     {
       "key": "proxycurl_logo_list_getcompanylogo",
       "name": "proxycurlLogoListGetcompanylogo",
       "schemaVersion": 2,
-      "title": "List logo",
-      "subtitle": "logos",
+      "title": "Lister logo",
+      "subtitle": "Logo",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -3751,7 +3751,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -3762,15 +3762,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:proxycurl_logos"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_getcompanylogo sur logo.",
+      "description": "Lister logo.",
       "args": {
-        "title": "List logo",
+        "title": "Lister logo",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3780,7 +3780,7 @@
             "type": "text",
             "key": "website",
             "label": "Website",
-            "description": "The website URL of the target company",
+            "description": "website URL target entreprise",
             "col": {
               "xs": 24
             },
@@ -3800,8 +3800,8 @@
       "key": "proxycurl_profile_search_getpersonprofile",
       "name": "proxycurlProfileSearchGetpersonprofile",
       "schemaVersion": 2,
-      "title": "Search profile",
-      "subtitle": "profiles",
+      "title": "Rechercher profile",
+      "subtitle": "Profile",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -3815,7 +3815,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -3826,15 +3826,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:proxycurl_profiles"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action search_getpersonprofile sur profile.",
+      "description": "Rechercher profile.",
       "args": {
-        "title": "Search profile",
+        "title": "Rechercher profile",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3844,7 +3844,7 @@
             "type": "text",
             "key": "work_email",
             "label": "Work Email",
-            "description": "Person's work email address",
+            "description": "Person s work email address",
             "col": {
               "xs": 24
             }
@@ -3853,7 +3853,7 @@
             "type": "text",
             "key": "first_name",
             "label": "First Name",
-            "description": "Person's first name",
+            "description": "Person s first name",
             "col": {
               "xs": 24
             }
@@ -3862,7 +3862,7 @@
             "type": "text",
             "key": "middle_name",
             "label": "Middle Name",
-            "description": "Person's middle name",
+            "description": "Person s middle name",
             "col": {
               "xs": 24
             }
@@ -3871,7 +3871,7 @@
             "type": "text",
             "key": "last_name",
             "label": "Last Name",
-            "description": "Person's last name",
+            "description": "Person s last name",
             "col": {
               "xs": 24
             }
@@ -3880,7 +3880,7 @@
             "type": "text",
             "key": "employer_website",
             "label": "Employer Website",
-            "description": "Employer's website URL or company name. A website URL (e.g. `https://stripe.com`) is strongly recommended for precision.",
+            "description": "Employer s website URL entreprise name website URL e g stripe com strongly recommended precision",
             "col": {
               "xs": 24
             }
@@ -3889,7 +3889,7 @@
             "type": "text",
             "key": "role",
             "label": "Role",
-            "description": "Job role/title",
+            "description": "Tâche role title",
             "col": {
               "xs": 24
             }
@@ -3898,7 +3898,7 @@
             "type": "text",
             "key": "slug",
             "label": "Slug",
-            "description": "Person's unique slug identifier (direct lookup)",
+            "description": "Person s unique slug identifier direct recherche",
             "col": {
               "xs": 24
             }
@@ -3906,8 +3906,8 @@
           {
             "type": "text",
             "key": "id",
-            "label": "Id",
-            "description": "Person's unique ID (direct lookup)",
+            "label": "ID",
+            "description": "Person s unique ID direct recherche",
             "col": {
               "xs": 24
             }
@@ -3915,8 +3915,8 @@
           {
             "type": "text",
             "key": "use_cache",
-            "label": "Use Cache",
-            "description": "Controls cache usage. Case-insensitive. Values: `if-recent` (default; use cached data when the last scrape is within 29 days, otherwise enrich live), `if-present` (return cache first, enrich live if absent), `if-present-only` (return cache only; return 404 if absent), `never` (always enrich live). Invalid values fall back to the endpoint default.",
+            "label": "Cache",
+            "description": "Controls cache usage Case insensitive Valeurs if recent default cached données when last scrape within 29 days otherwise enrich live if present return cache first enrich live if absent if present only return cache only return 404 if absent never always enrich live Invalid valeurs fall back default",
             "col": {
               "xs": 24
             }
@@ -3931,8 +3931,8 @@
       "key": "proxycurl_rssxml_search_getrssfeed",
       "name": "proxycurlRssxmlSearchGetrssfeed",
       "schemaVersion": 2,
-      "title": "Search rssxml",
-      "subtitle": "rssxmls",
+      "title": "Rechercher rssxml",
+      "subtitle": "Rssxml",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -3946,7 +3946,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -3957,15 +3957,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:proxycurl_rssxmls"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action search_getrssfeed sur rssxml.",
+      "description": "Rechercher rssxml.",
       "args": {
-        "title": "Search rssxml",
+        "title": "Rechercher rssxml",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3974,8 +3974,8 @@
           {
             "type": "text",
             "key": "feed_id",
-            "label": "Feed Id",
-            "description": "Feed identifier (e.g. feed_abc123xyz)",
+            "label": "Feed ID",
+            "description": "Feed identifier e g feed abc123xyz",
             "col": {
               "xs": 24
             },
@@ -3988,8 +3988,8 @@
           {
             "type": "text",
             "key": "token",
-            "label": "Token",
-            "description": "Access token for private feeds (included in rss_url)",
+            "label": "Jeton",
+            "description": "Accès jeton private feeds included rss URL",
             "col": {
               "xs": 24
             }
@@ -4004,8 +4004,8 @@
       "key": "proxycurl_target_create_addtarget",
       "name": "proxycurlTargetCreateAddtarget",
       "schemaVersion": 2,
-      "title": "Create target",
-      "subtitle": "targets",
+      "title": "Créer addtarget",
+      "subtitle": "Addtarget",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -4019,7 +4019,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -4030,15 +4030,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:proxycurl_target"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_addtarget sur target.",
+      "description": "Créer addtarget.",
       "args": {
-        "title": "Create target",
+        "title": "Créer addtarget",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -4047,8 +4047,8 @@
           {
             "type": "text",
             "key": "feed_id",
-            "label": "Feed Id",
-            "description": "Feed identifier (e.g. feed_abc123xyz)",
+            "label": "Feed ID",
+            "description": "Feed identifier e g feed abc123xyz",
             "col": {
               "xs": 24
             },
@@ -4062,7 +4062,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             },
@@ -4082,8 +4082,8 @@
       "key": "proxycurl_target_update_updatetarget",
       "name": "proxycurlTargetUpdateUpdatetarget",
       "schemaVersion": 2,
-      "title": "Update target",
-      "subtitle": "targets",
+      "title": "Mettre à jour target",
+      "subtitle": "Target",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -4097,7 +4097,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -4108,15 +4108,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:proxycurl_target"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update_updatetarget sur target.",
+      "description": "Mettre à jour target.",
       "args": {
-        "title": "Update target",
+        "title": "Mettre à jour target",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -4125,8 +4125,8 @@
           {
             "type": "text",
             "key": "feed_id",
-            "label": "Feed Id",
-            "description": "Feed identifier (e.g. feed_abc123xyz)",
+            "label": "Feed ID",
+            "description": "Feed identifier e g feed abc123xyz",
             "col": {
               "xs": 24
             },
@@ -4139,8 +4139,8 @@
           {
             "type": "text",
             "key": "target_id",
-            "label": "Target Id",
-            "description": "Target identifier (e.g. target_abc123xyz)",
+            "label": "Target ID",
+            "description": "Target identifier e g target abc123xyz",
             "col": {
               "xs": 24
             },
@@ -4154,7 +4154,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             },
@@ -4174,8 +4174,8 @@
       "key": "proxycurl_target_delete_deletetarget",
       "name": "proxycurlTargetDeleteDeletetarget",
       "schemaVersion": 2,
-      "title": "Delete target",
-      "subtitle": "targets",
+      "title": "Supprimer target",
+      "subtitle": "Target",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -4189,7 +4189,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -4200,15 +4200,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:proxycurl_action_result"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete_deletetarget sur target.",
+      "description": "Supprimer target.",
       "args": {
-        "title": "Delete target",
+        "title": "Supprimer target",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -4217,8 +4217,8 @@
           {
             "type": "text",
             "key": "feed_id",
-            "label": "Feed Id",
-            "description": "Feed identifier (e.g. feed_abc123xyz)",
+            "label": "Feed ID",
+            "description": "Feed identifier e g feed abc123xyz",
             "col": {
               "xs": 24
             },
@@ -4231,8 +4231,8 @@
           {
             "type": "text",
             "key": "target_id",
-            "label": "Target Id",
-            "description": "Target identifier (e.g. target_abc123xyz)",
+            "label": "Target ID",
+            "description": "Target identifier e g target abc123xyz",
             "col": {
               "xs": 24
             },
@@ -4252,8 +4252,8 @@
       "key": "proxycurl_update_list_getcompanyupdates",
       "name": "proxycurlUpdateListGetcompanyupdates",
       "schemaVersion": 2,
-      "title": "List update",
-      "subtitle": "updates",
+      "title": "Mettre à jour entreprise",
+      "subtitle": "Entreprise",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -4267,7 +4267,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -4278,15 +4278,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:proxycurl_updates"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_getcompanyupdates sur update.",
+      "description": "Mettre à jour entreprise.",
       "args": {
-        "title": "List update",
+        "title": "Mettre à jour entreprise",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -4296,7 +4296,7 @@
             "type": "text",
             "key": "website",
             "label": "Website",
-            "description": "The website URL or company name of the target company. A website URL (e.g. `https://www.stripe.com`) is strongly recommended for precision.",
+            "description": "website URL entreprise name target entreprise website URL e g www stripe com strongly recommended precision",
             "col": {
               "xs": 24
             },
@@ -4309,8 +4309,8 @@
           {
             "type": "text",
             "key": "use_cache",
-            "label": "Use Cache",
-            "description": "Controls cache usage. Case-insensitive. Values: `if-recent` (default; use cached data when the last scrape is within 1 day, otherwise enrich live), `if-present` (return cache first, enrich live if absent), `if-present-only` (return cache only; return 404 if absent), `never` (always enrich live). Invalid values fall back to the endpoint default.",
+            "label": "Cache",
+            "description": "Controls cache usage Case insensitive Valeurs if recent default cached données when last scrape within 1 day otherwise enrich live if present return cache first enrich live if absent if present only return cache only return 404 if absent never always enrich live Invalid valeurs fall back default",
             "col": {
               "xs": 24
             }
@@ -4319,14 +4319,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "updates"
+      "group": "mise à jours"
     },
     {
       "key": "proxycurl_website_search_getcompanywebsite",
       "name": "proxycurlWebsiteSearchGetcompanywebsite",
       "schemaVersion": 2,
-      "title": "Search website",
-      "subtitle": "websites",
+      "title": "Rechercher website",
+      "subtitle": "Website",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -4340,7 +4340,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -4351,15 +4351,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:proxycurl_websites"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action search_getcompanywebsite sur website.",
+      "description": "Rechercher website.",
       "args": {
-        "title": "Search website",
+        "title": "Rechercher website",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -4368,8 +4368,8 @@
           {
             "type": "text",
             "key": "company_name",
-            "label": "Company Name",
-            "description": "The name of the company to look up.",
+            "label": "Entreprise Name",
+            "description": "name entreprise recherche",
             "col": {
               "xs": 24
             },
@@ -4383,7 +4383,7 @@
             "type": "text",
             "key": "country_code",
             "label": "Country Code",
-            "description": "Optional ISO 3166-1 alpha-2 2-letter country code used to bias the search geographically (e.g. `us`, `gb`, `de`, `sg`).",
+            "description": "Optional Iso 3166 1 alpha 2 2 letter country code used bias recherche geographically e g us gb de sg",
             "col": {
               "xs": 24
             }
@@ -4392,7 +4392,7 @@
             "type": "text",
             "key": "hint",
             "label": "Hint",
-            "description": "Provide a hint to differentiate similarly named companies in the same country.",
+            "description": "Provide hint differentiate similarly named entreprises same country",
             "col": {
               "xs": 24
             }
@@ -4407,8 +4407,8 @@
       "key": "proxycurl_work_email_search_getworkemail",
       "name": "proxycurlWorkEmailSearchGetworkemail",
       "schemaVersion": 2,
-      "title": "Search work_email",
-      "subtitle": "work_emails",
+      "title": "Rechercher work email",
+      "subtitle": "Work email",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -4422,7 +4422,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -4433,15 +4433,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:proxycurl_work_emails"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action search_getworkemail sur work_email.",
+      "description": "Rechercher work email.",
       "args": {
-        "title": "Search work_email",
+        "title": "Rechercher work email",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -4451,7 +4451,7 @@
             "type": "text",
             "key": "first_name",
             "label": "First Name",
-            "description": "Person's first name",
+            "description": "Person s first name",
             "col": {
               "xs": 24
             },
@@ -4465,7 +4465,7 @@
             "type": "text",
             "key": "last_name",
             "label": "Last Name",
-            "description": "Person's last name. Improves accuracy when the email pattern needs it.",
+            "description": "Person s last name Improves accuracy when email pattern needs it",
             "col": {
               "xs": 24
             }
@@ -4474,7 +4474,7 @@
             "type": "text",
             "key": "domain",
             "label": "Domain",
-            "description": "Company domain. Scheme, www, and trailing slash are stripped if present.",
+            "description": "Entreprise domain Scheme www trailing slash are stripped if present",
             "col": {
               "xs": 24
             },
@@ -4487,8 +4487,8 @@
           {
             "type": "checkbox",
             "key": "force_refresh",
-            "label": "Force Refresh",
-            "description": "If `true`, bypass the cache and re-run the AI lookup.",
+            "label": "Force Rafraîchissement",
+            "description": "If true bypass cache re run Ai recherche",
             "col": {
               "xs": 24
             }
@@ -4497,7 +4497,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "work_emails"
+      "group": "work emails"
     }
   ]
 }

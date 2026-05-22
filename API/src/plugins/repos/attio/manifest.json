@@ -4026,8 +4026,8 @@
       "key": "attio_attribute_list_list_attributes",
       "name": "attioAttributeListListAttributes",
       "schemaVersion": 2,
-      "title": "List attribute",
-      "subtitle": "attributes",
+      "title": "Lister attribute",
+      "subtitle": "Attribute",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -4041,7 +4041,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -4052,15 +4052,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_attributes"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_list_attributes sur attribute.",
+      "description": "Lister attribute.",
       "args": {
-        "title": "List attribute",
+        "title": "Lister attribute",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -4070,7 +4070,7 @@
             "type": "text",
             "key": "target",
             "label": "Target",
-            "description": "Paramètre de chemin target.",
+            "description": "Paramètre de chemin target",
             "col": {
               "xs": 24
             },
@@ -4084,7 +4084,7 @@
             "type": "text",
             "key": "identifier",
             "label": "Identifier",
-            "description": "Paramètre de chemin identifier.",
+            "description": "Paramètre de chemin identifier",
             "col": {
               "xs": 24
             },
@@ -4098,7 +4098,7 @@
             "type": "number",
             "key": "limit",
             "label": "Limit",
-            "description": "Paramètre de requête limit.",
+            "description": "Paramètre de requête limit",
             "col": {
               "xs": 24
             }
@@ -4107,7 +4107,7 @@
             "type": "number",
             "key": "offset",
             "label": "Offset",
-            "description": "Paramètre de requête offset.",
+            "description": "Paramètre de requête offset",
             "col": {
               "xs": 24
             }
@@ -4116,7 +4116,7 @@
             "type": "checkbox",
             "key": "show_archived",
             "label": "Show Archived",
-            "description": "Paramètre de requête show_archived.",
+            "description": "Paramètre de requête show archived",
             "col": {
               "xs": 24
             }
@@ -4131,8 +4131,8 @@
       "key": "attio_attribute_create_create_an_attribute",
       "name": "attioAttributeCreateCreateAnAttribute",
       "schemaVersion": 2,
-      "title": "Create attribute",
-      "subtitle": "attributes",
+      "title": "Créer attribute",
+      "subtitle": "Attribute",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -4146,7 +4146,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -4157,15 +4157,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_attribute"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_create_an_attribute sur attribute.",
+      "description": "Créer attribute.",
       "args": {
-        "title": "Create attribute",
+        "title": "Créer attribute",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -4175,7 +4175,7 @@
             "type": "text",
             "key": "target",
             "label": "Target",
-            "description": "Paramètre de chemin target.",
+            "description": "Paramètre de chemin target",
             "col": {
               "xs": 24
             },
@@ -4189,7 +4189,7 @@
             "type": "text",
             "key": "identifier",
             "label": "Identifier",
-            "description": "Paramètre de chemin identifier.",
+            "description": "Paramètre de chemin identifier",
             "col": {
               "xs": 24
             },
@@ -4203,7 +4203,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             },
@@ -4223,8 +4223,8 @@
       "key": "attio_attribute_get_get_an_attribute",
       "name": "attioAttributeGetGetAnAttribute",
       "schemaVersion": 2,
-      "title": "Get attribute",
-      "subtitle": "attributes",
+      "title": "Récupérer attribute",
+      "subtitle": "Attribute",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -4238,7 +4238,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -4249,15 +4249,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_attribute"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get_get_an_attribute sur attribute.",
+      "description": "Récupérer attribute.",
       "args": {
-        "title": "Get attribute",
+        "title": "Récupérer attribute",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -4267,7 +4267,7 @@
             "type": "text",
             "key": "target",
             "label": "Target",
-            "description": "Paramètre de chemin target.",
+            "description": "Paramètre de chemin target",
             "col": {
               "xs": 24
             },
@@ -4281,7 +4281,7 @@
             "type": "text",
             "key": "identifier",
             "label": "Identifier",
-            "description": "Paramètre de chemin identifier.",
+            "description": "Paramètre de chemin identifier",
             "col": {
               "xs": 24
             },
@@ -4295,7 +4295,7 @@
             "type": "text",
             "key": "attribute",
             "label": "Attribute",
-            "description": "Paramètre de chemin attribute.",
+            "description": "Paramètre de chemin attribute",
             "col": {
               "xs": 24
             },
@@ -4315,8 +4315,8 @@
       "key": "attio_attribute_update_update_an_attribute",
       "name": "attioAttributeUpdateUpdateAnAttribute",
       "schemaVersion": 2,
-      "title": "Update attribute",
-      "subtitle": "attributes",
+      "title": "Mettre à jour attribute",
+      "subtitle": "Attribute",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -4330,7 +4330,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -4341,15 +4341,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_attribute"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update_update_an_attribute sur attribute.",
+      "description": "Mettre à jour attribute.",
       "args": {
-        "title": "Update attribute",
+        "title": "Mettre à jour attribute",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -4359,7 +4359,7 @@
             "type": "text",
             "key": "target",
             "label": "Target",
-            "description": "Paramètre de chemin target.",
+            "description": "Paramètre de chemin target",
             "col": {
               "xs": 24
             },
@@ -4373,7 +4373,7 @@
             "type": "text",
             "key": "identifier",
             "label": "Identifier",
-            "description": "Paramètre de chemin identifier.",
+            "description": "Paramètre de chemin identifier",
             "col": {
               "xs": 24
             },
@@ -4387,7 +4387,7 @@
             "type": "text",
             "key": "attribute",
             "label": "Attribute",
-            "description": "Paramètre de chemin attribute.",
+            "description": "Paramètre de chemin attribute",
             "col": {
               "xs": 24
             },
@@ -4401,7 +4401,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             },
@@ -4421,8 +4421,8 @@
       "key": "attio_call_recording_list_list_call_recordings",
       "name": "attioCallRecordingListListCallRecordings",
       "schemaVersion": 2,
-      "title": "List call_recording",
-      "subtitle": "call_recordings",
+      "title": "Lister appel enregistrement",
+      "subtitle": "Appel enregistrement",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -4436,7 +4436,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -4447,15 +4447,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_call_recordings"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_list_call_recordings sur call_recording.",
+      "description": "Lister appel enregistrement.",
       "args": {
-        "title": "List call_recording",
+        "title": "Lister appel enregistrement",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -4464,8 +4464,8 @@
           {
             "type": "text",
             "key": "meeting_id",
-            "label": "Meeting Id",
-            "description": "Paramètre de chemin meeting_id.",
+            "label": "Meeting ID",
+            "description": "Paramètre de chemin meeting ID",
             "col": {
               "xs": 24
             },
@@ -4479,7 +4479,7 @@
             "type": "number",
             "key": "limit",
             "label": "Limit",
-            "description": "Paramètre de requête limit.",
+            "description": "Paramètre de requête limit",
             "col": {
               "xs": 24
             }
@@ -4488,7 +4488,7 @@
             "type": "text",
             "key": "cursor",
             "label": "Cursor",
-            "description": "Paramètre de requête cursor.",
+            "description": "Paramètre de requête cursor",
             "col": {
               "xs": 24
             }
@@ -4497,14 +4497,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "call_recordings"
+      "group": "appel enregistrements"
     },
     {
       "key": "attio_call_recording_create_create_call_recording",
       "name": "attioCallRecordingCreateCreateCallRecording",
       "schemaVersion": 2,
-      "title": "Create call_recording",
-      "subtitle": "call_recordings",
+      "title": "Créer appel enregistrement",
+      "subtitle": "Appel enregistrement",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -4518,7 +4518,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -4529,15 +4529,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_call_recording"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_create_call_recording sur call_recording.",
+      "description": "Créer appel enregistrement.",
       "args": {
-        "title": "Create call_recording",
+        "title": "Créer appel enregistrement",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -4546,8 +4546,8 @@
           {
             "type": "text",
             "key": "meeting_id",
-            "label": "Meeting Id",
-            "description": "Paramètre de chemin meeting_id.",
+            "label": "Meeting ID",
+            "description": "Paramètre de chemin meeting ID",
             "col": {
               "xs": 24
             },
@@ -4561,7 +4561,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             },
@@ -4575,14 +4575,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "call_recordings"
+      "group": "appel enregistrements"
     },
     {
       "key": "attio_call_recording_get_get_call_recording",
       "name": "attioCallRecordingGetGetCallRecording",
       "schemaVersion": 2,
-      "title": "Get call_recording",
-      "subtitle": "call_recordings",
+      "title": "Récupérer appel enregistrement",
+      "subtitle": "Appel enregistrement",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -4596,7 +4596,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -4607,15 +4607,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_call_recording"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get_get_call_recording sur call_recording.",
+      "description": "Récupérer appel enregistrement.",
       "args": {
-        "title": "Get call_recording",
+        "title": "Récupérer appel enregistrement",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -4624,8 +4624,8 @@
           {
             "type": "text",
             "key": "meeting_id",
-            "label": "Meeting Id",
-            "description": "Paramètre de chemin meeting_id.",
+            "label": "Meeting ID",
+            "description": "Paramètre de chemin meeting ID",
             "col": {
               "xs": 24
             },
@@ -4638,8 +4638,8 @@
           {
             "type": "text",
             "key": "call_recording_id",
-            "label": "Call Recording Id",
-            "description": "Paramètre de chemin call_recording_id.",
+            "label": "Appel Enregistrement ID",
+            "description": "Paramètre de chemin appel enregistrement ID",
             "col": {
               "xs": 24
             },
@@ -4653,14 +4653,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "call_recordings"
+      "group": "appel enregistrements"
     },
     {
       "key": "attio_call_recording_delete_delete_call_recording",
       "name": "attioCallRecordingDeleteDeleteCallRecording",
       "schemaVersion": 2,
-      "title": "Delete call_recording",
-      "subtitle": "call_recordings",
+      "title": "Supprimer appel enregistrement",
+      "subtitle": "Appel enregistrement",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -4674,7 +4674,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -4685,15 +4685,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_action_result"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete_delete_call_recording sur call_recording.",
+      "description": "Supprimer appel enregistrement.",
       "args": {
-        "title": "Delete call_recording",
+        "title": "Supprimer appel enregistrement",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -4702,8 +4702,8 @@
           {
             "type": "text",
             "key": "meeting_id",
-            "label": "Meeting Id",
-            "description": "Paramètre de chemin meeting_id.",
+            "label": "Meeting ID",
+            "description": "Paramètre de chemin meeting ID",
             "col": {
               "xs": 24
             },
@@ -4716,8 +4716,8 @@
           {
             "type": "text",
             "key": "call_recording_id",
-            "label": "Call Recording Id",
-            "description": "Paramètre de chemin call_recording_id.",
+            "label": "Appel Enregistrement ID",
+            "description": "Paramètre de chemin appel enregistrement ID",
             "col": {
               "xs": 24
             },
@@ -4731,14 +4731,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "call_recordings"
+      "group": "appel enregistrements"
     },
     {
       "key": "attio_comment_comment_create_a_comment",
       "name": "attioCommentCommentCreateAComment",
       "schemaVersion": 2,
-      "title": "Comment comment",
-      "subtitle": "comments",
+      "title": "Créer commentaire",
+      "subtitle": "Commentaire",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -4752,7 +4752,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -4763,15 +4763,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_action_result"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action comment_create_a_comment sur comment.",
+      "description": "Créer commentaire.",
       "args": {
-        "title": "Comment comment",
+        "title": "Créer commentaire",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -4781,7 +4781,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             },
@@ -4795,14 +4795,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "comments"
+      "group": "commentaires"
     },
     {
       "key": "attio_comment_comment_get_a_comment",
       "name": "attioCommentCommentGetAComment",
       "schemaVersion": 2,
-      "title": "Comment comment",
-      "subtitle": "comments",
+      "title": "Récupérer commentaire",
+      "subtitle": "Commentaire",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -4816,7 +4816,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -4827,15 +4827,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_comment"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action comment_get_a_comment sur comment.",
+      "description": "Récupérer commentaire.",
       "args": {
-        "title": "Comment comment",
+        "title": "Récupérer commentaire",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -4844,8 +4844,8 @@
           {
             "type": "text",
             "key": "comment_id",
-            "label": "Comment Id",
-            "description": "Paramètre de chemin comment_id.",
+            "label": "Commenter ID",
+            "description": "Paramètre de chemin commentaire ID",
             "col": {
               "xs": 24
             },
@@ -4859,14 +4859,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "comments"
+      "group": "commentaires"
     },
     {
       "key": "attio_comment_comment_delete_a_comment",
       "name": "attioCommentCommentDeleteAComment",
       "schemaVersion": 2,
-      "title": "Comment comment",
-      "subtitle": "comments",
+      "title": "Supprimer commentaire",
+      "subtitle": "Commentaire",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -4880,7 +4880,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -4891,15 +4891,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_action_result"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action comment_delete_a_comment sur comment.",
+      "description": "Supprimer commentaire.",
       "args": {
-        "title": "Comment comment",
+        "title": "Supprimer commentaire",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -4908,8 +4908,8 @@
           {
             "type": "text",
             "key": "comment_id",
-            "label": "Comment Id",
-            "description": "Paramètre de chemin comment_id.",
+            "label": "Commenter ID",
+            "description": "Paramètre de chemin commentaire ID",
             "col": {
               "xs": 24
             },
@@ -4923,14 +4923,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "comments"
+      "group": "commentaires"
     },
     {
       "key": "attio_download_list_download_a_file",
       "name": "attioDownloadListDownloadAFile",
       "schemaVersion": 2,
-      "title": "List download",
-      "subtitle": "downloads",
+      "title": "Lister fichier",
+      "subtitle": "Fichier",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -4944,7 +4944,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -4955,15 +4955,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_downloads"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_download_a_file sur download.",
+      "description": "Lister fichier.",
       "args": {
-        "title": "List download",
+        "title": "Lister fichier",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -4972,8 +4972,8 @@
           {
             "type": "text",
             "key": "file_id",
-            "label": "File Id",
-            "description": "Paramètre de chemin file_id.",
+            "label": "Fichier ID",
+            "description": "Paramètre de chemin fichier ID",
             "col": {
               "xs": 24
             },
@@ -4987,14 +4987,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "downloads"
+      "group": "téléchargements"
     },
     {
       "key": "attio_entry_list_list_record_entries",
       "name": "attioEntryListListRecordEntries",
       "schemaVersion": 2,
-      "title": "List entry",
-      "subtitle": "entries",
+      "title": "Lister enregistrement entrée",
+      "subtitle": "Enregistrement entrée",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -5008,7 +5008,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -5019,15 +5019,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_entries"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_list_record_entries sur entry.",
+      "description": "Lister enregistrement entrée.",
       "args": {
-        "title": "List entry",
+        "title": "Lister enregistrement entrée",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -5036,8 +5036,8 @@
           {
             "type": "text",
             "key": "object",
-            "label": "Object",
-            "description": "Paramètre de chemin object.",
+            "label": "Objet",
+            "description": "Paramètre de chemin objet",
             "col": {
               "xs": 24
             },
@@ -5050,8 +5050,8 @@
           {
             "type": "text",
             "key": "record_id",
-            "label": "Record Id",
-            "description": "Paramètre de chemin record_id.",
+            "label": "Enregistrement ID",
+            "description": "Paramètre de chemin enregistrement ID",
             "col": {
               "xs": 24
             },
@@ -5065,7 +5065,7 @@
             "type": "number",
             "key": "limit",
             "label": "Limit",
-            "description": "Paramètre de requête limit.",
+            "description": "Paramètre de requête limit",
             "col": {
               "xs": 24
             }
@@ -5074,7 +5074,7 @@
             "type": "number",
             "key": "offset",
             "label": "Offset",
-            "description": "Paramètre de requête offset.",
+            "description": "Paramètre de requête offset",
             "col": {
               "xs": 24
             }
@@ -5083,14 +5083,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "entries"
+      "group": "entrées"
     },
     {
       "key": "attio_entry_query_list_entries",
       "name": "attioEntryQueryListEntries",
       "schemaVersion": 2,
-      "title": "Query entry",
-      "subtitle": "entries",
+      "title": "Lister entrée",
+      "subtitle": "Entrée",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -5104,7 +5104,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -5115,15 +5115,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_action_result"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action query_list_entries sur entry.",
+      "description": "Lister entrée.",
       "args": {
-        "title": "Query entry",
+        "title": "Lister entrée",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -5132,8 +5132,8 @@
           {
             "type": "text",
             "key": "list",
-            "label": "List",
-            "description": "Paramètre de chemin list.",
+            "label": "Lister",
+            "description": "Paramètre de chemin liste",
             "col": {
               "xs": 24
             },
@@ -5147,7 +5147,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             },
@@ -5161,14 +5161,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "entries"
+      "group": "entrées"
     },
     {
       "key": "attio_entry_create_create_an_entry_add_record_to_list",
       "name": "attioEntryCreateCreateAnEntryAddRecordToList",
       "schemaVersion": 2,
-      "title": "Create entry",
-      "subtitle": "entries",
+      "title": "Créer entrée enregistrement",
+      "subtitle": "Entrée enregistrement",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -5182,7 +5182,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -5193,15 +5193,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_entry"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_create_an_entry_add_record_to_list sur entry.",
+      "description": "Créer entrée enregistrement.",
       "args": {
-        "title": "Create entry",
+        "title": "Créer entrée enregistrement",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -5210,8 +5210,8 @@
           {
             "type": "text",
             "key": "list",
-            "label": "List",
-            "description": "Paramètre de chemin list.",
+            "label": "Lister",
+            "description": "Paramètre de chemin liste",
             "col": {
               "xs": 24
             },
@@ -5225,7 +5225,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             },
@@ -5239,14 +5239,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "entries"
+      "group": "entrées"
     },
     {
       "key": "attio_entry_upsert_upsert_a_list_entry_by_parent",
       "name": "attioEntryUpsertUpsertAListEntryByParent",
       "schemaVersion": 2,
-      "title": "Upsert entry",
-      "subtitle": "entries",
+      "title": "Mettre à jour ou créer entrée parent",
+      "subtitle": "Entrée parent",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -5260,7 +5260,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -5271,15 +5271,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_entry"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action upsert_upsert_a_list_entry_by_parent sur entry.",
+      "description": "Mettre à jour ou créer entrée parent.",
       "args": {
-        "title": "Upsert entry",
+        "title": "Mettre à jour ou créer entrée parent",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -5288,8 +5288,8 @@
           {
             "type": "text",
             "key": "list",
-            "label": "List",
-            "description": "Paramètre de chemin list.",
+            "label": "Lister",
+            "description": "Paramètre de chemin liste",
             "col": {
               "xs": 24
             },
@@ -5303,7 +5303,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             },
@@ -5317,14 +5317,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "entries"
+      "group": "entrées"
     },
     {
       "key": "attio_entry_get_get_a_list_entry",
       "name": "attioEntryGetGetAListEntry",
       "schemaVersion": 2,
-      "title": "Get entry",
-      "subtitle": "entries",
+      "title": "Récupérer entrée",
+      "subtitle": "Entrée",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -5338,7 +5338,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -5349,15 +5349,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_entry"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get_get_a_list_entry sur entry.",
+      "description": "Récupérer entrée.",
       "args": {
-        "title": "Get entry",
+        "title": "Récupérer entrée",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -5366,8 +5366,8 @@
           {
             "type": "text",
             "key": "list",
-            "label": "List",
-            "description": "Paramètre de chemin list.",
+            "label": "Lister",
+            "description": "Paramètre de chemin liste",
             "col": {
               "xs": 24
             },
@@ -5380,8 +5380,8 @@
           {
             "type": "text",
             "key": "entry_id",
-            "label": "Entry Id",
-            "description": "Paramètre de chemin entry_id.",
+            "label": "Entrée ID",
+            "description": "Paramètre de chemin entrée ID",
             "col": {
               "xs": 24
             },
@@ -5395,14 +5395,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "entries"
+      "group": "entrées"
     },
     {
       "key": "attio_entry_update_update_a_list_entry_append_multiselect_values",
       "name": "attioEntryUpdateUpdateAListEntryAppendMultiselectValues",
       "schemaVersion": 2,
-      "title": "Update entry",
-      "subtitle": "entries",
+      "title": "Mettre à jour entrée",
+      "subtitle": "Entrée",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -5416,7 +5416,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -5427,15 +5427,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_entry"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update_update_a_list_entry_append_multiselect_values sur entry.",
+      "description": "Mettre à jour entrée.",
       "args": {
-        "title": "Update entry",
+        "title": "Mettre à jour entrée",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -5444,8 +5444,8 @@
           {
             "type": "text",
             "key": "list",
-            "label": "List",
-            "description": "Paramètre de chemin list.",
+            "label": "Lister",
+            "description": "Paramètre de chemin liste",
             "col": {
               "xs": 24
             },
@@ -5458,8 +5458,8 @@
           {
             "type": "text",
             "key": "entry_id",
-            "label": "Entry Id",
-            "description": "Paramètre de chemin entry_id.",
+            "label": "Entrée ID",
+            "description": "Paramètre de chemin entrée ID",
             "col": {
               "xs": 24
             },
@@ -5473,7 +5473,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             },
@@ -5487,14 +5487,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "entries"
+      "group": "entrées"
     },
     {
       "key": "attio_entry_update_update_a_list_entry_overwrite_multiselect_values",
       "name": "attioEntryUpdateUpdateAListEntryOverwriteMultiselectValues",
       "schemaVersion": 2,
-      "title": "Update entry",
-      "subtitle": "entries",
+      "title": "Mettre à jour entrée - overwrite",
+      "subtitle": "Entrée",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -5508,7 +5508,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -5519,15 +5519,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_entry"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update_update_a_list_entry_overwrite_multiselect_values sur entry.",
+      "description": "Mettre à jour entrée - overwrite.",
       "args": {
-        "title": "Update entry",
+        "title": "Mettre à jour entrée - overwrite",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -5536,8 +5536,8 @@
           {
             "type": "text",
             "key": "list",
-            "label": "List",
-            "description": "Paramètre de chemin list.",
+            "label": "Lister",
+            "description": "Paramètre de chemin liste",
             "col": {
               "xs": 24
             },
@@ -5550,8 +5550,8 @@
           {
             "type": "text",
             "key": "entry_id",
-            "label": "Entry Id",
-            "description": "Paramètre de chemin entry_id.",
+            "label": "Entrée ID",
+            "description": "Paramètre de chemin entrée ID",
             "col": {
               "xs": 24
             },
@@ -5565,7 +5565,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             },
@@ -5579,14 +5579,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "entries"
+      "group": "entrées"
     },
     {
       "key": "attio_entry_delete_delete_a_list_entry",
       "name": "attioEntryDeleteDeleteAListEntry",
       "schemaVersion": 2,
-      "title": "Delete entry",
-      "subtitle": "entries",
+      "title": "Supprimer entrée",
+      "subtitle": "Entrée",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -5600,7 +5600,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -5611,15 +5611,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_action_result"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete_delete_a_list_entry sur entry.",
+      "description": "Supprimer entrée.",
       "args": {
-        "title": "Delete entry",
+        "title": "Supprimer entrée",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -5628,8 +5628,8 @@
           {
             "type": "text",
             "key": "list",
-            "label": "List",
-            "description": "Paramètre de chemin list.",
+            "label": "Lister",
+            "description": "Paramètre de chemin liste",
             "col": {
               "xs": 24
             },
@@ -5642,8 +5642,8 @@
           {
             "type": "text",
             "key": "entry_id",
-            "label": "Entry Id",
-            "description": "Paramètre de chemin entry_id.",
+            "label": "Entrée ID",
+            "description": "Paramètre de chemin entrée ID",
             "col": {
               "xs": 24
             },
@@ -5657,14 +5657,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "entries"
+      "group": "entrées"
     },
     {
       "key": "attio_file_search_list_files",
       "name": "attioFileSearchListFiles",
       "schemaVersion": 2,
-      "title": "Search file",
-      "subtitle": "files",
+      "title": "Rechercher fichier",
+      "subtitle": "Fichier",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -5678,7 +5678,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -5689,15 +5689,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_files"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action search_list_files sur file.",
+      "description": "Rechercher fichier.",
       "args": {
-        "title": "Search file",
+        "title": "Rechercher fichier",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -5706,8 +5706,8 @@
           {
             "type": "text",
             "key": "object",
-            "label": "Object",
-            "description": "Paramètre de requête object.",
+            "label": "Objet",
+            "description": "Paramètre de requête objet",
             "col": {
               "xs": 24
             },
@@ -5720,8 +5720,8 @@
           {
             "type": "text",
             "key": "record_id",
-            "label": "Record Id",
-            "description": "Paramètre de requête record_id.",
+            "label": "Enregistrement ID",
+            "description": "Paramètre de requête enregistrement ID",
             "col": {
               "xs": 24
             },
@@ -5735,7 +5735,7 @@
             "type": "text",
             "key": "storage_provider",
             "label": "Storage Provider",
-            "description": "Paramètre de requête storage_provider.",
+            "description": "Paramètre de requête storage provider",
             "col": {
               "xs": 24
             }
@@ -5743,8 +5743,8 @@
           {
             "type": "text",
             "key": "parent_folder_id",
-            "label": "Parent Folder Id",
-            "description": "Paramètre de requête parent_folder_id.",
+            "label": "Parent Folder ID",
+            "description": "Paramètre de requête parent folder ID",
             "col": {
               "xs": 24
             }
@@ -5753,7 +5753,7 @@
             "type": "number",
             "key": "limit",
             "label": "Limit",
-            "description": "Paramètre de requête limit.",
+            "description": "Paramètre de requête limit",
             "col": {
               "xs": 24
             }
@@ -5762,7 +5762,7 @@
             "type": "text",
             "key": "cursor",
             "label": "Cursor",
-            "description": "Paramètre de requête cursor.",
+            "description": "Paramètre de requête cursor",
             "col": {
               "xs": 24
             }
@@ -5771,14 +5771,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "files"
+      "group": "fichiers"
     },
     {
       "key": "attio_file_create_create_a_folder",
       "name": "attioFileCreateCreateAFolder",
       "schemaVersion": 2,
-      "title": "Create file",
-      "subtitle": "files",
+      "title": "Créer folder",
+      "subtitle": "Folder",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -5792,7 +5792,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -5803,15 +5803,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_file"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_create_a_folder sur file.",
+      "description": "Créer folder.",
       "args": {
-        "title": "Create file",
+        "title": "Créer folder",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -5821,7 +5821,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             },
@@ -5835,14 +5835,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "files"
+      "group": "fichiers"
     },
     {
       "key": "attio_file_get_get_a_file",
       "name": "attioFileGetGetAFile",
       "schemaVersion": 2,
-      "title": "Get file",
-      "subtitle": "files",
+      "title": "Récupérer fichier",
+      "subtitle": "Fichier",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -5856,7 +5856,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -5867,15 +5867,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_file"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get_get_a_file sur file.",
+      "description": "Récupérer fichier.",
       "args": {
-        "title": "Get file",
+        "title": "Récupérer fichier",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -5884,8 +5884,8 @@
           {
             "type": "text",
             "key": "file_id",
-            "label": "File Id",
-            "description": "Paramètre de chemin file_id.",
+            "label": "Fichier ID",
+            "description": "Paramètre de chemin fichier ID",
             "col": {
               "xs": 24
             },
@@ -5899,14 +5899,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "files"
+      "group": "fichiers"
     },
     {
       "key": "attio_file_delete_delete_a_file",
       "name": "attioFileDeleteDeleteAFile",
       "schemaVersion": 2,
-      "title": "Delete file",
-      "subtitle": "files",
+      "title": "Supprimer fichier",
+      "subtitle": "Fichier",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -5920,7 +5920,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -5931,15 +5931,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_action_result"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete_delete_a_file sur file.",
+      "description": "Supprimer fichier.",
       "args": {
-        "title": "Delete file",
+        "title": "Supprimer fichier",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -5948,8 +5948,8 @@
           {
             "type": "text",
             "key": "file_id",
-            "label": "File Id",
-            "description": "Paramètre de chemin file_id.",
+            "label": "Fichier ID",
+            "description": "Paramètre de chemin fichier ID",
             "col": {
               "xs": 24
             },
@@ -5963,14 +5963,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "files"
+      "group": "fichiers"
     },
     {
       "key": "attio_list_list_list_all_lists",
       "name": "attioListListListAllLists",
       "schemaVersion": 2,
-      "title": "List list",
-      "subtitle": "lists",
+      "title": "Lister liste",
+      "subtitle": "Liste",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -5984,7 +5984,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -5995,15 +5995,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_lists"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_list_all_lists sur list.",
+      "description": "Lister liste.",
       "args": {
-        "title": "List list",
+        "title": "Lister liste",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -6012,14 +6012,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "lists"
+      "group": "listes"
     },
     {
       "key": "attio_list_create_create_a_list",
       "name": "attioListCreateCreateAList",
       "schemaVersion": 2,
-      "title": "Create list",
-      "subtitle": "lists",
+      "title": "Créer liste",
+      "subtitle": "Liste",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -6033,7 +6033,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -6044,15 +6044,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_list"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_create_a_list sur list.",
+      "description": "Créer liste.",
       "args": {
-        "title": "Create list",
+        "title": "Créer liste",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -6062,7 +6062,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             },
@@ -6076,14 +6076,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "lists"
+      "group": "listes"
     },
     {
       "key": "attio_list_get_get_a_list",
       "name": "attioListGetGetAList",
       "schemaVersion": 2,
-      "title": "Get list",
-      "subtitle": "lists",
+      "title": "Récupérer liste",
+      "subtitle": "Liste",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -6097,7 +6097,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -6108,15 +6108,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_list"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get_get_a_list sur list.",
+      "description": "Récupérer liste.",
       "args": {
-        "title": "Get list",
+        "title": "Récupérer liste",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -6125,8 +6125,8 @@
           {
             "type": "text",
             "key": "list",
-            "label": "List",
-            "description": "Paramètre de chemin list.",
+            "label": "Lister",
+            "description": "Paramètre de chemin liste",
             "col": {
               "xs": 24
             },
@@ -6140,14 +6140,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "lists"
+      "group": "listes"
     },
     {
       "key": "attio_list_update_update_a_list",
       "name": "attioListUpdateUpdateAList",
       "schemaVersion": 2,
-      "title": "Update list",
-      "subtitle": "lists",
+      "title": "Mettre à jour liste",
+      "subtitle": "Liste",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -6161,7 +6161,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -6172,15 +6172,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_list"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update_update_a_list sur list.",
+      "description": "Mettre à jour liste.",
       "args": {
-        "title": "Update list",
+        "title": "Mettre à jour liste",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -6189,8 +6189,8 @@
           {
             "type": "text",
             "key": "list",
-            "label": "List",
-            "description": "Paramètre de chemin list.",
+            "label": "Lister",
+            "description": "Paramètre de chemin liste",
             "col": {
               "xs": 24
             },
@@ -6204,7 +6204,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             },
@@ -6218,14 +6218,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "lists"
+      "group": "listes"
     },
     {
       "key": "attio_meeting_list_list_meetings",
       "name": "attioMeetingListListMeetings",
       "schemaVersion": 2,
-      "title": "List meeting",
-      "subtitle": "meetings",
+      "title": "Lister meeting",
+      "subtitle": "Meeting",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -6239,7 +6239,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -6250,15 +6250,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_meetings"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_list_meetings sur meeting.",
+      "description": "Lister meeting.",
       "args": {
-        "title": "List meeting",
+        "title": "Lister meeting",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -6268,7 +6268,7 @@
             "type": "number",
             "key": "limit",
             "label": "Limit",
-            "description": "Paramètre de requête limit.",
+            "description": "Paramètre de requête limit",
             "col": {
               "xs": 24
             }
@@ -6277,7 +6277,7 @@
             "type": "text",
             "key": "cursor",
             "label": "Cursor",
-            "description": "Paramètre de requête cursor.",
+            "description": "Paramètre de requête cursor",
             "col": {
               "xs": 24
             }
@@ -6285,8 +6285,8 @@
           {
             "type": "text",
             "key": "linked_object",
-            "label": "Linked Object",
-            "description": "Paramètre de requête linked_object.",
+            "label": "Linked Objet",
+            "description": "Paramètre de requête linked objet",
             "col": {
               "xs": 24
             }
@@ -6294,8 +6294,8 @@
           {
             "type": "text",
             "key": "linked_record_id",
-            "label": "Linked Record Id",
-            "description": "Paramètre de requête linked_record_id.",
+            "label": "Linked Enregistrement ID",
+            "description": "Paramètre de requête linked enregistrement ID",
             "col": {
               "xs": 24
             }
@@ -6304,7 +6304,7 @@
             "type": "text",
             "key": "participants",
             "label": "Participants",
-            "description": "Paramètre de requête participants.",
+            "description": "Paramètre de requête participants",
             "col": {
               "xs": 24
             }
@@ -6313,7 +6313,7 @@
             "type": "text",
             "key": "sort",
             "label": "Sort",
-            "description": "Paramètre de requête sort.",
+            "description": "Paramètre de requête sort",
             "col": {
               "xs": 24
             }
@@ -6321,8 +6321,8 @@
           {
             "type": "text",
             "key": "ends_from",
-            "label": "Ends From",
-            "description": "Paramètre de requête ends_from.",
+            "label": "Ends",
+            "description": "Paramètre de requête ends",
             "col": {
               "xs": 24
             }
@@ -6331,7 +6331,7 @@
             "type": "text",
             "key": "starts_before",
             "label": "Starts Before",
-            "description": "Paramètre de requête starts_before.",
+            "description": "Paramètre de requête starts before",
             "col": {
               "xs": 24
             }
@@ -6340,7 +6340,7 @@
             "type": "text",
             "key": "timezone",
             "label": "Timezone",
-            "description": "Paramètre de requête timezone.",
+            "description": "Paramètre de requête timezone",
             "col": {
               "xs": 24
             }
@@ -6355,8 +6355,8 @@
       "key": "attio_meeting_search_find_or_create_a_meeting",
       "name": "attioMeetingSearchFindOrCreateAMeeting",
       "schemaVersion": 2,
-      "title": "Search meeting",
-      "subtitle": "meetings",
+      "title": "Rechercher meeting",
+      "subtitle": "Meeting",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -6370,7 +6370,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -6381,15 +6381,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_meetings"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action search_find_or_create_a_meeting sur meeting.",
+      "description": "Rechercher meeting.",
       "args": {
-        "title": "Search meeting",
+        "title": "Rechercher meeting",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -6399,7 +6399,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             },
@@ -6419,8 +6419,8 @@
       "key": "attio_meeting_get_get_a_meeting",
       "name": "attioMeetingGetGetAMeeting",
       "schemaVersion": 2,
-      "title": "Get meeting",
-      "subtitle": "meetings",
+      "title": "Récupérer meeting",
+      "subtitle": "Meeting",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -6434,7 +6434,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -6445,15 +6445,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_meeting"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get_get_a_meeting sur meeting.",
+      "description": "Récupérer meeting.",
       "args": {
-        "title": "Get meeting",
+        "title": "Récupérer meeting",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -6462,8 +6462,8 @@
           {
             "type": "text",
             "key": "meeting_id",
-            "label": "Meeting Id",
-            "description": "Paramètre de chemin meeting_id.",
+            "label": "Meeting ID",
+            "description": "Paramètre de chemin meeting ID",
             "col": {
               "xs": 24
             },
@@ -6483,8 +6483,8 @@
       "key": "attio_note_list_list_notes",
       "name": "attioNoteListListNotes",
       "schemaVersion": 2,
-      "title": "List note",
-      "subtitle": "notes",
+      "title": "Lister note",
+      "subtitle": "Note",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -6498,7 +6498,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -6509,15 +6509,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_notes"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_list_notes sur note.",
+      "description": "Lister note.",
       "args": {
-        "title": "List note",
+        "title": "Lister note",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -6527,7 +6527,7 @@
             "type": "number",
             "key": "limit",
             "label": "Limit",
-            "description": "Paramètre de requête limit.",
+            "description": "Paramètre de requête limit",
             "col": {
               "xs": 24
             }
@@ -6536,7 +6536,7 @@
             "type": "number",
             "key": "offset",
             "label": "Offset",
-            "description": "Paramètre de requête offset.",
+            "description": "Paramètre de requête offset",
             "col": {
               "xs": 24
             }
@@ -6544,8 +6544,8 @@
           {
             "type": "text",
             "key": "parent_object",
-            "label": "Parent Object",
-            "description": "Paramètre de requête parent_object.",
+            "label": "Parent Objet",
+            "description": "Paramètre de requête parent objet",
             "col": {
               "xs": 24
             }
@@ -6553,8 +6553,8 @@
           {
             "type": "text",
             "key": "parent_record_id",
-            "label": "Parent Record Id",
-            "description": "Paramètre de requête parent_record_id.",
+            "label": "Parent Enregistrement ID",
+            "description": "Paramètre de requête parent enregistrement ID",
             "col": {
               "xs": 24
             }
@@ -6569,8 +6569,8 @@
       "key": "attio_note_create_create_a_note",
       "name": "attioNoteCreateCreateANote",
       "schemaVersion": 2,
-      "title": "Create note",
-      "subtitle": "notes",
+      "title": "Créer note",
+      "subtitle": "Note",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -6584,7 +6584,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -6595,15 +6595,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_note"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_create_a_note sur note.",
+      "description": "Créer note.",
       "args": {
-        "title": "Create note",
+        "title": "Créer note",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -6613,7 +6613,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             },
@@ -6633,8 +6633,8 @@
       "key": "attio_note_get_get_a_note",
       "name": "attioNoteGetGetANote",
       "schemaVersion": 2,
-      "title": "Get note",
-      "subtitle": "notes",
+      "title": "Récupérer note",
+      "subtitle": "Note",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -6648,7 +6648,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -6659,15 +6659,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_note"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get_get_a_note sur note.",
+      "description": "Récupérer note.",
       "args": {
-        "title": "Get note",
+        "title": "Récupérer note",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -6676,8 +6676,8 @@
           {
             "type": "text",
             "key": "note_id",
-            "label": "Note Id",
-            "description": "Paramètre de chemin note_id.",
+            "label": "Note ID",
+            "description": "Paramètre de chemin note ID",
             "col": {
               "xs": 24
             },
@@ -6697,8 +6697,8 @@
       "key": "attio_note_delete_delete_a_note",
       "name": "attioNoteDeleteDeleteANote",
       "schemaVersion": 2,
-      "title": "Delete note",
-      "subtitle": "notes",
+      "title": "Supprimer note",
+      "subtitle": "Note",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -6712,7 +6712,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -6723,15 +6723,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_action_result"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete_delete_a_note sur note.",
+      "description": "Supprimer note.",
       "args": {
-        "title": "Delete note",
+        "title": "Supprimer note",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -6740,8 +6740,8 @@
           {
             "type": "text",
             "key": "note_id",
-            "label": "Note Id",
-            "description": "Paramètre de chemin note_id.",
+            "label": "Note ID",
+            "description": "Paramètre de chemin note ID",
             "col": {
               "xs": 24
             },
@@ -6761,8 +6761,8 @@
       "key": "attio_object_list_list_objects",
       "name": "attioObjectListListObjects",
       "schemaVersion": 2,
-      "title": "List object",
-      "subtitle": "objects",
+      "title": "Lister objet",
+      "subtitle": "Objet",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -6776,7 +6776,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -6787,15 +6787,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_objects"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_list_objects sur object.",
+      "description": "Lister objet.",
       "args": {
-        "title": "List object",
+        "title": "Lister objet",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -6804,14 +6804,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "objects"
+      "group": "objets"
     },
     {
       "key": "attio_object_create_create_an_object",
       "name": "attioObjectCreateCreateAnObject",
       "schemaVersion": 2,
-      "title": "Create object",
-      "subtitle": "objects",
+      "title": "Créer objet",
+      "subtitle": "Objet",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -6825,7 +6825,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -6836,15 +6836,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_object"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_create_an_object sur object.",
+      "description": "Créer objet.",
       "args": {
-        "title": "Create object",
+        "title": "Créer objet",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -6854,7 +6854,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             },
@@ -6868,14 +6868,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "objects"
+      "group": "objets"
     },
     {
       "key": "attio_object_get_get_an_object",
       "name": "attioObjectGetGetAnObject",
       "schemaVersion": 2,
-      "title": "Get object",
-      "subtitle": "objects",
+      "title": "Récupérer objet",
+      "subtitle": "Objet",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -6889,7 +6889,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -6900,15 +6900,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_object"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get_get_an_object sur object.",
+      "description": "Récupérer objet.",
       "args": {
-        "title": "Get object",
+        "title": "Récupérer objet",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -6917,8 +6917,8 @@
           {
             "type": "text",
             "key": "object",
-            "label": "Object",
-            "description": "Paramètre de chemin object.",
+            "label": "Objet",
+            "description": "Paramètre de chemin objet",
             "col": {
               "xs": 24
             },
@@ -6932,14 +6932,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "objects"
+      "group": "objets"
     },
     {
       "key": "attio_object_update_update_an_object",
       "name": "attioObjectUpdateUpdateAnObject",
       "schemaVersion": 2,
-      "title": "Update object",
-      "subtitle": "objects",
+      "title": "Mettre à jour objet",
+      "subtitle": "Objet",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -6953,7 +6953,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -6964,15 +6964,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_object"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update_update_an_object sur object.",
+      "description": "Mettre à jour objet.",
       "args": {
-        "title": "Update object",
+        "title": "Mettre à jour objet",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -6981,8 +6981,8 @@
           {
             "type": "text",
             "key": "object",
-            "label": "Object",
-            "description": "Paramètre de chemin object.",
+            "label": "Objet",
+            "description": "Paramètre de chemin objet",
             "col": {
               "xs": 24
             },
@@ -6996,7 +6996,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             },
@@ -7010,14 +7010,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "objects"
+      "group": "objets"
     },
     {
       "key": "attio_option_list_list_select_options",
       "name": "attioOptionListListSelectOptions",
       "schemaVersion": 2,
-      "title": "List option",
-      "subtitle": "options",
+      "title": "Lister select option",
+      "subtitle": "Select option",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -7031,7 +7031,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -7042,15 +7042,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_options"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_list_select_options sur option.",
+      "description": "Lister select option.",
       "args": {
-        "title": "List option",
+        "title": "Lister select option",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -7060,7 +7060,7 @@
             "type": "text",
             "key": "target",
             "label": "Target",
-            "description": "Paramètre de chemin target.",
+            "description": "Paramètre de chemin target",
             "col": {
               "xs": 24
             },
@@ -7074,7 +7074,7 @@
             "type": "text",
             "key": "identifier",
             "label": "Identifier",
-            "description": "Paramètre de chemin identifier.",
+            "description": "Paramètre de chemin identifier",
             "col": {
               "xs": 24
             },
@@ -7088,7 +7088,7 @@
             "type": "text",
             "key": "attribute",
             "label": "Attribute",
-            "description": "Paramètre de chemin attribute.",
+            "description": "Paramètre de chemin attribute",
             "col": {
               "xs": 24
             },
@@ -7102,7 +7102,7 @@
             "type": "checkbox",
             "key": "show_archived",
             "label": "Show Archived",
-            "description": "Paramètre de requête show_archived.",
+            "description": "Paramètre de requête show archived",
             "col": {
               "xs": 24
             }
@@ -7117,8 +7117,8 @@
       "key": "attio_option_create_create_a_select_option",
       "name": "attioOptionCreateCreateASelectOption",
       "schemaVersion": 2,
-      "title": "Create option",
-      "subtitle": "options",
+      "title": "Créer select option",
+      "subtitle": "Select option",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -7132,7 +7132,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -7143,15 +7143,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_option"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_create_a_select_option sur option.",
+      "description": "Créer select option.",
       "args": {
-        "title": "Create option",
+        "title": "Créer select option",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -7161,7 +7161,7 @@
             "type": "text",
             "key": "target",
             "label": "Target",
-            "description": "Paramètre de chemin target.",
+            "description": "Paramètre de chemin target",
             "col": {
               "xs": 24
             },
@@ -7175,7 +7175,7 @@
             "type": "text",
             "key": "identifier",
             "label": "Identifier",
-            "description": "Paramètre de chemin identifier.",
+            "description": "Paramètre de chemin identifier",
             "col": {
               "xs": 24
             },
@@ -7189,7 +7189,7 @@
             "type": "text",
             "key": "attribute",
             "label": "Attribute",
-            "description": "Paramètre de chemin attribute.",
+            "description": "Paramètre de chemin attribute",
             "col": {
               "xs": 24
             },
@@ -7203,7 +7203,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             },
@@ -7223,8 +7223,8 @@
       "key": "attio_option_update_update_a_select_option",
       "name": "attioOptionUpdateUpdateASelectOption",
       "schemaVersion": 2,
-      "title": "Update option",
-      "subtitle": "options",
+      "title": "Mettre à jour select option",
+      "subtitle": "Select option",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -7238,7 +7238,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -7249,15 +7249,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_option"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update_update_a_select_option sur option.",
+      "description": "Mettre à jour select option.",
       "args": {
-        "title": "Update option",
+        "title": "Mettre à jour select option",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -7267,7 +7267,7 @@
             "type": "text",
             "key": "target",
             "label": "Target",
-            "description": "Paramètre de chemin target.",
+            "description": "Paramètre de chemin target",
             "col": {
               "xs": 24
             },
@@ -7281,7 +7281,7 @@
             "type": "text",
             "key": "identifier",
             "label": "Identifier",
-            "description": "Paramètre de chemin identifier.",
+            "description": "Paramètre de chemin identifier",
             "col": {
               "xs": 24
             },
@@ -7295,7 +7295,7 @@
             "type": "text",
             "key": "attribute",
             "label": "Attribute",
-            "description": "Paramètre de chemin attribute.",
+            "description": "Paramètre de chemin attribute",
             "col": {
               "xs": 24
             },
@@ -7309,7 +7309,7 @@
             "type": "text",
             "key": "option",
             "label": "Option",
-            "description": "Paramètre de chemin option.",
+            "description": "Paramètre de chemin option",
             "col": {
               "xs": 24
             },
@@ -7323,7 +7323,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             },
@@ -7343,8 +7343,8 @@
       "key": "attio_record_query_list_records",
       "name": "attioRecordQueryListRecords",
       "schemaVersion": 2,
-      "title": "Query record",
-      "subtitle": "records",
+      "title": "Lister enregistrement",
+      "subtitle": "Enregistrement",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -7358,7 +7358,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -7369,15 +7369,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_action_result"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action query_list_records sur record.",
+      "description": "Lister enregistrement.",
       "args": {
-        "title": "Query record",
+        "title": "Lister enregistrement",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -7386,8 +7386,8 @@
           {
             "type": "text",
             "key": "object",
-            "label": "Object",
-            "description": "Paramètre de chemin object.",
+            "label": "Objet",
+            "description": "Paramètre de chemin objet",
             "col": {
               "xs": 24
             },
@@ -7401,7 +7401,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             },
@@ -7415,14 +7415,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "records"
+      "group": "enregistrements"
     },
     {
       "key": "attio_record_upsert_create_a_record",
       "name": "attioRecordUpsertCreateARecord",
       "schemaVersion": 2,
-      "title": "Upsert record",
-      "subtitle": "records",
+      "title": "Mettre à jour ou créer enregistrement",
+      "subtitle": "Enregistrement",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -7436,7 +7436,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -7447,15 +7447,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_record"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action upsert_create_a_record sur record.",
+      "description": "Mettre à jour ou créer enregistrement.",
       "args": {
-        "title": "Upsert record",
+        "title": "Mettre à jour ou créer enregistrement",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -7464,8 +7464,8 @@
           {
             "type": "text",
             "key": "object",
-            "label": "Object",
-            "description": "Paramètre de chemin object.",
+            "label": "Objet",
+            "description": "Paramètre de chemin objet",
             "col": {
               "xs": 24
             },
@@ -7479,7 +7479,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             },
@@ -7493,14 +7493,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "records"
+      "group": "enregistrements"
     },
     {
       "key": "attio_record_search_upsert_a_record",
       "name": "attioRecordSearchUpsertARecord",
       "schemaVersion": 2,
-      "title": "Search record",
-      "subtitle": "records",
+      "title": "Rechercher enregistrement",
+      "subtitle": "Enregistrement",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -7514,7 +7514,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -7525,15 +7525,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_records"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action search_upsert_a_record sur record.",
+      "description": "Rechercher enregistrement.",
       "args": {
-        "title": "Search record",
+        "title": "Rechercher enregistrement",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -7542,8 +7542,8 @@
           {
             "type": "text",
             "key": "object",
-            "label": "Object",
-            "description": "Paramètre de chemin object.",
+            "label": "Objet",
+            "description": "Paramètre de chemin objet",
             "col": {
               "xs": 24
             },
@@ -7557,7 +7557,7 @@
             "type": "text",
             "key": "matching_attribute",
             "label": "Matching Attribute",
-            "description": "Paramètre de requête matching_attribute.",
+            "description": "Paramètre de requête matching attribute",
             "col": {
               "xs": 24
             },
@@ -7571,7 +7571,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             },
@@ -7585,14 +7585,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "records"
+      "group": "enregistrements"
     },
     {
       "key": "attio_record_get_get_a_record",
       "name": "attioRecordGetGetARecord",
       "schemaVersion": 2,
-      "title": "Get record",
-      "subtitle": "records",
+      "title": "Récupérer enregistrement",
+      "subtitle": "Enregistrement",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -7606,7 +7606,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -7617,15 +7617,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_record"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get_get_a_record sur record.",
+      "description": "Récupérer enregistrement.",
       "args": {
-        "title": "Get record",
+        "title": "Récupérer enregistrement",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -7634,8 +7634,8 @@
           {
             "type": "text",
             "key": "object",
-            "label": "Object",
-            "description": "Paramètre de chemin object.",
+            "label": "Objet",
+            "description": "Paramètre de chemin objet",
             "col": {
               "xs": 24
             },
@@ -7648,8 +7648,8 @@
           {
             "type": "text",
             "key": "record_id",
-            "label": "Record Id",
-            "description": "Paramètre de chemin record_id.",
+            "label": "Enregistrement ID",
+            "description": "Paramètre de chemin enregistrement ID",
             "col": {
               "xs": 24
             },
@@ -7663,14 +7663,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "records"
+      "group": "enregistrements"
     },
     {
       "key": "attio_record_update_update_a_record_append_multiselect_values",
       "name": "attioRecordUpdateUpdateARecordAppendMultiselectValues",
       "schemaVersion": 2,
-      "title": "Update record",
-      "subtitle": "records",
+      "title": "Mettre à jour enregistrement",
+      "subtitle": "Enregistrement",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -7684,7 +7684,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -7695,15 +7695,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_record"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update_update_a_record_append_multiselect_values sur record.",
+      "description": "Mettre à jour enregistrement.",
       "args": {
-        "title": "Update record",
+        "title": "Mettre à jour enregistrement",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -7712,8 +7712,8 @@
           {
             "type": "text",
             "key": "object",
-            "label": "Object",
-            "description": "Paramètre de chemin object.",
+            "label": "Objet",
+            "description": "Paramètre de chemin objet",
             "col": {
               "xs": 24
             },
@@ -7726,8 +7726,8 @@
           {
             "type": "text",
             "key": "record_id",
-            "label": "Record Id",
-            "description": "Paramètre de chemin record_id.",
+            "label": "Enregistrement ID",
+            "description": "Paramètre de chemin enregistrement ID",
             "col": {
               "xs": 24
             },
@@ -7741,7 +7741,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             },
@@ -7755,14 +7755,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "records"
+      "group": "enregistrements"
     },
     {
       "key": "attio_record_update_update_a_record_overwrite_multiselect_values",
       "name": "attioRecordUpdateUpdateARecordOverwriteMultiselectValues",
       "schemaVersion": 2,
-      "title": "Update record",
-      "subtitle": "records",
+      "title": "Mettre à jour enregistrement - overwrite",
+      "subtitle": "Enregistrement",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -7776,7 +7776,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -7787,15 +7787,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_record"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update_update_a_record_overwrite_multiselect_values sur record.",
+      "description": "Mettre à jour enregistrement - overwrite.",
       "args": {
-        "title": "Update record",
+        "title": "Mettre à jour enregistrement - overwrite",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -7804,8 +7804,8 @@
           {
             "type": "text",
             "key": "object",
-            "label": "Object",
-            "description": "Paramètre de chemin object.",
+            "label": "Objet",
+            "description": "Paramètre de chemin objet",
             "col": {
               "xs": 24
             },
@@ -7818,8 +7818,8 @@
           {
             "type": "text",
             "key": "record_id",
-            "label": "Record Id",
-            "description": "Paramètre de chemin record_id.",
+            "label": "Enregistrement ID",
+            "description": "Paramètre de chemin enregistrement ID",
             "col": {
               "xs": 24
             },
@@ -7833,7 +7833,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             },
@@ -7847,14 +7847,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "records"
+      "group": "enregistrements"
     },
     {
       "key": "attio_record_delete_delete_a_record",
       "name": "attioRecordDeleteDeleteARecord",
       "schemaVersion": 2,
-      "title": "Delete record",
-      "subtitle": "records",
+      "title": "Supprimer enregistrement",
+      "subtitle": "Enregistrement",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -7868,7 +7868,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -7879,15 +7879,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_action_result"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete_delete_a_record sur record.",
+      "description": "Supprimer enregistrement.",
       "args": {
-        "title": "Delete record",
+        "title": "Supprimer enregistrement",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -7896,8 +7896,8 @@
           {
             "type": "text",
             "key": "object",
-            "label": "Object",
-            "description": "Paramètre de chemin object.",
+            "label": "Objet",
+            "description": "Paramètre de chemin objet",
             "col": {
               "xs": 24
             },
@@ -7910,8 +7910,8 @@
           {
             "type": "text",
             "key": "record_id",
-            "label": "Record Id",
-            "description": "Paramètre de chemin record_id.",
+            "label": "Enregistrement ID",
+            "description": "Paramètre de chemin enregistrement ID",
             "col": {
               "xs": 24
             },
@@ -7925,14 +7925,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "records"
+      "group": "enregistrements"
     },
     {
       "key": "attio_record_search_search_records",
       "name": "attioRecordSearchSearchRecords",
       "schemaVersion": 2,
-      "title": "Search record",
-      "subtitle": "records",
+      "title": "Rechercher enregistrement - enregistrement",
+      "subtitle": "Enregistrement",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -7946,7 +7946,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -7957,15 +7957,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_records"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action search_search_records sur record.",
+      "description": "Rechercher enregistrement - enregistrement.",
       "args": {
-        "title": "Search record",
+        "title": "Rechercher enregistrement - enregistrement",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -7975,7 +7975,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             },
@@ -7989,14 +7989,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "records"
+      "group": "enregistrements"
     },
     {
       "key": "attio_self_list_identify",
       "name": "attioSelfListIdentify",
       "schemaVersion": 2,
-      "title": "List self",
-      "subtitle": "selfs",
+      "title": "Lister identify",
+      "subtitle": "Identify",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -8010,7 +8010,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -8021,15 +8021,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_selfs"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_identify sur self.",
+      "description": "Lister identify.",
       "args": {
-        "title": "List self",
+        "title": "Lister identify",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -8044,8 +8044,8 @@
       "key": "attio_status_list_list_statuses",
       "name": "attioStatusListListStatuses",
       "schemaVersion": 2,
-      "title": "List status",
-      "subtitle": "statuses",
+      "title": "Lister statut",
+      "subtitle": "Statut",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -8059,7 +8059,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -8070,15 +8070,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_statuses"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_list_statuses sur status.",
+      "description": "Lister statut.",
       "args": {
-        "title": "List status",
+        "title": "Lister statut",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -8088,7 +8088,7 @@
             "type": "text",
             "key": "target",
             "label": "Target",
-            "description": "Paramètre de chemin target.",
+            "description": "Paramètre de chemin target",
             "col": {
               "xs": 24
             },
@@ -8102,7 +8102,7 @@
             "type": "text",
             "key": "identifier",
             "label": "Identifier",
-            "description": "Paramètre de chemin identifier.",
+            "description": "Paramètre de chemin identifier",
             "col": {
               "xs": 24
             },
@@ -8116,7 +8116,7 @@
             "type": "text",
             "key": "attribute",
             "label": "Attribute",
-            "description": "Paramètre de chemin attribute.",
+            "description": "Paramètre de chemin attribute",
             "col": {
               "xs": 24
             },
@@ -8130,7 +8130,7 @@
             "type": "checkbox",
             "key": "show_archived",
             "label": "Show Archived",
-            "description": "Paramètre de requête show_archived.",
+            "description": "Paramètre de requête show archived",
             "col": {
               "xs": 24
             }
@@ -8139,14 +8139,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "statuses"
+      "group": "statuts"
     },
     {
       "key": "attio_status_create_create_a_status",
       "name": "attioStatusCreateCreateAStatus",
       "schemaVersion": 2,
-      "title": "Create status",
-      "subtitle": "statuses",
+      "title": "Créer statut",
+      "subtitle": "Statut",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -8160,7 +8160,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -8171,15 +8171,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_status"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_create_a_status sur status.",
+      "description": "Créer statut.",
       "args": {
-        "title": "Create status",
+        "title": "Créer statut",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -8189,7 +8189,7 @@
             "type": "text",
             "key": "target",
             "label": "Target",
-            "description": "Paramètre de chemin target.",
+            "description": "Paramètre de chemin target",
             "col": {
               "xs": 24
             },
@@ -8203,7 +8203,7 @@
             "type": "text",
             "key": "identifier",
             "label": "Identifier",
-            "description": "Paramètre de chemin identifier.",
+            "description": "Paramètre de chemin identifier",
             "col": {
               "xs": 24
             },
@@ -8217,7 +8217,7 @@
             "type": "text",
             "key": "attribute",
             "label": "Attribute",
-            "description": "Paramètre de chemin attribute.",
+            "description": "Paramètre de chemin attribute",
             "col": {
               "xs": 24
             },
@@ -8231,7 +8231,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             },
@@ -8245,14 +8245,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "statuses"
+      "group": "statuts"
     },
     {
       "key": "attio_status_update_update_a_status",
       "name": "attioStatusUpdateUpdateAStatus",
       "schemaVersion": 2,
-      "title": "Update status",
-      "subtitle": "statuses",
+      "title": "Mettre à jour statut",
+      "subtitle": "Statut",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -8266,7 +8266,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -8277,15 +8277,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_status"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update_update_a_status sur status.",
+      "description": "Mettre à jour statut.",
       "args": {
-        "title": "Update status",
+        "title": "Mettre à jour statut",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -8295,7 +8295,7 @@
             "type": "text",
             "key": "target",
             "label": "Target",
-            "description": "Paramètre de chemin target.",
+            "description": "Paramètre de chemin target",
             "col": {
               "xs": 24
             },
@@ -8309,7 +8309,7 @@
             "type": "text",
             "key": "identifier",
             "label": "Identifier",
-            "description": "Paramètre de chemin identifier.",
+            "description": "Paramètre de chemin identifier",
             "col": {
               "xs": 24
             },
@@ -8323,7 +8323,7 @@
             "type": "text",
             "key": "attribute",
             "label": "Attribute",
-            "description": "Paramètre de chemin attribute.",
+            "description": "Paramètre de chemin attribute",
             "col": {
               "xs": 24
             },
@@ -8336,8 +8336,8 @@
           {
             "type": "text",
             "key": "status",
-            "label": "Status",
-            "description": "Paramètre de chemin status.",
+            "label": "Statut",
+            "description": "Paramètre de chemin statut",
             "col": {
               "xs": 24
             },
@@ -8351,7 +8351,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             },
@@ -8365,14 +8365,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "statuses"
+      "group": "statuts"
     },
     {
       "key": "attio_task_list_list_tasks",
       "name": "attioTaskListListTasks",
       "schemaVersion": 2,
-      "title": "List task",
-      "subtitle": "tasks",
+      "title": "Lister tâche",
+      "subtitle": "Tâche",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -8386,7 +8386,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -8397,15 +8397,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_tasks"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_list_tasks sur task.",
+      "description": "Lister tâche.",
       "args": {
-        "title": "List task",
+        "title": "Lister tâche",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -8415,7 +8415,7 @@
             "type": "number",
             "key": "limit",
             "label": "Limit",
-            "description": "Paramètre de requête limit.",
+            "description": "Paramètre de requête limit",
             "col": {
               "xs": 24
             }
@@ -8424,7 +8424,7 @@
             "type": "number",
             "key": "offset",
             "label": "Offset",
-            "description": "Paramètre de requête offset.",
+            "description": "Paramètre de requête offset",
             "col": {
               "xs": 24
             }
@@ -8433,7 +8433,7 @@
             "type": "text",
             "key": "sort",
             "label": "Sort",
-            "description": "Paramètre de requête sort.",
+            "description": "Paramètre de requête sort",
             "col": {
               "xs": 24
             }
@@ -8441,8 +8441,8 @@
           {
             "type": "text",
             "key": "linked_object",
-            "label": "Linked Object",
-            "description": "Paramètre de requête linked_object.",
+            "label": "Linked Objet",
+            "description": "Paramètre de requête linked objet",
             "col": {
               "xs": 24
             }
@@ -8450,8 +8450,8 @@
           {
             "type": "text",
             "key": "linked_record_id",
-            "label": "Linked Record Id",
-            "description": "Paramètre de requête linked_record_id.",
+            "label": "Linked Enregistrement ID",
+            "description": "Paramètre de requête linked enregistrement ID",
             "col": {
               "xs": 24
             }
@@ -8460,7 +8460,7 @@
             "type": "text",
             "key": "assignee",
             "label": "Assignee",
-            "description": "Paramètre de requête assignee.",
+            "description": "Paramètre de requête assignee",
             "col": {
               "xs": 24
             }
@@ -8468,8 +8468,8 @@
           {
             "type": "checkbox",
             "key": "is_completed",
-            "label": "Is Completed",
-            "description": "Paramètre de requête is_completed.",
+            "label": "Completed",
+            "description": "Paramètre de requête completed",
             "col": {
               "xs": 24
             }
@@ -8478,14 +8478,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "tasks"
+      "group": "tâches"
     },
     {
       "key": "attio_task_create_create_a_task",
       "name": "attioTaskCreateCreateATask",
       "schemaVersion": 2,
-      "title": "Create task",
-      "subtitle": "tasks",
+      "title": "Créer tâche",
+      "subtitle": "Tâche",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -8499,7 +8499,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -8510,15 +8510,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_task"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_create_a_task sur task.",
+      "description": "Créer tâche.",
       "args": {
-        "title": "Create task",
+        "title": "Créer tâche",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -8528,7 +8528,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             },
@@ -8542,14 +8542,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "tasks"
+      "group": "tâches"
     },
     {
       "key": "attio_task_get_get_a_task",
       "name": "attioTaskGetGetATask",
       "schemaVersion": 2,
-      "title": "Get task",
-      "subtitle": "tasks",
+      "title": "Récupérer tâche",
+      "subtitle": "Tâche",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -8563,7 +8563,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -8574,15 +8574,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_task"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get_get_a_task sur task.",
+      "description": "Récupérer tâche.",
       "args": {
-        "title": "Get task",
+        "title": "Récupérer tâche",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -8591,8 +8591,8 @@
           {
             "type": "text",
             "key": "task_id",
-            "label": "Task Id",
-            "description": "Paramètre de chemin task_id.",
+            "label": "Tâche ID",
+            "description": "Paramètre de chemin tâche ID",
             "col": {
               "xs": 24
             },
@@ -8606,14 +8606,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "tasks"
+      "group": "tâches"
     },
     {
       "key": "attio_task_update_update_a_task",
       "name": "attioTaskUpdateUpdateATask",
       "schemaVersion": 2,
-      "title": "Update task",
-      "subtitle": "tasks",
+      "title": "Mettre à jour tâche",
+      "subtitle": "Tâche",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -8627,7 +8627,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -8638,15 +8638,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_task"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update_update_a_task sur task.",
+      "description": "Mettre à jour tâche.",
       "args": {
-        "title": "Update task",
+        "title": "Mettre à jour tâche",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -8655,8 +8655,8 @@
           {
             "type": "text",
             "key": "task_id",
-            "label": "Task Id",
-            "description": "Paramètre de chemin task_id.",
+            "label": "Tâche ID",
+            "description": "Paramètre de chemin tâche ID",
             "col": {
               "xs": 24
             },
@@ -8670,7 +8670,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             },
@@ -8684,14 +8684,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "tasks"
+      "group": "tâches"
     },
     {
       "key": "attio_task_delete_delete_a_task",
       "name": "attioTaskDeleteDeleteATask",
       "schemaVersion": 2,
-      "title": "Delete task",
-      "subtitle": "tasks",
+      "title": "Supprimer tâche",
+      "subtitle": "Tâche",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -8705,7 +8705,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -8716,15 +8716,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_action_result"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete_delete_a_task sur task.",
+      "description": "Supprimer tâche.",
       "args": {
-        "title": "Delete task",
+        "title": "Supprimer tâche",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -8733,8 +8733,8 @@
           {
             "type": "text",
             "key": "task_id",
-            "label": "Task Id",
-            "description": "Paramètre de chemin task_id.",
+            "label": "Tâche ID",
+            "description": "Paramètre de chemin tâche ID",
             "col": {
               "xs": 24
             },
@@ -8748,14 +8748,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "tasks"
+      "group": "tâches"
     },
     {
       "key": "attio_thread_comment_list_threads",
       "name": "attioThreadCommentListThreads",
       "schemaVersion": 2,
-      "title": "Comment thread",
-      "subtitle": "threads",
+      "title": "Lister fil",
+      "subtitle": "Fil",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -8769,7 +8769,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -8780,15 +8780,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_thread"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action comment_list_threads sur thread.",
+      "description": "Lister fil.",
       "args": {
-        "title": "Comment thread",
+        "title": "Lister fil",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -8797,8 +8797,8 @@
           {
             "type": "text",
             "key": "record_id",
-            "label": "Record Id",
-            "description": "Paramètre de requête record_id.",
+            "label": "Enregistrement ID",
+            "description": "Paramètre de requête enregistrement ID",
             "col": {
               "xs": 24
             }
@@ -8806,8 +8806,8 @@
           {
             "type": "text",
             "key": "object",
-            "label": "Object",
-            "description": "Paramètre de requête object.",
+            "label": "Objet",
+            "description": "Paramètre de requête objet",
             "col": {
               "xs": 24
             }
@@ -8815,8 +8815,8 @@
           {
             "type": "text",
             "key": "entry_id",
-            "label": "Entry Id",
-            "description": "Paramètre de requête entry_id.",
+            "label": "Entrée ID",
+            "description": "Paramètre de requête entrée ID",
             "col": {
               "xs": 24
             }
@@ -8824,8 +8824,8 @@
           {
             "type": "text",
             "key": "list",
-            "label": "List",
-            "description": "Paramètre de requête list.",
+            "label": "Lister",
+            "description": "Paramètre de requête liste",
             "col": {
               "xs": 24
             }
@@ -8834,7 +8834,7 @@
             "type": "number",
             "key": "limit",
             "label": "Limit",
-            "description": "Paramètre de requête limit.",
+            "description": "Paramètre de requête limit",
             "col": {
               "xs": 24
             }
@@ -8843,7 +8843,7 @@
             "type": "number",
             "key": "offset",
             "label": "Offset",
-            "description": "Paramètre de requête offset.",
+            "description": "Paramètre de requête offset",
             "col": {
               "xs": 24
             }
@@ -8852,14 +8852,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "threads"
+      "group": "fils"
     },
     {
       "key": "attio_thread_comment_get_a_thread",
       "name": "attioThreadCommentGetAThread",
       "schemaVersion": 2,
-      "title": "Comment thread",
-      "subtitle": "threads",
+      "title": "Récupérer fil",
+      "subtitle": "Fil",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -8873,7 +8873,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -8884,15 +8884,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_thread"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action comment_get_a_thread sur thread.",
+      "description": "Récupérer fil.",
       "args": {
-        "title": "Comment thread",
+        "title": "Récupérer fil",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -8901,8 +8901,8 @@
           {
             "type": "text",
             "key": "thread_id",
-            "label": "Thread Id",
-            "description": "Paramètre de chemin thread_id.",
+            "label": "Fil ID",
+            "description": "Paramètre de chemin fil ID",
             "col": {
               "xs": 24
             },
@@ -8916,14 +8916,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "threads"
+      "group": "fils"
     },
     {
       "key": "attio_transcript_list_get_call_transcript",
       "name": "attioTranscriptListGetCallTranscript",
       "schemaVersion": 2,
-      "title": "List transcript",
-      "subtitle": "transcripts",
+      "title": "Lister transcript",
+      "subtitle": "Transcript",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -8937,7 +8937,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -8948,15 +8948,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_transcripts"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_get_call_transcript sur transcript.",
+      "description": "Lister transcript.",
       "args": {
-        "title": "List transcript",
+        "title": "Lister transcript",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -8965,8 +8965,8 @@
           {
             "type": "text",
             "key": "meeting_id",
-            "label": "Meeting Id",
-            "description": "Paramètre de chemin meeting_id.",
+            "label": "Meeting ID",
+            "description": "Paramètre de chemin meeting ID",
             "col": {
               "xs": 24
             },
@@ -8979,8 +8979,8 @@
           {
             "type": "text",
             "key": "call_recording_id",
-            "label": "Call Recording Id",
-            "description": "Paramètre de chemin call_recording_id.",
+            "label": "Appel Enregistrement ID",
+            "description": "Paramètre de chemin appel enregistrement ID",
             "col": {
               "xs": 24
             },
@@ -8994,7 +8994,7 @@
             "type": "text",
             "key": "cursor",
             "label": "Cursor",
-            "description": "Paramètre de requête cursor.",
+            "description": "Paramètre de requête cursor",
             "col": {
               "xs": 24
             }
@@ -9009,8 +9009,8 @@
       "key": "attio_upload_send_upload_a_file",
       "name": "attioUploadSendUploadAFile",
       "schemaVersion": 2,
-      "title": "Send upload",
-      "subtitle": "uploads",
+      "title": "Téléverser fichier",
+      "subtitle": "Fichier",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -9024,7 +9024,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -9035,15 +9035,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_action_result"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action send_upload_a_file sur upload.",
+      "description": "Téléverser fichier.",
       "args": {
-        "title": "Send upload",
+        "title": "Téléverser fichier",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -9053,7 +9053,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             },
@@ -9067,14 +9067,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "uploads"
+      "group": "téléversements"
     },
     {
       "key": "attio_value_search_list_record_attribute_values",
       "name": "attioValueSearchListRecordAttributeValues",
       "schemaVersion": 2,
-      "title": "Search value",
-      "subtitle": "values",
+      "title": "Rechercher enregistrement attribute valeur",
+      "subtitle": "Enregistrement attribute valeur",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -9088,7 +9088,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -9099,15 +9099,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_values"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action search_list_record_attribute_values sur value.",
+      "description": "Rechercher enregistrement attribute valeur.",
       "args": {
-        "title": "Search value",
+        "title": "Rechercher enregistrement attribute valeur",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -9116,8 +9116,8 @@
           {
             "type": "text",
             "key": "object",
-            "label": "Object",
-            "description": "Paramètre de chemin object.",
+            "label": "Objet",
+            "description": "Paramètre de chemin objet",
             "col": {
               "xs": 24
             },
@@ -9130,8 +9130,8 @@
           {
             "type": "text",
             "key": "record_id",
-            "label": "Record Id",
-            "description": "Paramètre de chemin record_id.",
+            "label": "Enregistrement ID",
+            "description": "Paramètre de chemin enregistrement ID",
             "col": {
               "xs": 24
             },
@@ -9145,7 +9145,7 @@
             "type": "text",
             "key": "attribute",
             "label": "Attribute",
-            "description": "Paramètre de chemin attribute.",
+            "description": "Paramètre de chemin attribute",
             "col": {
               "xs": 24
             },
@@ -9159,7 +9159,7 @@
             "type": "checkbox",
             "key": "show_historic",
             "label": "Show Historic",
-            "description": "Paramètre de requête show_historic.",
+            "description": "Paramètre de requête show historic",
             "col": {
               "xs": 24
             }
@@ -9168,7 +9168,7 @@
             "type": "number",
             "key": "limit",
             "label": "Limit",
-            "description": "Paramètre de requête limit.",
+            "description": "Paramètre de requête limit",
             "col": {
               "xs": 24
             }
@@ -9177,7 +9177,7 @@
             "type": "number",
             "key": "offset",
             "label": "Offset",
-            "description": "Paramètre de requête offset.",
+            "description": "Paramètre de requête offset",
             "col": {
               "xs": 24
             }
@@ -9186,14 +9186,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "values"
+      "group": "valeurs"
     },
     {
       "key": "attio_value_search_list_attribute_values_for_a_list_entry",
       "name": "attioValueSearchListAttributeValuesForAListEntry",
       "schemaVersion": 2,
-      "title": "Search value",
-      "subtitle": "values",
+      "title": "Rechercher attribute valeur entrée",
+      "subtitle": "Attribute valeur entrée",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -9207,7 +9207,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -9218,15 +9218,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_values"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action search_list_attribute_values_for_a_list_entry sur value.",
+      "description": "Rechercher attribute valeur entrée.",
       "args": {
-        "title": "Search value",
+        "title": "Rechercher attribute valeur entrée",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -9235,8 +9235,8 @@
           {
             "type": "text",
             "key": "list",
-            "label": "List",
-            "description": "Paramètre de chemin list.",
+            "label": "Lister",
+            "description": "Paramètre de chemin liste",
             "col": {
               "xs": 24
             },
@@ -9249,8 +9249,8 @@
           {
             "type": "text",
             "key": "entry_id",
-            "label": "Entry Id",
-            "description": "Paramètre de chemin entry_id.",
+            "label": "Entrée ID",
+            "description": "Paramètre de chemin entrée ID",
             "col": {
               "xs": 24
             },
@@ -9264,7 +9264,7 @@
             "type": "text",
             "key": "attribute",
             "label": "Attribute",
-            "description": "Paramètre de chemin attribute.",
+            "description": "Paramètre de chemin attribute",
             "col": {
               "xs": 24
             },
@@ -9278,7 +9278,7 @@
             "type": "checkbox",
             "key": "show_historic",
             "label": "Show Historic",
-            "description": "Paramètre de requête show_historic.",
+            "description": "Paramètre de requête show historic",
             "col": {
               "xs": 24
             }
@@ -9287,7 +9287,7 @@
             "type": "number",
             "key": "limit",
             "label": "Limit",
-            "description": "Paramètre de requête limit.",
+            "description": "Paramètre de requête limit",
             "col": {
               "xs": 24
             }
@@ -9296,7 +9296,7 @@
             "type": "number",
             "key": "offset",
             "label": "Offset",
-            "description": "Paramètre de requête offset.",
+            "description": "Paramètre de requête offset",
             "col": {
               "xs": 24
             }
@@ -9305,14 +9305,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "values"
+      "group": "valeurs"
     },
     {
       "key": "attio_view_list_list_views_for_object",
       "name": "attioViewListListViewsForObject",
       "schemaVersion": 2,
-      "title": "List view",
-      "subtitle": "views",
+      "title": "Lister vue objet",
+      "subtitle": "Vue objet",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -9326,7 +9326,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -9337,15 +9337,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_views"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_list_views_for_object sur view.",
+      "description": "Lister vue objet.",
       "args": {
-        "title": "List view",
+        "title": "Lister vue objet",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -9354,8 +9354,8 @@
           {
             "type": "text",
             "key": "object",
-            "label": "Object",
-            "description": "Paramètre de chemin object.",
+            "label": "Objet",
+            "description": "Paramètre de chemin objet",
             "col": {
               "xs": 24
             },
@@ -9369,7 +9369,7 @@
             "type": "checkbox",
             "key": "show_archived",
             "label": "Show Archived",
-            "description": "Paramètre de requête show_archived.",
+            "description": "Paramètre de requête show archived",
             "col": {
               "xs": 24
             }
@@ -9378,7 +9378,7 @@
             "type": "number",
             "key": "limit",
             "label": "Limit",
-            "description": "Paramètre de requête limit.",
+            "description": "Paramètre de requête limit",
             "col": {
               "xs": 24
             }
@@ -9387,7 +9387,7 @@
             "type": "text",
             "key": "cursor",
             "label": "Cursor",
-            "description": "Paramètre de requête cursor.",
+            "description": "Paramètre de requête cursor",
             "col": {
               "xs": 24
             }
@@ -9396,14 +9396,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "views"
+      "group": "vues"
     },
     {
       "key": "attio_view_list_list_views_for_list",
       "name": "attioViewListListViewsForList",
       "schemaVersion": 2,
-      "title": "List view",
-      "subtitle": "views",
+      "title": "Lister vue",
+      "subtitle": "Vue",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -9417,7 +9417,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -9428,15 +9428,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_views"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_list_views_for_list sur view.",
+      "description": "Lister vue.",
       "args": {
-        "title": "List view",
+        "title": "Lister vue",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -9445,8 +9445,8 @@
           {
             "type": "text",
             "key": "list",
-            "label": "List",
-            "description": "Paramètre de chemin list.",
+            "label": "Lister",
+            "description": "Paramètre de chemin liste",
             "col": {
               "xs": 24
             },
@@ -9460,7 +9460,7 @@
             "type": "checkbox",
             "key": "show_archived",
             "label": "Show Archived",
-            "description": "Paramètre de requête show_archived.",
+            "description": "Paramètre de requête show archived",
             "col": {
               "xs": 24
             }
@@ -9469,7 +9469,7 @@
             "type": "number",
             "key": "limit",
             "label": "Limit",
-            "description": "Paramètre de requête limit.",
+            "description": "Paramètre de requête limit",
             "col": {
               "xs": 24
             }
@@ -9478,7 +9478,7 @@
             "type": "text",
             "key": "cursor",
             "label": "Cursor",
-            "description": "Paramètre de requête cursor.",
+            "description": "Paramètre de requête cursor",
             "col": {
               "xs": 24
             }
@@ -9487,14 +9487,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "views"
+      "group": "vues"
     },
     {
       "key": "attio_webhook_list_list_webhooks",
       "name": "attioWebhookListListWebhooks",
       "schemaVersion": 2,
-      "title": "List webhook",
-      "subtitle": "webhooks",
+      "title": "Lister webhook",
+      "subtitle": "Webhook",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -9508,7 +9508,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -9519,15 +9519,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_webhooks"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_list_webhooks sur webhook.",
+      "description": "Lister webhook.",
       "args": {
-        "title": "List webhook",
+        "title": "Lister webhook",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -9537,7 +9537,7 @@
             "type": "number",
             "key": "limit",
             "label": "Limit",
-            "description": "Paramètre de requête limit.",
+            "description": "Paramètre de requête limit",
             "col": {
               "xs": 24
             }
@@ -9546,7 +9546,7 @@
             "type": "number",
             "key": "offset",
             "label": "Offset",
-            "description": "Paramètre de requête offset.",
+            "description": "Paramètre de requête offset",
             "col": {
               "xs": 24
             }
@@ -9561,8 +9561,8 @@
       "key": "attio_webhook_webhook_create_a_webhook",
       "name": "attioWebhookWebhookCreateAWebhook",
       "schemaVersion": 2,
-      "title": "Webhook webhook",
-      "subtitle": "webhooks",
+      "title": "Créer webhook",
+      "subtitle": "Webhook",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -9576,7 +9576,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -9587,15 +9587,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_action_result"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action webhook_create_a_webhook sur webhook.",
+      "description": "Créer webhook.",
       "args": {
-        "title": "Webhook webhook",
+        "title": "Créer webhook",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -9605,7 +9605,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             },
@@ -9625,8 +9625,8 @@
       "key": "attio_webhook_list_get_a_webhook",
       "name": "attioWebhookListGetAWebhook",
       "schemaVersion": 2,
-      "title": "List webhook",
-      "subtitle": "webhooks",
+      "title": "Récupérer webhook",
+      "subtitle": "Webhook",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -9640,7 +9640,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -9651,15 +9651,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_webhooks"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_get_a_webhook sur webhook.",
+      "description": "Récupérer webhook.",
       "args": {
-        "title": "List webhook",
+        "title": "Récupérer webhook",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -9668,8 +9668,8 @@
           {
             "type": "text",
             "key": "webhook_id",
-            "label": "Webhook Id",
-            "description": "Paramètre de chemin webhook_id.",
+            "label": "Webhook ID",
+            "description": "Paramètre de chemin webhook ID",
             "col": {
               "xs": 24
             },
@@ -9689,8 +9689,8 @@
       "key": "attio_webhook_webhook_update_a_webhook",
       "name": "attioWebhookWebhookUpdateAWebhook",
       "schemaVersion": 2,
-      "title": "Webhook webhook",
-      "subtitle": "webhooks",
+      "title": "Mettre à jour webhook",
+      "subtitle": "Webhook",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -9704,7 +9704,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -9715,15 +9715,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_action_result"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action webhook_update_a_webhook sur webhook.",
+      "description": "Mettre à jour webhook.",
       "args": {
-        "title": "Webhook webhook",
+        "title": "Mettre à jour webhook",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -9732,8 +9732,8 @@
           {
             "type": "text",
             "key": "webhook_id",
-            "label": "Webhook Id",
-            "description": "Paramètre de chemin webhook_id.",
+            "label": "Webhook ID",
+            "description": "Paramètre de chemin webhook ID",
             "col": {
               "xs": 24
             },
@@ -9747,7 +9747,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             },
@@ -9767,8 +9767,8 @@
       "key": "attio_webhook_webhook_delete_a_webhook",
       "name": "attioWebhookWebhookDeleteAWebhook",
       "schemaVersion": 2,
-      "title": "Webhook webhook",
-      "subtitle": "webhooks",
+      "title": "Supprimer webhook",
+      "subtitle": "Webhook",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -9782,7 +9782,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -9793,15 +9793,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_action_result"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action webhook_delete_a_webhook sur webhook.",
+      "description": "Supprimer webhook.",
       "args": {
-        "title": "Webhook webhook",
+        "title": "Supprimer webhook",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -9810,8 +9810,8 @@
           {
             "type": "text",
             "key": "webhook_id",
-            "label": "Webhook Id",
-            "description": "Paramètre de chemin webhook_id.",
+            "label": "Webhook ID",
+            "description": "Paramètre de chemin webhook ID",
             "col": {
               "xs": 24
             },
@@ -9831,8 +9831,8 @@
       "key": "attio_workspace_member_list_list_workspace_members",
       "name": "attioWorkspaceMemberListListWorkspaceMembers",
       "schemaVersion": 2,
-      "title": "List workspace_member",
-      "subtitle": "workspace_members",
+      "title": "Lister espace de travail membre",
+      "subtitle": "Espace de travail membre",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -9846,7 +9846,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -9857,15 +9857,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_workspace_members"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_list_workspace_members sur workspace_member.",
+      "description": "Lister espace de travail membre.",
       "args": {
-        "title": "List workspace_member",
+        "title": "Lister espace de travail membre",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -9874,14 +9874,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "workspace_members"
+      "group": "espace de travail membres"
     },
     {
       "key": "attio_workspace_member_get_get_a_workspace_member",
       "name": "attioWorkspaceMemberGetGetAWorkspaceMember",
       "schemaVersion": 2,
-      "title": "Get workspace_member",
-      "subtitle": "workspace_members",
+      "title": "Récupérer espace de travail membre",
+      "subtitle": "Espace de travail membre",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -9895,7 +9895,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -9906,15 +9906,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:attio_workspace_member"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get_get_a_workspace_member sur workspace_member.",
+      "description": "Récupérer espace de travail membre.",
       "args": {
-        "title": "Get workspace_member",
+        "title": "Récupérer espace de travail membre",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -9923,8 +9923,8 @@
           {
             "type": "text",
             "key": "workspace_member_id",
-            "label": "Workspace Member Id",
-            "description": "Paramètre de chemin workspace_member_id.",
+            "label": "Espace de travail Membre ID",
+            "description": "Paramètre de chemin espace de travail membre ID",
             "col": {
               "xs": 24
             },
@@ -9938,7 +9938,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "workspace_members"
+      "group": "espace de travail membres"
     }
   ]
 }

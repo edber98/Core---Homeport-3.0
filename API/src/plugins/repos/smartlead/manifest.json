@@ -13994,8 +13994,8 @@
       "key": "smartlead_all_leads_activity_list_api_reference_leads_activities",
       "name": "smartleadAllLeadsActivityListApiReferenceLeadsActivities",
       "schemaVersion": 2,
-      "title": "List all_leads_activity",
-      "subtitle": "all_leads_activities",
+      "title": "Lister prospect activité",
+      "subtitle": "Prospect activité",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -14009,7 +14009,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -14020,15 +14020,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_all_leads_activities"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_api_reference_leads_activities sur all_leads_activity.",
+      "description": "Lister prospect activité.",
       "args": {
-        "title": "List all_leads_activity",
+        "title": "Lister prospect activité",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -14037,14 +14037,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "all_leads_activities"
+      "group": "prospects activités"
     },
     {
       "key": "smartlead_analytic_list_api_reference_campaign_statistics_top_level",
       "name": "smartleadAnalyticListApiReferenceCampaignStatisticsTopLevel",
       "schemaVersion": 2,
-      "title": "List analytic",
-      "subtitle": "analytics",
+      "title": "Lister analytique",
+      "subtitle": "Analytique",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -14058,7 +14058,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -14069,15 +14069,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_analytics"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_api_reference_campaign_statistics_top_level sur analytic.",
+      "description": "Lister analytique.",
       "args": {
-        "title": "List analytic",
+        "title": "Lister analytique",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -14086,8 +14086,8 @@
           {
             "type": "text",
             "key": "campaign_id",
-            "label": "Campaign Id",
-            "description": "Valeur de chemin campaign_id.",
+            "label": "Campagne ID",
+            "description": "Valeur de chemin campagne ID",
             "col": {
               "xs": 24
             },
@@ -14101,14 +14101,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "analytics"
+      "group": "analytiques"
     },
     {
       "key": "smartlead_analytics_by_date_list_api_reference_campaigns_get_analytics_by_date",
       "name": "smartleadAnalyticsByDateListApiReferenceCampaignsGetAnalyticsByDate",
       "schemaVersion": 2,
-      "title": "List analytics_by_date",
-      "subtitle": "analytics_by_dates",
+      "title": "Lister campagne analytique date",
+      "subtitle": "Campagne analytique date",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -14122,7 +14122,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -14133,15 +14133,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_analytics_by_dates"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_api_reference_campaigns_get_analytics_by_date sur analytics_by_date.",
+      "description": "Lister campagne analytique date.",
       "args": {
-        "title": "List analytics_by_date",
+        "title": "Lister campagne analytique date",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -14150,8 +14150,8 @@
           {
             "type": "text",
             "key": "campaign_id",
-            "label": "Campaign Id",
-            "description": "Valeur de chemin campaign_id.",
+            "label": "Campagne ID",
+            "description": "Valeur de chemin campagne ID",
             "col": {
               "xs": 24
             },
@@ -14165,14 +14165,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "analytics_by_dates"
+      "group": "analytiques dates"
     },
     {
       "key": "smartlead_api_key_create_api_reference_clients_api_keys",
       "name": "smartleadApiKeyCreateApiReferenceClientsApiKeys",
       "schemaVersion": 2,
-      "title": "Create api_key",
-      "subtitle": "api_keies",
+      "title": "Créer client key",
+      "subtitle": "Client key",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -14186,7 +14186,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -14197,15 +14197,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_api_key"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_api_reference_clients_api_keys sur api_key.",
+      "description": "Créer client key.",
       "args": {
-        "title": "Create api_key",
+        "title": "Créer client key",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -14215,7 +14215,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -14224,14 +14224,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "api_keies"
+      "group": "keies"
     },
     {
       "key": "smartlead_assign_tag_assign_api_reference_lead_lists_assign_tags",
       "name": "smartleadAssignTagAssignApiReferenceLeadListsAssignTags",
       "schemaVersion": 2,
-      "title": "Assign assign_tag",
-      "subtitle": "assign_tags",
+      "title": "Assigner tag prospect liste",
+      "subtitle": "Tag prospect liste",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -14245,7 +14245,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -14256,15 +14256,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_action_result"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action assign_api_reference_lead_lists_assign_tags sur assign_tag.",
+      "description": "Assigner tag prospect liste.",
       "args": {
-        "title": "Assign assign_tag",
+        "title": "Assigner tag prospect liste",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -14274,7 +14274,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -14283,14 +14283,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "assign_tags"
+      "group": "Assigner tags"
     },
     {
       "key": "smartlead_bbfbdsfghlbr76ruhjvh6fhhl_create_api_reference_campaigns_get_leads_history_bulk",
       "name": "smartleadBbfbdsfghlbr76ruhjvh6fhhlCreateApiReferenceCampaignsGetLeadsHistoryBulk",
       "schemaVersion": 2,
-      "title": "Create bbfbdsfghlbr76ruhjvh6fhhl",
-      "subtitle": "bbfbdsfghlbr76ruhjvh6fhhls",
+      "title": "Créer campagne prospect historique lot",
+      "subtitle": "Campagne prospect historique lot",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -14304,7 +14304,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -14315,15 +14315,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_bbfbdsfghlbr76ruhjvh6fhhl"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_api_reference_campaigns_get_leads_history_bulk sur bbfbdsfghlbr76ruhjvh6fhhl.",
+      "description": "Créer campagne prospect historique lot.",
       "args": {
-        "title": "Create bbfbdsfghlbr76ruhjvh6fhhl",
+        "title": "Créer campagne prospect historique lot",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -14332,8 +14332,8 @@
           {
             "type": "text",
             "key": "campaign_id",
-            "label": "Campaign Id",
-            "description": "Valeur de chemin campaign_id.",
+            "label": "Campagne ID",
+            "description": "Valeur de chemin campagne ID",
             "col": {
               "xs": 24
             },
@@ -14347,7 +14347,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -14362,8 +14362,8 @@
       "key": "smartlead_block_domain_create_api_reference_inbox_block_domains",
       "name": "smartleadBlockDomainCreateApiReferenceInboxBlockDomains",
       "schemaVersion": 2,
-      "title": "Create block_domain",
-      "subtitle": "block_domains",
+      "title": "Créer boîte de réception bloc domain",
+      "subtitle": "Boîte de réception bloc domain",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -14377,7 +14377,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -14388,15 +14388,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_block_domain"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_api_reference_inbox_block_domains sur block_domain.",
+      "description": "Créer boîte de réception bloc domain.",
       "args": {
-        "title": "Create block_domain",
+        "title": "Créer boîte de réception bloc domain",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -14406,7 +14406,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -14415,14 +14415,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "block_domains"
+      "group": "bloc domains"
     },
     {
       "key": "smartlead_campaign_list_api_reference_campaigns_get_all",
       "name": "smartleadCampaignListApiReferenceCampaignsGetAll",
       "schemaVersion": 2,
-      "title": "List campaign",
-      "subtitle": "campaigns",
+      "title": "Lister campagne",
+      "subtitle": "Campagne",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -14436,7 +14436,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -14447,15 +14447,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_campaigns"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_api_reference_campaigns_get_all sur campaign.",
+      "description": "Lister campagne.",
       "args": {
-        "title": "List campaign",
+        "title": "Lister campagne",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -14464,14 +14464,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "campaigns"
+      "group": "campagnes"
     },
     {
       "key": "smartlead_campaign_get_api_reference_campaigns_get_by_id",
       "name": "smartleadCampaignGetApiReferenceCampaignsGetById",
       "schemaVersion": 2,
-      "title": "Get campaign",
-      "subtitle": "campaigns",
+      "title": "Récupérer campagne ID",
+      "subtitle": "Campagne ID",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -14485,7 +14485,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -14496,15 +14496,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_campaign"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get_api_reference_campaigns_get_by_id sur campaign.",
+      "description": "Récupérer campagne ID.",
       "args": {
-        "title": "Get campaign",
+        "title": "Récupérer campagne ID",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -14513,8 +14513,8 @@
           {
             "type": "text",
             "key": "campaign_id",
-            "label": "Campaign Id",
-            "description": "Valeur de chemin campaign_id.",
+            "label": "Campagne ID",
+            "description": "Valeur de chemin campagne ID",
             "col": {
               "xs": 24
             },
@@ -14528,14 +14528,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "campaigns"
+      "group": "campagnes"
     },
     {
       "key": "smartlead_campaign_webhook_api_reference_campaigns_save_webhooks",
       "name": "smartleadCampaignWebhookApiReferenceCampaignsSaveWebhooks",
       "schemaVersion": 2,
-      "title": "Webhook campaign",
-      "subtitle": "campaigns",
+      "title": "Enregistrer webhook",
+      "subtitle": "Webhook",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -14549,7 +14549,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -14560,15 +14560,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_action_result"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action webhook_api_reference_campaigns_save_webhooks sur campaign.",
+      "description": "Enregistrer webhook.",
       "args": {
-        "title": "Webhook campaign",
+        "title": "Enregistrer webhook",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -14577,8 +14577,8 @@
           {
             "type": "text",
             "key": "campaign_id",
-            "label": "Campaign Id",
-            "description": "Valeur de chemin campaign_id.",
+            "label": "Campagne ID",
+            "description": "Valeur de chemin campagne ID",
             "col": {
               "xs": 24
             },
@@ -14592,7 +14592,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -14601,14 +14601,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "campaigns"
+      "group": "campagnes"
     },
     {
       "key": "smartlead_campaign_webhook_api_reference_campaigns_delete_webhook",
       "name": "smartleadCampaignWebhookApiReferenceCampaignsDeleteWebhook",
       "schemaVersion": 2,
-      "title": "Webhook campaign",
-      "subtitle": "campaigns",
+      "title": "Supprimer webhook",
+      "subtitle": "Webhook",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -14622,7 +14622,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -14633,15 +14633,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_action_result"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action webhook_api_reference_campaigns_delete_webhook sur campaign.",
+      "description": "Supprimer webhook.",
       "args": {
-        "title": "Webhook campaign",
+        "title": "Supprimer webhook",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -14650,8 +14650,8 @@
           {
             "type": "text",
             "key": "campaign_id",
-            "label": "Campaign Id",
-            "description": "Valeur de chemin campaign_id.",
+            "label": "Campagne ID",
+            "description": "Valeur de chemin campagne ID",
             "col": {
               "xs": 24
             },
@@ -14664,8 +14664,8 @@
           {
             "type": "text",
             "key": "webhook_id",
-            "label": "Webhook Id",
-            "description": "Valeur de chemin webhook_id.",
+            "label": "Webhook ID",
+            "description": "Valeur de chemin webhook ID",
             "col": {
               "xs": 24
             },
@@ -14679,14 +14679,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "campaigns"
+      "group": "campagnes"
     },
     {
       "key": "smartlead_category_wise_response_list_api_reference_analytics_lead_category_response",
       "name": "smartleadCategoryWiseResponseListApiReferenceAnalyticsLeadCategoryResponse",
       "schemaVersion": 2,
-      "title": "List category_wise_response",
-      "subtitle": "category_wise_responses",
+      "title": "Lister analytique prospect category",
+      "subtitle": "Analytique prospect category",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -14700,7 +14700,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -14711,15 +14711,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_category_wise_responses"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_api_reference_analytics_lead_category_response sur category_wise_response.",
+      "description": "Lister analytique prospect category.",
       "args": {
-        "title": "List category_wise_response",
+        "title": "Lister analytique prospect category",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -14728,14 +14728,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "category_wise_responses"
+      "group": "category wise responses"
     },
     {
       "key": "smartlead_change_read_statu_update_api_reference_inbox_mark_read",
       "name": "smartleadChangeReadStatuUpdateApiReferenceInboxMarkRead",
       "schemaVersion": 2,
-      "title": "Update change_read_statu",
-      "subtitle": "change_read_status",
+      "title": "Lire statut boîte de réception",
+      "subtitle": "Statut boîte de réception",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -14749,7 +14749,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -14760,15 +14760,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_change_read_statu"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update_api_reference_inbox_mark_read sur change_read_statu.",
+      "description": "Lire statut boîte de réception.",
       "args": {
-        "title": "Update change_read_statu",
+        "title": "Lire statut boîte de réception",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -14778,7 +14778,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -14787,14 +14787,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "change_read_status"
+      "group": "change read statut"
     },
     {
       "key": "smartlead_client_list_api_reference_clients_get_all",
       "name": "smartleadClientListApiReferenceClientsGetAll",
       "schemaVersion": 2,
-      "title": "List client",
-      "subtitle": "clients",
+      "title": "Lister client",
+      "subtitle": "Client",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -14808,7 +14808,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -14819,15 +14819,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_clients"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_api_reference_clients_get_all sur client.",
+      "description": "Lister client.",
       "args": {
-        "title": "List client",
+        "title": "Lister client",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -14842,8 +14842,8 @@
       "key": "smartlead_create_create_api_reference_campaigns_create",
       "name": "smartleadCreateCreateApiReferenceCampaignsCreate",
       "schemaVersion": 2,
-      "title": "Create create",
-      "subtitle": "creates",
+      "title": "Créer campagne",
+      "subtitle": "Campagne",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -14857,7 +14857,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -14868,15 +14868,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_create"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_api_reference_campaigns_create sur create.",
+      "description": "Créer campagne.",
       "args": {
-        "title": "Create create",
+        "title": "Créer campagne",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -14886,7 +14886,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -14895,14 +14895,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "creates"
+      "group": "créations"
     },
     {
       "key": "smartlead_create_create_api_reference_webhooks_create",
       "name": "smartleadCreateCreateApiReferenceWebhooksCreate",
       "schemaVersion": 2,
-      "title": "Create create",
-      "subtitle": "creates",
+      "title": "Créer webhook",
+      "subtitle": "Webhook",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -14916,7 +14916,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -14927,15 +14927,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_create"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_api_reference_webhooks_create sur create.",
+      "description": "Créer webhook.",
       "args": {
-        "title": "Create create",
+        "title": "Créer webhook",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -14945,7 +14945,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -14954,14 +14954,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "creates"
+      "group": "créations"
     },
     {
       "key": "smartlead_create_subsequence_create_api_reference_campaigns_create_subsequence",
       "name": "smartleadCreateSubsequenceCreateApiReferenceCampaignsCreateSubsequence",
       "schemaVersion": 2,
-      "title": "Create create_subsequence",
-      "subtitle": "create_subsequences",
+      "title": "Créer sous-séquence campagne",
+      "subtitle": "Sous-séquence campagne",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -14975,7 +14975,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -14986,15 +14986,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_create_subsequence"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_api_reference_campaigns_create_subsequence sur create_subsequence.",
+      "description": "Créer sous-séquence campagne.",
       "args": {
-        "title": "Create create_subsequence",
+        "title": "Créer sous-séquence campagne",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -15004,7 +15004,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -15013,14 +15013,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "create_subsequences"
+      "group": "Créer sous séquences"
     },
     {
       "key": "smartlead_create_task_create_api_reference_inbox_create_task",
       "name": "smartleadCreateTaskCreateApiReferenceInboxCreateTask",
       "schemaVersion": 2,
-      "title": "Create create_task",
-      "subtitle": "create_tasks",
+      "title": "Créer tâche boîte de réception",
+      "subtitle": "Tâche boîte de réception",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -15034,7 +15034,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -15045,15 +15045,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_create_task"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_api_reference_inbox_create_task sur create_task.",
+      "description": "Créer tâche boîte de réception.",
       "args": {
-        "title": "Create create_task",
+        "title": "Créer tâche boîte de réception",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -15063,7 +15063,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -15072,14 +15072,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "create_tasks"
+      "group": "Créer tâches"
     },
     {
       "key": "smartlead_day_wise_overall_stat_list_api_reference_analytics_day_wise_stats",
       "name": "smartleadDayWiseOverallStatListApiReferenceAnalyticsDayWiseStats",
       "schemaVersion": 2,
-      "title": "List day_wise_overall_stat",
-      "subtitle": "day_wise_overall_stats",
+      "title": "Lister analytique day wise stat",
+      "subtitle": "Analytique day wise stat",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -15093,7 +15093,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -15104,15 +15104,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_day_wise_overall_stats"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_api_reference_analytics_day_wise_stats sur day_wise_overall_stat.",
+      "description": "Lister analytique day wise stat.",
       "args": {
-        "title": "List day_wise_overall_stat",
+        "title": "Lister analytique day wise stat",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -15121,14 +15121,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "day_wise_overall_stats"
+      "group": "day wise global statistiques"
     },
     {
       "key": "smartlead_day_wise_overall_stats_by_sent_time_list_api_reference_analytics_day_wise_sent_time",
       "name": "smartleadDayWiseOverallStatsBySentTimeListApiReferenceAnalyticsDayWiseSentTime",
       "schemaVersion": 2,
-      "title": "List day_wise_overall_stats_by_sent_time",
-      "subtitle": "day_wise_overall_stats_by_sent_times",
+      "title": "Lister analytique day wise envoyés time",
+      "subtitle": "Analytique day wise envoyés time",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -15142,7 +15142,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -15153,15 +15153,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_day_wise_overall_stats_by_sent_times"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_api_reference_analytics_day_wise_sent_time sur day_wise_overall_stats_by_sent_time.",
+      "description": "Lister analytique day wise envoyés time.",
       "args": {
-        "title": "List day_wise_overall_stats_by_sent_time",
+        "title": "Lister analytique day wise envoyés time",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -15170,14 +15170,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "day_wise_overall_stats_by_sent_times"
+      "group": "day wise global statistiques envoyés times"
     },
     {
       "key": "smartlead_day_wise_positive_reply_stats_by_sent_time_list_api_reference_analytics_day_wise_positive_sent_time",
       "name": "smartleadDayWisePositiveReplyStatsBySentTimeListApiReferenceAnalyticsDayWisePositiveSentTime",
       "schemaVersion": 2,
-      "title": "List day_wise_positive_reply_stats_by_sent_time",
-      "subtitle": "day_wise_positive_reply_stats_by_sent_times",
+      "title": "Lister analytique day wise positive envoyés time",
+      "subtitle": "Analytique day wise positive envoyés time",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -15191,7 +15191,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -15202,15 +15202,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_day_wise_positive_reply_stats_by_sent_times"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_api_reference_analytics_day_wise_positive_sent_time sur day_wise_positive_reply_stats_by_sent_time.",
+      "description": "Lister analytique day wise positive envoyés time.",
       "args": {
-        "title": "List day_wise_positive_reply_stats_by_sent_time",
+        "title": "Lister analytique day wise positive envoyés time",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -15219,14 +15219,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "day_wise_positive_reply_stats_by_sent_times"
+      "group": "day wise positive réponse statistiques envoyés times"
     },
     {
       "key": "smartlead_email_account_create_api_reference_campaigns_add_email_accounts",
       "name": "smartleadEmailAccountCreateApiReferenceCampaignsAddEmailAccounts",
       "schemaVersion": 2,
-      "title": "Create email_account",
-      "subtitle": "email_accounts",
+      "title": "Créer campagne email compte",
+      "subtitle": "Campagne email compte",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -15240,7 +15240,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -15251,15 +15251,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_email_account"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_api_reference_campaigns_add_email_accounts sur email_account.",
+      "description": "Créer campagne email compte.",
       "args": {
-        "title": "Create email_account",
+        "title": "Créer campagne email compte",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -15268,8 +15268,8 @@
           {
             "type": "text",
             "key": "campaign_id",
-            "label": "Campaign Id",
-            "description": "Valeur de chemin campaign_id.",
+            "label": "Campagne ID",
+            "description": "Valeur de chemin campagne ID",
             "col": {
               "xs": 24
             },
@@ -15283,7 +15283,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -15292,14 +15292,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "email_accounts"
+      "group": "comptes email"
     },
     {
       "key": "smartlead_email_account_list_api_reference_email_accounts_get_all",
       "name": "smartleadEmailAccountListApiReferenceEmailAccountsGetAll",
       "schemaVersion": 2,
-      "title": "List email_account",
-      "subtitle": "email_accounts",
+      "title": "Lister comptes email",
+      "subtitle": "Comptes email",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -15313,7 +15313,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -15324,15 +15324,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_email_accounts"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_api_reference_email_accounts_get_all sur email_account.",
+      "description": "Lister comptes email.",
       "args": {
-        "title": "List email_account",
+        "title": "Lister comptes email",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -15341,14 +15341,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "email_accounts"
+      "group": "comptes email"
     },
     {
       "key": "smartlead_email_account_get_api_reference_email_accounts_get_by_id",
       "name": "smartleadEmailAccountGetApiReferenceEmailAccountsGetById",
       "schemaVersion": 2,
-      "title": "Get email_account",
-      "subtitle": "email_accounts",
+      "title": "Récupérer email compte ID",
+      "subtitle": "Email compte ID",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -15362,7 +15362,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -15373,15 +15373,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_email_account"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get_api_reference_email_accounts_get_by_id sur email_account.",
+      "description": "Récupérer email compte ID.",
       "args": {
-        "title": "Get email_account",
+        "title": "Récupérer email compte ID",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -15390,8 +15390,8 @@
           {
             "type": "text",
             "key": "email_account_id",
-            "label": "Email Account Id",
-            "description": "Valeur de chemin email_account_id.",
+            "label": "Email Compte ID",
+            "description": "Valeur de chemin email compte ID",
             "col": {
               "xs": 24
             },
@@ -15405,14 +15405,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "email_accounts"
+      "group": "comptes email"
     },
     {
       "key": "smartlead_email_account_create_api_reference_email_accounts_update",
       "name": "smartleadEmailAccountCreateApiReferenceEmailAccountsUpdate",
       "schemaVersion": 2,
-      "title": "Create email_account",
-      "subtitle": "email_accounts",
+      "title": "Créer comptes email",
+      "subtitle": "Comptes email",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -15426,7 +15426,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -15437,15 +15437,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_email_account"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_api_reference_email_accounts_update sur email_account.",
+      "description": "Créer comptes email.",
       "args": {
-        "title": "Create email_account",
+        "title": "Créer comptes email",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -15454,8 +15454,8 @@
           {
             "type": "text",
             "key": "email_account_id",
-            "label": "Email Account Id",
-            "description": "Valeur de chemin email_account_id.",
+            "label": "Email Compte ID",
+            "description": "Valeur de chemin email compte ID",
             "col": {
               "xs": 24
             },
@@ -15469,7 +15469,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -15478,14 +15478,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "email_accounts"
+      "group": "comptes email"
     },
     {
       "key": "smartlead_email_account_delete_api_reference_email_accounts_delete",
       "name": "smartleadEmailAccountDeleteApiReferenceEmailAccountsDelete",
       "schemaVersion": 2,
-      "title": "Delete email_account",
-      "subtitle": "email_accounts",
+      "title": "Supprimer comptes email",
+      "subtitle": "Comptes email",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -15499,7 +15499,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -15510,15 +15510,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_action_result"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete_api_reference_email_accounts_delete sur email_account.",
+      "description": "Supprimer comptes email.",
       "args": {
-        "title": "Delete email_account",
+        "title": "Supprimer comptes email",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -15527,8 +15527,8 @@
           {
             "type": "text",
             "key": "email_account_id",
-            "label": "Email Account Id",
-            "description": "Valeur de chemin email_account_id.",
+            "label": "Email Compte ID",
+            "description": "Valeur de chemin email compte ID",
             "col": {
               "xs": 24
             },
@@ -15542,14 +15542,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "email_accounts"
+      "group": "comptes email"
     },
     {
       "key": "smartlead_fetch_category_list_api_reference_leads_categories",
       "name": "smartleadFetchCategoryListApiReferenceLeadsCategories",
       "schemaVersion": 2,
-      "title": "List fetch_category",
-      "subtitle": "fetch_categories",
+      "title": "Lister fetch category",
+      "subtitle": "Fetch category",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -15563,7 +15563,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -15574,15 +15574,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_fetch_categories"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_api_reference_leads_categories sur fetch_category.",
+      "description": "Lister fetch category.",
       "args": {
-        "title": "List fetch_category",
+        "title": "Lister fetch category",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -15591,14 +15591,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "fetch_categories"
+      "group": "fetch categories"
     },
     {
       "key": "smartlead_forward_email_create_api_reference_inbox_forward",
       "name": "smartleadForwardEmailCreateApiReferenceInboxForward",
       "schemaVersion": 2,
-      "title": "Create forward_email",
-      "subtitle": "forward_emails",
+      "title": "Créer boîte de réception forward",
+      "subtitle": "Boîte de réception forward",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -15612,7 +15612,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -15623,15 +15623,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_forward_email"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_api_reference_inbox_forward sur forward_email.",
+      "description": "Créer boîte de réception forward.",
       "args": {
-        "title": "Create forward_email",
+        "title": "Créer boîte de réception forward",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -15640,8 +15640,8 @@
           {
             "type": "text",
             "key": "campaign_id",
-            "label": "Campaign Id",
-            "description": "Valeur de chemin campaign_id.",
+            "label": "Campagne ID",
+            "description": "Valeur de chemin campagne ID",
             "col": {
               "xs": 24
             },
@@ -15655,7 +15655,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -15664,14 +15664,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "forward_emails"
+      "group": "forward emails"
     },
     {
       "key": "smartlead_id_list_api_reference_inbox_get_by_id",
       "name": "smartleadIdListApiReferenceInboxGetById",
       "schemaVersion": 2,
-      "title": "List id",
-      "subtitle": "ids",
+      "title": "Lister boîte de réception ID",
+      "subtitle": "Boîte de réception ID",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -15685,7 +15685,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -15696,15 +15696,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_ids"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_api_reference_inbox_get_by_id sur id.",
+      "description": "Lister boîte de réception ID.",
       "args": {
-        "title": "List id",
+        "title": "Lister boîte de réception ID",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -15719,8 +15719,8 @@
       "key": "smartlead_import_create_api_reference_lead_lists_import_leads",
       "name": "smartleadImportCreateApiReferenceLeadListsImportLeads",
       "schemaVersion": 2,
-      "title": "Create import",
-      "subtitle": "imports",
+      "title": "Créer prospect liste import",
+      "subtitle": "Prospect liste import",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -15734,7 +15734,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -15745,15 +15745,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_import"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_api_reference_lead_lists_import_leads sur import.",
+      "description": "Créer prospect liste import.",
       "args": {
-        "title": "Create import",
+        "title": "Créer prospect liste import",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -15762,8 +15762,8 @@
           {
             "type": "text",
             "key": "id",
-            "label": "Id",
-            "description": "Valeur de chemin id.",
+            "label": "ID",
+            "description": "Valeur de chemin ID",
             "col": {
               "xs": 24
             },
@@ -15777,7 +15777,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -15792,8 +15792,8 @@
       "key": "smartlead_important_create_api_reference_inbox_get_important",
       "name": "smartleadImportantCreateApiReferenceInboxGetImportant",
       "schemaVersion": 2,
-      "title": "Create important",
-      "subtitle": "importants",
+      "title": "Créer boîte de réception important",
+      "subtitle": "Boîte de réception important",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -15807,7 +15807,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -15818,15 +15818,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_important"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_api_reference_inbox_get_important sur important.",
+      "description": "Créer boîte de réception important.",
       "args": {
-        "title": "Create important",
+        "title": "Créer boîte de réception important",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -15836,7 +15836,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -15851,8 +15851,8 @@
       "key": "smartlead_inbox_reply_create_api_reference_inbox_get_messages",
       "name": "smartleadInboxReplyCreateApiReferenceInboxGetMessages",
       "schemaVersion": 2,
-      "title": "Create inbox_reply",
-      "subtitle": "inbox_replies",
+      "title": "Créer boîte de réception message",
+      "subtitle": "Boîte de réception message",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -15866,7 +15866,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -15877,15 +15877,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_inbox_reply"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_api_reference_inbox_get_messages sur inbox_reply.",
+      "description": "Créer boîte de réception message.",
       "args": {
-        "title": "Create inbox_reply",
+        "title": "Créer boîte de réception message",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -15895,7 +15895,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -15904,14 +15904,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "inbox_replies"
+      "group": "boîte de réception réponses"
     },
     {
       "key": "smartlead_initiate_send_api_reference_utilities_send_single_email",
       "name": "smartleadInitiateSendApiReferenceUtilitiesSendSingleEmail",
       "schemaVersion": 2,
-      "title": "Send initiate",
-      "subtitle": "initiates",
+      "title": "Envoyer Utilitaire single email",
+      "subtitle": "Utilitaire single email",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -15925,7 +15925,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -15936,15 +15936,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_action_result"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action send_api_reference_utilities_send_single_email sur initiate.",
+      "description": "Envoyer Utilitaire single email.",
       "args": {
-        "title": "Send initiate",
+        "title": "Envoyer Utilitaire single email",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -15954,7 +15954,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -15969,8 +15969,8 @@
       "key": "smartlead_lead_create_api_reference_leads_add_to_campaign",
       "name": "smartleadLeadCreateApiReferenceLeadsAddToCampaign",
       "schemaVersion": 2,
-      "title": "Create lead",
-      "subtitle": "leads",
+      "title": "Créer prospect campagne",
+      "subtitle": "Prospect campagne",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -15984,7 +15984,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -15995,15 +15995,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_lead"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_api_reference_leads_add_to_campaign sur lead.",
+      "description": "Créer prospect campagne.",
       "args": {
-        "title": "Create lead",
+        "title": "Créer prospect campagne",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16012,8 +16012,8 @@
           {
             "type": "text",
             "key": "campaign_id",
-            "label": "Campaign Id",
-            "description": "Valeur de chemin campaign_id.",
+            "label": "Campagne ID",
+            "description": "Valeur de chemin campagne ID",
             "col": {
               "xs": 24
             },
@@ -16027,7 +16027,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -16036,14 +16036,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "leads"
+      "group": "prospects"
     },
     {
       "key": "smartlead_lead_list_api_reference_leads_get_by_campaign",
       "name": "smartleadLeadListApiReferenceLeadsGetByCampaign",
       "schemaVersion": 2,
-      "title": "List lead",
-      "subtitle": "leads",
+      "title": "Lister prospect campagne",
+      "subtitle": "Prospect campagne",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -16057,7 +16057,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -16068,15 +16068,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_leads"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_api_reference_leads_get_by_campaign sur lead.",
+      "description": "Lister prospect campagne.",
       "args": {
-        "title": "List lead",
+        "title": "Lister prospect campagne",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16085,8 +16085,8 @@
           {
             "type": "text",
             "key": "campaign_id",
-            "label": "Campaign Id",
-            "description": "Valeur de chemin campaign_id.",
+            "label": "Campagne ID",
+            "description": "Valeur de chemin campagne ID",
             "col": {
               "xs": 24
             },
@@ -16100,14 +16100,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "leads"
+      "group": "prospects"
     },
     {
       "key": "smartlead_lead_create_api_reference_campaigns_update_lead",
       "name": "smartleadLeadCreateApiReferenceCampaignsUpdateLead",
       "schemaVersion": 2,
-      "title": "Create lead",
-      "subtitle": "leads",
+      "title": "Créer campagne prospect",
+      "subtitle": "Campagne prospect",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -16121,7 +16121,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -16132,15 +16132,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_lead"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_api_reference_campaigns_update_lead sur lead.",
+      "description": "Créer campagne prospect.",
       "args": {
-        "title": "Create lead",
+        "title": "Créer campagne prospect",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16149,8 +16149,8 @@
           {
             "type": "text",
             "key": "campaign_id",
-            "label": "Campaign Id",
-            "description": "Valeur de chemin campaign_id.",
+            "label": "Campagne ID",
+            "description": "Valeur de chemin campagne ID",
             "col": {
               "xs": 24
             },
@@ -16163,8 +16163,8 @@
           {
             "type": "text",
             "key": "lead_id",
-            "label": "Lead Id",
-            "description": "Valeur de chemin lead_id.",
+            "label": "Prospect ID",
+            "description": "Valeur de chemin prospect ID",
             "col": {
               "xs": 24
             },
@@ -16178,7 +16178,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -16187,14 +16187,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "leads"
+      "group": "prospects"
     },
     {
       "key": "smartlead_lead_delete_api_reference_leads_delete",
       "name": "smartleadLeadDeleteApiReferenceLeadsDelete",
       "schemaVersion": 2,
-      "title": "Delete lead",
-      "subtitle": "leads",
+      "title": "Supprimer prospect",
+      "subtitle": "Prospect",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -16208,7 +16208,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -16219,15 +16219,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_action_result"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete_api_reference_leads_delete sur lead.",
+      "description": "Supprimer prospect.",
       "args": {
-        "title": "Delete lead",
+        "title": "Supprimer prospect",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16236,8 +16236,8 @@
           {
             "type": "text",
             "key": "campaign_id",
-            "label": "Campaign Id",
-            "description": "Valeur de chemin campaign_id.",
+            "label": "Campagne ID",
+            "description": "Valeur de chemin campagne ID",
             "col": {
               "xs": 24
             },
@@ -16250,8 +16250,8 @@
           {
             "type": "text",
             "key": "lead_id",
-            "label": "Lead Id",
-            "description": "Valeur de chemin lead_id.",
+            "label": "Prospect ID",
+            "description": "Valeur de chemin prospect ID",
             "col": {
               "xs": 24
             },
@@ -16265,14 +16265,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "leads"
+      "group": "prospects"
     },
     {
       "key": "smartlead_lead_list_api_reference_leads_get_by_email",
       "name": "smartleadLeadListApiReferenceLeadsGetByEmail",
       "schemaVersion": 2,
-      "title": "List lead",
-      "subtitle": "leads",
+      "title": "Lister prospect email",
+      "subtitle": "Prospect email",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -16286,7 +16286,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -16297,15 +16297,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_leads"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_api_reference_leads_get_by_email sur lead.",
+      "description": "Lister prospect email.",
       "args": {
-        "title": "List lead",
+        "title": "Lister prospect email",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16314,14 +16314,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "leads"
+      "group": "prospects"
     },
     {
       "key": "smartlead_lead_tag_api_reference_lead_tags_get_all",
       "name": "smartleadLeadTagApiReferenceLeadTagsGetAll",
       "schemaVersion": 2,
-      "title": "Tag lead",
-      "subtitle": "leads",
+      "title": "Récupérer prospect",
+      "subtitle": "Prospect",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -16335,7 +16335,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -16346,15 +16346,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_lead"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action tag_api_reference_lead_tags_get_all sur lead.",
+      "description": "Récupérer prospect.",
       "args": {
-        "title": "Tag lead",
+        "title": "Récupérer prospect",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16363,14 +16363,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "leads"
+      "group": "prospects"
     },
     {
       "key": "smartlead_lead_tag_api_reference_lead_tags_remove_from_lead",
       "name": "smartleadLeadTagApiReferenceLeadTagsRemoveFromLead",
       "schemaVersion": 2,
-      "title": "Tag lead",
-      "subtitle": "leads",
+      "title": "Retirer prospect",
+      "subtitle": "Prospect",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -16384,7 +16384,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -16395,15 +16395,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_action_result"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action tag_api_reference_lead_tags_remove_from_lead sur lead.",
+      "description": "Retirer prospect.",
       "args": {
-        "title": "Tag lead",
+        "title": "Retirer prospect",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16413,7 +16413,7 @@
             "type": "text",
             "key": "tagmappingid",
             "label": "Tagmappingid",
-            "description": "Valeur de chemin tagmappingid.",
+            "description": "Valeur de chemin tagmappingid",
             "col": {
               "xs": 24
             },
@@ -16427,14 +16427,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "leads"
+      "group": "prospects"
     },
     {
       "key": "smartlead_lead_list_create_api_reference_lead_lists_create",
       "name": "smartleadLeadListCreateApiReferenceLeadListsCreate",
       "schemaVersion": 2,
-      "title": "Create lead_list",
-      "subtitle": "lead_lists",
+      "title": "Lister prospect liste",
+      "subtitle": "Prospect liste",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -16448,7 +16448,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -16459,15 +16459,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_lead_list"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_api_reference_lead_lists_create sur lead_list.",
+      "description": "Lister prospect liste.",
       "args": {
-        "title": "Create lead_list",
+        "title": "Lister prospect liste",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16477,7 +16477,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -16486,14 +16486,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "lead_lists"
+      "group": "prospect listes"
     },
     {
       "key": "smartlead_lead_list_list_api_reference_lead_lists_get_all",
       "name": "smartleadLeadListListApiReferenceLeadListsGetAll",
       "schemaVersion": 2,
-      "title": "List lead_list",
-      "subtitle": "lead_lists",
+      "title": "Lister prospect liste - prospect liste",
+      "subtitle": "Prospect liste",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -16507,7 +16507,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -16518,15 +16518,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_lead_lists"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_api_reference_lead_lists_get_all sur lead_list.",
+      "description": "Lister prospect liste - prospect liste.",
       "args": {
-        "title": "List lead_list",
+        "title": "Lister prospect liste - prospect liste",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16535,14 +16535,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "lead_lists"
+      "group": "prospect listes"
     },
     {
       "key": "smartlead_lead_list_get_api_reference_lead_lists_get_by_id",
       "name": "smartleadLeadListGetApiReferenceLeadListsGetById",
       "schemaVersion": 2,
-      "title": "Get lead_list",
-      "subtitle": "lead_lists",
+      "title": "Lister prospect liste ID",
+      "subtitle": "Prospect liste ID",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -16556,7 +16556,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -16567,15 +16567,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_lead_list"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get_api_reference_lead_lists_get_by_id sur lead_list.",
+      "description": "Lister prospect liste ID.",
       "args": {
-        "title": "Get lead_list",
+        "title": "Lister prospect liste ID",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16584,8 +16584,8 @@
           {
             "type": "text",
             "key": "id",
-            "label": "Id",
-            "description": "Valeur de chemin id.",
+            "label": "ID",
+            "description": "Valeur de chemin ID",
             "col": {
               "xs": 24
             },
@@ -16599,14 +16599,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "lead_lists"
+      "group": "prospect listes"
     },
     {
       "key": "smartlead_lead_list_update_api_reference_lead_lists_update",
       "name": "smartleadLeadListUpdateApiReferenceLeadListsUpdate",
       "schemaVersion": 2,
-      "title": "Update lead_list",
-      "subtitle": "lead_lists",
+      "title": "Mettre à jour prospect liste",
+      "subtitle": "Prospect liste",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -16620,7 +16620,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -16631,15 +16631,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_lead_list"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update_api_reference_lead_lists_update sur lead_list.",
+      "description": "Mettre à jour prospect liste.",
       "args": {
-        "title": "Update lead_list",
+        "title": "Mettre à jour prospect liste",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16648,8 +16648,8 @@
           {
             "type": "text",
             "key": "id",
-            "label": "Id",
-            "description": "Valeur de chemin id.",
+            "label": "ID",
+            "description": "Valeur de chemin ID",
             "col": {
               "xs": 24
             },
@@ -16663,7 +16663,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -16672,14 +16672,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "lead_lists"
+      "group": "prospect listes"
     },
     {
       "key": "smartlead_lead_to_reply_time_list_api_reference_analytics_lead_to_reply_time",
       "name": "smartleadLeadToReplyTimeListApiReferenceAnalyticsLeadToReplyTime",
       "schemaVersion": 2,
-      "title": "List lead_to_reply_time",
-      "subtitle": "lead_to_reply_times",
+      "title": "Lister analytique prospect réponse time",
+      "subtitle": "Analytique prospect réponse time",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -16693,7 +16693,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -16704,15 +16704,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_lead_to_reply_times"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_api_reference_analytics_lead_to_reply_time sur lead_to_reply_time.",
+      "description": "Lister analytique prospect réponse time.",
       "args": {
-        "title": "List lead_to_reply_time",
+        "title": "Lister analytique prospect réponse time",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16721,14 +16721,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "lead_to_reply_times"
+      "group": "prospect réponse times"
     },
     {
       "key": "smartlead_leads_export_list_api_reference_leads_export",
       "name": "smartleadLeadsExportListApiReferenceLeadsExport",
       "schemaVersion": 2,
-      "title": "List leads_export",
-      "subtitle": "leads_exports",
+      "title": "Lister prospect export",
+      "subtitle": "Prospect export",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -16742,7 +16742,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -16753,15 +16753,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_leads_exports"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_api_reference_leads_export sur leads_export.",
+      "description": "Lister prospect export.",
       "args": {
-        "title": "List leads_export",
+        "title": "Lister prospect export",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16770,8 +16770,8 @@
           {
             "type": "text",
             "key": "campaign_id",
-            "label": "Campaign Id",
-            "description": "Valeur de chemin campaign_id.",
+            "label": "Campagne ID",
+            "description": "Valeur de chemin campagne ID",
             "col": {
               "xs": 24
             },
@@ -16785,14 +16785,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "leads_exports"
+      "group": "prospects exports"
     },
     {
       "key": "smartlead_leads_statistic_list_api_reference_campaign_statistics_lead_statistics",
       "name": "smartleadLeadsStatisticListApiReferenceCampaignStatisticsLeadStatistics",
       "schemaVersion": 2,
-      "title": "List leads_statistic",
-      "subtitle": "leads_statistics",
+      "title": "Lister prospect statistic",
+      "subtitle": "Prospect statistic",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -16806,7 +16806,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -16817,15 +16817,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_leads_statistics"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_api_reference_campaign_statistics_lead_statistics sur leads_statistic.",
+      "description": "Lister prospect statistic.",
       "args": {
-        "title": "List leads_statistic",
+        "title": "Lister prospect statistic",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16834,8 +16834,8 @@
           {
             "type": "text",
             "key": "campaign_id",
-            "label": "Campaign Id",
-            "description": "Valeur de chemin campaign_id.",
+            "label": "Campagne ID",
+            "description": "Valeur de chemin campagne ID",
             "col": {
               "xs": 24
             },
@@ -16849,14 +16849,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "leads_statistics"
+      "group": "prospects statistics"
     },
     {
       "key": "smartlead_leads_take_for_first_reply_list_api_reference_analytics_leads_for_first_reply",
       "name": "smartleadLeadsTakeForFirstReplyListApiReferenceAnalyticsLeadsForFirstReply",
       "schemaVersion": 2,
-      "title": "List leads_take_for_first_reply",
-      "subtitle": "leads_take_for_first_replies",
+      "title": "Lister analytique prospect first réponse",
+      "subtitle": "Analytique prospect first réponse",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -16870,7 +16870,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -16881,15 +16881,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_leads_take_for_first_replies"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_api_reference_analytics_leads_for_first_reply sur leads_take_for_first_reply.",
+      "description": "Lister analytique prospect first réponse.",
       "args": {
-        "title": "List leads_take_for_first_reply",
+        "title": "Lister analytique prospect first réponse",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16898,14 +16898,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "leads_take_for_first_replies"
+      "group": "prospects take first réponses"
     },
     {
       "key": "smartlead_list_list_api_reference_analytics_campaign_list",
       "name": "smartleadListListApiReferenceAnalyticsCampaignList",
       "schemaVersion": 2,
-      "title": "List list",
-      "subtitle": "lists",
+      "title": "Lister analytique campagne",
+      "subtitle": "Analytique campagne",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -16919,7 +16919,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -16930,15 +16930,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_lists"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_api_reference_analytics_campaign_list sur list.",
+      "description": "Lister analytique campagne.",
       "args": {
-        "title": "List list",
+        "title": "Lister analytique campagne",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16947,14 +16947,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "lists"
+      "group": "listes"
     },
     {
       "key": "smartlead_mailbox_statistic_list_api_reference_campaign_statistics_mailbox_statistics",
       "name": "smartleadMailboxStatisticListApiReferenceCampaignStatisticsMailboxStatistics",
       "schemaVersion": 2,
-      "title": "List mailbox_statistic",
-      "subtitle": "mailbox_statistics",
+      "title": "Lister mailbox statistic",
+      "subtitle": "Mailbox statistic",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -16968,7 +16968,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -16979,15 +16979,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_mailbox_statistics"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_api_reference_campaign_statistics_mailbox_statistics sur mailbox_statistic.",
+      "description": "Lister mailbox statistic.",
       "args": {
-        "title": "List mailbox_statistic",
+        "title": "Lister mailbox statistic",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16996,8 +16996,8 @@
           {
             "type": "text",
             "key": "campaign_id",
-            "label": "Campaign Id",
-            "description": "Valeur de chemin campaign_id.",
+            "label": "Campagne ID",
+            "description": "Valeur de chemin campagne ID",
             "col": {
               "xs": 24
             },
@@ -17011,14 +17011,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "mailbox_statistics"
+      "group": "mailbox statistics"
     },
     {
       "key": "smartlead_message_history_list_api_reference_campaigns_get_lead_history",
       "name": "smartleadMessageHistoryListApiReferenceCampaignsGetLeadHistory",
       "schemaVersion": 2,
-      "title": "List message_history",
-      "subtitle": "message_histories",
+      "title": "Lister campagne prospect historique",
+      "subtitle": "Campagne prospect historique",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -17032,7 +17032,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -17043,15 +17043,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_message_histories"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_api_reference_campaigns_get_lead_history sur message_history.",
+      "description": "Lister campagne prospect historique.",
       "args": {
-        "title": "List message_history",
+        "title": "Lister campagne prospect historique",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17060,8 +17060,8 @@
           {
             "type": "text",
             "key": "campaign_id",
-            "label": "Campaign Id",
-            "description": "Valeur de chemin campaign_id.",
+            "label": "Campagne ID",
+            "description": "Valeur de chemin campagne ID",
             "col": {
               "xs": 24
             },
@@ -17074,8 +17074,8 @@
           {
             "type": "text",
             "key": "lead_id",
-            "label": "Lead Id",
-            "description": "Valeur de chemin lead_id.",
+            "label": "Prospect ID",
+            "description": "Valeur de chemin prospect ID",
             "col": {
               "xs": 24
             },
@@ -17089,14 +17089,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "message_histories"
+      "group": "message historiques"
     },
     {
       "key": "smartlead_month_wise_count_list_api_reference_analytics_month_wise_client_count",
       "name": "smartleadMonthWiseCountListApiReferenceAnalyticsMonthWiseClientCount",
       "schemaVersion": 2,
-      "title": "List month_wise_count",
-      "subtitle": "month_wise_counts",
+      "title": "Lister analytique month wise client count",
+      "subtitle": "Analytique month wise client count",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -17110,7 +17110,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -17121,15 +17121,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_month_wise_counts"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_api_reference_analytics_month_wise_client_count sur month_wise_count.",
+      "description": "Lister analytique month wise client count.",
       "args": {
-        "title": "List month_wise_count",
+        "title": "Lister analytique month wise client count",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17138,14 +17138,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "month_wise_counts"
+      "group": "month wise counts"
     },
     {
       "key": "smartlead_name_wise_health_metric_list_api_reference_analytics_email_wise_health",
       "name": "smartleadNameWiseHealthMetricListApiReferenceAnalyticsEmailWiseHealth",
       "schemaVersion": 2,
-      "title": "List name_wise_health_metric",
-      "subtitle": "name_wise_health_metrics",
+      "title": "Lister analytique email wise santé",
+      "subtitle": "Analytique email wise santé",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -17159,7 +17159,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -17170,15 +17170,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_name_wise_health_metrics"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_api_reference_analytics_email_wise_health sur name_wise_health_metric.",
+      "description": "Lister analytique email wise santé.",
       "args": {
-        "title": "List name_wise_health_metric",
+        "title": "Lister analytique email wise santé",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17187,14 +17187,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "name_wise_health_metrics"
+      "group": "name wise santé métriques"
     },
     {
       "key": "smartlead_note_get_api_reference_lead_notes_get_all",
       "name": "smartleadNoteGetApiReferenceLeadNotesGetAll",
       "schemaVersion": 2,
-      "title": "Get note",
-      "subtitle": "notes",
+      "title": "Récupérer prospect note",
+      "subtitle": "Prospect note",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -17208,7 +17208,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -17219,15 +17219,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_note"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get_api_reference_lead_notes_get_all sur note.",
+      "description": "Récupérer prospect note.",
       "args": {
-        "title": "Get note",
+        "title": "Récupérer prospect note",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17236,8 +17236,8 @@
           {
             "type": "text",
             "key": "id",
-            "label": "Id",
-            "description": "Valeur de chemin id.",
+            "label": "ID",
+            "description": "Valeur de chemin ID",
             "col": {
               "xs": 24
             },
@@ -17257,8 +17257,8 @@
       "key": "smartlead_overall_stat_list_api_reference_analytics_campaign_performance",
       "name": "smartleadOverallStatListApiReferenceAnalyticsCampaignPerformance",
       "schemaVersion": 2,
-      "title": "List overall_stat",
-      "subtitle": "overall_stats",
+      "title": "Lister statistique globale",
+      "subtitle": "Statistique globale",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -17272,7 +17272,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -17283,15 +17283,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_overall_stats"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_api_reference_analytics_campaign_performance sur overall_stat.",
+      "description": "Lister statistique globale.",
       "args": {
-        "title": "List overall_stat",
+        "title": "Lister statistique globale",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17300,14 +17300,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "overall_stats"
+      "group": "statistiques globales"
     },
     {
       "key": "smartlead_overall_stat_list_api_reference_analytics_client_performance",
       "name": "smartleadOverallStatListApiReferenceAnalyticsClientPerformance",
       "schemaVersion": 2,
-      "title": "List overall_stat",
-      "subtitle": "overall_stats",
+      "title": "Lister statistique globale - global",
+      "subtitle": "Statistique globale",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -17321,7 +17321,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -17332,15 +17332,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_overall_stats"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_api_reference_analytics_client_performance sur overall_stat.",
+      "description": "Lister statistique globale - global.",
       "args": {
-        "title": "List overall_stat",
+        "title": "Lister statistique globale - global",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17349,14 +17349,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "overall_stats"
+      "group": "statistiques globales"
     },
     {
       "key": "smartlead_overall_stat_list_api_reference_analytics_mailbox_health",
       "name": "smartleadOverallStatListApiReferenceAnalyticsMailboxHealth",
       "schemaVersion": 2,
-      "title": "List overall_stat",
-      "subtitle": "overall_stats",
+      "title": "Lister analytique mailbox santé",
+      "subtitle": "Analytique mailbox santé",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -17370,7 +17370,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -17381,15 +17381,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_overall_stats"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_api_reference_analytics_mailbox_health sur overall_stat.",
+      "description": "Lister analytique mailbox santé.",
       "args": {
-        "title": "List overall_stat",
+        "title": "Lister analytique mailbox santé",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17398,14 +17398,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "overall_stats"
+      "group": "statistiques globales"
     },
     {
       "key": "smartlead_overall_stat_list_api_reference_analytics_team_board_stats",
       "name": "smartleadOverallStatListApiReferenceAnalyticsTeamBoardStats",
       "schemaVersion": 2,
-      "title": "List overall_stat",
-      "subtitle": "overall_stats",
+      "title": "Lister analytique team board stat",
+      "subtitle": "Analytique team board stat",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -17419,7 +17419,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -17430,15 +17430,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_overall_stats"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_api_reference_analytics_team_board_stats sur overall_stat.",
+      "description": "Lister analytique team board stat.",
       "args": {
-        "title": "List overall_stat",
+        "title": "Lister analytique team board stat",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17447,14 +17447,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "overall_stats"
+      "group": "statistiques globales"
     },
     {
       "key": "smartlead_overall_stats_v2_list_api_reference_analytics_overview",
       "name": "smartleadOverallStatsV2ListApiReferenceAnalyticsOverview",
       "schemaVersion": 2,
-      "title": "List overall_stats_v2",
-      "subtitle": "overall_stats_v2s",
+      "title": "Lister analytique overview",
+      "subtitle": "Analytique overview",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -17468,7 +17468,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -17479,15 +17479,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_overall_stats_v2s"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_api_reference_analytics_overview sur overall_stats_v2.",
+      "description": "Lister analytique overview.",
       "args": {
-        "title": "List overall_stats_v2",
+        "title": "Lister analytique overview",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17496,14 +17496,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "overall_stats_v2s"
+      "group": "global statistiques v2s"
     },
     {
       "key": "smartlead_pause_create_api_reference_leads_pause",
       "name": "smartleadPauseCreateApiReferenceLeadsPause",
       "schemaVersion": 2,
-      "title": "Create pause",
-      "subtitle": "pauses",
+      "title": "Créer prospect",
+      "subtitle": "Prospect",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -17517,7 +17517,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -17528,15 +17528,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_pause"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_api_reference_leads_pause sur pause.",
+      "description": "Créer prospect.",
       "args": {
-        "title": "Create pause",
+        "title": "Créer prospect",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17545,8 +17545,8 @@
           {
             "type": "text",
             "key": "campaign_id",
-            "label": "Campaign Id",
-            "description": "Valeur de chemin campaign_id.",
+            "label": "Campagne ID",
+            "description": "Valeur de chemin campagne ID",
             "col": {
               "xs": 24
             },
@@ -17559,8 +17559,8 @@
           {
             "type": "text",
             "key": "lead_id",
-            "label": "Lead Id",
-            "description": "Valeur de chemin lead_id.",
+            "label": "Prospect ID",
+            "description": "Valeur de chemin prospect ID",
             "col": {
               "xs": 24
             },
@@ -17574,7 +17574,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -17589,8 +17589,8 @@
       "key": "smartlead_provider_wise_overall_performance_list_api_reference_analytics_provider_performance",
       "name": "smartleadProviderWiseOverallPerformanceListApiReferenceAnalyticsProviderPerformance",
       "schemaVersion": 2,
-      "title": "List provider_wise_overall_performance",
-      "subtitle": "provider_wise_overall_performances",
+      "title": "Lister provider wise global performance",
+      "subtitle": "Provider wise global performance",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -17604,7 +17604,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -17615,15 +17615,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_provider_wise_overall_performances"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_api_reference_analytics_provider_performance sur provider_wise_overall_performance.",
+      "description": "Lister provider wise global performance.",
       "args": {
-        "title": "List provider_wise_overall_performance",
+        "title": "Lister provider wise global performance",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17632,14 +17632,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "provider_wise_overall_performances"
+      "group": "provider wise global performances"
     },
     {
       "key": "smartlead_push_between_list_move_api_reference_lead_lists_push_between_lists",
       "name": "smartleadPushBetweenListMoveApiReferenceLeadListsPushBetweenLists",
       "schemaVersion": 2,
-      "title": "Move push_between_list",
-      "subtitle": "push_between_lists",
+      "title": "Lister prospect liste push between",
+      "subtitle": "Prospect liste push between",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -17653,7 +17653,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -17664,15 +17664,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_action_result"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action move_api_reference_lead_lists_push_between_lists sur push_between_list.",
+      "description": "Lister prospect liste push between.",
       "args": {
-        "title": "Move push_between_list",
+        "title": "Lister prospect liste push between",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17682,7 +17682,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -17691,14 +17691,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "push_between_lists"
+      "group": "push between listes"
     },
     {
       "key": "smartlead_push_to_campaign_create_api_reference_lead_lists_push_to_campaign",
       "name": "smartleadPushToCampaignCreateApiReferenceLeadListsPushToCampaign",
       "schemaVersion": 2,
-      "title": "Create push_to_campaign",
-      "subtitle": "push_to_campaigns",
+      "title": "Créer prospect liste push campagne",
+      "subtitle": "Prospect liste push campagne",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -17712,7 +17712,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -17723,15 +17723,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_push_to_campaign"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_api_reference_lead_lists_push_to_campaign sur push_to_campaign.",
+      "description": "Créer prospect liste push campagne.",
       "args": {
-        "title": "Create push_to_campaign",
+        "title": "Créer prospect liste push campagne",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17741,7 +17741,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -17750,14 +17750,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "push_to_campaigns"
+      "group": "push campagnes"
     },
     {
       "key": "smartlead_push_to_subsequence_create_api_reference_inbox_push_to_subsequence",
       "name": "smartleadPushToSubsequenceCreateApiReferenceInboxPushToSubsequence",
       "schemaVersion": 2,
-      "title": "Create push_to_subsequence",
-      "subtitle": "push_to_subsequences",
+      "title": "Créer boîte de réception push sous-séquence",
+      "subtitle": "Boîte de réception push sous-séquence",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -17771,7 +17771,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -17782,15 +17782,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_push_to_subsequence"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_api_reference_inbox_push_to_subsequence sur push_to_subsequence.",
+      "description": "Créer boîte de réception push sous-séquence.",
       "args": {
-        "title": "Create push_to_subsequence",
+        "title": "Créer boîte de réception push sous-séquence",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17800,7 +17800,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -17809,14 +17809,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "push_to_subsequences"
+      "group": "push sous séquences"
     },
     {
       "key": "smartlead_reminder_create_api_reference_inbox_get_reminders",
       "name": "smartleadReminderCreateApiReferenceInboxGetReminders",
       "schemaVersion": 2,
-      "title": "Create reminder",
-      "subtitle": "reminders",
+      "title": "Créer boîte de réception rappel",
+      "subtitle": "Boîte de réception rappel",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -17830,7 +17830,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -17841,15 +17841,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_reminder"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_api_reference_inbox_get_reminders sur reminder.",
+      "description": "Créer boîte de réception rappel.",
       "args": {
-        "title": "Create reminder",
+        "title": "Créer boîte de réception rappel",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17859,7 +17859,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -17868,14 +17868,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "reminders"
+      "group": "rappels"
     },
     {
       "key": "smartlead_reply_email_thread_create_api_reference_inbox_reply",
       "name": "smartleadReplyEmailThreadCreateApiReferenceInboxReply",
       "schemaVersion": 2,
-      "title": "Create reply_email_thread",
-      "subtitle": "reply_email_threads",
+      "title": "Créer boîte de réception réponse",
+      "subtitle": "Boîte de réception réponse",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -17889,7 +17889,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -17900,15 +17900,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_reply_email_thread"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_api_reference_inbox_reply sur reply_email_thread.",
+      "description": "Créer boîte de réception réponse.",
       "args": {
-        "title": "Create reply_email_thread",
+        "title": "Créer boîte de réception réponse",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17917,8 +17917,8 @@
           {
             "type": "text",
             "key": "campaign_id",
-            "label": "Campaign Id",
-            "description": "Valeur de chemin campaign_id.",
+            "label": "Campagne ID",
+            "description": "Valeur de chemin campagne ID",
             "col": {
               "xs": 24
             },
@@ -17932,7 +17932,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -17941,14 +17941,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "reply_email_threads"
+      "group": "réponse email fils"
     },
     {
       "key": "smartlead_reply_statu_list_api_reference_inbox_reply_status",
       "name": "smartleadReplyStatuListApiReferenceInboxReplyStatus",
       "schemaVersion": 2,
-      "title": "List reply_statu",
-      "subtitle": "reply_status",
+      "title": "Lister boîte de réception réponse statut",
+      "subtitle": "Boîte de réception réponse statut",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -17962,7 +17962,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -17973,15 +17973,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_reply_status"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_api_reference_inbox_reply_status sur reply_statu.",
+      "description": "Lister boîte de réception réponse statut.",
       "args": {
-        "title": "List reply_statu",
+        "title": "Lister boîte de réception réponse statut",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17990,14 +17990,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "reply_status"
+      "group": "réponse statut"
     },
     {
       "key": "smartlead_response_stat_list_api_reference_analytics_campaign_response_stats",
       "name": "smartleadResponseStatListApiReferenceAnalyticsCampaignResponseStats",
       "schemaVersion": 2,
-      "title": "List response_stat",
-      "subtitle": "response_stats",
+      "title": "Lister analytique campagne stat",
+      "subtitle": "Analytique campagne stat",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -18011,7 +18011,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -18022,15 +18022,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_response_stats"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_api_reference_analytics_campaign_response_stats sur response_stat.",
+      "description": "Lister analytique campagne stat.",
       "args": {
-        "title": "List response_stat",
+        "title": "Lister analytique campagne stat",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -18039,14 +18039,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "response_stats"
+      "group": "statistiques"
     },
     {
       "key": "smartlead_resume_create_api_reference_leads_resume",
       "name": "smartleadResumeCreateApiReferenceLeadsResume",
       "schemaVersion": 2,
-      "title": "Create resume",
-      "subtitle": "resumes",
+      "title": "Créer prospect - prospect",
+      "subtitle": "Prospect",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -18060,7 +18060,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -18071,15 +18071,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_resume"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_api_reference_leads_resume sur resume.",
+      "description": "Créer prospect - prospect.",
       "args": {
-        "title": "Create resume",
+        "title": "Créer prospect - prospect",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -18088,8 +18088,8 @@
           {
             "type": "text",
             "key": "campaign_id",
-            "label": "Campaign Id",
-            "description": "Valeur de chemin campaign_id.",
+            "label": "Campagne ID",
+            "description": "Valeur de chemin campagne ID",
             "col": {
               "xs": 24
             },
@@ -18102,8 +18102,8 @@
           {
             "type": "text",
             "key": "lead_id",
-            "label": "Lead Id",
-            "description": "Valeur de chemin lead_id.",
+            "label": "Prospect ID",
+            "description": "Valeur de chemin prospect ID",
             "col": {
               "xs": 24
             },
@@ -18117,7 +18117,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -18126,14 +18126,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "resumes"
+      "group": "reprises"
     },
     {
       "key": "smartlead_resume_lead_update_api_reference_inbox_resume_lead",
       "name": "smartleadResumeLeadUpdateApiReferenceInboxResumeLead",
       "schemaVersion": 2,
-      "title": "Update resume_lead",
-      "subtitle": "resume_leads",
+      "title": "Mettre à jour boîte de réception prospect",
+      "subtitle": "Boîte de réception prospect",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -18147,7 +18147,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -18158,15 +18158,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_resume_lead"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update_api_reference_inbox_resume_lead sur resume_lead.",
+      "description": "Mettre à jour boîte de réception prospect.",
       "args": {
-        "title": "Update resume_lead",
+        "title": "Mettre à jour boîte de réception prospect",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -18176,7 +18176,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -18185,14 +18185,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "resume_leads"
+      "group": "Reprendre prospects"
     },
     {
       "key": "smartlead_retrigger_failed_event_create_api_reference_campaigns_retrigger_webhooks",
       "name": "smartleadRetriggerFailedEventCreateApiReferenceCampaignsRetriggerWebhooks",
       "schemaVersion": 2,
-      "title": "Create retrigger_failed_event",
-      "subtitle": "retrigger_failed_events",
+      "title": "Créer campagne retrigger webhook",
+      "subtitle": "Campagne retrigger webhook",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -18206,7 +18206,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -18217,15 +18217,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_retrigger_failed_event"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_api_reference_campaigns_retrigger_webhooks sur retrigger_failed_event.",
+      "description": "Créer campagne retrigger webhook.",
       "args": {
-        "title": "Create retrigger_failed_event",
+        "title": "Créer campagne retrigger webhook",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -18235,7 +18235,7 @@
             "type": "text",
             "key": "campaignid",
             "label": "Campaignid",
-            "description": "Valeur de chemin campaignid.",
+            "description": "Valeur de chemin campaignid",
             "col": {
               "xs": 24
             },
@@ -18249,7 +18249,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -18258,14 +18258,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "retrigger_failed_events"
+      "group": "retrigger failed événements"
     },
     {
       "key": "smartlead_save_create_api_reference_email_accounts_add_smtp",
       "name": "smartleadSaveCreateApiReferenceEmailAccountsAddSmtp",
       "schemaVersion": 2,
-      "title": "Create save",
-      "subtitle": "saves",
+      "title": "Créer email compte smtp",
+      "subtitle": "Email compte smtp",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -18279,7 +18279,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -18290,15 +18290,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_save"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_api_reference_email_accounts_add_smtp sur save.",
+      "description": "Créer email compte smtp.",
       "args": {
-        "title": "Create save",
+        "title": "Créer email compte smtp",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -18308,7 +18308,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -18317,14 +18317,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "saves"
+      "group": "sauvegardes"
     },
     {
       "key": "smartlead_save_create_api_reference_clients_update",
       "name": "smartleadSaveCreateApiReferenceClientsUpdate",
       "schemaVersion": 2,
-      "title": "Create save",
-      "subtitle": "saves",
+      "title": "Créer client",
+      "subtitle": "Client",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -18338,7 +18338,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -18349,15 +18349,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_save"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_api_reference_clients_update sur save.",
+      "description": "Créer client.",
       "args": {
-        "title": "Create save",
+        "title": "Créer client",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -18367,7 +18367,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -18376,14 +18376,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "saves"
+      "group": "sauvegardes"
     },
     {
       "key": "smartlead_schedule_create_api_reference_campaigns_update_schedule",
       "name": "smartleadScheduleCreateApiReferenceCampaignsUpdateSchedule",
       "schemaVersion": 2,
-      "title": "Create schedule",
-      "subtitle": "schedules",
+      "title": "Créer campagne schedule",
+      "subtitle": "Campagne schedule",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -18397,7 +18397,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -18408,15 +18408,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_schedule"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_api_reference_campaigns_update_schedule sur schedule.",
+      "description": "Créer campagne schedule.",
       "args": {
-        "title": "Create schedule",
+        "title": "Créer campagne schedule",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -18425,8 +18425,8 @@
           {
             "type": "text",
             "key": "campaign_id",
-            "label": "Campaign Id",
-            "description": "Valeur de chemin campaign_id.",
+            "label": "Campagne ID",
+            "description": "Valeur de chemin campagne ID",
             "col": {
               "xs": 24
             },
@@ -18440,7 +18440,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -18455,8 +18455,8 @@
       "key": "smartlead_scheduled_create_api_reference_inbox_get_scheduled",
       "name": "smartleadScheduledCreateApiReferenceInboxGetScheduled",
       "schemaVersion": 2,
-      "title": "Create scheduled",
-      "subtitle": "scheduleds",
+      "title": "Créer boîte de réception planifiés",
+      "subtitle": "Boîte de réception planifiés",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -18470,7 +18470,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -18481,15 +18481,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_scheduled"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_api_reference_inbox_get_scheduled sur scheduled.",
+      "description": "Créer boîte de réception planifiés.",
       "args": {
-        "title": "Create scheduled",
+        "title": "Créer boîte de réception planifiés",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -18499,7 +18499,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -18508,14 +18508,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "scheduleds"
+      "group": "planifiés"
     },
     {
       "key": "smartlead_sent_create_api_reference_inbox_get_sent",
       "name": "smartleadSentCreateApiReferenceInboxGetSent",
       "schemaVersion": 2,
-      "title": "Create sent",
-      "subtitle": "sents",
+      "title": "Créer boîte de réception envoyés",
+      "subtitle": "Boîte de réception envoyés",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -18529,7 +18529,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -18540,15 +18540,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_sent"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_api_reference_inbox_get_sent sur sent.",
+      "description": "Créer boîte de réception envoyés.",
       "args": {
-        "title": "Create sent",
+        "title": "Créer boîte de réception envoyés",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -18558,7 +18558,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -18567,14 +18567,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "sents"
+      "group": "envoyés"
     },
     {
       "key": "smartlead_sequence_list_api_reference_campaigns_get_sequences",
       "name": "smartleadSequenceListApiReferenceCampaignsGetSequences",
       "schemaVersion": 2,
-      "title": "List sequence",
-      "subtitle": "sequences",
+      "title": "Lister campagne sequence",
+      "subtitle": "Campagne sequence",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -18588,7 +18588,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -18599,15 +18599,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_sequences"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_api_reference_campaigns_get_sequences sur sequence.",
+      "description": "Lister campagne sequence.",
       "args": {
-        "title": "List sequence",
+        "title": "Lister campagne sequence",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -18616,8 +18616,8 @@
           {
             "type": "text",
             "key": "campaign_id",
-            "label": "Campaign Id",
-            "description": "Valeur de chemin campaign_id.",
+            "label": "Campagne ID",
+            "description": "Valeur de chemin campagne ID",
             "col": {
               "xs": 24
             },
@@ -18637,8 +18637,8 @@
       "key": "smartlead_sequence_create_api_reference_campaigns_update_sequences",
       "name": "smartleadSequenceCreateApiReferenceCampaignsUpdateSequences",
       "schemaVersion": 2,
-      "title": "Create sequence",
-      "subtitle": "sequences",
+      "title": "Créer campagne sequence",
+      "subtitle": "Campagne sequence",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -18652,7 +18652,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -18663,15 +18663,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_sequence"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_api_reference_campaigns_update_sequences sur sequence.",
+      "description": "Créer campagne sequence.",
       "args": {
-        "title": "Create sequence",
+        "title": "Créer campagne sequence",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -18680,8 +18680,8 @@
           {
             "type": "text",
             "key": "campaign_id",
-            "label": "Campaign Id",
-            "description": "Valeur de chemin campaign_id.",
+            "label": "Campagne ID",
+            "description": "Valeur de chemin campagne ID",
             "col": {
               "xs": 24
             },
@@ -18695,7 +18695,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -18710,8 +18710,8 @@
       "key": "smartlead_set_reminder_create_api_reference_inbox_set_reminder",
       "name": "smartleadSetReminderCreateApiReferenceInboxSetReminder",
       "schemaVersion": 2,
-      "title": "Create set_reminder",
-      "subtitle": "set_reminders",
+      "title": "Créer boîte de réception set rappel",
+      "subtitle": "Boîte de réception set rappel",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -18725,7 +18725,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -18736,15 +18736,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_set_reminder"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_api_reference_inbox_set_reminder sur set_reminder.",
+      "description": "Créer boîte de réception set rappel.",
       "args": {
-        "title": "Create set_reminder",
+        "title": "Créer boîte de réception set rappel",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -18754,7 +18754,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -18763,14 +18763,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "set_reminders"
+      "group": "set rappels"
     },
     {
       "key": "smartlead_setting_create_api_reference_campaigns_update_settings",
       "name": "smartleadSettingCreateApiReferenceCampaignsUpdateSettings",
       "schemaVersion": 2,
-      "title": "Create setting",
-      "subtitle": "settings",
+      "title": "Créer campagne paramètre",
+      "subtitle": "Campagne paramètre",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -18784,7 +18784,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -18795,15 +18795,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_setting"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_api_reference_campaigns_update_settings sur setting.",
+      "description": "Créer campagne paramètre.",
       "args": {
-        "title": "Create setting",
+        "title": "Créer campagne paramètre",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -18812,8 +18812,8 @@
           {
             "type": "text",
             "key": "campaign_id",
-            "label": "Campaign Id",
-            "description": "Valeur de chemin campaign_id.",
+            "label": "Campagne ID",
+            "description": "Valeur de chemin campagne ID",
             "col": {
               "xs": 24
             },
@@ -18827,7 +18827,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -18836,14 +18836,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "settings"
+      "group": "paramètres"
     },
     {
       "key": "smartlead_statistic_list_api_reference_campaigns_statistics",
       "name": "smartleadStatisticListApiReferenceCampaignsStatistics",
       "schemaVersion": 2,
-      "title": "List statistic",
-      "subtitle": "statistics",
+      "title": "Lister statistic",
+      "subtitle": "Statistic",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -18857,7 +18857,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -18868,15 +18868,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_statistics"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_api_reference_campaigns_statistics sur statistic.",
+      "description": "Lister statistic.",
       "args": {
-        "title": "List statistic",
+        "title": "Lister statistic",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -18885,8 +18885,8 @@
           {
             "type": "text",
             "key": "campaign_id",
-            "label": "Campaign Id",
-            "description": "Valeur de chemin campaign_id.",
+            "label": "Campagne ID",
+            "description": "Valeur de chemin campagne ID",
             "col": {
               "xs": 24
             },
@@ -18906,8 +18906,8 @@
       "key": "smartlead_status_stat_list_api_reference_analytics_campaign_status_stats",
       "name": "smartleadStatusStatListApiReferenceAnalyticsCampaignStatusStats",
       "schemaVersion": 2,
-      "title": "List status_stat",
-      "subtitle": "status_stats",
+      "title": "Lister analytique campagne statut stat",
+      "subtitle": "Analytique campagne statut stat",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -18921,7 +18921,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -18932,15 +18932,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_status_stats"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_api_reference_analytics_campaign_status_stats sur status_stat.",
+      "description": "Lister analytique campagne statut stat.",
       "args": {
-        "title": "List status_stat",
+        "title": "Lister analytique campagne statut stat",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -18949,14 +18949,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "status_stats"
+      "group": "statut statistiques"
     },
     {
       "key": "smartlead_summary_list_api_reference_campaigns_get_webhook_summary",
       "name": "smartleadSummaryListApiReferenceCampaignsGetWebhookSummary",
       "schemaVersion": 2,
-      "title": "List summary",
-      "subtitle": "summaries",
+      "title": "Lister campagne webhook résumé",
+      "subtitle": "Campagne webhook résumé",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -18970,7 +18970,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -18981,15 +18981,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_summaries"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_api_reference_campaigns_get_webhook_summary sur summary.",
+      "description": "Lister campagne webhook résumé.",
       "args": {
-        "title": "List summary",
+        "title": "Lister campagne webhook résumé",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -18999,7 +18999,7 @@
             "type": "text",
             "key": "campaignid",
             "label": "Campaignid",
-            "description": "Valeur de chemin campaignid.",
+            "description": "Valeur de chemin campaignid",
             "col": {
               "xs": 24
             },
@@ -19013,14 +19013,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "summaries"
+      "group": "résumés"
     },
     {
       "key": "smartlead_tag_tag_api_reference_email_account_tags_create_new",
       "name": "smartleadTagTagApiReferenceEmailAccountTagsCreateNew",
       "schemaVersion": 2,
-      "title": "Tag tag",
-      "subtitle": "tags",
+      "title": "Créer nouveau",
+      "subtitle": "nouveau",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -19034,7 +19034,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -19045,15 +19045,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_action_result"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action tag_api_reference_email_account_tags_create_new sur tag.",
+      "description": "Créer nouveau.",
       "args": {
-        "title": "Tag tag",
+        "title": "Créer nouveau",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -19063,7 +19063,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -19078,8 +19078,8 @@
       "key": "smartlead_tag_list_create_api_reference_email_account_tags_get_all",
       "name": "smartleadTagListCreateApiReferenceEmailAccountTagsGetAll",
       "schemaVersion": 2,
-      "title": "Create tag_list",
-      "subtitle": "tag_lists",
+      "title": "Lister email compte tag",
+      "subtitle": "Email compte tag",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -19093,7 +19093,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -19104,15 +19104,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_tag_list"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_api_reference_email_account_tags_get_all sur tag_list.",
+      "description": "Lister email compte tag.",
       "args": {
-        "title": "Create tag_list",
+        "title": "Lister email compte tag",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -19122,7 +19122,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -19131,14 +19131,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "tag_lists"
+      "group": "Taguer listes"
     },
     {
       "key": "smartlead_tag_manager_tag_api_reference_lead_tags_create",
       "name": "smartleadTagManagerTagApiReferenceLeadTagsCreate",
       "schemaVersion": 2,
-      "title": "Tag tag_manager",
-      "subtitle": "tag_managers",
+      "title": "Créer manager prospect",
+      "subtitle": "Manager prospect",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -19152,7 +19152,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -19163,15 +19163,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_action_result"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action tag_api_reference_lead_tags_create sur tag_manager.",
+      "description": "Créer manager prospect.",
       "args": {
-        "title": "Tag tag_manager",
+        "title": "Créer manager prospect",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -19181,7 +19181,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -19190,14 +19190,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "tag_managers"
+      "group": "Taguer managers"
     },
     {
       "key": "smartlead_tag_mapping_assign_api_reference_email_account_tags_assign",
       "name": "smartleadTagMappingAssignApiReferenceEmailAccountTagsAssign",
       "schemaVersion": 2,
-      "title": "Assign tag_mapping",
-      "subtitle": "tag_mappings",
+      "title": "Assigner email compte tag",
+      "subtitle": "Email compte tag",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -19211,7 +19211,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -19222,15 +19222,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_action_result"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action assign_api_reference_email_account_tags_assign sur tag_mapping.",
+      "description": "Assigner email compte tag.",
       "args": {
-        "title": "Assign tag_mapping",
+        "title": "Assigner email compte tag",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -19240,7 +19240,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -19249,14 +19249,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "tag_mappings"
+      "group": "Taguer correspondances"
     },
     {
       "key": "smartlead_tag_mapping_delete_api_reference_email_account_tags_remove",
       "name": "smartleadTagMappingDeleteApiReferenceEmailAccountTagsRemove",
       "schemaVersion": 2,
-      "title": "Delete tag_mapping",
-      "subtitle": "tag_mappings",
+      "title": "Supprimer email compte tag",
+      "subtitle": "Email compte tag",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -19270,7 +19270,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -19281,15 +19281,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_action_result"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete_api_reference_email_account_tags_remove sur tag_mapping.",
+      "description": "Supprimer email compte tag.",
       "args": {
-        "title": "Delete tag_mapping",
+        "title": "Supprimer email compte tag",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -19298,14 +19298,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "tag_mappings"
+      "group": "Taguer correspondances"
     },
     {
       "key": "smartlead_team_member_create_api_reference_campaigns_update_team_member",
       "name": "smartleadTeamMemberCreateApiReferenceCampaignsUpdateTeamMember",
       "schemaVersion": 2,
-      "title": "Create team_member",
-      "subtitle": "team_members",
+      "title": "Créer campagne team membre",
+      "subtitle": "Campagne team membre",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -19319,7 +19319,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -19330,15 +19330,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_team_member"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_api_reference_campaigns_update_team_member sur team_member.",
+      "description": "Créer campagne team membre.",
       "args": {
-        "title": "Create team_member",
+        "title": "Créer campagne team membre",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -19347,8 +19347,8 @@
           {
             "type": "text",
             "key": "campaign_id",
-            "label": "Campaign Id",
-            "description": "Valeur de chemin campaign_id.",
+            "label": "Campagne ID",
+            "description": "Valeur de chemin campagne ID",
             "col": {
               "xs": 24
             },
@@ -19362,7 +19362,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -19371,14 +19371,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "team_members"
+      "group": "team membres"
     },
     {
       "key": "smartlead_top_level_analytics_by_date_list_api_reference_campaigns_get_top_level_analytics",
       "name": "smartleadTopLevelAnalyticsByDateListApiReferenceCampaignsGetTopLevelAnalytics",
       "schemaVersion": 2,
-      "title": "List top_level_analytics_by_date",
-      "subtitle": "top_level_analytics_by_dates",
+      "title": "Lister campagne top level analytique",
+      "subtitle": "Campagne top level analytique",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -19392,7 +19392,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -19403,15 +19403,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_top_level_analytics_by_dates"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_api_reference_campaigns_get_top_level_analytics sur top_level_analytics_by_date.",
+      "description": "Lister campagne top level analytique.",
       "args": {
-        "title": "List top_level_analytics_by_date",
+        "title": "Lister campagne top level analytique",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -19420,8 +19420,8 @@
           {
             "type": "text",
             "key": "campaign_id",
-            "label": "Campaign Id",
-            "description": "Valeur de chemin campaign_id.",
+            "label": "Campagne ID",
+            "description": "Valeur de chemin campagne ID",
             "col": {
               "xs": 24
             },
@@ -19435,14 +19435,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "top_level_analytics_by_dates"
+      "group": "top level analytiques dates"
     },
     {
       "key": "smartlead_unread_reply_create_api_reference_inbox_get_unread",
       "name": "smartleadUnreadReplyCreateApiReferenceInboxGetUnread",
       "schemaVersion": 2,
-      "title": "Create unread_reply",
-      "subtitle": "unread_replies",
+      "title": "Créer boîte de réception non lus",
+      "subtitle": "Boîte de réception non lus",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -19456,7 +19456,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -19467,15 +19467,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_unread_reply"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_api_reference_inbox_get_unread sur unread_reply.",
+      "description": "Créer boîte de réception non lus.",
       "args": {
-        "title": "Create unread_reply",
+        "title": "Créer boîte de réception non lus",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -19485,7 +19485,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -19494,14 +19494,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "unread_replies"
+      "group": "non lus réponses"
     },
     {
       "key": "smartlead_unsubscribe_create_api_reference_campaigns_unsubscribe_lead",
       "name": "smartleadUnsubscribeCreateApiReferenceCampaignsUnsubscribeLead",
       "schemaVersion": 2,
-      "title": "Create unsubscribe",
-      "subtitle": "unsubscribes",
+      "title": "Créer unsubscribe",
+      "subtitle": "Unsubscribe",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -19515,7 +19515,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -19526,15 +19526,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_unsubscribe"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_api_reference_campaigns_unsubscribe_lead sur unsubscribe.",
+      "description": "Créer unsubscribe.",
       "args": {
-        "title": "Create unsubscribe",
+        "title": "Créer unsubscribe",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -19543,8 +19543,8 @@
           {
             "type": "text",
             "key": "campaign_id",
-            "label": "Campaign Id",
-            "description": "Valeur de chemin campaign_id.",
+            "label": "Campagne ID",
+            "description": "Valeur de chemin campagne ID",
             "col": {
               "xs": 24
             },
@@ -19557,8 +19557,8 @@
           {
             "type": "text",
             "key": "lead_id",
-            "label": "Lead Id",
-            "description": "Valeur de chemin lead_id.",
+            "label": "Prospect ID",
+            "description": "Valeur de chemin prospect ID",
             "col": {
               "xs": 24
             },
@@ -19572,7 +19572,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -19587,8 +19587,8 @@
       "key": "smartlead_unsuspend_delete_api_reference_email_accounts_unsuspend",
       "name": "smartleadUnsuspendDeleteApiReferenceEmailAccountsUnsuspend",
       "schemaVersion": 2,
-      "title": "Delete unsuspend",
-      "subtitle": "unsuspends",
+      "title": "Supprimer email compte unsuspend",
+      "subtitle": "Email compte unsuspend",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -19602,7 +19602,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -19613,15 +19613,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_action_result"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action delete_api_reference_email_accounts_unsuspend sur unsuspend.",
+      "description": "Supprimer email compte unsuspend.",
       "args": {
-        "title": "Delete unsuspend",
+        "title": "Supprimer email compte unsuspend",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -19630,8 +19630,8 @@
           {
             "type": "text",
             "key": "email_account_id",
-            "label": "Email Account Id",
-            "description": "Valeur de chemin email_account_id.",
+            "label": "Email Compte ID",
+            "description": "Valeur de chemin email compte ID",
             "col": {
               "xs": 24
             },
@@ -19651,8 +19651,8 @@
       "key": "smartlead_update_lead_email_account_create_api_reference_campaigns_update_lead_email_account",
       "name": "smartleadUpdateLeadEmailAccountCreateApiReferenceCampaignsUpdateLeadEmailAccount",
       "schemaVersion": 2,
-      "title": "Create update_lead_email_account",
-      "subtitle": "update_lead_email_accounts",
+      "title": "Mettre à jour prospect email compte campagne",
+      "subtitle": "Prospect email compte campagne",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -19666,7 +19666,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -19677,15 +19677,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_update_lead_email_account"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_api_reference_campaigns_update_lead_email_account sur update_lead_email_account.",
+      "description": "Mettre à jour prospect email compte campagne.",
       "args": {
-        "title": "Create update_lead_email_account",
+        "title": "Mettre à jour prospect email compte campagne",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -19695,7 +19695,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -19704,14 +19704,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "update_lead_email_accounts"
+      "group": "Mettre à jour prospect email comptes"
     },
     {
       "key": "smartlead_update_revenue_update_api_reference_inbox_update_revenue",
       "name": "smartleadUpdateRevenueUpdateApiReferenceInboxUpdateRevenue",
       "schemaVersion": 2,
-      "title": "Update update_revenue",
-      "subtitle": "update_revenues",
+      "title": "Mettre à jour revenue boîte de réception",
+      "subtitle": "Revenue boîte de réception",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -19725,7 +19725,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -19736,15 +19736,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_update_revenue"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update_api_reference_inbox_update_revenue sur update_revenue.",
+      "description": "Mettre à jour revenue boîte de réception.",
       "args": {
-        "title": "Update update_revenue",
+        "title": "Mettre à jour revenue boîte de réception",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -19754,7 +19754,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -19763,14 +19763,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "update_revenues"
+      "group": "Mettre à jour revenues"
     },
     {
       "key": "smartlead_update_team_member_assign_api_reference_inbox_update_team_member",
       "name": "smartleadUpdateTeamMemberAssignApiReferenceInboxUpdateTeamMember",
       "schemaVersion": 2,
-      "title": "Assign update_team_member",
-      "subtitle": "update_team_members",
+      "title": "Mettre à jour team membre boîte de réception",
+      "subtitle": "Team membre boîte de réception",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -19784,7 +19784,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -19795,15 +19795,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_action_result"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action assign_api_reference_inbox_update_team_member sur update_team_member.",
+      "description": "Mettre à jour team membre boîte de réception.",
       "args": {
-        "title": "Assign update_team_member",
+        "title": "Mettre à jour team membre boîte de réception",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -19813,7 +19813,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -19822,14 +19822,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "update_team_members"
+      "group": "Mettre à jour team membres"
     },
     {
       "key": "smartlead_view_create_api_reference_inbox_get_views",
       "name": "smartleadViewCreateApiReferenceInboxGetViews",
       "schemaVersion": 2,
-      "title": "Create view",
-      "subtitle": "views",
+      "title": "Créer boîte de réception vue",
+      "subtitle": "Boîte de réception vue",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -19843,7 +19843,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -19854,15 +19854,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_view"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_api_reference_inbox_get_views sur view.",
+      "description": "Créer boîte de réception vue.",
       "args": {
-        "title": "Create view",
+        "title": "Créer boîte de réception vue",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -19872,7 +19872,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -19881,14 +19881,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "views"
+      "group": "vues"
     },
     {
       "key": "smartlead_warmup_create_api_reference_email_accounts_warmup_settings",
       "name": "smartleadWarmupCreateApiReferenceEmailAccountsWarmupSettings",
       "schemaVersion": 2,
-      "title": "Create warmup",
-      "subtitle": "warmups",
+      "title": "Créer email compte warmup paramètre",
+      "subtitle": "Email compte warmup paramètre",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -19902,7 +19902,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -19913,15 +19913,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_warmup"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_api_reference_email_accounts_warmup_settings sur warmup.",
+      "description": "Créer email compte warmup paramètre.",
       "args": {
-        "title": "Create warmup",
+        "title": "Créer email compte warmup paramètre",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -19930,8 +19930,8 @@
           {
             "type": "text",
             "key": "email_account_id",
-            "label": "Email Account Id",
-            "description": "Valeur de chemin email_account_id.",
+            "label": "Email Compte ID",
+            "description": "Valeur de chemin email compte ID",
             "col": {
               "xs": 24
             },
@@ -19945,7 +19945,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -19960,8 +19960,8 @@
       "key": "smartlead_warmup_stat_list_api_reference_email_accounts_warmup_stats",
       "name": "smartleadWarmupStatListApiReferenceEmailAccountsWarmupStats",
       "schemaVersion": 2,
-      "title": "List warmup_stat",
-      "subtitle": "warmup_stats",
+      "title": "Lister email compte warmup stat",
+      "subtitle": "Email compte warmup stat",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -19975,7 +19975,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -19986,15 +19986,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_warmup_stats"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_api_reference_email_accounts_warmup_stats sur warmup_stat.",
+      "description": "Lister email compte warmup stat.",
       "args": {
-        "title": "List warmup_stat",
+        "title": "Lister email compte warmup stat",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -20003,8 +20003,8 @@
           {
             "type": "text",
             "key": "email_account_id",
-            "label": "Email Account Id",
-            "description": "Valeur de chemin email_account_id.",
+            "label": "Email Compte ID",
+            "description": "Valeur de chemin email compte ID",
             "col": {
               "xs": 24
             },
@@ -20018,14 +20018,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "warmup_stats"
+      "group": "warmup statistiques"
     },
     {
       "key": "smartlead_webhook_list_api_reference_webhooks_get",
       "name": "smartleadWebhookListApiReferenceWebhooksGet",
       "schemaVersion": 2,
-      "title": "List webhook",
-      "subtitle": "webhooks",
+      "title": "Lister webhook",
+      "subtitle": "Webhook",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -20039,7 +20039,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -20050,15 +20050,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_webhooks"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_api_reference_webhooks_get sur webhook.",
+      "description": "Lister webhook.",
       "args": {
-        "title": "List webhook",
+        "title": "Lister webhook",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -20067,8 +20067,8 @@
           {
             "type": "text",
             "key": "webhook_id",
-            "label": "Webhook Id",
-            "description": "Valeur de chemin webhook_id.",
+            "label": "Webhook ID",
+            "description": "Valeur de chemin webhook ID",
             "col": {
               "xs": 24
             },
@@ -20088,8 +20088,8 @@
       "key": "smartlead_webhook_id_update_api_reference_webhooks_update",
       "name": "smartleadWebhookIdUpdateApiReferenceWebhooksUpdate",
       "schemaVersion": 2,
-      "title": "Update webhook_id",
-      "subtitle": "webhook_ids",
+      "title": "Mettre à jour webhook",
+      "subtitle": "Webhook",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -20103,7 +20103,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "In",
+          "name": "Entrée",
           "type": "any",
           "accepts": [
             "any",
@@ -20114,15 +20114,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:smartlead_webhook_id"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action update_api_reference_webhooks_update sur webhook_id.",
+      "description": "Mettre à jour webhook.",
       "args": {
-        "title": "Update webhook_id",
+        "title": "Mettre à jour webhook",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -20132,7 +20132,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -20141,7 +20141,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "webhook_ids"
+      "group": "Gérer webhook ids"
     }
   ]
 }
