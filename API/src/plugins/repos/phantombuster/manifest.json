@@ -6518,8 +6518,8 @@
       "key": "phantombuster_advice_create_post_ai_advice",
       "name": "phantombusterAdviceCreatePostAiAdvice",
       "schemaVersion": 2,
-      "title": "Create advice",
-      "subtitle": "advices",
+      "title": "Créer IA conseil",
+      "subtitle": "IA conseil",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -6544,15 +6544,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:phantombuster_advice"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_post_ai_advice sur advice.",
+      "description": "Crée un nouvel élément pour IA conseil.",
       "args": {
-        "title": "Create advice",
+        "title": "Créer IA conseil",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -6562,7 +6562,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -6577,8 +6577,8 @@
       "key": "phantombuster_attach_list_get_containers_attach",
       "name": "phantombusterAttachListGetContainersAttach",
       "schemaVersion": 2,
-      "title": "List attach",
-      "subtitle": "attachs",
+      "title": "Lister attache",
+      "subtitle": "attache",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -6603,15 +6603,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:phantombuster_attachs"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_get_containers_attach sur attach.",
+      "description": "Retourne une liste pour attache.",
       "args": {
-        "title": "List attach",
+        "title": "Lister attache",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -6626,8 +6626,8 @@
       "key": "phantombuster_by_list_create_post_org_storage_leads_by_list_listid",
       "name": "phantombusterByListCreatePostOrgStorageLeadsByListListid",
       "schemaVersion": 2,
-      "title": "Create by_list",
-      "subtitle": "by_lists",
+      "title": "Lister org storage prospect ID",
+      "subtitle": "Org storage prospect ID",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -6652,15 +6652,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:phantombuster_by_list"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_post_org_storage_leads_by_list_listid sur by_list.",
+      "description": "Retourne une liste pour org storage prospect ID.",
       "args": {
-        "title": "Create by_list",
+        "title": "Lister org storage prospect ID",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -6670,7 +6670,7 @@
             "type": "text",
             "key": "listid",
             "label": "Listid",
-            "description": "Valeur de chemin listid.",
+            "description": "Valeur de chemin listid",
             "col": {
               "xs": 24
             },
@@ -6684,7 +6684,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -6693,14 +6693,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "by_lists"
+      "group": "listes"
     },
     {
       "key": "phantombuster_companies_object_search_post_org_storage_companies_objects_search",
       "name": "phantombusterCompaniesObjectSearchPostOrgStorageCompaniesObjectsSearch",
       "schemaVersion": 2,
-      "title": "Search companies_object",
-      "subtitle": "companies_objects",
+      "title": "Rechercher org storage entreprise objet",
+      "subtitle": "Org storage entreprise objet",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -6725,15 +6725,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:phantombuster_companies_objects"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action search_post_org_storage_companies_objects_search sur companies_object.",
+      "description": "Recherche des éléments liés à org storage entreprise objet.",
       "args": {
-        "title": "Search companies_object",
+        "title": "Rechercher org storage entreprise objet",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -6743,7 +6743,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -6752,14 +6752,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "companies_objects"
+      "group": "entreprises objets"
     },
     {
       "key": "phantombuster_completion_create_post_ai_completions",
       "name": "phantombusterCompletionCreatePostAiCompletions",
       "schemaVersion": 2,
-      "title": "Create completion",
-      "subtitle": "completions",
+      "title": "Créer IA complétion",
+      "subtitle": "IA complétion",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -6784,15 +6784,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:phantombuster_completion"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_post_ai_completions sur completion.",
+      "description": "Crée un nouvel élément pour IA complétion.",
       "args": {
-        "title": "Create completion",
+        "title": "Créer IA complétion",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -6802,7 +6802,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -6811,14 +6811,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "completions"
+      "group": "complétions"
     },
     {
       "key": "phantombuster_delete_create_post_agents_delete",
       "name": "phantombusterDeleteCreatePostAgentsDelete",
       "schemaVersion": 2,
-      "title": "Create delete",
-      "subtitle": "deletes",
+      "title": "Supprimer agent",
+      "subtitle": "Agent",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -6843,15 +6843,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:phantombuster_delete"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_post_agents_delete sur delete.",
+      "description": "Supprime agent.",
       "args": {
-        "title": "Create delete",
+        "title": "Supprimer agent",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -6861,7 +6861,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -6870,14 +6870,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "deletes"
+      "group": "suppressions"
     },
     {
       "key": "phantombuster_delete_create_post_org_storage_lists_delete",
       "name": "phantombusterDeleteCreatePostOrgStorageListsDelete",
       "schemaVersion": 2,
-      "title": "Create delete",
-      "subtitle": "deletes",
+      "title": "Supprimer org storage liste",
+      "subtitle": "Org storage liste",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -6902,15 +6902,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:phantombuster_delete"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_post_org_storage_lists_delete sur delete.",
+      "description": "Supprime org storage liste.",
       "args": {
-        "title": "Create delete",
+        "title": "Supprimer org storage liste",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -6920,7 +6920,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -6929,14 +6929,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "deletes"
+      "group": "suppressions"
     },
     {
       "key": "phantombuster_delete_create_post_org_storage_leads_objects_delete",
       "name": "phantombusterDeleteCreatePostOrgStorageLeadsObjectsDelete",
       "schemaVersion": 2,
-      "title": "Create delete",
-      "subtitle": "deletes",
+      "title": "Supprimer org storage prospect objet",
+      "subtitle": "Org storage prospect objet",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -6961,15 +6961,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:phantombuster_delete"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_post_org_storage_leads_objects_delete sur delete.",
+      "description": "Supprime org storage prospect objet.",
       "args": {
-        "title": "Create delete",
+        "title": "Supprimer org storage prospect objet",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -6979,7 +6979,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -6988,14 +6988,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "deletes"
+      "group": "suppressions"
     },
     {
       "key": "phantombuster_delete_many_create_post_org_storage_leads_delete_many",
       "name": "phantombusterDeleteManyCreatePostOrgStorageLeadsDeleteMany",
       "schemaVersion": 2,
-      "title": "Create delete_many",
-      "subtitle": "delete_manies",
+      "title": "Supprimer org storage prospect",
+      "subtitle": "Org storage prospect",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -7020,15 +7020,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:phantombuster_delete_many"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_post_org_storage_leads_delete_many sur delete_many.",
+      "description": "Supprime org storage prospect.",
       "args": {
-        "title": "Create delete_many",
+        "title": "Supprimer org storage prospect",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -7038,7 +7038,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -7047,14 +7047,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "delete_manies"
+      "group": "suppression manies"
     },
     {
       "key": "phantombuster_export_agent_usage_list_get_orgs_export_agent_usage_1",
       "name": "phantombusterExportAgentUsageListGetOrgsExportAgentUsage1",
       "schemaVersion": 2,
-      "title": "List export_agent_usage",
-      "subtitle": "export_agent_usages",
+      "title": "Lister org export agent usage 1",
+      "subtitle": "Org export agent usage 1",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -7079,15 +7079,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:phantombuster_export_agent_usages"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_get_orgs_export_agent_usage_1 sur export_agent_usage.",
+      "description": "Retourne une liste pour org export agent usage 1.",
       "args": {
-        "title": "List export_agent_usage",
+        "title": "Lister org export agent usage 1",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -7096,14 +7096,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "export_agent_usages"
+      "group": "export agent usages"
     },
     {
       "key": "phantombuster_export_container_usage_list_get_orgs_export_container_usage_1",
       "name": "phantombusterExportContainerUsageListGetOrgsExportContainerUsage1",
       "schemaVersion": 2,
-      "title": "List export_container_usage",
-      "subtitle": "export_container_usages",
+      "title": "Lister org export container usage 1",
+      "subtitle": "Org export container usage 1",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -7128,15 +7128,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:phantombuster_export_container_usages"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_get_orgs_export_container_usage_1 sur export_container_usage.",
+      "description": "Retourne une liste pour org export container usage 1.",
       "args": {
-        "title": "List export_container_usage",
+        "title": "Lister org export container usage 1",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -7145,14 +7145,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "export_container_usages"
+      "group": "export container usages"
     },
     {
       "key": "phantombuster_fetch_list_get_orgs_fetch",
       "name": "phantombusterFetchListGetOrgsFetch",
       "schemaVersion": 2,
-      "title": "List fetch",
-      "subtitle": "fetchs",
+      "title": "Lister org récupération",
+      "subtitle": "Org récupération",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -7177,15 +7177,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:phantombuster_fetchs"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_get_orgs_fetch sur fetch.",
+      "description": "Retourne une liste pour org récupération.",
       "args": {
-        "title": "List fetch",
+        "title": "Lister org récupération",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -7200,8 +7200,8 @@
       "key": "phantombuster_fetch_list_get_containers_fetch",
       "name": "phantombusterFetchListGetContainersFetch",
       "schemaVersion": 2,
-      "title": "List fetch",
-      "subtitle": "fetchs",
+      "title": "Lister récupération",
+      "subtitle": "récupération",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -7226,15 +7226,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:phantombuster_fetchs"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_get_containers_fetch sur fetch.",
+      "description": "Retourne une liste pour récupération.",
       "args": {
-        "title": "List fetch",
+        "title": "Lister récupération",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -7249,8 +7249,8 @@
       "key": "phantombuster_fetch_list_get_agents_fetch",
       "name": "phantombusterFetchListGetAgentsFetch",
       "schemaVersion": 2,
-      "title": "List fetch",
-      "subtitle": "fetchs",
+      "title": "Lister agent récupération",
+      "subtitle": "Agent récupération",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -7275,15 +7275,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:phantombuster_fetchs"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_get_agents_fetch sur fetch.",
+      "description": "Retourne une liste pour agent récupération.",
       "args": {
-        "title": "List fetch",
+        "title": "Lister agent récupération",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -7298,8 +7298,8 @@
       "key": "phantombuster_fetch_list_get_org_storage_lists_fetch",
       "name": "phantombusterFetchListGetOrgStorageListsFetch",
       "schemaVersion": 2,
-      "title": "List fetch",
-      "subtitle": "fetchs",
+      "title": "Lister org storage liste récupération",
+      "subtitle": "Org storage liste récupération",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -7324,15 +7324,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:phantombuster_fetchs"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_get_org_storage_lists_fetch sur fetch.",
+      "description": "Retourne une liste pour org storage liste récupération.",
       "args": {
-        "title": "List fetch",
+        "title": "Lister org storage liste récupération",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -7347,8 +7347,8 @@
       "key": "phantombuster_fetch_agent_group_list_get_orgs_fetch_agent_groups",
       "name": "phantombusterFetchAgentGroupListGetOrgsFetchAgentGroups",
       "schemaVersion": 2,
-      "title": "List fetch_agent_group",
-      "subtitle": "fetch_agent_groups",
+      "title": "Lister org récupération agent groupe",
+      "subtitle": "Org récupération agent groupe",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -7373,15 +7373,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:phantombuster_fetch_agent_groups"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_get_orgs_fetch_agent_groups sur fetch_agent_group.",
+      "description": "Retourne une liste pour org récupération agent groupe.",
       "args": {
-        "title": "List fetch_agent_group",
+        "title": "Lister org récupération agent groupe",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -7390,14 +7390,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "fetch_agent_groups"
+      "group": "fetch agent groupes"
     },
     {
       "key": "phantombuster_fetch_all_list_get_containers_fetch_all",
       "name": "phantombusterFetchAllListGetContainersFetchAll",
       "schemaVersion": 2,
-      "title": "List fetch_all",
-      "subtitle": "fetch_alls",
+      "title": "Lister récupération all",
+      "subtitle": "récupération all",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -7422,15 +7422,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:phantombuster_fetch_alls"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_get_containers_fetch_all sur fetch_all.",
+      "description": "Retourne une liste pour récupération all.",
       "args": {
-        "title": "List fetch_all",
+        "title": "Lister récupération all",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -7439,14 +7439,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "fetch_alls"
+      "group": "fetch alls"
     },
     {
       "key": "phantombuster_fetch_all_list_get_agents_fetch_all",
       "name": "phantombusterFetchAllListGetAgentsFetchAll",
       "schemaVersion": 2,
-      "title": "List fetch_all",
-      "subtitle": "fetch_alls",
+      "title": "Lister agent récupération agent",
+      "subtitle": "Agent récupération",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -7471,15 +7471,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:phantombuster_fetch_alls"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_get_agents_fetch_all sur fetch_all.",
+      "description": "Retourne une liste pour agent récupération agent.",
       "args": {
-        "title": "List fetch_all",
+        "title": "Lister agent récupération agent",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -7488,14 +7488,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "fetch_alls"
+      "group": "fetch alls"
     },
     {
       "key": "phantombuster_fetch_all_list_get_org_storage_lists_fetch_all",
       "name": "phantombusterFetchAllListGetOrgStorageListsFetchAll",
       "schemaVersion": 2,
-      "title": "List fetch_all",
-      "subtitle": "fetch_alls",
+      "title": "Lister org storage liste récupération org storage liste",
+      "subtitle": "Org storage liste récupération",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -7520,15 +7520,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:phantombuster_fetch_alls"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_get_org_storage_lists_fetch_all sur fetch_all.",
+      "description": "Retourne une liste pour org storage liste récupération org storage liste.",
       "args": {
-        "title": "List fetch_all",
+        "title": "Lister org storage liste récupération org storage liste",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -7537,14 +7537,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "fetch_alls"
+      "group": "fetch alls"
     },
     {
       "key": "phantombuster_fetch_crm_access_list_get_orgs_fetch_crm_access",
       "name": "phantombusterFetchCrmAccessListGetOrgsFetchCrmAccess",
       "schemaVersion": 2,
-      "title": "List fetch_crm_access",
-      "subtitle": "fetch_crm_accesses",
+      "title": "Lister org récupération CRM accès",
+      "subtitle": "Org récupération CRM accès",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -7569,15 +7569,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:phantombuster_fetch_crm_accesses"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_get_orgs_fetch_crm_access sur fetch_crm_access.",
+      "description": "Retourne une liste pour org récupération CRM accès.",
       "args": {
-        "title": "List fetch_crm_access",
+        "title": "Lister org récupération CRM accès",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -7586,14 +7586,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "fetch_crm_accesses"
+      "group": "fetch crm accès"
     },
     {
       "key": "phantombuster_fetch_crm_resource_list_get_orgs_fetch_crm_resources",
       "name": "phantombusterFetchCrmResourceListGetOrgsFetchCrmResources",
       "schemaVersion": 2,
-      "title": "List fetch_crm_resource",
-      "subtitle": "fetch_crm_resources",
+      "title": "Lister org récupération CRM resource",
+      "subtitle": "Org récupération CRM resource",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -7618,15 +7618,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:phantombuster_fetch_crm_resources"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_get_orgs_fetch_crm_resources sur fetch_crm_resource.",
+      "description": "Retourne une liste pour org récupération CRM resource.",
       "args": {
-        "title": "List fetch_crm_resource",
+        "title": "Lister org récupération CRM resource",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -7635,14 +7635,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "fetch_crm_resources"
+      "group": "fetch crm resources"
     },
     {
       "key": "phantombuster_fetch_deleted_list_get_agents_fetch_deleted",
       "name": "phantombusterFetchDeletedListGetAgentsFetchDeleted",
       "schemaVersion": 2,
-      "title": "List fetch_deleted",
-      "subtitle": "fetch_deleteds",
+      "title": "Supprimer agent récupération",
+      "subtitle": "Agent récupération",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -7667,15 +7667,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:phantombuster_fetch_deleteds"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_get_agents_fetch_deleted sur fetch_deleted.",
+      "description": "Supprime agent récupération.",
       "args": {
-        "title": "List fetch_deleted",
+        "title": "Supprimer agent récupération",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -7684,14 +7684,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "fetch_deleteds"
+      "group": "fetch deleteds"
     },
     {
       "key": "phantombuster_fetch_output_list_get_containers_fetch_output",
       "name": "phantombusterFetchOutputListGetContainersFetchOutput",
       "schemaVersion": 2,
-      "title": "List fetch_output",
-      "subtitle": "fetch_outputs",
+      "title": "Lister récupération output",
+      "subtitle": "récupération output",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -7716,15 +7716,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:phantombuster_fetch_outputs"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_get_containers_fetch_output sur fetch_output.",
+      "description": "Retourne une liste pour récupération output.",
       "args": {
-        "title": "List fetch_output",
+        "title": "Lister récupération output",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -7733,14 +7733,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "fetch_outputs"
+      "group": "fetch outputs"
     },
     {
       "key": "phantombuster_fetch_output_list_get_agents_fetch_output",
       "name": "phantombusterFetchOutputListGetAgentsFetchOutput",
       "schemaVersion": 2,
-      "title": "List fetch_output",
-      "subtitle": "fetch_outputs",
+      "title": "Lister agent récupération output",
+      "subtitle": "Agent récupération output",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -7765,15 +7765,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:phantombuster_fetch_outputs"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_get_agents_fetch_output sur fetch_output.",
+      "description": "Retourne une liste pour agent récupération output.",
       "args": {
-        "title": "List fetch_output",
+        "title": "Lister agent récupération output",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -7782,14 +7782,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "fetch_outputs"
+      "group": "fetch outputs"
     },
     {
       "key": "phantombuster_fetch_resource_list_get_orgs_fetch_resources",
       "name": "phantombusterFetchResourceListGetOrgsFetchResources",
       "schemaVersion": 2,
-      "title": "List fetch_resource",
-      "subtitle": "fetch_resources",
+      "title": "Lister org récupération resource",
+      "subtitle": "Org récupération resource",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -7814,15 +7814,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:phantombuster_fetch_resources"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_get_orgs_fetch_resources sur fetch_resource.",
+      "description": "Retourne une liste pour org récupération resource.",
       "args": {
-        "title": "List fetch_resource",
+        "title": "Lister org récupération resource",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -7831,14 +7831,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "fetch_resources"
+      "group": "fetch resources"
     },
     {
       "key": "phantombuster_fetch_result_object_list_get_containers_fetch_result_object",
       "name": "phantombusterFetchResultObjectListGetContainersFetchResultObject",
       "schemaVersion": 2,
-      "title": "List fetch_result_object",
-      "subtitle": "fetch_result_objects",
+      "title": "Lister récupération résultat objet",
+      "subtitle": "récupération résultat objet",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -7863,15 +7863,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:phantombuster_fetch_result_objects"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_get_containers_fetch_result_object sur fetch_result_object.",
+      "description": "Retourne une liste pour récupération résultat objet.",
       "args": {
-        "title": "List fetch_result_object",
+        "title": "Lister récupération résultat objet",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -7880,14 +7880,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "fetch_result_objects"
+      "group": "fetch résultat objets"
     },
     {
       "key": "phantombuster_fetch_running_container_list_get_orgs_fetch_running_containers",
       "name": "phantombusterFetchRunningContainerListGetOrgsFetchRunningContainers",
       "schemaVersion": 2,
-      "title": "List fetch_running_container",
-      "subtitle": "fetch_running_containers",
+      "title": "Lister récupération running container",
+      "subtitle": "récupération running container",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -7912,15 +7912,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:phantombuster_fetch_running_containers"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_get_orgs_fetch_running_containers sur fetch_running_container.",
+      "description": "Retourne une liste pour récupération running container.",
       "args": {
-        "title": "List fetch_running_container",
+        "title": "Lister récupération running container",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -7929,14 +7929,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "fetch_running_containers"
+      "group": "fetch running containers"
     },
     {
       "key": "phantombuster_generate_token_create_post_identities_generate_token",
       "name": "phantombusterGenerateTokenCreatePostIdentitiesGenerateToken",
       "schemaVersion": 2,
-      "title": "Create generate_token",
-      "subtitle": "generate_tokens",
+      "title": "Créer ID entité generate jeton",
+      "subtitle": "ID entité generate jeton",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -7961,15 +7961,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:phantombuster_generate_token"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_post_identities_generate_token sur generate_token.",
+      "description": "Crée un nouvel élément pour ID entité generate jeton.",
       "args": {
-        "title": "Create generate_token",
+        "title": "Créer ID entité generate jeton",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -7979,7 +7979,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -7988,14 +7988,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "generate_tokens"
+      "group": "generate jetons"
     },
     {
       "key": "phantombuster_hcaptcha_create_post_hcaptcha",
       "name": "phantombusterHcaptchaCreatePostHcaptcha",
       "schemaVersion": 2,
-      "title": "Create hcaptcha",
-      "subtitle": "hcaptchas",
+      "title": "Créer hcaptcha",
+      "subtitle": "Hcaptcha",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -8020,15 +8020,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:phantombuster_hcaptcha"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_post_hcaptcha sur hcaptcha.",
+      "description": "Crée un nouvel élément pour hcaptcha.",
       "args": {
-        "title": "Create hcaptcha",
+        "title": "Créer hcaptcha",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -8038,7 +8038,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -8053,8 +8053,8 @@
       "key": "phantombuster_ip_list_get_location_ip",
       "name": "phantombusterIpListGetLocationIp",
       "schemaVersion": 2,
-      "title": "List ip",
-      "subtitle": "ips",
+      "title": "Lister location ip",
+      "subtitle": "Location ip",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -8079,15 +8079,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:phantombuster_ips"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_get_location_ip sur ip.",
+      "description": "Retourne une liste pour location ip.",
       "args": {
-        "title": "List ip",
+        "title": "Lister location ip",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -8102,8 +8102,8 @@
       "key": "phantombuster_launch_create_post_agents_launch",
       "name": "phantombusterLaunchCreatePostAgentsLaunch",
       "schemaVersion": 2,
-      "title": "Create launch",
-      "subtitle": "launchs",
+      "title": "Créer agent lancement",
+      "subtitle": "Agent lancement",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -8128,15 +8128,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:phantombuster_launch"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_post_agents_launch sur launch.",
+      "description": "Crée un nouvel élément pour agent lancement.",
       "args": {
-        "title": "Create launch",
+        "title": "Créer agent lancement",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -8146,7 +8146,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -8161,8 +8161,8 @@
       "key": "phantombuster_launch_soon_create_post_agents_launch_soon",
       "name": "phantombusterLaunchSoonCreatePostAgentsLaunchSoon",
       "schemaVersion": 2,
-      "title": "Create launch_soon",
-      "subtitle": "launch_soons",
+      "title": "Créer agent lancement soon",
+      "subtitle": "Agent lancement soon",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -8187,15 +8187,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:phantombuster_launch_soon"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_post_agents_launch_soon sur launch_soon.",
+      "description": "Crée un nouvel élément pour agent lancement soon.",
       "args": {
-        "title": "Create launch_soon",
+        "title": "Créer agent lancement soon",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -8205,7 +8205,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -8214,14 +8214,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "launch_soons"
+      "group": "launch soons"
     },
     {
       "key": "phantombuster_launch_sync_create_post_agents_launch_sync",
       "name": "phantombusterLaunchSyncCreatePostAgentsLaunchSync",
       "schemaVersion": 2,
-      "title": "Create launch_sync",
-      "subtitle": "launch_syncs",
+      "title": "Créer agent lancement sync",
+      "subtitle": "Agent lancement sync",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -8246,15 +8246,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:phantombuster_launch_sync"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_post_agents_launch_sync sur launch_sync.",
+      "description": "Crée un nouvel élément pour agent lancement sync.",
       "args": {
-        "title": "Create launch_sync",
+        "title": "Créer agent lancement sync",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -8264,7 +8264,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -8273,14 +8273,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "launch_syncs"
+      "group": "launch syncs"
     },
     {
       "key": "phantombuster_leads_object_search_post_org_storage_leads_objects_search",
       "name": "phantombusterLeadsObjectSearchPostOrgStorageLeadsObjectsSearch",
       "schemaVersion": 2,
-      "title": "Search leads_object",
-      "subtitle": "leads_objects",
+      "title": "Rechercher org storage prospect objet",
+      "subtitle": "Org storage prospect objet",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -8305,15 +8305,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:phantombuster_leads_objects"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action search_post_org_storage_leads_objects_search sur leads_object.",
+      "description": "Recherche des éléments liés à org storage prospect objet.",
       "args": {
-        "title": "Search leads_object",
+        "title": "Rechercher org storage prospect objet",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -8323,7 +8323,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -8332,14 +8332,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "leads_objects"
+      "group": "prospects objets"
     },
     {
       "key": "phantombuster_recaptcha_create_post_recaptcha",
       "name": "phantombusterRecaptchaCreatePostRecaptcha",
       "schemaVersion": 2,
-      "title": "Create recaptcha",
-      "subtitle": "recaptchas",
+      "title": "Créer recaptcha",
+      "subtitle": "Recaptcha",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -8364,15 +8364,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:phantombuster_recaptcha"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_post_recaptcha sur recaptcha.",
+      "description": "Crée un nouvel élément pour recaptcha.",
       "args": {
-        "title": "Create recaptcha",
+        "title": "Créer recaptcha",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -8382,7 +8382,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -8397,8 +8397,8 @@
       "key": "phantombuster_save_create_post_agents_save",
       "name": "phantombusterSaveCreatePostAgentsSave",
       "schemaVersion": 2,
-      "title": "Create save",
-      "subtitle": "saves",
+      "title": "Enregistrer agent",
+      "subtitle": "Agent",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -8423,15 +8423,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:phantombuster_save"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_post_agents_save sur save.",
+      "description": "Enregistre agent.",
       "args": {
-        "title": "Create save",
+        "title": "Enregistrer agent",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -8441,7 +8441,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -8450,14 +8450,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "saves"
+      "group": "sauvegardes"
     },
     {
       "key": "phantombuster_save_create_post_org_storage_leads_save",
       "name": "phantombusterSaveCreatePostOrgStorageLeadsSave",
       "schemaVersion": 2,
-      "title": "Create save",
-      "subtitle": "saves",
+      "title": "Créer org storage prospect",
+      "subtitle": "Org storage prospect",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -8482,15 +8482,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:phantombuster_save"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_post_org_storage_leads_save sur save.",
+      "description": "Crée un nouvel élément pour org storage prospect.",
       "args": {
-        "title": "Create save",
+        "title": "Créer org storage prospect",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -8500,7 +8500,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -8509,14 +8509,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "saves"
+      "group": "sauvegardes"
     },
     {
       "key": "phantombuster_save_create_post_org_storage_lists_save",
       "name": "phantombusterSaveCreatePostOrgStorageListsSave",
       "schemaVersion": 2,
-      "title": "Create save",
-      "subtitle": "saves",
+      "title": "Créer org storage liste",
+      "subtitle": "Org storage liste",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -8541,15 +8541,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:phantombuster_save"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_post_org_storage_lists_save sur save.",
+      "description": "Crée un nouvel élément pour org storage liste.",
       "args": {
-        "title": "Create save",
+        "title": "Créer org storage liste",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -8559,7 +8559,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -8568,14 +8568,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "saves"
+      "group": "sauvegardes"
     },
     {
       "key": "phantombuster_save_create_post_org_storage_leads_objects_save",
       "name": "phantombusterSaveCreatePostOrgStorageLeadsObjectsSave",
       "schemaVersion": 2,
-      "title": "Create save",
-      "subtitle": "saves",
+      "title": "Créer org storage prospect objet",
+      "subtitle": "Org storage prospect objet",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -8600,15 +8600,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:phantombuster_save"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_post_org_storage_leads_objects_save sur save.",
+      "description": "Crée un nouvel élément pour org storage prospect objet.",
       "args": {
-        "title": "Create save",
+        "title": "Créer org storage prospect objet",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -8618,7 +8618,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -8627,14 +8627,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "saves"
+      "group": "sauvegardes"
     },
     {
       "key": "phantombuster_save_create_post_org_storage_companies_objects_save",
       "name": "phantombusterSaveCreatePostOrgStorageCompaniesObjectsSave",
       "schemaVersion": 2,
-      "title": "Create save",
-      "subtitle": "saves",
+      "title": "Créer org storage entreprise objet",
+      "subtitle": "Org storage entreprise objet",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -8659,15 +8659,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:phantombuster_save"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_post_org_storage_companies_objects_save sur save.",
+      "description": "Crée un nouvel élément pour org storage entreprise objet.",
       "args": {
-        "title": "Create save",
+        "title": "Créer org storage entreprise objet",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -8677,7 +8677,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -8686,14 +8686,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "saves"
+      "group": "sauvegardes"
     },
     {
       "key": "phantombuster_save_create_post_identities_events_save",
       "name": "phantombusterSaveCreatePostIdentitiesEventsSave",
       "schemaVersion": 2,
-      "title": "Create save",
-      "subtitle": "saves",
+      "title": "Créer ID entitévénement",
+      "subtitle": "ID entitévénement",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -8718,15 +8718,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:phantombuster_save"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_post_identities_events_save sur save.",
+      "description": "Crée un nouvel élément pour ID entitévénement.",
       "args": {
-        "title": "Create save",
+        "title": "Créer ID entitévénement",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -8736,7 +8736,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -8745,14 +8745,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "saves"
+      "group": "sauvegardes"
     },
     {
       "key": "phantombuster_save_agent_group_create_post_orgs_save_agent_groups",
       "name": "phantombusterSaveAgentGroupCreatePostOrgsSaveAgentGroups",
       "schemaVersion": 2,
-      "title": "Create save_agent_group",
-      "subtitle": "save_agent_groups",
+      "title": "Créer org agent groupe",
+      "subtitle": "Org agent groupe",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -8777,15 +8777,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:phantombuster_save_agent_group"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_post_orgs_save_agent_groups sur save_agent_group.",
+      "description": "Crée un nouvel élément pour org agent groupe.",
       "args": {
-        "title": "Create save_agent_group",
+        "title": "Créer org agent groupe",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -8795,7 +8795,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -8804,14 +8804,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "save_agent_groups"
+      "group": "sauvegarde agent groupes"
     },
     {
       "key": "phantombuster_save_crm_contact_create_post_orgs_save_crm_contact",
       "name": "phantombusterSaveCrmContactCreatePostOrgsSaveCrmContact",
       "schemaVersion": 2,
-      "title": "Create save_crm_contact",
-      "subtitle": "save_crm_contacts",
+      "title": "Créer org CRM contact",
+      "subtitle": "Org CRM contact",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -8836,15 +8836,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:phantombuster_save_crm_contact"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_post_orgs_save_crm_contact sur save_crm_contact.",
+      "description": "Crée un nouvel élément pour org CRM contact.",
       "args": {
-        "title": "Create save_crm_contact",
+        "title": "Créer org CRM contact",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -8854,7 +8854,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -8863,14 +8863,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "save_crm_contacts"
+      "group": "sauvegarde crm contacts"
     },
     {
       "key": "phantombuster_save_many_create_post_org_storage_leads_save_many",
       "name": "phantombusterSaveManyCreatePostOrgStorageLeadsSaveMany",
       "schemaVersion": 2,
-      "title": "Create save_many",
-      "subtitle": "save_manies",
+      "title": "Créer org storage prospect - org storage prospect",
+      "subtitle": "Org storage prospect",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -8895,15 +8895,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:phantombuster_save_many"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_post_org_storage_leads_save_many sur save_many.",
+      "description": "Crée un nouvel élément pour org storage prospect - org storage prospect.",
       "args": {
-        "title": "Create save_many",
+        "title": "Créer org storage prospect - org storage prospect",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -8913,7 +8913,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -8922,14 +8922,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "save_manies"
+      "group": "sauvegarde manies"
     },
     {
       "key": "phantombuster_save_many_create_post_org_storage_leads_objects_save_many",
       "name": "phantombusterSaveManyCreatePostOrgStorageLeadsObjectsSaveMany",
       "schemaVersion": 2,
-      "title": "Create save_many",
-      "subtitle": "save_manies",
+      "title": "Créer org storage prospect objet - org storage prospect objet",
+      "subtitle": "Org storage prospect objet",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -8954,15 +8954,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:phantombuster_save_many"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_post_org_storage_leads_objects_save_many sur save_many.",
+      "description": "Crée un nouvel élément pour org storage prospect objet - org storage prospect objet.",
       "args": {
-        "title": "Create save_many",
+        "title": "Créer org storage prospect objet - org storage prospect objet",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -8972,7 +8972,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -8981,14 +8981,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "save_manies"
+      "group": "sauvegarde manies"
     },
     {
       "key": "phantombuster_save_many_create_post_org_storage_companies_objects_save_many",
       "name": "phantombusterSaveManyCreatePostOrgStorageCompaniesObjectsSaveMany",
       "schemaVersion": 2,
-      "title": "Create save_many",
-      "subtitle": "save_manies",
+      "title": "Créer org storage entreprise objet - org storage entreprise objet",
+      "subtitle": "Org storage entreprise objet",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -9013,15 +9013,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:phantombuster_save_many"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_post_org_storage_companies_objects_save_many sur save_many.",
+      "description": "Crée un nouvel élément pour org storage entreprise objet - org storage entreprise objet.",
       "args": {
-        "title": "Create save_many",
+        "title": "Créer org storage entreprise objet - org storage entreprise objet",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -9031,7 +9031,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -9040,14 +9040,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "save_manies"
+      "group": "sauvegarde manies"
     },
     {
       "key": "phantombuster_save_with_token_create_post_identities_save_with_token",
       "name": "phantombusterSaveWithTokenCreatePostIdentitiesSaveWithToken",
       "schemaVersion": 2,
-      "title": "Create save_with_token",
-      "subtitle": "save_with_tokens",
+      "title": "Créer ID entité jeton",
+      "subtitle": "ID entité jeton",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -9072,15 +9072,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:phantombuster_save_with_token"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_post_identities_save_with_token sur save_with_token.",
+      "description": "Crée un nouvel élément pour ID entité jeton.",
       "args": {
-        "title": "Create save_with_token",
+        "title": "Créer ID entité jeton",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -9090,7 +9090,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -9099,14 +9099,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "save_with_tokens"
+      "group": "sauvegarde jetons"
     },
     {
       "key": "phantombuster_serp_list_get_brightdata_serp",
       "name": "phantombusterSerpListGetBrightdataSerp",
       "schemaVersion": 2,
-      "title": "List serp",
-      "subtitle": "serps",
+      "title": "Lister serp",
+      "subtitle": "Serp",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -9131,15 +9131,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:phantombuster_serps"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_get_brightdata_serp sur serp.",
+      "description": "Retourne une liste pour serp.",
       "args": {
-        "title": "List serp",
+        "title": "Lister serp",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -9154,8 +9154,8 @@
       "key": "phantombuster_stop_create_post_agents_stop",
       "name": "phantombusterStopCreatePostAgentsStop",
       "schemaVersion": 2,
-      "title": "Create stop",
-      "subtitle": "stops",
+      "title": "Arrêter agent",
+      "subtitle": "Agent",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -9180,15 +9180,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:phantombuster_stop"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_post_agents_stop sur stop.",
+      "description": "Arrête agent.",
       "args": {
-        "title": "Create stop",
+        "title": "Arrêter agent",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -9198,7 +9198,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -9213,8 +9213,8 @@
       "key": "phantombuster_task_create_post_ai_tasks",
       "name": "phantombusterTaskCreatePostAiTasks",
       "schemaVersion": 2,
-      "title": "Create task",
-      "subtitle": "tasks",
+      "title": "Créer IA tâche",
+      "subtitle": "IA tâche",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -9239,15 +9239,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:phantombuster_task"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_post_ai_tasks sur task.",
+      "description": "Crée un nouvel élément pour IA tâche.",
       "args": {
-        "title": "Create task",
+        "title": "Créer IA tâche",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -9257,7 +9257,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -9266,14 +9266,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "tasks"
+      "group": "tâches"
     },
     {
       "key": "phantombuster_unschedule_all_create_post_agents_unschedule_all",
       "name": "phantombusterUnscheduleAllCreatePostAgentsUnscheduleAll",
       "schemaVersion": 2,
-      "title": "Create unschedule_all",
-      "subtitle": "unschedule_alls",
+      "title": "Créer annuler toutes les planifications",
+      "subtitle": "annuler toutes les planifications",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -9298,15 +9298,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:phantombuster_unschedule_all"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_post_agents_unschedule_all sur unschedule_all.",
+      "description": "Crée un nouvel élément pour annuler toutes les planifications.",
       "args": {
-        "title": "Create unschedule_all",
+        "title": "Créer annuler toutes les planifications",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -9316,7 +9316,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             }
@@ -9325,7 +9325,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "unschedule_alls"
+      "group": "unschedule alls"
     }
   ]
 }

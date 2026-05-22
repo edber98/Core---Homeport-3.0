@@ -2425,8 +2425,8 @@
       "key": "openrouter_completion_create_sendchatcompletionrequest",
       "name": "openrouterCompletionCreateSendchatcompletionrequest",
       "schemaVersion": 2,
-      "title": "Create completion",
-      "subtitle": "completions",
+      "title": "Créer complétion",
+      "subtitle": "Complétion",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -2451,15 +2451,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:openrouter_completion"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_sendchatcompletionrequest sur completion.",
+      "description": "Crée un nouvel élément pour complétion.",
       "args": {
-        "title": "Create completion",
+        "title": "Créer complétion",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -2469,7 +2469,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             },
@@ -2483,14 +2483,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "completions"
+      "group": "complétions"
     },
     {
       "key": "openrouter_completion_create_createpresetschatcompletions",
       "name": "openrouterCompletionCreateCreatepresetschatcompletions",
       "schemaVersion": 2,
-      "title": "Create completion",
-      "subtitle": "completions",
+      "title": "Créer complétion - createpresetschatcompletion",
+      "subtitle": "Complétion",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -2515,15 +2515,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:openrouter_completion"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_createpresetschatcompletions sur completion.",
+      "description": "Crée un nouvel élément pour complétion - createpresetschatcompletion.",
       "args": {
-        "title": "Create completion",
+        "title": "Créer complétion - createpresetschatcompletion",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -2533,7 +2533,7 @@
             "type": "text",
             "key": "slug",
             "label": "Slug",
-            "description": "URL-safe slug identifying the preset. Created if it does not exist.",
+            "description": "URL safe slug identifying preset Created if it does not exist",
             "col": {
               "xs": 24
             },
@@ -2547,7 +2547,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             },
@@ -2561,14 +2561,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "completions"
+      "group": "complétions"
     },
     {
       "key": "openrouter_content_list_listgenerationcontent",
       "name": "openrouterContentListListgenerationcontent",
       "schemaVersion": 2,
-      "title": "List content",
-      "subtitle": "contents",
+      "title": "Lister contenu",
+      "subtitle": "contenu",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -2593,15 +2593,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:openrouter_contents"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_listgenerationcontent sur content.",
+      "description": "Retourne une liste pour contenu.",
       "args": {
-        "title": "List content",
+        "title": "Lister contenu",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -2610,8 +2610,8 @@
           {
             "type": "text",
             "key": "id",
-            "label": "Id",
-            "description": "The generation ID",
+            "label": "ID",
+            "description": "generation ID",
             "col": {
               "xs": 24
             },
@@ -2631,8 +2631,8 @@
       "key": "openrouter_content_list_listvideoscontent",
       "name": "openrouterContentListListvideoscontent",
       "schemaVersion": 2,
-      "title": "List content",
-      "subtitle": "contents",
+      "title": "Lister contenu - listvideoscontent",
+      "subtitle": "contenu",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -2657,15 +2657,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:openrouter_contents"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_listvideoscontent sur content.",
+      "description": "Retourne une liste pour contenu - listvideoscontent.",
       "args": {
-        "title": "List content",
+        "title": "Lister contenu - listvideoscontent",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -2675,7 +2675,7 @@
             "type": "text",
             "key": "jobid",
             "label": "Jobid",
-            "description": "Paramètre de chemin jobid.",
+            "description": "Paramètre de chemin jobid",
             "col": {
               "xs": 24
             },
@@ -2688,8 +2688,8 @@
           {
             "type": "number",
             "key": "index",
-            "label": "Index",
-            "description": "Paramètre de requête index.",
+            "label": "Liste",
+            "description": "Paramètre de requête liste",
             "col": {
               "xs": 24
             }
@@ -2704,8 +2704,8 @@
       "key": "openrouter_count_list_listmodelscount",
       "name": "openrouterCountListListmodelscount",
       "schemaVersion": 2,
-      "title": "List count",
-      "subtitle": "counts",
+      "title": "Lister compte",
+      "subtitle": "compte",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -2730,15 +2730,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:openrouter_counts"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_listmodelscount sur count.",
+      "description": "Retourne une liste pour compte.",
       "args": {
-        "title": "List count",
+        "title": "Lister compte",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -2748,7 +2748,7 @@
             "type": "text",
             "key": "output_modalities",
             "label": "Output Modalities",
-            "description": "Filter models by output modality. Accepts a comma-separated list of modalities (text, image, audio, embeddings) or \"all\" to include all models. Defaults to \"text\".",
+            "description": "Filtre modèles output modality Accepts comma separated liste modalities text image audio embeddings include modèles Defaults text",
             "col": {
               "xs": 24
             }
@@ -2763,8 +2763,8 @@
       "key": "openrouter_embedding_create_createembeddings",
       "name": "openrouterEmbeddingCreateCreateembeddings",
       "schemaVersion": 2,
-      "title": "Create embedding",
-      "subtitle": "embeddings",
+      "title": "Créer embedding",
+      "subtitle": "embedding",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -2789,15 +2789,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:openrouter_embedding"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_createembeddings sur embedding.",
+      "description": "Crée un nouvel élément pour embedding.",
       "args": {
-        "title": "Create embedding",
+        "title": "Créer embedding",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -2807,7 +2807,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             },
@@ -2827,7 +2827,7 @@
       "key": "openrouter_endpoint_list_listendpoints",
       "name": "openrouterEndpointListListendpoints",
       "schemaVersion": 2,
-      "title": "List endpoint",
+      "title": "Lister endpoints",
       "subtitle": "endpoints",
       "icon": "fa-solid fa-bolt",
       "type": "function",
@@ -2853,15 +2853,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:openrouter_endpoints"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_listendpoints sur endpoint.",
+      "description": "Retourne une liste pour endpoints.",
       "args": {
-        "title": "List endpoint",
+        "title": "Lister endpoints",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -2871,7 +2871,7 @@
             "type": "text",
             "key": "author",
             "label": "Author",
-            "description": "The author/organization of the model",
+            "description": "author organization modèle",
             "col": {
               "xs": 24
             },
@@ -2885,7 +2885,7 @@
             "type": "text",
             "key": "slug",
             "label": "Slug",
-            "description": "The model slug",
+            "description": "modèle slug",
             "col": {
               "xs": 24
             },
@@ -2905,8 +2905,8 @@
       "key": "openrouter_generation_list_getgeneration",
       "name": "openrouterGenerationListGetgeneration",
       "schemaVersion": 2,
-      "title": "List generation",
-      "subtitle": "generations",
+      "title": "Lister génération",
+      "subtitle": "génération",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -2931,15 +2931,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:openrouter_generations"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_getgeneration sur generation.",
+      "description": "Retourne une liste pour génération.",
       "args": {
-        "title": "List generation",
+        "title": "Lister génération",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -2948,8 +2948,8 @@
           {
             "type": "text",
             "key": "id",
-            "label": "Id",
-            "description": "The generation ID",
+            "label": "ID",
+            "description": "generation ID",
             "col": {
               "xs": 24
             },
@@ -2969,8 +2969,8 @@
       "key": "openrouter_model_list_listembeddingsmodels",
       "name": "openrouterModelListListembeddingsmodels",
       "schemaVersion": 2,
-      "title": "List model",
-      "subtitle": "models",
+      "title": "Lister modèles d'embeddings",
+      "subtitle": "Modèle",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -2995,15 +2995,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:openrouter_models"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_listembeddingsmodels sur model.",
+      "description": "Retourne une liste pour modèles d'embeddings.",
       "args": {
-        "title": "List model",
+        "title": "Lister modèles d'embeddings",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3012,14 +3012,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "models"
+      "group": "modèles"
     },
     {
       "key": "openrouter_model_list_getmodels",
       "name": "openrouterModelListGetmodels",
       "schemaVersion": 2,
-      "title": "List model",
-      "subtitle": "models",
+      "title": "Lister modèles de chat",
+      "subtitle": "Modèle",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -3044,15 +3044,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:openrouter_models"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_getmodels sur model.",
+      "description": "Retourne une liste pour modèles de chat.",
       "args": {
-        "title": "List model",
+        "title": "Lister modèles de chat",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3062,7 +3062,7 @@
             "type": "text",
             "key": "category",
             "label": "Category",
-            "description": "Filter models by use case category",
+            "description": "Filtre modèles case category",
             "col": {
               "xs": 24
             }
@@ -3071,7 +3071,7 @@
             "type": "text",
             "key": "supported_parameters",
             "label": "Supported Parameters",
-            "description": "Filter models by supported parameter (comma-separated)",
+            "description": "Filtre modèles supported parameter comma separated",
             "col": {
               "xs": 24
             }
@@ -3080,7 +3080,7 @@
             "type": "text",
             "key": "output_modalities",
             "label": "Output Modalities",
-            "description": "Filter models by output modality. Accepts a comma-separated list of modalities (text, image, audio, embeddings) or \"all\" to include all models. Defaults to \"text\".",
+            "description": "Filtre modèles output modality Accepts comma separated liste modalities text image audio embeddings include modèles Defaults text",
             "col": {
               "xs": 24
             }
@@ -3089,14 +3089,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "models"
+      "group": "modèles"
     },
     {
       "key": "openrouter_model_list_listvideosmodels",
       "name": "openrouterModelListListvideosmodels",
       "schemaVersion": 2,
-      "title": "List model",
-      "subtitle": "models",
+      "title": "Lister vidéo modèle",
+      "subtitle": "Vidéo modèle",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -3121,15 +3121,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:openrouter_models"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_listvideosmodels sur model.",
+      "description": "Retourne une liste pour vidéo modèle.",
       "args": {
-        "title": "List model",
+        "title": "Lister vidéo modèle",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3138,14 +3138,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "models"
+      "group": "modèles"
     },
     {
       "key": "openrouter_rerank_create_creatererank",
       "name": "openrouterRerankCreateCreatererank",
       "schemaVersion": 2,
-      "title": "Create rerank",
-      "subtitle": "reranks",
+      "title": "Créer reranking",
+      "subtitle": "reranking",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -3170,15 +3170,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:openrouter_rerank"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_creatererank sur rerank.",
+      "description": "Crée un nouvel élément pour reranking.",
       "args": {
-        "title": "Create rerank",
+        "title": "Créer reranking",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3188,7 +3188,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             },
@@ -3208,8 +3208,8 @@
       "key": "openrouter_respons_create_createresponses",
       "name": "openrouterResponsCreateCreateresponses",
       "schemaVersion": 2,
-      "title": "Create respons",
-      "subtitle": "responses",
+      "title": "Créer réponse",
+      "subtitle": "réponse",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -3234,15 +3234,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:openrouter_respons"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_createresponses sur respons.",
+      "description": "Crée un nouvel élément pour réponse.",
       "args": {
-        "title": "Create respons",
+        "title": "Créer réponse",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3252,7 +3252,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             },
@@ -3272,8 +3272,8 @@
       "key": "openrouter_speech_create_createaudiospeech",
       "name": "openrouterSpeechCreateCreateaudiospeech",
       "schemaVersion": 2,
-      "title": "Create speech",
-      "subtitle": "speechs",
+      "title": "Créer audio parole",
+      "subtitle": "Audio parole",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -3298,15 +3298,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:openrouter_speech"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_createaudiospeech sur speech.",
+      "description": "Crée un nouvel élément pour audio parole.",
       "args": {
-        "title": "Create speech",
+        "title": "Créer audio parole",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3316,7 +3316,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             },
@@ -3330,14 +3330,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "speechs"
+      "group": "paroles"
     },
     {
       "key": "openrouter_transcription_create_createaudiotranscriptions",
       "name": "openrouterTranscriptionCreateCreateaudiotranscriptions",
       "schemaVersion": 2,
-      "title": "Create transcription",
-      "subtitle": "transcriptions",
+      "title": "Créer transcription audio",
+      "subtitle": "transcription audio",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -3362,15 +3362,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:openrouter_transcription"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_createaudiotranscriptions sur transcription.",
+      "description": "Crée un nouvel élément pour transcription audio.",
       "args": {
-        "title": "Create transcription",
+        "title": "Créer transcription audio",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3380,7 +3380,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             },
@@ -3400,8 +3400,8 @@
       "key": "openrouter_user_list_listmodelsuser",
       "name": "openrouterUserListListmodelsuser",
       "schemaVersion": 2,
-      "title": "List user",
-      "subtitle": "users",
+      "title": "Lister modèle utilisateur",
+      "subtitle": "Modèle utilisateur",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -3426,15 +3426,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:openrouter_users"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action list_listmodelsuser sur user.",
+      "description": "Retourne une liste pour modèle utilisateur.",
       "args": {
-        "title": "List user",
+        "title": "Lister modèle utilisateur",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3443,14 +3443,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "users"
+      "group": "utilisateurs"
     },
     {
       "key": "openrouter_video_create_createvideos",
       "name": "openrouterVideoCreateCreatevideos",
       "schemaVersion": 2,
-      "title": "Create video",
-      "subtitle": "videos",
+      "title": "Créer vidéo",
+      "subtitle": "Vidéo",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -3475,15 +3475,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:openrouter_video"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action create_createvideos sur video.",
+      "description": "Crée un nouvel élément pour vidéo.",
       "args": {
-        "title": "Create video",
+        "title": "Créer vidéo",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3493,7 +3493,7 @@
             "type": "json",
             "key": "body",
             "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "description": "Corps Json de la requête",
             "col": {
               "xs": 24
             },
@@ -3507,14 +3507,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "videos"
+      "group": "vidéos"
     },
     {
       "key": "openrouter_video_get_getvideos",
       "name": "openrouterVideoGetGetvideos",
       "schemaVersion": 2,
-      "title": "Get video",
-      "subtitle": "videos",
+      "title": "Récupérer vidéo",
+      "subtitle": "Vidéo",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -3539,15 +3539,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Success",
+          "name": "Succès",
           "type": "payload",
           "schema": "$var:openrouter_video"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Action get_getvideos sur video.",
+      "description": "Récupère les détails de vidéo.",
       "args": {
-        "title": "Get video",
+        "title": "Récupérer vidéo",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3557,7 +3557,7 @@
             "type": "text",
             "key": "jobid",
             "label": "Jobid",
-            "description": "Paramètre de chemin jobid.",
+            "description": "Paramètre de chemin jobid",
             "col": {
               "xs": 24
             },
@@ -3571,7 +3571,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "videos"
+      "group": "vidéos"
     }
   ]
 }

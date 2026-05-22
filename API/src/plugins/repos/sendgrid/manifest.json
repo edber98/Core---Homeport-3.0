@@ -15806,7 +15806,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Rechercher segment.",
+      "description": "Recherche des éléments liés à segment.",
       "args": {
         "title": "Rechercher segment",
         "ui": {
@@ -15884,7 +15884,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer segment.",
+      "description": "Crée un nouvel élément pour segment.",
       "args": {
         "title": "Créer segment",
         "ui": {
@@ -15943,7 +15943,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer segment ID.",
+      "description": "Supprime segment ID.",
       "args": {
         "title": "Supprimer segment ID",
         "ui": {
@@ -16007,7 +16007,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer segment ID.",
+      "description": "Récupère les détails de segment ID.",
       "args": {
         "title": "Récupérer segment ID",
         "ui": {
@@ -16080,7 +16080,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour segment ID.",
+      "description": "Met à jour segment ID.",
       "args": {
         "title": "Mettre à jour segment ID",
         "ui": {
@@ -16153,7 +16153,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Activer modèle ID version.",
+      "description": "Active modèle ID version.",
       "args": {
         "title": "Activer modèle ID version",
         "ui": {
@@ -16231,7 +16231,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister accès paramètre activité.",
+      "description": "Retourne une liste pour accès paramètre activité.",
       "args": {
         "title": "Lister accès paramètre activité",
         "ui": {
@@ -16258,8 +16258,8 @@
       "key": "sendgrid_address_whitelist_list_get_mail_settings_address_whitelist",
       "name": "sendgridAddressWhitelistListGetMailSettingsAddressWhitelist",
       "schemaVersion": 2,
-      "title": "Lister mail paramètre address whitelist",
-      "subtitle": "Mail paramètre address whitelist",
+      "title": "Lister email paramètre address whitelist",
+      "subtitle": "email paramètre address whitelist",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -16290,9 +16290,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister mail paramètre address whitelist.",
+      "description": "Retourne une liste pour email paramètre address whitelist.",
       "args": {
-        "title": "Lister mail paramètre address whitelist",
+        "title": "Lister email paramètre address whitelist",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16307,8 +16307,8 @@
       "key": "sendgrid_address_whitelist_update_patch_mail_settings_address_whitelist",
       "name": "sendgridAddressWhitelistUpdatePatchMailSettingsAddressWhitelist",
       "schemaVersion": 2,
-      "title": "Mettre à jour mail paramètre address whitelist",
-      "subtitle": "Mail paramètre address whitelist",
+      "title": "Mettre à jour email paramètre address whitelist",
+      "subtitle": "email paramètre address whitelist",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -16339,9 +16339,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour mail paramètre address whitelist.",
+      "description": "Met à jour email paramètre address whitelist.",
       "args": {
-        "title": "Mettre à jour mail paramètre address whitelist",
+        "title": "Mettre à jour email paramètre address whitelist",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16366,8 +16366,8 @@
       "key": "sendgrid_alert_list_get_alerts",
       "name": "sendgridAlertListGetAlerts",
       "schemaVersion": 2,
-      "title": "Lister alert",
-      "subtitle": "Alert",
+      "title": "Lister alerte",
+      "subtitle": "alerte",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -16398,9 +16398,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister alert.",
+      "description": "Retourne une liste pour alerte.",
       "args": {
-        "title": "Lister alert",
+        "title": "Lister alerte",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16415,8 +16415,8 @@
       "key": "sendgrid_alert_create_post_alerts",
       "name": "sendgridAlertCreatePostAlerts",
       "schemaVersion": 2,
-      "title": "Créer alert",
-      "subtitle": "Alert",
+      "title": "Créer alerte",
+      "subtitle": "alerte",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -16447,9 +16447,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer alert.",
+      "description": "Crée un nouvel élément pour alerte.",
       "args": {
-        "title": "Créer alert",
+        "title": "Créer alerte",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16474,8 +16474,8 @@
       "key": "sendgrid_alert_delete_delete_alerts_alert_id",
       "name": "sendgridAlertDeleteDeleteAlertsAlertId",
       "schemaVersion": 2,
-      "title": "Supprimer alert ID",
-      "subtitle": "Alert ID",
+      "title": "Supprimer alerte ID",
+      "subtitle": "alerte ID",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -16506,9 +16506,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer alert ID.",
+      "description": "Supprime alerte ID.",
       "args": {
-        "title": "Supprimer alert ID",
+        "title": "Supprimer alerte ID",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16538,8 +16538,8 @@
       "key": "sendgrid_alert_get_get_alerts_alert_id",
       "name": "sendgridAlertGetGetAlertsAlertId",
       "schemaVersion": 2,
-      "title": "Récupérer alert ID",
-      "subtitle": "Alert ID",
+      "title": "Récupérer alerte ID",
+      "subtitle": "alerte ID",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
@@ -16570,9 +16570,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer alert ID.",
+      "description": "Récupère les détails de alerte ID.",
       "args": {
-        "title": "Récupérer alert ID",
+        "title": "Récupérer alerte ID",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16602,8 +16602,8 @@
       "key": "sendgrid_alert_update_patch_alerts_alert_id",
       "name": "sendgridAlertUpdatePatchAlertsAlertId",
       "schemaVersion": 2,
-      "title": "Mettre à jour alert ID",
-      "subtitle": "Alert ID",
+      "title": "Mettre à jour alerte ID",
+      "subtitle": "alerte ID",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -16634,9 +16634,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour alert ID.",
+      "description": "Met à jour alerte ID.",
       "args": {
-        "title": "Mettre à jour alert ID",
+        "title": "Mettre à jour alerte ID",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16675,8 +16675,8 @@
       "key": "sendgrid_assigned_send_get_ips_assigned",
       "name": "sendgridAssignedSendGetIpsAssigned",
       "schemaVersion": 2,
-      "title": "Récupérer ips assigned",
-      "subtitle": "Ips assigned",
+      "title": "Récupérer IP assigned",
+      "subtitle": "IP assigned",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -16707,9 +16707,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer ips assigned.",
+      "description": "Récupère les détails de IP assigned.",
       "args": {
-        "title": "Récupérer ips assigned",
+        "title": "Récupérer IP assigned",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16756,7 +16756,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Rechercher automation.",
+      "description": "Recherche des éléments liés à automation.",
       "args": {
         "title": "Rechercher automation",
         "ui": {
@@ -16783,7 +16783,7 @@
       "key": "sendgrid_automation_search_get_automation_stat",
       "name": "sendgridAutomationSearchGetAutomationStat",
       "schemaVersion": 2,
-      "title": "Rechercher automation - stat",
+      "title": "Rechercher automation - statistique",
       "subtitle": "Automation",
       "icon": "fa-solid fa-magnifying-glass",
       "type": "function",
@@ -16815,9 +16815,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Rechercher automation - stat.",
+      "description": "Recherche des éléments liés à automation - statistique.",
       "args": {
-        "title": "Rechercher automation - stat",
+        "title": "Rechercher automation - statistique",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16847,8 +16847,8 @@
       "key": "sendgrid_batch_assign_post_mail_batch",
       "name": "sendgridBatchAssignPostMailBatch",
       "schemaVersion": 2,
-      "title": "Assigner mail lot",
-      "subtitle": "Mail lot",
+      "title": "Assigner email lot",
+      "subtitle": "email lot",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -16879,9 +16879,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Assigner mail lot.",
+      "description": "Assigne email lot.",
       "args": {
-        "title": "Assigner mail lot",
+        "title": "Assigner email lot",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16906,8 +16906,8 @@
       "key": "sendgrid_batch_send_get_mail_batch_batch_id",
       "name": "sendgridBatchSendGetMailBatchBatchId",
       "schemaVersion": 2,
-      "title": "Récupérer mail lot ID",
-      "subtitle": "Mail lot ID",
+      "title": "Récupérer email lot ID",
+      "subtitle": "email lot ID",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -16938,9 +16938,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer mail lot ID.",
+      "description": "Récupère les détails de email lot ID.",
       "args": {
-        "title": "Récupérer mail lot ID",
+        "title": "Récupérer email lot ID",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17002,7 +17002,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer marketing contact lot.",
+      "description": "Crée un nouvel élément pour marketing contact lot.",
       "args": {
         "title": "Créer marketing contact lot",
         "ui": {
@@ -17029,8 +17029,8 @@
       "key": "sendgrid_billable_count_list_get_contactdb_recipients_billable_count",
       "name": "sendgridBillableCountListGetContactdbRecipientsBillableCount",
       "schemaVersion": 2,
-      "title": "Lister billable count",
-      "subtitle": "Billable count",
+      "title": "Lister billable compte",
+      "subtitle": "Billable compte",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -17061,9 +17061,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister billable count.",
+      "description": "Retourne une liste pour billable compte.",
       "args": {
-        "title": "Lister billable count",
+        "title": "Lister billable compte",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17110,7 +17110,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer bloc.",
+      "description": "Supprime bloc.",
       "args": {
         "title": "Supprimer bloc",
         "ui": {
@@ -17159,7 +17159,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister bloc.",
+      "description": "Retourne une liste pour bloc.",
       "args": {
         "title": "Lister bloc",
         "ui": {
@@ -17171,7 +17171,7 @@
             "type": "number",
             "key": "start_time",
             "label": "Start Time",
-            "description": "start time range when blocked email was created inclusive unix timestamp",
+            "description": "Démarrer time range when blocked email was created inclusive unix timestamp",
             "col": {
               "xs": 24
             }
@@ -17245,7 +17245,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer bloc - suppression.",
+      "description": "Supprime bloc - suppression.",
       "args": {
         "title": "Supprimer bloc - suppression",
         "ui": {
@@ -17309,7 +17309,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer bloc.",
+      "description": "Récupère les détails de bloc.",
       "args": {
         "title": "Récupérer bloc",
         "ui": {
@@ -17341,8 +17341,8 @@
       "key": "sendgrid_bounce_delete_delete_suppression_bounces",
       "name": "sendgridBounceDeleteDeleteSuppressionBounces",
       "schemaVersion": 2,
-      "title": "Supprimer bounce",
-      "subtitle": "Bounce",
+      "title": "Supprimer rebond",
+      "subtitle": "rebond",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -17373,9 +17373,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer bounce.",
+      "description": "Supprime rebond.",
       "args": {
-        "title": "Supprimer bounce",
+        "title": "Supprimer rebond",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17390,8 +17390,8 @@
       "key": "sendgrid_bounce_list_get_suppression_bounces",
       "name": "sendgridBounceListGetSuppressionBounces",
       "schemaVersion": 2,
-      "title": "Lister bounce",
-      "subtitle": "Bounce",
+      "title": "Lister rebond",
+      "subtitle": "rebond",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -17422,9 +17422,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister bounce.",
+      "description": "Retourne une liste pour rebond.",
       "args": {
-        "title": "Lister bounce",
+        "title": "Lister rebond",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17458,8 +17458,8 @@
       "key": "sendgrid_bounce_delete_delete_suppression_bounces_email",
       "name": "sendgridBounceDeleteDeleteSuppressionBouncesEmail",
       "schemaVersion": 2,
-      "title": "Supprimer bounce - suppression",
-      "subtitle": "Bounce",
+      "title": "Supprimer rebond - suppression",
+      "subtitle": "rebond",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -17490,9 +17490,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer bounce - suppression.",
+      "description": "Supprime rebond - suppression.",
       "args": {
-        "title": "Supprimer bounce - suppression",
+        "title": "Supprimer rebond - suppression",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17536,8 +17536,8 @@
       "key": "sendgrid_bounce_get_get_suppression_bounces_email",
       "name": "sendgridBounceGetGetSuppressionBouncesEmail",
       "schemaVersion": 2,
-      "title": "Récupérer bounce",
-      "subtitle": "Bounce",
+      "title": "Récupérer rebond",
+      "subtitle": "rebond",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
@@ -17568,9 +17568,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer bounce.",
+      "description": "Récupère les détails de rebond.",
       "args": {
-        "title": "Récupérer bounce",
+        "title": "Récupérer rebond",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17600,8 +17600,8 @@
       "key": "sendgrid_bounce_purge_list_get_mail_settings_bounce_purge",
       "name": "sendgridBouncePurgeListGetMailSettingsBouncePurge",
       "schemaVersion": 2,
-      "title": "Lister mail paramètre bounce purge",
-      "subtitle": "Mail paramètre bounce purge",
+      "title": "Lister email paramètre rebond purge",
+      "subtitle": "email paramètre rebond purge",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -17632,9 +17632,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister mail paramètre bounce purge.",
+      "description": "Retourne une liste pour email paramètre rebond purge.",
       "args": {
-        "title": "Lister mail paramètre bounce purge",
+        "title": "Lister email paramètre rebond purge",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17649,8 +17649,8 @@
       "key": "sendgrid_bounce_purge_update_patch_mail_settings_bounce_purge",
       "name": "sendgridBouncePurgeUpdatePatchMailSettingsBouncePurge",
       "schemaVersion": 2,
-      "title": "Mettre à jour mail paramètre bounce purge",
-      "subtitle": "Mail paramètre bounce purge",
+      "title": "Mettre à jour email paramètre rebond purge",
+      "subtitle": "email paramètre rebond purge",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -17681,9 +17681,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour mail paramètre bounce purge.",
+      "description": "Met à jour email paramètre rebond purge.",
       "args": {
-        "title": "Mettre à jour mail paramètre bounce purge",
+        "title": "Mettre à jour email paramètre rebond purge",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17740,7 +17740,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister campagne.",
+      "description": "Retourne une liste pour campagne.",
       "args": {
         "title": "Lister campagne",
         "ui": {
@@ -17808,7 +17808,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Envoyer campagne.",
+      "description": "Envoie campagne.",
       "args": {
         "title": "Envoyer campagne",
         "ui": {
@@ -17867,7 +17867,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer campagne ID.",
+      "description": "Supprime campagne ID.",
       "args": {
         "title": "Supprimer campagne ID",
         "ui": {
@@ -17931,7 +17931,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer campagne ID.",
+      "description": "Récupère les détails de campagne ID.",
       "args": {
         "title": "Récupérer campagne ID",
         "ui": {
@@ -17995,7 +17995,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour campagne ID.",
+      "description": "Met à jour campagne ID.",
       "args": {
         "title": "Mettre à jour campagne ID",
         "ui": {
@@ -18036,8 +18036,8 @@
       "key": "sendgrid_category_list_get_categories",
       "name": "sendgridCategoryListGetCategories",
       "schemaVersion": 2,
-      "title": "Lister category",
-      "subtitle": "Category",
+      "title": "Lister catégorie",
+      "subtitle": "catégorie",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -18068,9 +18068,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister category.",
+      "description": "Retourne une liste pour catégorie.",
       "args": {
-        "title": "Lister category",
+        "title": "Lister catégorie",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -18113,8 +18113,8 @@
       "key": "sendgrid_category_list_get_marketing_singlesends_categories",
       "name": "sendgridCategoryListGetMarketingSinglesendsCategories",
       "schemaVersion": 2,
-      "title": "Lister category - marketing",
-      "subtitle": "Category",
+      "title": "Lister catégorie - marketing",
+      "subtitle": "catégorie",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -18145,9 +18145,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister category - marketing.",
+      "description": "Retourne une liste pour catégorie - marketing.",
       "args": {
-        "title": "Lister category - marketing",
+        "title": "Lister catégorie - marketing",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -18162,8 +18162,8 @@
       "key": "sendgrid_click_list_get_tracking_settings_click",
       "name": "sendgridClickListGetTrackingSettingsClick",
       "schemaVersion": 2,
-      "title": "Lister tracking paramètre click",
-      "subtitle": "Tracking paramètre click",
+      "title": "Lister suivi paramètre click",
+      "subtitle": "suivi paramètre click",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -18194,9 +18194,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister tracking paramètre click.",
+      "description": "Retourne une liste pour suivi paramètre click.",
       "args": {
-        "title": "Lister tracking paramètre click",
+        "title": "Lister suivi paramètre click",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -18211,8 +18211,8 @@
       "key": "sendgrid_click_update_patch_tracking_settings_click",
       "name": "sendgridClickUpdatePatchTrackingSettingsClick",
       "schemaVersion": 2,
-      "title": "Mettre à jour tracking paramètre click",
-      "subtitle": "Tracking paramètre click",
+      "title": "Mettre à jour suivi paramètre click",
+      "subtitle": "suivi paramètre click",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -18243,9 +18243,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour tracking paramètre click.",
+      "description": "Met à jour suivi paramètre click.",
       "args": {
-        "title": "Mettre à jour tracking paramètre click",
+        "title": "Mettre à jour suivi paramètre click",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -18302,7 +18302,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Rechercher mc contact.",
+      "description": "Recherche des éléments liés à mc contact.",
       "args": {
         "title": "Rechercher mc contact",
         "ui": {
@@ -18380,7 +18380,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister mc contat.",
+      "description": "Retourne une liste pour mc contat.",
       "args": {
         "title": "Lister mc contat",
         "ui": {
@@ -18429,7 +18429,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour ou créer mc contact.",
+      "description": "Met à jour ou crée mc contact.",
       "args": {
         "title": "Mettre à jour ou créer mc contact",
         "ui": {
@@ -18456,7 +18456,7 @@
       "key": "sendgrid_contact_search_post_mc_contacts_search",
       "name": "sendgridContactSearchPostMcContactsSearch",
       "schemaVersion": 2,
-      "title": "Rechercher mc contact - contact mc",
+      "title": "Rechercher mc contact mc",
       "subtitle": "Mc contact",
       "icon": "fa-solid fa-magnifying-glass",
       "type": "function",
@@ -18488,9 +18488,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Rechercher mc contact - contact mc.",
+      "description": "Recherche des éléments liés à mc contact mc.",
       "args": {
-        "title": "Rechercher mc contact - contact mc",
+        "title": "Rechercher mc contact mc",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -18547,7 +18547,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer mc contact ID.",
+      "description": "Récupère les détails de mc contact ID.",
       "args": {
         "title": "Récupérer mc contact ID",
         "ui": {
@@ -18611,7 +18611,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer mc liste ID contact.",
+      "description": "Supprime mc liste ID contact.",
       "args": {
         "title": "Supprimer mc liste ID contact",
         "ui": {
@@ -18657,8 +18657,8 @@
       "key": "sendgrid_count_list_get_contactdb_recipients_count",
       "name": "sendgridCountListGetContactdbRecipientsCount",
       "schemaVersion": 2,
-      "title": "Lister count",
-      "subtitle": "Count",
+      "title": "Lister compte",
+      "subtitle": "compte",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -18689,9 +18689,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister count.",
+      "description": "Retourne une liste pour compte.",
       "args": {
-        "title": "Lister count",
+        "title": "Lister compte",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -18706,8 +18706,8 @@
       "key": "sendgrid_count_list_get_mc_contacts_count",
       "name": "sendgridCountListGetMcContactsCount",
       "schemaVersion": 2,
-      "title": "Lister mc contact count",
-      "subtitle": "Mc contact count",
+      "title": "Lister mc contact compte",
+      "subtitle": "Mc contact compte",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -18738,9 +18738,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister mc contact count.",
+      "description": "Retourne une liste pour mc contact compte.",
       "args": {
-        "title": "Lister mc contact count",
+        "title": "Lister mc contact compte",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -18755,8 +18755,8 @@
       "key": "sendgrid_count_list_get_mc_lists_id_contacts_count",
       "name": "sendgridCountListGetMcListsIdContactsCount",
       "schemaVersion": 2,
-      "title": "Lister mc liste ID contact count",
-      "subtitle": "Mc liste ID contact count",
+      "title": "Lister mc liste ID contact compte",
+      "subtitle": "Mc liste ID contact compte",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -18787,9 +18787,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister mc liste ID contact count.",
+      "description": "Retourne une liste pour mc liste ID contact compte.",
       "args": {
-        "title": "Lister mc liste ID contact count",
+        "title": "Lister mc liste ID contact compte",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -18851,7 +18851,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer utilisateur credit.",
+      "description": "Récupère les détails de utilisateur credit.",
       "args": {
         "title": "Récupérer utilisateur credit",
         "ui": {
@@ -18900,7 +18900,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister contactdb personnalisé champ.",
+      "description": "Retourne une liste pour contactdb personnalisé champ.",
       "args": {
         "title": "Lister contactdb personnalisé champ",
         "ui": {
@@ -18949,7 +18949,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer contactdb personnalisé champ.",
+      "description": "Crée un nouvel élément pour contactdb personnalisé champ.",
       "args": {
         "title": "Créer contactdb personnalisé champ",
         "ui": {
@@ -19008,7 +19008,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer contactdb personnalisé champ ID.",
+      "description": "Supprime contactdb personnalisé champ ID.",
       "args": {
         "title": "Supprimer contactdb personnalisé champ ID",
         "ui": {
@@ -19072,7 +19072,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer contactdb personnalisé champ ID.",
+      "description": "Récupère les détails de contactdb personnalisé champ ID.",
       "args": {
         "title": "Récupérer contactdb personnalisé champ ID",
         "ui": {
@@ -19104,8 +19104,8 @@
       "key": "sendgrid_default_send_get_whitelabel_domains_default",
       "name": "sendgridDefaultSendGetWhitelabelDomainsDefault",
       "schemaVersion": 2,
-      "title": "Récupérer default",
-      "subtitle": "Default",
+      "title": "Récupérer défaut",
+      "subtitle": "défaut",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -19136,9 +19136,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer default.",
+      "description": "Récupère les détails de défaut.",
       "args": {
-        "title": "Récupérer default",
+        "title": "Récupérer défaut",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -19163,8 +19163,8 @@
       "key": "sendgrid_default_list_get_whitelabel_links_default",
       "name": "sendgridDefaultListGetWhitelabelLinksDefault",
       "schemaVersion": 2,
-      "title": "Lister default",
-      "subtitle": "Default",
+      "title": "Lister défaut",
+      "subtitle": "défaut",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -19195,9 +19195,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister default.",
+      "description": "Retourne une liste pour défaut.",
       "args": {
-        "title": "Lister default",
+        "title": "Lister défaut",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -19254,7 +19254,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer marketing segment.",
+      "description": "Supprime marketing segment.",
       "args": {
         "title": "Supprimer marketing segment",
         "ui": {
@@ -19281,8 +19281,8 @@
       "key": "sendgrid_design_search_list_designs",
       "name": "sendgridDesignSearchListDesigns",
       "schemaVersion": 2,
-      "title": "Rechercher design",
-      "subtitle": "Design",
+      "title": "Rechercher modèle de design",
+      "subtitle": "modèle de design",
       "icon": "fa-solid fa-magnifying-glass",
       "type": "function",
       "nodeKind": "function",
@@ -19313,9 +19313,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Rechercher design.",
+      "description": "Recherche des éléments liés à modèle de design.",
       "args": {
-        "title": "Rechercher design",
+        "title": "Rechercher modèle de design",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -19330,8 +19330,8 @@
       "key": "sendgrid_design_create_create_design",
       "name": "sendgridDesignCreateCreateDesign",
       "schemaVersion": 2,
-      "title": "Créer design",
-      "subtitle": "Design",
+      "title": "Créer modèle de design",
+      "subtitle": "modèle de design",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -19362,9 +19362,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer design.",
+      "description": "Crée un nouvel élément pour modèle de design.",
       "args": {
-        "title": "Créer design",
+        "title": "Créer modèle de design",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -19389,8 +19389,8 @@
       "key": "sendgrid_design_delete_delete_design",
       "name": "sendgridDesignDeleteDeleteDesign",
       "schemaVersion": 2,
-      "title": "Supprimer design",
-      "subtitle": "Design",
+      "title": "Supprimer modèle de design",
+      "subtitle": "modèle de design",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -19421,9 +19421,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer design.",
+      "description": "Supprime modèle de design.",
       "args": {
-        "title": "Supprimer design",
+        "title": "Supprimer modèle de design",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -19453,8 +19453,8 @@
       "key": "sendgrid_design_get_get_design",
       "name": "sendgridDesignGetGetDesign",
       "schemaVersion": 2,
-      "title": "Récupérer design",
-      "subtitle": "Design",
+      "title": "Récupérer modèle de design",
+      "subtitle": "modèle de design",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
@@ -19485,9 +19485,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer design.",
+      "description": "Récupère les détails de modèle de design.",
       "args": {
-        "title": "Récupérer design",
+        "title": "Récupérer modèle de design",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -19517,8 +19517,8 @@
       "key": "sendgrid_design_update_put_design",
       "name": "sendgridDesignUpdatePutDesign",
       "schemaVersion": 2,
-      "title": "Mettre à jour design",
-      "subtitle": "Design",
+      "title": "Mettre à jour modèle de design",
+      "subtitle": "modèle de design",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -19549,9 +19549,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour design.",
+      "description": "Met à jour modèle de design.",
       "args": {
-        "title": "Mettre à jour design",
+        "title": "Mettre à jour modèle de design",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -19590,8 +19590,8 @@
       "key": "sendgrid_design_create_post_design",
       "name": "sendgridDesignCreatePostDesign",
       "schemaVersion": 2,
-      "title": "Créer design - design",
-      "subtitle": "Design",
+      "title": "Créer modèle de design - modèle de design",
+      "subtitle": "modèle de design",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -19622,9 +19622,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer design - design.",
+      "description": "Crée un nouvel élément pour modèle de design - modèle de design.",
       "args": {
-        "title": "Créer design - design",
+        "title": "Créer modèle de design - modèle de design",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -19663,8 +19663,8 @@
       "key": "sendgrid_domain_list_get_verified_senders_domains",
       "name": "sendgridDomainListGetVerifiedSendersDomains",
       "schemaVersion": 2,
-      "title": "Lister verified expéditeur domain",
-      "subtitle": "Verified expéditeur domain",
+      "title": "Lister vérifié expéditeur domaine",
+      "subtitle": "vérifié expéditeur domaine",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -19695,9 +19695,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister verified expéditeur domain.",
+      "description": "Retourne une liste pour vérifié expéditeur domaine.",
       "args": {
-        "title": "Lister verified expéditeur domain",
+        "title": "Lister vérifié expéditeur domaine",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -19712,8 +19712,8 @@
       "key": "sendgrid_domain_list_get_whitelabel_domains",
       "name": "sendgridDomainListGetWhitelabelDomains",
       "schemaVersion": 2,
-      "title": "Lister domain",
-      "subtitle": "Domain",
+      "title": "Lister domaine",
+      "subtitle": "domaine",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -19744,9 +19744,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister domain.",
+      "description": "Retourne une liste pour domaine.",
       "args": {
-        "title": "Lister domain",
+        "title": "Lister domaine",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -19807,8 +19807,8 @@
       "key": "sendgrid_domain_create_post_whitelabel_domains",
       "name": "sendgridDomainCreatePostWhitelabelDomains",
       "schemaVersion": 2,
-      "title": "Créer domain",
-      "subtitle": "Domain",
+      "title": "Créer domaine",
+      "subtitle": "domaine",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -19839,9 +19839,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer domain.",
+      "description": "Crée un nouvel élément pour domaine.",
       "args": {
-        "title": "Créer domain",
+        "title": "Créer domaine",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -19866,8 +19866,8 @@
       "key": "sendgrid_domain_delete_delete_whitelabel_domains_domain_id",
       "name": "sendgridDomainDeleteDeleteWhitelabelDomainsDomainId",
       "schemaVersion": 2,
-      "title": "Supprimer domain",
-      "subtitle": "Domain",
+      "title": "Supprimer domaine",
+      "subtitle": "domaine",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -19898,9 +19898,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer domain.",
+      "description": "Supprime domaine.",
       "args": {
-        "title": "Supprimer domain",
+        "title": "Supprimer domaine",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -19930,8 +19930,8 @@
       "key": "sendgrid_domain_get_get_whitelabel_domains_domain_id",
       "name": "sendgridDomainGetGetWhitelabelDomainsDomainId",
       "schemaVersion": 2,
-      "title": "Récupérer domain",
-      "subtitle": "Domain",
+      "title": "Récupérer domaine",
+      "subtitle": "domaine",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
@@ -19962,9 +19962,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer domain.",
+      "description": "Récupère les détails de domaine.",
       "args": {
-        "title": "Récupérer domain",
+        "title": "Récupérer domaine",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -19994,8 +19994,8 @@
       "key": "sendgrid_domain_update_patch_whitelabel_domains_domain_id",
       "name": "sendgridDomainUpdatePatchWhitelabelDomainsDomainId",
       "schemaVersion": 2,
-      "title": "Mettre à jour domain",
-      "subtitle": "Domain",
+      "title": "Mettre à jour domaine",
+      "subtitle": "domaine",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -20026,9 +20026,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour domain.",
+      "description": "Met à jour domaine.",
       "args": {
-        "title": "Mettre à jour domain",
+        "title": "Mettre à jour domaine",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -20067,7 +20067,7 @@
       "key": "sendgrid_download_search_post_v3_messages_download",
       "name": "sendgridDownloadSearchPostV3MessagesDownload",
       "schemaVersion": 2,
-      "title": "Rechercher message",
+      "title": "Rechercher export de messages",
       "subtitle": "Message",
       "icon": "fa-solid fa-magnifying-glass",
       "type": "function",
@@ -20099,9 +20099,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Rechercher message.",
+      "description": "Recherche des éléments liés à export de messages.",
       "args": {
-        "title": "Rechercher message",
+        "title": "Rechercher export de messages",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -20163,7 +20163,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer message uuid.",
+      "description": "Récupère les détails de message uuid.",
       "args": {
         "title": "Récupérer message uuid",
         "ui": {
@@ -20227,7 +20227,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Rechercher marketing contact email.",
+      "description": "Recherche des éléments liés à marketing contact email.",
       "args": {
         "title": "Rechercher marketing contact email",
         "ui": {
@@ -20286,7 +20286,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister utilisateur email.",
+      "description": "Retourne une liste pour utilisateur email.",
       "args": {
         "title": "Lister utilisateur email",
         "ui": {
@@ -20335,7 +20335,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour utilisateur email.",
+      "description": "Met à jour utilisateur email.",
       "args": {
         "title": "Mettre à jour utilisateur email",
         "ui": {
@@ -20394,7 +20394,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer email.",
+      "description": "Crée un nouvel élément pour email.",
       "args": {
         "title": "Créer email",
         "ui": {
@@ -20421,7 +20421,7 @@
       "key": "sendgrid_email_send_post_whitelabel_dns_email",
       "name": "sendgridEmailSendPostWhitelabelDnsEmail",
       "schemaVersion": 2,
-      "title": "Envoyer email",
+      "title": "Envoyer email DNS",
       "subtitle": "Email",
       "icon": "fa-solid fa-bolt",
       "type": "function",
@@ -20453,9 +20453,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Envoyer email.",
+      "description": "Envoie email DNS.",
       "args": {
-        "title": "Envoyer email",
+        "title": "Envoyer email DNS",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -20512,7 +20512,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer utilisateur paramètre enforced tls.",
+      "description": "Récupère les détails de utilisateur paramètre enforced tls.",
       "args": {
         "title": "Récupérer utilisateur paramètre enforced tls",
         "ui": {
@@ -20561,7 +20561,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour utilisateur paramètre enforced tls.",
+      "description": "Met à jour utilisateur paramètre enforced tls.",
       "args": {
         "title": "Mettre à jour utilisateur paramètre enforced tls",
         "ui": {
@@ -20620,7 +20620,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister marketing contact export.",
+      "description": "Retourne une liste pour marketing contact export.",
       "args": {
         "title": "Lister marketing contact export",
         "ui": {
@@ -20669,7 +20669,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer mc contact export.",
+      "description": "Crée un nouvel élément pour mc contact export.",
       "args": {
         "title": "Créer mc contact export",
         "ui": {
@@ -20728,7 +20728,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer mc contact export ID.",
+      "description": "Récupère les détails de mc contact export ID.",
       "args": {
         "title": "Récupérer mc contact export ID",
         "ui": {
@@ -20792,7 +20792,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Rechercher export.",
+      "description": "Recherche des éléments liés à export.",
       "args": {
         "title": "Rechercher export",
         "ui": {
@@ -20828,7 +20828,7 @@
       "key": "sendgrid_export_search_get_singlesend_stats_export",
       "name": "sendgridExportSearchGetSinglesendStatsExport",
       "schemaVersion": 2,
-      "title": "Rechercher export - singlesend",
+      "title": "Rechercher export - envoi unitaire",
       "subtitle": "Export",
       "icon": "fa-solid fa-magnifying-glass",
       "type": "function",
@@ -20860,9 +20860,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Rechercher export - singlesend.",
+      "description": "Recherche des éléments liés à export - envoi unitaire.",
       "args": {
-        "title": "Rechercher export - singlesend",
+        "title": "Rechercher export - envoi unitaire",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -20928,7 +20928,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister champ definition.",
+      "description": "Retourne une liste pour champ definition.",
       "args": {
         "title": "Lister champ definition",
         "ui": {
@@ -20977,7 +20977,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer champ definition.",
+      "description": "Crée un nouvel élément pour champ definition.",
       "args": {
         "title": "Créer champ definition",
         "ui": {
@@ -21036,7 +21036,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer champ definition.",
+      "description": "Supprime champ definition.",
       "args": {
         "title": "Supprimer champ definition",
         "ui": {
@@ -21100,7 +21100,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour champ definition.",
+      "description": "Met à jour champ definition.",
       "args": {
         "title": "Mettre à jour champ definition",
         "ui": {
@@ -21141,8 +21141,8 @@
       "key": "sendgrid_footer_list_get_mail_settings_footer",
       "name": "sendgridFooterListGetMailSettingsFooter",
       "schemaVersion": 2,
-      "title": "Lister mail paramètre footer",
-      "subtitle": "Mail paramètre footer",
+      "title": "Lister email paramètre footer",
+      "subtitle": "email paramètre footer",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -21173,9 +21173,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister mail paramètre footer.",
+      "description": "Retourne une liste pour email paramètre footer.",
       "args": {
-        "title": "Lister mail paramètre footer",
+        "title": "Lister email paramètre footer",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -21190,8 +21190,8 @@
       "key": "sendgrid_footer_update_patch_mail_settings_footer",
       "name": "sendgridFooterUpdatePatchMailSettingsFooter",
       "schemaVersion": 2,
-      "title": "Mettre à jour mail paramètre footer",
-      "subtitle": "Mail paramètre footer",
+      "title": "Mettre à jour email paramètre footer",
+      "subtitle": "email paramètre footer",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -21222,9 +21222,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour mail paramètre footer.",
+      "description": "Met à jour email paramètre footer.",
       "args": {
-        "title": "Mettre à jour mail paramètre footer",
+        "title": "Mettre à jour email paramètre footer",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -21249,8 +21249,8 @@
       "key": "sendgrid_forward_bounce_list_get_mail_settings_forward_bounce",
       "name": "sendgridForwardBounceListGetMailSettingsForwardBounce",
       "schemaVersion": 2,
-      "title": "Lister mail paramètre forward bounce",
-      "subtitle": "Mail paramètre forward bounce",
+      "title": "Lister email paramètre forward rebond",
+      "subtitle": "email paramètre forward rebond",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -21281,9 +21281,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister mail paramètre forward bounce.",
+      "description": "Retourne une liste pour email paramètre forward rebond.",
       "args": {
-        "title": "Lister mail paramètre forward bounce",
+        "title": "Lister email paramètre forward rebond",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -21298,8 +21298,8 @@
       "key": "sendgrid_forward_bounce_update_patch_mail_settings_forward_bounce",
       "name": "sendgridForwardBounceUpdatePatchMailSettingsForwardBounce",
       "schemaVersion": 2,
-      "title": "Mettre à jour mail paramètre forward bounce",
-      "subtitle": "Mail paramètre forward bounce",
+      "title": "Mettre à jour email paramètre forward rebond",
+      "subtitle": "email paramètre forward rebond",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -21330,9 +21330,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour mail paramètre forward bounce.",
+      "description": "Met à jour email paramètre forward rebond.",
       "args": {
-        "title": "Mettre à jour mail paramètre forward bounce",
+        "title": "Mettre à jour email paramètre forward rebond",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -21357,8 +21357,8 @@
       "key": "sendgrid_forward_spam_list_get_mail_settings_forward_spam",
       "name": "sendgridForwardSpamListGetMailSettingsForwardSpam",
       "schemaVersion": 2,
-      "title": "Lister mail paramètre forward spam",
-      "subtitle": "Mail paramètre forward spam",
+      "title": "Lister email paramètre forward spam",
+      "subtitle": "email paramètre forward spam",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -21389,9 +21389,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister mail paramètre forward spam.",
+      "description": "Retourne une liste pour email paramètre forward spam.",
       "args": {
-        "title": "Lister mail paramètre forward spam",
+        "title": "Lister email paramètre forward spam",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -21406,8 +21406,8 @@
       "key": "sendgrid_forward_spam_update_patch_mail_settings_forward_spam",
       "name": "sendgridForwardSpamUpdatePatchMailSettingsForwardSpam",
       "schemaVersion": 2,
-      "title": "Mettre à jour mail paramètre forward spam",
-      "subtitle": "Mail paramètre forward spam",
+      "title": "Mettre à jour email paramètre forward spam",
+      "subtitle": "email paramètre forward spam",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -21438,9 +21438,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour mail paramètre forward spam.",
+      "description": "Met à jour email paramètre forward spam.",
       "args": {
-        "title": "Mettre à jour mail paramètre forward spam",
+        "title": "Mettre à jour email paramètre forward spam",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -21497,7 +21497,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer global.",
+      "description": "Crée un nouvel élément pour global.",
       "args": {
         "title": "Créer global",
         "ui": {
@@ -21556,7 +21556,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer global.",
+      "description": "Supprime global.",
       "args": {
         "title": "Supprimer global",
         "ui": {
@@ -21620,7 +21620,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer global.",
+      "description": "Récupère les détails de global.",
       "args": {
         "title": "Récupérer global",
         "ui": {
@@ -21652,8 +21652,8 @@
       "key": "sendgrid_google_analytic_list_get_tracking_settings_google_analytics",
       "name": "sendgridGoogleAnalyticListGetTrackingSettingsGoogleAnalytics",
       "schemaVersion": 2,
-      "title": "Lister tracking paramètre google analytique",
-      "subtitle": "Tracking paramètre google analytique",
+      "title": "Lister suivi paramètre Google Analytics",
+      "subtitle": "suivi paramètre Google Analytics",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -21684,9 +21684,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister tracking paramètre google analytique.",
+      "description": "Retourne une liste pour suivi paramètre Google Analytics.",
       "args": {
-        "title": "Lister tracking paramètre google analytique",
+        "title": "Lister suivi paramètre Google Analytics",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -21701,8 +21701,8 @@
       "key": "sendgrid_google_analytic_update_patch_tracking_settings_google_analytics",
       "name": "sendgridGoogleAnalyticUpdatePatchTrackingSettingsGoogleAnalytics",
       "schemaVersion": 2,
-      "title": "Mettre à jour tracking paramètre google analytique",
-      "subtitle": "Tracking paramètre google analytique",
+      "title": "Mettre à jour suivi paramètre Google Analytics",
+      "subtitle": "suivi paramètre Google Analytics",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -21733,9 +21733,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour tracking paramètre google analytique.",
+      "description": "Met à jour suivi paramètre Google Analytics.",
       "args": {
-        "title": "Mettre à jour tracking paramètre google analytique",
+        "title": "Mettre à jour suivi paramètre Google Analytics",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -21760,8 +21760,8 @@
       "key": "sendgrid_group_list_get_asm_groups",
       "name": "sendgridGroupListGetAsmGroups",
       "schemaVersion": 2,
-      "title": "Lister asm groupe",
-      "subtitle": "Asm groupe",
+      "title": "Lister groupe de désinscription groupe",
+      "subtitle": "groupe de désinscription groupe",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -21792,9 +21792,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister asm groupe.",
+      "description": "Retourne une liste pour groupe de désinscription groupe.",
       "args": {
-        "title": "Lister asm groupe",
+        "title": "Lister groupe de désinscription groupe",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -21819,8 +21819,8 @@
       "key": "sendgrid_group_create_post_asm_groups",
       "name": "sendgridGroupCreatePostAsmGroups",
       "schemaVersion": 2,
-      "title": "Créer asm groupe",
-      "subtitle": "Asm groupe",
+      "title": "Créer groupe de désinscription groupe",
+      "subtitle": "groupe de désinscription groupe",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -21851,9 +21851,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer asm groupe.",
+      "description": "Crée un nouvel élément pour groupe de désinscription groupe.",
       "args": {
-        "title": "Créer asm groupe",
+        "title": "Créer groupe de désinscription groupe",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -21878,8 +21878,8 @@
       "key": "sendgrid_group_delete_delete_asm_groups_group_id",
       "name": "sendgridGroupDeleteDeleteAsmGroupsGroupId",
       "schemaVersion": 2,
-      "title": "Supprimer asm groupe ID",
-      "subtitle": "Asm groupe ID",
+      "title": "Supprimer groupe de désinscription groupe ID",
+      "subtitle": "groupe de désinscription groupe ID",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -21910,9 +21910,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer asm groupe ID.",
+      "description": "Supprime groupe de désinscription groupe ID.",
       "args": {
-        "title": "Supprimer asm groupe ID",
+        "title": "Supprimer groupe de désinscription groupe ID",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -21942,8 +21942,8 @@
       "key": "sendgrid_group_get_get_asm_groups_group_id",
       "name": "sendgridGroupGetGetAsmGroupsGroupId",
       "schemaVersion": 2,
-      "title": "Récupérer asm groupe ID",
-      "subtitle": "Asm groupe ID",
+      "title": "Récupérer groupe de désinscription groupe ID",
+      "subtitle": "groupe de désinscription groupe ID",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
@@ -21974,9 +21974,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer asm groupe ID.",
+      "description": "Récupère les détails de groupe de désinscription groupe ID.",
       "args": {
-        "title": "Récupérer asm groupe ID",
+        "title": "Récupérer groupe de désinscription groupe ID",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -22006,8 +22006,8 @@
       "key": "sendgrid_group_update_patch_asm_groups_group_id",
       "name": "sendgridGroupUpdatePatchAsmGroupsGroupId",
       "schemaVersion": 2,
-      "title": "Mettre à jour asm groupe ID",
-      "subtitle": "Asm groupe ID",
+      "title": "Mettre à jour groupe de désinscription groupe ID",
+      "subtitle": "groupe de désinscription groupe ID",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -22038,9 +22038,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour asm groupe ID.",
+      "description": "Met à jour groupe de désinscription groupe ID.",
       "args": {
-        "title": "Mettre à jour asm groupe ID",
+        "title": "Mettre à jour groupe de désinscription groupe ID",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -22111,7 +22111,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour mc contact import.",
+      "description": "Met à jour mc contact import.",
       "args": {
         "title": "Mettre à jour mc contact import",
         "ui": {
@@ -22170,7 +22170,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer marketing contact import ID.",
+      "description": "Récupère les détails de marketing contact import ID.",
       "args": {
         "title": "Récupérer marketing contact import ID",
         "ui": {
@@ -22202,8 +22202,8 @@
       "key": "sendgrid_invalid_email_delete_delete_suppression_invalid_emails",
       "name": "sendgridInvalidEmailDeleteDeleteSuppressionInvalidEmails",
       "schemaVersion": 2,
-      "title": "Supprimer invalid email",
-      "subtitle": "Invalid email",
+      "title": "Supprimer email invalide",
+      "subtitle": "email invalide",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -22234,9 +22234,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer invalid email.",
+      "description": "Supprime email invalide.",
       "args": {
-        "title": "Supprimer invalid email",
+        "title": "Supprimer email invalide",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -22251,8 +22251,8 @@
       "key": "sendgrid_invalid_email_list_get_suppression_invalid_emails",
       "name": "sendgridInvalidEmailListGetSuppressionInvalidEmails",
       "schemaVersion": 2,
-      "title": "Lister invalid email",
-      "subtitle": "Invalid email",
+      "title": "Lister email invalide",
+      "subtitle": "email invalide",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -22283,9 +22283,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister invalid email.",
+      "description": "Retourne une liste pour email invalide.",
       "args": {
-        "title": "Lister invalid email",
+        "title": "Lister email invalide",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -22337,8 +22337,8 @@
       "key": "sendgrid_invalid_email_delete_delete_suppression_invalid_emails_email",
       "name": "sendgridInvalidEmailDeleteDeleteSuppressionInvalidEmailsEmail",
       "schemaVersion": 2,
-      "title": "Supprimer invalid email - suppression",
-      "subtitle": "Invalid email",
+      "title": "Supprimer email invalide - suppression",
+      "subtitle": "email invalide",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -22369,9 +22369,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer invalid email - suppression.",
+      "description": "Supprime email invalide - suppression.",
       "args": {
-        "title": "Supprimer invalid email - suppression",
+        "title": "Supprimer email invalide - suppression",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -22401,8 +22401,8 @@
       "key": "sendgrid_invalid_email_get_get_suppression_invalid_emails_email",
       "name": "sendgridInvalidEmailGetGetSuppressionInvalidEmailsEmail",
       "schemaVersion": 2,
-      "title": "Récupérer invalid email",
-      "subtitle": "Invalid email",
+      "title": "Récupérer email invalide",
+      "subtitle": "email invalide",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
@@ -22433,9 +22433,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer invalid email.",
+      "description": "Récupère les détails de email invalide.",
       "args": {
-        "title": "Récupérer invalid email",
+        "title": "Récupérer email invalide",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -22465,8 +22465,8 @@
       "key": "sendgrid_ip_send_get_ips",
       "name": "sendgridIpSendGetIps",
       "schemaVersion": 2,
-      "title": "Récupérer ips",
-      "subtitle": "Ips",
+      "title": "Récupérer IP",
+      "subtitle": "IP",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -22497,9 +22497,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer ips.",
+      "description": "Récupère les détails de IP.",
       "args": {
-        "title": "Récupérer ips",
+        "title": "Récupérer IP",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -22569,8 +22569,8 @@
       "key": "sendgrid_ip_create_post_ips",
       "name": "sendgridIpCreatePostIps",
       "schemaVersion": 2,
-      "title": "Créer ips",
-      "subtitle": "Ips",
+      "title": "Créer IP",
+      "subtitle": "IP",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -22601,9 +22601,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer ips.",
+      "description": "Crée un nouvel élément pour IP.",
       "args": {
-        "title": "Créer ips",
+        "title": "Créer IP",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -22628,8 +22628,8 @@
       "key": "sendgrid_ip_search_post_ips_pools_pool_name_ips",
       "name": "sendgridIpSearchPostIpsPoolsPoolNameIps",
       "schemaVersion": 2,
-      "title": "Rechercher ips pool name",
-      "subtitle": "Ips pool name",
+      "title": "Rechercher IP pool name",
+      "subtitle": "IP pool name",
       "icon": "fa-solid fa-magnifying-glass",
       "type": "function",
       "nodeKind": "function",
@@ -22660,9 +22660,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Rechercher ips pool name.",
+      "description": "Recherche des éléments liés à IP pool name.",
       "args": {
-        "title": "Rechercher ips pool name",
+        "title": "Rechercher IP pool name",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -22701,8 +22701,8 @@
       "key": "sendgrid_ip_delete_delete_ips_pools_pool_name_ips_ip",
       "name": "sendgridIpDeleteDeleteIpsPoolsPoolNameIpsIp",
       "schemaVersion": 2,
-      "title": "Supprimer ips pool name ip",
-      "subtitle": "Ips pool name ip",
+      "title": "Supprimer IP pool name ip",
+      "subtitle": "IP pool name ip",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -22733,9 +22733,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer ips pool name ip.",
+      "description": "Supprime IP pool name ip.",
       "args": {
-        "title": "Supprimer ips pool name ip",
+        "title": "Supprimer IP pool name ip",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -22779,8 +22779,8 @@
       "key": "sendgrid_ip_send_get_ips_ip_address",
       "name": "sendgridIpSendGetIpsIpAddress",
       "schemaVersion": 2,
-      "title": "Récupérer ips ip address",
-      "subtitle": "Ips ip address",
+      "title": "Récupérer IP adresse IP",
+      "subtitle": "IP adresse IP",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -22811,9 +22811,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer ips ip address.",
+      "description": "Récupère les détails de IP adresse IP.",
       "args": {
-        "title": "Récupérer ips ip address",
+        "title": "Récupérer IP adresse IP",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -22843,8 +22843,8 @@
       "key": "sendgrid_ip_update_put_subusers_subuser_name_ips",
       "name": "sendgridIpUpdatePutSubusersSubuserNameIps",
       "schemaVersion": 2,
-      "title": "Mettre à jour subuser name ips",
-      "subtitle": "Subuser name ips",
+      "title": "Mettre à jour sous-utilisateur name IP",
+      "subtitle": "sous-utilisateur name IP",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -22875,9 +22875,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour subuser name ips.",
+      "description": "Met à jour sous-utilisateur name IP.",
       "args": {
-        "title": "Mettre à jour subuser name ips",
+        "title": "Mettre à jour sous-utilisateur name IP",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -22916,8 +22916,8 @@
       "key": "sendgrid_ip_create_post_whitelabel_domains_id_ips",
       "name": "sendgridIpCreatePostWhitelabelDomainsIdIps",
       "schemaVersion": 2,
-      "title": "Créer ips - ip",
-      "subtitle": "Ips",
+      "title": "Créer IP - ip",
+      "subtitle": "IP",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -22948,9 +22948,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer ips - ip.",
+      "description": "Crée un nouvel élément pour IP - ip.",
       "args": {
-        "title": "Créer ips - ip",
+        "title": "Créer IP - ip",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -22989,8 +22989,8 @@
       "key": "sendgrid_ip_delete_delete_whitelabel_domains_id_ips_ip",
       "name": "sendgridIpDeleteDeleteWhitelabelDomainsIdIpsIp",
       "schemaVersion": 2,
-      "title": "Supprimer ips",
-      "subtitle": "Ips",
+      "title": "Supprimer IP",
+      "subtitle": "IP",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -23021,9 +23021,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer ips.",
+      "description": "Supprime IP.",
       "args": {
-        "title": "Supprimer ips",
+        "title": "Supprimer IP",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -23067,8 +23067,8 @@
       "key": "sendgrid_ip_search_get_whitelabel_ips",
       "name": "sendgridIpSearchGetWhitelabelIps",
       "schemaVersion": 2,
-      "title": "Rechercher ips",
-      "subtitle": "Ips",
+      "title": "Rechercher IP",
+      "subtitle": "IP",
       "icon": "fa-solid fa-magnifying-glass",
       "type": "function",
       "nodeKind": "function",
@@ -23099,9 +23099,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Rechercher ips.",
+      "description": "Recherche des éléments liés à IP.",
       "args": {
-        "title": "Rechercher ips",
+        "title": "Rechercher IP",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -23144,8 +23144,8 @@
       "key": "sendgrid_ip_create_post_whitelabel_ips",
       "name": "sendgridIpCreatePostWhitelabelIps",
       "schemaVersion": 2,
-      "title": "Créer ips - ip whitelabel",
-      "subtitle": "Ips",
+      "title": "Créer IP - ip whitelabel",
+      "subtitle": "IP",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -23176,9 +23176,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer ips - ip whitelabel.",
+      "description": "Crée un nouvel élément pour IP - ip whitelabel.",
       "args": {
-        "title": "Créer ips - ip whitelabel",
+        "title": "Créer IP - ip whitelabel",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -23203,8 +23203,8 @@
       "key": "sendgrid_ip_delete_delete_whitelabel_ips_id",
       "name": "sendgridIpDeleteDeleteWhitelabelIpsId",
       "schemaVersion": 2,
-      "title": "Supprimer ips - ip",
-      "subtitle": "Ips",
+      "title": "Supprimer IP - ip",
+      "subtitle": "IP",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -23235,9 +23235,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer ips - ip.",
+      "description": "Supprime IP - ip.",
       "args": {
-        "title": "Supprimer ips - ip",
+        "title": "Supprimer IP - ip",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -23267,8 +23267,8 @@
       "key": "sendgrid_ip_get_get_whitelabel_ips_id",
       "name": "sendgridIpGetGetWhitelabelIpsId",
       "schemaVersion": 2,
-      "title": "Récupérer ips - ip",
-      "subtitle": "Ips",
+      "title": "Récupérer IP - ip",
+      "subtitle": "IP",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
@@ -23299,9 +23299,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer ips - ip.",
+      "description": "Récupère les détails de IP - ip.",
       "args": {
-        "title": "Récupérer ips - ip",
+        "title": "Récupérer IP - ip",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -23331,8 +23331,8 @@
       "key": "sendgrid_link_search_get_automation_link_stat",
       "name": "sendgridLinkSearchGetAutomationLinkStat",
       "schemaVersion": 2,
-      "title": "Rechercher link",
-      "subtitle": "Link",
+      "title": "Rechercher lien",
+      "subtitle": "lien",
       "icon": "fa-solid fa-magnifying-glass",
       "type": "function",
       "nodeKind": "function",
@@ -23363,9 +23363,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Rechercher link.",
+      "description": "Recherche des éléments liés à lien.",
       "args": {
-        "title": "Rechercher link",
+        "title": "Rechercher lien",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -23395,8 +23395,8 @@
       "key": "sendgrid_link_search_get_singlesend_link_stat",
       "name": "sendgridLinkSearchGetSinglesendLinkStat",
       "schemaVersion": 2,
-      "title": "Rechercher link - singlesend",
-      "subtitle": "Link",
+      "title": "Rechercher lien - envoi unitaire",
+      "subtitle": "lien",
       "icon": "fa-solid fa-magnifying-glass",
       "type": "function",
       "nodeKind": "function",
@@ -23427,9 +23427,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Rechercher link - singlesend.",
+      "description": "Recherche des éléments liés à lien - envoi unitaire.",
       "args": {
-        "title": "Rechercher link - singlesend",
+        "title": "Rechercher lien - envoi unitaire",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -23459,8 +23459,8 @@
       "key": "sendgrid_link_list_get_whitelabel_links",
       "name": "sendgridLinkListGetWhitelabelLinks",
       "schemaVersion": 2,
-      "title": "Lister link",
-      "subtitle": "Link",
+      "title": "Lister lien",
+      "subtitle": "lien",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -23491,9 +23491,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister link.",
+      "description": "Retourne une liste pour lien.",
       "args": {
-        "title": "Lister link",
+        "title": "Lister lien",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -23518,8 +23518,8 @@
       "key": "sendgrid_link_create_post_whitelabel_links",
       "name": "sendgridLinkCreatePostWhitelabelLinks",
       "schemaVersion": 2,
-      "title": "Créer link",
-      "subtitle": "Link",
+      "title": "Créer lien",
+      "subtitle": "lien",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -23550,9 +23550,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer link.",
+      "description": "Crée un nouvel élément pour lien.",
       "args": {
-        "title": "Créer link",
+        "title": "Créer lien",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -23577,8 +23577,8 @@
       "key": "sendgrid_link_delete_delete_whitelabel_links_id",
       "name": "sendgridLinkDeleteDeleteWhitelabelLinksId",
       "schemaVersion": 2,
-      "title": "Supprimer link",
-      "subtitle": "Link",
+      "title": "Supprimer lien",
+      "subtitle": "lien",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -23609,9 +23609,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer link.",
+      "description": "Supprime lien.",
       "args": {
-        "title": "Supprimer link",
+        "title": "Supprimer lien",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -23641,8 +23641,8 @@
       "key": "sendgrid_link_get_get_whitelabel_links_id",
       "name": "sendgridLinkGetGetWhitelabelLinksId",
       "schemaVersion": 2,
-      "title": "Récupérer link",
-      "subtitle": "Link",
+      "title": "Récupérer lien",
+      "subtitle": "lien",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
@@ -23673,9 +23673,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer link.",
+      "description": "Récupère les détails de lien.",
       "args": {
-        "title": "Récupérer link",
+        "title": "Récupérer lien",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -23705,8 +23705,8 @@
       "key": "sendgrid_link_update_patch_whitelabel_links_id",
       "name": "sendgridLinkUpdatePatchWhitelabelLinksId",
       "schemaVersion": 2,
-      "title": "Mettre à jour link",
-      "subtitle": "Link",
+      "title": "Mettre à jour lien",
+      "subtitle": "lien",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -23737,9 +23737,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour link.",
+      "description": "Met à jour lien.",
       "args": {
-        "title": "Mettre à jour link",
+        "title": "Mettre à jour lien",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -23810,7 +23810,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister contactdb liste.",
+      "description": "Retourne une liste pour contactdb liste.",
       "args": {
         "title": "Lister contactdb liste",
         "ui": {
@@ -23859,7 +23859,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister contactdb liste - contactdb liste.",
+      "description": "Retourne une liste pour contactdb liste - contactdb liste.",
       "args": {
         "title": "Lister contactdb liste - contactdb liste",
         "ui": {
@@ -23908,7 +23908,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer un liste.",
+      "description": "Crée un nouvel élément pour un liste.",
       "args": {
         "title": "Créer un liste",
         "ui": {
@@ -23967,7 +23967,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister contactdb liste ID.",
+      "description": "Retourne une liste pour contactdb liste ID.",
       "args": {
         "title": "Lister contactdb liste ID",
         "ui": {
@@ -24040,7 +24040,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister contactdb liste ID - contactdb liste ID.",
+      "description": "Retourne une liste pour contactdb liste ID - contactdb liste ID.",
       "args": {
         "title": "Lister contactdb liste ID - contactdb liste ID",
         "ui": {
@@ -24104,7 +24104,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour un liste.",
+      "description": "Met à jour un liste.",
       "args": {
         "title": "Mettre à jour un liste",
         "ui": {
@@ -24177,7 +24177,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister liste.",
+      "description": "Retourne une liste pour liste.",
       "args": {
         "title": "Lister liste",
         "ui": {
@@ -24241,7 +24241,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister mc liste.",
+      "description": "Retourne une liste pour mc liste.",
       "args": {
         "title": "Lister mc liste",
         "ui": {
@@ -24319,7 +24319,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister mc liste - mc liste.",
+      "description": "Retourne une liste pour mc liste - mc liste.",
       "args": {
         "title": "Lister mc liste - mc liste",
         "ui": {
@@ -24378,7 +24378,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister liste ID.",
+      "description": "Retourne une liste pour liste ID.",
       "args": {
         "title": "Lister liste ID",
         "ui": {
@@ -24456,7 +24456,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister mc liste ID.",
+      "description": "Retourne une liste pour mc liste ID.",
       "args": {
         "title": "Lister mc liste ID",
         "ui": {
@@ -24529,7 +24529,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister mc liste ID - mc liste ID.",
+      "description": "Retourne une liste pour mc liste ID - mc liste ID.",
       "args": {
         "title": "Lister mc liste ID - mc liste ID",
         "ui": {
@@ -24570,8 +24570,8 @@
       "key": "sendgrid_mail_send_post_mail_send",
       "name": "sendgridMailSendPostMailSend",
       "schemaVersion": 2,
-      "title": "Envoyer mail",
-      "subtitle": "Mail",
+      "title": "Envoyer email",
+      "subtitle": "email",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -24602,9 +24602,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Envoyer mail.",
+      "description": "Envoie email.",
       "args": {
-        "title": "Envoyer mail",
+        "title": "Envoyer email",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -24629,8 +24629,8 @@
       "key": "sendgrid_mail_setting_list_get_mail_settings",
       "name": "sendgridMailSettingListGetMailSettings",
       "schemaVersion": 2,
-      "title": "Lister mail paramètre",
-      "subtitle": "Mail paramètre",
+      "title": "Lister email paramètre",
+      "subtitle": "email paramètre",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -24661,9 +24661,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister mail paramètre.",
+      "description": "Retourne une liste pour email paramètre.",
       "args": {
-        "title": "Lister mail paramètre",
+        "title": "Lister email paramètre",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -24697,7 +24697,7 @@
       "key": "sendgrid_message_search_get_messages",
       "name": "sendgridMessageSearchGetMessages",
       "schemaVersion": 2,
-      "title": "Rechercher message - message",
+      "title": "Rechercher messages envoyés",
       "subtitle": "Message",
       "icon": "fa-solid fa-magnifying-glass",
       "type": "function",
@@ -24729,9 +24729,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Rechercher message - message.",
+      "description": "Recherche des éléments liés à messages envoyés.",
       "args": {
-        "title": "Rechercher message - message",
+        "title": "Rechercher messages envoyés",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -24741,7 +24741,7 @@
             "type": "text",
             "key": "query",
             "label": "Query",
-            "description": "query syntax filtre your email activité",
+            "description": "Interroger syntax filtre your email activité",
             "col": {
               "xs": 24
             },
@@ -24807,7 +24807,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer message msg ID.",
+      "description": "Récupère les détails de message msg ID.",
       "args": {
         "title": "Récupérer message msg ID",
         "ui": {
@@ -24839,8 +24839,8 @@
       "key": "sendgrid_monitor_delete_delete_subusers_subuser_name_monitor",
       "name": "sendgridMonitorDeleteDeleteSubusersSubuserNameMonitor",
       "schemaVersion": 2,
-      "title": "Supprimer subuser name monitor",
-      "subtitle": "Subuser name monitor",
+      "title": "Supprimer sous-utilisateur name monitor",
+      "subtitle": "sous-utilisateur name monitor",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -24871,9 +24871,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer subuser name monitor.",
+      "description": "Supprime sous-utilisateur name monitor.",
       "args": {
-        "title": "Supprimer subuser name monitor",
+        "title": "Supprimer sous-utilisateur name monitor",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -24903,8 +24903,8 @@
       "key": "sendgrid_monitor_list_get_subusers_subuser_name_monitor",
       "name": "sendgridMonitorListGetSubusersSubuserNameMonitor",
       "schemaVersion": 2,
-      "title": "Lister subuser name monitor",
-      "subtitle": "Subuser name monitor",
+      "title": "Lister sous-utilisateur name monitor",
+      "subtitle": "sous-utilisateur name monitor",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -24935,9 +24935,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister subuser name monitor.",
+      "description": "Retourne une liste pour sous-utilisateur name monitor.",
       "args": {
-        "title": "Lister subuser name monitor",
+        "title": "Lister sous-utilisateur name monitor",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -24967,8 +24967,8 @@
       "key": "sendgrid_monitor_create_post_subusers_subuser_name_monitor",
       "name": "sendgridMonitorCreatePostSubusersSubuserNameMonitor",
       "schemaVersion": 2,
-      "title": "Créer subuser name monitor",
-      "subtitle": "Subuser name monitor",
+      "title": "Créer sous-utilisateur name monitor",
+      "subtitle": "sous-utilisateur name monitor",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -24999,9 +24999,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer subuser name monitor.",
+      "description": "Crée un nouvel élément pour sous-utilisateur name monitor.",
       "args": {
-        "title": "Créer subuser name monitor",
+        "title": "Créer sous-utilisateur name monitor",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -25040,8 +25040,8 @@
       "key": "sendgrid_monitor_update_put_subusers_subuser_name_monitor",
       "name": "sendgridMonitorUpdatePutSubusersSubuserNameMonitor",
       "schemaVersion": 2,
-      "title": "Mettre à jour subuser name monitor",
-      "subtitle": "Subuser name monitor",
+      "title": "Mettre à jour sous-utilisateur name monitor",
+      "subtitle": "sous-utilisateur name monitor",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -25072,9 +25072,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour subuser name monitor.",
+      "description": "Met à jour sous-utilisateur name monitor.",
       "args": {
-        "title": "Mettre à jour subuser name monitor",
+        "title": "Mettre à jour sous-utilisateur name monitor",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -25113,8 +25113,8 @@
       "key": "sendgrid_monthly_list_get_subusers_stats_monthly",
       "name": "sendgridMonthlyListGetSubusersStatsMonthly",
       "schemaVersion": 2,
-      "title": "Lister subuser stat monthly",
-      "subtitle": "Subuser stat monthly",
+      "title": "Lister sous-utilisateur statistique mensuel",
+      "subtitle": "sous-utilisateur statistique mensuel",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -25145,9 +25145,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister subuser stat monthly.",
+      "description": "Retourne une liste pour sous-utilisateur statistique mensuel.",
       "args": {
-        "title": "Lister subuser stat monthly",
+        "title": "Lister sous-utilisateur statistique mensuel",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -25247,8 +25247,8 @@
       "key": "sendgrid_monthly_list_get_subusers_subuser_name_stats_monthly",
       "name": "sendgridMonthlyListGetSubusersSubuserNameStatsMonthly",
       "schemaVersion": 2,
-      "title": "Lister subuser name stat monthly",
-      "subtitle": "Subuser name stat monthly",
+      "title": "Lister sous-utilisateur name statistique mensuel",
+      "subtitle": "sous-utilisateur name statistique mensuel",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -25279,9 +25279,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister subuser name stat monthly.",
+      "description": "Retourne une liste pour sous-utilisateur name statistique mensuel.",
       "args": {
-        "title": "Lister subuser name stat monthly",
+        "title": "Lister sous-utilisateur name statistique mensuel",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -25381,8 +25381,8 @@
       "key": "sendgrid_new_relic_send_get_partner_settings_new_relic",
       "name": "sendgridNewRelicSendGetPartnerSettingsNewRelic",
       "schemaVersion": 2,
-      "title": "Récupérer partner paramètre nouveau relic",
-      "subtitle": "Partner paramètre nouveau relic",
+      "title": "Récupérer partenaire paramètre nouveau relic",
+      "subtitle": "partenaire paramètre nouveau relic",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -25413,9 +25413,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer partner paramètre nouveau relic.",
+      "description": "Récupère les détails de partenaire paramètre nouveau relic.",
       "args": {
-        "title": "Récupérer partner paramètre nouveau relic",
+        "title": "Récupérer partenaire paramètre nouveau relic",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -25430,8 +25430,8 @@
       "key": "sendgrid_new_relic_send_patch_partner_settings_new_relic",
       "name": "sendgridNewRelicSendPatchPartnerSettingsNewRelic",
       "schemaVersion": 2,
-      "title": "Mettre à jour partner paramètre nouveau relic",
-      "subtitle": "Partner paramètre nouveau relic",
+      "title": "Mettre à jour partenaire paramètre nouveau relic",
+      "subtitle": "partenaire paramètre nouveau relic",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -25462,9 +25462,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour partner paramètre nouveau relic.",
+      "description": "Met à jour partenaire paramètre nouveau relic.",
       "args": {
-        "title": "Mettre à jour partner paramètre nouveau relic",
+        "title": "Mettre à jour partenaire paramètre nouveau relic",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -25521,7 +25521,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Envoyer campagne ID schedule now.",
+      "description": "Envoie campagne ID schedule now.",
       "args": {
         "title": "Envoyer campagne ID schedule now",
         "ui": {
@@ -25553,8 +25553,8 @@
       "key": "sendgrid_open_list_get_tracking_settings_open",
       "name": "sendgridOpenListGetTrackingSettingsOpen",
       "schemaVersion": 2,
-      "title": "Lister tracking paramètre",
-      "subtitle": "Tracking paramètre",
+      "title": "Lister suivi paramètre",
+      "subtitle": "suivi paramètre",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -25585,9 +25585,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister tracking paramètre.",
+      "description": "Retourne une liste pour suivi paramètre.",
       "args": {
-        "title": "Lister tracking paramètre",
+        "title": "Lister suivi paramètre",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -25602,8 +25602,8 @@
       "key": "sendgrid_open_update_patch_tracking_settings_open",
       "name": "sendgridOpenUpdatePatchTrackingSettingsOpen",
       "schemaVersion": 2,
-      "title": "Mettre à jour tracking paramètre",
-      "subtitle": "Tracking paramètre",
+      "title": "Mettre à jour suivi paramètre",
+      "subtitle": "suivi paramètre",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -25634,9 +25634,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour tracking paramètre.",
+      "description": "Met à jour suivi paramètre.",
       "args": {
-        "title": "Mettre à jour tracking paramètre",
+        "title": "Mettre à jour suivi paramètre",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -25661,8 +25661,8 @@
       "key": "sendgrid_partner_setting_list_get_partner_settings",
       "name": "sendgridPartnerSettingListGetPartnerSettings",
       "schemaVersion": 2,
-      "title": "Lister partner paramètre",
-      "subtitle": "Partner paramètre",
+      "title": "Lister partenaire paramètre",
+      "subtitle": "partenaire paramètre",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -25693,9 +25693,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister partner paramètre.",
+      "description": "Retourne une liste pour partenaire paramètre.",
       "args": {
-        "title": "Lister partner paramètre",
+        "title": "Lister partenaire paramètre",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -25729,8 +25729,8 @@
       "key": "sendgrid_password_update_put_user_password",
       "name": "sendgridPasswordUpdatePutUserPassword",
       "schemaVersion": 2,
-      "title": "Mettre à jour utilisateur password",
-      "subtitle": "Utilisateur password",
+      "title": "Mettre à jour utilisateur mot de passe",
+      "subtitle": "Utilisateur mot de passe",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -25761,9 +25761,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour utilisateur password.",
+      "description": "Met à jour utilisateur mot de passe.",
       "args": {
-        "title": "Mettre à jour utilisateur password",
+        "title": "Mettre à jour utilisateur mot de passe",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -25788,8 +25788,8 @@
       "key": "sendgrid_pending_list_get_v3_teammates_pending",
       "name": "sendgridPendingListGetV3TeammatesPending",
       "schemaVersion": 2,
-      "title": "Lister teammate pending",
-      "subtitle": "Teammate pending",
+      "title": "Lister coéquipier en attente",
+      "subtitle": "coéquipier en attente",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -25820,9 +25820,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister teammate pending.",
+      "description": "Retourne une liste pour coéquipier en attente.",
       "args": {
-        "title": "Lister teammate pending",
+        "title": "Lister coéquipier en attente",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -25837,8 +25837,8 @@
       "key": "sendgrid_pending_delete_delete_v3_teammates_pending_token",
       "name": "sendgridPendingDeleteDeleteV3TeammatesPendingToken",
       "schemaVersion": 2,
-      "title": "Supprimer teammate pending jeton",
-      "subtitle": "Teammate pending jeton",
+      "title": "Supprimer coéquipier en attente jeton",
+      "subtitle": "coéquipier en attente jeton",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -25869,9 +25869,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer teammate pending jeton.",
+      "description": "Supprime coéquipier en attente jeton.",
       "args": {
-        "title": "Supprimer teammate pending jeton",
+        "title": "Supprimer coéquipier en attente jeton",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -25901,8 +25901,8 @@
       "key": "sendgrid_pool_list_get_ips_pools",
       "name": "sendgridPoolListGetIpsPools",
       "schemaVersion": 2,
-      "title": "Lister ips pool",
-      "subtitle": "Ips pool",
+      "title": "Lister IP pool",
+      "subtitle": "IP pool",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -25933,9 +25933,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister ips pool.",
+      "description": "Retourne une liste pour IP pool.",
       "args": {
-        "title": "Lister ips pool",
+        "title": "Lister IP pool",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -25950,8 +25950,8 @@
       "key": "sendgrid_pool_search_post_ips_pools",
       "name": "sendgridPoolSearchPostIpsPools",
       "schemaVersion": 2,
-      "title": "Rechercher ips pool",
-      "subtitle": "Ips pool",
+      "title": "Rechercher IP pool",
+      "subtitle": "IP pool",
       "icon": "fa-solid fa-magnifying-glass",
       "type": "function",
       "nodeKind": "function",
@@ -25982,9 +25982,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Rechercher ips pool.",
+      "description": "Recherche des éléments liés à IP pool.",
       "args": {
-        "title": "Rechercher ips pool",
+        "title": "Rechercher IP pool",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -26009,8 +26009,8 @@
       "key": "sendgrid_pool_delete_delete_ips_pools_pool_name",
       "name": "sendgridPoolDeleteDeleteIpsPoolsPoolName",
       "schemaVersion": 2,
-      "title": "Supprimer ips pool name",
-      "subtitle": "Ips pool name",
+      "title": "Supprimer IP pool name",
+      "subtitle": "IP pool name",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -26041,9 +26041,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer ips pool name.",
+      "description": "Supprime IP pool name.",
       "args": {
-        "title": "Supprimer ips pool name",
+        "title": "Supprimer IP pool name",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -26073,8 +26073,8 @@
       "key": "sendgrid_pool_get_get_ips_pools_pool_name",
       "name": "sendgridPoolGetGetIpsPoolsPoolName",
       "schemaVersion": 2,
-      "title": "Récupérer ips pool name",
-      "subtitle": "Ips pool name",
+      "title": "Récupérer IP pool name",
+      "subtitle": "IP pool name",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
@@ -26105,9 +26105,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer ips pool name.",
+      "description": "Récupère les détails de IP pool name.",
       "args": {
-        "title": "Récupérer ips pool name",
+        "title": "Récupérer IP pool name",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -26137,8 +26137,8 @@
       "key": "sendgrid_pool_update_put_ips_pools_pool_name",
       "name": "sendgridPoolUpdatePutIpsPoolsPoolName",
       "schemaVersion": 2,
-      "title": "Mettre à jour ips pool name",
-      "subtitle": "Ips pool name",
+      "title": "Mettre à jour IP pool name",
+      "subtitle": "IP pool name",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -26169,9 +26169,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour ips pool name.",
+      "description": "Met à jour IP pool name.",
       "args": {
-        "title": "Mettre à jour ips pool name",
+        "title": "Mettre à jour IP pool name",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -26210,8 +26210,8 @@
       "key": "sendgrid_pre_built_search_list_sendgrid_pre_built_designs",
       "name": "sendgridPreBuiltSearchListSendgridPreBuiltDesigns",
       "schemaVersion": 2,
-      "title": "Rechercher sendgrid pre built design",
-      "subtitle": "Sendgrid pre built design",
+      "title": "Rechercher sendgrid pre built modèle de design",
+      "subtitle": "Sendgrid pre built modèle de design",
       "icon": "fa-solid fa-magnifying-glass",
       "type": "function",
       "nodeKind": "function",
@@ -26242,9 +26242,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Rechercher sendgrid pre built design.",
+      "description": "Recherche des éléments liés à sendgrid pre built modèle de design.",
       "args": {
-        "title": "Rechercher sendgrid pre built design",
+        "title": "Rechercher sendgrid pre built modèle de design",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -26259,8 +26259,8 @@
       "key": "sendgrid_pre_built_get_get_sendgrid_pre_built_design",
       "name": "sendgridPreBuiltGetGetSendgridPreBuiltDesign",
       "schemaVersion": 2,
-      "title": "Récupérer sendgrid pre built design",
-      "subtitle": "Sendgrid pre built design",
+      "title": "Récupérer sendgrid pre built modèle de design",
+      "subtitle": "Sendgrid pre built modèle de design",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
@@ -26291,9 +26291,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer sendgrid pre built design.",
+      "description": "Récupère les détails de sendgrid pre built modèle de design.",
       "args": {
-        "title": "Récupérer sendgrid pre built design",
+        "title": "Récupérer sendgrid pre built modèle de design",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -26323,8 +26323,8 @@
       "key": "sendgrid_pre_built_create_post_sendgrid_pre_built_design",
       "name": "sendgridPreBuiltCreatePostSendgridPreBuiltDesign",
       "schemaVersion": 2,
-      "title": "Créer sendgrid pre built design",
-      "subtitle": "Sendgrid pre built design",
+      "title": "Créer sendgrid pre built modèle de design",
+      "subtitle": "Sendgrid pre built modèle de design",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -26355,9 +26355,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer sendgrid pre built design.",
+      "description": "Crée un nouvel élément pour sendgrid pre built modèle de design.",
       "args": {
-        "title": "Créer sendgrid pre built design",
+        "title": "Créer sendgrid pre built modèle de design",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -26396,8 +26396,8 @@
       "key": "sendgrid_profile_list_get_user_profile",
       "name": "sendgridProfileListGetUserProfile",
       "schemaVersion": 2,
-      "title": "Lister utilisateur profile",
-      "subtitle": "Utilisateur profile",
+      "title": "Lister utilisateur profil",
+      "subtitle": "Utilisateur profil",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -26428,9 +26428,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister utilisateur profile.",
+      "description": "Retourne une liste pour utilisateur profil.",
       "args": {
-        "title": "Lister utilisateur profile",
+        "title": "Lister utilisateur profil",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -26445,8 +26445,8 @@
       "key": "sendgrid_profile_update_patch_user_profile",
       "name": "sendgridProfileUpdatePatchUserProfile",
       "schemaVersion": 2,
-      "title": "Mettre à jour utilisateur profile",
-      "subtitle": "Utilisateur profile",
+      "title": "Mettre à jour utilisateur profil",
+      "subtitle": "Utilisateur profil",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -26477,9 +26477,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour utilisateur profile.",
+      "description": "Met à jour utilisateur profil.",
       "args": {
-        "title": "Mettre à jour utilisateur profile",
+        "title": "Mettre à jour utilisateur profil",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -26504,8 +26504,8 @@
       "key": "sendgrid_recipient_list_get_contactdb_lists_list_id_recipients",
       "name": "sendgridRecipientListGetContactdbListsListIdRecipients",
       "schemaVersion": 2,
-      "title": "Lister recipient",
-      "subtitle": "Recipient",
+      "title": "Lister destinataire",
+      "subtitle": "destinataire",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -26536,9 +26536,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister recipient.",
+      "description": "Retourne une liste pour destinataire.",
       "args": {
-        "title": "Lister recipient",
+        "title": "Lister destinataire",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -26596,8 +26596,8 @@
       "key": "sendgrid_recipient_create_post_contactdb_lists_list_id_recipients",
       "name": "sendgridRecipientCreatePostContactdbListsListIdRecipients",
       "schemaVersion": 2,
-      "title": "Créer recipient",
-      "subtitle": "Recipient",
+      "title": "Créer destinataire",
+      "subtitle": "destinataire",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -26628,9 +26628,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer recipient.",
+      "description": "Crée un nouvel élément pour destinataire.",
       "args": {
-        "title": "Créer recipient",
+        "title": "Créer destinataire",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -26669,8 +26669,8 @@
       "key": "sendgrid_recipient_delete_delete_contactdb_lists_list_id_recipients_recipient_id",
       "name": "sendgridRecipientDeleteDeleteContactdbListsListIdRecipientsRecipientId",
       "schemaVersion": 2,
-      "title": "Supprimer recipient",
-      "subtitle": "Recipient",
+      "title": "Supprimer destinataire",
+      "subtitle": "destinataire",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -26701,9 +26701,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer recipient.",
+      "description": "Supprime destinataire.",
       "args": {
-        "title": "Supprimer recipient",
+        "title": "Supprimer destinataire",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -26747,8 +26747,8 @@
       "key": "sendgrid_recipient_create_post_contactdb_lists_list_id_recipients_recipient_id",
       "name": "sendgridRecipientCreatePostContactdbListsListIdRecipientsRecipientId",
       "schemaVersion": 2,
-      "title": "Créer recipient - contactdb",
-      "subtitle": "Recipient",
+      "title": "Créer destinataire - contactdb",
+      "subtitle": "destinataire",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -26779,9 +26779,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer recipient - contactdb.",
+      "description": "Crée un nouvel élément pour destinataire - contactdb.",
       "args": {
-        "title": "Créer recipient - contactdb",
+        "title": "Créer destinataire - contactdb",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -26825,8 +26825,8 @@
       "key": "sendgrid_recipient_delete_delete_contactdb_recipients",
       "name": "sendgridRecipientDeleteDeleteContactdbRecipients",
       "schemaVersion": 2,
-      "title": "Supprimer recipient - contactdb",
-      "subtitle": "Recipient",
+      "title": "Supprimer destinataire - contactdb",
+      "subtitle": "destinataire",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -26857,9 +26857,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer recipient - contactdb.",
+      "description": "Supprime destinataire - contactdb.",
       "args": {
-        "title": "Supprimer recipient - contactdb",
+        "title": "Supprimer destinataire - contactdb",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -26874,8 +26874,8 @@
       "key": "sendgrid_recipient_list_get_contactdb_recipients",
       "name": "sendgridRecipientListGetContactdbRecipients",
       "schemaVersion": 2,
-      "title": "Lister recipient - contactdb",
-      "subtitle": "Recipient",
+      "title": "Lister destinataire - contactdb",
+      "subtitle": "destinataire",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -26906,9 +26906,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister recipient - contactdb.",
+      "description": "Retourne une liste pour destinataire - contactdb.",
       "args": {
-        "title": "Lister recipient - contactdb",
+        "title": "Lister destinataire - contactdb",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -26942,8 +26942,8 @@
       "key": "sendgrid_recipient_update_patch_contactdb_recipients",
       "name": "sendgridRecipientUpdatePatchContactdbRecipients",
       "schemaVersion": 2,
-      "title": "Mettre à jour recipient",
-      "subtitle": "Recipient",
+      "title": "Mettre à jour destinataire",
+      "subtitle": "destinataire",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -26974,9 +26974,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour recipient.",
+      "description": "Met à jour destinataire.",
       "args": {
-        "title": "Mettre à jour recipient",
+        "title": "Mettre à jour destinataire",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -27001,8 +27001,8 @@
       "key": "sendgrid_recipient_create_post_contactdb_recipients",
       "name": "sendgridRecipientCreatePostContactdbRecipients",
       "schemaVersion": 2,
-      "title": "Créer recipient - recipient contactdb",
-      "subtitle": "Recipient",
+      "title": "Créer destinataire contactdb",
+      "subtitle": "destinataire",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -27033,9 +27033,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer recipient - recipient contactdb.",
+      "description": "Crée un nouvel élément pour destinataire contactdb.",
       "args": {
-        "title": "Créer recipient - recipient contactdb",
+        "title": "Créer destinataire contactdb",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -27060,8 +27060,8 @@
       "key": "sendgrid_recipient_search_get_contactdb_recipients_search",
       "name": "sendgridRecipientSearchGetContactdbRecipientsSearch",
       "schemaVersion": 2,
-      "title": "Rechercher recipient",
-      "subtitle": "Recipient",
+      "title": "Rechercher destinataire",
+      "subtitle": "destinataire",
       "icon": "fa-solid fa-magnifying-glass",
       "type": "function",
       "nodeKind": "function",
@@ -27092,9 +27092,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Rechercher recipient.",
+      "description": "Recherche des éléments liés à destinataire.",
       "args": {
-        "title": "Rechercher recipient",
+        "title": "Rechercher destinataire",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -27119,8 +27119,8 @@
       "key": "sendgrid_recipient_search_post_contactdb_recipients_search",
       "name": "sendgridRecipientSearchPostContactdbRecipientsSearch",
       "schemaVersion": 2,
-      "title": "Rechercher recipient - contactdb",
-      "subtitle": "Recipient",
+      "title": "Rechercher destinataire - contactdb",
+      "subtitle": "destinataire",
       "icon": "fa-solid fa-magnifying-glass",
       "type": "function",
       "nodeKind": "function",
@@ -27151,9 +27151,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Rechercher recipient - contactdb.",
+      "description": "Recherche des éléments liés à destinataire - contactdb.",
       "args": {
-        "title": "Rechercher recipient - contactdb",
+        "title": "Rechercher destinataire - contactdb",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -27178,8 +27178,8 @@
       "key": "sendgrid_recipient_delete_delete_contactdb_recipients_recipient_id",
       "name": "sendgridRecipientDeleteDeleteContactdbRecipientsRecipientId",
       "schemaVersion": 2,
-      "title": "Supprimer recipient - contactdb ID",
-      "subtitle": "Recipient",
+      "title": "Supprimer destinataire - contactdb ID",
+      "subtitle": "destinataire",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -27210,9 +27210,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer recipient - contactdb ID.",
+      "description": "Supprime destinataire - contactdb ID.",
       "args": {
-        "title": "Supprimer recipient - contactdb ID",
+        "title": "Supprimer destinataire - contactdb ID",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -27242,8 +27242,8 @@
       "key": "sendgrid_recipient_get_get_contactdb_recipients_recipient_id",
       "name": "sendgridRecipientGetGetContactdbRecipientsRecipientId",
       "schemaVersion": 2,
-      "title": "Récupérer recipient",
-      "subtitle": "Recipient",
+      "title": "Récupérer destinataire",
+      "subtitle": "destinataire",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
@@ -27274,9 +27274,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer recipient.",
+      "description": "Récupère les détails de destinataire.",
       "args": {
-        "title": "Récupérer recipient",
+        "title": "Récupérer destinataire",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -27306,8 +27306,8 @@
       "key": "sendgrid_recipient_list_get_contactdb_segments_segment_id_recipients",
       "name": "sendgridRecipientListGetContactdbSegmentsSegmentIdRecipients",
       "schemaVersion": 2,
-      "title": "Lister recipient - contactdb segment",
-      "subtitle": "Recipient",
+      "title": "Lister destinataire - contactdb segment",
+      "subtitle": "destinataire",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -27338,9 +27338,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister recipient - contactdb segment.",
+      "description": "Retourne une liste pour destinataire - contactdb segment.",
       "args": {
-        "title": "Lister recipient - contactdb segment",
+        "title": "Lister destinataire - contactdb segment",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -27388,8 +27388,8 @@
       "key": "sendgrid_remaining_list_get_ips_remaining",
       "name": "sendgridRemainingListGetIpsRemaining",
       "schemaVersion": 2,
-      "title": "Lister ips remaining",
-      "subtitle": "Ips remaining",
+      "title": "Lister IP remaining",
+      "subtitle": "IP remaining",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -27420,9 +27420,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister ips remaining.",
+      "description": "Retourne une liste pour IP remaining.",
       "args": {
-        "title": "Lister ips remaining",
+        "title": "Lister IP remaining",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -27469,7 +27469,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister reputation.",
+      "description": "Retourne une liste pour reputation.",
       "args": {
         "title": "Lister reputation",
         "ui": {
@@ -27496,8 +27496,8 @@
       "key": "sendgrid_request_list_get_v3_scopes_requests",
       "name": "sendgridRequestListGetV3ScopesRequests",
       "schemaVersion": 2,
-      "title": "Lister scope request",
-      "subtitle": "Scope request",
+      "title": "Lister portée request",
+      "subtitle": "portée request",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -27528,9 +27528,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister scope request.",
+      "description": "Retourne une liste pour portée request.",
       "args": {
-        "title": "Lister scope request",
+        "title": "Lister portée request",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -27564,8 +27564,8 @@
       "key": "sendgrid_request_delete_delete_v3_scopes_requests_request_id",
       "name": "sendgridRequestDeleteDeleteV3ScopesRequestsRequestId",
       "schemaVersion": 2,
-      "title": "Supprimer scope request ID",
-      "subtitle": "Scope request ID",
+      "title": "Supprimer portée request ID",
+      "subtitle": "portée request ID",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -27596,9 +27596,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer scope request ID.",
+      "description": "Supprime portée request ID.",
       "args": {
-        "title": "Supprimer scope request ID",
+        "title": "Supprimer portée request ID",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -27628,8 +27628,8 @@
       "key": "sendgrid_request_approve_patch_v3_scopes_requests_approve_id",
       "name": "sendgridRequestApprovePatchV3ScopesRequestsApproveId",
       "schemaVersion": 2,
-      "title": "Mettre à jour scope request ID",
-      "subtitle": "Scope request ID",
+      "title": "Mettre à jour portée request ID",
+      "subtitle": "portée request ID",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -27660,9 +27660,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour scope request ID.",
+      "description": "Met à jour portée request ID.",
       "args": {
-        "title": "Mettre à jour scope request ID",
+        "title": "Mettre à jour portée request ID",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -27692,8 +27692,8 @@
       "key": "sendgrid_resend_create_post_v3_teammates_pending_token_resend",
       "name": "sendgridResendCreatePostV3TeammatesPendingTokenResend",
       "schemaVersion": 2,
-      "title": "Créer teammate pending jeton resend",
-      "subtitle": "Teammate pending jeton resend",
+      "title": "Créer coéquipier en attente jeton resend",
+      "subtitle": "coéquipier en attente jeton resend",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -27724,9 +27724,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer teammate pending jeton resend.",
+      "description": "Crée un nouvel élément pour coéquipier en attente jeton resend.",
       "args": {
-        "title": "Créer teammate pending jeton resend",
+        "title": "Créer coéquipier en attente jeton resend",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -27756,8 +27756,8 @@
       "key": "sendgrid_resend_create_post_verified_senders_resend_id",
       "name": "sendgridResendCreatePostVerifiedSendersResendId",
       "schemaVersion": 2,
-      "title": "Créer verified expéditeur resend ID",
-      "subtitle": "Verified expéditeur resend ID",
+      "title": "Créer vérifié expéditeur resend ID",
+      "subtitle": "vérifié expéditeur resend ID",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -27788,9 +27788,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer verified expéditeur resend ID.",
+      "description": "Crée un nouvel élément pour vérifié expéditeur resend ID.",
       "args": {
-        "title": "Créer verified expéditeur resend ID",
+        "title": "Créer vérifié expéditeur resend ID",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -27852,7 +27852,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer resend verification.",
+      "description": "Crée un nouvel élément pour resend verification.",
       "args": {
         "title": "Créer resend verification",
         "ui": {
@@ -27916,7 +27916,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister contactdb reserved champ.",
+      "description": "Retourne une liste pour contactdb reserved champ.",
       "args": {
         "title": "Lister contactdb reserved champ",
         "ui": {
@@ -27965,7 +27965,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer campagne ID schedule.",
+      "description": "Supprime campagne ID schedule.",
       "args": {
         "title": "Supprimer campagne ID schedule",
         "ui": {
@@ -28029,7 +28029,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister campagne ID schedule.",
+      "description": "Retourne une liste pour campagne ID schedule.",
       "args": {
         "title": "Lister campagne ID schedule",
         "ui": {
@@ -28093,7 +28093,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour campagne ID schedule.",
+      "description": "Met à jour campagne ID schedule.",
       "args": {
         "title": "Mettre à jour campagne ID schedule",
         "ui": {
@@ -28166,7 +28166,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer campagne ID schedule.",
+      "description": "Crée un nouvel élément pour campagne ID schedule.",
       "args": {
         "title": "Créer campagne ID schedule",
         "ui": {
@@ -28239,7 +28239,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer schedule.",
+      "description": "Supprime schedule.",
       "args": {
         "title": "Supprimer schedule",
         "ui": {
@@ -28303,7 +28303,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Envoyer schedule.",
+      "description": "Envoie schedule.",
       "args": {
         "title": "Envoyer schedule",
         "ui": {
@@ -28344,8 +28344,8 @@
       "key": "sendgrid_scheduled_send_assign_get_user_scheduled_sends",
       "name": "sendgridScheduledSendAssignGetUserScheduledSends",
       "schemaVersion": 2,
-      "title": "Récupérer utilisateur planifiés send",
-      "subtitle": "Utilisateur planifiés send",
+      "title": "Récupérer utilisateur planifiés envoi",
+      "subtitle": "Utilisateur planifiés envoi",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -28376,9 +28376,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer utilisateur planifiés send.",
+      "description": "Récupère les détails de utilisateur planifiés envoi.",
       "args": {
-        "title": "Récupérer utilisateur planifiés send",
+        "title": "Récupérer utilisateur planifiés envoi",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -28393,8 +28393,8 @@
       "key": "sendgrid_scheduled_send_send_post_user_scheduled_sends",
       "name": "sendgridScheduledSendSendPostUserScheduledSends",
       "schemaVersion": 2,
-      "title": "Envoyer utilisateur planifiés send",
-      "subtitle": "Utilisateur planifiés send",
+      "title": "Envoyer utilisateur planifiés envoi",
+      "subtitle": "Utilisateur planifiés envoi",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -28425,9 +28425,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Envoyer utilisateur planifiés send.",
+      "description": "Envoie utilisateur planifiés envoi.",
       "args": {
-        "title": "Envoyer utilisateur planifiés send",
+        "title": "Envoyer utilisateur planifiés envoi",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -28452,8 +28452,8 @@
       "key": "sendgrid_scheduled_send_send_delete_user_scheduled_sends_batch_id",
       "name": "sendgridScheduledSendSendDeleteUserScheduledSendsBatchId",
       "schemaVersion": 2,
-      "title": "Supprimer utilisateur planifiés send lot ID",
-      "subtitle": "Utilisateur planifiés send lot ID",
+      "title": "Supprimer utilisateur planifiés envoi lot ID",
+      "subtitle": "Utilisateur planifiés envoi lot ID",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -28484,9 +28484,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer utilisateur planifiés send lot ID.",
+      "description": "Supprime utilisateur planifiés envoi lot ID.",
       "args": {
-        "title": "Supprimer utilisateur planifiés send lot ID",
+        "title": "Supprimer utilisateur planifiés envoi lot ID",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -28516,8 +28516,8 @@
       "key": "sendgrid_scheduled_send_send_get_user_scheduled_sends_batch_id",
       "name": "sendgridScheduledSendSendGetUserScheduledSendsBatchId",
       "schemaVersion": 2,
-      "title": "Récupérer utilisateur planifiés send lot ID",
-      "subtitle": "Utilisateur planifiés send lot ID",
+      "title": "Récupérer utilisateur planifiés envoi lot ID",
+      "subtitle": "Utilisateur planifiés envoi lot ID",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -28548,9 +28548,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer utilisateur planifiés send lot ID.",
+      "description": "Récupère les détails de utilisateur planifiés envoi lot ID.",
       "args": {
-        "title": "Récupérer utilisateur planifiés send lot ID",
+        "title": "Récupérer utilisateur planifiés envoi lot ID",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -28580,8 +28580,8 @@
       "key": "sendgrid_scheduled_send_send_patch_user_scheduled_sends_batch_id",
       "name": "sendgridScheduledSendSendPatchUserScheduledSendsBatchId",
       "schemaVersion": 2,
-      "title": "Mettre à jour utilisateur planifiés send lot ID",
-      "subtitle": "Utilisateur planifiés send lot ID",
+      "title": "Mettre à jour utilisateur planifiés envoi lot ID",
+      "subtitle": "Utilisateur planifiés envoi lot ID",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -28612,9 +28612,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour utilisateur planifiés send lot ID.",
+      "description": "Met à jour utilisateur planifiés envoi lot ID.",
       "args": {
-        "title": "Mettre à jour utilisateur planifiés send lot ID",
+        "title": "Mettre à jour utilisateur planifiés envoi lot ID",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -28653,8 +28653,8 @@
       "key": "sendgrid_scope_list_get_scopes",
       "name": "sendgridScopeListGetScopes",
       "schemaVersion": 2,
-      "title": "Lister scope",
-      "subtitle": "Scope",
+      "title": "Lister portée",
+      "subtitle": "portée",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -28685,9 +28685,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister scope.",
+      "description": "Retourne une liste pour portée.",
       "args": {
-        "title": "Lister scope",
+        "title": "Lister portée",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -28734,7 +28734,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister contactdb segment.",
+      "description": "Retourne une liste pour contactdb segment.",
       "args": {
         "title": "Lister contactdb segment",
         "ui": {
@@ -28783,7 +28783,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer contactdb segment.",
+      "description": "Crée un nouvel élément pour contactdb segment.",
       "args": {
         "title": "Créer contactdb segment",
         "ui": {
@@ -28842,7 +28842,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer contactdb segment ID.",
+      "description": "Supprime contactdb segment ID.",
       "args": {
         "title": "Supprimer contactdb segment ID",
         "ui": {
@@ -28915,7 +28915,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer contactdb segment ID.",
+      "description": "Récupère les détails de contactdb segment ID.",
       "args": {
         "title": "Récupérer contactdb segment ID",
         "ui": {
@@ -28979,7 +28979,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour contactdb segment ID.",
+      "description": "Met à jour contactdb segment ID.",
       "args": {
         "title": "Mettre à jour contactdb segment ID",
         "ui": {
@@ -29052,7 +29052,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Rechercher marketing segment.",
+      "description": "Recherche des éléments liés à marketing segment.",
       "args": {
         "title": "Rechercher marketing segment",
         "ui": {
@@ -29120,7 +29120,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer marketing segment.",
+      "description": "Crée un nouvel élément pour marketing segment.",
       "args": {
         "title": "Créer marketing segment",
         "ui": {
@@ -29179,7 +29179,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer marketing segment ID.",
+      "description": "Supprime marketing segment ID.",
       "args": {
         "title": "Supprimer marketing segment ID",
         "ui": {
@@ -29243,7 +29243,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer marketing segment ID.",
+      "description": "Récupère les détails de marketing segment ID.",
       "args": {
         "title": "Récupérer marketing segment ID",
         "ui": {
@@ -29316,7 +29316,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour marketing segment ID.",
+      "description": "Met à jour marketing segment ID.",
       "args": {
         "title": "Mettre à jour marketing segment ID",
         "ui": {
@@ -29357,7 +29357,7 @@
       "key": "sendgrid_send_email_send_post_marketing_test_send_email",
       "name": "sendgridSendEmailSendPostMarketingTestSendEmail",
       "schemaVersion": 2,
-      "title": "Envoyer email marketing test",
+      "title": "Envoyer email de test marketing",
       "subtitle": "Email marketing test",
       "icon": "fa-solid fa-bolt",
       "type": "function",
@@ -29389,9 +29389,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Envoyer email marketing test.",
+      "description": "Envoie email de test marketing.",
       "args": {
-        "title": "Envoyer email marketing test",
+        "title": "Envoyer email de test marketing",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -29448,7 +29448,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer marketing expéditeur.",
+      "description": "Crée un nouvel élément pour marketing expéditeur.",
       "args": {
         "title": "Créer marketing expéditeur",
         "ui": {
@@ -29476,7 +29476,7 @@
       "name": "sendgridSenderListGetV3Senders",
       "schemaVersion": 2,
       "title": "Lister expéditeur",
-      "subtitle": "Expéditeur",
+      "subtitle": "expéditeur",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -29507,7 +29507,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister expéditeur.",
+      "description": "Retourne une liste pour expéditeur.",
       "args": {
         "title": "Lister expéditeur",
         "ui": {
@@ -29525,7 +29525,7 @@
       "name": "sendgridSenderCreatePostSenders",
       "schemaVersion": 2,
       "title": "Créer expéditeur",
-      "subtitle": "Expéditeur",
+      "subtitle": "expéditeur",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -29556,7 +29556,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer expéditeur.",
+      "description": "Crée un nouvel élément pour expéditeur.",
       "args": {
         "title": "Créer expéditeur",
         "ui": {
@@ -29584,7 +29584,7 @@
       "name": "sendgridSenderDeleteDeleteV3SendersSenderId",
       "schemaVersion": 2,
       "title": "Supprimer expéditeur ID",
-      "subtitle": "Expéditeur ID",
+      "subtitle": "expéditeur ID",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -29615,7 +29615,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer expéditeur ID.",
+      "description": "Supprime expéditeur ID.",
       "args": {
         "title": "Supprimer expéditeur ID",
         "ui": {
@@ -29648,7 +29648,7 @@
       "name": "sendgridSenderGetGetV3SendersSenderId",
       "schemaVersion": 2,
       "title": "Récupérer expéditeur ID",
-      "subtitle": "Expéditeur ID",
+      "subtitle": "expéditeur ID",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
@@ -29679,7 +29679,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer expéditeur ID.",
+      "description": "Récupère les détails de expéditeur ID.",
       "args": {
         "title": "Récupérer expéditeur ID",
         "ui": {
@@ -29712,7 +29712,7 @@
       "name": "sendgridSenderUpdatePatchV3SendersSenderId",
       "schemaVersion": 2,
       "title": "Mettre à jour expéditeur ID",
-      "subtitle": "Expéditeur ID",
+      "subtitle": "expéditeur ID",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -29743,7 +29743,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour expéditeur ID.",
+      "description": "Met à jour expéditeur ID.",
       "args": {
         "title": "Mettre à jour expéditeur ID",
         "ui": {
@@ -29816,7 +29816,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister utilisateur webhook événement paramètre.",
+      "description": "Retourne une liste pour utilisateur webhook événement paramètre.",
       "args": {
         "title": "Lister utilisateur webhook événement paramètre",
         "ui": {
@@ -29865,7 +29865,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour utilisateur webhook événement paramètre.",
+      "description": "Met à jour utilisateur webhook événement paramètre.",
       "args": {
         "title": "Mettre à jour utilisateur webhook événement paramètre",
         "ui": {
@@ -29924,7 +29924,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister utilisateur webhook parse paramètre.",
+      "description": "Retourne une liste pour utilisateur webhook parse paramètre.",
       "args": {
         "title": "Lister utilisateur webhook parse paramètre",
         "ui": {
@@ -29973,7 +29973,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer utilisateur webhook parse paramètre.",
+      "description": "Crée un nouvel élément pour utilisateur webhook parse paramètre.",
       "args": {
         "title": "Créer utilisateur webhook parse paramètre",
         "ui": {
@@ -30032,7 +30032,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer utilisateur webhook parse paramètre hostname.",
+      "description": "Supprime utilisateur webhook parse paramètre hostname.",
       "args": {
         "title": "Supprimer utilisateur webhook parse paramètre hostname",
         "ui": {
@@ -30096,7 +30096,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer utilisateur webhook parse paramètre hostname.",
+      "description": "Récupère les détails de utilisateur webhook parse paramètre hostname.",
       "args": {
         "title": "Récupérer utilisateur webhook parse paramètre hostname",
         "ui": {
@@ -30160,7 +30160,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour utilisateur webhook parse paramètre hostname.",
+      "description": "Met à jour utilisateur webhook parse paramètre hostname.",
       "args": {
         "title": "Mettre à jour utilisateur webhook parse paramètre hostname",
         "ui": {
@@ -30233,7 +30233,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister utilisateur webhook événement paramètre - utilisateur événement paramètre.",
+      "description": "Retourne une liste pour utilisateur webhook événement paramètre - utilisateur événement paramètre.",
       "args": {
         "title": "Lister utilisateur webhook événement paramètre - utilisateur événement paramètre",
         "ui": {
@@ -30282,7 +30282,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour utilisateur webhook événement paramètre - utilisateur événement paramètre.",
+      "description": "Met à jour utilisateur webhook événement paramètre - utilisateur événement paramètre.",
       "args": {
         "title": "Mettre à jour utilisateur webhook événement paramètre - utilisateur événement paramètre",
         "ui": {
@@ -30309,8 +30309,8 @@
       "key": "sendgrid_singlesend_delete_delete_marketing_singlesends",
       "name": "sendgridSinglesendDeleteDeleteMarketingSinglesends",
       "schemaVersion": 2,
-      "title": "Supprimer singlesend",
-      "subtitle": "Singlesend",
+      "title": "Supprimer envoi unitaire",
+      "subtitle": "envoi unitaire",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -30341,9 +30341,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer singlesend.",
+      "description": "Supprime envoi unitaire.",
       "args": {
-        "title": "Supprimer singlesend",
+        "title": "Supprimer envoi unitaire",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -30368,8 +30368,8 @@
       "key": "sendgrid_singlesend_send_get_marketing_singlesends",
       "name": "sendgridSinglesendSendGetMarketingSinglesends",
       "schemaVersion": 2,
-      "title": "Récupérer singlesend",
-      "subtitle": "Singlesend",
+      "title": "Récupérer envoi unitaire",
+      "subtitle": "envoi unitaire",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -30400,9 +30400,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer singlesend.",
+      "description": "Récupère les détails de envoi unitaire.",
       "args": {
-        "title": "Récupérer singlesend",
+        "title": "Récupérer envoi unitaire",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -30436,8 +30436,8 @@
       "key": "sendgrid_singlesend_send_post_marketing_singlesends",
       "name": "sendgridSinglesendSendPostMarketingSinglesends",
       "schemaVersion": 2,
-      "title": "Envoyer singlesend",
-      "subtitle": "Singlesend",
+      "title": "Envoyer envoi unitaire",
+      "subtitle": "envoi unitaire",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -30468,9 +30468,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Envoyer singlesend.",
+      "description": "Envoie envoi unitaire.",
       "args": {
-        "title": "Envoyer singlesend",
+        "title": "Envoyer envoi unitaire",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -30495,8 +30495,8 @@
       "key": "sendgrid_singlesend_search_post_marketing_singlesends_search",
       "name": "sendgridSinglesendSearchPostMarketingSinglesendsSearch",
       "schemaVersion": 2,
-      "title": "Rechercher singlesend",
-      "subtitle": "Singlesend",
+      "title": "Rechercher envoi unitaire",
+      "subtitle": "envoi unitaire",
       "icon": "fa-solid fa-magnifying-glass",
       "type": "function",
       "nodeKind": "function",
@@ -30527,9 +30527,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Rechercher singlesend.",
+      "description": "Recherche des éléments liés à envoi unitaire.",
       "args": {
-        "title": "Rechercher singlesend",
+        "title": "Rechercher envoi unitaire",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -30572,8 +30572,8 @@
       "key": "sendgrid_singlesend_send_delete_marketing_singlesends_id",
       "name": "sendgridSinglesendSendDeleteMarketingSinglesendsId",
       "schemaVersion": 2,
-      "title": "Supprimer singlesend - marketing",
-      "subtitle": "Singlesend",
+      "title": "Supprimer envoi unitaire - marketing",
+      "subtitle": "envoi unitaire",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -30604,9 +30604,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer singlesend - marketing.",
+      "description": "Supprime envoi unitaire - marketing.",
       "args": {
-        "title": "Supprimer singlesend - marketing",
+        "title": "Supprimer envoi unitaire - marketing",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -30636,8 +30636,8 @@
       "key": "sendgrid_singlesend_send_get_marketing_singlesends_id",
       "name": "sendgridSinglesendSendGetMarketingSinglesendsId",
       "schemaVersion": 2,
-      "title": "Récupérer singlesend - marketing",
-      "subtitle": "Singlesend",
+      "title": "Récupérer envoi unitaire - marketing",
+      "subtitle": "envoi unitaire",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -30668,9 +30668,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer singlesend - marketing.",
+      "description": "Récupère les détails de envoi unitaire - marketing.",
       "args": {
-        "title": "Récupérer singlesend - marketing",
+        "title": "Récupérer envoi unitaire - marketing",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -30700,8 +30700,8 @@
       "key": "sendgrid_singlesend_send_patch_marketing_singlesends_id",
       "name": "sendgridSinglesendSendPatchMarketingSinglesendsId",
       "schemaVersion": 2,
-      "title": "Mettre à jour singlesend",
-      "subtitle": "Singlesend",
+      "title": "Mettre à jour envoi unitaire",
+      "subtitle": "envoi unitaire",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -30732,9 +30732,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour singlesend.",
+      "description": "Met à jour envoi unitaire.",
       "args": {
-        "title": "Mettre à jour singlesend",
+        "title": "Mettre à jour envoi unitaire",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -30773,8 +30773,8 @@
       "key": "sendgrid_singlesend_send_post_marketing_singlesends_id",
       "name": "sendgridSinglesendSendPostMarketingSinglesendsId",
       "schemaVersion": 2,
-      "title": "Envoyer singlesend - marketing",
-      "subtitle": "Singlesend",
+      "title": "Envoyer envoi unitaire - marketing",
+      "subtitle": "envoi unitaire",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -30805,9 +30805,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Envoyer singlesend - marketing.",
+      "description": "Envoie envoi unitaire - marketing.",
       "args": {
-        "title": "Envoyer singlesend - marketing",
+        "title": "Envoyer envoi unitaire - marketing",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -30846,8 +30846,8 @@
       "key": "sendgrid_singlesend_search_getall_singlesend_stats",
       "name": "sendgridSinglesendSearchGetallSinglesendStats",
       "schemaVersion": 2,
-      "title": "Rechercher singlesend - stat",
-      "subtitle": "Singlesend",
+      "title": "Rechercher envoi unitaire - statistique",
+      "subtitle": "envoi unitaire",
       "icon": "fa-solid fa-magnifying-glass",
       "type": "function",
       "nodeKind": "function",
@@ -30878,9 +30878,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Rechercher singlesend - stat.",
+      "description": "Recherche des éléments liés à envoi unitaire - statistique.",
       "args": {
-        "title": "Rechercher singlesend - stat",
+        "title": "Rechercher envoi unitaire - statistique",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -30905,8 +30905,8 @@
       "key": "sendgrid_singlesend_search_get_singlesend_stat",
       "name": "sendgridSinglesendSearchGetSinglesendStat",
       "schemaVersion": 2,
-      "title": "Rechercher singlesend - singlesend stat",
-      "subtitle": "Singlesend",
+      "title": "Rechercher envoi unitaire - envoi unitaire statistique",
+      "subtitle": "envoi unitaire",
       "icon": "fa-solid fa-magnifying-glass",
       "type": "function",
       "nodeKind": "function",
@@ -30937,9 +30937,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Rechercher singlesend - singlesend stat.",
+      "description": "Recherche des éléments liés à envoi unitaire - envoi unitaire statistique.",
       "args": {
-        "title": "Rechercher singlesend - singlesend stat",
+        "title": "Rechercher envoi unitaire - envoi unitaire statistique",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -30969,8 +30969,8 @@
       "key": "sendgrid_spam_report_delete_delete_suppression_spam_reports",
       "name": "sendgridSpamReportDeleteDeleteSuppressionSpamReports",
       "schemaVersion": 2,
-      "title": "Supprimer spam rapport",
-      "subtitle": "Spam rapport",
+      "title": "Supprimer rapport spam",
+      "subtitle": "rapport spam",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -31001,9 +31001,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer spam rapport.",
+      "description": "Supprime rapport spam.",
       "args": {
-        "title": "Supprimer spam rapport",
+        "title": "Supprimer rapport spam",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -31018,8 +31018,8 @@
       "key": "sendgrid_spam_report_list_get_suppression_spam_reports",
       "name": "sendgridSpamReportListGetSuppressionSpamReports",
       "schemaVersion": 2,
-      "title": "Lister spam rapport",
-      "subtitle": "Spam rapport",
+      "title": "Lister rapport spam",
+      "subtitle": "rapport spam",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -31050,9 +31050,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister spam rapport.",
+      "description": "Retourne une liste pour rapport spam.",
       "args": {
-        "title": "Lister spam rapport",
+        "title": "Lister rapport spam",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -31062,7 +31062,7 @@
             "type": "number",
             "key": "start_time",
             "label": "Start Time",
-            "description": "start time range when spam rapport was created inclusive unix timestamp",
+            "description": "Démarrer time range when spam rapport was created inclusive unix timestamp",
             "col": {
               "xs": 24
             }
@@ -31104,8 +31104,8 @@
       "key": "sendgrid_spam_report_delete_delete_suppression_spam_reports_email",
       "name": "sendgridSpamReportDeleteDeleteSuppressionSpamReportsEmail",
       "schemaVersion": 2,
-      "title": "Supprimer spam rapport - suppression",
-      "subtitle": "Spam rapport",
+      "title": "Supprimer rapport spam - suppression",
+      "subtitle": "rapport spam",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -31136,9 +31136,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer spam rapport - suppression.",
+      "description": "Supprime rapport spam - suppression.",
       "args": {
-        "title": "Supprimer spam rapport - suppression",
+        "title": "Supprimer rapport spam - suppression",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -31168,8 +31168,8 @@
       "key": "sendgrid_spam_report_get_get_suppression_spam_reports_email",
       "name": "sendgridSpamReportGetGetSuppressionSpamReportsEmail",
       "schemaVersion": 2,
-      "title": "Récupérer spam rapport",
-      "subtitle": "Spam rapport",
+      "title": "Récupérer rapport spam",
+      "subtitle": "rapport spam",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
@@ -31200,9 +31200,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer spam rapport.",
+      "description": "Récupère les détails de rapport spam.",
       "args": {
-        "title": "Récupérer spam rapport",
+        "title": "Récupérer rapport spam",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -31232,8 +31232,8 @@
       "key": "sendgrid_stat_list_get_browsers_stats",
       "name": "sendgridStatListGetBrowsersStats",
       "schemaVersion": 2,
-      "title": "Lister browser stat",
-      "subtitle": "Browser stat",
+      "title": "Lister browser statistique",
+      "subtitle": "Browser statistique",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -31264,9 +31264,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister browser stat.",
+      "description": "Retourne une liste pour browser statistique.",
       "args": {
-        "title": "Lister browser stat",
+        "title": "Lister browser statistique",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -31323,7 +31323,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Rechercher statistique.",
+      "description": "Recherche des éléments liés à statistique.",
       "args": {
         "title": "Rechercher statistique",
         "ui": {
@@ -31425,8 +31425,8 @@
       "key": "sendgrid_stat_list_get_clients_stats",
       "name": "sendgridStatListGetClientsStats",
       "schemaVersion": 2,
-      "title": "Lister client stat",
-      "subtitle": "Client stat",
+      "title": "Lister client statistique",
+      "subtitle": "Client statistique",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -31457,9 +31457,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister client stat.",
+      "description": "Retourne une liste pour client statistique.",
       "args": {
-        "title": "Lister client stat",
+        "title": "Lister client statistique",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -31474,8 +31474,8 @@
       "key": "sendgrid_stat_list_get_clients_client_type_stats",
       "name": "sendgridStatListGetClientsClientTypeStats",
       "schemaVersion": 2,
-      "title": "Lister client type stat",
-      "subtitle": "Client type stat",
+      "title": "Lister client type statistique",
+      "subtitle": "Client type statistique",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -31506,9 +31506,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister client type stat.",
+      "description": "Retourne une liste pour client type statistique.",
       "args": {
-        "title": "Lister client type stat",
+        "title": "Lister client type statistique",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -31538,8 +31538,8 @@
       "key": "sendgrid_stat_list_get_devices_stats",
       "name": "sendgridStatListGetDevicesStats",
       "schemaVersion": 2,
-      "title": "Lister device stat",
-      "subtitle": "Device stat",
+      "title": "Lister device statistique",
+      "subtitle": "Device statistique",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -31570,9 +31570,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister device stat.",
+      "description": "Retourne une liste pour device statistique.",
       "args": {
-        "title": "Lister device stat",
+        "title": "Lister device statistique",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -31587,8 +31587,8 @@
       "key": "sendgrid_stat_list_get_geo_stats",
       "name": "sendgridStatListGetGeoStats",
       "schemaVersion": 2,
-      "title": "Lister geo stat",
-      "subtitle": "Geo stat",
+      "title": "Lister geo statistique",
+      "subtitle": "Geo statistique",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -31619,9 +31619,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister geo stat.",
+      "description": "Retourne une liste pour geo statistique.",
       "args": {
-        "title": "Lister geo stat",
+        "title": "Lister geo statistique",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -31646,8 +31646,8 @@
       "key": "sendgrid_stat_list_get_mailbox_providers_stats",
       "name": "sendgridStatListGetMailboxProvidersStats",
       "schemaVersion": 2,
-      "title": "Lister mailbox provider stat",
-      "subtitle": "Mailbox provider stat",
+      "title": "Lister mailbox provider statistique",
+      "subtitle": "Mailbox provider statistique",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -31678,9 +31678,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister mailbox provider stat.",
+      "description": "Retourne une liste pour mailbox provider statistique.",
       "args": {
-        "title": "Lister mailbox provider stat",
+        "title": "Lister mailbox provider statistique",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -31705,8 +31705,8 @@
       "key": "sendgrid_stat_list_get_stats",
       "name": "sendgridStatListGetStats",
       "schemaVersion": 2,
-      "title": "Lister stat",
-      "subtitle": "Stat",
+      "title": "Lister statistique",
+      "subtitle": "statistique",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -31737,9 +31737,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister stat.",
+      "description": "Retourne une liste pour statistique.",
       "args": {
-        "title": "Lister stat",
+        "title": "Lister statistique",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -31754,8 +31754,8 @@
       "key": "sendgrid_stat_list_get_subusers_stats",
       "name": "sendgridStatListGetSubusersStats",
       "schemaVersion": 2,
-      "title": "Lister subuser stat",
-      "subtitle": "Subuser stat",
+      "title": "Lister sous-utilisateur statistique",
+      "subtitle": "sous-utilisateur statistique",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -31786,9 +31786,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister subuser stat.",
+      "description": "Retourne une liste pour sous-utilisateur statistique.",
       "args": {
-        "title": "Lister subuser stat",
+        "title": "Lister sous-utilisateur statistique",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -31888,8 +31888,8 @@
       "key": "sendgrid_stat_search_get_user_webhooks_parse_stats",
       "name": "sendgridStatSearchGetUserWebhooksParseStats",
       "schemaVersion": 2,
-      "title": "Rechercher utilisateur webhook parse stat",
-      "subtitle": "Utilisateur webhook parse stat",
+      "title": "Rechercher utilisateur webhook parse statistique",
+      "subtitle": "Utilisateur webhook parse statistique",
       "icon": "fa-solid fa-magnifying-glass",
       "type": "function",
       "nodeKind": "function",
@@ -31920,9 +31920,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Rechercher utilisateur webhook parse stat.",
+      "description": "Recherche des éléments liés à utilisateur webhook parse statistique.",
       "args": {
-        "title": "Rechercher utilisateur webhook parse stat",
+        "title": "Rechercher utilisateur webhook parse statistique",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -32040,7 +32040,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister contactdb statut.",
+      "description": "Retourne une liste pour contactdb statut.",
       "args": {
         "title": "Lister contactdb statut",
         "ui": {
@@ -32057,8 +32057,8 @@
       "key": "sendgrid_steps_completed_list_get_verified_senders_steps_completed",
       "name": "sendgridStepsCompletedListGetVerifiedSendersStepsCompleted",
       "schemaVersion": 2,
-      "title": "Lister verified expéditeur step completed",
-      "subtitle": "Verified expéditeur step completed",
+      "title": "Lister vérifié expéditeur étape completed",
+      "subtitle": "vérifié expéditeur étape completed",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -32089,9 +32089,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister verified expéditeur step completed.",
+      "description": "Retourne une liste pour vérifié expéditeur étape completed.",
       "args": {
-        "title": "Lister verified expéditeur step completed",
+        "title": "Lister vérifié expéditeur étape completed",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -32106,8 +32106,8 @@
       "key": "sendgrid_subuser_list_get_subusers",
       "name": "sendgridSubuserListGetSubusers",
       "schemaVersion": 2,
-      "title": "Lister subuser",
-      "subtitle": "Subuser",
+      "title": "Lister sous-utilisateur",
+      "subtitle": "sous-utilisateur",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -32138,9 +32138,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister subuser.",
+      "description": "Retourne une liste pour sous-utilisateur.",
       "args": {
-        "title": "Lister subuser",
+        "title": "Lister sous-utilisateur",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -32183,8 +32183,8 @@
       "key": "sendgrid_subuser_create_post_subusers",
       "name": "sendgridSubuserCreatePostSubusers",
       "schemaVersion": 2,
-      "title": "Créer subuser",
-      "subtitle": "Subuser",
+      "title": "Créer sous-utilisateur",
+      "subtitle": "sous-utilisateur",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -32215,9 +32215,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer subuser.",
+      "description": "Crée un nouvel élément pour sous-utilisateur.",
       "args": {
-        "title": "Créer subuser",
+        "title": "Créer sous-utilisateur",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -32242,8 +32242,8 @@
       "key": "sendgrid_subuser_delete_delete_subusers_subuser_name",
       "name": "sendgridSubuserDeleteDeleteSubusersSubuserName",
       "schemaVersion": 2,
-      "title": "Supprimer subuser name",
-      "subtitle": "Subuser name",
+      "title": "Supprimer sous-utilisateur name",
+      "subtitle": "sous-utilisateur name",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -32274,9 +32274,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer subuser name.",
+      "description": "Supprime sous-utilisateur name.",
       "args": {
-        "title": "Supprimer subuser name",
+        "title": "Supprimer sous-utilisateur name",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -32306,8 +32306,8 @@
       "key": "sendgrid_subuser_update_patch_subusers_subuser_name",
       "name": "sendgridSubuserUpdatePatchSubusersSubuserName",
       "schemaVersion": 2,
-      "title": "Mettre à jour subuser name",
-      "subtitle": "Subuser name",
+      "title": "Mettre à jour sous-utilisateur name",
+      "subtitle": "sous-utilisateur name",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -32338,9 +32338,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour subuser name.",
+      "description": "Met à jour sous-utilisateur name.",
       "args": {
-        "title": "Mettre à jour subuser name",
+        "title": "Mettre à jour sous-utilisateur name",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -32379,8 +32379,8 @@
       "key": "sendgrid_subuser_send_delete_whitelabel_domains_subuser",
       "name": "sendgridSubuserSendDeleteWhitelabelDomainsSubuser",
       "schemaVersion": 2,
-      "title": "Supprimer subuser",
-      "subtitle": "Subuser",
+      "title": "Supprimer sous-utilisateur",
+      "subtitle": "sous-utilisateur",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -32411,9 +32411,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer subuser.",
+      "description": "Supprime sous-utilisateur.",
       "args": {
-        "title": "Supprimer subuser",
+        "title": "Supprimer sous-utilisateur",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -32438,8 +32438,8 @@
       "key": "sendgrid_subuser_send_get_whitelabel_domains_subuser",
       "name": "sendgridSubuserSendGetWhitelabelDomainsSubuser",
       "schemaVersion": 2,
-      "title": "Récupérer subuser",
-      "subtitle": "Subuser",
+      "title": "Récupérer sous-utilisateur",
+      "subtitle": "sous-utilisateur",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -32470,9 +32470,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer subuser.",
+      "description": "Récupère les détails de sous-utilisateur.",
       "args": {
-        "title": "Récupérer subuser",
+        "title": "Récupérer sous-utilisateur",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -32502,8 +32502,8 @@
       "key": "sendgrid_subuser_send_post_whitelabel_domains_domain_id_subuser",
       "name": "sendgridSubuserSendPostWhitelabelDomainsDomainIdSubuser",
       "schemaVersion": 2,
-      "title": "Envoyer subuser",
-      "subtitle": "Subuser",
+      "title": "Envoyer sous-utilisateur",
+      "subtitle": "sous-utilisateur",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -32534,9 +32534,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Envoyer subuser.",
+      "description": "Envoie sous-utilisateur.",
       "args": {
-        "title": "Envoyer subuser",
+        "title": "Envoyer sous-utilisateur",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -32575,8 +32575,8 @@
       "key": "sendgrid_subuser_send_delete_whitelabel_links_subuser",
       "name": "sendgridSubuserSendDeleteWhitelabelLinksSubuser",
       "schemaVersion": 2,
-      "title": "Supprimer subuser - whitelabel",
-      "subtitle": "Subuser",
+      "title": "Supprimer sous-utilisateur - whitelabel",
+      "subtitle": "sous-utilisateur",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -32607,9 +32607,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer subuser - whitelabel.",
+      "description": "Supprime sous-utilisateur - whitelabel.",
       "args": {
-        "title": "Supprimer subuser - whitelabel",
+        "title": "Supprimer sous-utilisateur - whitelabel",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -32639,8 +32639,8 @@
       "key": "sendgrid_subuser_send_get_whitelabel_links_subuser",
       "name": "sendgridSubuserSendGetWhitelabelLinksSubuser",
       "schemaVersion": 2,
-      "title": "Récupérer subuser - whitelabel",
-      "subtitle": "Subuser",
+      "title": "Récupérer sous-utilisateur - whitelabel",
+      "subtitle": "sous-utilisateur",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -32671,9 +32671,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer subuser - whitelabel.",
+      "description": "Récupère les détails de sous-utilisateur - whitelabel.",
       "args": {
-        "title": "Récupérer subuser - whitelabel",
+        "title": "Récupérer sous-utilisateur - whitelabel",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -32703,8 +32703,8 @@
       "key": "sendgrid_subuser_send_post_whitelabel_links_link_id_subuser",
       "name": "sendgridSubuserSendPostWhitelabelLinksLinkIdSubuser",
       "schemaVersion": 2,
-      "title": "Envoyer subuser - whitelabel",
-      "subtitle": "Subuser",
+      "title": "Envoyer sous-utilisateur - whitelabel",
+      "subtitle": "sous-utilisateur",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -32735,9 +32735,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Envoyer subuser - whitelabel.",
+      "description": "Envoie sous-utilisateur - whitelabel.",
       "args": {
-        "title": "Envoyer subuser - whitelabel",
+        "title": "Envoyer sous-utilisateur - whitelabel",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -32808,7 +32808,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Rechercher sum.",
+      "description": "Recherche des éléments liés à sum.",
       "args": {
         "title": "Rechercher sum",
         "ui": {
@@ -32924,8 +32924,8 @@
       "key": "sendgrid_sum_list_get_subusers_stats_sums",
       "name": "sendgridSumListGetSubusersStatsSums",
       "schemaVersion": 2,
-      "title": "Lister subuser stat sum",
-      "subtitle": "Subuser stat sum",
+      "title": "Lister sous-utilisateur statistique sum",
+      "subtitle": "sous-utilisateur statistique sum",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -32956,9 +32956,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister subuser stat sum.",
+      "description": "Retourne une liste pour sous-utilisateur statistique sum.",
       "args": {
-        "title": "Lister subuser stat sum",
+        "title": "Lister sous-utilisateur statistique sum",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -33104,7 +33104,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister suppression.",
+      "description": "Retourne une liste pour suppression.",
       "args": {
         "title": "Lister suppression",
         "ui": {
@@ -33168,7 +33168,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer suppression.",
+      "description": "Crée un nouvel élément pour suppression.",
       "args": {
         "title": "Créer suppression",
         "ui": {
@@ -33241,7 +33241,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Rechercher suppression.",
+      "description": "Recherche des éléments liés à suppression.",
       "args": {
         "title": "Rechercher suppression",
         "ui": {
@@ -33314,7 +33314,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer suppression.",
+      "description": "Supprime suppression.",
       "args": {
         "title": "Supprimer suppression",
         "ui": {
@@ -33360,7 +33360,7 @@
       "key": "sendgrid_suppression_list_get_asm_suppressions",
       "name": "sendgridSuppressionListGetAsmSuppressions",
       "schemaVersion": 2,
-      "title": "Lister suppression - asm",
+      "title": "Lister suppression - groupe de désinscription",
       "subtitle": "Suppression",
       "icon": "fa-solid fa-list",
       "type": "function",
@@ -33392,9 +33392,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister suppression - asm.",
+      "description": "Retourne une liste pour suppression - groupe de désinscription.",
       "args": {
-        "title": "Lister suppression - asm",
+        "title": "Lister suppression - groupe de désinscription",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -33441,7 +33441,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer suppression.",
+      "description": "Récupère les détails de suppression.",
       "args": {
         "title": "Récupérer suppression",
         "ui": {
@@ -33473,8 +33473,8 @@
       "key": "sendgrid_teammate_search_get_v3_teammates",
       "name": "sendgridTeammateSearchGetV3Teammates",
       "schemaVersion": 2,
-      "title": "Rechercher teammate",
-      "subtitle": "Teammate",
+      "title": "Rechercher coéquipier",
+      "subtitle": "coéquipier",
       "icon": "fa-solid fa-magnifying-glass",
       "type": "function",
       "nodeKind": "function",
@@ -33505,9 +33505,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Rechercher teammate.",
+      "description": "Recherche des éléments liés à coéquipier.",
       "args": {
-        "title": "Rechercher teammate",
+        "title": "Rechercher coéquipier",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -33541,8 +33541,8 @@
       "key": "sendgrid_teammate_create_post_v3_teammates",
       "name": "sendgridTeammateCreatePostV3Teammates",
       "schemaVersion": 2,
-      "title": "Créer teammate",
-      "subtitle": "Teammate",
+      "title": "Créer coéquipier",
+      "subtitle": "coéquipier",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -33573,9 +33573,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer teammate.",
+      "description": "Crée un nouvel élément pour coéquipier.",
       "args": {
-        "title": "Créer teammate",
+        "title": "Créer coéquipier",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -33600,8 +33600,8 @@
       "key": "sendgrid_teammate_delete_delete_v3_teammates_username",
       "name": "sendgridTeammateDeleteDeleteV3TeammatesUsername",
       "schemaVersion": 2,
-      "title": "Supprimer teammate username",
-      "subtitle": "Teammate username",
+      "title": "Supprimer coéquipier username",
+      "subtitle": "coéquipier username",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -33632,9 +33632,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer teammate username.",
+      "description": "Supprime coéquipier username.",
       "args": {
-        "title": "Supprimer teammate username",
+        "title": "Supprimer coéquipier username",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -33664,8 +33664,8 @@
       "key": "sendgrid_teammate_get_get_v3_teammates_username",
       "name": "sendgridTeammateGetGetV3TeammatesUsername",
       "schemaVersion": 2,
-      "title": "Récupérer teammate username",
-      "subtitle": "Teammate username",
+      "title": "Récupérer coéquipier username",
+      "subtitle": "coéquipier username",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
@@ -33696,9 +33696,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer teammate username.",
+      "description": "Récupère les détails de coéquipier username.",
       "args": {
-        "title": "Récupérer teammate username",
+        "title": "Récupérer coéquipier username",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -33728,8 +33728,8 @@
       "key": "sendgrid_teammate_update_patch_v3_teammates_username",
       "name": "sendgridTeammateUpdatePatchV3TeammatesUsername",
       "schemaVersion": 2,
-      "title": "Mettre à jour teammate username",
-      "subtitle": "Teammate username",
+      "title": "Mettre à jour coéquipier username",
+      "subtitle": "coéquipier username",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -33760,9 +33760,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour teammate username.",
+      "description": "Met à jour coéquipier username.",
       "args": {
-        "title": "Mettre à jour teammate username",
+        "title": "Mettre à jour coéquipier username",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -33801,8 +33801,8 @@
       "key": "sendgrid_template_send_get_mail_settings_template",
       "name": "sendgridTemplateSendGetMailSettingsTemplate",
       "schemaVersion": 2,
-      "title": "Récupérer mail paramètre modèle",
-      "subtitle": "Mail paramètre modèle",
+      "title": "Récupérer email paramètre modèle",
+      "subtitle": "email paramètre modèle",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -33833,9 +33833,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer mail paramètre modèle.",
+      "description": "Récupère les détails de email paramètre modèle.",
       "args": {
-        "title": "Récupérer mail paramètre modèle",
+        "title": "Récupérer email paramètre modèle",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -33850,8 +33850,8 @@
       "key": "sendgrid_template_send_patch_mail_settings_template",
       "name": "sendgridTemplateSendPatchMailSettingsTemplate",
       "schemaVersion": 2,
-      "title": "Mettre à jour mail paramètre modèle",
-      "subtitle": "Mail paramètre modèle",
+      "title": "Mettre à jour email paramètre modèle",
+      "subtitle": "email paramètre modèle",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -33882,9 +33882,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour mail paramètre modèle.",
+      "description": "Met à jour email paramètre modèle.",
       "args": {
-        "title": "Mettre à jour mail paramètre modèle",
+        "title": "Mettre à jour email paramètre modèle",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -33941,7 +33941,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister modèle.",
+      "description": "Retourne une liste pour modèle.",
       "args": {
         "title": "Lister modèle",
         "ui": {
@@ -34033,7 +34033,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer modèle.",
+      "description": "Crée un nouvel élément pour modèle.",
       "args": {
         "title": "Créer modèle",
         "ui": {
@@ -34092,7 +34092,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer modèle ID.",
+      "description": "Supprime modèle ID.",
       "args": {
         "title": "Supprimer modèle ID",
         "ui": {
@@ -34156,7 +34156,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer modèle ID.",
+      "description": "Récupère les détails de modèle ID.",
       "args": {
         "title": "Récupérer modèle ID",
         "ui": {
@@ -34220,7 +34220,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour modèle ID.",
+      "description": "Met à jour modèle ID.",
       "args": {
         "title": "Mettre à jour modèle ID",
         "ui": {
@@ -34293,7 +34293,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer modèle ID.",
+      "description": "Crée un nouvel élément pour modèle ID.",
       "args": {
         "title": "Créer modèle ID",
         "ui": {
@@ -34366,7 +34366,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Envoyer campagne ID schedule test.",
+      "description": "Envoie campagne ID schedule test.",
       "args": {
         "title": "Envoyer campagne ID schedule test",
         "ui": {
@@ -34439,7 +34439,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer utilisateur webhook événement test.",
+      "description": "Crée un nouvel élément pour utilisateur webhook événement test.",
       "args": {
         "title": "Créer utilisateur webhook événement test",
         "ui": {
@@ -34466,8 +34466,8 @@
       "key": "sendgrid_tracking_setting_list_get_tracking_settings",
       "name": "sendgridTrackingSettingListGetTrackingSettings",
       "schemaVersion": 2,
-      "title": "Lister tracking paramètre - tracking paramètre",
-      "subtitle": "Tracking paramètre",
+      "title": "Lister suivi paramètre - suivi paramètre",
+      "subtitle": "suivi paramètre",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -34498,9 +34498,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister tracking paramètre - tracking paramètre.",
+      "description": "Retourne une liste pour suivi paramètre - suivi paramètre.",
       "args": {
-        "title": "Lister tracking paramètre - tracking paramètre",
+        "title": "Lister suivi paramètre - suivi paramètre",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -34547,7 +34547,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister unsubscribe.",
+      "description": "Retourne une liste pour unsubscribe.",
       "args": {
         "title": "Lister unsubscribe",
         "ui": {
@@ -34633,7 +34633,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister utilisateur username.",
+      "description": "Retourne une liste pour utilisateur username.",
       "args": {
         "title": "Lister utilisateur username",
         "ui": {
@@ -34682,7 +34682,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour utilisateur username.",
+      "description": "Met à jour utilisateur username.",
       "args": {
         "title": "Mettre à jour utilisateur username",
         "ui": {
@@ -34741,7 +34741,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer validate.",
+      "description": "Crée un nouvel élément pour validate.",
       "args": {
         "title": "Créer validate",
         "ui": {
@@ -34805,7 +34805,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Rechercher validate.",
+      "description": "Recherche des éléments liés à validate.",
       "args": {
         "title": "Rechercher validate",
         "ui": {
@@ -34869,7 +34869,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer validate - whitelabel.",
+      "description": "Crée un nouvel élément pour validate - whitelabel.",
       "args": {
         "title": "Créer validate - whitelabel",
         "ui": {
@@ -34901,8 +34901,8 @@
       "key": "sendgrid_verified_sender_search_get_verified_senders",
       "name": "sendgridVerifiedSenderSearchGetVerifiedSenders",
       "schemaVersion": 2,
-      "title": "Rechercher verified expéditeur",
-      "subtitle": "Verified expéditeur",
+      "title": "Rechercher vérifié expéditeur",
+      "subtitle": "vérifié expéditeur",
       "icon": "fa-solid fa-magnifying-glass",
       "type": "function",
       "nodeKind": "function",
@@ -34933,9 +34933,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Rechercher verified expéditeur.",
+      "description": "Recherche des éléments liés à vérifié expéditeur.",
       "args": {
-        "title": "Rechercher verified expéditeur",
+        "title": "Rechercher vérifié expéditeur",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -34978,8 +34978,8 @@
       "key": "sendgrid_verified_sender_create_post_verified_senders",
       "name": "sendgridVerifiedSenderCreatePostVerifiedSenders",
       "schemaVersion": 2,
-      "title": "Créer verified expéditeur",
-      "subtitle": "Verified expéditeur",
+      "title": "Créer vérifié expéditeur",
+      "subtitle": "vérifié expéditeur",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -35010,9 +35010,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer verified expéditeur.",
+      "description": "Crée un nouvel élément pour vérifié expéditeur.",
       "args": {
-        "title": "Créer verified expéditeur",
+        "title": "Créer vérifié expéditeur",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -35037,8 +35037,8 @@
       "key": "sendgrid_verified_sender_delete_delete_verified_senders_id",
       "name": "sendgridVerifiedSenderDeleteDeleteVerifiedSendersId",
       "schemaVersion": 2,
-      "title": "Supprimer verified expéditeur ID",
-      "subtitle": "Verified expéditeur ID",
+      "title": "Supprimer vérifié expéditeur ID",
+      "subtitle": "vérifié expéditeur ID",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -35069,9 +35069,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer verified expéditeur ID.",
+      "description": "Supprime vérifié expéditeur ID.",
       "args": {
-        "title": "Supprimer verified expéditeur ID",
+        "title": "Supprimer vérifié expéditeur ID",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -35101,8 +35101,8 @@
       "key": "sendgrid_verified_sender_update_patch_verified_senders_id",
       "name": "sendgridVerifiedSenderUpdatePatchVerifiedSendersId",
       "schemaVersion": 2,
-      "title": "Mettre à jour verified expéditeur ID",
-      "subtitle": "Verified expéditeur ID",
+      "title": "Mettre à jour vérifié expéditeur ID",
+      "subtitle": "vérifié expéditeur ID",
       "icon": "fa-solid fa-pen",
       "type": "function",
       "nodeKind": "function",
@@ -35133,9 +35133,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour verified expéditeur ID.",
+      "description": "Met à jour vérifié expéditeur ID.",
       "args": {
-        "title": "Mettre à jour verified expéditeur ID",
+        "title": "Mettre à jour vérifié expéditeur ID",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -35174,8 +35174,8 @@
       "key": "sendgrid_verify_get_get_verified_senders_verify_token",
       "name": "sendgridVerifyGetGetVerifiedSendersVerifyToken",
       "schemaVersion": 2,
-      "title": "Récupérer verified expéditeur verify jeton",
-      "subtitle": "Verified expéditeur verify jeton",
+      "title": "Récupérer vérifié expéditeur verify jeton",
+      "subtitle": "vérifié expéditeur verify jeton",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
@@ -35206,9 +35206,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer verified expéditeur verify jeton.",
+      "description": "Récupère les détails de vérifié expéditeur verify jeton.",
       "args": {
-        "title": "Récupérer verified expéditeur verify jeton",
+        "title": "Récupérer vérifié expéditeur verify jeton",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -35270,7 +35270,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer modèle ID version.",
+      "description": "Crée un nouvel élément pour modèle ID version.",
       "args": {
         "title": "Créer modèle ID version",
         "ui": {
@@ -35343,7 +35343,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer modèle ID version.",
+      "description": "Supprime modèle ID version.",
       "args": {
         "title": "Supprimer modèle ID version",
         "ui": {
@@ -35421,7 +35421,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer modèle ID version.",
+      "description": "Récupère les détails de modèle ID version.",
       "args": {
         "title": "Récupérer modèle ID version",
         "ui": {
@@ -35499,7 +35499,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour modèle ID version.",
+      "description": "Met à jour modèle ID version.",
       "args": {
         "title": "Mettre à jour modèle ID version",
         "ui": {
@@ -35554,8 +35554,8 @@
       "key": "sendgrid_warmup_list_get_ips_warmup",
       "name": "sendgridWarmupListGetIpsWarmup",
       "schemaVersion": 2,
-      "title": "Lister ips warmup",
-      "subtitle": "Ips warmup",
+      "title": "Lister IP warmup",
+      "subtitle": "IP warmup",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -35586,9 +35586,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister ips warmup.",
+      "description": "Retourne une liste pour IP warmup.",
       "args": {
-        "title": "Lister ips warmup",
+        "title": "Lister IP warmup",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -35603,8 +35603,8 @@
       "key": "sendgrid_warmup_create_post_ips_warmup",
       "name": "sendgridWarmupCreatePostIpsWarmup",
       "schemaVersion": 2,
-      "title": "Créer ips warmup",
-      "subtitle": "Ips warmup",
+      "title": "Créer IP warmup",
+      "subtitle": "IP warmup",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -35635,9 +35635,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer ips warmup.",
+      "description": "Crée un nouvel élément pour IP warmup.",
       "args": {
-        "title": "Créer ips warmup",
+        "title": "Créer IP warmup",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -35662,8 +35662,8 @@
       "key": "sendgrid_warmup_delete_delete_ips_warmup_ip_address",
       "name": "sendgridWarmupDeleteDeleteIpsWarmupIpAddress",
       "schemaVersion": 2,
-      "title": "Supprimer ips warmup ip address",
-      "subtitle": "Ips warmup ip address",
+      "title": "Supprimer IP warmup adresse IP",
+      "subtitle": "IP warmup adresse IP",
       "icon": "fa-solid fa-trash",
       "type": "function",
       "nodeKind": "function",
@@ -35694,9 +35694,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer ips warmup ip address.",
+      "description": "Supprime IP warmup adresse IP.",
       "args": {
-        "title": "Supprimer ips warmup ip address",
+        "title": "Supprimer IP warmup adresse IP",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -35726,8 +35726,8 @@
       "key": "sendgrid_warmup_get_get_ips_warmup_ip_address",
       "name": "sendgridWarmupGetGetIpsWarmupIpAddress",
       "schemaVersion": 2,
-      "title": "Récupérer ips warmup ip address",
-      "subtitle": "Ips warmup ip address",
+      "title": "Récupérer IP warmup adresse IP",
+      "subtitle": "IP warmup adresse IP",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
@@ -35758,9 +35758,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer ips warmup ip address.",
+      "description": "Récupère les détails de IP warmup adresse IP.",
       "args": {
-        "title": "Récupérer ips warmup ip address",
+        "title": "Récupérer IP warmup adresse IP",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -35822,7 +35822,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer accès paramètre whitelist.",
+      "description": "Supprime accès paramètre whitelist.",
       "args": {
         "title": "Supprimer accès paramètre whitelist",
         "ui": {
@@ -35871,7 +35871,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister accès paramètre whitelist.",
+      "description": "Retourne une liste pour accès paramètre whitelist.",
       "args": {
         "title": "Lister accès paramètre whitelist",
         "ui": {
@@ -35920,7 +35920,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer accès paramètre whitelist.",
+      "description": "Crée un nouvel élément pour accès paramètre whitelist.",
       "args": {
         "title": "Créer accès paramètre whitelist",
         "ui": {
@@ -35979,7 +35979,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer accès paramètre whitelist rule ID.",
+      "description": "Supprime accès paramètre whitelist rule ID.",
       "args": {
         "title": "Supprimer accès paramètre whitelist rule ID",
         "ui": {
@@ -36043,7 +36043,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer accès paramètre whitelist rule ID.",
+      "description": "Récupère les détails de accès paramètre whitelist rule ID.",
       "args": {
         "title": "Récupérer accès paramètre whitelist rule ID",
         "ui": {

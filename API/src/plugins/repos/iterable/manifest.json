@@ -24092,7 +24092,7 @@
             "type": "text",
             "key": "includecustomevents",
             "label": "Includecustomevents",
-            "description": "Include Personnalisé Événements",
+            "description": "Include Personnalisé événements",
             "col": {
               "xs": 24
             }

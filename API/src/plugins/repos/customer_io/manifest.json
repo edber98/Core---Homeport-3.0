@@ -25728,8 +25728,8 @@
       "key": "customer_io_used_by_search_getsegmentdependencies",
       "name": "customerIoUsedBySearchGetsegmentdependencies",
       "schemaVersion": 2,
-      "title": "Rechercher used by",
-      "subtitle": "Used by",
+      "title": "Rechercher used",
+      "subtitle": "Used",
       "icon": "fa-solid fa-magnifying-glass",
       "type": "function",
       "nodeKind": "function",
@@ -25760,9 +25760,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Rechercher used by.",
+      "description": "Rechercher used.",
       "args": {
-        "title": "Rechercher used by",
+        "title": "Rechercher used",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -25792,8 +25792,8 @@
       "key": "customer_io_used_by_list_getsenderusage",
       "name": "customerIoUsedByListGetsenderusage",
       "schemaVersion": 2,
-      "title": "Lister used by",
-      "subtitle": "Used by",
+      "title": "Lister used",
+      "subtitle": "Used",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -25824,9 +25824,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister used by.",
+      "description": "Lister used.",
       "args": {
-        "title": "Lister used by",
+        "title": "Lister used",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true

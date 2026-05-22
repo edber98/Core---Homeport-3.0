@@ -11178,7 +11178,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister activité.",
+      "description": "Retourne la liste des éléments activité.",
       "args": {
         "title": "Lister activité",
         "ui": {
@@ -11367,8 +11367,8 @@
       "key": "close_crm_activity_list_custom_fields_activity_list",
       "name": "closeCrmActivityListCustomFieldsActivityList",
       "schemaVersion": 2,
-      "title": "Lister personnalisé champ activité",
-      "subtitle": "Personnalisé champ activité",
+      "title": "Lister champ personnalisé activité",
+      "subtitle": "champ personnalisé activité",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -11399,9 +11399,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister personnalisé champ activité.",
+      "description": "Retourne la liste des éléments champ personnalisé activité.",
       "args": {
-        "title": "Lister personnalisé champ activité",
+        "title": "Lister champ personnalisé activité",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -11416,8 +11416,8 @@
       "key": "close_crm_activity_publish_custom_fields_activity_create",
       "name": "closeCrmActivityPublishCustomFieldsActivityCreate",
       "schemaVersion": 2,
-      "title": "Créer activité personnalisé champ",
-      "subtitle": "Activité personnalisé champ",
+      "title": "Créer activité champ personnalisé",
+      "subtitle": "Activité champ personnalisé",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -11448,9 +11448,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer activité personnalisé champ.",
+      "description": "Crée un nouvel élément pour activité champ personnalisé.",
       "args": {
-        "title": "Créer activité personnalisé champ",
+        "title": "Créer activité champ personnalisé",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -11480,8 +11480,8 @@
       "key": "close_crm_activity_get_custom_fields_activity_get",
       "name": "closeCrmActivityGetCustomFieldsActivityGet",
       "schemaVersion": 2,
-      "title": "Récupérer personnalisé champ activité",
-      "subtitle": "Personnalisé champ activité",
+      "title": "Récupérer champ personnalisé activité",
+      "subtitle": "champ personnalisé activité",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -11512,9 +11512,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer personnalisé champ activité.",
+      "description": "Récupère les détails de champ personnalisé activité.",
       "args": {
-        "title": "Récupérer personnalisé champ activité",
+        "title": "Récupérer champ personnalisé activité",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -11544,8 +11544,8 @@
       "key": "close_crm_activity_update_custom_fields_activity_update",
       "name": "closeCrmActivityUpdateCustomFieldsActivityUpdate",
       "schemaVersion": 2,
-      "title": "Mettre à jour personnalisé champ activité",
-      "subtitle": "Personnalisé champ activité",
+      "title": "Mettre à jour champ personnalisé activité",
+      "subtitle": "champ personnalisé activité",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -11576,9 +11576,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour personnalisé champ activité.",
+      "description": "Met à jour champ personnalisé activité.",
       "args": {
-        "title": "Mettre à jour personnalisé champ activité",
+        "title": "Mettre à jour champ personnalisé activité",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -11622,8 +11622,8 @@
       "key": "close_crm_activity_delete_custom_fields_activity_delete",
       "name": "closeCrmActivityDeleteCustomFieldsActivityDelete",
       "schemaVersion": 2,
-      "title": "Supprimer personnalisé champ activité",
-      "subtitle": "Personnalisé champ activité",
+      "title": "Supprimer champ personnalisé activité",
+      "subtitle": "champ personnalisé activité",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -11654,9 +11654,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer personnalisé champ activité.",
+      "description": "Supprime champ personnalisé activité.",
       "args": {
-        "title": "Supprimer personnalisé champ activité",
+        "title": "Supprimer champ personnalisé activité",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -11686,8 +11686,8 @@
       "key": "close_crm_activity_search_reporting_get_activity",
       "name": "closeCrmActivitySearchReportingGetActivity",
       "schemaVersion": 2,
-      "title": "Rechercher reporting activité",
-      "subtitle": "Reporting activité",
+      "title": "Rechercher rapport activité",
+      "subtitle": "rapport activité",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -11718,9 +11718,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Rechercher reporting activité.",
+      "description": "Recherche des éléments liés à rapport activité.",
       "args": {
-        "title": "Rechercher reporting activité",
+        "title": "Rechercher rapport activité",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -11782,7 +11782,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer association.",
+      "description": "Crée un nouvel élément pour association.",
       "args": {
         "title": "Créer association",
         "ui": {
@@ -11860,7 +11860,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer association.",
+      "description": "Récupère les détails de association.",
       "args": {
         "title": "Récupérer association",
         "ui": {
@@ -11938,7 +11938,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour association.",
+      "description": "Met à jour association.",
       "args": {
         "title": "Mettre à jour association",
         "ui": {
@@ -12030,7 +12030,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer association.",
+      "description": "Supprime association.",
       "args": {
         "title": "Supprimer association",
         "ui": {
@@ -12108,7 +12108,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister utilisateur disponibilité.",
+      "description": "Retourne la liste des éléments utilisateur disponibilité.",
       "args": {
         "title": "Lister utilisateur disponibilité",
         "ui": {
@@ -12135,8 +12135,8 @@
       "key": "close_crm_blocked_phone_number_list_blocked_phone_numbers_list",
       "name": "closeCrmBlockedPhoneNumberListBlockedPhoneNumbersList",
       "schemaVersion": 2,
-      "title": "Lister blocked téléphone numéro",
-      "subtitle": "Blocked téléphone numéro",
+      "title": "Lister numéros de téléphone bloqués",
+      "subtitle": "numéros de téléphone bloqués",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -12167,9 +12167,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister blocked téléphone numéro.",
+      "description": "Retourne la liste des éléments numéros de téléphone bloqués.",
       "args": {
-        "title": "Lister blocked téléphone numéro",
+        "title": "Lister numéros de téléphone bloqués",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -12184,8 +12184,8 @@
       "key": "close_crm_blocked_phone_number_create_blocked_phone_numbers_create",
       "name": "closeCrmBlockedPhoneNumberCreateBlockedPhoneNumbersCreate",
       "schemaVersion": 2,
-      "title": "Créer blocked téléphone numéro",
-      "subtitle": "Blocked téléphone numéro",
+      "title": "Créer numéros de téléphone bloqués",
+      "subtitle": "numéros de téléphone bloqués",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -12216,9 +12216,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer blocked téléphone numéro.",
+      "description": "Crée un nouvel élément pour numéros de téléphone bloqués.",
       "args": {
-        "title": "Créer blocked téléphone numéro",
+        "title": "Créer numéros de téléphone bloqués",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -12248,8 +12248,8 @@
       "key": "close_crm_blocked_phone_number_get_blocked_phone_numbers_get",
       "name": "closeCrmBlockedPhoneNumberGetBlockedPhoneNumbersGet",
       "schemaVersion": 2,
-      "title": "Récupérer blocked téléphone numéro",
-      "subtitle": "Blocked téléphone numéro",
+      "title": "Récupérer numéros de téléphone bloqués",
+      "subtitle": "numéros de téléphone bloqués",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -12280,9 +12280,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer blocked téléphone numéro.",
+      "description": "Récupère les détails de numéros de téléphone bloqués.",
       "args": {
-        "title": "Récupérer blocked téléphone numéro",
+        "title": "Récupérer numéros de téléphone bloqués",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -12312,8 +12312,8 @@
       "key": "close_crm_blocked_phone_number_update_blocked_phone_numbers_update",
       "name": "closeCrmBlockedPhoneNumberUpdateBlockedPhoneNumbersUpdate",
       "schemaVersion": 2,
-      "title": "Mettre à jour blocked téléphone numéro",
-      "subtitle": "Blocked téléphone numéro",
+      "title": "Mettre à jour numéros de téléphone bloqués",
+      "subtitle": "numéros de téléphone bloqués",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -12344,9 +12344,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour blocked téléphone numéro.",
+      "description": "Met à jour numéros de téléphone bloqués.",
       "args": {
-        "title": "Mettre à jour blocked téléphone numéro",
+        "title": "Mettre à jour numéros de téléphone bloqués",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -12390,8 +12390,8 @@
       "key": "close_crm_blocked_phone_number_delete_blocked_phone_numbers_delete",
       "name": "closeCrmBlockedPhoneNumberDeleteBlockedPhoneNumbersDelete",
       "schemaVersion": 2,
-      "title": "Supprimer blocked téléphone numéro",
-      "subtitle": "Blocked téléphone numéro",
+      "title": "Supprimer numéros de téléphone bloqués",
+      "subtitle": "numéros de téléphone bloqués",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -12422,9 +12422,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer blocked téléphone numéro.",
+      "description": "Supprime numéros de téléphone bloqués.",
       "args": {
-        "title": "Supprimer blocked téléphone numéro",
+        "title": "Supprimer numéros de téléphone bloqués",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -12486,7 +12486,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer lot.",
+      "description": "Crée un nouvel élément pour lot.",
       "args": {
         "title": "Créer lot",
         "ui": {
@@ -12550,7 +12550,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister activité appel.",
+      "description": "Retourne la liste des éléments activité appel.",
       "args": {
         "title": "Lister activité appel",
         "ui": {
@@ -12726,7 +12726,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer activité appel.",
+      "description": "Crée un nouvel élément pour activité appel.",
       "args": {
         "title": "Créer activité appel",
         "ui": {
@@ -12790,7 +12790,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer activité appel.",
+      "description": "Récupère les détails de activité appel.",
       "args": {
         "title": "Récupérer activité appel",
         "ui": {
@@ -12854,7 +12854,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour activité appel.",
+      "description": "Met à jour activité appel.",
       "args": {
         "title": "Mettre à jour activité appel",
         "ui": {
@@ -12932,7 +12932,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer activité appel.",
+      "description": "Supprime activité appel.",
       "args": {
         "title": "Supprimer activité appel",
         "ui": {
@@ -12996,7 +12996,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister commentaire.",
+      "description": "Retourne la liste des éléments commentaire.",
       "args": {
         "title": "Lister commentaire",
         "ui": {
@@ -13064,7 +13064,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer commentaire.",
+      "description": "Crée un nouvel élément pour commentaire.",
       "args": {
         "title": "Créer commentaire",
         "ui": {
@@ -13128,7 +13128,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer commentaire.",
+      "description": "Récupère les détails de commentaire.",
       "args": {
         "title": "Récupérer commentaire",
         "ui": {
@@ -13192,7 +13192,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour commentaire.",
+      "description": "Met à jour commentaire.",
       "args": {
         "title": "Mettre à jour commentaire",
         "ui": {
@@ -13270,7 +13270,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer commentaire.",
+      "description": "Supprime commentaire.",
       "args": {
         "title": "Supprimer commentaire",
         "ui": {
@@ -13334,7 +13334,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister fil.",
+      "description": "Retourne la liste des éléments fil.",
       "args": {
         "title": "Lister fil",
         "ui": {
@@ -13402,7 +13402,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer fil.",
+      "description": "Récupère les détails de fil.",
       "args": {
         "title": "Récupérer fil",
         "ui": {
@@ -13466,7 +13466,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister contact.",
+      "description": "Retourne la liste des éléments contact.",
       "args": {
         "title": "Lister contact",
         "ui": {
@@ -13525,7 +13525,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer contact.",
+      "description": "Crée un nouvel élément pour contact.",
       "args": {
         "title": "Créer contact",
         "ui": {
@@ -13589,7 +13589,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer contact.",
+      "description": "Récupère les détails de contact.",
       "args": {
         "title": "Récupérer contact",
         "ui": {
@@ -13653,7 +13653,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour contact.",
+      "description": "Met à jour contact.",
       "args": {
         "title": "Mettre à jour contact",
         "ui": {
@@ -13731,7 +13731,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer contact.",
+      "description": "Supprime contact.",
       "args": {
         "title": "Supprimer contact",
         "ui": {
@@ -13763,8 +13763,8 @@
       "key": "close_crm_contact_list_custom_fields_contact_list",
       "name": "closeCrmContactListCustomFieldsContactList",
       "schemaVersion": 2,
-      "title": "Lister personnalisé champ contact",
-      "subtitle": "Personnalisé champ contact",
+      "title": "Lister champ personnalisé contact",
+      "subtitle": "champ personnalisé contact",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -13795,9 +13795,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister personnalisé champ contact.",
+      "description": "Retourne la liste des éléments champ personnalisé contact.",
       "args": {
-        "title": "Lister personnalisé champ contact",
+        "title": "Lister champ personnalisé contact",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -13812,8 +13812,8 @@
       "key": "close_crm_contact_create_custom_fields_contact_create",
       "name": "closeCrmContactCreateCustomFieldsContactCreate",
       "schemaVersion": 2,
-      "title": "Créer personnalisé champ contact",
-      "subtitle": "Personnalisé champ contact",
+      "title": "Créer champ personnalisé contact",
+      "subtitle": "champ personnalisé contact",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -13844,9 +13844,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer personnalisé champ contact.",
+      "description": "Crée un nouvel élément pour champ personnalisé contact.",
       "args": {
-        "title": "Créer personnalisé champ contact",
+        "title": "Créer champ personnalisé contact",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -13876,8 +13876,8 @@
       "key": "close_crm_contact_get_custom_fields_contact_get",
       "name": "closeCrmContactGetCustomFieldsContactGet",
       "schemaVersion": 2,
-      "title": "Récupérer personnalisé champ contact",
-      "subtitle": "Personnalisé champ contact",
+      "title": "Récupérer champ personnalisé contact",
+      "subtitle": "champ personnalisé contact",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -13908,9 +13908,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer personnalisé champ contact.",
+      "description": "Récupère les détails de champ personnalisé contact.",
       "args": {
-        "title": "Récupérer personnalisé champ contact",
+        "title": "Récupérer champ personnalisé contact",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -13940,8 +13940,8 @@
       "key": "close_crm_contact_update_custom_fields_contact_update",
       "name": "closeCrmContactUpdateCustomFieldsContactUpdate",
       "schemaVersion": 2,
-      "title": "Mettre à jour personnalisé champ contact",
-      "subtitle": "Personnalisé champ contact",
+      "title": "Mettre à jour champ personnalisé contact",
+      "subtitle": "champ personnalisé contact",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -13972,9 +13972,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour personnalisé champ contact.",
+      "description": "Met à jour champ personnalisé contact.",
       "args": {
-        "title": "Mettre à jour personnalisé champ contact",
+        "title": "Mettre à jour champ personnalisé contact",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -14018,8 +14018,8 @@
       "key": "close_crm_contact_delete_custom_fields_contact_delete",
       "name": "closeCrmContactDeleteCustomFieldsContactDelete",
       "schemaVersion": 2,
-      "title": "Supprimer personnalisé champ contact",
-      "subtitle": "Personnalisé champ contact",
+      "title": "Supprimer champ personnalisé contact",
+      "subtitle": "champ personnalisé contact",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -14050,9 +14050,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer personnalisé champ contact.",
+      "description": "Supprime champ personnalisé contact.",
       "args": {
-        "title": "Supprimer personnalisé champ contact",
+        "title": "Supprimer champ personnalisé contact",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -14114,7 +14114,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer activité creation.",
+      "description": "Crée un nouvel élément pour activité creation.",
       "args": {
         "title": "Créer activité creation",
         "ui": {
@@ -14290,7 +14290,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer activité creation - activité creation.",
+      "description": "Crée un nouvel élément pour activité creation - activité creation.",
       "args": {
         "title": "Créer activité creation - activité creation",
         "ui": {
@@ -14354,7 +14354,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister activité personnalisé.",
+      "description": "Retourne la liste des éléments activité personnalisé.",
       "args": {
         "title": "Lister activité personnalisé",
         "ui": {
@@ -14548,7 +14548,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer activité personnalisé.",
+      "description": "Crée un nouvel élément pour activité personnalisé.",
       "args": {
         "title": "Créer activité personnalisé",
         "ui": {
@@ -14612,7 +14612,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer activité personnalisé.",
+      "description": "Récupère les détails de activité personnalisé.",
       "args": {
         "title": "Récupérer activité personnalisé",
         "ui": {
@@ -14676,7 +14676,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour activité personnalisé.",
+      "description": "Met à jour activité personnalisé.",
       "args": {
         "title": "Mettre à jour activité personnalisé",
         "ui": {
@@ -14754,7 +14754,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer activité personnalisé.",
+      "description": "Supprime activité personnalisé.",
       "args": {
         "title": "Supprimer activité personnalisé",
         "ui": {
@@ -14786,8 +14786,8 @@
       "key": "close_crm_custom_search_reporting_get_custom",
       "name": "closeCrmCustomSearchReportingGetCustom",
       "schemaVersion": 2,
-      "title": "Rechercher reporting personnalisé",
-      "subtitle": "Reporting personnalisé",
+      "title": "Rechercher rapport personnalisé",
+      "subtitle": "rapport personnalisé",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -14818,9 +14818,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Rechercher reporting personnalisé.",
+      "description": "Recherche des éléments liés à rapport personnalisé.",
       "args": {
-        "title": "Rechercher reporting personnalisé",
+        "title": "Rechercher rapport personnalisé",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -14922,8 +14922,8 @@
       "key": "close_crm_custom_activity_list_custom_activity_types_list",
       "name": "closeCrmCustomActivityListCustomActivityTypesList",
       "schemaVersion": 2,
-      "title": "Lister personnalisé activité type",
-      "subtitle": "Personnalisé activité type",
+      "title": "Lister type d'activité personnalisé",
+      "subtitle": "type d'activité personnalisé",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -14954,9 +14954,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister personnalisé activité type.",
+      "description": "Retourne la liste des éléments type d'activité personnalisé.",
       "args": {
-        "title": "Lister personnalisé activité type",
+        "title": "Lister type d'activité personnalisé",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -14971,8 +14971,8 @@
       "key": "close_crm_custom_activity_create_custom_activity_types_create",
       "name": "closeCrmCustomActivityCreateCustomActivityTypesCreate",
       "schemaVersion": 2,
-      "title": "Créer personnalisé activité type",
-      "subtitle": "Personnalisé activité type",
+      "title": "Créer type d'activité personnalisé",
+      "subtitle": "type d'activité personnalisé",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -15003,9 +15003,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer personnalisé activité type.",
+      "description": "Crée un nouvel élément pour type d'activité personnalisé.",
       "args": {
-        "title": "Créer personnalisé activité type",
+        "title": "Créer type d'activité personnalisé",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -15035,8 +15035,8 @@
       "key": "close_crm_custom_activity_get_custom_activity_types_get",
       "name": "closeCrmCustomActivityGetCustomActivityTypesGet",
       "schemaVersion": 2,
-      "title": "Récupérer personnalisé activité type",
-      "subtitle": "Personnalisé activité type",
+      "title": "Récupérer type d'activité personnalisé",
+      "subtitle": "type d'activité personnalisé",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -15067,9 +15067,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer personnalisé activité type.",
+      "description": "Récupère les détails de type d'activité personnalisé.",
       "args": {
-        "title": "Récupérer personnalisé activité type",
+        "title": "Récupérer type d'activité personnalisé",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -15099,8 +15099,8 @@
       "key": "close_crm_custom_activity_update_custom_activity_types_update",
       "name": "closeCrmCustomActivityUpdateCustomActivityTypesUpdate",
       "schemaVersion": 2,
-      "title": "Mettre à jour personnalisé activité type",
-      "subtitle": "Personnalisé activité type",
+      "title": "Mettre à jour type d'activité personnalisé",
+      "subtitle": "type d'activité personnalisé",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -15131,9 +15131,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour personnalisé activité type.",
+      "description": "Met à jour type d'activité personnalisé.",
       "args": {
-        "title": "Mettre à jour personnalisé activité type",
+        "title": "Mettre à jour type d'activité personnalisé",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -15177,8 +15177,8 @@
       "key": "close_crm_custom_activity_delete_custom_activity_types_delete",
       "name": "closeCrmCustomActivityDeleteCustomActivityTypesDelete",
       "schemaVersion": 2,
-      "title": "Supprimer personnalisé activité type",
-      "subtitle": "Personnalisé activité type",
+      "title": "Supprimer type d'activité personnalisé",
+      "subtitle": "type d'activité personnalisé",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -15209,9 +15209,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer personnalisé activité type.",
+      "description": "Supprime type d'activité personnalisé.",
       "args": {
-        "title": "Supprimer personnalisé activité type",
+        "title": "Supprimer type d'activité personnalisé",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -15241,8 +15241,8 @@
       "key": "close_crm_custom_field_schema_get_custom_field_schemas_get",
       "name": "closeCrmCustomFieldSchemaGetCustomFieldSchemasGet",
       "schemaVersion": 2,
-      "title": "Récupérer personnalisé champ schéma",
-      "subtitle": "Personnalisé champ schéma",
+      "title": "Récupérer champ personnalisé schéma",
+      "subtitle": "champ personnalisé schéma",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -15273,9 +15273,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer personnalisé champ schéma.",
+      "description": "Récupère les détails de champ personnalisé schéma.",
       "args": {
-        "title": "Récupérer personnalisé champ schéma",
+        "title": "Récupérer champ personnalisé schéma",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -15305,8 +15305,8 @@
       "key": "close_crm_custom_field_schema_update_custom_field_schemas_update",
       "name": "closeCrmCustomFieldSchemaUpdateCustomFieldSchemasUpdate",
       "schemaVersion": 2,
-      "title": "Mettre à jour personnalisé champ schéma",
-      "subtitle": "Personnalisé champ schéma",
+      "title": "Mettre à jour champ personnalisé schéma",
+      "subtitle": "champ personnalisé schéma",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -15337,9 +15337,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour personnalisé champ schéma.",
+      "description": "Met à jour champ personnalisé schéma.",
       "args": {
-        "title": "Mettre à jour personnalisé champ schéma",
+        "title": "Mettre à jour champ personnalisé schéma",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -15383,8 +15383,8 @@
       "key": "close_crm_custom_object_search_custom_objects_list",
       "name": "closeCrmCustomObjectSearchCustomObjectsList",
       "schemaVersion": 2,
-      "title": "Rechercher personnalisé objet",
-      "subtitle": "Personnalisé objet",
+      "title": "Rechercher objet personnalisé",
+      "subtitle": "objet personnalisé",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -15415,9 +15415,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Rechercher personnalisé objet.",
+      "description": "Recherche des éléments liés à objet personnalisé.",
       "args": {
-        "title": "Rechercher personnalisé objet",
+        "title": "Rechercher objet personnalisé",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -15456,8 +15456,8 @@
       "key": "close_crm_custom_object_create_custom_objects_create",
       "name": "closeCrmCustomObjectCreateCustomObjectsCreate",
       "schemaVersion": 2,
-      "title": "Créer personnalisé objet",
-      "subtitle": "Personnalisé objet",
+      "title": "Créer objet personnalisé",
+      "subtitle": "objet personnalisé",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -15488,9 +15488,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer personnalisé objet.",
+      "description": "Crée un nouvel élément pour objet personnalisé.",
       "args": {
-        "title": "Créer personnalisé objet",
+        "title": "Créer objet personnalisé",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -15520,8 +15520,8 @@
       "key": "close_crm_custom_object_get_custom_objects_get",
       "name": "closeCrmCustomObjectGetCustomObjectsGet",
       "schemaVersion": 2,
-      "title": "Récupérer personnalisé objet",
-      "subtitle": "Personnalisé objet",
+      "title": "Récupérer objet personnalisé",
+      "subtitle": "objet personnalisé",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -15552,9 +15552,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer personnalisé objet.",
+      "description": "Récupère les détails de objet personnalisé.",
       "args": {
-        "title": "Récupérer personnalisé objet",
+        "title": "Récupérer objet personnalisé",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -15584,8 +15584,8 @@
       "key": "close_crm_custom_object_update_custom_objects_update",
       "name": "closeCrmCustomObjectUpdateCustomObjectsUpdate",
       "schemaVersion": 2,
-      "title": "Mettre à jour personnalisé objet",
-      "subtitle": "Personnalisé objet",
+      "title": "Mettre à jour objet personnalisé",
+      "subtitle": "objet personnalisé",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -15616,9 +15616,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour personnalisé objet.",
+      "description": "Met à jour objet personnalisé.",
       "args": {
-        "title": "Mettre à jour personnalisé objet",
+        "title": "Mettre à jour objet personnalisé",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -15662,8 +15662,8 @@
       "key": "close_crm_custom_object_delete_custom_objects_delete",
       "name": "closeCrmCustomObjectDeleteCustomObjectsDelete",
       "schemaVersion": 2,
-      "title": "Supprimer personnalisé objet",
-      "subtitle": "Personnalisé objet",
+      "title": "Supprimer objet personnalisé",
+      "subtitle": "objet personnalisé",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -15694,9 +15694,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer personnalisé objet.",
+      "description": "Supprime objet personnalisé.",
       "args": {
-        "title": "Supprimer personnalisé objet",
+        "title": "Supprimer objet personnalisé",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -15726,8 +15726,8 @@
       "key": "close_crm_custom_object_type_list_custom_fields_custom_object_list",
       "name": "closeCrmCustomObjectTypeListCustomFieldsCustomObjectList",
       "schemaVersion": 2,
-      "title": "Lister personnalisé champ objet",
-      "subtitle": "Personnalisé champ objet",
+      "title": "Lister champ objet personnalisé",
+      "subtitle": "champ objet personnalisé",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -15758,9 +15758,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister personnalisé champ objet.",
+      "description": "Retourne la liste des éléments champ objet personnalisé.",
       "args": {
-        "title": "Lister personnalisé champ objet",
+        "title": "Lister champ objet personnalisé",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -15775,8 +15775,8 @@
       "key": "close_crm_custom_object_type_create_custom_fields_custom_object_create",
       "name": "closeCrmCustomObjectTypeCreateCustomFieldsCustomObjectCreate",
       "schemaVersion": 2,
-      "title": "Créer personnalisé champ objet",
-      "subtitle": "Personnalisé champ objet",
+      "title": "Créer champ objet personnalisé",
+      "subtitle": "champ objet personnalisé",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -15807,9 +15807,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer personnalisé champ objet.",
+      "description": "Crée un nouvel élément pour champ objet personnalisé.",
       "args": {
-        "title": "Créer personnalisé champ objet",
+        "title": "Créer champ objet personnalisé",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -15839,8 +15839,8 @@
       "key": "close_crm_custom_object_type_get_custom_fields_custom_object_get",
       "name": "closeCrmCustomObjectTypeGetCustomFieldsCustomObjectGet",
       "schemaVersion": 2,
-      "title": "Récupérer personnalisé champ objet",
-      "subtitle": "Personnalisé champ objet",
+      "title": "Récupérer champ objet personnalisé",
+      "subtitle": "champ objet personnalisé",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -15871,9 +15871,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer personnalisé champ objet.",
+      "description": "Récupère les détails de champ objet personnalisé.",
       "args": {
-        "title": "Récupérer personnalisé champ objet",
+        "title": "Récupérer champ objet personnalisé",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -15903,8 +15903,8 @@
       "key": "close_crm_custom_object_type_update_custom_fields_custom_object_update",
       "name": "closeCrmCustomObjectTypeUpdateCustomFieldsCustomObjectUpdate",
       "schemaVersion": 2,
-      "title": "Mettre à jour personnalisé champ objet",
-      "subtitle": "Personnalisé champ objet",
+      "title": "Mettre à jour champ objet personnalisé",
+      "subtitle": "champ objet personnalisé",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -15935,9 +15935,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour personnalisé champ objet.",
+      "description": "Met à jour champ objet personnalisé.",
       "args": {
-        "title": "Mettre à jour personnalisé champ objet",
+        "title": "Mettre à jour champ objet personnalisé",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -15981,8 +15981,8 @@
       "key": "close_crm_custom_object_type_delete_custom_fields_custom_object_delete",
       "name": "closeCrmCustomObjectTypeDeleteCustomFieldsCustomObjectDelete",
       "schemaVersion": 2,
-      "title": "Supprimer personnalisé champ objet",
-      "subtitle": "Personnalisé champ objet",
+      "title": "Supprimer champ objet personnalisé",
+      "subtitle": "champ objet personnalisé",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -16013,9 +16013,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer personnalisé champ objet.",
+      "description": "Supprime champ objet personnalisé.",
       "args": {
-        "title": "Supprimer personnalisé champ objet",
+        "title": "Supprimer champ objet personnalisé",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16077,7 +16077,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister types d objets personnalisés.",
+      "description": "Retourne la liste des éléments types d objets personnalisés.",
       "args": {
         "title": "Lister types d objets personnalisés",
         "ui": {
@@ -16126,7 +16126,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer types d objets personnalisés.",
+      "description": "Crée un nouvel élément pour types d objets personnalisés.",
       "args": {
         "title": "Créer types d objets personnalisés",
         "ui": {
@@ -16190,7 +16190,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer types d objets personnalisés.",
+      "description": "Récupère les détails de types d objets personnalisés.",
       "args": {
         "title": "Récupérer types d objets personnalisés",
         "ui": {
@@ -16254,7 +16254,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour types d objets personnalisés.",
+      "description": "Met à jour types d objets personnalisés.",
       "args": {
         "title": "Mettre à jour types d objets personnalisés",
         "ui": {
@@ -16332,7 +16332,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer types d objets personnalisés.",
+      "description": "Supprime types d objets personnalisés.",
       "args": {
         "title": "Supprimer types d objets personnalisés",
         "ui": {
@@ -16364,8 +16364,8 @@
       "key": "close_crm_delete_list_bulk_actions_delete_list",
       "name": "closeCrmDeleteListBulkActionsDeleteList",
       "schemaVersion": 2,
-      "title": "Supprimer lot action",
-      "subtitle": "Lot action",
+      "title": "Supprimer action en lot",
+      "subtitle": "action en lot",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -16396,9 +16396,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer lot action.",
+      "description": "Supprime action en lot.",
       "args": {
-        "title": "Supprimer lot action",
+        "title": "Supprimer action en lot",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16413,8 +16413,8 @@
       "key": "close_crm_delete_create_bulk_actions_delete_create",
       "name": "closeCrmDeleteCreateBulkActionsDeleteCreate",
       "schemaVersion": 2,
-      "title": "Supprimer lot action - lot action",
-      "subtitle": "Lot action",
+      "title": "Supprimer action en lot - action en lot",
+      "subtitle": "action en lot",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -16445,9 +16445,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer lot action - lot action.",
+      "description": "Supprime action en lot - action en lot.",
       "args": {
-        "title": "Supprimer lot action - lot action",
+        "title": "Supprimer action en lot - action en lot",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16477,8 +16477,8 @@
       "key": "close_crm_delete_get_bulk_actions_delete_get",
       "name": "closeCrmDeleteGetBulkActionsDeleteGet",
       "schemaVersion": 2,
-      "title": "Récupérer lot action",
-      "subtitle": "Lot action",
+      "title": "Récupérer action en lot",
+      "subtitle": "action en lot",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -16509,9 +16509,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer lot action.",
+      "description": "Récupère les détails de action en lot.",
       "args": {
-        "title": "Récupérer lot action",
+        "title": "Récupérer action en lot",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16541,8 +16541,8 @@
       "key": "close_crm_dialer_list_dialers_list",
       "name": "closeCrmDialerListDialersList",
       "schemaVersion": 2,
-      "title": "Lister dialer",
-      "subtitle": "Dialer",
+      "title": "Lister composeur",
+      "subtitle": "composeur",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -16573,9 +16573,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister dialer.",
+      "description": "Retourne la liste des éléments composeur.",
       "args": {
-        "title": "Lister dialer",
+        "title": "Lister composeur",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16645,8 +16645,8 @@
       "key": "close_crm_dialer_search_dialers_get",
       "name": "closeCrmDialerSearchDialersGet",
       "schemaVersion": 2,
-      "title": "Rechercher dialer",
-      "subtitle": "Dialer",
+      "title": "Rechercher composeur",
+      "subtitle": "composeur",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -16677,9 +16677,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Rechercher dialer.",
+      "description": "Recherche des éléments liés à composeur.",
       "args": {
-        "title": "Rechercher dialer",
+        "title": "Rechercher composeur",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16718,8 +16718,8 @@
       "key": "close_crm_edit_list_bulk_actions_edit_list",
       "name": "closeCrmEditListBulkActionsEditList",
       "schemaVersion": 2,
-      "title": "Lister lot action edit",
-      "subtitle": "Lot action edit",
+      "title": "Lister actions de modification en lot",
+      "subtitle": "actions de modification en lot",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -16750,9 +16750,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister lot action edit.",
+      "description": "Retourne la liste des éléments actions de modification en lot.",
       "args": {
-        "title": "Lister lot action edit",
+        "title": "Lister actions de modification en lot",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16767,8 +16767,8 @@
       "key": "close_crm_edit_create_bulk_actions_edit_create",
       "name": "closeCrmEditCreateBulkActionsEditCreate",
       "schemaVersion": 2,
-      "title": "Créer lot action edit",
-      "subtitle": "Lot action edit",
+      "title": "Créer actions de modification en lot",
+      "subtitle": "actions de modification en lot",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -16799,9 +16799,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer lot action edit.",
+      "description": "Crée un nouvel élément pour actions de modification en lot.",
       "args": {
-        "title": "Créer lot action edit",
+        "title": "Créer actions de modification en lot",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16831,8 +16831,8 @@
       "key": "close_crm_edit_get_bulk_actions_edit_get",
       "name": "closeCrmEditGetBulkActionsEditGet",
       "schemaVersion": 2,
-      "title": "Récupérer lot action edit",
-      "subtitle": "Lot action edit",
+      "title": "Récupérer actions de modification en lot",
+      "subtitle": "actions de modification en lot",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -16863,9 +16863,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer lot action edit.",
+      "description": "Récupère les détails de actions de modification en lot.",
       "args": {
-        "title": "Récupérer lot action edit",
+        "title": "Récupérer actions de modification en lot",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16927,7 +16927,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister activité email.",
+      "description": "Retourne la liste des éléments activité email.",
       "args": {
         "title": "Lister activité email",
         "ui": {
@@ -17103,7 +17103,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer email activité.",
+      "description": "Crée un nouvel élément pour email activité.",
       "args": {
         "title": "Créer email activité",
         "ui": {
@@ -17167,7 +17167,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer activité email.",
+      "description": "Récupère les détails de activité email.",
       "args": {
         "title": "Récupérer activité email",
         "ui": {
@@ -17231,7 +17231,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour email activité.",
+      "description": "Met à jour email activité.",
       "args": {
         "title": "Mettre à jour email activité",
         "ui": {
@@ -17309,7 +17309,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer activité email.",
+      "description": "Supprime activité email.",
       "args": {
         "title": "Supprimer activité email",
         "ui": {
@@ -17341,8 +17341,8 @@
       "key": "close_crm_email_list_bulk_actions_email_list",
       "name": "closeCrmEmailListBulkActionsEmailList",
       "schemaVersion": 2,
-      "title": "Lister lot action email",
-      "subtitle": "Lot action email",
+      "title": "Lister action en lot email",
+      "subtitle": "action en lot email",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -17373,9 +17373,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister lot action email.",
+      "description": "Retourne la liste des éléments action en lot email.",
       "args": {
-        "title": "Lister lot action email",
+        "title": "Lister action en lot email",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17400,8 +17400,8 @@
       "key": "close_crm_email_create_bulk_actions_email_create",
       "name": "closeCrmEmailCreateBulkActionsEmailCreate",
       "schemaVersion": 2,
-      "title": "Créer lot action email",
-      "subtitle": "Lot action email",
+      "title": "Créer action en lot email",
+      "subtitle": "action en lot email",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -17432,9 +17432,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer lot action email.",
+      "description": "Crée un nouvel élément pour action en lot email.",
       "args": {
-        "title": "Créer lot action email",
+        "title": "Créer action en lot email",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17464,8 +17464,8 @@
       "key": "close_crm_email_get_bulk_actions_email_get",
       "name": "closeCrmEmailGetBulkActionsEmailGet",
       "schemaVersion": 2,
-      "title": "Récupérer lot action email",
-      "subtitle": "Lot action email",
+      "title": "Récupérer action en lot email",
+      "subtitle": "action en lot email",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -17496,9 +17496,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer lot action email.",
+      "description": "Récupère les détails de action en lot email.",
       "args": {
-        "title": "Récupérer lot action email",
+        "title": "Récupérer action en lot email",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17560,7 +17560,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister désinscrit email.",
+      "description": "Retourne la liste des éléments désinscrit email.",
       "args": {
         "title": "Lister désinscrit email",
         "ui": {
@@ -17609,7 +17609,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer désinscrit email.",
+      "description": "Crée un nouvel élément pour désinscrit email.",
       "args": {
         "title": "Créer désinscrit email",
         "ui": {
@@ -17673,7 +17673,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer désinscrit email.",
+      "description": "Supprime désinscrit email.",
       "args": {
         "title": "Supprimer désinscrit email",
         "ui": {
@@ -17705,8 +17705,8 @@
       "key": "close_crm_email_template_list_email_templates_list",
       "name": "closeCrmEmailTemplateListEmailTemplatesList",
       "schemaVersion": 2,
-      "title": "Lister email modèle",
-      "subtitle": "Email modèle",
+      "title": "Lister modèle d'email",
+      "subtitle": "modèle d'email",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -17737,9 +17737,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister email modèle.",
+      "description": "Retourne la liste des éléments modèle d'email.",
       "args": {
-        "title": "Lister email modèle",
+        "title": "Lister modèle d'email",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17773,8 +17773,8 @@
       "key": "close_crm_email_template_create_email_templates_create",
       "name": "closeCrmEmailTemplateCreateEmailTemplatesCreate",
       "schemaVersion": 2,
-      "title": "Créer email modèle",
-      "subtitle": "Email modèle",
+      "title": "Créer modèle d'email",
+      "subtitle": "modèle d'email",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -17805,9 +17805,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer email modèle.",
+      "description": "Crée un nouvel élément pour modèle d'email.",
       "args": {
-        "title": "Créer email modèle",
+        "title": "Créer modèle d'email",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17837,8 +17837,8 @@
       "key": "close_crm_email_template_get_email_templates_get",
       "name": "closeCrmEmailTemplateGetEmailTemplatesGet",
       "schemaVersion": 2,
-      "title": "Récupérer email modèle",
-      "subtitle": "Email modèle",
+      "title": "Récupérer modèle d'email",
+      "subtitle": "modèle d'email",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -17869,9 +17869,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer email modèle.",
+      "description": "Récupère les détails de modèle d'email.",
       "args": {
-        "title": "Récupérer email modèle",
+        "title": "Récupérer modèle d'email",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17910,8 +17910,8 @@
       "key": "close_crm_email_template_update_email_templates_update",
       "name": "closeCrmEmailTemplateUpdateEmailTemplatesUpdate",
       "schemaVersion": 2,
-      "title": "Mettre à jour email modèle",
-      "subtitle": "Email modèle",
+      "title": "Mettre à jour modèle d'email",
+      "subtitle": "modèle d'email",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -17942,9 +17942,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour email modèle.",
+      "description": "Met à jour modèle d'email.",
       "args": {
-        "title": "Mettre à jour email modèle",
+        "title": "Mettre à jour modèle d'email",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17988,8 +17988,8 @@
       "key": "close_crm_email_template_delete_email_templates_delete",
       "name": "closeCrmEmailTemplateDeleteEmailTemplatesDelete",
       "schemaVersion": 2,
-      "title": "Supprimer email modèle",
-      "subtitle": "Email modèle",
+      "title": "Supprimer modèle d'email",
+      "subtitle": "modèle d'email",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -18020,9 +18020,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer email modèle.",
+      "description": "Supprime modèle d'email.",
       "args": {
-        "title": "Supprimer email modèle",
+        "title": "Supprimer modèle d'email",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -18084,7 +18084,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister activité email fil.",
+      "description": "Retourne la liste des éléments activité email fil.",
       "args": {
         "title": "Lister activité email fil",
         "ui": {
@@ -18260,7 +18260,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer activité email fil.",
+      "description": "Récupère les détails de activité email fil.",
       "args": {
         "title": "Récupérer activité email fil",
         "ui": {
@@ -18324,7 +18324,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer activité email fil.",
+      "description": "Supprime activité email fil.",
       "args": {
         "title": "Supprimer activité email fil",
         "ui": {
@@ -18388,7 +18388,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer champ enrichissement.",
+      "description": "Crée un nouvel élément pour champ enrichissement.",
       "args": {
         "title": "Créer champ enrichissement",
         "ui": {
@@ -18452,7 +18452,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Rechercher événement.",
+      "description": "Recherche des éléments liés à événement.",
       "args": {
         "title": "Rechercher événement",
         "ui": {
@@ -18583,7 +18583,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer événement.",
+      "description": "Récupère les détails de événement.",
       "args": {
         "title": "Récupérer événement",
         "ui": {
@@ -18647,7 +18647,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister export.",
+      "description": "Retourne la liste des éléments export.",
       "args": {
         "title": "Lister export",
         "ui": {
@@ -18696,7 +18696,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer export.",
+      "description": "Récupère les détails de export.",
       "args": {
         "title": "Récupérer export",
         "ui": {
@@ -18728,8 +18728,8 @@
       "key": "close_crm_form_list_forms_list",
       "name": "closeCrmFormListFormsList",
       "schemaVersion": 2,
-      "title": "Lister form",
-      "subtitle": "Form",
+      "title": "Lister formulaire",
+      "subtitle": "formulaire",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -18760,9 +18760,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister form.",
+      "description": "Retourne la liste des éléments formulaire.",
       "args": {
-        "title": "Lister form",
+        "title": "Lister formulaire",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -18787,8 +18787,8 @@
       "key": "close_crm_form_get_forms_fetch",
       "name": "closeCrmFormGetFormsFetch",
       "schemaVersion": 2,
-      "title": "Récupérer form fetch",
-      "subtitle": "Form fetch",
+      "title": "Récupérer formulaire",
+      "subtitle": "formulaire",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -18819,9 +18819,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer form fetch.",
+      "description": "Récupère les détails de formulaire.",
       "args": {
-        "title": "Récupérer form fetch",
+        "title": "Récupérer formulaire",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -18851,8 +18851,8 @@
       "key": "close_crm_form_submission_list_activities_form_submissions_list",
       "name": "closeCrmFormSubmissionListActivitiesFormSubmissionsList",
       "schemaVersion": 2,
-      "title": "Lister form submission",
-      "subtitle": "Form submission",
+      "title": "Lister soumission de formulaire",
+      "subtitle": "soumission de formulaire",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -18883,9 +18883,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister form submission.",
+      "description": "Retourne la liste des éléments soumission de formulaire.",
       "args": {
-        "title": "Lister form submission",
+        "title": "Lister soumission de formulaire",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -19081,8 +19081,8 @@
       "key": "close_crm_form_submission_get_activities_form_submissions_get",
       "name": "closeCrmFormSubmissionGetActivitiesFormSubmissionsGet",
       "schemaVersion": 2,
-      "title": "Récupérer form submission",
-      "subtitle": "Form submission",
+      "title": "Récupérer soumission de formulaire",
+      "subtitle": "soumission de formulaire",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -19113,9 +19113,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer form submission.",
+      "description": "Récupère les détails de soumission de formulaire.",
       "args": {
-        "title": "Récupérer form submission",
+        "title": "Récupérer soumission de formulaire",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -19145,8 +19145,8 @@
       "key": "close_crm_form_submission_delete_activities_form_submissions_delete",
       "name": "closeCrmFormSubmissionDeleteActivitiesFormSubmissionsDelete",
       "schemaVersion": 2,
-      "title": "Supprimer form submission",
-      "subtitle": "Form submission",
+      "title": "Supprimer soumission de formulaire",
+      "subtitle": "soumission de formulaire",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -19177,9 +19177,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer form submission.",
+      "description": "Supprime soumission de formulaire.",
       "args": {
-        "title": "Supprimer form submission",
+        "title": "Supprimer soumission de formulaire",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -19209,8 +19209,8 @@
       "key": "close_crm_integration_create_activities_meetings_create_integration",
       "name": "closeCrmIntegrationCreateActivitiesMeetingsCreateIntegration",
       "schemaVersion": 2,
-      "title": "Créer integration",
-      "subtitle": "Integration",
+      "title": "Créer intégration",
+      "subtitle": "intégration",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -19241,9 +19241,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer integration.",
+      "description": "Crée un nouvel élément pour intégration.",
       "args": {
-        "title": "Créer integration",
+        "title": "Créer intégration",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -19287,8 +19287,8 @@
       "key": "close_crm_integration_create_scheduling_links_create_integration",
       "name": "closeCrmIntegrationCreateSchedulingLinksCreateIntegration",
       "schemaVersion": 2,
-      "title": "Créer integration - scheduling",
-      "subtitle": "Integration",
+      "title": "Créer intégration - planification",
+      "subtitle": "intégration",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -19319,9 +19319,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer integration - scheduling.",
+      "description": "Crée un nouvel élément pour intégration - planification.",
       "args": {
-        "title": "Créer integration - scheduling",
+        "title": "Créer intégration - planification",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -19351,8 +19351,8 @@
       "key": "close_crm_integration_delete_scheduling_links_delete_integration",
       "name": "closeCrmIntegrationDeleteSchedulingLinksDeleteIntegration",
       "schemaVersion": 2,
-      "title": "Supprimer integration",
-      "subtitle": "Integration",
+      "title": "Supprimer intégration",
+      "subtitle": "intégration",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -19383,9 +19383,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer integration.",
+      "description": "Supprime intégration.",
       "args": {
-        "title": "Supprimer integration",
+        "title": "Supprimer intégration",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -19415,8 +19415,8 @@
       "key": "close_crm_integration_link_list_integration_links_list",
       "name": "closeCrmIntegrationLinkListIntegrationLinksList",
       "schemaVersion": 2,
-      "title": "Lister integration link",
-      "subtitle": "Integration link",
+      "title": "Lister lien d'intégration",
+      "subtitle": "lien d'intégration",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -19447,9 +19447,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister integration link.",
+      "description": "Retourne la liste des éléments lien d'intégration.",
       "args": {
-        "title": "Lister integration link",
+        "title": "Lister lien d'intégration",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -19464,8 +19464,8 @@
       "key": "close_crm_integration_link_create_integration_links_create",
       "name": "closeCrmIntegrationLinkCreateIntegrationLinksCreate",
       "schemaVersion": 2,
-      "title": "Créer integration link",
-      "subtitle": "Integration link",
+      "title": "Créer lien d'intégration",
+      "subtitle": "lien d'intégration",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -19496,9 +19496,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer integration link.",
+      "description": "Crée un nouvel élément pour lien d'intégration.",
       "args": {
-        "title": "Créer integration link",
+        "title": "Créer lien d'intégration",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -19528,8 +19528,8 @@
       "key": "close_crm_integration_link_get_integration_links_get",
       "name": "closeCrmIntegrationLinkGetIntegrationLinksGet",
       "schemaVersion": 2,
-      "title": "Récupérer integration link",
-      "subtitle": "Integration link",
+      "title": "Récupérer lien d'intégration",
+      "subtitle": "lien d'intégration",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -19560,9 +19560,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer integration link.",
+      "description": "Récupère les détails de lien d'intégration.",
       "args": {
-        "title": "Récupérer integration link",
+        "title": "Récupérer lien d'intégration",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -19592,8 +19592,8 @@
       "key": "close_crm_integration_link_update_integration_links_update",
       "name": "closeCrmIntegrationLinkUpdateIntegrationLinksUpdate",
       "schemaVersion": 2,
-      "title": "Mettre à jour integration link",
-      "subtitle": "Integration link",
+      "title": "Mettre à jour lien d'intégration",
+      "subtitle": "lien d'intégration",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -19624,9 +19624,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour integration link.",
+      "description": "Met à jour lien d'intégration.",
       "args": {
-        "title": "Mettre à jour integration link",
+        "title": "Mettre à jour lien d'intégration",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -19670,8 +19670,8 @@
       "key": "close_crm_integration_link_delete_integration_links_delete",
       "name": "closeCrmIntegrationLinkDeleteIntegrationLinksDelete",
       "schemaVersion": 2,
-      "title": "Supprimer integration link",
-      "subtitle": "Integration link",
+      "title": "Supprimer lien d'intégration",
+      "subtitle": "lien d'intégration",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -19702,9 +19702,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer integration link.",
+      "description": "Supprime lien d'intégration.",
       "args": {
-        "title": "Supprimer integration link",
+        "title": "Supprimer lien d'intégration",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -19766,7 +19766,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister activité prospect statut change.",
+      "description": "Retourne la liste des éléments activité prospect statut change.",
       "args": {
         "title": "Lister activité prospect statut change",
         "ui": {
@@ -19942,7 +19942,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer activité prospect statut change.",
+      "description": "Crée un nouvel élément pour activité prospect statut change.",
       "args": {
         "title": "Créer activité prospect statut change",
         "ui": {
@@ -20006,7 +20006,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer activité prospect statut change.",
+      "description": "Récupère les détails de activité prospect statut change.",
       "args": {
         "title": "Récupérer activité prospect statut change",
         "ui": {
@@ -20070,7 +20070,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer activité prospect statut change.",
+      "description": "Supprime activité prospect statut change.",
       "args": {
         "title": "Supprimer activité prospect statut change",
         "ui": {
@@ -20102,8 +20102,8 @@
       "key": "close_crm_lead_list_custom_fields_lead_list",
       "name": "closeCrmLeadListCustomFieldsLeadList",
       "schemaVersion": 2,
-      "title": "Lister personnalisé champ prospect",
-      "subtitle": "Personnalisé champ prospect",
+      "title": "Lister champ personnalisé prospect",
+      "subtitle": "champ personnalisé prospect",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -20134,9 +20134,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister personnalisé champ prospect.",
+      "description": "Retourne la liste des éléments champ personnalisé prospect.",
       "args": {
-        "title": "Lister personnalisé champ prospect",
+        "title": "Lister champ personnalisé prospect",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -20151,8 +20151,8 @@
       "key": "close_crm_lead_create_custom_fields_lead_create",
       "name": "closeCrmLeadCreateCustomFieldsLeadCreate",
       "schemaVersion": 2,
-      "title": "Créer personnalisé champ prospect",
-      "subtitle": "Personnalisé champ prospect",
+      "title": "Créer champ personnalisé prospect",
+      "subtitle": "champ personnalisé prospect",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -20183,9 +20183,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer personnalisé champ prospect.",
+      "description": "Crée un nouvel élément pour champ personnalisé prospect.",
       "args": {
-        "title": "Créer personnalisé champ prospect",
+        "title": "Créer champ personnalisé prospect",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -20215,8 +20215,8 @@
       "key": "close_crm_lead_get_custom_fields_lead_get",
       "name": "closeCrmLeadGetCustomFieldsLeadGet",
       "schemaVersion": 2,
-      "title": "Récupérer personnalisé champ prospect",
-      "subtitle": "Personnalisé champ prospect",
+      "title": "Récupérer champ personnalisé prospect",
+      "subtitle": "champ personnalisé prospect",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -20247,9 +20247,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer personnalisé champ prospect.",
+      "description": "Récupère les détails de champ personnalisé prospect.",
       "args": {
-        "title": "Récupérer personnalisé champ prospect",
+        "title": "Récupérer champ personnalisé prospect",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -20279,8 +20279,8 @@
       "key": "close_crm_lead_update_custom_fields_lead_update",
       "name": "closeCrmLeadUpdateCustomFieldsLeadUpdate",
       "schemaVersion": 2,
-      "title": "Mettre à jour personnalisé champ prospect",
-      "subtitle": "Personnalisé champ prospect",
+      "title": "Mettre à jour champ personnalisé prospect",
+      "subtitle": "champ personnalisé prospect",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -20311,9 +20311,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour personnalisé champ prospect.",
+      "description": "Met à jour champ personnalisé prospect.",
       "args": {
-        "title": "Mettre à jour personnalisé champ prospect",
+        "title": "Mettre à jour champ personnalisé prospect",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -20357,8 +20357,8 @@
       "key": "close_crm_lead_delete_custom_fields_lead_delete",
       "name": "closeCrmLeadDeleteCustomFieldsLeadDelete",
       "schemaVersion": 2,
-      "title": "Supprimer personnalisé champ prospect",
-      "subtitle": "Personnalisé champ prospect",
+      "title": "Supprimer champ personnalisé prospect",
+      "subtitle": "champ personnalisé prospect",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -20389,9 +20389,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer personnalisé champ prospect.",
+      "description": "Supprime champ personnalisé prospect.",
       "args": {
-        "title": "Supprimer personnalisé champ prospect",
+        "title": "Supprimer champ personnalisé prospect",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -20453,7 +20453,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Rechercher export prospect.",
+      "description": "Recherche des éléments liés à export prospect.",
       "args": {
         "title": "Rechercher export prospect",
         "ui": {
@@ -20517,7 +20517,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister prospect.",
+      "description": "Retourne la liste des éléments prospect.",
       "args": {
         "title": "Lister prospect",
         "ui": {
@@ -20566,7 +20566,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer prospect.",
+      "description": "Crée un nouvel élément pour prospect.",
       "args": {
         "title": "Créer prospect",
         "ui": {
@@ -20630,7 +20630,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer prospect.",
+      "description": "Récupère les détails de prospect.",
       "args": {
         "title": "Récupérer prospect",
         "ui": {
@@ -20694,7 +20694,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour prospect.",
+      "description": "Met à jour prospect.",
       "args": {
         "title": "Mettre à jour prospect",
         "ui": {
@@ -20772,7 +20772,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer prospect.",
+      "description": "Supprime prospect.",
       "args": {
         "title": "Supprimer prospect",
         "ui": {
@@ -20804,8 +20804,8 @@
       "key": "close_crm_lead_search_reporting_get_lead_statuses",
       "name": "closeCrmLeadSearchReportingGetLeadStatuses",
       "schemaVersion": 2,
-      "title": "Rechercher reporting prospect statut",
-      "subtitle": "Reporting prospect statut",
+      "title": "Rechercher rapport prospect statut",
+      "subtitle": "rapport prospect statut",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -20836,9 +20836,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Rechercher reporting prospect statut.",
+      "description": "Recherche des éléments liés à rapport prospect statut.",
       "args": {
-        "title": "Rechercher reporting prospect statut",
+        "title": "Rechercher rapport prospect statut",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -20936,7 +20936,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister prospect statut.",
+      "description": "Retourne la liste des éléments prospect statut.",
       "args": {
         "title": "Lister prospect statut",
         "ui": {
@@ -20985,7 +20985,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer prospect statut.",
+      "description": "Crée un nouvel élément pour prospect statut.",
       "args": {
         "title": "Créer prospect statut",
         "ui": {
@@ -21049,7 +21049,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour prospect statut.",
+      "description": "Met à jour prospect statut.",
       "args": {
         "title": "Mettre à jour prospect statut",
         "ui": {
@@ -21127,7 +21127,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer prospect statut.",
+      "description": "Supprime prospect statut.",
       "args": {
         "title": "Supprimer prospect statut",
         "ui": {
@@ -21191,7 +21191,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister activité prospect fusion.",
+      "description": "Retourne la liste des éléments activité prospect fusion.",
       "args": {
         "title": "Lister activité prospect fusion",
         "ui": {
@@ -21367,7 +21367,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer activité prospect fusion.",
+      "description": "Récupère les détails de activité prospect fusion.",
       "args": {
         "title": "Récupérer activité prospect fusion",
         "ui": {
@@ -21431,7 +21431,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister utilisateur me.",
+      "description": "Retourne la liste des éléments utilisateur me.",
       "args": {
         "title": "Lister utilisateur me",
         "ui": {
@@ -21448,8 +21448,8 @@
       "key": "close_crm_meeting_list_activities_meetings_list",
       "name": "closeCrmMeetingListActivitiesMeetingsList",
       "schemaVersion": 2,
-      "title": "Lister activité meeting",
-      "subtitle": "Activité meeting",
+      "title": "Lister activité réunion",
+      "subtitle": "Activité réunion",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -21480,9 +21480,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister activité meeting.",
+      "description": "Retourne la liste des éléments activité réunion.",
       "args": {
-        "title": "Lister activité meeting",
+        "title": "Lister activité réunion",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -21624,8 +21624,8 @@
       "key": "close_crm_meeting_get_activities_meetings_get",
       "name": "closeCrmMeetingGetActivitiesMeetingsGet",
       "schemaVersion": 2,
-      "title": "Récupérer activité meeting",
-      "subtitle": "Activité meeting",
+      "title": "Récupérer activité réunion",
+      "subtitle": "Activité réunion",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -21656,9 +21656,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer activité meeting.",
+      "description": "Récupère les détails de activité réunion.",
       "args": {
-        "title": "Récupérer activité meeting",
+        "title": "Récupérer activité réunion",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -21688,8 +21688,8 @@
       "key": "close_crm_meeting_update_activities_meetings_update",
       "name": "closeCrmMeetingUpdateActivitiesMeetingsUpdate",
       "schemaVersion": 2,
-      "title": "Mettre à jour activité meeting",
-      "subtitle": "Activité meeting",
+      "title": "Mettre à jour activité réunion",
+      "subtitle": "Activité réunion",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -21720,9 +21720,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour activité meeting.",
+      "description": "Met à jour activité réunion.",
       "args": {
-        "title": "Mettre à jour activité meeting",
+        "title": "Mettre à jour activité réunion",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -21766,8 +21766,8 @@
       "key": "close_crm_meeting_delete_activities_meetings_delete",
       "name": "closeCrmMeetingDeleteActivitiesMeetingsDelete",
       "schemaVersion": 2,
-      "title": "Supprimer activité meeting",
-      "subtitle": "Activité meeting",
+      "title": "Supprimer activité réunion",
+      "subtitle": "Activité réunion",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -21798,9 +21798,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer activité meeting.",
+      "description": "Supprime activité réunion.",
       "args": {
-        "title": "Supprimer activité meeting",
+        "title": "Supprimer activité réunion",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -21862,7 +21862,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer prospect fusion.",
+      "description": "Crée un nouvel élément pour prospect fusion.",
       "args": {
         "title": "Créer prospect fusion",
         "ui": {
@@ -21894,8 +21894,8 @@
       "key": "close_crm_metric_list_reporting_list_activity_metrics",
       "name": "closeCrmMetricListReportingListActivityMetrics",
       "schemaVersion": 2,
-      "title": "Lister reporting activité métrique",
-      "subtitle": "Reporting activité métrique",
+      "title": "Lister rapport activité métrique",
+      "subtitle": "rapport activité métrique",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -21926,9 +21926,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister reporting activité métrique.",
+      "description": "Retourne la liste des éléments rapport activité métrique.",
       "args": {
-        "title": "Lister reporting activité métrique",
+        "title": "Lister rapport activité métrique",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -21975,7 +21975,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister activité note.",
+      "description": "Retourne la liste des éléments activité note.",
       "args": {
         "title": "Lister activité note",
         "ui": {
@@ -22151,7 +22151,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer activité note.",
+      "description": "Crée un nouvel élément pour activité note.",
       "args": {
         "title": "Créer activité note",
         "ui": {
@@ -22215,7 +22215,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer activité note.",
+      "description": "Récupère les détails de activité note.",
       "args": {
         "title": "Récupérer activité note",
         "ui": {
@@ -22279,7 +22279,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour activité note.",
+      "description": "Met à jour activité note.",
       "args": {
         "title": "Mettre à jour activité note",
         "ui": {
@@ -22357,7 +22357,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer activité note.",
+      "description": "Supprime activité note.",
       "args": {
         "title": "Supprimer activité note",
         "ui": {
@@ -22421,7 +22421,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister activité opportunité statut change.",
+      "description": "Retourne la liste des éléments activité opportunité statut change.",
       "args": {
         "title": "Lister activité opportunité statut change",
         "ui": {
@@ -22606,7 +22606,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer activité opportunité statut change.",
+      "description": "Crée un nouvel élément pour activité opportunité statut change.",
       "args": {
         "title": "Créer activité opportunité statut change",
         "ui": {
@@ -22670,7 +22670,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer activité opportunité statut change.",
+      "description": "Récupère les détails de activité opportunité statut change.",
       "args": {
         "title": "Récupérer activité opportunité statut change",
         "ui": {
@@ -22734,7 +22734,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer activité opportunité statut change.",
+      "description": "Supprime activité opportunité statut change.",
       "args": {
         "title": "Supprimer activité opportunité statut change",
         "ui": {
@@ -22766,8 +22766,8 @@
       "key": "close_crm_opportunity_list_custom_fields_opportunity_list",
       "name": "closeCrmOpportunityListCustomFieldsOpportunityList",
       "schemaVersion": 2,
-      "title": "Lister personnalisé champ opportunité",
-      "subtitle": "Personnalisé champ opportunité",
+      "title": "Lister champ personnalisé opportunité",
+      "subtitle": "champ personnalisé opportunité",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -22798,9 +22798,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister personnalisé champ opportunité.",
+      "description": "Retourne la liste des éléments champ personnalisé opportunité.",
       "args": {
-        "title": "Lister personnalisé champ opportunité",
+        "title": "Lister champ personnalisé opportunité",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -22815,8 +22815,8 @@
       "key": "close_crm_opportunity_create_custom_fields_opportunity_create",
       "name": "closeCrmOpportunityCreateCustomFieldsOpportunityCreate",
       "schemaVersion": 2,
-      "title": "Créer personnalisé champ opportunité",
-      "subtitle": "Personnalisé champ opportunité",
+      "title": "Créer champ personnalisé opportunité",
+      "subtitle": "champ personnalisé opportunité",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -22847,9 +22847,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer personnalisé champ opportunité.",
+      "description": "Crée un nouvel élément pour champ personnalisé opportunité.",
       "args": {
-        "title": "Créer personnalisé champ opportunité",
+        "title": "Créer champ personnalisé opportunité",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -22879,8 +22879,8 @@
       "key": "close_crm_opportunity_get_custom_fields_opportunity_get",
       "name": "closeCrmOpportunityGetCustomFieldsOpportunityGet",
       "schemaVersion": 2,
-      "title": "Récupérer personnalisé champ opportunité",
-      "subtitle": "Personnalisé champ opportunité",
+      "title": "Récupérer champ personnalisé opportunité",
+      "subtitle": "champ personnalisé opportunité",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -22911,9 +22911,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer personnalisé champ opportunité.",
+      "description": "Récupère les détails de champ personnalisé opportunité.",
       "args": {
-        "title": "Récupérer personnalisé champ opportunité",
+        "title": "Récupérer champ personnalisé opportunité",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -22943,8 +22943,8 @@
       "key": "close_crm_opportunity_update_custom_fields_opportunity_update",
       "name": "closeCrmOpportunityUpdateCustomFieldsOpportunityUpdate",
       "schemaVersion": 2,
-      "title": "Mettre à jour personnalisé champ opportunité",
-      "subtitle": "Personnalisé champ opportunité",
+      "title": "Mettre à jour champ personnalisé opportunité",
+      "subtitle": "champ personnalisé opportunité",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -22975,9 +22975,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour personnalisé champ opportunité.",
+      "description": "Met à jour champ personnalisé opportunité.",
       "args": {
-        "title": "Mettre à jour personnalisé champ opportunité",
+        "title": "Mettre à jour champ personnalisé opportunité",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -23021,8 +23021,8 @@
       "key": "close_crm_opportunity_delete_custom_fields_opportunity_delete",
       "name": "closeCrmOpportunityDeleteCustomFieldsOpportunityDelete",
       "schemaVersion": 2,
-      "title": "Supprimer personnalisé champ opportunité",
-      "subtitle": "Personnalisé champ opportunité",
+      "title": "Supprimer champ personnalisé opportunité",
+      "subtitle": "champ personnalisé opportunité",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -23053,9 +23053,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer personnalisé champ opportunité.",
+      "description": "Supprime champ personnalisé opportunité.",
       "args": {
-        "title": "Supprimer personnalisé champ opportunité",
+        "title": "Supprimer champ personnalisé opportunité",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -23117,7 +23117,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer export opportunité.",
+      "description": "Crée un nouvel élément pour export opportunité.",
       "args": {
         "title": "Créer export opportunité",
         "ui": {
@@ -23181,7 +23181,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Rechercher opportunité.",
+      "description": "Recherche des éléments liés à opportunité.",
       "args": {
         "title": "Rechercher opportunité",
         "ui": {
@@ -23546,7 +23546,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer opportunité.",
+      "description": "Crée un nouvel élément pour opportunité.",
       "args": {
         "title": "Créer opportunité",
         "ui": {
@@ -23610,7 +23610,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer opportunité.",
+      "description": "Récupère les détails de opportunité.",
       "args": {
         "title": "Récupérer opportunité",
         "ui": {
@@ -23674,7 +23674,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour opportunité.",
+      "description": "Met à jour opportunité.",
       "args": {
         "title": "Mettre à jour opportunité",
         "ui": {
@@ -23752,7 +23752,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer opportunité.",
+      "description": "Supprime opportunité.",
       "args": {
         "title": "Supprimer opportunité",
         "ui": {
@@ -23784,8 +23784,8 @@
       "key": "close_crm_opportunity_search_reporting_get_opportunity_statuses",
       "name": "closeCrmOpportunitySearchReportingGetOpportunityStatuses",
       "schemaVersion": 2,
-      "title": "Rechercher reporting opportunité statut",
-      "subtitle": "Reporting opportunité statut",
+      "title": "Rechercher rapport opportunité statut",
+      "subtitle": "rapport opportunité statut",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -23816,9 +23816,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Rechercher reporting opportunité statut.",
+      "description": "Recherche des éléments liés à rapport opportunité statut.",
       "args": {
-        "title": "Rechercher reporting opportunité statut",
+        "title": "Rechercher rapport opportunité statut",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -23925,7 +23925,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister opportunité statut.",
+      "description": "Retourne la liste des éléments opportunité statut.",
       "args": {
         "title": "Lister opportunité statut",
         "ui": {
@@ -23974,7 +23974,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer opportunité statut.",
+      "description": "Crée un nouvel élément pour opportunité statut.",
       "args": {
         "title": "Créer opportunité statut",
         "ui": {
@@ -24038,7 +24038,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour opportunité statut.",
+      "description": "Met à jour opportunité statut.",
       "args": {
         "title": "Mettre à jour opportunité statut",
         "ui": {
@@ -24116,7 +24116,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer opportunité statut.",
+      "description": "Supprime opportunité statut.",
       "args": {
         "title": "Supprimer opportunité statut",
         "ui": {
@@ -24148,8 +24148,8 @@
       "key": "close_crm_outcome_list_outcomes_list",
       "name": "closeCrmOutcomeListOutcomesList",
       "schemaVersion": 2,
-      "title": "Lister outcome",
-      "subtitle": "Outcome",
+      "title": "Lister résultat",
+      "subtitle": "résultat",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -24180,9 +24180,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister outcome.",
+      "description": "Retourne la liste des éléments résultat.",
       "args": {
-        "title": "Lister outcome",
+        "title": "Lister résultat",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -24197,8 +24197,8 @@
       "key": "close_crm_outcome_create_outcomes_create",
       "name": "closeCrmOutcomeCreateOutcomesCreate",
       "schemaVersion": 2,
-      "title": "Créer outcome",
-      "subtitle": "Outcome",
+      "title": "Créer résultat",
+      "subtitle": "résultat",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -24229,9 +24229,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer outcome.",
+      "description": "Crée un nouvel élément pour résultat.",
       "args": {
-        "title": "Créer outcome",
+        "title": "Créer résultat",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -24261,8 +24261,8 @@
       "key": "close_crm_outcome_get_outcomes_get",
       "name": "closeCrmOutcomeGetOutcomesGet",
       "schemaVersion": 2,
-      "title": "Récupérer outcome",
-      "subtitle": "Outcome",
+      "title": "Récupérer résultat",
+      "subtitle": "résultat",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -24293,9 +24293,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer outcome.",
+      "description": "Récupère les détails de résultat.",
       "args": {
-        "title": "Récupérer outcome",
+        "title": "Récupérer résultat",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -24325,8 +24325,8 @@
       "key": "close_crm_outcome_update_outcomes_update",
       "name": "closeCrmOutcomeUpdateOutcomesUpdate",
       "schemaVersion": 2,
-      "title": "Mettre à jour outcome",
-      "subtitle": "Outcome",
+      "title": "Mettre à jour résultat",
+      "subtitle": "résultat",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -24357,9 +24357,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour outcome.",
+      "description": "Met à jour résultat.",
       "args": {
-        "title": "Mettre à jour outcome",
+        "title": "Mettre à jour résultat",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -24403,8 +24403,8 @@
       "key": "close_crm_outcome_search_outcomes_delete",
       "name": "closeCrmOutcomeSearchOutcomesDelete",
       "schemaVersion": 2,
-      "title": "Rechercher outcome",
-      "subtitle": "Outcome",
+      "title": "Rechercher résultat",
+      "subtitle": "résultat",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -24435,9 +24435,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Rechercher outcome.",
+      "description": "Recherche des éléments liés à résultat.",
       "args": {
-        "title": "Rechercher outcome",
+        "title": "Rechercher résultat",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -24467,8 +24467,8 @@
       "key": "close_crm_phone_number_search_phone_numbers_list",
       "name": "closeCrmPhoneNumberSearchPhoneNumbersList",
       "schemaVersion": 2,
-      "title": "Rechercher téléphone numéro",
-      "subtitle": "Téléphone numéro",
+      "title": "Rechercher numéro de téléphone",
+      "subtitle": "numéro de téléphone",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -24499,9 +24499,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Rechercher téléphone numéro.",
+      "description": "Recherche des éléments liés à numéro de téléphone.",
       "args": {
-        "title": "Rechercher téléphone numéro",
+        "title": "Rechercher numéro de téléphone",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -24544,8 +24544,8 @@
       "key": "close_crm_phone_number_get_phone_numbers_get",
       "name": "closeCrmPhoneNumberGetPhoneNumbersGet",
       "schemaVersion": 2,
-      "title": "Récupérer téléphone numéro",
-      "subtitle": "Téléphone numéro",
+      "title": "Récupérer numéro de téléphone",
+      "subtitle": "numéro de téléphone",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -24576,9 +24576,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer téléphone numéro.",
+      "description": "Récupère les détails de numéro de téléphone.",
       "args": {
-        "title": "Récupérer téléphone numéro",
+        "title": "Récupérer numéro de téléphone",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -24608,8 +24608,8 @@
       "key": "close_crm_phone_number_update_phone_numbers_update",
       "name": "closeCrmPhoneNumberUpdatePhoneNumbersUpdate",
       "schemaVersion": 2,
-      "title": "Mettre à jour téléphone numéro",
-      "subtitle": "Téléphone numéro",
+      "title": "Mettre à jour numéro de téléphone",
+      "subtitle": "numéro de téléphone",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -24640,9 +24640,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour téléphone numéro.",
+      "description": "Met à jour numéro de téléphone.",
       "args": {
-        "title": "Mettre à jour téléphone numéro",
+        "title": "Mettre à jour numéro de téléphone",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -24686,8 +24686,8 @@
       "key": "close_crm_phone_number_delete_phone_numbers_delete",
       "name": "closeCrmPhoneNumberDeletePhoneNumbersDelete",
       "schemaVersion": 2,
-      "title": "Supprimer téléphone numéro",
-      "subtitle": "Téléphone numéro",
+      "title": "Supprimer numéro de téléphone",
+      "subtitle": "numéro de téléphone",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -24718,9 +24718,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer téléphone numéro.",
+      "description": "Supprime numéro de téléphone.",
       "args": {
-        "title": "Supprimer téléphone numéro",
+        "title": "Supprimer numéro de téléphone",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -24782,7 +24782,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister pipeline.",
+      "description": "Retourne la liste des éléments pipeline.",
       "args": {
         "title": "Lister pipeline",
         "ui": {
@@ -24831,7 +24831,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer pipeline.",
+      "description": "Crée un nouvel élément pour pipeline.",
       "args": {
         "title": "Créer pipeline",
         "ui": {
@@ -24895,7 +24895,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour pipeline.",
+      "description": "Met à jour pipeline.",
       "args": {
         "title": "Mettre à jour pipeline",
         "ui": {
@@ -24973,7 +24973,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer pipeline.",
+      "description": "Supprime pipeline.",
       "args": {
         "title": "Supprimer pipeline",
         "ui": {
@@ -25005,8 +25005,8 @@
       "key": "close_crm_playbook_list_playbooks_list",
       "name": "closeCrmPlaybookListPlaybooksList",
       "schemaVersion": 2,
-      "title": "Lister playbook",
-      "subtitle": "Playbook",
+      "title": "Lister guide commercial",
+      "subtitle": "guide commercial",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -25037,9 +25037,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister playbook.",
+      "description": "Retourne la liste des éléments guide commercial.",
       "args": {
-        "title": "Lister playbook",
+        "title": "Lister guide commercial",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -25082,8 +25082,8 @@
       "key": "close_crm_playbook_create_playbooks_create",
       "name": "closeCrmPlaybookCreatePlaybooksCreate",
       "schemaVersion": 2,
-      "title": "Créer playbook",
-      "subtitle": "Playbook",
+      "title": "Créer guide commercial",
+      "subtitle": "guide commercial",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -25114,9 +25114,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer playbook.",
+      "description": "Crée un nouvel élément pour guide commercial.",
       "args": {
-        "title": "Créer playbook",
+        "title": "Créer guide commercial",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -25146,8 +25146,8 @@
       "key": "close_crm_playbook_get_playbooks_get",
       "name": "closeCrmPlaybookGetPlaybooksGet",
       "schemaVersion": 2,
-      "title": "Récupérer playbook",
-      "subtitle": "Playbook",
+      "title": "Récupérer guide commercial",
+      "subtitle": "guide commercial",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -25178,9 +25178,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer playbook.",
+      "description": "Récupère les détails de guide commercial.",
       "args": {
-        "title": "Récupérer playbook",
+        "title": "Récupérer guide commercial",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -25210,8 +25210,8 @@
       "key": "close_crm_playbook_update_playbooks_update",
       "name": "closeCrmPlaybookUpdatePlaybooksUpdate",
       "schemaVersion": 2,
-      "title": "Mettre à jour playbook",
-      "subtitle": "Playbook",
+      "title": "Mettre à jour guide commercial",
+      "subtitle": "guide commercial",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -25242,9 +25242,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour playbook.",
+      "description": "Met à jour guide commercial.",
       "args": {
-        "title": "Mettre à jour playbook",
+        "title": "Mettre à jour guide commercial",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -25288,8 +25288,8 @@
       "key": "close_crm_playbook_delete_playbooks_delete",
       "name": "closeCrmPlaybookDeletePlaybooksDelete",
       "schemaVersion": 2,
-      "title": "Supprimer playbook",
-      "subtitle": "Playbook",
+      "title": "Supprimer guide commercial",
+      "subtitle": "guide commercial",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -25320,9 +25320,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer playbook.",
+      "description": "Supprime guide commercial.",
       "args": {
-        "title": "Supprimer playbook",
+        "title": "Supprimer guide commercial",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -25352,8 +25352,8 @@
       "key": "close_crm_playbook_archive_playbooks_archive",
       "name": "closeCrmPlaybookArchivePlaybooksArchive",
       "schemaVersion": 2,
-      "title": "Archiver playbook",
-      "subtitle": "Playbook",
+      "title": "Archiver guide commercial",
+      "subtitle": "guide commercial",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -25384,9 +25384,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Archiver playbook.",
+      "description": "Archive guide commercial.",
       "args": {
-        "title": "Archiver playbook",
+        "title": "Archiver guide commercial",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -25416,8 +25416,8 @@
       "key": "close_crm_render_search_email_templates_render",
       "name": "closeCrmRenderSearchEmailTemplatesRender",
       "schemaVersion": 2,
-      "title": "Rechercher email modèle render",
-      "subtitle": "Email modèle render",
+      "title": "Rechercher rendu de modèle d'email",
+      "subtitle": "rendu de modèle d'email",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -25448,9 +25448,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Rechercher email modèle render.",
+      "description": "Recherche des éléments liés à rendu de modèle d'email.",
       "args": {
-        "title": "Rechercher email modèle render",
+        "title": "Rechercher rendu de modèle d'email",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -25597,8 +25597,8 @@
       "key": "close_crm_saved_search_list_smart_views_list",
       "name": "closeCrmSavedSearchListSmartViewsList",
       "schemaVersion": 2,
-      "title": "Rechercher smart vue",
-      "subtitle": "Smart vue",
+      "title": "Rechercher vue intelligente",
+      "subtitle": "vue intelligente",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -25629,9 +25629,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Rechercher smart vue.",
+      "description": "Recherche des éléments liés à vue intelligente.",
       "args": {
-        "title": "Rechercher smart vue",
+        "title": "Rechercher vue intelligente",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -25665,8 +25665,8 @@
       "key": "close_crm_saved_search_create_smart_views_create",
       "name": "closeCrmSavedSearchCreateSmartViewsCreate",
       "schemaVersion": 2,
-      "title": "Rechercher smart vue - smart vue",
-      "subtitle": "Smart vue",
+      "title": "Rechercher vue intelligente - vue intelligente",
+      "subtitle": "vue intelligente",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -25697,9 +25697,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Rechercher smart vue - smart vue.",
+      "description": "Recherche des éléments liés à vue intelligente - vue intelligente.",
       "args": {
-        "title": "Rechercher smart vue - smart vue",
+        "title": "Rechercher vue intelligente - vue intelligente",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -25729,8 +25729,8 @@
       "key": "close_crm_saved_search_get_smart_views_get",
       "name": "closeCrmSavedSearchGetSmartViewsGet",
       "schemaVersion": 2,
-      "title": "Récupérer smart vue",
-      "subtitle": "Smart vue",
+      "title": "Récupérer vue intelligente",
+      "subtitle": "vue intelligente",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -25761,9 +25761,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer smart vue.",
+      "description": "Récupère les détails de vue intelligente.",
       "args": {
-        "title": "Récupérer smart vue",
+        "title": "Récupérer vue intelligente",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -25793,8 +25793,8 @@
       "key": "close_crm_saved_search_update_smart_views_update",
       "name": "closeCrmSavedSearchUpdateSmartViewsUpdate",
       "schemaVersion": 2,
-      "title": "Mettre à jour smart vue",
-      "subtitle": "Smart vue",
+      "title": "Mettre à jour vue intelligente",
+      "subtitle": "vue intelligente",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -25825,9 +25825,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour smart vue.",
+      "description": "Met à jour vue intelligente.",
       "args": {
-        "title": "Mettre à jour smart vue",
+        "title": "Mettre à jour vue intelligente",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -25871,8 +25871,8 @@
       "key": "close_crm_saved_search_delete_smart_views_delete",
       "name": "closeCrmSavedSearchDeleteSmartViewsDelete",
       "schemaVersion": 2,
-      "title": "Supprimer smart vue",
-      "subtitle": "Smart vue",
+      "title": "Supprimer vue intelligente",
+      "subtitle": "vue intelligente",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -25903,9 +25903,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer smart vue.",
+      "description": "Supprime vue intelligente.",
       "args": {
-        "title": "Supprimer smart vue",
+        "title": "Supprimer vue intelligente",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -25935,8 +25935,8 @@
       "key": "close_crm_scheduling_link_list_scheduling_links_list",
       "name": "closeCrmSchedulingLinkListSchedulingLinksList",
       "schemaVersion": 2,
-      "title": "Lister scheduling link",
-      "subtitle": "Scheduling link",
+      "title": "Lister lien de planification",
+      "subtitle": "lien de planification",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -25967,9 +25967,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister scheduling link.",
+      "description": "Retourne la liste des éléments lien de planification.",
       "args": {
-        "title": "Lister scheduling link",
+        "title": "Lister lien de planification",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -25984,8 +25984,8 @@
       "key": "close_crm_scheduling_link_create_scheduling_links_create",
       "name": "closeCrmSchedulingLinkCreateSchedulingLinksCreate",
       "schemaVersion": 2,
-      "title": "Créer scheduling link",
-      "subtitle": "Scheduling link",
+      "title": "Créer lien de planification",
+      "subtitle": "lien de planification",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -26016,9 +26016,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer scheduling link.",
+      "description": "Crée un nouvel élément pour lien de planification.",
       "args": {
-        "title": "Créer scheduling link",
+        "title": "Créer lien de planification",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -26048,8 +26048,8 @@
       "key": "close_crm_scheduling_link_get_scheduling_links_get",
       "name": "closeCrmSchedulingLinkGetSchedulingLinksGet",
       "schemaVersion": 2,
-      "title": "Récupérer scheduling link",
-      "subtitle": "Scheduling link",
+      "title": "Récupérer lien de planification",
+      "subtitle": "lien de planification",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -26080,9 +26080,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer scheduling link.",
+      "description": "Récupère les détails de lien de planification.",
       "args": {
-        "title": "Récupérer scheduling link",
+        "title": "Récupérer lien de planification",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -26112,8 +26112,8 @@
       "key": "close_crm_scheduling_link_update_scheduling_links_update",
       "name": "closeCrmSchedulingLinkUpdateSchedulingLinksUpdate",
       "schemaVersion": 2,
-      "title": "Mettre à jour scheduling link",
-      "subtitle": "Scheduling link",
+      "title": "Mettre à jour lien de planification",
+      "subtitle": "lien de planification",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -26144,9 +26144,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour scheduling link.",
+      "description": "Met à jour lien de planification.",
       "args": {
-        "title": "Mettre à jour scheduling link",
+        "title": "Mettre à jour lien de planification",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -26190,8 +26190,8 @@
       "key": "close_crm_scheduling_link_delete_scheduling_links_delete",
       "name": "closeCrmSchedulingLinkDeleteSchedulingLinksDelete",
       "schemaVersion": 2,
-      "title": "Supprimer scheduling link",
-      "subtitle": "Scheduling link",
+      "title": "Supprimer lien de planification",
+      "subtitle": "lien de planification",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -26222,9 +26222,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer scheduling link.",
+      "description": "Supprime lien de planification.",
       "args": {
-        "title": "Supprimer scheduling link",
+        "title": "Supprimer lien de planification",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -26286,7 +26286,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister send.",
+      "description": "Retourne la liste des éléments send.",
       "args": {
         "title": "Lister send",
         "ui": {
@@ -26354,7 +26354,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer send.",
+      "description": "Crée un nouvel élément pour send.",
       "args": {
         "title": "Créer send",
         "ui": {
@@ -26418,7 +26418,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer utilisateur.",
+      "description": "Supprime utilisateur.",
       "args": {
         "title": "Supprimer utilisateur",
         "ui": {
@@ -26486,7 +26486,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer send.",
+      "description": "Récupère les détails de send.",
       "args": {
         "title": "Récupérer send",
         "ui": {
@@ -26550,7 +26550,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer send.",
+      "description": "Supprime send.",
       "args": {
         "title": "Supprimer send",
         "ui": {
@@ -26582,8 +26582,8 @@
       "key": "close_crm_sent_email_get_reporting_get_sent_emails",
       "name": "closeCrmSentEmailGetReportingGetSentEmails",
       "schemaVersion": 2,
-      "title": "Récupérer reporting envoyés email",
-      "subtitle": "Reporting envoyés email",
+      "title": "Récupérer rapport envoyés email",
+      "subtitle": "rapport envoyés email",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -26614,9 +26614,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer reporting envoyés email.",
+      "description": "Récupère les détails de rapport envoyés email.",
       "args": {
-        "title": "Récupérer reporting envoyés email",
+        "title": "Récupérer rapport envoyés email",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -26673,8 +26673,8 @@
       "key": "close_crm_sequence_list_sequences_list",
       "name": "closeCrmSequenceListSequencesList",
       "schemaVersion": 2,
-      "title": "Lister sequence",
-      "subtitle": "Sequence",
+      "title": "Lister séquence",
+      "subtitle": "séquence",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -26705,9 +26705,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister sequence.",
+      "description": "Retourne la liste des éléments séquence.",
       "args": {
-        "title": "Lister sequence",
+        "title": "Lister séquence",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -26722,8 +26722,8 @@
       "key": "close_crm_sequence_create_sequences_create",
       "name": "closeCrmSequenceCreateSequencesCreate",
       "schemaVersion": 2,
-      "title": "Créer sequence",
-      "subtitle": "Sequence",
+      "title": "Créer séquence",
+      "subtitle": "séquence",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -26754,9 +26754,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer sequence.",
+      "description": "Crée un nouvel élément pour séquence.",
       "args": {
-        "title": "Créer sequence",
+        "title": "Créer séquence",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -26786,8 +26786,8 @@
       "key": "close_crm_sequence_get_sequences_get",
       "name": "closeCrmSequenceGetSequencesGet",
       "schemaVersion": 2,
-      "title": "Récupérer sequence",
-      "subtitle": "Sequence",
+      "title": "Récupérer séquence",
+      "subtitle": "séquence",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -26818,9 +26818,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer sequence.",
+      "description": "Récupère les détails de séquence.",
       "args": {
-        "title": "Récupérer sequence",
+        "title": "Récupérer séquence",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -26850,8 +26850,8 @@
       "key": "close_crm_sequence_update_sequences_update",
       "name": "closeCrmSequenceUpdateSequencesUpdate",
       "schemaVersion": 2,
-      "title": "Mettre à jour sequence",
-      "subtitle": "Sequence",
+      "title": "Mettre à jour séquence",
+      "subtitle": "séquence",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -26882,9 +26882,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour sequence.",
+      "description": "Met à jour séquence.",
       "args": {
-        "title": "Mettre à jour sequence",
+        "title": "Mettre à jour séquence",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -26928,8 +26928,8 @@
       "key": "close_crm_sequence_delete_sequences_delete",
       "name": "closeCrmSequenceDeleteSequencesDelete",
       "schemaVersion": 2,
-      "title": "Supprimer sequence",
-      "subtitle": "Sequence",
+      "title": "Supprimer séquence",
+      "subtitle": "séquence",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -26960,9 +26960,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer sequence.",
+      "description": "Supprime séquence.",
       "args": {
-        "title": "Supprimer sequence",
+        "title": "Supprimer séquence",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -26992,8 +26992,8 @@
       "key": "close_crm_sequence_subscription_list_bulk_actions_sequence_subscriptions_list",
       "name": "closeCrmSequenceSubscriptionListBulkActionsSequenceSubscriptionsList",
       "schemaVersion": 2,
-      "title": "Lister lot action sequence abonnement",
-      "subtitle": "Lot action sequence abonnement",
+      "title": "Lister action en lot abonnement à la séquence",
+      "subtitle": "action en lot abonnement à la séquence",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -27024,9 +27024,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister lot action sequence abonnement.",
+      "description": "Retourne la liste des éléments action en lot abonnement à la séquence.",
       "args": {
-        "title": "Lister lot action sequence abonnement",
+        "title": "Lister action en lot abonnement à la séquence",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -27041,8 +27041,8 @@
       "key": "close_crm_sequence_subscription_create_bulk_actions_sequence_subscriptions_create",
       "name": "closeCrmSequenceSubscriptionCreateBulkActionsSequenceSubscriptionsCreate",
       "schemaVersion": 2,
-      "title": "Créer lot action sequence abonnement",
-      "subtitle": "Lot action sequence abonnement",
+      "title": "Créer action en lot abonnement à la séquence",
+      "subtitle": "action en lot abonnement à la séquence",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -27073,9 +27073,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer lot action sequence abonnement.",
+      "description": "Crée un nouvel élément pour action en lot abonnement à la séquence.",
       "args": {
-        "title": "Créer lot action sequence abonnement",
+        "title": "Créer action en lot abonnement à la séquence",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -27105,8 +27105,8 @@
       "key": "close_crm_sequence_subscription_get_bulk_actions_sequence_subscriptions_get",
       "name": "closeCrmSequenceSubscriptionGetBulkActionsSequenceSubscriptionsGet",
       "schemaVersion": 2,
-      "title": "Récupérer lot action sequence abonnement",
-      "subtitle": "Lot action sequence abonnement",
+      "title": "Récupérer action en lot abonnement à la séquence",
+      "subtitle": "action en lot abonnement à la séquence",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -27137,9 +27137,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer lot action sequence abonnement.",
+      "description": "Récupère les détails de action en lot abonnement à la séquence.",
       "args": {
-        "title": "Récupérer lot action sequence abonnement",
+        "title": "Récupérer action en lot abonnement à la séquence",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -27169,8 +27169,8 @@
       "key": "close_crm_sequence_subscription_list_sequences_list_subscriptions",
       "name": "closeCrmSequenceSubscriptionListSequencesListSubscriptions",
       "schemaVersion": 2,
-      "title": "Lister sequence abonnement",
-      "subtitle": "Sequence abonnement",
+      "title": "Lister abonnement à la séquence",
+      "subtitle": "abonnement à la séquence",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -27201,9 +27201,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister sequence abonnement.",
+      "description": "Retourne la liste des éléments abonnement à la séquence.",
       "args": {
-        "title": "Lister sequence abonnement",
+        "title": "Lister abonnement à la séquence",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -27246,8 +27246,8 @@
       "key": "close_crm_sequence_subscription_create_sequences_create_subscription",
       "name": "closeCrmSequenceSubscriptionCreateSequencesCreateSubscription",
       "schemaVersion": 2,
-      "title": "Créer sequence abonnement",
-      "subtitle": "Sequence abonnement",
+      "title": "Créer abonnement à la séquence",
+      "subtitle": "abonnement à la séquence",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -27278,9 +27278,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer sequence abonnement.",
+      "description": "Crée un nouvel élément pour abonnement à la séquence.",
       "args": {
-        "title": "Créer sequence abonnement",
+        "title": "Créer abonnement à la séquence",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -27310,8 +27310,8 @@
       "key": "close_crm_sequence_subscription_get_sequences_get_subscription",
       "name": "closeCrmSequenceSubscriptionGetSequencesGetSubscription",
       "schemaVersion": 2,
-      "title": "Récupérer sequence abonnement",
-      "subtitle": "Sequence abonnement",
+      "title": "Récupérer abonnement à la séquence",
+      "subtitle": "abonnement à la séquence",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -27342,9 +27342,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer sequence abonnement.",
+      "description": "Récupère les détails de abonnement à la séquence.",
       "args": {
-        "title": "Récupérer sequence abonnement",
+        "title": "Récupérer abonnement à la séquence",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -27374,8 +27374,8 @@
       "key": "close_crm_sequence_subscription_update_sequences_update_subscription",
       "name": "closeCrmSequenceSubscriptionUpdateSequencesUpdateSubscription",
       "schemaVersion": 2,
-      "title": "Mettre à jour sequence abonnement",
-      "subtitle": "Sequence abonnement",
+      "title": "Mettre à jour abonnement à la séquence",
+      "subtitle": "abonnement à la séquence",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -27406,9 +27406,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour sequence abonnement.",
+      "description": "Met à jour abonnement à la séquence.",
       "args": {
-        "title": "Mettre à jour sequence abonnement",
+        "title": "Mettre à jour abonnement à la séquence",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -27452,8 +27452,8 @@
       "key": "close_crm_shared_list_custom_fields_shared_list",
       "name": "closeCrmSharedListCustomFieldsSharedList",
       "schemaVersion": 2,
-      "title": "Lister personnalisé champ shared",
-      "subtitle": "Personnalisé champ shared",
+      "title": "Lister champ personnalisé partagé",
+      "subtitle": "champ personnalisé partagé",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -27484,9 +27484,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister personnalisé champ shared.",
+      "description": "Retourne la liste des éléments champ personnalisé partagé.",
       "args": {
-        "title": "Lister personnalisé champ shared",
+        "title": "Lister champ personnalisé partagé",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -27501,8 +27501,8 @@
       "key": "close_crm_shared_create_custom_fields_shared_create",
       "name": "closeCrmSharedCreateCustomFieldsSharedCreate",
       "schemaVersion": 2,
-      "title": "Créer personnalisé champ shared",
-      "subtitle": "Personnalisé champ shared",
+      "title": "Créer champ personnalisé partagé",
+      "subtitle": "champ personnalisé partagé",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -27533,9 +27533,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer personnalisé champ shared.",
+      "description": "Crée un nouvel élément pour champ personnalisé partagé.",
       "args": {
-        "title": "Créer personnalisé champ shared",
+        "title": "Créer champ personnalisé partagé",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -27565,8 +27565,8 @@
       "key": "close_crm_shared_get_custom_fields_shared_get",
       "name": "closeCrmSharedGetCustomFieldsSharedGet",
       "schemaVersion": 2,
-      "title": "Récupérer personnalisé champ shared",
-      "subtitle": "Personnalisé champ shared",
+      "title": "Récupérer champ personnalisé partagé",
+      "subtitle": "champ personnalisé partagé",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -27597,9 +27597,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer personnalisé champ shared.",
+      "description": "Récupère les détails de champ personnalisé partagé.",
       "args": {
-        "title": "Récupérer personnalisé champ shared",
+        "title": "Récupérer champ personnalisé partagé",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -27629,8 +27629,8 @@
       "key": "close_crm_shared_update_custom_fields_shared_update",
       "name": "closeCrmSharedUpdateCustomFieldsSharedUpdate",
       "schemaVersion": 2,
-      "title": "Mettre à jour personnalisé champ shared",
-      "subtitle": "Personnalisé champ shared",
+      "title": "Mettre à jour champ personnalisé partagé",
+      "subtitle": "champ personnalisé partagé",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -27661,9 +27661,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour personnalisé champ shared.",
+      "description": "Met à jour champ personnalisé partagé.",
       "args": {
-        "title": "Mettre à jour personnalisé champ shared",
+        "title": "Mettre à jour champ personnalisé partagé",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -27707,8 +27707,8 @@
       "key": "close_crm_shared_delete_custom_fields_shared_delete",
       "name": "closeCrmSharedDeleteCustomFieldsSharedDelete",
       "schemaVersion": 2,
-      "title": "Supprimer personnalisé champ shared",
-      "subtitle": "Personnalisé champ shared",
+      "title": "Supprimer champ personnalisé partagé",
+      "subtitle": "champ personnalisé partagé",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -27739,9 +27739,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer personnalisé champ shared.",
+      "description": "Supprime champ personnalisé partagé.",
       "args": {
-        "title": "Supprimer personnalisé champ shared",
+        "title": "Supprimer champ personnalisé partagé",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -27771,8 +27771,8 @@
       "key": "close_crm_shared_scheduling_link_list_scheduling_links_list_shared",
       "name": "closeCrmSharedSchedulingLinkListSchedulingLinksListShared",
       "schemaVersion": 2,
-      "title": "Lister shared scheduling link",
-      "subtitle": "Shared scheduling link",
+      "title": "Lister lien de planification partagé",
+      "subtitle": "lien de planification partagé",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -27803,9 +27803,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister shared scheduling link.",
+      "description": "Retourne la liste des éléments lien de planification partagé.",
       "args": {
-        "title": "Lister shared scheduling link",
+        "title": "Lister lien de planification partagé",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -27820,8 +27820,8 @@
       "key": "close_crm_shared_scheduling_link_create_scheduling_links_create_shared",
       "name": "closeCrmSharedSchedulingLinkCreateSchedulingLinksCreateShared",
       "schemaVersion": 2,
-      "title": "Créer shared scheduling link",
-      "subtitle": "Shared scheduling link",
+      "title": "Créer lien de planification partagé",
+      "subtitle": "lien de planification partagé",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -27852,9 +27852,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer shared scheduling link.",
+      "description": "Crée un nouvel élément pour lien de planification partagé.",
       "args": {
-        "title": "Créer shared scheduling link",
+        "title": "Créer lien de planification partagé",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -27884,8 +27884,8 @@
       "key": "close_crm_shared_scheduling_link_get_scheduling_links_get_shared",
       "name": "closeCrmSharedSchedulingLinkGetSchedulingLinksGetShared",
       "schemaVersion": 2,
-      "title": "Récupérer shared scheduling link",
-      "subtitle": "Shared scheduling link",
+      "title": "Récupérer lien de planification partagé",
+      "subtitle": "lien de planification partagé",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -27916,9 +27916,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer shared scheduling link.",
+      "description": "Récupère les détails de lien de planification partagé.",
       "args": {
-        "title": "Récupérer shared scheduling link",
+        "title": "Récupérer lien de planification partagé",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -27948,8 +27948,8 @@
       "key": "close_crm_shared_scheduling_link_update_scheduling_links_update_shared",
       "name": "closeCrmSharedSchedulingLinkUpdateSchedulingLinksUpdateShared",
       "schemaVersion": 2,
-      "title": "Mettre à jour shared scheduling link",
-      "subtitle": "Shared scheduling link",
+      "title": "Mettre à jour lien de planification partagé",
+      "subtitle": "lien de planification partagé",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -27980,9 +27980,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour shared scheduling link.",
+      "description": "Met à jour lien de planification partagé.",
       "args": {
-        "title": "Mettre à jour shared scheduling link",
+        "title": "Mettre à jour lien de planification partagé",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -28026,8 +28026,8 @@
       "key": "close_crm_shared_scheduling_link_delete_scheduling_links_delete_shared",
       "name": "closeCrmSharedSchedulingLinkDeleteSchedulingLinksDeleteShared",
       "schemaVersion": 2,
-      "title": "Supprimer shared scheduling link",
-      "subtitle": "Shared scheduling link",
+      "title": "Supprimer lien de planification partagé",
+      "subtitle": "lien de planification partagé",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -28058,9 +28058,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer shared scheduling link.",
+      "description": "Supprime lien de planification partagé.",
       "args": {
-        "title": "Supprimer shared scheduling link",
+        "title": "Supprimer lien de planification partagé",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -28090,8 +28090,8 @@
       "key": "close_crm_shared_scheduling_link_association_create_scheduling_links_create_shared_association",
       "name": "closeCrmSharedSchedulingLinkAssociationCreateSchedulingLinksCreateSharedAssociation",
       "schemaVersion": 2,
-      "title": "Créer shared scheduling link association",
-      "subtitle": "Shared scheduling link association",
+      "title": "Créer association de lien de planification partagé",
+      "subtitle": "association de lien de planification partagé",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -28122,9 +28122,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer shared scheduling link association.",
+      "description": "Crée un nouvel élément pour association de lien de planification partagé.",
       "args": {
-        "title": "Créer shared scheduling link association",
+        "title": "Créer association de lien de planification partagé",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -28186,7 +28186,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister activité sms.",
+      "description": "Retourne la liste des éléments activité sms.",
       "args": {
         "title": "Lister activité sms",
         "ui": {
@@ -28362,7 +28362,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Rechercher activité sms.",
+      "description": "Recherche des éléments liés à activité sms.",
       "args": {
         "title": "Rechercher activité sms",
         "ui": {
@@ -28435,7 +28435,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer activité sms.",
+      "description": "Récupère les détails de activité sms.",
       "args": {
         "title": "Récupérer activité sms",
         "ui": {
@@ -28499,7 +28499,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour sm activité sms.",
+      "description": "Met à jour sm activité sms.",
       "args": {
         "title": "Mettre à jour sm activité sms",
         "ui": {
@@ -28577,7 +28577,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer activité sms.",
+      "description": "Supprime activité sms.",
       "args": {
         "title": "Supprimer activité sms",
         "ui": {
@@ -28641,7 +28641,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister sms modèle.",
+      "description": "Retourne la liste des éléments sms modèle.",
       "args": {
         "title": "Lister sms modèle",
         "ui": {
@@ -28690,7 +28690,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer sms modèle.",
+      "description": "Crée un nouvel élément pour sms modèle.",
       "args": {
         "title": "Créer sms modèle",
         "ui": {
@@ -28754,7 +28754,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer sms modèle.",
+      "description": "Récupère les détails de sms modèle.",
       "args": {
         "title": "Récupérer sms modèle",
         "ui": {
@@ -28836,7 +28836,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour sms modèle.",
+      "description": "Met à jour sms modèle.",
       "args": {
         "title": "Mettre à jour sms modèle",
         "ui": {
@@ -28914,7 +28914,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer sms modèle.",
+      "description": "Supprime sms modèle.",
       "args": {
         "title": "Supprimer sms modèle",
         "ui": {
@@ -28946,8 +28946,8 @@
       "key": "close_crm_stage_search_reporting_get_funnel_stages",
       "name": "closeCrmStageSearchReportingGetFunnelStages",
       "schemaVersion": 2,
-      "title": "Rechercher reporting funnel étape",
-      "subtitle": "Reporting funnel étape",
+      "title": "Rechercher rapport étapes du tunnel",
+      "subtitle": "rapport étapes du tunnel",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -28978,9 +28978,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Rechercher reporting funnel étape.",
+      "description": "Recherche des éléments liés à rapport étapes du tunnel.",
       "args": {
-        "title": "Rechercher reporting funnel étape",
+        "title": "Rechercher rapport étapes du tunnel",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -29042,7 +29042,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister tâche.",
+      "description": "Retourne la liste des éléments tâche.",
       "args": {
         "title": "Lister tâche",
         "ui": {
@@ -29353,7 +29353,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer tâche.",
+      "description": "Crée un nouvel élément pour tâche.",
       "args": {
         "title": "Créer tâche",
         "ui": {
@@ -29417,7 +29417,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour tâche lot.",
+      "description": "Met à jour tâche lot.",
       "args": {
         "title": "Mettre à jour tâche lot",
         "ui": {
@@ -29742,7 +29742,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer tâche.",
+      "description": "Récupère les détails de tâche.",
       "args": {
         "title": "Récupérer tâche",
         "ui": {
@@ -29806,7 +29806,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour tâche.",
+      "description": "Met à jour tâche.",
       "args": {
         "title": "Mettre à jour tâche",
         "ui": {
@@ -29884,7 +29884,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer tâche.",
+      "description": "Supprime tâche.",
       "args": {
         "title": "Supprimer tâche",
         "ui": {
@@ -29948,7 +29948,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister activité tâche complétion.",
+      "description": "Retourne la liste des éléments activité tâche complétion.",
       "args": {
         "title": "Lister activité tâche complétion",
         "ui": {
@@ -30124,7 +30124,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer activité tâche complétion.",
+      "description": "Récupère les détails de activité tâche complétion.",
       "args": {
         "title": "Récupérer activité tâche complétion",
         "ui": {
@@ -30188,7 +30188,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer activité tâche complétion.",
+      "description": "Supprime activité tâche complétion.",
       "args": {
         "title": "Supprimer activité tâche complétion",
         "ui": {
@@ -30220,8 +30220,8 @@
       "key": "close_crm_total_search_reporting_get_funnel_totals",
       "name": "closeCrmTotalSearchReportingGetFunnelTotals",
       "schemaVersion": 2,
-      "title": "Rechercher reporting funnel total",
-      "subtitle": "Reporting funnel total",
+      "title": "Rechercher rapport totaux du tunnel",
+      "subtitle": "rapport totaux du tunnel",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -30252,9 +30252,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Rechercher reporting funnel total.",
+      "description": "Recherche des éléments liés à rapport totaux du tunnel.",
       "args": {
-        "title": "Rechercher reporting funnel total",
+        "title": "Rechercher rapport totaux du tunnel",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -30284,8 +30284,8 @@
       "key": "close_crm_unarchive_restore_playbooks_unarchive",
       "name": "closeCrmUnarchiveRestorePlaybooksUnarchive",
       "schemaVersion": 2,
-      "title": "Restaurer playbook unarchive",
-      "subtitle": "Playbook unarchive",
+      "title": "Restaurer guide commercial désarchivage",
+      "subtitle": "guide commercial désarchivage",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -30316,9 +30316,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Restaurer playbook unarchive.",
+      "description": "Restaure guide commercial désarchivage.",
       "args": {
-        "title": "Restaurer playbook unarchive",
+        "title": "Restaurer guide commercial désarchivage",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -30348,8 +30348,8 @@
       "key": "close_crm_unmap_create_scheduling_links_delete_shared_association",
       "name": "closeCrmUnmapCreateSchedulingLinksDeleteSharedAssociation",
       "schemaVersion": 2,
-      "title": "Créer unmap",
-      "subtitle": "Unmap",
+      "title": "Créer dissociation",
+      "subtitle": "dissociation",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -30380,9 +30380,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer unmap.",
+      "description": "Crée un nouvel élément pour dissociation.",
       "args": {
-        "title": "Créer unmap",
+        "title": "Créer dissociation",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -30444,7 +30444,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer fichier.",
+      "description": "Crée un nouvel élément pour fichier.",
       "args": {
         "title": "Créer fichier",
         "ui": {
@@ -30508,7 +30508,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister utilisateur.",
+      "description": "Retourne la liste des éléments utilisateur.",
       "args": {
         "title": "Lister utilisateur",
         "ui": {
@@ -30567,7 +30567,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer utilisateur.",
+      "description": "Récupère les détails de utilisateur.",
       "args": {
         "title": "Récupérer utilisateur",
         "ui": {
@@ -30640,7 +30640,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister webhook.",
+      "description": "Retourne la liste des éléments webhook.",
       "args": {
         "title": "Lister webhook",
         "ui": {
@@ -30689,7 +30689,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer webhook.",
+      "description": "Crée un nouvel élément pour webhook.",
       "args": {
         "title": "Créer webhook",
         "ui": {
@@ -30753,7 +30753,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer webhook.",
+      "description": "Récupère les détails de webhook.",
       "args": {
         "title": "Récupérer webhook",
         "ui": {
@@ -30817,7 +30817,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour webhook.",
+      "description": "Met à jour webhook.",
       "args": {
         "title": "Mettre à jour webhook",
         "ui": {
@@ -30895,7 +30895,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer webhook.",
+      "description": "Supprime webhook.",
       "args": {
         "title": "Supprimer webhook",
         "ui": {
@@ -30927,8 +30927,8 @@
       "key": "close_crm_whatsapp_message_search_activities_whatsapp_messages_list",
       "name": "closeCrmWhatsappMessageSearchActivitiesWhatsappMessagesList",
       "schemaVersion": 2,
-      "title": "Rechercher activité whatsapp message",
-      "subtitle": "Activité whatsapp message",
+      "title": "Rechercher activité message WhatsApp",
+      "subtitle": "Activité message WhatsApp",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -30959,9 +30959,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Rechercher activité whatsapp message.",
+      "description": "Recherche des éléments liés à activité message WhatsApp.",
       "args": {
-        "title": "Rechercher activité whatsapp message",
+        "title": "Rechercher activité message WhatsApp",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -31112,8 +31112,8 @@
       "key": "close_crm_whatsapp_message_search_activities_whatsapp_messages_create",
       "name": "closeCrmWhatsappMessageSearchActivitiesWhatsappMessagesCreate",
       "schemaVersion": 2,
-      "title": "Rechercher activité whatsapp message - whatsapp message activité",
-      "subtitle": "Activité whatsapp message",
+      "title": "Rechercher activité message WhatsApp - message WhatsApp activité",
+      "subtitle": "Activité message WhatsApp",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -31144,9 +31144,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Rechercher activité whatsapp message - whatsapp message activité.",
+      "description": "Recherche des éléments liés à activité message WhatsApp - message WhatsApp activité.",
       "args": {
-        "title": "Rechercher activité whatsapp message - whatsapp message activité",
+        "title": "Rechercher activité message WhatsApp - message WhatsApp activité",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -31185,8 +31185,8 @@
       "key": "close_crm_whatsapp_message_get_activities_whatsapp_messages_get",
       "name": "closeCrmWhatsappMessageGetActivitiesWhatsappMessagesGet",
       "schemaVersion": 2,
-      "title": "Récupérer activité whatsapp message",
-      "subtitle": "Activité whatsapp message",
+      "title": "Récupérer activité message WhatsApp",
+      "subtitle": "Activité message WhatsApp",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -31217,9 +31217,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer activité whatsapp message.",
+      "description": "Récupère les détails de activité message WhatsApp.",
       "args": {
-        "title": "Récupérer activité whatsapp message",
+        "title": "Récupérer activité message WhatsApp",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -31249,8 +31249,8 @@
       "key": "close_crm_whatsapp_message_update_activities_whatsapp_messages_update",
       "name": "closeCrmWhatsappMessageUpdateActivitiesWhatsappMessagesUpdate",
       "schemaVersion": 2,
-      "title": "Mettre à jour activité whatsapp message",
-      "subtitle": "Activité whatsapp message",
+      "title": "Mettre à jour activité message WhatsApp",
+      "subtitle": "Activité message WhatsApp",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -31281,9 +31281,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour activité whatsapp message.",
+      "description": "Met à jour activité message WhatsApp.",
       "args": {
-        "title": "Mettre à jour activité whatsapp message",
+        "title": "Mettre à jour activité message WhatsApp",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -31327,8 +31327,8 @@
       "key": "close_crm_whatsapp_message_delete_activities_whatsapp_messages_delete",
       "name": "closeCrmWhatsappMessageDeleteActivitiesWhatsappMessagesDelete",
       "schemaVersion": 2,
-      "title": "Supprimer activité whatsapp message",
-      "subtitle": "Activité whatsapp message",
+      "title": "Supprimer activité message WhatsApp",
+      "subtitle": "Activité message WhatsApp",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -31359,9 +31359,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer activité whatsapp message.",
+      "description": "Supprime activité message WhatsApp.",
       "args": {
-        "title": "Supprimer activité whatsapp message",
+        "title": "Supprimer activité message WhatsApp",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
