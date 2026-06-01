@@ -166,6 +166,49 @@ const ACTIONS = {
     "body": [],
     "json": [],
     "list": false
+  },
+  "clay_table_rows_list": {
+    "path": "/v1/tables/{tableId}/rows",
+    "method": "GET",
+    "query": [
+      "limit",
+      "cursor"
+    ],
+    "body": [],
+    "json": [],
+    "list": true
+  },
+  "clay_table_row_get": {
+    "path": "/v1/tables/{tableId}/rows/{rowId}",
+    "method": "GET",
+    "query": [],
+    "body": [],
+    "json": [],
+    "list": false
+  },
+  "clay_table_row_update": {
+    "path": "/v1/tables/{tableId}/rows/{rowId}",
+    "method": "PATCH",
+    "query": [],
+    "body": [],
+    "json": [],
+    "list": false
+  },
+  "clay_table_row_delete": {
+    "path": "/v1/tables/{tableId}/rows/{rowId}",
+    "method": "DELETE",
+    "query": [],
+    "body": [],
+    "json": [],
+    "list": false
+  },
+  "clay_api_request": {
+    "path": "{path}",
+    "method": "GET",
+    "query": [],
+    "body": [],
+    "json": [],
+    "list": false
   }
 };
 
@@ -174,6 +217,16 @@ async function run(key, inputs, opts) {
   if (!spec) return { ok: false, error: "Action inconnue: " + key };
   const log = opts && opts.log ? opts.log : () => {};
   try {
+    if (key === "clay_api_request") {
+      const method = String((inputs || {}).method || "GET").toUpperCase();
+      const path = String((inputs || {}).path || "").trim();
+      if (!path) return { ok: false, error: "Champ requis manquant: path." };
+      const query = parseJsonInput((inputs || {}).query, "query", {});
+      const body = method === "GET" || method === "DELETE" ? undefined : parseJsonInput((inputs || {}).body, "body", undefined);
+      const res = await apiRequest(opts, path, { method, query, body });
+      if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
+      return responseResult(res.data);
+    }
     const path = interpolate(spec.path, inputs || {});
     const query = pick(inputs || {}, spec.query || []);
     const body = spec.method === "GET" ? undefined : bodyFrom(inputs || {}, spec.body || [], spec.json || []);

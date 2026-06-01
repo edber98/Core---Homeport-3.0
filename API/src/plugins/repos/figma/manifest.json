@@ -1167,6 +1167,128 @@
         "displayDescription": false
       },
       "group": "Design system"
+    },
+    {
+      "key": "figma_team_projects_list",
+      "name": "figmaTeamProjectsList",
+      "schemaVersion": 2,
+      "title": "Lister projets d équipe",
+      "subtitle": "Équipes",
+      "icon": "fa-solid fa-people-group",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Figma",
+      "providerKey": "figma",
+      "tags": [
+        "figma",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:figma_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les projets d une équipe Figma.",
+      "args": {
+        "title": "Lister projets d équipe",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "teamId",
+            "label": "Team ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    },
+    {
+      "key": "figma_project_files_list",
+      "name": "figmaProjectFilesList",
+      "schemaVersion": 2,
+      "title": "Lister fichiers d un projet",
+      "subtitle": "Projets",
+      "icon": "fa-solid fa-folder-open",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Figma",
+      "providerKey": "figma",
+      "tags": [
+        "figma",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:figma_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les fichiers d un projet Figma.",
+      "args": {
+        "title": "Lister fichiers d un projet",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "Project ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
     }
   ]
 }

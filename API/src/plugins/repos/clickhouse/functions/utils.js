@@ -148,6 +148,15 @@ async function run(key, inputs, opts) {
       return ok(res, "Tables récupérées.", { items, totalCount: items.length });
     }
 
+    if (key === "clickhouse_query_list_databases") {
+      const sql = "SHOW DATABASES";
+      const res = await executeSql(opts, sql, "", "JSON");
+      if (!res.ok) return res;
+      const rows = parseRowsFromJson(res.data);
+      const items = rows.map((r) => ({ id: r.name || r.database || Object.values(r)[0] || "", name: r.name || r.database || Object.values(r)[0] || "", raw: r }));
+      return ok(res, "Bases récupérées.", { items, totalCount: items.length });
+    }
+
     if (key === "clickhouse_query_describe_table") {
       const table = clean(d.table);
       if (!table) return { ok: false, error: "table requise." };

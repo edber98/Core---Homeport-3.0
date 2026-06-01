@@ -1604,6 +1604,334 @@
       },
       "group": "Événements",
       "risk": "safe"
+    },
+    {
+      "key": "dbx_list_folder_continue",
+      "name": "dbxListFolderContinue",
+      "schemaVersion": 2,
+      "title": "Lister dossier (page suivante)",
+      "subtitle": "Fichiers",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Dropbox",
+      "providerKey": "dropbox",
+      "tags": [
+        "dropbox",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:dbx_files"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lister dossier (page suivante)",
+      "args": {
+        "title": "Lister dossier (page suivante)",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "cursor",
+            "label": "Cursor",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Fichiers",
+      "risk": "write"
+    },
+    {
+      "key": "dbx_get_temporary_link",
+      "name": "dbxGetTemporaryLink",
+      "schemaVersion": 2,
+      "title": "Créer un lien temporaire",
+      "subtitle": "Fichiers",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Dropbox",
+      "providerKey": "dropbox",
+      "tags": [
+        "dropbox",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:dbx_shared_link"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Créer un lien temporaire",
+      "args": {
+        "title": "Créer un lien temporaire",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Chemin",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Fichiers",
+      "risk": "write"
+    },
+    {
+      "key": "dbx_download_zip",
+      "name": "dbxDownloadZip",
+      "schemaVersion": 2,
+      "title": "Télécharger un dossier en ZIP",
+      "subtitle": "Fichiers",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Dropbox",
+      "providerKey": "dropbox",
+      "tags": [
+        "dropbox",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:dbx_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Télécharger un dossier en ZIP",
+      "args": {
+        "title": "Télécharger un dossier en ZIP",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Chemin dossier",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Fichiers",
+      "risk": "write"
+    },
+    {
+      "key": "dbx_save_url",
+      "name": "dbxSaveUrl",
+      "schemaVersion": 2,
+      "title": "Importer un fichier depuis URL",
+      "subtitle": "Fichiers",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Dropbox",
+      "providerKey": "dropbox",
+      "tags": [
+        "dropbox",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:dbx_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Importer un fichier depuis URL",
+      "args": {
+        "title": "Importer un fichier depuis URL",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Chemin destination",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "url",
+            "label": "URL source",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Fichiers",
+      "risk": "write"
+    },
+    {
+      "key": "dbx_save_url_check_job_status",
+      "name": "dbxSaveUrlCheckJobStatus",
+      "schemaVersion": 2,
+      "title": "Vérifier import URL",
+      "subtitle": "Fichiers",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Dropbox",
+      "providerKey": "dropbox",
+      "tags": [
+        "dropbox",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:dbx_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Vérifier import URL",
+      "args": {
+        "title": "Vérifier import URL",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "async_job_id",
+            "label": "Async Job ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Fichiers",
+      "risk": "write"
     }
   ]
 }

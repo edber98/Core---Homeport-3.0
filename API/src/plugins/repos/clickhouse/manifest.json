@@ -823,6 +823,47 @@
         "displayDescription": false
       },
       "group": "Utilitaires API"
+    },
+    {
+      "key": "clickhouse_query_list_databases",
+      "name": "clickhouseQueryListDatabases",
+      "schemaVersion": 2,
+      "title": "Lister les bases",
+      "subtitle": "Query",
+      "icon": "fa-solid fa-database",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "ClickHouse",
+      "providerKey": "clickhouse",
+      "tags": [
+        "lecture",
+        "database"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:clickhouse_queries"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les bases de données ClickHouse.",
+      "args": {
+        "fields": []
+      },
+      "group": "Requêtes"
     }
   ]
 }

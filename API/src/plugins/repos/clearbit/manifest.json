@@ -1165,6 +1165,134 @@
         "displayDescription": false
       },
       "group": "reveals"
+    },
+    {
+      "key": "clearbit_health_ping",
+      "name": "clearbitHealthPing",
+      "schemaVersion": 2,
+      "title": "Tester la connexion API",
+      "subtitle": "Santé",
+      "icon": "fa-solid fa-heart-pulse",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Clearbit",
+      "providerKey": "clearbit",
+      "tags": [
+        "santé"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:clearbit_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Vérifie la connectivité Clearbit.",
+      "args": {
+        "fields": []
+      },
+      "group": "Utilitaires"
+    },
+    {
+      "key": "clearbit_api_request",
+      "name": "clearbitApiRequest",
+      "schemaVersion": 2,
+      "title": "Requête API personnalisée",
+      "subtitle": "API",
+      "icon": "fa-solid fa-code",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Clearbit",
+      "providerKey": "clearbit",
+      "tags": [
+        "api",
+        "custom"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:clearbit_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Exécute une requête Clearbit personnalisée.",
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "method",
+            "label": "Méthode",
+            "defaultValue": "GET",
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Path ou URL",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "query",
+            "label": "Query JSON",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "headers",
+            "label": "Headers JSON",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "body",
+            "label": "Body JSON",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "group": "API"
     }
   ]
 }

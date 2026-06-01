@@ -4012,6 +4012,54 @@
         "displayDescription": false
       },
       "group": "volumes"
+    },
+    {
+      "key": "e2b_health_ping",
+      "name": "e2bHealthPing",
+      "schemaVersion": 2,
+      "title": "Vérifier disponibilité API",
+      "subtitle": "Santé",
+      "icon": "fa-solid fa-heart-pulse",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "E2B",
+      "providerKey": "e2b",
+      "tags": [
+        "e2b",
+        "health",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:e2b_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Teste rapidement la disponibilité de l API E2B.",
+      "args": {
+        "title": "Vérifier disponibilité API",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      }
     }
   ]
 }

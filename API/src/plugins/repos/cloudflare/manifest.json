@@ -7,101 +7,478 @@
   "variables": {
     "cloudflare_zone": {
       "title": "Zone Cloudflare",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "text", "key": "id", "label": "ID", "col": { "xs": 24 } },
-        { "type": "text", "key": "name", "label": "Nom", "col": { "xs": 24 } },
-        { "type": "text", "key": "status", "label": "Statut", "col": { "xs": 24 } },
-        { "type": "text", "key": "type", "label": "Type", "col": { "xs": 24 } },
-        { "type": "text", "key": "account_id", "label": "ID compte", "col": { "xs": 24 } },
-        { "type": "text", "key": "account_name", "label": "Compte", "col": { "xs": 24 } },
-        { "type": "text", "key": "name_servers", "label": "Serveurs de noms", "col": { "xs": 24 } },
-        { "type": "date", "key": "created_on", "label": "Date de création", "col": { "xs": 24 } },
-        { "type": "date", "key": "modified_on", "label": "Date de modification", "col": { "xs": 24 } }
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "type",
+          "label": "Type",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "account_id",
+          "label": "ID compte",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "account_name",
+          "label": "Compte",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name_servers",
+          "label": "Serveurs de noms",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "created_on",
+          "label": "Date de création",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "modified_on",
+          "label": "Date de modification",
+          "col": {
+            "xs": 24
+          }
+        }
       ]
     },
     "cloudflare_zones": {
       "title": "Zones Cloudflare",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "number", "key": "totalCount", "label": "Nombre total", "col": { "xs": 24 } },
-        { "type": "section", "title": "Zones", "key": "zones", "mode": "array", "array": { "initialItems": 0, "minItems": 0 }, "fields": [
-          { "type": "text", "key": "id", "label": "ID", "col": { "xs": 24 } },
-          { "type": "text", "key": "name", "label": "Nom", "col": { "xs": 24 } },
-          { "type": "text", "key": "status", "label": "Statut", "col": { "xs": 24 } },
-          { "type": "text", "key": "account_name", "label": "Compte", "col": { "xs": 24 } }
-        ], "col": { "xs": 24 } }
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Zones",
+          "key": "zones",
+          "mode": "array",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "account_name",
+              "label": "Compte",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
       ]
     },
     "cloudflare_dns_record": {
       "title": "Enregistrement DNS Cloudflare",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "text", "key": "id", "label": "ID", "col": { "xs": 24 } },
-        { "type": "text", "key": "zone_id", "label": "ID zone", "col": { "xs": 24 } },
-        { "type": "text", "key": "type", "label": "Type", "col": { "xs": 24 } },
-        { "type": "text", "key": "name", "label": "Nom", "col": { "xs": 24 } },
-        { "type": "text", "key": "content", "label": "Contenu", "col": { "xs": 24 } },
-        { "type": "number", "key": "ttl", "label": "TTL", "col": { "xs": 24 } },
-        { "type": "text", "key": "proxied", "label": "Proxy actif", "col": { "xs": 24 } },
-        { "type": "text", "key": "comment", "label": "Commentaire", "col": { "xs": 24 } },
-        { "type": "date", "key": "created_on", "label": "Date de création", "col": { "xs": 24 } },
-        { "type": "date", "key": "modified_on", "label": "Date de modification", "col": { "xs": 24 } }
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "zone_id",
+          "label": "ID zone",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "type",
+          "label": "Type",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "content",
+          "label": "Contenu",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "ttl",
+          "label": "TTL",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "proxied",
+          "label": "Proxy actif",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "comment",
+          "label": "Commentaire",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "created_on",
+          "label": "Date de création",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "modified_on",
+          "label": "Date de modification",
+          "col": {
+            "xs": 24
+          }
+        }
       ]
     },
     "cloudflare_dns_records": {
       "title": "Enregistrements DNS Cloudflare",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "number", "key": "totalCount", "label": "Nombre total", "col": { "xs": 24 } },
-        { "type": "section", "title": "Enregistrements", "key": "records", "mode": "array", "array": { "initialItems": 0, "minItems": 0 }, "fields": [
-          { "type": "text", "key": "id", "label": "ID", "col": { "xs": 24 } },
-          { "type": "text", "key": "type", "label": "Type", "col": { "xs": 24 } },
-          { "type": "text", "key": "name", "label": "Nom", "col": { "xs": 24 } },
-          { "type": "text", "key": "content", "label": "Contenu", "col": { "xs": 24 } },
-          { "type": "text", "key": "proxied", "label": "Proxy actif", "col": { "xs": 24 } }
-        ], "col": { "xs": 24 } }
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Enregistrements",
+          "key": "records",
+          "mode": "array",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "type",
+              "label": "Type",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "content",
+              "label": "Contenu",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "proxied",
+              "label": "Proxy actif",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
       ]
     },
     "cloudflare_result": {
       "title": "Résultat Cloudflare",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "text", "key": "id", "label": "ID", "col": { "xs": 24 } },
-        { "type": "text", "key": "key", "label": "Clé", "col": { "xs": 24 } },
-        { "type": "text", "key": "success", "label": "Succès", "col": { "xs": 24 } }
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "key",
+          "label": "Clé",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "success",
+          "label": "Succès",
+          "col": {
+            "xs": 24
+          }
+        }
       ]
     },
     "cloudflare_kv_namespaces": {
       "title": "Namespaces KV Cloudflare",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "number", "key": "totalCount", "label": "Nombre total", "col": { "xs": 24 } },
-        { "type": "section", "title": "Namespaces", "key": "namespaces", "mode": "array", "array": { "initialItems": 0, "minItems": 0 }, "fields": [
-          { "type": "text", "key": "id", "label": "ID", "col": { "xs": 24 } },
-          { "type": "text", "key": "title", "label": "Titre", "col": { "xs": 24 } }
-        ], "col": { "xs": 24 } }
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Namespaces",
+          "key": "namespaces",
+          "mode": "array",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "title",
+              "label": "Titre",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
       ]
     },
     "cloudflare_kv_keys": {
       "title": "Clés KV Cloudflare",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "number", "key": "totalCount", "label": "Nombre total", "col": { "xs": 24 } },
-        { "type": "text", "key": "cursor", "label": "Curseur suivant", "col": { "xs": 24 } },
-        { "type": "section", "title": "Clés", "key": "keys", "mode": "array", "array": { "initialItems": 0, "minItems": 0 }, "fields": [
-          { "type": "text", "key": "name", "label": "Nom", "col": { "xs": 24 } },
-          { "type": "text", "key": "expiration", "label": "Expiration", "col": { "xs": 24 } },
-          { "type": "textarea", "key": "metadata", "label": "Métadonnées", "col": { "xs": 24 } }
-        ], "col": { "xs": 24 } }
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "cursor",
+          "label": "Curseur suivant",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Clés",
+          "key": "keys",
+          "mode": "array",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "expiration",
+              "label": "Expiration",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "metadata",
+              "label": "Métadonnées",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
       ]
     },
     "cloudflare_kv_value": {
       "title": "Valeur KV Cloudflare",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "text", "key": "key", "label": "Clé", "col": { "xs": 24 } },
-        { "type": "textarea", "key": "value", "label": "Valeur", "col": { "xs": 24 } }
+        {
+          "type": "text",
+          "key": "key",
+          "label": "Clé",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "value",
+          "label": "Valeur",
+          "col": {
+            "xs": 24
+          }
+        }
       ]
     }
   },
@@ -113,17 +490,60 @@
       "iconClass": "fa-brands fa-cloudflare",
       "iconUrl": "https://cdn.simpleicons.org/cloudflare",
       "color": "#ffd9c2",
-      "tags": ["cloudflare", "dns", "cdn"],
-      "categories": ["Infrastructure"],
+      "tags": [
+        "cloudflare",
+        "dns",
+        "cdn"
+      ],
+      "categories": [
+        "Infrastructure"
+      ],
       "hasCredentials": true,
       "credentialsForm": {
         "title": "Identifiants Cloudflare",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
-          { "type": "text", "key": "apiToken", "label": "Jeton API", "description": "Jeton API Cloudflare recommandé.", "secret": true, "col": { "xs": 24 } },
-          { "type": "text", "key": "apiEmail", "label": "Email API", "description": "Optionnel, pour l'ancienne clé globale.", "col": { "xs": 24 } },
-          { "type": "text", "key": "apiKey", "label": "Clé API globale", "description": "Optionnel, utilisé avec l'email API.", "secret": true, "col": { "xs": 24 } },
-          { "type": "text", "key": "baseUrl", "label": "URL API", "default": "https://api.cloudflare.com/client/v4", "col": { "xs": 24 } }
+          {
+            "type": "text",
+            "key": "apiToken",
+            "label": "Jeton API",
+            "description": "Jeton API Cloudflare recommandé.",
+            "secret": true,
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "apiEmail",
+            "label": "Email API",
+            "description": "Optionnel, pour l'ancienne clé globale.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "apiKey",
+            "label": "Clé API globale",
+            "description": "Optionnel, utilisé avec l'email API.",
+            "secret": true,
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "baseUrl",
+            "label": "URL API",
+            "default": "https://api.cloudflare.com/client/v4",
+            "col": {
+              "xs": 24
+            }
+          }
         ],
         "displayTitle": false,
         "displayDescription": false
@@ -142,17 +562,76 @@
       "nodeKind": "function",
       "category": "Cloudflare",
       "providerKey": "cloudflare",
-      "tags": ["lecture", "zone"],
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:cloudflare_zones" }],
+      "tags": [
+        "lecture",
+        "zone"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:cloudflare_zones"
+        }
+      ],
       "authorize_catch_error": true,
       "description": "Liste les zones Cloudflare accessibles.",
-      "args": { "title": "Lister les zones", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [
-        { "type": "text", "key": "name", "label": "Nom de domaine", "col": { "xs": 24 } },
-        { "type": "text", "key": "status", "label": "Statut", "col": { "xs": 12 } },
-        { "type": "number", "key": "page", "label": "Page", "default": 1, "col": { "xs": 12 } },
-        { "type": "number", "key": "pageSize", "label": "Taille page", "default": 50, "col": { "xs": 12 } }
-      ], "displayTitle": false, "displayDescription": false },
+      "args": {
+        "title": "Lister les zones",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom de domaine",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "status",
+            "label": "Statut",
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "number",
+            "key": "page",
+            "label": "Page",
+            "default": 1,
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "number",
+            "key": "pageSize",
+            "label": "Taille page",
+            "default": 50,
+            "col": {
+              "xs": 12
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
       "group": "Zones"
     },
     {
@@ -166,12 +645,48 @@
       "nodeKind": "function",
       "category": "Cloudflare",
       "providerKey": "cloudflare",
-      "tags": ["lecture", "zone"],
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:cloudflare_zone" }],
+      "tags": [
+        "lecture",
+        "zone"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:cloudflare_zone"
+        }
+      ],
       "authorize_catch_error": true,
       "description": "Récupère les détails d'une zone Cloudflare.",
-      "args": { "fields": [{ "type": "text", "key": "zoneId", "label": "ID zone", "validators": [{ "type": "required" }], "col": { "xs": 24 } }] },
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "zoneId",
+            "label": "ID zone",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
       "group": "Zones"
     },
     {
@@ -185,19 +700,90 @@
       "nodeKind": "function",
       "category": "Cloudflare",
       "providerKey": "cloudflare",
-      "tags": ["lecture", "dns"],
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:cloudflare_dns_records" }],
+      "tags": [
+        "lecture",
+        "dns"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:cloudflare_dns_records"
+        }
+      ],
       "authorize_catch_error": true,
       "description": "Liste les enregistrements DNS d'une zone.",
-      "args": { "fields": [
-        { "type": "text", "key": "zoneId", "label": "ID zone", "validators": [{ "type": "required" }], "col": { "xs": 24 } },
-        { "type": "text", "key": "name", "label": "Nom", "col": { "xs": 24 } },
-        { "type": "text", "key": "type", "label": "Type", "col": { "xs": 12 } },
-        { "type": "text", "key": "content", "label": "Contenu", "col": { "xs": 24 } },
-        { "type": "number", "key": "page", "label": "Page", "default": 1, "col": { "xs": 12 } },
-        { "type": "number", "key": "pageSize", "label": "Taille page", "default": 50, "col": { "xs": 12 } }
-      ] },
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "zoneId",
+            "label": "ID zone",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "type",
+            "label": "Type",
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "text",
+            "key": "content",
+            "label": "Contenu",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "page",
+            "label": "Page",
+            "default": 1,
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "number",
+            "key": "pageSize",
+            "label": "Taille page",
+            "default": 50,
+            "col": {
+              "xs": 12
+            }
+          }
+        ]
+      },
       "group": "DNS"
     },
     {
@@ -211,22 +797,133 @@
       "nodeKind": "function",
       "category": "Cloudflare",
       "providerKey": "cloudflare",
-      "tags": ["création", "dns"],
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:cloudflare_dns_record" }],
+      "tags": [
+        "création",
+        "dns"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:cloudflare_dns_record"
+        }
+      ],
       "authorize_catch_error": true,
       "description": "Crée un enregistrement DNS.",
-      "args": { "fields": [
-        { "type": "text", "key": "zoneId", "label": "ID zone", "validators": [{ "type": "required" }], "col": { "xs": 24 } },
-        { "type": "select", "key": "type", "label": "Type", "options": ["A", "AAAA", "CNAME", "TXT", "MX", "SRV", "CAA", "NS"], "col": { "xs": 12 } },
-        { "type": "text", "key": "name", "label": "Nom", "validators": [{ "type": "required" }], "col": { "xs": 24 } },
-        { "type": "text", "key": "content", "label": "Contenu", "validators": [{ "type": "required" }], "col": { "xs": 24 } },
-        { "type": "number", "key": "ttl", "label": "TTL", "default": 1, "col": { "xs": 12 } },
-        { "type": "checkbox", "key": "proxied", "label": "Activer le proxy", "col": { "xs": 12 } },
-        { "type": "number", "key": "priority", "label": "Priorité", "col": { "xs": 12 } },
-        { "type": "text", "key": "comment", "label": "Commentaire", "col": { "xs": 24 } },
-        { "type": "textarea", "key": "data", "label": "Données avancées JSON", "col": { "xs": 24 } }
-      ] },
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "zoneId",
+            "label": "ID zone",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "select",
+            "key": "type",
+            "label": "Type",
+            "options": [
+              "A",
+              "AAAA",
+              "CNAME",
+              "TXT",
+              "MX",
+              "SRV",
+              "CAA",
+              "NS"
+            ],
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "content",
+            "label": "Contenu",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "ttl",
+            "label": "TTL",
+            "default": 1,
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "proxied",
+            "label": "Activer le proxy",
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "number",
+            "key": "priority",
+            "label": "Priorité",
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "text",
+            "key": "comment",
+            "label": "Commentaire",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "data",
+            "label": "Données avancées JSON",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
       "group": "DNS"
     },
     {
@@ -240,23 +937,136 @@
       "nodeKind": "function",
       "category": "Cloudflare",
       "providerKey": "cloudflare",
-      "tags": ["modification", "dns"],
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:cloudflare_dns_record" }],
+      "tags": [
+        "modification",
+        "dns"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:cloudflare_dns_record"
+        }
+      ],
       "authorize_catch_error": true,
       "description": "Modifie un enregistrement DNS.",
-      "args": { "fields": [
-        { "type": "text", "key": "zoneId", "label": "ID zone", "validators": [{ "type": "required" }], "col": { "xs": 24 } },
-        { "type": "text", "key": "recordId", "label": "ID enregistrement", "validators": [{ "type": "required" }], "col": { "xs": 24 } },
-        { "type": "select", "key": "type", "label": "Type", "options": ["", "A", "AAAA", "CNAME", "TXT", "MX", "SRV", "CAA", "NS"], "col": { "xs": 12 } },
-        { "type": "text", "key": "name", "label": "Nom", "col": { "xs": 24 } },
-        { "type": "text", "key": "content", "label": "Contenu", "col": { "xs": 24 } },
-        { "type": "number", "key": "ttl", "label": "TTL", "col": { "xs": 12 } },
-        { "type": "checkbox", "key": "proxied", "label": "Activer le proxy", "col": { "xs": 12 } },
-        { "type": "number", "key": "priority", "label": "Priorité", "col": { "xs": 12 } },
-        { "type": "text", "key": "comment", "label": "Commentaire", "col": { "xs": 24 } },
-        { "type": "textarea", "key": "data", "label": "Données avancées JSON", "col": { "xs": 24 } }
-      ] },
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "zoneId",
+            "label": "ID zone",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "recordId",
+            "label": "ID enregistrement",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "select",
+            "key": "type",
+            "label": "Type",
+            "options": [
+              "",
+              "A",
+              "AAAA",
+              "CNAME",
+              "TXT",
+              "MX",
+              "SRV",
+              "CAA",
+              "NS"
+            ],
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "content",
+            "label": "Contenu",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "ttl",
+            "label": "TTL",
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "proxied",
+            "label": "Activer le proxy",
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "number",
+            "key": "priority",
+            "label": "Priorité",
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "text",
+            "key": "comment",
+            "label": "Commentaire",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "data",
+            "label": "Données avancées JSON",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
       "group": "DNS"
     },
     {
@@ -270,15 +1080,61 @@
       "nodeKind": "function",
       "category": "Cloudflare",
       "providerKey": "cloudflare",
-      "tags": ["suppression", "dns"],
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:cloudflare_result" }],
+      "tags": [
+        "suppression",
+        "dns"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:cloudflare_result"
+        }
+      ],
       "authorize_catch_error": true,
       "description": "Supprime un enregistrement DNS.",
-      "args": { "fields": [
-        { "type": "text", "key": "zoneId", "label": "ID zone", "validators": [{ "type": "required" }], "col": { "xs": 24 } },
-        { "type": "text", "key": "recordId", "label": "ID enregistrement", "validators": [{ "type": "required" }], "col": { "xs": 24 } }
-      ] },
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "zoneId",
+            "label": "ID zone",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "recordId",
+            "label": "ID enregistrement",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
       "group": "DNS"
     },
     {
@@ -292,16 +1148,73 @@
       "nodeKind": "function",
       "category": "Cloudflare",
       "providerKey": "cloudflare",
-      "tags": ["cache", "purge"],
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:cloudflare_result" }],
+      "tags": [
+        "cache",
+        "purge"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:cloudflare_result"
+        }
+      ],
       "authorize_catch_error": true,
       "description": "Purge le cache d'une zone.",
-      "args": { "fields": [
-        { "type": "text", "key": "zoneId", "label": "ID zone", "validators": [{ "type": "required" }], "col": { "xs": 24 } },
-        { "type": "select", "key": "mode", "label": "Mode", "default": "files", "options": ["files", "everything", "tags", "hosts", "prefixes"], "col": { "xs": 24 } },
-        { "type": "textarea", "key": "values", "label": "Valeurs", "description": "Une valeur par ligne, sauf purge complète.", "col": { "xs": 24 } }
-      ] },
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "zoneId",
+            "label": "ID zone",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "select",
+            "key": "mode",
+            "label": "Mode",
+            "default": "files",
+            "options": [
+              "files",
+              "everything",
+              "tags",
+              "hosts",
+              "prefixes"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "values",
+            "label": "Valeurs",
+            "description": "Une valeur par ligne, sauf purge complète.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
       "group": "Cache"
     },
     {
@@ -315,16 +1228,66 @@
       "nodeKind": "function",
       "category": "Cloudflare",
       "providerKey": "cloudflare",
-      "tags": ["lecture", "kv"],
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:cloudflare_kv_namespaces" }],
+      "tags": [
+        "lecture",
+        "kv"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:cloudflare_kv_namespaces"
+        }
+      ],
       "authorize_catch_error": true,
       "description": "Liste les namespaces Workers KV d'un compte.",
-      "args": { "fields": [
-        { "type": "text", "key": "accountId", "label": "ID compte", "validators": [{ "type": "required" }], "col": { "xs": 24 } },
-        { "type": "number", "key": "page", "label": "Page", "default": 1, "col": { "xs": 12 } },
-        { "type": "number", "key": "pageSize", "label": "Taille page", "default": 50, "col": { "xs": 12 } }
-      ] },
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "accountId",
+            "label": "ID compte",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "page",
+            "label": "Page",
+            "default": 1,
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "number",
+            "key": "pageSize",
+            "label": "Taille page",
+            "default": 50,
+            "col": {
+              "xs": 12
+            }
+          }
+        ]
+      },
       "group": "Workers KV"
     },
     {
@@ -338,18 +1301,86 @@
       "nodeKind": "function",
       "category": "Cloudflare",
       "providerKey": "cloudflare",
-      "tags": ["lecture", "kv"],
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:cloudflare_kv_keys" }],
+      "tags": [
+        "lecture",
+        "kv"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:cloudflare_kv_keys"
+        }
+      ],
       "authorize_catch_error": true,
       "description": "Liste les clés d'un namespace Workers KV.",
-      "args": { "fields": [
-        { "type": "text", "key": "accountId", "label": "ID compte", "validators": [{ "type": "required" }], "col": { "xs": 24 } },
-        { "type": "text", "key": "namespaceId", "label": "ID namespace", "validators": [{ "type": "required" }], "col": { "xs": 24 } },
-        { "type": "text", "key": "prefix", "label": "Préfixe", "col": { "xs": 24 } },
-        { "type": "text", "key": "cursor", "label": "Curseur", "col": { "xs": 24 } },
-        { "type": "number", "key": "pageSize", "label": "Limite", "default": 100, "col": { "xs": 12 } }
-      ] },
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "accountId",
+            "label": "ID compte",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "namespaceId",
+            "label": "ID namespace",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "prefix",
+            "label": "Préfixe",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "cursor",
+            "label": "Curseur",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "pageSize",
+            "label": "Limite",
+            "default": 100,
+            "col": {
+              "xs": 12
+            }
+          }
+        ]
+      },
       "group": "Workers KV"
     },
     {
@@ -363,16 +1394,74 @@
       "nodeKind": "function",
       "category": "Cloudflare",
       "providerKey": "cloudflare",
-      "tags": ["lecture", "kv"],
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:cloudflare_kv_value" }],
+      "tags": [
+        "lecture",
+        "kv"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:cloudflare_kv_value"
+        }
+      ],
       "authorize_catch_error": true,
       "description": "Lit une valeur Workers KV.",
-      "args": { "fields": [
-        { "type": "text", "key": "accountId", "label": "ID compte", "validators": [{ "type": "required" }], "col": { "xs": 24 } },
-        { "type": "text", "key": "namespaceId", "label": "ID namespace", "validators": [{ "type": "required" }], "col": { "xs": 24 } },
-        { "type": "text", "key": "key", "label": "Clé", "validators": [{ "type": "required" }], "col": { "xs": 24 } }
-      ] },
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "accountId",
+            "label": "ID compte",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "namespaceId",
+            "label": "ID namespace",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "key",
+            "label": "Clé",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
       "group": "Workers KV"
     },
     {
@@ -386,20 +1475,107 @@
       "nodeKind": "function",
       "category": "Cloudflare",
       "providerKey": "cloudflare",
-      "tags": ["écriture", "kv"],
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:cloudflare_result" }],
+      "tags": [
+        "écriture",
+        "kv"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:cloudflare_result"
+        }
+      ],
       "authorize_catch_error": true,
       "description": "Écrit une valeur Workers KV.",
-      "args": { "fields": [
-        { "type": "text", "key": "accountId", "label": "ID compte", "validators": [{ "type": "required" }], "col": { "xs": 24 } },
-        { "type": "text", "key": "namespaceId", "label": "ID namespace", "validators": [{ "type": "required" }], "col": { "xs": 24 } },
-        { "type": "text", "key": "key", "label": "Clé", "validators": [{ "type": "required" }], "col": { "xs": 24 } },
-        { "type": "textarea", "key": "value", "label": "Valeur", "col": { "xs": 24 } },
-        { "type": "text", "key": "contentType", "label": "Type de contenu", "default": "text/plain", "col": { "xs": 24 } },
-        { "type": "number", "key": "expirationTtl", "label": "Expiration TTL", "col": { "xs": 12 } },
-        { "type": "textarea", "key": "metadata", "label": "Métadonnées JSON", "col": { "xs": 24 } }
-      ] },
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "accountId",
+            "label": "ID compte",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "namespaceId",
+            "label": "ID namespace",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "key",
+            "label": "Clé",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "value",
+            "label": "Valeur",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "contentType",
+            "label": "Type de contenu",
+            "default": "text/plain",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "expirationTtl",
+            "label": "Expiration TTL",
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "metadata",
+            "label": "Métadonnées JSON",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
       "group": "Workers KV"
     },
     {
@@ -413,17 +1589,359 @@
       "nodeKind": "function",
       "category": "Cloudflare",
       "providerKey": "cloudflare",
-      "tags": ["suppression", "kv"],
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:cloudflare_result" }],
+      "tags": [
+        "suppression",
+        "kv"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:cloudflare_result"
+        }
+      ],
       "authorize_catch_error": true,
       "description": "Supprime une valeur Workers KV.",
-      "args": { "fields": [
-        { "type": "text", "key": "accountId", "label": "ID compte", "validators": [{ "type": "required" }], "col": { "xs": 24 } },
-        { "type": "text", "key": "namespaceId", "label": "ID namespace", "validators": [{ "type": "required" }], "col": { "xs": 24 } },
-        { "type": "text", "key": "key", "label": "Clé", "validators": [{ "type": "required" }], "col": { "xs": 24 } }
-      ] },
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "accountId",
+            "label": "ID compte",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "namespaceId",
+            "label": "ID namespace",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "key",
+            "label": "Clé",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
       "group": "Workers KV"
+    },
+    {
+      "key": "cloudflare_dns_record_get",
+      "name": "cloudflareDnsRecordGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un enregistrement DNS",
+      "subtitle": "DNS",
+      "icon": "fa-solid fa-circle-info",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Cloudflare",
+      "providerKey": "cloudflare",
+      "tags": [
+        "lecture",
+        "dns"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:cloudflare_dns_record"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère un enregistrement DNS Cloudflare.",
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "zoneId",
+            "label": "ID zone",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "recordId",
+            "label": "ID enregistrement",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "group": "DNS"
+    },
+    {
+      "key": "cloudflare_api_request",
+      "name": "cloudflareApiRequest",
+      "schemaVersion": 2,
+      "title": "Requête API personnalisée",
+      "subtitle": "API",
+      "icon": "fa-solid fa-code",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Cloudflare",
+      "providerKey": "cloudflare",
+      "tags": [
+        "api",
+        "custom"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:cloudflare_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Exécute une requête API Cloudflare personnalisée.",
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "method",
+            "label": "Méthode",
+            "defaultValue": "GET",
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Path",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "query",
+            "label": "Query JSON",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "body",
+            "label": "Body JSON",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "group": "API"
+    },
+    {
+      "key": "cloudflare_kv_namespace_create",
+      "name": "cloudflareKvNamespaceCreate",
+      "schemaVersion": 2,
+      "title": "Créer un namespace KV",
+      "subtitle": "KV",
+      "icon": "fa-solid fa-folder-plus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Cloudflare",
+      "providerKey": "cloudflare",
+      "tags": [
+        "création",
+        "kv"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:cloudflare_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Crée un namespace Workers KV.",
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "accountId",
+            "label": "ID compte",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "title",
+            "label": "Titre namespace",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "group": "KV"
+    },
+    {
+      "key": "cloudflare_kv_namespace_delete",
+      "name": "cloudflareKvNamespaceDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un namespace KV",
+      "subtitle": "KV",
+      "icon": "fa-solid fa-folder-minus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Cloudflare",
+      "providerKey": "cloudflare",
+      "tags": [
+        "suppression",
+        "kv"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:cloudflare_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Supprime un namespace Workers KV.",
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "accountId",
+            "label": "ID compte",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "namespaceId",
+            "label": "ID namespace",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "group": "KV"
     }
   ]
 }

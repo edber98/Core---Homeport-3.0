@@ -11,6 +11,19 @@ Atteindre une couverture operationnelle maximale d un connecteur, sans ajouter d
 Produire un verdict de couverture honnete avec liste des endpoints couverts, manquants, exclus et justification.
 Par defaut, le skill doit viser `100% metier` et poursuivre les ajouts tant qu il reste des endpoints metier `MISSING`.
 
+## Declenchement direct (one-shot)
+
+Appliquer ce skill immediatement, sans demander un second prompt, quand la demande utilisateur ressemble a:
+- "Ajoute tous les noeuds utiles (endpoint) a l automation ... fais un audit ..."
+- "endpoint par endpoint", "tout ajouter", "il ne doit rien manquer"
+- demande multi-connecteurs (liste de plusieurs connecteurs dans le meme message)
+
+Dans ce cas:
+1. Traiter tous les connecteurs cites dans le meme tour.
+2. Ajouter directement tous les noeuds dedies `MISSING` (non custom).
+3. Refaire un audit apres ajout et continuer jusqu a `MISSING = 0`.
+4. Ne poser aucune question intermediaire sauf blocage technique reel.
+
 ## Regle de priorite
 
 Prioriser toujours:
@@ -57,6 +70,7 @@ Prioriser toujours:
 3. Ajouter tous les `MISSING` metier dans le meme tour, sans attendre validation intermediaire.
 4. Reboucler une seconde passe de verification; si un endpoint metier reste `MISSING`, continuer les ajouts.
 5. Ne terminer que lorsque `MISSING = 0` sur le perimetre metier retenu.
+6. Si plusieurs connecteurs sont demandes, boucler connecteur par connecteur puis publier un recap global unique.
 
 Definition perimetre metier:
 - Inclure CRUD, list/search, transitions d etat, actions unitaires frequentes, import/export utile aux workflows.
@@ -66,8 +80,7 @@ Definition perimetre metier:
 
 - Reutiliser les helpers `utils.js` du connecteur avant de creer de nouvelles abstractions.
 - Ajouter des noeuds dedies pour les endpoints metier frequents.
-- Ajouter un noeud `custom_request` seulement comme complement, jamais comme argument de couverture dediee.
-- En mode couverture maximale, autoriser un noeud `custom_request` de secours par domaine fonctionnel uniquement si la doc expose beaucoup de variantes d action metier et que les noeuds dedies principaux sont deja couverts.
+- Ajouter aussi les endpoints metier moins frequents mais utiles en automation (pas seulement le top frequents).
 - Marquer les risques (`write`, `destructive`) dans manifest quand applicable.
 - Ne pas casser les noeuds existants ni renommer sans necessite.
 
@@ -84,3 +97,11 @@ Toujours fournir:
 
 Lire `references/exclusion-rules.md` avant de classer les endpoints limites.
 Utiliser `scripts/build_coverage_template.js` pour generer un template de matrice couverture.
+
+
+## Interdiction custom_request (obligatoire)
+
+- Si l utilisateur demande une couverture complete endpoint par endpoint, ne pas ajouter de noeud `custom_request` (ou equivalent generique).
+- La couverture doit etre composee exclusivement de noeuds dedies, un endpoint metier = un noeud explicite.
+- `custom_request` est interdit meme en mode secours, sauf demande explicite de l utilisateur.
+- En mode one-shot multi-connecteurs, l usage de `custom_request` est interdit sans exception.

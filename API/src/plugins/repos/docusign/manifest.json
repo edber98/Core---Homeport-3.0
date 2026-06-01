@@ -1748,6 +1748,291 @@
       },
       "group": "Événements",
       "risk": "safe"
+    },
+    {
+      "key": "docusign_envelope_update",
+      "name": "docusignEnvelopeUpdate",
+      "schemaVersion": 2,
+      "title": "Mettre à jour une enveloppe",
+      "subtitle": "Enveloppes",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "DocuSign",
+      "providerKey": "docusign",
+      "tags": [
+        "docusign",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ds_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Mettre à jour une enveloppe",
+      "args": {
+        "title": "Mettre à jour une enveloppe",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "envelopeId",
+            "label": "Envelope ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "status",
+            "label": "Statut",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "emailSubject",
+            "label": "Sujet email",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "emailBlurb",
+            "label": "Message email",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Enveloppes",
+      "risk": "write"
+    },
+    {
+      "key": "docusign_envelope_audit_events_list",
+      "name": "docusignEnvelopeAuditEventsList",
+      "schemaVersion": 2,
+      "title": "Lister les audit events",
+      "subtitle": "Enveloppes",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "DocuSign",
+      "providerKey": "docusign",
+      "tags": [
+        "docusign",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ds_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lister les audit events",
+      "args": {
+        "title": "Lister les audit events",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "envelopeId",
+            "label": "Envelope ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Enveloppes",
+      "risk": "write"
+    },
+    {
+      "key": "docusign_envelope_lock",
+      "name": "docusignEnvelopeLock",
+      "schemaVersion": 2,
+      "title": "Verrouiller une enveloppe",
+      "subtitle": "Enveloppes",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "DocuSign",
+      "providerKey": "docusign",
+      "tags": [
+        "docusign",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ds_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Verrouiller une enveloppe",
+      "args": {
+        "title": "Verrouiller une enveloppe",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "envelopeId",
+            "label": "Envelope ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "lockDurationInSeconds",
+            "label": "Durée verrou (sec)",
+            "col": {
+              "xs": 24
+            },
+            "default": 300
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Enveloppes",
+      "risk": "write"
+    },
+    {
+      "key": "docusign_envelope_unlock",
+      "name": "docusignEnvelopeUnlock",
+      "schemaVersion": 2,
+      "title": "Déverrouiller une enveloppe",
+      "subtitle": "Enveloppes",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "DocuSign",
+      "providerKey": "docusign",
+      "tags": [
+        "docusign",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ds_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Déverrouiller une enveloppe",
+      "args": {
+        "title": "Déverrouiller une enveloppe",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "envelopeId",
+            "label": "Envelope ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Enveloppes",
+      "risk": "write"
     }
   ]
 }
