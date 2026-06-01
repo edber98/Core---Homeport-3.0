@@ -3210,6 +3210,67 @@
       ],
       "group": "Déclencheur",
       "risk": "safe"
+    },
+    {
+      "key": "shopify_order_transactions_list",
+      "name": "shopifyOrderTransactionsList",
+      "schemaVersion": 2,
+      "title": "Lister transactions commande",
+      "subtitle": "Commandes",
+      "icon": "fa-solid fa-receipt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Shopify",
+      "providerKey": "shopify",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:shopify_orders"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Lister les transactions d'une commande Shopify.",
+      "args": {
+        "title": "Lister transactions commande",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "orderId",
+            "label": "ID commande",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "shopify"
+      ],
+      "group": "Commandes",
+      "risk": "safe"
     }
   ]
 }

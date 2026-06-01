@@ -347,6 +347,318 @@
         "displayDescription": false
       },
       "group": "linkedins"
+    },
+    {
+      "key": "substack_publication_get",
+      "name": "substackPublicationGet",
+      "schemaVersion": 2,
+      "title": "Récupérer la publication",
+      "subtitle": "Publication",
+      "icon": "fa-solid fa-newspaper",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Substack",
+      "providerKey": "substack",
+      "tags": [
+        "substack",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:substack_by_linkedin"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupérer la publication",
+      "args": {
+        "title": "Récupérer la publication",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Publication",
+      "risk": "safe"
+    },
+    {
+      "key": "substack_posts_list",
+      "name": "substackPostsList",
+      "schemaVersion": 2,
+      "title": "Lister les posts",
+      "subtitle": "Posts",
+      "icon": "fa-solid fa-newspaper",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Substack",
+      "providerKey": "substack",
+      "tags": [
+        "substack",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:substack_by_linkedins"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lister les posts",
+      "args": {
+        "title": "Lister les posts",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "offset",
+            "label": "Offset",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "status",
+            "label": "Statut",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Posts",
+      "risk": "safe"
+    },
+    {
+      "key": "substack_post_get",
+      "name": "substackPostGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un post",
+      "subtitle": "Posts",
+      "icon": "fa-solid fa-newspaper",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Substack",
+      "providerKey": "substack",
+      "tags": [
+        "substack",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:substack_by_linkedin"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupérer un post",
+      "args": {
+        "title": "Récupérer un post",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "post_id",
+            "label": "Post ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Posts",
+      "risk": "safe"
+    },
+    {
+      "key": "substack_post_create",
+      "name": "substackPostCreate",
+      "schemaVersion": 2,
+      "title": "Créer un post",
+      "subtitle": "Posts",
+      "icon": "fa-solid fa-newspaper",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Substack",
+      "providerKey": "substack",
+      "tags": [
+        "substack",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:substack_by_linkedin"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Créer un post",
+      "args": {
+        "title": "Créer un post",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "json",
+            "key": "body",
+            "label": "Payload JSON",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Posts",
+      "risk": "write"
+    },
+    {
+      "key": "substack_post_publish",
+      "name": "substackPostPublish",
+      "schemaVersion": 2,
+      "title": "Publier un post",
+      "subtitle": "Posts",
+      "icon": "fa-solid fa-newspaper",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Substack",
+      "providerKey": "substack",
+      "tags": [
+        "substack",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:substack_by_linkedin"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Publier un post",
+      "args": {
+        "title": "Publier un post",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "post_id",
+            "label": "Post ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Posts",
+      "risk": "write"
     }
   ]
 }

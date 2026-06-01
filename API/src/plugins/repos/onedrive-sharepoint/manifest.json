@@ -513,6 +513,379 @@
         "SharePoint"
       ],
       "risk": "write"
+    },
+    {
+      "key": "sharepoint_list_sites",
+      "name": "sharepointListSites",
+      "schemaVersion": 2,
+      "title": "Lister les sites SharePoint",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SharePoint",
+      "providerKey": "sharePoint",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sharepoint_file"
+        }
+      ],
+      "description": "Lister les sites SharePoint",
+      "args": {
+        "title": "Lister les sites SharePoint",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "search",
+            "label": "Recherche",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Fichiers",
+      "icon": "fa-solid fa-folder-open",
+      "group": "Fichiers",
+      "tags": [
+        "SharePoint"
+      ],
+      "risk": "safe"
+    },
+    {
+      "key": "sharepoint_list_drives",
+      "name": "sharepointListDrives",
+      "schemaVersion": 2,
+      "title": "Lister les bibliothèques SharePoint",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SharePoint",
+      "providerKey": "sharePoint",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sharepoint_file"
+        }
+      ],
+      "description": "Lister les bibliothèques SharePoint",
+      "args": {
+        "title": "Lister les bibliothèques SharePoint",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "siteId",
+            "label": "ID du site",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Fichiers",
+      "icon": "fa-solid fa-folder-open",
+      "group": "Fichiers",
+      "tags": [
+        "SharePoint"
+      ],
+      "risk": "safe"
+    },
+    {
+      "key": "sharepoint_list_items",
+      "name": "sharepointListItems",
+      "schemaVersion": 2,
+      "title": "Lister les fichiers SharePoint",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SharePoint",
+      "providerKey": "sharePoint",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sharepoint_file"
+        }
+      ],
+      "description": "Lister les fichiers SharePoint",
+      "args": {
+        "title": "Lister les fichiers SharePoint",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "siteId",
+            "label": "ID du site",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "driveId",
+            "label": "ID du drive",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "folderPath",
+            "label": "Chemin dossier",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Fichiers",
+      "icon": "fa-solid fa-folder-open",
+      "group": "Fichiers",
+      "tags": [
+        "SharePoint"
+      ],
+      "risk": "safe"
+    },
+    {
+      "key": "sharepoint_download_file",
+      "name": "sharepointDownloadFile",
+      "schemaVersion": 2,
+      "title": "Télécharger un fichier SharePoint",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SharePoint",
+      "providerKey": "sharePoint",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sharepoint_file"
+        }
+      ],
+      "description": "Télécharger un fichier SharePoint",
+      "args": {
+        "title": "Télécharger un fichier SharePoint",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "siteId",
+            "label": "ID du site",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "driveId",
+            "label": "ID du drive",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "itemId",
+            "label": "ID de l'item",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Fichiers",
+      "icon": "fa-solid fa-folder-open",
+      "group": "Fichiers",
+      "tags": [
+        "SharePoint"
+      ],
+      "risk": "safe"
+    },
+    {
+      "key": "sharepoint_delete_file",
+      "name": "sharepointDeleteFile",
+      "schemaVersion": 2,
+      "title": "Supprimer un fichier SharePoint",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SharePoint",
+      "providerKey": "sharePoint",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sharepoint_file"
+        }
+      ],
+      "description": "Supprimer un fichier SharePoint",
+      "args": {
+        "title": "Supprimer un fichier SharePoint",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "siteId",
+            "label": "ID du site",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "driveId",
+            "label": "ID du drive",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "itemId",
+            "label": "ID de l'item",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Fichiers",
+      "icon": "fa-solid fa-folder-open",
+      "group": "Fichiers",
+      "tags": [
+        "SharePoint"
+      ],
+      "risk": "destructive"
     }
   ]
 }

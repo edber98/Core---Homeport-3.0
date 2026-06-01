@@ -510,6 +510,70 @@
         "displayDescription": false
       },
       "group": "Compte"
+    },
+    {
+      "key": "serpapi_locations_list",
+      "name": "serpapiLocationsList",
+      "schemaVersion": 2,
+      "title": "Lister les localisations",
+      "subtitle": "Localisations",
+      "icon": "fa-solid fa-location-dot",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SerpAPI",
+      "providerKey": "serpapi",
+      "tags": [
+        "serpapi"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:serpapi_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lister les localisations supportées par SerpAPI.",
+      "args": {
+        "title": "Lister les localisations",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "q",
+            "label": "Recherche",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Recherche"
     }
   ]
 }
