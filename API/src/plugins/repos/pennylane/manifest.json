@@ -2928,6 +2928,168 @@
       ],
       "group": "Événements",
       "risk": "safe"
+    },
+    {
+      "key": "pl_product_get",
+      "name": "plProductGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un produit",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Produits",
+      "providerKey": "pennylane",
+      "description": "Récupère un produit Pennylane par son ID.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pl_product"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Récupérer un produit",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "product_id",
+            "label": "ID produit",
+            "description": "Identifiant du produit.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Produits",
+      "icon": "fa-solid fa-eye",
+      "tags": [
+        "lecture",
+        "pennylane"
+      ],
+      "group": "Produits",
+      "risk": "safe"
+    },
+    {
+      "key": "pl_product_update",
+      "name": "plProductUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier un produit",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Produits",
+      "providerKey": "pennylane",
+      "description": "Modifie un produit existant.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pl_product"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Modifier un produit",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "product_id",
+            "label": "ID produit",
+            "description": "Identifiant du produit.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "label",
+            "label": "Libellé",
+            "description": "Nouveau libellé.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "price",
+            "label": "Prix",
+            "description": "Nouveau prix.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "unit",
+            "label": "Unité",
+            "description": "Unité (pièce, heure, etc.).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "reference",
+            "label": "Référence",
+            "description": "Référence interne.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Produits",
+      "icon": "fa-solid fa-pen",
+      "tags": [
+        "mise à jour",
+        "pennylane"
+      ],
+      "group": "Produits",
+      "risk": "write"
     }
   ]
 }

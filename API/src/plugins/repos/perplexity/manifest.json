@@ -551,6 +551,54 @@
         "displayDescription": false
       },
       "group": "Async"
+    },
+    {
+      "key": "perplexity_models_list",
+      "name": "perplexityModelsList",
+      "schemaVersion": 2,
+      "title": "Lister les modèles",
+      "subtitle": "Modèles",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Perplexity",
+      "providerKey": "perplexity",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:perplexity_items"
+        }
+      ],
+      "description": "Liste les modèles disponibles via /models.",
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Lister les modèles",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Modèles",
+      "tags": [
+        "lecture",
+        "Perplexity"
+      ],
+      "risk": "safe"
     }
   ]
 }

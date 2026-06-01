@@ -3572,6 +3572,54 @@
         "displayDescription": false
       },
       "group": "vidéos"
+    },
+    {
+      "key": "openrouter_credit_get_getcredits",
+      "name": "openrouterCreditGetGetcredits",
+      "schemaVersion": 2,
+      "title": "Lire les crédits",
+      "subtitle": "Compte",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "OpenRouter",
+      "providerKey": "openrouter",
+      "icon": "fa-solid fa-wallet",
+      "description": "Récupère l'état des crédits OpenRouter.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:openrouter_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Lire les crédits",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Compte",
+      "tags": [
+        "lecture",
+        "OpenRouter"
+      ],
+      "risk": "safe"
     }
   ]
 }

@@ -1137,6 +1137,195 @@
         "OpenProject"
       ],
       "risk": "write"
+    },
+    {
+      "key": "get_openproject_project",
+      "name": "getOpenProjectProject",
+      "schemaVersion": 2,
+      "title": "Récupérer un projet",
+      "subtitle": "Projets",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "OpenProject",
+      "providerKey": "openproject",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:op_project"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère un projet OpenProject par ID.",
+      "args": {
+        "title": "Récupérer un projet",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "project_id",
+            "label": "ID projet",
+            "description": "Identifiant du projet.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "icon": "fa-solid fa-eye",
+      "group": "Projets",
+      "tags": [
+        "lecture",
+        "OpenProject"
+      ],
+      "risk": "safe"
+    },
+    {
+      "key": "get_openproject_task",
+      "name": "getOpenProjectTask",
+      "schemaVersion": 2,
+      "title": "Récupérer une tâche",
+      "subtitle": "Tâches",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "OpenProject",
+      "providerKey": "openproject",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:op_task"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère une tâche OpenProject par ID.",
+      "args": {
+        "title": "Récupérer une tâche",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "task_id",
+            "label": "ID tâche",
+            "description": "Identifiant de la tâche.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "icon": "fa-solid fa-eye",
+      "group": "Tâches",
+      "tags": [
+        "lecture",
+        "OpenProject"
+      ],
+      "risk": "safe"
+    },
+    {
+      "key": "delete_openproject_task",
+      "name": "deleteOpenProjectTask",
+      "schemaVersion": 2,
+      "title": "Supprimer une tâche",
+      "subtitle": "Tâches",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "OpenProject",
+      "providerKey": "openproject",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:op_task"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Supprime une tâche OpenProject.",
+      "args": {
+        "title": "Supprimer une tâche",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "task_id",
+            "label": "ID tâche",
+            "description": "Identifiant de la tâche à supprimer.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "icon": "fa-solid fa-trash",
+      "group": "Tâches",
+      "tags": [
+        "suppression",
+        "OpenProject"
+      ],
+      "risk": "destructive"
     }
   ]
 }

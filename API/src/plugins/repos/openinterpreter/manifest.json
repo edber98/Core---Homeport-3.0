@@ -569,6 +569,64 @@
         "displayDescription": false
       },
       "group": "serveurs"
+    },
+    {
+      "key": "openinterpreter_health_ping",
+      "name": "openinterpreterHealthPing",
+      "schemaVersion": 2,
+      "title": "Ping santé",
+      "subtitle": "serveurs",
+      "icon": "fa-solid fa-heart-pulse",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "OpenInterpreter",
+      "providerKey": "openinterpreter",
+      "tags": [
+        "openinterpreter",
+        "health"
+      ],
+      "group": "serveurs",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:openinterpreter_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Vérifier rapidement la disponibilité logique du connecteur.",
+      "args": {
+        "title": "Ping santé",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "message",
+            "label": "Message",
+            "col": {
+              "xs": 24
+            },
+            "default": "ok"
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
     }
   ]
 }

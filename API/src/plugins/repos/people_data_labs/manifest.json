@@ -2028,6 +2028,134 @@
         "displayDescription": false
       },
       "group": "nettoyages"
+    },
+    {
+      "key": "people_data_labs_person_bulk_enrich",
+      "name": "peopleDataLabsPersonBulkEnrich",
+      "schemaVersion": 2,
+      "title": "Enrichir des personnes (bulk)",
+      "subtitle": "Personnes bulk",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Personnes",
+      "providerKey": "people_data_labs",
+      "icon": "fa-solid fa-users",
+      "description": "Enrichissement bulk de personnes via PDL.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:people_data_labs_persons"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Enrichir des personnes (bulk)",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "json",
+            "key": "body",
+            "label": "Body JSON",
+            "description": "Payload JSON bulk attendu par /v5/person/bulk.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Personnes",
+      "tags": [
+        "bulk",
+        "enrichissement",
+        "People Data Labs"
+      ],
+      "risk": "write"
+    },
+    {
+      "key": "people_data_labs_company_bulk_enrich",
+      "name": "peopleDataLabsCompanyBulkEnrich",
+      "schemaVersion": 2,
+      "title": "Enrichir des entreprises (bulk)",
+      "subtitle": "Entreprises bulk",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Entreprises",
+      "providerKey": "people_data_labs",
+      "icon": "fa-solid fa-building",
+      "description": "Enrichissement bulk d'entreprises via PDL.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:people_data_labs_companies"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Enrichir des entreprises (bulk)",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "json",
+            "key": "body",
+            "label": "Body JSON",
+            "description": "Payload JSON bulk attendu par /v5/company/bulk.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Entreprises",
+      "tags": [
+        "bulk",
+        "enrichissement",
+        "People Data Labs"
+      ],
+      "risk": "write"
     }
   ]
 }
