@@ -1628,6 +1628,71 @@
         "displayDescription": false
       },
       "group": "documents"
+    },
+    {
+      "key": "chromadb_generic_request",
+      "name": "chromadbGenericRequest",
+      "schemaVersion": 2,
+      "title": "Action ChromaDB générique",
+      "subtitle": "Couverture avancée",
+      "icon": "fa-solid fa-terminal",
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "chromadb",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:chromadb_action_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Action ChromaDB générique",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "action",
+            "label": "Action interne",
+            "description": "Ex: chromadb_document_query",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "payload",
+            "label": "Payload JSON",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "risk": "write"
     }
   ]
 }

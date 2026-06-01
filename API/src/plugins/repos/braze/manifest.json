@@ -3994,6 +3994,387 @@
         "displayDescription": false
       },
       "group": "unsubscribes"
+    },
+    {
+      "key": "braze_users_track",
+      "name": "brazeUsersTrack",
+      "schemaVersion": 2,
+      "title": "Users Track",
+      "subtitle": "Créer/mettre à jour utilisateurs et événements",
+      "icon": "fa-solid fa-user-plus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Braze",
+      "providerKey": "braze",
+      "tags": [
+        "braze",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:braze_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Appelle l endpoint users/track.",
+      "args": {
+        "title": "Users Track",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "body",
+            "label": "Body JSON",
+            "description": "Payload JSON users/track.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Users",
+      "risk": "write"
+    },
+    {
+      "key": "braze_messages_send",
+      "name": "brazeMessagesSend",
+      "schemaVersion": 2,
+      "title": "Messages Send",
+      "subtitle": "Envoyer un message transactionnel",
+      "icon": "fa-solid fa-paper-plane",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Braze",
+      "providerKey": "braze",
+      "tags": [
+        "braze",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:braze_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Appelle l endpoint messages/send.",
+      "args": {
+        "title": "Messages Send",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "body",
+            "label": "Body JSON",
+            "description": "Payload JSON messages/send.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Messaging",
+      "risk": "write"
+    },
+    {
+      "key": "braze_users_export_ids",
+      "name": "brazeUsersExportIds",
+      "schemaVersion": 2,
+      "title": "Users Export IDs",
+      "subtitle": "Exporter des profils utilisateurs",
+      "icon": "fa-solid fa-file-export",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Braze",
+      "providerKey": "braze",
+      "tags": [
+        "braze",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:braze_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Appelle l endpoint users/export/ids.",
+      "args": {
+        "title": "Users Export IDs",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "body",
+            "label": "Body JSON",
+            "description": "Payload JSON users/export/ids.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Users",
+      "risk": "write"
+    },
+    {
+      "key": "braze_campaigns_trigger_send",
+      "name": "brazeCampaignsTriggerSend",
+      "schemaVersion": 2,
+      "title": "Trigger campaign",
+      "subtitle": "Envoyer campagne transactionnelle",
+      "icon": "fa-solid fa-bullhorn",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Braze",
+      "providerKey": "braze",
+      "tags": [
+        "braze",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:braze_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Appelle /campaigns/trigger/send.",
+      "args": {
+        "title": "Trigger campaign",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "body",
+            "label": "Body JSON",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Messaging",
+      "risk": "write"
+    },
+    {
+      "key": "braze_canvas_trigger_send",
+      "name": "brazeCanvasTriggerSend",
+      "schemaVersion": 2,
+      "title": "Trigger canvas",
+      "subtitle": "Envoyer canvas transactionnel",
+      "icon": "fa-solid fa-diagram-project",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Braze",
+      "providerKey": "braze",
+      "tags": [
+        "braze",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:braze_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Appelle /canvas/trigger/send.",
+      "args": {
+        "title": "Trigger canvas",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "body",
+            "label": "Body JSON",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Messaging",
+      "risk": "write"
+    },
+    {
+      "key": "braze_users_delete",
+      "name": "brazeUsersDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer utilisateurs",
+      "subtitle": "Suppression profils",
+      "icon": "fa-solid fa-user-minus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Braze",
+      "providerKey": "braze",
+      "tags": [
+        "braze",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:braze_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Appelle /users/delete.",
+      "args": {
+        "title": "Supprimer utilisateurs",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "body",
+            "label": "Body JSON",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Users",
+      "risk": "destructive"
     }
   ]
 }

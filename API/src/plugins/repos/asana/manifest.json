@@ -2750,6 +2750,835 @@
       },
       "group": "Sous-tâches",
       "risk": "write"
+    },
+    {
+      "key": "asana_project_update",
+      "name": "asanaProjectUpdate",
+      "schemaVersion": 2,
+      "title": "Mettre a jour un projet",
+      "subtitle": "Projets",
+      "icon": "fa-solid fa-pen-to-square",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Asana",
+      "providerKey": "asana",
+      "tags": [
+        "asana",
+        "projet"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:asana_project"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Met a jour un projet Asana.",
+      "args": {
+        "title": "Mettre a jour un projet",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectGid",
+            "label": "GID du projet",
+            "description": "Identifiant du projet.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nouveau nom.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "notes",
+            "label": "Notes",
+            "description": "Description.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "color",
+            "label": "Couleur",
+            "description": "Couleur Asana.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Projets",
+      "risk": "write"
+    },
+    {
+      "key": "asana_project_delete",
+      "name": "asanaProjectDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un projet",
+      "subtitle": "Projets",
+      "icon": "fa-solid fa-trash",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Asana",
+      "providerKey": "asana",
+      "tags": [
+        "asana",
+        "suppression"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Supprime un projet Asana.",
+      "args": {
+        "title": "Supprimer un projet",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectGid",
+            "label": "GID du projet",
+            "description": "Identifiant du projet.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Projets",
+      "risk": "destructive"
+    },
+    {
+      "key": "asana_section_add_task",
+      "name": "asanaSectionAddTask",
+      "schemaVersion": 2,
+      "title": "Ajouter une tache a une section",
+      "subtitle": "Sections",
+      "icon": "fa-solid fa-layer-group",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Asana",
+      "providerKey": "asana",
+      "tags": [
+        "asana",
+        "section"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Ajoute une tache existante a une section.",
+      "args": {
+        "title": "Ajouter une tache a une section",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "sectionGid",
+            "label": "GID de section",
+            "description": "Identifiant de la section.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "taskGid",
+            "label": "GID de tache",
+            "description": "Identifiant de la tache.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Sections",
+      "risk": "write"
+    },
+    {
+      "key": "asana_task_complete",
+      "name": "asanaTaskComplete",
+      "schemaVersion": 2,
+      "title": "Marquer tache comme completee",
+      "subtitle": "Taches",
+      "icon": "fa-solid fa-check",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Asana",
+      "providerKey": "asana",
+      "tags": [
+        "asana",
+        "tache"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:asana_task"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Marque une tache comme completee.",
+      "args": {
+        "title": "Marquer tache comme completee",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "taskGid",
+            "label": "GID de la tache",
+            "description": "Identifiant de la tache.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Taches",
+      "risk": "write"
+    },
+    {
+      "key": "asana_task_uncomplete",
+      "name": "asanaTaskUncomplete",
+      "schemaVersion": 2,
+      "title": "Marquer tache comme non completee",
+      "subtitle": "Taches",
+      "icon": "fa-solid fa-rotate-left",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Asana",
+      "providerKey": "asana",
+      "tags": [
+        "asana",
+        "tache"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:asana_task"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Rouvre une tache completee.",
+      "args": {
+        "title": "Marquer tache comme non completee",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "taskGid",
+            "label": "GID de la tache",
+            "description": "Identifiant de la tache.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Taches",
+      "risk": "write"
+    },
+    {
+      "key": "asana_task_remove_project",
+      "name": "asanaTaskRemoveProject",
+      "schemaVersion": 2,
+      "title": "Retirer un projet d une tache",
+      "subtitle": "Taches",
+      "icon": "fa-solid fa-folder-minus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Asana",
+      "providerKey": "asana",
+      "tags": [
+        "asana",
+        "tache"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Retire un projet d une tache.",
+      "args": {
+        "title": "Retirer un projet",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "taskGid",
+            "label": "GID tache",
+            "description": "Identifiant de la tache.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "projectGid",
+            "label": "GID projet",
+            "description": "Identifiant du projet.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Taches",
+      "risk": "write"
+    },
+    {
+      "key": "asana_task_remove_tag",
+      "name": "asanaTaskRemoveTag",
+      "schemaVersion": 2,
+      "title": "Retirer un tag d une tache",
+      "subtitle": "Taches",
+      "icon": "fa-solid fa-tag",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Asana",
+      "providerKey": "asana",
+      "tags": [
+        "asana",
+        "tache"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Retire un tag d une tache.",
+      "args": {
+        "title": "Retirer un tag",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "taskGid",
+            "label": "GID tache",
+            "description": "Identifiant de la tache.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "tagGid",
+            "label": "GID tag",
+            "description": "Identifiant du tag.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Taches",
+      "risk": "write"
+    },
+    {
+      "key": "asana_task_add_followers",
+      "name": "asanaTaskAddFollowers",
+      "schemaVersion": 2,
+      "title": "Ajouter des followers",
+      "subtitle": "Taches",
+      "icon": "fa-solid fa-user-plus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Asana",
+      "providerKey": "asana",
+      "tags": [
+        "asana",
+        "tache"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:asana_task"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Ajoute des followers a une tache.",
+      "args": {
+        "title": "Ajouter des followers",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "taskGid",
+            "label": "GID tache",
+            "description": "Identifiant de la tache.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "followers",
+            "label": "Followers",
+            "description": "JSON array ou CSV de GID utilisateurs.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Taches",
+      "risk": "write"
+    },
+    {
+      "key": "asana_task_remove_followers",
+      "name": "asanaTaskRemoveFollowers",
+      "schemaVersion": 2,
+      "title": "Retirer des followers",
+      "subtitle": "Taches",
+      "icon": "fa-solid fa-user-minus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Asana",
+      "providerKey": "asana",
+      "tags": [
+        "asana",
+        "tache"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:asana_task"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Retire des followers d une tache.",
+      "args": {
+        "title": "Retirer des followers",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "taskGid",
+            "label": "GID tache",
+            "description": "Identifiant de la tache.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "followers",
+            "label": "Followers",
+            "description": "JSON array ou CSV de GID utilisateurs.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Taches",
+      "risk": "write"
+    },
+    {
+      "key": "asana_task_add_dependencies",
+      "name": "asanaTaskAddDependencies",
+      "schemaVersion": 2,
+      "title": "Ajouter des dependances",
+      "subtitle": "Taches",
+      "icon": "fa-solid fa-link",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Asana",
+      "providerKey": "asana",
+      "tags": [
+        "asana",
+        "tache"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Ajoute des dependances a une tache.",
+      "args": {
+        "title": "Ajouter des dependances",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "taskGid",
+            "label": "GID tache",
+            "description": "Identifiant de la tache.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "dependencies",
+            "label": "Dependances",
+            "description": "JSON array ou CSV de GID de taches.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Taches",
+      "risk": "write"
+    },
+    {
+      "key": "asana_task_remove_dependencies",
+      "name": "asanaTaskRemoveDependencies",
+      "schemaVersion": 2,
+      "title": "Retirer des dependances",
+      "subtitle": "Taches",
+      "icon": "fa-solid fa-unlink",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Asana",
+      "providerKey": "asana",
+      "tags": [
+        "asana",
+        "tache"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Retire des dependances d une tache.",
+      "args": {
+        "title": "Retirer des dependances",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "taskGid",
+            "label": "GID tache",
+            "description": "Identifiant de la tache.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "dependencies",
+            "label": "Dependances",
+            "description": "JSON array ou CSV de GID de taches.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Taches",
+      "risk": "write"
     }
   ]
 }

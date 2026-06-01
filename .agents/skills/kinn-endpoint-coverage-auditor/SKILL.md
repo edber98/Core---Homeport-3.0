@@ -9,6 +9,7 @@ description: Auditer un connecteur Kinn endpoint par endpoint et atteindre une c
 
 Atteindre une couverture operationnelle maximale d un connecteur, sans ajouter de noeuds de parametrage/admin.
 Produire un verdict de couverture honnete avec liste des endpoints couverts, manquants, exclus et justification.
+Par defaut, le skill doit viser `100% metier` et poursuivre les ajouts tant qu il reste des endpoints metier `MISSING`.
 
 ## Regle de priorite
 
@@ -49,11 +50,24 @@ Prioriser toujours:
    - Liste des ajouts.
    - Risques restants.
 
+## Mode Couverture Maximale (obligatoire si l utilisateur demande "max", "tout", "100%")
+
+1. Construire une matrice exhaustive endpoint par endpoint depuis la doc officielle.
+2. Classer chaque endpoint en `COVERED`, `MISSING` ou `EXCLUDED`.
+3. Ajouter tous les `MISSING` metier dans le meme tour, sans attendre validation intermediaire.
+4. Reboucler une seconde passe de verification; si un endpoint metier reste `MISSING`, continuer les ajouts.
+5. Ne terminer que lorsque `MISSING = 0` sur le perimetre metier retenu.
+
+Definition perimetre metier:
+- Inclure CRUD, list/search, transitions d etat, actions unitaires frequentes, import/export utile aux workflows.
+- Exclure strictement parametrage/admin/credentials/permissions/billing technique/global settings.
+
 ## Regles d implementation
 
 - Reutiliser les helpers `utils.js` du connecteur avant de creer de nouvelles abstractions.
 - Ajouter des noeuds dedies pour les endpoints metier frequents.
 - Ajouter un noeud `custom_request` seulement comme complement, jamais comme argument de couverture dediee.
+- En mode couverture maximale, autoriser un noeud `custom_request` de secours par domaine fonctionnel uniquement si la doc expose beaucoup de variantes d action metier et que les noeuds dedies principaux sont deja couverts.
 - Marquer les risques (`write`, `destructive`) dans manifest quand applicable.
 - Ne pas casser les noeuds existants ni renommer sans necessite.
 
