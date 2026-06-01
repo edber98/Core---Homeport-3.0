@@ -1190,6 +1190,278 @@
         "displayDescription": false
       },
       "group": "Items"
+    },
+    {
+      "key": "miro_board_comment_get",
+      "name": "miroBoardCommentGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un commentaire",
+      "subtitle": "Commentaires",
+      "icon": "fa-solid fa-comment-dots",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Miro",
+      "providerKey": "miro",
+      "authorize_catch_error": true,
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:miro_item"
+        }
+      ],
+      "description": "Récupère un commentaire de board.",
+      "args": {
+        "title": "Récupérer un commentaire",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "boardId",
+            "label": "Board ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "commentId",
+            "label": "Comment ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Commentaires"
+    },
+    {
+      "key": "miro_board_comment_update",
+      "name": "miroBoardCommentUpdate",
+      "schemaVersion": 2,
+      "title": "Mettre à jour un commentaire",
+      "subtitle": "Commentaires",
+      "icon": "fa-solid fa-pen",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Miro",
+      "providerKey": "miro",
+      "authorize_catch_error": true,
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:miro_item"
+        }
+      ],
+      "description": "Met à jour le contenu d un commentaire.",
+      "args": {
+        "title": "Mettre à jour un commentaire",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "boardId",
+            "label": "Board ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "commentId",
+            "label": "Comment ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "content",
+            "label": "Contenu",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Commentaires"
+    },
+    {
+      "key": "miro_board_comment_delete",
+      "name": "miroBoardCommentDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un commentaire",
+      "subtitle": "Commentaires",
+      "icon": "fa-solid fa-trash",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Miro",
+      "providerKey": "miro",
+      "authorize_catch_error": true,
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:miro_item"
+        }
+      ],
+      "description": "Supprime un commentaire de board.",
+      "args": {
+        "title": "Supprimer un commentaire",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "boardId",
+            "label": "Board ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "commentId",
+            "label": "Comment ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Commentaires"
+    },
+    {
+      "key": "miro_board_copy",
+      "name": "miroBoardCopy",
+      "schemaVersion": 2,
+      "title": "Copier un board",
+      "subtitle": "Boards",
+      "icon": "fa-solid fa-copy",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Miro",
+      "providerKey": "miro",
+      "authorize_catch_error": true,
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:miro_item"
+        }
+      ],
+      "description": "Copie un board Miro.",
+      "args": {
+        "title": "Copier un board",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "boardId",
+            "label": "Board ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom nouveau board",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "description",
+            "label": "Description",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "teamId",
+            "label": "Team ID",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "Project ID",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Boards"
     }
   ]
 }

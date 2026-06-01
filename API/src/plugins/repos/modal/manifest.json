@@ -388,6 +388,443 @@
         "displayDescription": false
       },
       "group": "endpoints"
+    },
+    {
+      "key": "modal_endpoint_get",
+      "name": "modalEndpointGet",
+      "schemaVersion": 2,
+      "title": "Lire un endpoint Modal",
+      "subtitle": "endpoints",
+      "icon": "fa-solid fa-arrow-down-wide-short",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Modal",
+      "providerKey": "modal",
+      "tags": [
+        "modal",
+        "endpoint",
+        "get"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:modal_endpoint"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action GET sur endpoint.",
+      "args": {
+        "title": "Lire un endpoint Modal",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "url",
+            "label": "URL",
+            "description": "URL complète de l endpoint Modal.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "headers",
+            "label": "Headers JSON",
+            "description": "Headers additionnels JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "query",
+            "label": "Query JSON",
+            "description": "Paramètres query JSON.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "endpoints"
+    },
+    {
+      "key": "modal_endpoint_post_json",
+      "name": "modalEndpointPostJson",
+      "schemaVersion": 2,
+      "title": "Créer via endpoint Modal",
+      "subtitle": "endpoints",
+      "icon": "fa-solid fa-plus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Modal",
+      "providerKey": "modal",
+      "tags": [
+        "modal",
+        "endpoint",
+        "post_json"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:modal_endpoint"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action POST JSON sur endpoint.",
+      "args": {
+        "title": "Créer via endpoint Modal",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "url",
+            "label": "URL",
+            "description": "URL complète de l endpoint Modal.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "headers",
+            "label": "Headers JSON",
+            "description": "Headers additionnels JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "query",
+            "label": "Query JSON",
+            "description": "Paramètres query JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "body",
+            "label": "Payload JSON",
+            "description": "Corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "endpoints"
+    },
+    {
+      "key": "modal_endpoint_put_json",
+      "name": "modalEndpointPutJson",
+      "schemaVersion": 2,
+      "title": "Remplacer via endpoint Modal",
+      "subtitle": "endpoints",
+      "icon": "fa-solid fa-arrows-rotate",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Modal",
+      "providerKey": "modal",
+      "tags": [
+        "modal",
+        "endpoint",
+        "put_json"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:modal_endpoint"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action PUT JSON sur endpoint.",
+      "args": {
+        "title": "Remplacer via endpoint Modal",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "url",
+            "label": "URL",
+            "description": "URL complète de l endpoint Modal.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "headers",
+            "label": "Headers JSON",
+            "description": "Headers additionnels JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "query",
+            "label": "Query JSON",
+            "description": "Paramètres query JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "body",
+            "label": "Payload JSON",
+            "description": "Corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "endpoints"
+    },
+    {
+      "key": "modal_endpoint_patch_json",
+      "name": "modalEndpointPatchJson",
+      "schemaVersion": 2,
+      "title": "Mettre à jour via endpoint Modal",
+      "subtitle": "endpoints",
+      "icon": "fa-solid fa-pen",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Modal",
+      "providerKey": "modal",
+      "tags": [
+        "modal",
+        "endpoint",
+        "patch_json"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:modal_endpoint"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action PATCH JSON sur endpoint.",
+      "args": {
+        "title": "Mettre à jour via endpoint Modal",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "url",
+            "label": "URL",
+            "description": "URL complète de l endpoint Modal.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "headers",
+            "label": "Headers JSON",
+            "description": "Headers additionnels JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "query",
+            "label": "Query JSON",
+            "description": "Paramètres query JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "body",
+            "label": "Payload JSON",
+            "description": "Corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "endpoints"
+    },
+    {
+      "key": "modal_endpoint_delete",
+      "name": "modalEndpointDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer via endpoint Modal",
+      "subtitle": "endpoints",
+      "icon": "fa-solid fa-trash",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Modal",
+      "providerKey": "modal",
+      "tags": [
+        "modal",
+        "endpoint",
+        "delete"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:modal_endpoint"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action DELETE sur endpoint.",
+      "args": {
+        "title": "Supprimer via endpoint Modal",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "url",
+            "label": "URL",
+            "description": "URL complète de l endpoint Modal.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "headers",
+            "label": "Headers JSON",
+            "description": "Headers additionnels JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "query",
+            "label": "Query JSON",
+            "description": "Paramètres query JSON.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "endpoints"
     }
   ]
 }

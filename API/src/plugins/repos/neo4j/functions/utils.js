@@ -278,6 +278,46 @@ async function run(key, inputs, opts) {
       });
     }
 
+    if (key === "neo4j_relationships_match") {
+      const type = safeRelType(d.type || "");
+      const where = cleanString(d.where);
+      const params = parseJson(d.params, "params", {});
+      const limit = Math.max(1, Math.min(Number(d.limit || 100), 5000));
+      const typePart = type ? `:${type}` : "";
+      const wherePart = where ? ` WHERE ${where}` : "";
+      const query = `MATCH (a)-[r${typePart}]->(b)${wherePart} RETURN elementId(r) AS id, type(r) AS type, properties(r) AS properties, elementId(a) AS fromId, elementId(b) AS toId LIMIT $limit`;
+      return withDriver(opts, d.database, async ({ neo4j, run }) => {
+        const res = await run(query, { ...params, limit });
+        const items = (res.records || []).map((r) => {
+          const row = normalizeRecord(neo4j, r);
+          return {
+            id: String(row.id || ""),
+            name: String(row.type || ""),
+            status: "ok",
+            properties: { ...(row.properties || {}), type: row.type, fromId: row.fromId, toId: row.toId },
+            raw: row
+          };
+        });
+        return listResult(items, items);
+      });
+    }
+
+    if (key === "neo4j_relationships_update") {
+      const type = safeRelType(d.type || "");
+      const where = cleanString(d.where);
+      if (!where) return { ok: false, error: "Clause WHERE requise." };
+      const params = parseJson(d.params, "params", {});
+      const properties = parseJson(d.properties, "properties", null);
+      if (!properties || typeof properties !== "object" || Array.isArray(properties)) return { ok: false, error: "properties doit être un objet JSON." };
+      const typePart = type ? `:${type}` : "";
+      const query = `MATCH ()-[r${typePart}]-() WHERE ${where} SET r += $props RETURN count(r) AS updatedCount`;
+      return withDriver(opts, d.database, async ({ neo4j, run }) => {
+        const res = await run(query, { ...params, props: properties });
+        const row = res.records && res.records[0] ? normalizeRecord(neo4j, res.records[0]) : { updatedCount: 0 };
+        return actionResult(`${Number(row.updatedCount || 0)} relation(s) mise(s) à jour.`, row);
+      });
+    }
+
     if (key === "neo4j_labels_list") {
       return withDriver(opts, d.database, async ({ neo4j, run }) => {
         const res = await run("CALL db.labels() YIELD label RETURN label ORDER BY label", {});

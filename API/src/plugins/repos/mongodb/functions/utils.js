@@ -42,8 +42,10 @@ function mockDb() {
     command: async () => ({ ok: 1 }),
     collection: () => ({
       find: () => ({ sort: () => ({ limit: () => ({ skip: () => ({ toArray: async () => [] }) }) }) }),
+      countDocuments: async () => 0,
       insertOne: async () => result,
       insertMany: async () => ({ acknowledged: true, insertedCount: 0, insertedIds: {} }),
+      replaceOne: async () => result,
       updateMany: async () => result,
       deleteMany: async () => result,
       aggregate: () => ({ toArray: async () => [] })

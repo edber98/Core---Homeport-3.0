@@ -226,6 +226,49 @@ async function run(key, inputs, opts) {
       });
     }
 
+    if (key === 'nats_jetstream_js_streams_list') {
+      return withConn(opts, async (nc) => {
+        const jsm = await nc.jetstreamManager();
+        const iter = await jsm.streams.list();
+        const items = [];
+        for await (const info of iter) {
+          const cfg = info?.config || {};
+          items.push({
+            id: str(cfg.name || ''),
+            name: str(cfg.name || ''),
+            url: '',
+            status: 'ok',
+            created_at: '',
+            updated_at: '',
+            raw: info
+          });
+        }
+        return listResult(items, items);
+      });
+    }
+
+    if (key === 'nats_jetstream_js_consumers_list') {
+      const stream = str(d.stream);
+      if (!stream) return { ok: false, error: 'stream requis.' };
+      return withConn(opts, async (nc) => {
+        const jsm = await nc.jetstreamManager();
+        const iter = await jsm.consumers.list(stream);
+        const items = [];
+        for await (const info of iter) {
+          items.push({
+            id: `${stream}:${str(info?.name || '')}`,
+            name: str(info?.name || ''),
+            url: '',
+            status: 'ok',
+            created_at: '',
+            updated_at: '',
+            raw: info
+          });
+        }
+        return listResult(items, items);
+      });
+    }
+
     return { ok: false, error: `Action inconnue: ${key}` };
   } catch (e) {
     return { ok: false, error: e.message };

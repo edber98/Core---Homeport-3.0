@@ -1222,6 +1222,183 @@
         "displayDescription": false
       },
       "group": "Métadonnées"
+    },
+    {
+      "key": "neo4j_relationships_match",
+      "name": "neo4jRelationshipsMatch",
+      "schemaVersion": 2,
+      "title": "Rechercher des relations",
+      "subtitle": "Relations",
+      "icon": "fa-solid fa-magnifying-glass",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Neo4j",
+      "providerKey": "neo4j",
+      "tags": [
+        "neo4j",
+        "relations",
+        "search"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:neo4j_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Recherche des relations par type et filtre.",
+      "args": {
+        "title": "Rechercher des relations",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "type",
+            "label": "Type relation",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "where",
+            "label": "Clause WHERE",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "params",
+            "label": "Paramètres JSON",
+            "default": "{}",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "default": 100,
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Relations"
+    },
+    {
+      "key": "neo4j_relationships_update",
+      "name": "neo4jRelationshipsUpdate",
+      "schemaVersion": 2,
+      "title": "Mettre à jour des relations",
+      "subtitle": "Relations",
+      "icon": "fa-solid fa-pen",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Neo4j",
+      "providerKey": "neo4j",
+      "tags": [
+        "neo4j",
+        "relations",
+        "update"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:neo4j_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Met à jour les propriétés de relations ciblées.",
+      "args": {
+        "title": "Mettre à jour des relations",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "type",
+            "label": "Type relation",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "where",
+            "label": "Clause WHERE",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "params",
+            "label": "Paramètres JSON",
+            "default": "{}",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "properties",
+            "label": "Propriétés JSON",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Relations"
     }
   ]
 }

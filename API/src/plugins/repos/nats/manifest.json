@@ -1047,6 +1047,118 @@
         "displayDescription": false
       },
       "group": "jetstreams"
+    },
+    {
+      "key": "nats_jetstream_js_streams_list",
+      "name": "natsJetstreamJsStreamsList",
+      "schemaVersion": 2,
+      "title": "Lister les streams JetStream",
+      "subtitle": "jetstreams",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "NATS",
+      "providerKey": "nats",
+      "tags": [
+        "nats",
+        "jetstream",
+        "streams"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:nats_jetstreams"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les streams JetStream.",
+      "args": {
+        "title": "Lister les streams JetStream",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "jetstreams"
+    },
+    {
+      "key": "nats_jetstream_js_consumers_list",
+      "name": "natsJetstreamJsConsumersList",
+      "schemaVersion": 2,
+      "title": "Lister les consumers JetStream",
+      "subtitle": "jetstreams",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "NATS",
+      "providerKey": "nats",
+      "tags": [
+        "nats",
+        "jetstream",
+        "consumers"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:nats_jetstreams"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les consumers d’un stream JetStream.",
+      "args": {
+        "title": "Lister les consumers JetStream",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "stream",
+            "label": "Stream",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "jetstreams"
     }
   ]
 }
