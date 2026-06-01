@@ -1192,6 +1192,325 @@
       ],
       "group": "Événements",
       "risk": "safe"
+    },
+    {
+      "key": "wa_send_audio",
+      "name": "waSendAudio",
+      "schemaVersion": 2,
+      "title": "Envoyer un audio",
+      "subtitle": "Messages",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Messages",
+      "providerKey": "whatsapp",
+      "icon": "fa-solid fa-music",
+      "description": "Envoyer un audio",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wa_message}"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Envoyer un audio",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "to",
+            "label": "Destinataire",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "file",
+            "key": "audio_url",
+            "label": "Audio",
+            "col": {
+              "xs": 24
+            },
+            "description": "Audio à envoyer."
+          },
+          {
+            "type": "text",
+            "key": "audio_id",
+            "label": "ID média",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "caption",
+            "label": "Légende",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "whatsapp"
+      ],
+      "group": "Messages",
+      "risk": "write"
+    },
+    {
+      "key": "wa_send_video",
+      "name": "waSendVideo",
+      "schemaVersion": 2,
+      "title": "Envoyer une vidéo",
+      "subtitle": "Messages",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Messages",
+      "providerKey": "whatsapp",
+      "icon": "fa-solid fa-video",
+      "description": "Envoyer une vidéo",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wa_message}"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Envoyer une vidéo",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "to",
+            "label": "Destinataire",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "file",
+            "key": "video_url",
+            "label": "Vidéo",
+            "col": {
+              "xs": 24
+            },
+            "description": "Vidéo à envoyer."
+          },
+          {
+            "type": "text",
+            "key": "video_id",
+            "label": "ID média",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "caption",
+            "label": "Légende",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "whatsapp"
+      ],
+      "group": "Messages",
+      "risk": "write"
+    },
+    {
+      "key": "wa_send_reaction",
+      "name": "waSendReaction",
+      "schemaVersion": 2,
+      "title": "Envoyer une réaction",
+      "subtitle": "Messages",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Messages",
+      "providerKey": "whatsapp",
+      "icon": "fa-regular fa-face-smile",
+      "description": "Envoyer une réaction",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wa_message}"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Envoyer une réaction",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "to",
+            "label": "Destinataire",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "message_id",
+            "label": "ID message",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "emoji",
+            "label": "Emoji",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "whatsapp"
+      ],
+      "group": "Messages",
+      "risk": "write"
+    },
+    {
+      "key": "wa_delete_media",
+      "name": "waDeleteMedia",
+      "schemaVersion": 2,
+      "title": "Supprimer un média",
+      "subtitle": "Messages",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Messages",
+      "providerKey": "whatsapp",
+      "icon": "fa-solid fa-trash",
+      "description": "Supprimer un média",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wa_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Supprimer un média",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "media_id",
+            "label": "ID média",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "whatsapp"
+      ],
+      "group": "Messages",
+      "risk": "destructive"
     }
   ],
   "variables": {

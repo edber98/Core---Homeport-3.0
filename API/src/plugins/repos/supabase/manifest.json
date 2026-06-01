@@ -1614,6 +1614,273 @@
       },
       "group": "Stockage",
       "risk": "destructive"
+    },
+    {
+      "key": "supa_storage_move",
+      "name": "supaStorageMove",
+      "schemaVersion": 2,
+      "title": "Déplacer un fichier",
+      "subtitle": "Stockage",
+      "icon": "fa-solid fa-database",
+      "tags": [
+        "supabase"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Supabase",
+      "providerKey": "supabase",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:supa_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Déplacer un fichier",
+      "args": {
+        "title": "Déplacer un fichier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "bucket",
+            "label": "Bucket",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "fromPath",
+            "label": "Chemin source",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "toPath",
+            "label": "Chemin destination",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Stockage",
+      "risk": "write"
+    },
+    {
+      "key": "supa_storage_copy",
+      "name": "supaStorageCopy",
+      "schemaVersion": 2,
+      "title": "Copier un fichier",
+      "subtitle": "Stockage",
+      "icon": "fa-solid fa-database",
+      "tags": [
+        "supabase"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Supabase",
+      "providerKey": "supabase",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:supa_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Copier un fichier",
+      "args": {
+        "title": "Copier un fichier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "bucket",
+            "label": "Bucket",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "fromPath",
+            "label": "Chemin source",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "toPath",
+            "label": "Chemin destination",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Stockage",
+      "risk": "write"
+    },
+    {
+      "key": "supa_auth_update_user",
+      "name": "supaAuthUpdateUser",
+      "schemaVersion": 2,
+      "title": "Mettre à jour un utilisateur",
+      "subtitle": "Auth",
+      "icon": "fa-solid fa-database",
+      "tags": [
+        "supabase"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Supabase",
+      "providerKey": "supabase",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:supa_user"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Mettre à jour un utilisateur",
+      "args": {
+        "title": "Mettre à jour un utilisateur",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "userId",
+            "label": "User ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "email",
+            "key": "email",
+            "label": "Email",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "password",
+            "label": "Mot de passe",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "phone",
+            "label": "Téléphone",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "userMetadata",
+            "label": "User metadata JSON",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Auth",
+      "risk": "write"
     }
   ]
 }

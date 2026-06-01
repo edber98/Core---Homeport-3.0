@@ -1637,6 +1637,125 @@
         "displayDescription": false
       },
       "group": "schedules"
+    },
+    {
+      "key": "temporal_workflow_signal_with_start",
+      "name": "temporalWorkflowSignalWithStart",
+      "schemaVersion": 2,
+      "title": "Signaler et démarrer workflow",
+      "subtitle": "workflows",
+      "icon": "fa-solid fa-play",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Temporal",
+      "providerKey": "temporal",
+      "tags": [
+        "temporal",
+        "workflow",
+        "signal_with_start"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:temporal_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "SignalWithStart: démarre le workflow si absent puis envoie le signal.",
+      "args": {
+        "title": "Signaler et démarrer workflow",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "workflow_id",
+            "label": "Workflow ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "workflow_type",
+            "label": "Workflow Type",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "task_queue",
+            "label": "Task Queue",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "signal",
+            "label": "Signal",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "args",
+            "label": "Workflow args JSON",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "signal_args",
+            "label": "Signal args JSON",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "workflows",
+      "risk": "write"
     }
   ]
 }

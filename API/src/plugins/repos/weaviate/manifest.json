@@ -954,6 +954,156 @@
         "displayDescription": false
       },
       "group": "Objets"
+    },
+    {
+      "key": "weaviate_objects_list",
+      "name": "weaviateObjectsList",
+      "schemaVersion": 2,
+      "title": "Lister les objets",
+      "subtitle": "Objets",
+      "icon": "fa-solid fa-database",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Weaviate",
+      "providerKey": "weaviate",
+      "tags": [
+        "weaviate",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:weaviate_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lister les objets",
+      "args": {
+        "title": "Lister les objets",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "className",
+            "label": "Classe",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "offset",
+            "label": "Offset",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Objets",
+      "risk": "safe"
+    },
+    {
+      "key": "weaviate_objects_batch_delete",
+      "name": "weaviateObjectsBatchDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer des objets (batch)",
+      "subtitle": "Objets",
+      "icon": "fa-solid fa-database",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Weaviate",
+      "providerKey": "weaviate",
+      "tags": [
+        "weaviate",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:weaviate_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Supprimer des objets (batch)",
+      "args": {
+        "title": "Supprimer des objets (batch)",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "className",
+            "label": "Classe",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "whereFilter",
+            "label": "Filtre where JSON",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Objets",
+      "risk": "destructive"
     }
   ]
 }

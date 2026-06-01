@@ -1564,6 +1564,302 @@
       },
       "group": "Signets",
       "risk": "safe"
+    },
+    {
+      "key": "twitter_like_tweet",
+      "name": "twitterLikeTweet",
+      "schemaVersion": 2,
+      "title": "Liker un tweet",
+      "subtitle": "Tweets",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Twitter",
+      "providerKey": "twitter",
+      "icon": "fa-solid fa-heart",
+      "description": "Liker un tweet",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:twitter_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Liker un tweet",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "userId",
+            "label": "ID utilisateur",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "tweetId",
+            "label": "ID tweet",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "twitter"
+      ],
+      "group": "Tweets",
+      "risk": "write"
+    },
+    {
+      "key": "twitter_unlike_tweet",
+      "name": "twitterUnlikeTweet",
+      "schemaVersion": 2,
+      "title": "Retirer un like",
+      "subtitle": "Tweets",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Twitter",
+      "providerKey": "twitter",
+      "icon": "fa-regular fa-heart",
+      "description": "Retirer un like",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:twitter_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Retirer un like",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "userId",
+            "label": "ID utilisateur",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "tweetId",
+            "label": "ID tweet",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "twitter"
+      ],
+      "group": "Tweets",
+      "risk": "write"
+    },
+    {
+      "key": "twitter_retweet",
+      "name": "twitterRetweet",
+      "schemaVersion": 2,
+      "title": "Retweeter",
+      "subtitle": "Tweets",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Twitter",
+      "providerKey": "twitter",
+      "icon": "fa-solid fa-retweet",
+      "description": "Retweeter",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:twitter_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Retweeter",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "userId",
+            "label": "ID utilisateur",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "tweetId",
+            "label": "ID tweet",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "twitter"
+      ],
+      "group": "Tweets",
+      "risk": "write"
+    },
+    {
+      "key": "twitter_unretweet",
+      "name": "twitterUnretweet",
+      "schemaVersion": 2,
+      "title": "Annuler retweet",
+      "subtitle": "Tweets",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Twitter",
+      "providerKey": "twitter",
+      "icon": "fa-solid fa-rotate-left",
+      "description": "Annuler retweet",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:twitter_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Annuler retweet",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "userId",
+            "label": "ID utilisateur",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "tweetId",
+            "label": "ID tweet",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "twitter"
+      ],
+      "group": "Tweets",
+      "risk": "write"
     }
   ]
 }

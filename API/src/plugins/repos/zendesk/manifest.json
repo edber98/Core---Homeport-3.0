@@ -2743,6 +2743,219 @@
       ],
       "group": "Événements",
       "risk": "safe"
+    },
+    {
+      "key": "zd_organization_update",
+      "name": "zdOrganizationUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier une organisation",
+      "subtitle": "Organisations",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Zendesk",
+      "providerKey": "zendesk",
+      "icon": "fa-solid fa-pen-to-square",
+      "description": "Modifie une organisation Zendesk.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:zd_org"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Modifier une organisation",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "organizationId",
+            "label": "ID organisation",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "domainNames",
+            "label": "Domaines",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "notes",
+            "label": "Notes",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Organisations",
+      "tags": [
+        "mise-à-jour",
+        "zendesk"
+      ],
+      "risk": "write"
+    },
+    {
+      "key": "zd_organization_delete",
+      "name": "zdOrganizationDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer une organisation",
+      "subtitle": "Organisations",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Zendesk",
+      "providerKey": "zendesk",
+      "icon": "fa-solid fa-trash",
+      "description": "Supprime une organisation Zendesk.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:zd_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Supprimer une organisation",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "organizationId",
+            "label": "ID organisation",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Organisations",
+      "tags": [
+        "suppression",
+        "zendesk"
+      ],
+      "risk": "destructive"
+    },
+    {
+      "key": "zd_user_delete",
+      "name": "zdUserDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un utilisateur",
+      "subtitle": "Utilisateurs",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Zendesk",
+      "providerKey": "zendesk",
+      "icon": "fa-solid fa-trash",
+      "description": "Supprime un utilisateur Zendesk.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:zd_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Supprimer un utilisateur",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "userId",
+            "label": "ID utilisateur",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Utilisateurs",
+      "tags": [
+        "suppression",
+        "zendesk"
+      ],
+      "risk": "destructive"
     }
   ]
 }

@@ -1210,6 +1210,231 @@
         "displayDescription": false
       },
       "group": "Transferts"
+    },
+    {
+      "key": "wise_profile_get",
+      "name": "wiseProfileGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un profil",
+      "subtitle": "Profils",
+      "icon": "fa-solid fa-money-bill-transfer",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Wise",
+      "providerKey": "wise",
+      "tags": [
+        "wise",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wise_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupérer un profil",
+      "args": {
+        "title": "Récupérer un profil",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "profileId",
+            "label": "ID profil",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Profils"
+    },
+    {
+      "key": "wise_recipient_get",
+      "name": "wiseRecipientGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un bénéficiaire",
+      "subtitle": "Bénéficiaires",
+      "icon": "fa-solid fa-money-bill-transfer",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Wise",
+      "providerKey": "wise",
+      "tags": [
+        "wise",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wise_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupérer un bénéficiaire",
+      "args": {
+        "title": "Récupérer un bénéficiaire",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "recipientId",
+            "label": "ID bénéficiaire",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Bénéficiaires"
+    },
+    {
+      "key": "wise_quote_requirements_get",
+      "name": "wiseQuoteRequirementsGet",
+      "schemaVersion": 2,
+      "title": "Lister les exigences de devis",
+      "subtitle": "Devis",
+      "icon": "fa-solid fa-money-bill-transfer",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Wise",
+      "providerKey": "wise",
+      "tags": [
+        "wise",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wise_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lister les exigences de devis",
+      "args": {
+        "title": "Lister les exigences de devis",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "profileId",
+            "label": "ID profil",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "source",
+            "label": "Devise source",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "target",
+            "label": "Devise cible",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "sourceAmount",
+            "label": "Montant source",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Devis"
     }
   ]
 }

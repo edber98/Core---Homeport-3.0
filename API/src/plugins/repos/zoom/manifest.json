@@ -2309,6 +2309,273 @@
         "zoom"
       ],
       "risk": "safe"
+    },
+    {
+      "key": "zoom_meeting_registrant_create",
+      "name": "zoomMeetingRegistrantCreate",
+      "schemaVersion": 2,
+      "title": "Créer un inscrit réunion",
+      "subtitle": "Réunion",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Réunions",
+      "providerKey": "zoom",
+      "icon": "fa-solid fa-user-plus",
+      "description": "Ajoute un inscrit à une réunion Zoom.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:zoom_registrant"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Créer un inscrit réunion",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "meetingId",
+            "label": "ID réunion",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "email",
+            "label": "E-mail",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "first_name",
+            "label": "Prénom",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "last_name",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Réunions",
+      "tags": [
+        "inscription",
+        "zoom"
+      ],
+      "risk": "write"
+    },
+    {
+      "key": "zoom_webinar_registrants_list",
+      "name": "zoomWebinarRegistrantsList",
+      "schemaVersion": 2,
+      "title": "Lister les inscrits webinar",
+      "subtitle": "Webinar",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Webinaires",
+      "providerKey": "zoom",
+      "icon": "fa-solid fa-list",
+      "description": "Liste les inscrits à un webinar Zoom.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:zoom_registrants"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Lister les inscrits webinar",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "webinarId",
+            "label": "ID webinar",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Webinaires",
+      "tags": [
+        "liste",
+        "zoom"
+      ],
+      "risk": "safe"
+    },
+    {
+      "key": "zoom_webinar_registrant_create",
+      "name": "zoomWebinarRegistrantCreate",
+      "schemaVersion": 2,
+      "title": "Créer un inscrit webinar",
+      "subtitle": "Webinar",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Webinaires",
+      "providerKey": "zoom",
+      "icon": "fa-solid fa-user-plus",
+      "description": "Ajoute un inscrit à un webinar Zoom.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:zoom_registrant"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Créer un inscrit webinar",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "webinarId",
+            "label": "ID webinar",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "email",
+            "label": "E-mail",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "first_name",
+            "label": "Prénom",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "last_name",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Webinaires",
+      "tags": [
+        "inscription",
+        "zoom"
+      ],
+      "risk": "write"
     }
   ],
   "variables": {

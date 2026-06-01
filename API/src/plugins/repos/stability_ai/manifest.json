@@ -803,6 +803,55 @@
         "displayDescription": false
       },
       "group": "générations"
+    },
+    {
+      "key": "stability_ai_user_balance_get",
+      "name": "stabilityAiUserBalanceGet",
+      "schemaVersion": 2,
+      "title": "Récupérer le solde crédits",
+      "subtitle": "Utilisateur",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Stability AI",
+      "providerKey": "stability_ai",
+      "tags": [
+        "stability_ai",
+        "engine",
+        "list_engines"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:stability_ai_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère le solde de crédits Stability AI.",
+      "args": {
+        "title": "Récupérer le solde crédits",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Compte"
     }
   ]
 }

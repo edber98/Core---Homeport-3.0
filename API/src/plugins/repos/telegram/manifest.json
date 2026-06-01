@@ -2687,6 +2687,187 @@
         "telegram"
       ],
       "risk": "safe"
+    },
+    {
+      "key": "tg_send_animation",
+      "name": "tgSendAnimation",
+      "schemaVersion": 2,
+      "title": "Envoyer une animation",
+      "subtitle": "Messages",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Messages",
+      "providerKey": "telegram",
+      "icon": "fa-solid fa-film",
+      "description": "Envoyer une animation",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:tg_message"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Envoyer une animation",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "chat_id",
+            "label": "ID du chat",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "file",
+            "key": "animation",
+            "label": "Animation",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "caption",
+            "label": "Légende",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "select",
+            "key": "parse_mode",
+            "label": "Mode d'analyse",
+            "description": "Format du texte",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "HTML",
+                "value": "HTML"
+              },
+              {
+                "label": "Markdown",
+                "value": "Markdown"
+              },
+              {
+                "label": "MarkdownV2",
+                "value": "MarkdownV2"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Messages",
+      "tags": [
+        "telegram"
+      ],
+      "risk": "write"
+    },
+    {
+      "key": "tg_send_media_group",
+      "name": "tgSendMediaGroup",
+      "schemaVersion": 2,
+      "title": "Envoyer un groupe de médias",
+      "subtitle": "Messages",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Messages",
+      "providerKey": "telegram",
+      "icon": "fa-solid fa-images",
+      "description": "Envoyer un groupe de médias",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:tg_messages"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Envoyer un groupe de médias",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "chat_id",
+            "label": "ID du chat",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "media",
+            "label": "Media JSON",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Messages",
+      "tags": [
+        "telegram"
+      ],
+      "risk": "write"
     }
   ],
   "variables": {

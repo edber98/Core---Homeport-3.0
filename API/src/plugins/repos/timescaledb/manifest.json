@@ -992,6 +992,141 @@
         "displayDescription": false
       },
       "group": "Données"
+    },
+    {
+      "key": "timescaledb_records_count",
+      "name": "timescaledbRecordsCount",
+      "schemaVersion": 2,
+      "title": "Compter des lignes",
+      "subtitle": "Données",
+      "icon": "fa-solid fa-database",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "TimescaleDB",
+      "providerKey": "timescaledb",
+      "tags": [
+        "timescaledb"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:timescaledb_rows"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Compter des lignes",
+      "args": {
+        "title": "Compter des lignes",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "table",
+            "label": "Table",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "schema",
+            "label": "Schéma",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "where",
+            "label": "WHERE",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Données",
+      "risk": "safe"
+    },
+    {
+      "key": "timescaledb_hypertables_list",
+      "name": "timescaledbHypertablesList",
+      "schemaVersion": 2,
+      "title": "Lister les hypertables",
+      "subtitle": "Données",
+      "icon": "fa-solid fa-database",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "TimescaleDB",
+      "providerKey": "timescaledb",
+      "tags": [
+        "timescaledb"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:timescaledb_tables"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lister les hypertables",
+      "args": {
+        "title": "Lister les hypertables",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "schema",
+            "label": "Schéma",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Données",
+      "risk": "safe"
     }
   ]
 }
