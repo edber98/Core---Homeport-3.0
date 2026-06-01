@@ -3864,6 +3864,384 @@
       ],
       "group": "Événements",
       "risk": "safe"
+    },
+    {
+      "key": "qb_vendor_update",
+      "name": "qbVendorUpdate",
+      "schemaVersion": 2,
+      "title": "Mettre à jour un fournisseur",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Fournisseurs",
+      "providerKey": "quickbooks",
+      "description": "Met à jour un fournisseur QuickBooks.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:qb_vendor"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Mettre à jour un fournisseur",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "vendorId",
+            "label": "ID fournisseur",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "displayName",
+            "label": "Nom affiché",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "companyName",
+            "label": "Société",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "primaryEmailAddr",
+            "label": "Email",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "primaryPhone",
+            "label": "Téléphone",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Fournisseurs",
+      "icon": "fa-solid fa-square-plus",
+      "tags": [
+        "création",
+        "quickbooks"
+      ],
+      "group": "Fournisseurs",
+      "risk": "write"
+    },
+    {
+      "key": "qb_bill_update",
+      "name": "qbBillUpdate",
+      "schemaVersion": 2,
+      "title": "Mettre à jour une facture fournisseur",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Factures fournisseur",
+      "providerKey": "quickbooks",
+      "description": "Met à jour une facture fournisseur QuickBooks.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:qb_bill"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Mettre à jour une facture fournisseur",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "billId",
+            "label": "ID facture fournisseur",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "vendorRef",
+            "label": "ID fournisseur",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "date",
+            "key": "txnDate",
+            "label": "Date facture",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "date",
+            "key": "dueDate",
+            "label": "Date d'échéance",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "lineItems",
+            "label": "Lignes JSON",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Factures fournisseurs",
+      "icon": "fa-solid fa-square-plus",
+      "tags": [
+        "création",
+        "quickbooks"
+      ],
+      "group": "Factures fournisseurs",
+      "risk": "destructive",
+      "riskReason": "Crée une facture fournisseur"
+    },
+    {
+      "key": "qb_payment_update",
+      "name": "qbPaymentUpdate",
+      "schemaVersion": 2,
+      "title": "Mettre à jour un paiement",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Paiements",
+      "providerKey": "quickbooks",
+      "description": "Met à jour un paiement QuickBooks.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:qb_payment"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Mettre à jour un paiement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "paymentId",
+            "label": "ID paiement",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "customerRef",
+            "label": "ID client",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "totalAmt",
+            "label": "Montant",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "date",
+            "key": "txnDate",
+            "label": "Date",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "paymentMethodRef",
+            "label": "Mode de paiement",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Paiements",
+      "icon": "fa-solid fa-square-plus",
+      "tags": [
+        "création",
+        "quickbooks"
+      ],
+      "group": "Paiements",
+      "risk": "destructive",
+      "riskReason": "Enregistre un paiement"
+    },
+    {
+      "key": "qb_estimate_update",
+      "name": "qbEstimateUpdate",
+      "schemaVersion": 2,
+      "title": "Mettre à jour un devis",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Devis",
+      "providerKey": "quickbooks",
+      "description": "Met à jour un devis QuickBooks.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:qb_estimate"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Mettre à jour un devis",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "estimateId",
+            "label": "ID devis",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "customerRef",
+            "label": "ID client",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "date",
+            "key": "txnDate",
+            "label": "Date devis",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "date",
+            "key": "expirationDate",
+            "label": "Date expiration",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "lineItems",
+            "label": "Lignes JSON",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Devis",
+      "icon": "fa-solid fa-square-plus",
+      "tags": [
+        "création",
+        "quickbooks"
+      ],
+      "group": "Devis",
+      "risk": "write"
     }
   ]
 }

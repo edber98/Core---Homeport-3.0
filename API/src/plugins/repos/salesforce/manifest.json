@@ -3624,6 +3624,240 @@
       },
       "group": "Événements",
       "risk": "safe"
+    },
+    {
+      "key": "salesforce_task_update",
+      "name": "salesforceTaskUpdate",
+      "schemaVersion": 2,
+      "title": "Mettre à jour une tâche",
+      "subtitle": "Tâches",
+      "icon": "fa-solid fa-square-plus",
+      "tags": [
+        "création",
+        "salesforce"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Salesforce",
+      "providerKey": "salesforce",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sf_task"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Met à jour une tâche Salesforce.",
+      "args": {
+        "title": "Créer une tâche",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "taskId",
+            "label": "ID tâche",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "Subject",
+            "label": "Sujet",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "Status",
+            "label": "Statut",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "Priority",
+            "label": "Priorité",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "WhoId",
+            "label": "WhoId",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "WhatId",
+            "label": "WhatId",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "date",
+            "key": "ActivityDate",
+            "label": "Date d'activité",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Tâches",
+      "risk": "write"
+    },
+    {
+      "key": "salesforce_task_delete",
+      "name": "salesforceTaskDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer une tâche",
+      "subtitle": "Tâches",
+      "icon": "fa-solid fa-eye",
+      "tags": [
+        "lecture",
+        "salesforce"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Salesforce",
+      "providerKey": "salesforce",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sf_task"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Supprime une tâche Salesforce.",
+      "args": {
+        "title": "Supprimer une tâche",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "taskId",
+            "label": "ID tâche",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Tâches",
+      "risk": "safe"
+    },
+    {
+      "key": "salesforce_case_delete",
+      "name": "salesforceCaseDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un case",
+      "subtitle": "Cases",
+      "icon": "fa-solid fa-eye",
+      "tags": [
+        "lecture",
+        "salesforce"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Salesforce",
+      "providerKey": "salesforce",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sf_case"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Supprime un case Salesforce.",
+      "args": {
+        "title": "Supprimer un case",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "caseId",
+            "label": "ID case",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Cases",
+      "risk": "safe"
     }
   ]
 }

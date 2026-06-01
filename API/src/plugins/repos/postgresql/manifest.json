@@ -889,6 +889,107 @@
         "displayDescription": false
       },
       "group": "Données"
+    },
+    {
+      "key": "postgresql_record_upsert",
+      "name": "postgresqlRecordUpsert",
+      "schemaVersion": 2,
+      "title": "Upsert une ligne",
+      "subtitle": "Lignes",
+      "icon": "fa-solid fa-code-merge",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "PostgreSQL",
+      "providerKey": "postgresql",
+      "description": "Insère ou met à jour une ligne via ON CONFLICT.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:postgresql_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Upsert une ligne",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "schema",
+            "label": "Schéma",
+            "description": "Schéma PostgreSQL.",
+            "col": {
+              "xs": 24
+            },
+            "default": "public"
+          },
+          {
+            "type": "text",
+            "key": "table",
+            "label": "Table",
+            "description": "Nom de la table.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "data",
+            "label": "Données JSON",
+            "description": "Objet JSON à insérer.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "conflictColumns",
+            "label": "Colonnes de conflit",
+            "description": "Colonnes uniques pour ON CONFLICT, séparées par des virgules.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Lignes",
+      "tags": [
+        "upsert",
+        "PostgreSQL"
+      ],
+      "risk": "write"
     }
   ]
 }

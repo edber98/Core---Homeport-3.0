@@ -1225,6 +1225,151 @@
       ],
       "description": "Reçoit un événement Qonto.",
       "group": "Webhook"
+    },
+    {
+      "key": "qonto_sepa_transfers_list",
+      "name": "qontoSepaTransfersList",
+      "schemaVersion": 2,
+      "title": "Lister les virements SEPA",
+      "subtitle": "sepa_transfers",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Qonto",
+      "providerKey": "qonto",
+      "tags": [
+        "qonto",
+        "transactions"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:qonto_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lister les virements SEPA",
+      "args": {
+        "title": "Lister les virements SEPA",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "slug",
+            "label": "Slug organisation",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "status",
+            "label": "Statut",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "current_page",
+            "label": "Page",
+            "default": 1,
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "per_page",
+            "label": "Taille page",
+            "default": 100,
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Virements"
+    },
+    {
+      "key": "qonto_sepa_transfer_get",
+      "name": "qontoSepaTransferGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un virement SEPA",
+      "subtitle": "sepa_transfer",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Qonto",
+      "providerKey": "qonto",
+      "tags": [
+        "qonto",
+        "transaction"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:qonto_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupérer un virement SEPA",
+      "args": {
+        "title": "Récupérer un virement SEPA",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "transferId",
+            "label": "ID virement",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Virements"
     }
   ]
 }

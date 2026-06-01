@@ -813,6 +813,79 @@
         "displayDescription": false
       },
       "group": "Maintenance"
+    },
+    {
+      "key": "rabbitmq_queue_delete",
+      "name": "rabbitmqQueueDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer une queue",
+      "subtitle": "Queue",
+      "icon": "fa-solid fa-broom",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "RabbitMQ",
+      "providerKey": "rabbitmq",
+      "tags": [
+        "rabbitmq",
+        "purge"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:rabbitmq_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Supprimer une queue RabbitMQ (optionnellement si vide/inutilisée).",
+      "args": {
+        "title": "Supprimer une queue",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "queue",
+            "label": "Queue",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "ifUnused",
+            "label": "Seulement si inutilisée",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "ifEmpty",
+            "label": "Seulement si vide",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Queues"
     }
   ]
 }

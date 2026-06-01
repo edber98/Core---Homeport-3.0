@@ -238,6 +238,27 @@ const ACTIONS = {
     "body": [],
     "json": [],
     "list": true
+  },
+  "qonto_sepa_transfers_list": {
+    "path": "/sepa/transfers",
+    "method": "GET",
+    "query": [
+      "slug",
+      "status",
+      "current_page",
+      "per_page"
+    ],
+    "body": [],
+    "json": [],
+    "list": true
+  },
+  "qonto_sepa_transfer_get": {
+    "path": "/sepa/transfers/{transferId}",
+    "method": "GET",
+    "query": [],
+    "body": [],
+    "json": [],
+    "list": false
   }
 };
 
