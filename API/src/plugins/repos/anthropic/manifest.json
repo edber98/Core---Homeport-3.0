@@ -2735,6 +2735,267 @@
       },
       "group": "Fichiers",
       "risk": "write"
+    },
+    {
+      "key": "anthropic_create_message_json",
+      "name": "anthropicCreateMessageJson",
+      "schemaVersion": 2,
+      "title": "Générer JSON strict",
+      "subtitle": "Messages",
+      "icon": "fa-solid fa-code",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Anthropic",
+      "providerKey": "anthropic",
+      "tags": [
+        "anthropic",
+        "json"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:anthropic_message"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Génère une réponse en JSON object.",
+      "args": {
+        "title": "Générer JSON strict",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Modèle",
+            "col": {
+              "xs": 24
+            },
+            "defaultValue": "claude-sonnet-4-5-20250929"
+          },
+          {
+            "type": "number",
+            "key": "maxTokens",
+            "label": "Max tokens",
+            "col": {
+              "xs": 12
+            },
+            "defaultValue": 1024
+          },
+          {
+            "type": "number",
+            "key": "temperature",
+            "label": "Température",
+            "col": {
+              "xs": 12
+            },
+            "defaultValue": 0.2
+          },
+          {
+            "type": "textarea",
+            "key": "system",
+            "label": "System",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "prompt",
+            "label": "Prompt",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Messages"
+    },
+    {
+      "key": "anthropic_batch_create_from_jsonl",
+      "name": "anthropicBatchCreateFromJsonl",
+      "schemaVersion": 2,
+      "title": "Créer batch depuis JSONL",
+      "subtitle": "Batches",
+      "icon": "fa-solid fa-file-lines",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Anthropic",
+      "providerKey": "anthropic",
+      "tags": [
+        "anthropic",
+        "batch"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:anthropic_message_batch"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un batch de messages depuis une liste JSONL.",
+      "args": {
+        "title": "Créer batch depuis JSONL",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "requestsJsonl",
+            "label": "Requests JSONL",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Batches"
+    },
+    {
+      "key": "anthropic_custom_request",
+      "name": "anthropicCustomRequest",
+      "schemaVersion": 2,
+      "title": "Requête API personnalisée",
+      "subtitle": "Advanced",
+      "icon": "fa-solid fa-code",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Anthropic",
+      "providerKey": "anthropic",
+      "tags": [
+        "anthropic",
+        "advanced"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:anthropic_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Appelle n'importe quel endpoint Anthropic.",
+      "args": {
+        "title": "Requête API personnalisée",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "select",
+            "key": "method",
+            "label": "Méthode",
+            "defaultValue": "GET",
+            "options": [
+              "GET",
+              "POST",
+              "PUT",
+              "PATCH",
+              "DELETE"
+            ],
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Path",
+            "col": {
+              "xs": 12
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "query",
+            "label": "Query JSON",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "headers",
+            "label": "Headers JSON",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "body",
+            "label": "Body JSON",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Advanced"
     }
   ]
 }

@@ -7,23 +7,99 @@
   "variables": {
     "ahrefs_metric": {
       "title": "Métrique Ahrefs",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "text", "key": "target", "label": "Cible", "description": "Domaine, URL ou workspace.", "col": { "xs": 24 } },
-        { "type": "text", "key": "metric", "label": "Métrique", "description": "Nom de la métrique.", "col": { "xs": 24 } },
-        { "type": "text", "key": "value", "label": "Valeur", "description": "Valeur principale.", "col": { "xs": 24 } },
-        { "type": "textarea", "key": "raw", "label": "Réponse brute", "description": "Réponse JSON brute.", "col": { "xs": 24 } }
+        {
+          "type": "text",
+          "key": "target",
+          "label": "Cible",
+          "description": "Domaine, URL ou workspace.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "metric",
+          "label": "Métrique",
+          "description": "Nom de la métrique.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "value",
+          "label": "Valeur",
+          "description": "Valeur principale.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "raw",
+          "label": "Réponse brute",
+          "description": "Réponse JSON brute.",
+          "col": {
+            "xs": 24
+          }
+        }
       ]
     },
     "ahrefs_report": {
       "title": "Rapport Ahrefs",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "text", "key": "totalCount", "label": "Nombre total", "description": "Nombre de lignes.", "col": { "xs": 24 } },
-        { "type": "textarea", "key": "raw", "label": "Réponse brute", "description": "Réponse JSON brute.", "col": { "xs": 24 } },
-        { "type": "section", "title": "Lignes", "description": "Lignes du rapport.", "mode": "array", "key": "rows", "array": { "initialItems": 0, "minItems": 0 }, "fields": [
-          { "type": "textarea", "key": "json", "label": "JSON", "description": "Ligne brute au format JSON.", "col": { "xs": 24 } }
-        ], "col": { "xs": 24 } }
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre de lignes.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "raw",
+          "label": "Réponse brute",
+          "description": "Réponse JSON brute.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Lignes",
+          "description": "Lignes du rapport.",
+          "mode": "array",
+          "key": "rows",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "textarea",
+              "key": "json",
+              "label": "JSON",
+              "description": "Ligne brute au format JSON.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
       ]
     }
   },
@@ -38,23 +114,785 @@
       "hasCredentials": true,
       "credentialsForm": {
         "fields": [
-          { "type": "password", "key": "apiKey", "label": "Clé API", "description": "Clé API v3 Ahrefs.", "col": { "xs": 24 } }
+          {
+            "type": "password",
+            "key": "apiKey",
+            "label": "Clé API",
+            "description": "Clé API v3 Ahrefs.",
+            "col": {
+              "xs": 24
+            }
+          }
         ]
       }
     }
   ],
   "nodeTemplates": [
-    { "key": "ahrefs_domain_rating", "name": "ahrefsDomainRating", "title": "Domain Rating", "subtitle": "Récupérer le Domain Rating", "schemaVersion": 2, "type": "function", "nodeKind": "function", "providerKey": "ahrefs", "authorize_catch_error": true, "args": { "fields": [ { "type": "text", "key": "target", "label": "Cible" }, { "type": "select", "key": "mode", "label": "Mode", "default": "domain", "options": [ { "label": "Domain", "value": "domain" }, { "label": "Exact", "value": "exact" }, { "label": "Prefix", "value": "prefix" }, { "label": "Subdomains", "value": "subdomains" } ] } ] }, "outputHandles": [ { "id": "ok", "type": "payload", "schema": "$var:ahrefs_metric" }, { "id": "err", "type": "error" } ] },
-    { "key": "ahrefs_backlinks_stats", "name": "ahrefsBacklinksStats", "title": "Stats backlinks", "subtitle": "Résumé du profil backlinks", "schemaVersion": 2, "type": "function", "nodeKind": "function", "providerKey": "ahrefs", "authorize_catch_error": true, "args": { "fields": [ { "type": "text", "key": "target", "label": "Cible" }, { "type": "select", "key": "mode", "label": "Mode", "default": "domain", "options": [ { "label": "Domain", "value": "domain" }, { "label": "Exact", "value": "exact" }, { "label": "Prefix", "value": "prefix" }, { "label": "Subdomains", "value": "subdomains" } ] } ] }, "outputHandles": [ { "id": "ok", "type": "payload", "schema": "$var:ahrefs_metric" }, { "id": "err", "type": "error" } ] },
-    { "key": "ahrefs_metrics", "name": "ahrefsMetrics", "title": "Métriques site", "subtitle": "Récupérer les métriques Site Explorer", "schemaVersion": 2, "type": "function", "nodeKind": "function", "providerKey": "ahrefs", "authorize_catch_error": true, "args": { "fields": [ { "type": "text", "key": "target", "label": "Cible" }, { "type": "select", "key": "mode", "label": "Mode", "default": "domain", "options": [ { "label": "Domain", "value": "domain" }, { "label": "Exact", "value": "exact" }, { "label": "Prefix", "value": "prefix" }, { "label": "Subdomains", "value": "subdomains" } ] }, { "type": "date", "key": "date", "label": "Date" } ] }, "outputHandles": [ { "id": "ok", "type": "payload", "schema": "$var:ahrefs_metric" }, { "id": "err", "type": "error" } ] },
-    { "key": "ahrefs_all_backlinks", "name": "ahrefsAllBacklinks", "title": "Lister les backlinks", "subtitle": "Rapport All backlinks", "schemaVersion": 2, "type": "function", "nodeKind": "function", "providerKey": "ahrefs", "authorize_catch_error": true, "args": { "fields": [ { "type": "text", "key": "target", "label": "Cible" }, { "type": "text", "key": "mode", "label": "Mode", "default": "domain" }, { "type": "number", "key": "limit", "label": "Limite", "default": 50 }, { "type": "text", "key": "orderBy", "label": "Tri" } ] }, "outputHandles": [ { "id": "ok", "type": "payload", "schema": "$var:ahrefs_report" }, { "id": "err", "type": "error" } ] },
-    { "key": "ahrefs_refdomains", "name": "ahrefsRefdomains", "title": "Domaines référents", "subtitle": "Lister les domaines référents", "schemaVersion": 2, "type": "function", "nodeKind": "function", "providerKey": "ahrefs", "authorize_catch_error": true, "args": { "fields": [ { "type": "text", "key": "target", "label": "Cible" }, { "type": "text", "key": "mode", "label": "Mode", "default": "domain" }, { "type": "number", "key": "limit", "label": "Limite", "default": 50 }, { "type": "text", "key": "orderBy", "label": "Tri" } ] }, "outputHandles": [ { "id": "ok", "type": "payload", "schema": "$var:ahrefs_report" }, { "id": "err", "type": "error" } ] },
-    { "key": "ahrefs_organic_keywords", "name": "ahrefsOrganicKeywords", "title": "Mots-clés organiques", "subtitle": "Rapport Organic keywords", "schemaVersion": 2, "type": "function", "nodeKind": "function", "providerKey": "ahrefs", "authorize_catch_error": true, "args": { "fields": [ { "type": "text", "key": "target", "label": "Cible" }, { "type": "text", "key": "country", "label": "Pays", "default": "us" }, { "type": "text", "key": "mode", "label": "Mode", "default": "domain" }, { "type": "number", "key": "limit", "label": "Limite", "default": 50 }, { "type": "text", "key": "orderBy", "label": "Tri" } ] }, "outputHandles": [ { "id": "ok", "type": "payload", "schema": "$var:ahrefs_report" }, { "id": "err", "type": "error" } ] },
-    { "key": "ahrefs_organic_competitors", "name": "ahrefsOrganicCompetitors", "title": "Concurrents organiques", "subtitle": "Rapport Organic competitors", "schemaVersion": 2, "type": "function", "nodeKind": "function", "providerKey": "ahrefs", "authorize_catch_error": true, "args": { "fields": [ { "type": "text", "key": "target", "label": "Cible" }, { "type": "text", "key": "country", "label": "Pays", "default": "us" }, { "type": "text", "key": "mode", "label": "Mode", "default": "domain" }, { "type": "number", "key": "limit", "label": "Limite", "default": 50 } ] }, "outputHandles": [ { "id": "ok", "type": "payload", "schema": "$var:ahrefs_report" }, { "id": "err", "type": "error" } ] },
-    { "key": "ahrefs_top_pages", "name": "ahrefsTopPages", "title": "Top pages", "subtitle": "Pages avec le plus de trafic", "schemaVersion": 2, "type": "function", "nodeKind": "function", "providerKey": "ahrefs", "authorize_catch_error": true, "args": { "fields": [ { "type": "text", "key": "target", "label": "Cible" }, { "type": "text", "key": "country", "label": "Pays", "default": "us" }, { "type": "text", "key": "mode", "label": "Mode", "default": "domain" }, { "type": "number", "key": "limit", "label": "Limite", "default": 50 } ] }, "outputHandles": [ { "id": "ok", "type": "payload", "schema": "$var:ahrefs_report" }, { "id": "err", "type": "error" } ] },
-    { "key": "ahrefs_keyword_overview", "name": "ahrefsKeywordOverview", "title": "Vue d'ensemble mot-clé", "subtitle": "Keywords Explorer overview", "schemaVersion": 2, "type": "function", "nodeKind": "function", "providerKey": "ahrefs", "authorize_catch_error": true, "args": { "fields": [ { "type": "text", "key": "keyword", "label": "Mot-clé" }, { "type": "text", "key": "country", "label": "Pays", "default": "us" } ] }, "outputHandles": [ { "id": "ok", "type": "payload", "schema": "$var:ahrefs_report" }, { "id": "err", "type": "error" } ] },
-    { "key": "ahrefs_keyword_matching_terms", "name": "ahrefsKeywordMatchingTerms", "title": "Matching terms", "subtitle": "Idées de mots-clés correspondants", "schemaVersion": 2, "type": "function", "nodeKind": "function", "providerKey": "ahrefs", "authorize_catch_error": true, "args": { "fields": [ { "type": "text", "key": "keyword", "label": "Mot-clé" }, { "type": "text", "key": "country", "label": "Pays", "default": "us" }, { "type": "number", "key": "limit", "label": "Limite", "default": 50 } ] }, "outputHandles": [ { "id": "ok", "type": "payload", "schema": "$var:ahrefs_report" }, { "id": "err", "type": "error" } ] },
-    { "key": "ahrefs_keyword_related_terms", "name": "ahrefsKeywordRelatedTerms", "title": "Related terms", "subtitle": "Idées de mots-clés associés", "schemaVersion": 2, "type": "function", "nodeKind": "function", "providerKey": "ahrefs", "authorize_catch_error": true, "args": { "fields": [ { "type": "text", "key": "keyword", "label": "Mot-clé" }, { "type": "text", "key": "country", "label": "Pays", "default": "us" }, { "type": "number", "key": "limit", "label": "Limite", "default": 50 } ] }, "outputHandles": [ { "id": "ok", "type": "payload", "schema": "$var:ahrefs_report" }, { "id": "err", "type": "error" } ] },
-    { "key": "ahrefs_limits_usage", "name": "ahrefsLimitsUsage", "title": "Limites et usage", "subtitle": "Consulter les unités API", "schemaVersion": 2, "type": "function", "nodeKind": "function", "providerKey": "ahrefs", "authorize_catch_error": true, "args": { "fields": [] }, "outputHandles": [ { "id": "ok", "type": "payload", "schema": "$var:ahrefs_metric" }, { "id": "err", "type": "error" } ] }
+    {
+      "key": "ahrefs_domain_rating",
+      "name": "ahrefsDomainRating",
+      "title": "Domain Rating",
+      "subtitle": "Récupérer le Domain Rating",
+      "schemaVersion": 2,
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "ahrefs",
+      "authorize_catch_error": true,
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "target",
+            "label": "Cible"
+          },
+          {
+            "type": "select",
+            "key": "mode",
+            "label": "Mode",
+            "default": "domain",
+            "options": [
+              {
+                "label": "Domain",
+                "value": "domain"
+              },
+              {
+                "label": "Exact",
+                "value": "exact"
+              },
+              {
+                "label": "Prefix",
+                "value": "prefix"
+              },
+              {
+                "label": "Subdomains",
+                "value": "subdomains"
+              }
+            ]
+          }
+        ]
+      },
+      "outputHandles": [
+        {
+          "id": "ok",
+          "type": "payload",
+          "schema": "$var:ahrefs_metric"
+        },
+        {
+          "id": "err",
+          "type": "error"
+        }
+      ]
+    },
+    {
+      "key": "ahrefs_backlinks_stats",
+      "name": "ahrefsBacklinksStats",
+      "title": "Stats backlinks",
+      "subtitle": "Résumé du profil backlinks",
+      "schemaVersion": 2,
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "ahrefs",
+      "authorize_catch_error": true,
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "target",
+            "label": "Cible"
+          },
+          {
+            "type": "select",
+            "key": "mode",
+            "label": "Mode",
+            "default": "domain",
+            "options": [
+              {
+                "label": "Domain",
+                "value": "domain"
+              },
+              {
+                "label": "Exact",
+                "value": "exact"
+              },
+              {
+                "label": "Prefix",
+                "value": "prefix"
+              },
+              {
+                "label": "Subdomains",
+                "value": "subdomains"
+              }
+            ]
+          }
+        ]
+      },
+      "outputHandles": [
+        {
+          "id": "ok",
+          "type": "payload",
+          "schema": "$var:ahrefs_metric"
+        },
+        {
+          "id": "err",
+          "type": "error"
+        }
+      ]
+    },
+    {
+      "key": "ahrefs_metrics",
+      "name": "ahrefsMetrics",
+      "title": "Métriques site",
+      "subtitle": "Récupérer les métriques Site Explorer",
+      "schemaVersion": 2,
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "ahrefs",
+      "authorize_catch_error": true,
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "target",
+            "label": "Cible"
+          },
+          {
+            "type": "select",
+            "key": "mode",
+            "label": "Mode",
+            "default": "domain",
+            "options": [
+              {
+                "label": "Domain",
+                "value": "domain"
+              },
+              {
+                "label": "Exact",
+                "value": "exact"
+              },
+              {
+                "label": "Prefix",
+                "value": "prefix"
+              },
+              {
+                "label": "Subdomains",
+                "value": "subdomains"
+              }
+            ]
+          },
+          {
+            "type": "date",
+            "key": "date",
+            "label": "Date"
+          }
+        ]
+      },
+      "outputHandles": [
+        {
+          "id": "ok",
+          "type": "payload",
+          "schema": "$var:ahrefs_metric"
+        },
+        {
+          "id": "err",
+          "type": "error"
+        }
+      ]
+    },
+    {
+      "key": "ahrefs_all_backlinks",
+      "name": "ahrefsAllBacklinks",
+      "title": "Lister les backlinks",
+      "subtitle": "Rapport All backlinks",
+      "schemaVersion": 2,
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "ahrefs",
+      "authorize_catch_error": true,
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "target",
+            "label": "Cible"
+          },
+          {
+            "type": "text",
+            "key": "mode",
+            "label": "Mode",
+            "default": "domain"
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "default": 50
+          },
+          {
+            "type": "text",
+            "key": "orderBy",
+            "label": "Tri"
+          }
+        ]
+      },
+      "outputHandles": [
+        {
+          "id": "ok",
+          "type": "payload",
+          "schema": "$var:ahrefs_report"
+        },
+        {
+          "id": "err",
+          "type": "error"
+        }
+      ]
+    },
+    {
+      "key": "ahrefs_refdomains",
+      "name": "ahrefsRefdomains",
+      "title": "Domaines référents",
+      "subtitle": "Lister les domaines référents",
+      "schemaVersion": 2,
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "ahrefs",
+      "authorize_catch_error": true,
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "target",
+            "label": "Cible"
+          },
+          {
+            "type": "text",
+            "key": "mode",
+            "label": "Mode",
+            "default": "domain"
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "default": 50
+          },
+          {
+            "type": "text",
+            "key": "orderBy",
+            "label": "Tri"
+          }
+        ]
+      },
+      "outputHandles": [
+        {
+          "id": "ok",
+          "type": "payload",
+          "schema": "$var:ahrefs_report"
+        },
+        {
+          "id": "err",
+          "type": "error"
+        }
+      ]
+    },
+    {
+      "key": "ahrefs_organic_keywords",
+      "name": "ahrefsOrganicKeywords",
+      "title": "Mots-clés organiques",
+      "subtitle": "Rapport Organic keywords",
+      "schemaVersion": 2,
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "ahrefs",
+      "authorize_catch_error": true,
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "target",
+            "label": "Cible"
+          },
+          {
+            "type": "text",
+            "key": "country",
+            "label": "Pays",
+            "default": "us"
+          },
+          {
+            "type": "text",
+            "key": "mode",
+            "label": "Mode",
+            "default": "domain"
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "default": 50
+          },
+          {
+            "type": "text",
+            "key": "orderBy",
+            "label": "Tri"
+          }
+        ]
+      },
+      "outputHandles": [
+        {
+          "id": "ok",
+          "type": "payload",
+          "schema": "$var:ahrefs_report"
+        },
+        {
+          "id": "err",
+          "type": "error"
+        }
+      ]
+    },
+    {
+      "key": "ahrefs_organic_competitors",
+      "name": "ahrefsOrganicCompetitors",
+      "title": "Concurrents organiques",
+      "subtitle": "Rapport Organic competitors",
+      "schemaVersion": 2,
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "ahrefs",
+      "authorize_catch_error": true,
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "target",
+            "label": "Cible"
+          },
+          {
+            "type": "text",
+            "key": "country",
+            "label": "Pays",
+            "default": "us"
+          },
+          {
+            "type": "text",
+            "key": "mode",
+            "label": "Mode",
+            "default": "domain"
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "default": 50
+          }
+        ]
+      },
+      "outputHandles": [
+        {
+          "id": "ok",
+          "type": "payload",
+          "schema": "$var:ahrefs_report"
+        },
+        {
+          "id": "err",
+          "type": "error"
+        }
+      ]
+    },
+    {
+      "key": "ahrefs_top_pages",
+      "name": "ahrefsTopPages",
+      "title": "Top pages",
+      "subtitle": "Pages avec le plus de trafic",
+      "schemaVersion": 2,
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "ahrefs",
+      "authorize_catch_error": true,
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "target",
+            "label": "Cible"
+          },
+          {
+            "type": "text",
+            "key": "country",
+            "label": "Pays",
+            "default": "us"
+          },
+          {
+            "type": "text",
+            "key": "mode",
+            "label": "Mode",
+            "default": "domain"
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "default": 50
+          }
+        ]
+      },
+      "outputHandles": [
+        {
+          "id": "ok",
+          "type": "payload",
+          "schema": "$var:ahrefs_report"
+        },
+        {
+          "id": "err",
+          "type": "error"
+        }
+      ]
+    },
+    {
+      "key": "ahrefs_keyword_overview",
+      "name": "ahrefsKeywordOverview",
+      "title": "Vue d'ensemble mot-clé",
+      "subtitle": "Keywords Explorer overview",
+      "schemaVersion": 2,
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "ahrefs",
+      "authorize_catch_error": true,
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "keyword",
+            "label": "Mot-clé"
+          },
+          {
+            "type": "text",
+            "key": "country",
+            "label": "Pays",
+            "default": "us"
+          }
+        ]
+      },
+      "outputHandles": [
+        {
+          "id": "ok",
+          "type": "payload",
+          "schema": "$var:ahrefs_report"
+        },
+        {
+          "id": "err",
+          "type": "error"
+        }
+      ]
+    },
+    {
+      "key": "ahrefs_keyword_matching_terms",
+      "name": "ahrefsKeywordMatchingTerms",
+      "title": "Matching terms",
+      "subtitle": "Idées de mots-clés correspondants",
+      "schemaVersion": 2,
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "ahrefs",
+      "authorize_catch_error": true,
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "keyword",
+            "label": "Mot-clé"
+          },
+          {
+            "type": "text",
+            "key": "country",
+            "label": "Pays",
+            "default": "us"
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "default": 50
+          }
+        ]
+      },
+      "outputHandles": [
+        {
+          "id": "ok",
+          "type": "payload",
+          "schema": "$var:ahrefs_report"
+        },
+        {
+          "id": "err",
+          "type": "error"
+        }
+      ]
+    },
+    {
+      "key": "ahrefs_keyword_related_terms",
+      "name": "ahrefsKeywordRelatedTerms",
+      "title": "Related terms",
+      "subtitle": "Idées de mots-clés associés",
+      "schemaVersion": 2,
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "ahrefs",
+      "authorize_catch_error": true,
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "keyword",
+            "label": "Mot-clé"
+          },
+          {
+            "type": "text",
+            "key": "country",
+            "label": "Pays",
+            "default": "us"
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "default": 50
+          }
+        ]
+      },
+      "outputHandles": [
+        {
+          "id": "ok",
+          "type": "payload",
+          "schema": "$var:ahrefs_report"
+        },
+        {
+          "id": "err",
+          "type": "error"
+        }
+      ]
+    },
+    {
+      "key": "ahrefs_limits_usage",
+      "name": "ahrefsLimitsUsage",
+      "title": "Limites et usage",
+      "subtitle": "Consulter les unités API",
+      "schemaVersion": 2,
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "ahrefs",
+      "authorize_catch_error": true,
+      "args": {
+        "fields": []
+      },
+      "outputHandles": [
+        {
+          "id": "ok",
+          "type": "payload",
+          "schema": "$var:ahrefs_metric"
+        },
+        {
+          "id": "err",
+          "type": "error"
+        }
+      ]
+    },
+    {
+      "key": "ahrefs_broken_backlinks",
+      "name": "ahrefsBrokenBacklinks",
+      "title": "Backlinks cassés",
+      "subtitle": "Rapport broken backlinks",
+      "schemaVersion": 2,
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "ahrefs",
+      "authorize_catch_error": true,
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "target",
+            "label": "Cible"
+          },
+          {
+            "type": "text",
+            "key": "mode",
+            "label": "Mode",
+            "default": "domain"
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "default": 50
+          },
+          {
+            "type": "text",
+            "key": "orderBy",
+            "label": "Tri"
+          }
+        ]
+      },
+      "outputHandles": [
+        {
+          "id": "ok",
+          "type": "payload",
+          "schema": "$var:ahrefs_report"
+        },
+        {
+          "id": "err",
+          "type": "error"
+        }
+      ]
+    },
+    {
+      "key": "ahrefs_anchors",
+      "name": "ahrefsAnchors",
+      "title": "Ancres backlinks",
+      "subtitle": "Rapport anchors",
+      "schemaVersion": 2,
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "ahrefs",
+      "authorize_catch_error": true,
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "target",
+            "label": "Cible"
+          },
+          {
+            "type": "text",
+            "key": "mode",
+            "label": "Mode",
+            "default": "domain"
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "default": 50
+          },
+          {
+            "type": "text",
+            "key": "orderBy",
+            "label": "Tri"
+          }
+        ]
+      },
+      "outputHandles": [
+        {
+          "id": "ok",
+          "type": "payload",
+          "schema": "$var:ahrefs_report"
+        },
+        {
+          "id": "err",
+          "type": "error"
+        }
+      ]
+    },
+    {
+      "key": "ahrefs_pages_by_traffic",
+      "name": "ahrefsPagesByTraffic",
+      "title": "Pages par trafic",
+      "subtitle": "Rapport pages by traffic",
+      "schemaVersion": 2,
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "ahrefs",
+      "authorize_catch_error": true,
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "target",
+            "label": "Cible"
+          },
+          {
+            "type": "text",
+            "key": "country",
+            "label": "Pays",
+            "default": "us"
+          },
+          {
+            "type": "text",
+            "key": "mode",
+            "label": "Mode",
+            "default": "domain"
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "default": 50
+          }
+        ]
+      },
+      "outputHandles": [
+        {
+          "id": "ok",
+          "type": "payload",
+          "schema": "$var:ahrefs_report"
+        },
+        {
+          "id": "err",
+          "type": "error"
+        }
+      ]
+    },
+    {
+      "key": "ahrefs_outlinks_stats",
+      "name": "ahrefsOutlinksStats",
+      "title": "Stats outlinks",
+      "subtitle": "Résumé des liens sortants",
+      "schemaVersion": 2,
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "ahrefs",
+      "authorize_catch_error": true,
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "target",
+            "label": "Cible"
+          },
+          {
+            "type": "select",
+            "key": "mode",
+            "label": "Mode",
+            "default": "domain",
+            "options": [
+              {
+                "label": "Domain",
+                "value": "domain"
+              },
+              {
+                "label": "Exact",
+                "value": "exact"
+              },
+              {
+                "label": "Prefix",
+                "value": "prefix"
+              },
+              {
+                "label": "Subdomains",
+                "value": "subdomains"
+              }
+            ]
+          }
+        ]
+      },
+      "outputHandles": [
+        {
+          "id": "ok",
+          "type": "payload",
+          "schema": "$var:ahrefs_metric"
+        },
+        {
+          "id": "err",
+          "type": "error"
+        }
+      ]
+    }
   ]
 }

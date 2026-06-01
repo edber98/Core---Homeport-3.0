@@ -1,0 +1,195 @@
+{
+  "connector": "apify",
+  "generatedAt": "2026-06-01T08:43:49.379Z",
+  "summary": {
+    "covered": 23,
+    "missing": 0,
+    "excluded": 0
+  },
+  "rows": [
+    {
+      "nodeKey": "apify_actor_run_start",
+      "title": "Démarrer un acteur",
+      "group": "Acteurs",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "apify_actor_run_sync_items",
+      "title": "Exécuter et lire les résultats",
+      "group": "Acteurs",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "apify_run_get",
+      "title": "Récupérer un run",
+      "group": "Runs",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "apify_run_abort",
+      "title": "Arrêter un run",
+      "group": "Runs",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "apify_dataset_items_list",
+      "title": "Lister les items dataset",
+      "group": "Datasets",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "apify_dataset_get",
+      "title": "Récupérer un dataset",
+      "group": "Datasets",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "apify_kv_record_get",
+      "title": "Lire un record KV",
+      "group": "Key-value store",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "apify_kv_record_put",
+      "title": "Écrire un record KV",
+      "group": "Key-value store",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "apify_task_run_start",
+      "title": "Démarrer une tâche",
+      "group": "Tâches",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "apify_user_actors_list",
+      "title": "Lister mes acteurs",
+      "group": "Acteurs",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "apify_tasks_list",
+      "title": "Lister les tasks",
+      "group": "Tasks",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "apify_task_get",
+      "title": "Obtenir une task",
+      "group": "Tasks",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "apify_task_run_sync_items",
+      "title": "Exécuter une task (sync + items)",
+      "group": "Tasks",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "apify_task_create",
+      "title": "Créer une task",
+      "group": "Tasks",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "apify_task_update",
+      "title": "Mettre à jour une task",
+      "group": "Tasks",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "apify_task_delete",
+      "title": "Supprimer une task",
+      "group": "Tasks",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "apify_task_input_get",
+      "title": "Lire l'input d'une task",
+      "group": "Tasks",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "apify_task_input_update",
+      "title": "Modifier l'input d'une task",
+      "group": "Tasks",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "apify_task_runs_list",
+      "title": "Lister les runs d'une task",
+      "group": "Tasks",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "apify_task_run_last",
+      "title": "Obtenir le dernier run task",
+      "group": "Tasks",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "apify_custom_request",
+      "title": "Requête API personnalisée",
+      "group": "Advanced",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "apify_dataset_items_push",
+      "title": "Ajouter items dataset",
+      "group": "Datasets",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "apify_kv_record_delete",
+      "title": "Supprimer un record KV",
+      "group": "KeyValue",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    }
+  ]
+}

@@ -950,6 +950,998 @@
         "displayDescription": false
       },
       "group": "Acteurs"
+    },
+    {
+      "key": "apify_tasks_list",
+      "name": "apifyTasksList",
+      "schemaVersion": 2,
+      "title": "Lister les tasks",
+      "subtitle": "Tasks",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Apify",
+      "providerKey": "apify",
+      "tags": [
+        "apify",
+        "tasks"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:apify_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les Actor Tasks.",
+      "args": {
+        "title": "Lister les tasks",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limit",
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "number",
+            "key": "offset",
+            "label": "Offset",
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "desc",
+            "label": "Tri décroissant",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Tasks"
+    },
+    {
+      "key": "apify_task_get",
+      "name": "apifyTaskGet",
+      "schemaVersion": 2,
+      "title": "Obtenir une task",
+      "subtitle": "Tasks",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Apify",
+      "providerKey": "apify",
+      "tags": [
+        "apify",
+        "tasks"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:apify_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère une Actor Task.",
+      "args": {
+        "title": "Obtenir une task",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "taskId",
+            "label": "Task ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Tasks"
+    },
+    {
+      "key": "apify_task_run_sync_items",
+      "name": "apifyTaskRunSyncItems",
+      "schemaVersion": 2,
+      "title": "Exécuter une task (sync + items)",
+      "subtitle": "Tasks",
+      "icon": "fa-solid fa-play",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Apify",
+      "providerKey": "apify",
+      "tags": [
+        "apify",
+        "tasks"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:apify_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lance une task et renvoie les items du dataset.",
+      "args": {
+        "title": "Exécuter une task (sync + items)",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "taskId",
+            "label": "Task ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "input",
+            "label": "Input JSON",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limit items",
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "clean",
+            "label": "Clean output",
+            "col": {
+              "xs": 12
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Tasks"
+    },
+    {
+      "key": "apify_task_create",
+      "name": "apifyTaskCreate",
+      "schemaVersion": 2,
+      "title": "Créer une task",
+      "subtitle": "Tasks",
+      "icon": "fa-solid fa-square-plus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Apify",
+      "providerKey": "apify",
+      "tags": [
+        "apify",
+        "tasks"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:apify_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Crée une Actor Task.",
+      "args": {
+        "title": "Créer une task",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "actId",
+            "label": "Actor ID",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "input",
+            "label": "Input JSON",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "options",
+            "label": "Options JSON",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Tasks",
+      "risk": "write"
+    },
+    {
+      "key": "apify_task_update",
+      "name": "apifyTaskUpdate",
+      "schemaVersion": 2,
+      "title": "Mettre à jour une task",
+      "subtitle": "Tasks",
+      "icon": "fa-solid fa-pen",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Apify",
+      "providerKey": "apify",
+      "tags": [
+        "apify",
+        "tasks"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:apify_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Met à jour une Actor Task.",
+      "args": {
+        "title": "Mettre à jour une task",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "taskId",
+            "label": "Task ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "actId",
+            "label": "Actor ID",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "options",
+            "label": "Options JSON",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Tasks",
+      "risk": "write"
+    },
+    {
+      "key": "apify_task_delete",
+      "name": "apifyTaskDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer une task",
+      "subtitle": "Tasks",
+      "icon": "fa-solid fa-trash",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Apify",
+      "providerKey": "apify",
+      "tags": [
+        "apify",
+        "tasks"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:apify_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Supprime une Actor Task.",
+      "args": {
+        "title": "Supprimer une task",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "taskId",
+            "label": "Task ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Tasks",
+      "risk": "destructive"
+    },
+    {
+      "key": "apify_task_input_get",
+      "name": "apifyTaskInputGet",
+      "schemaVersion": 2,
+      "title": "Lire l'input d'une task",
+      "subtitle": "Tasks",
+      "icon": "fa-solid fa-file-lines",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Apify",
+      "providerKey": "apify",
+      "tags": [
+        "apify",
+        "tasks"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:apify_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère l'input JSON d'une task.",
+      "args": {
+        "title": "Lire l'input d'une task",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "taskId",
+            "label": "Task ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Tasks"
+    },
+    {
+      "key": "apify_task_input_update",
+      "name": "apifyTaskInputUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier l'input d'une task",
+      "subtitle": "Tasks",
+      "icon": "fa-solid fa-file-pen",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Apify",
+      "providerKey": "apify",
+      "tags": [
+        "apify",
+        "tasks"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:apify_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Met à jour l'input JSON d'une task.",
+      "args": {
+        "title": "Modifier l'input d'une task",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "taskId",
+            "label": "Task ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "input",
+            "label": "Input JSON",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Tasks",
+      "risk": "write"
+    },
+    {
+      "key": "apify_task_runs_list",
+      "name": "apifyTaskRunsList",
+      "schemaVersion": 2,
+      "title": "Lister les runs d'une task",
+      "subtitle": "Tasks",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Apify",
+      "providerKey": "apify",
+      "tags": [
+        "apify",
+        "tasks",
+        "runs"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:apify_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les exécutions d'une task.",
+      "args": {
+        "title": "Lister les runs d'une task",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "taskId",
+            "label": "Task ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limit",
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "number",
+            "key": "offset",
+            "label": "Offset",
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "desc",
+            "label": "Tri décroissant",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Tasks"
+    },
+    {
+      "key": "apify_task_run_last",
+      "name": "apifyTaskRunLast",
+      "schemaVersion": 2,
+      "title": "Obtenir le dernier run task",
+      "subtitle": "Tasks",
+      "icon": "fa-solid fa-clock-rotate-left",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Apify",
+      "providerKey": "apify",
+      "tags": [
+        "apify",
+        "tasks",
+        "runs"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:apify_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère le dernier run d'une task.",
+      "args": {
+        "title": "Obtenir le dernier run task",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "taskId",
+            "label": "Task ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Tasks"
+    },
+    {
+      "key": "apify_custom_request",
+      "name": "apifyCustomRequest",
+      "schemaVersion": 2,
+      "title": "Requête API personnalisée",
+      "subtitle": "Advanced",
+      "icon": "fa-solid fa-code",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Apify",
+      "providerKey": "apify",
+      "tags": [
+        "apify",
+        "advanced"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:apify_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Appelle n'importe quel endpoint Apify.",
+      "args": {
+        "title": "Requête API personnalisée",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "select",
+            "key": "method",
+            "label": "Méthode",
+            "defaultValue": "GET",
+            "options": [
+              "GET",
+              "POST",
+              "PUT",
+              "PATCH",
+              "DELETE"
+            ],
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Path",
+            "col": {
+              "xs": 12
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "query",
+            "label": "Query JSON",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "body",
+            "label": "Body JSON",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Advanced"
+    },
+    {
+      "key": "apify_dataset_items_push",
+      "name": "apifyDatasetItemsPush",
+      "schemaVersion": 2,
+      "title": "Ajouter items dataset",
+      "subtitle": "Datasets",
+      "icon": "fa-solid fa-upload",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Apify",
+      "providerKey": "apify",
+      "tags": [
+        "apify",
+        "dataset"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:apify_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Ajoute des items dans un dataset.",
+      "args": {
+        "title": "Ajouter items dataset",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "datasetId",
+            "label": "Dataset ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "items",
+            "label": "Items JSON array",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Datasets",
+      "risk": "write"
+    },
+    {
+      "key": "apify_kv_record_delete",
+      "name": "apifyKvRecordDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un record KV",
+      "subtitle": "KeyValue",
+      "icon": "fa-solid fa-trash",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Apify",
+      "providerKey": "apify",
+      "tags": [
+        "apify",
+        "kv"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:apify_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Supprime un record dans un key-value store.",
+      "args": {
+        "title": "Supprimer un record KV",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "storeId",
+            "label": "Store ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "recordKey",
+            "label": "Record Key",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "KeyValue",
+      "risk": "destructive"
     }
   ]
 }

@@ -2913,6 +2913,280 @@
         "displayDescription": false
       },
       "group": "webhooks"
+    },
+    {
+      "key": "aircall_call_comments_list",
+      "name": "aircallCallCommentsList",
+      "schemaVersion": 2,
+      "title": "Lister les commentaires d'appel",
+      "subtitle": "Calls",
+      "icon": "fa-solid fa-comments",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Aircall",
+      "providerKey": "aircall",
+      "tags": [
+        "calls",
+        "comments"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:aircall_calls"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les commentaires liés à un appel.",
+      "args": {
+        "title": "Lister les commentaires d'appel",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "callId",
+            "label": "Call ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Calls"
+    },
+    {
+      "key": "aircall_call_comment_create",
+      "name": "aircallCallCommentCreate",
+      "schemaVersion": 2,
+      "title": "Ajouter un commentaire d'appel",
+      "subtitle": "Calls",
+      "icon": "fa-solid fa-comment-medical",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Aircall",
+      "providerKey": "aircall",
+      "tags": [
+        "calls",
+        "comments"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:aircall_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Ajoute un commentaire sur un appel.",
+      "args": {
+        "title": "Ajouter un commentaire d'appel",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "callId",
+            "label": "Call ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "content",
+            "label": "Commentaire",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Calls"
+    },
+    {
+      "key": "aircall_call_tag_add",
+      "name": "aircallCallTagAdd",
+      "schemaVersion": 2,
+      "title": "Taguer un appel",
+      "subtitle": "Calls",
+      "icon": "fa-solid fa-tag",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Aircall",
+      "providerKey": "aircall",
+      "tags": [
+        "calls",
+        "tags"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:aircall_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Ajoute un tag à un appel.",
+      "args": {
+        "title": "Taguer un appel",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "callId",
+            "label": "Call ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "tagName",
+            "label": "Nom du tag",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Calls"
+    },
+    {
+      "key": "aircall_call_archive",
+      "name": "aircallCallArchive",
+      "schemaVersion": 2,
+      "title": "Archiver un appel",
+      "subtitle": "Calls",
+      "icon": "fa-solid fa-box-archive",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Aircall",
+      "providerKey": "aircall",
+      "tags": [
+        "calls",
+        "archive"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:aircall_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Archive un appel.",
+      "args": {
+        "title": "Archiver un appel",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "callId",
+            "label": "Call ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Calls"
     }
   ]
 }

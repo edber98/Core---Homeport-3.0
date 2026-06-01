@@ -1,0 +1,187 @@
+{
+  "connector": "apollo",
+  "generatedAt": "2026-06-01T08:43:49.402Z",
+  "summary": {
+    "covered": 22,
+    "missing": 0,
+    "excluded": 0
+  },
+  "rows": [
+    {
+      "nodeKey": "apollo_people_search",
+      "title": "Rechercher des personnes",
+      "group": "Personnes",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "apollo_people_match",
+      "title": "Enrichir une personne",
+      "group": "Personnes",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "apollo_contacts_search",
+      "title": "Rechercher des contacts",
+      "group": "Contacts",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "apollo_contact_create",
+      "title": "Créer un contact",
+      "group": "Contacts",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "apollo_contact_get",
+      "title": "Récupérer un contact",
+      "group": "Contacts",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "apollo_contact_update",
+      "title": "Mettre à jour un contact",
+      "group": "Contacts",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "apollo_contact_delete",
+      "title": "Supprimer un contact",
+      "group": "Contacts",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "apollo_accounts_search",
+      "title": "Rechercher des comptes",
+      "group": "Comptes",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "apollo_account_create",
+      "title": "Créer un compte",
+      "group": "Comptes",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "apollo_account_get",
+      "title": "Récupérer un compte",
+      "group": "Comptes",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "apollo_account_update",
+      "title": "Mettre à jour un compte",
+      "group": "Comptes",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "apollo_organizations_enrich",
+      "title": "Enrichir une entreprise",
+      "group": "Entreprises",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "apollo_sequences_list",
+      "title": "Lister les séquences",
+      "group": "Séquences",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "apollo_sequence_add_contacts",
+      "title": "Ajouter des contacts à une séquence",
+      "group": "Séquences",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "apollo_opportunities_search",
+      "title": "Rechercher des opportunités",
+      "group": "Opportunités",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "apollo_webhook_event",
+      "title": "Événement webhook",
+      "group": "Webhook",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "apollo_sequence_activate",
+      "title": "Activer une séquence",
+      "group": "Sequences",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "apollo_sequence_remove_contacts",
+      "title": "Retirer des contacts d'une séquence",
+      "group": "Sequences",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "apollo_custom_request",
+      "title": "Requête API personnalisée",
+      "group": "Advanced",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "apollo_sequences_search",
+      "title": "Rechercher des séquences",
+      "group": "Sequences",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "apollo_sequence_contact_status_update",
+      "title": "Mettre à jour le statut sequence",
+      "group": "Sequences",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "apollo_sequence_get",
+      "title": "Obtenir une séquence",
+      "group": "Sequences",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    }
+  ]
+}

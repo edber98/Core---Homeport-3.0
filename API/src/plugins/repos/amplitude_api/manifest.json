@@ -2499,6 +2499,747 @@
         "displayDescription": false
       },
       "group": "dashboard"
+    },
+    {
+      "key": "amplitude_api_dashboard_annotations_list",
+      "name": "amplitudeApiDashboardAnnotationsList",
+      "schemaVersion": 2,
+      "title": "Lister les annotations",
+      "subtitle": "Dashboard",
+      "icon": "fa-solid fa-note-sticky",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Amplitude Api",
+      "providerKey": "amplitude_api",
+      "tags": [
+        "amplitude",
+        "annotations"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:amplitude_api_dashboards"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les annotations du projet Amplitude.",
+      "args": {
+        "title": "Lister les annotations",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "json",
+            "key": "query",
+            "label": "Query JSON",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "headers",
+            "label": "Headers JSON",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Dashboard"
+    },
+    {
+      "key": "amplitude_api_dashboard_annotation_create",
+      "name": "amplitudeApiDashboardAnnotationCreate",
+      "schemaVersion": 2,
+      "title": "Créer une annotation",
+      "subtitle": "Dashboard",
+      "icon": "fa-solid fa-plus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Amplitude Api",
+      "providerKey": "amplitude_api",
+      "tags": [
+        "amplitude",
+        "annotations"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:amplitude_api_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Crée une annotation dashboard.",
+      "args": {
+        "title": "Créer une annotation",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "json",
+            "key": "body",
+            "label": "Body JSON",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "headers",
+            "label": "Headers JSON",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Dashboard"
+    },
+    {
+      "key": "amplitude_api_dashboard_annotation_delete",
+      "name": "amplitudeApiDashboardAnnotationDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer une annotation",
+      "subtitle": "Dashboard",
+      "icon": "fa-solid fa-trash",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Amplitude Api",
+      "providerKey": "amplitude_api",
+      "tags": [
+        "amplitude",
+        "annotations"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:amplitude_api_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Supprime une annotation.",
+      "args": {
+        "title": "Supprimer une annotation",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "annotationId",
+            "label": "Annotation ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "headers",
+            "label": "Headers JSON",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Dashboard"
+    },
+    {
+      "key": "amplitude_api_custom_request",
+      "name": "amplitudeApiCustomRequest",
+      "schemaVersion": 2,
+      "title": "Requête API personnalisée",
+      "subtitle": "Advanced",
+      "icon": "fa-solid fa-code",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Amplitude Api",
+      "providerKey": "amplitude_api",
+      "tags": [
+        "amplitude",
+        "advanced"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:amplitude_api_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Appelle n'importe quel endpoint Amplitude.",
+      "args": {
+        "title": "Requête API personnalisée",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "select",
+            "key": "method",
+            "label": "Méthode",
+            "defaultValue": "GET",
+            "options": [
+              "GET",
+              "POST",
+              "PUT",
+              "PATCH",
+              "DELETE"
+            ],
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Path",
+            "col": {
+              "xs": 12
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "query",
+            "label": "Query JSON",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "headers",
+            "label": "Headers JSON",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "body",
+            "label": "Body JSON",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Advanced"
+    },
+    {
+      "key": "amplitude_api_dashboard_annotation_get",
+      "name": "amplitudeApiDashboardAnnotationGet",
+      "schemaVersion": 2,
+      "title": "Récupérer une annotation",
+      "subtitle": "Dashboard",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Amplitude Api",
+      "providerKey": "amplitude_api",
+      "tags": [
+        "amplitude",
+        "annotations"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:amplitude_api_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère une annotation par ID.",
+      "args": {
+        "title": "Récupérer une annotation",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "annotationId",
+            "label": "Annotation ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "headers",
+            "label": "Headers JSON",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Dashboard"
+    },
+    {
+      "key": "amplitude_api_dashboard_annotation_update",
+      "name": "amplitudeApiDashboardAnnotationUpdate",
+      "schemaVersion": 2,
+      "title": "Mettre à jour une annotation",
+      "subtitle": "Dashboard",
+      "icon": "fa-solid fa-pen",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Amplitude Api",
+      "providerKey": "amplitude_api",
+      "tags": [
+        "amplitude",
+        "annotations"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:amplitude_api_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Met à jour une annotation.",
+      "args": {
+        "title": "Mettre à jour une annotation",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "annotationId",
+            "label": "Annotation ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "body",
+            "label": "Body JSON",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "headers",
+            "label": "Headers JSON",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Dashboard"
+    },
+    {
+      "key": "amplitude_api_dashboard_annotation_categories_list",
+      "name": "amplitudeApiDashboardAnnotationCategoriesList",
+      "schemaVersion": 2,
+      "title": "Lister catégories annotations",
+      "subtitle": "Dashboard",
+      "icon": "fa-solid fa-tags",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Amplitude Api",
+      "providerKey": "amplitude_api",
+      "tags": [
+        "amplitude",
+        "annotations"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:amplitude_api_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les catégories d'annotations.",
+      "args": {
+        "title": "Lister catégories annotations",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "json",
+            "key": "headers",
+            "label": "Headers JSON",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Dashboard"
+    },
+    {
+      "key": "amplitude_api_dashboard_annotation_category_create",
+      "name": "amplitudeApiDashboardAnnotationCategoryCreate",
+      "schemaVersion": 2,
+      "title": "Créer catégorie annotation",
+      "subtitle": "Dashboard",
+      "icon": "fa-solid fa-tag",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Amplitude Api",
+      "providerKey": "amplitude_api",
+      "tags": [
+        "amplitude",
+        "annotations"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:amplitude_api_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Crée une catégorie d'annotations.",
+      "args": {
+        "title": "Créer catégorie annotation",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "json",
+            "key": "body",
+            "label": "Body JSON",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "headers",
+            "label": "Headers JSON",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Dashboard"
+    },
+    {
+      "key": "amplitude_api_dashboard_annotation_category_update",
+      "name": "amplitudeApiDashboardAnnotationCategoryUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier catégorie annotation",
+      "subtitle": "Dashboard",
+      "icon": "fa-solid fa-pen-to-square",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Amplitude Api",
+      "providerKey": "amplitude_api",
+      "tags": [
+        "amplitude",
+        "annotations"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:amplitude_api_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Met à jour une catégorie d'annotations.",
+      "args": {
+        "title": "Modifier catégorie annotation",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "categoryId",
+            "label": "Category ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "body",
+            "label": "Body JSON",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "headers",
+            "label": "Headers JSON",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Dashboard"
+    },
+    {
+      "key": "amplitude_api_dashboard_annotation_category_delete",
+      "name": "amplitudeApiDashboardAnnotationCategoryDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer catégorie annotation",
+      "subtitle": "Dashboard",
+      "icon": "fa-solid fa-trash",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Amplitude Api",
+      "providerKey": "amplitude_api",
+      "tags": [
+        "amplitude",
+        "annotations"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:amplitude_api_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Supprime une catégorie d'annotations.",
+      "args": {
+        "title": "Supprimer catégorie annotation",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "categoryId",
+            "label": "Category ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "headers",
+            "label": "Headers JSON",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Dashboard",
+      "risk": "destructive"
     }
   ]
 }
