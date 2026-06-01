@@ -1312,6 +1312,196 @@
         "displayDescription": false
       },
       "group": "offsets"
+    },
+    {
+      "key": "kafka_topic_create_topic",
+      "name": "kafkaTopicCreateTopic",
+      "schemaVersion": 2,
+      "title": "Créer un topic",
+      "subtitle": "topics",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Kafka",
+      "providerKey": "kafka",
+      "tags": [
+        "kafka"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:kafka_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Créer un topic",
+      "args": {
+        "title": "Créer un topic",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "topic",
+            "label": "Topic",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "numPartitions",
+            "label": "Partitions",
+            "default": 1,
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "replicationFactor",
+            "label": "Replication factor",
+            "default": 1,
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "topics",
+      "risk": "write"
+    },
+    {
+      "key": "kafka_topic_delete_topic",
+      "name": "kafkaTopicDeleteTopic",
+      "schemaVersion": 2,
+      "title": "Supprimer un topic",
+      "subtitle": "topics",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Kafka",
+      "providerKey": "kafka",
+      "tags": [
+        "kafka"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:kafka_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Supprimer un topic",
+      "args": {
+        "title": "Supprimer un topic",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "topic",
+            "label": "Topic",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "topics",
+      "risk": "destructive"
+    },
+    {
+      "key": "kafka_group_list_groups",
+      "name": "kafkaGroupListGroups",
+      "schemaVersion": 2,
+      "title": "Lister les consumer groups",
+      "subtitle": "groups",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Kafka",
+      "providerKey": "kafka",
+      "tags": [
+        "kafka"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:kafka_topics"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lister les consumer groups",
+      "args": {
+        "title": "Lister les consumer groups",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "groups",
+      "risk": "safe"
     }
   ]
 }

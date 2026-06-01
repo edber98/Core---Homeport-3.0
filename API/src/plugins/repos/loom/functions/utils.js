@@ -156,6 +156,24 @@ const ACTIONS = {
     "json": [],
     "list": true
   },
+  "loom_video_comment_create": {
+    "path": "/videos/{videoId}/comments",
+    "method": "POST",
+    "query": [],
+    "body": [
+      "text"
+    ],
+    "json": [],
+    "list": false
+  },
+  "loom_video_comment_delete": {
+    "path": "/videos/{videoId}/comments/{commentId}",
+    "method": "DELETE",
+    "query": [],
+    "body": [],
+    "json": [],
+    "list": false
+  },
   "loom_folders_list": {
     "path": "/folders",
     "method": "GET",
@@ -174,6 +192,14 @@ const ACTIONS = {
     "body": [],
     "json": [],
     "list": true
+  },
+  "loom_folder_get": {
+    "path": "/folders/{folderId}",
+    "method": "GET",
+    "query": [],
+    "body": [],
+    "json": [],
+    "list": false
   }
 };
 

@@ -147,6 +147,28 @@ async function run(key, inputs, opts) {
       });
     }
 
+    if (key === 'kafka_topic_create_topic') {
+      const topic = str(d.topic);
+      const numPartitions = Math.max(1, toNum(d.numPartitions, 1));
+      const replicationFactor = Math.max(1, toNum(d.replicationFactor, 1));
+      if (!topic) return { ok: false, error: 'topic requis.' };
+      return withAdmin(opts, async (admin) => {
+        await admin.createTopics({
+          topics: [{ topic, numPartitions, replicationFactor }]
+        });
+        return actionResult(`Topic créé: ${topic}.`, { topic, numPartitions, replicationFactor });
+      });
+    }
+
+    if (key === 'kafka_topic_delete_topic') {
+      const topic = str(d.topic);
+      if (!topic) return { ok: false, error: 'topic requis.' };
+      return withAdmin(opts, async (admin) => {
+        await admin.deleteTopics({ topics: [topic] });
+        return actionResult(`Topic supprimé: ${topic}.`, { topic });
+      });
+    }
+
     if (key === 'kafka_message_publish_message') {
       const topic = str(d.topic);
       const value = d.value === undefined || d.value === null ? '' : String(d.value);
@@ -260,6 +282,17 @@ async function run(key, inputs, opts) {
       return withAdmin(opts, async (admin) => {
         const offsets = await admin.fetchTopicOffsets(topic);
         return itemResult({ id: topic, name: topic, status: 'ok', offsets }, topic);
+      });
+    }
+
+    if (key === 'kafka_group_list_groups') {
+      return withAdmin(opts, async (admin) => {
+        const groups = await admin.listGroups();
+        const list = Array.isArray(groups?.groups) ? groups.groups : [];
+        return listResult(
+          list.map((g) => itemFromRaw({ id: g.groupId || '', name: g.groupId || '', status: g.protocolType || '' }, g.groupId || '')),
+          groups
+        );
       });
     }
 

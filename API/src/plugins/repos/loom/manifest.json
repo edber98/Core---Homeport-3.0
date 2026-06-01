@@ -800,6 +800,221 @@
       ],
       "description": "Reçoit un événement Loom.",
       "group": "Webhook"
+    },
+    {
+      "key": "loom_video_comment_create",
+      "name": "loomVideoCommentCreate",
+      "schemaVersion": 2,
+      "title": "Créer un commentaire",
+      "subtitle": "Commentaires",
+      "icon": "fa-solid fa-plus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Loom",
+      "providerKey": "loom",
+      "tags": [
+        "loom",
+        "video"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:loom_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Crée un commentaire sur une vidéo Loom.",
+      "args": {
+        "title": "Créer un commentaire",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "videoId",
+            "label": "Video ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "text",
+            "label": "Texte",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Commentaires",
+      "risk": "write"
+    },
+    {
+      "key": "loom_video_comment_delete",
+      "name": "loomVideoCommentDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un commentaire",
+      "subtitle": "Commentaires",
+      "icon": "fa-solid fa-trash",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Loom",
+      "providerKey": "loom",
+      "tags": [
+        "loom",
+        "video"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:loom_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Supprime un commentaire Loom.",
+      "args": {
+        "title": "Supprimer un commentaire",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "videoId",
+            "label": "Video ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "commentId",
+            "label": "Comment ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Commentaires",
+      "risk": "destructive"
+    },
+    {
+      "key": "loom_folder_get",
+      "name": "loomFolderGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un dossier",
+      "subtitle": "Dossiers",
+      "icon": "fa-solid fa-folder-open",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Loom",
+      "providerKey": "loom",
+      "tags": [
+        "loom",
+        "folder"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:loom_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère un dossier Loom.",
+      "args": {
+        "title": "Récupérer un dossier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "folderId",
+            "label": "Folder ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Dossiers",
+      "risk": "safe"
     }
   ]
 }

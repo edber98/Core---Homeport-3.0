@@ -1698,6 +1698,254 @@
       ],
       "description": "Reçoit un événement Klaviyo.",
       "group": "Webhook"
+    },
+    {
+      "key": "klaviyo_segment_get",
+      "name": "klaviyoSegmentGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un segment",
+      "subtitle": "Segments",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Klaviyo",
+      "providerKey": "klaviyo",
+      "tags": [
+        "klaviyo"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:klaviyo_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupérer un segment",
+      "args": {
+        "title": "Récupérer un segment",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "segmentId",
+            "label": "Segment ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Segments",
+      "risk": "safe"
+    },
+    {
+      "key": "klaviyo_flow_get",
+      "name": "klaviyoFlowGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un flow",
+      "subtitle": "Flows",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Klaviyo",
+      "providerKey": "klaviyo",
+      "tags": [
+        "klaviyo"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:klaviyo_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupérer un flow",
+      "args": {
+        "title": "Récupérer un flow",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "flowId",
+            "label": "Flow ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Flows",
+      "risk": "safe"
+    },
+    {
+      "key": "klaviyo_template_get",
+      "name": "klaviyoTemplateGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un template",
+      "subtitle": "Templates",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Klaviyo",
+      "providerKey": "klaviyo",
+      "tags": [
+        "klaviyo"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:klaviyo_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupérer un template",
+      "args": {
+        "title": "Récupérer un template",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "templateId",
+            "label": "Template ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Templates",
+      "risk": "safe"
+    },
+    {
+      "key": "klaviyo_metric_get",
+      "name": "klaviyoMetricGet",
+      "schemaVersion": 2,
+      "title": "Récupérer une métrique",
+      "subtitle": "Métriques",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Klaviyo",
+      "providerKey": "klaviyo",
+      "tags": [
+        "klaviyo"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:klaviyo_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupérer une métrique",
+      "args": {
+        "title": "Récupérer une métrique",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "metricId",
+            "label": "Metric ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Métriques",
+      "risk": "safe"
     }
   ]
 }

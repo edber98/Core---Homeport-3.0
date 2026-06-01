@@ -3078,6 +3078,151 @@
         "displayDescription": false
       },
       "group": "séquences"
+    },
+    {
+      "key": "hunter_sequence_remove_sequence_recipient",
+      "name": "hunterSequenceRemoveSequenceRecipient",
+      "schemaVersion": 2,
+      "title": "Supprimer un destinataire de séquence",
+      "subtitle": "sequences",
+      "icon": "fa-solid fa-user-minus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Hunter",
+      "providerKey": "hunter",
+      "tags": [
+        "hunter",
+        "sequence",
+        "recipient",
+        "delete"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:hunter_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Supprime un destinataire d une campagne séquence Hunter.",
+      "args": {
+        "title": "Supprimer un destinataire de séquence",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "id",
+            "label": "ID séquence",
+            "description": "ID de la séquence.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "recipientId",
+            "label": "ID destinataire",
+            "description": "ID du destinataire à retirer.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "sequences",
+      "risk": "write"
+    },
+    {
+      "key": "hunter_sequence_stop_sequence",
+      "name": "hunterSequenceStopSequence",
+      "schemaVersion": 2,
+      "title": "Arrêter une séquence",
+      "subtitle": "sequences",
+      "icon": "fa-solid fa-stop",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Hunter",
+      "providerKey": "hunter",
+      "tags": [
+        "hunter",
+        "sequence",
+        "stop"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:hunter_lookup"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Arrête une campagne séquence en cours.",
+      "args": {
+        "title": "Arrêter une séquence",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "id",
+            "label": "ID séquence",
+            "description": "ID de la séquence à arrêter.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "sequences",
+      "risk": "write"
     }
   ]
 }

@@ -2183,6 +2183,134 @@
         "displayDescription": false
       },
       "group": "Utilitaires API"
+    },
+    {
+      "key": "fullstory_user_events_export",
+      "name": "fullstoryUserEventsExport",
+      "schemaVersion": 2,
+      "title": "Exporter les événements utilisateur",
+      "subtitle": "exports",
+      "icon": "fa-solid fa-file-export",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Fullstory",
+      "providerKey": "fullstory",
+      "tags": [
+        "fullstory",
+        "export",
+        "user"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:fullstory_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Télécharge les événements indexés d'un utilisateur.",
+      "args": {
+        "title": "Exporter les événements utilisateur",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "uid",
+            "label": "UID",
+            "description": "Identifiant utilisateur applicatif.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "exports"
+    },
+    {
+      "key": "fullstory_user_pages_export",
+      "name": "fullstoryUserPagesExport",
+      "schemaVersion": 2,
+      "title": "Exporter les pages utilisateur",
+      "subtitle": "exports",
+      "icon": "fa-solid fa-file-export",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Fullstory",
+      "providerKey": "fullstory",
+      "tags": [
+        "fullstory",
+        "export",
+        "user"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:fullstory_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Télécharge les pages et événements bruts d'un utilisateur.",
+      "args": {
+        "title": "Exporter les pages utilisateur",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "uid",
+            "label": "UID",
+            "description": "Identifiant utilisateur applicatif.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "exports"
     }
   ]
 }

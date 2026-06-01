@@ -278,6 +278,14 @@ const ACTIONS = {
     "json": [],
     "list": true
   },
+  "klaviyo_segment_get": {
+    "path": "/segments/{segmentId}",
+    "method": "GET",
+    "query": [],
+    "body": [],
+    "json": [],
+    "list": false
+  },
   "klaviyo_campaigns_list": {
     "path": "/campaigns",
     "method": "GET",
@@ -331,6 +339,14 @@ const ACTIONS = {
     "json": [],
     "list": true
   },
+  "klaviyo_flow_get": {
+    "path": "/flows/{flowId}",
+    "method": "GET",
+    "query": [],
+    "body": [],
+    "json": [],
+    "list": false
+  },
   "klaviyo_templates_list": {
     "path": "/templates",
     "method": "GET",
@@ -342,6 +358,22 @@ const ACTIONS = {
     "body": [],
     "json": [],
     "list": true
+  },
+  "klaviyo_template_get": {
+    "path": "/templates/{templateId}",
+    "method": "GET",
+    "query": [],
+    "body": [],
+    "json": [],
+    "list": false
+  },
+  "klaviyo_metric_get": {
+    "path": "/metrics/{metricId}",
+    "method": "GET",
+    "query": [],
+    "body": [],
+    "json": [],
+    "list": false
   }
 };
 

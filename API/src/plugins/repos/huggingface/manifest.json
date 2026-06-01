@@ -702,6 +702,199 @@
         "displayDescription": false
       },
       "group": "Hub"
+    },
+    {
+      "key": "huggingface_spaces_list",
+      "name": "huggingfaceSpacesList",
+      "schemaVersion": 2,
+      "title": "Lister les Spaces",
+      "subtitle": "Hub",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Hugging Face",
+      "providerKey": "huggingface",
+      "tags": [
+        "huggingface",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:huggingface_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les Spaces du Hub Hugging Face.",
+      "args": {
+        "title": "Lister les Spaces",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "search",
+            "label": "Recherche",
+            "description": "Recherche Space.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre d'éléments.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Hub"
+    },
+    {
+      "key": "huggingface_space_get",
+      "name": "huggingfaceSpaceGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un Space",
+      "subtitle": "Hub",
+      "icon": "fa-solid fa-magnifying-glass",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Hugging Face",
+      "providerKey": "huggingface",
+      "tags": [
+        "huggingface",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:huggingface_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère un Space par repoId (owner/name).",
+      "args": {
+        "title": "Récupérer un Space",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "repoId",
+            "label": "Repo ID",
+            "description": "Format owner/name.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Hub"
+    },
+    {
+      "key": "huggingface_dataset_get",
+      "name": "huggingfaceDatasetGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un dataset",
+      "subtitle": "Hub",
+      "icon": "fa-solid fa-database",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Hugging Face",
+      "providerKey": "huggingface",
+      "tags": [
+        "huggingface",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:huggingface_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère un dataset par repoId (owner/name).",
+      "args": {
+        "title": "Récupérer un dataset",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "repoId",
+            "label": "Repo ID",
+            "description": "Format owner/name.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Hub"
     }
   ]
 }

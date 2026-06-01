@@ -22,6 +22,9 @@ async function run(key, inputs, opts) {
     if (key === "langchain_json_extract") { const r = await chat(opts, d.model, [[ "system", "Extrait les informations demandées et réponds uniquement en JSON valide. Schéma: " + compactJson(parseJson(d.schema, "schema", {})) ], [ "human", d.text ]]); return r.ok ? response(r) : r; }
     if (key === "langchain_classify") { const r = await chat(opts, d.model, [[ "system", "Classe le texte dans un des labels suivants et réponds en JSON: " + compactJson(parseJson(d.labels, "labels", [])) ], [ "human", d.text ]]); return r.ok ? response(r) : r; }
     if (key === "langchain_rag_answer") { const docs = parseJson(d.documents, "documents", []); const context = docs.map((x, i) => "[" + (i + 1) + "] " + (x.text || x.content || x)).join("\n\n"); const r = await chat(opts, d.model, [[ "system", "Réponds à partir du contexte fourni. Cite les numéros de sources utiles." ], [ "human", "Contexte:\n" + context + "\n\nQuestion: " + d.question ]]); return r.ok ? response(r) : r; }
+    if (key === "langchain_keywords_extract") { const r = await chat(opts, d.model, [[ "system", "Extrais les mots-clés principaux et réponds en JSON avec le champ keywords (tableau de chaînes)." ], [ "human", d.text ]]); return r.ok ? response(r) : r; }
+    if (key === "langchain_text_translate") { const targetLanguage = d.targetLanguage || "fr"; const r = await chat(opts, d.model, [[ "system", "Traduis fidèlement le texte dans la langue cible." ], [ "human", `Langue cible: ${targetLanguage}\n\nTexte:\n${d.text || ""}` ]]); return r.ok ? response(r) : r; }
+    if (key === "langchain_sentiment_analyze") { const r = await chat(opts, d.model, [[ "system", "Analyse le sentiment et réponds en JSON valide avec: sentiment, confidence, rationale." ], [ "human", d.text ]]); return r.ok ? response(r) : r; }
     return { ok: false, error: "Action inconnue." };
   } catch (e) { return { ok: false, error: e.message }; }
 }

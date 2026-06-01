@@ -251,4 +251,4 @@ async function run(key, inputs, opts) {
   }
 }
 
-module.exports = { utils: { run, parseJson } };
+module.exports = { utils: { run, parseJson, request } };

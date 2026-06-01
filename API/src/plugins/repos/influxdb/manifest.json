@@ -787,6 +787,129 @@
         "displayDescription": false
       },
       "group": "Métadonnées"
+    },
+    {
+      "key": "influxdb_retention_rules_list",
+      "name": "influxdbRetentionRulesList",
+      "schemaVersion": 2,
+      "title": "Lister les règles de rétention",
+      "subtitle": "Gouvernance",
+      "icon": "fa-solid fa-clock-rotate-left",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "InfluxDB",
+      "providerKey": "influxdb",
+      "tags": [
+        "influxdb",
+        "retention",
+        "bucket"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:influxdb_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les règles de rétention d un bucket.",
+      "args": {
+        "title": "Lister les règles de rétention",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "bucketId",
+            "label": "ID bucket",
+            "description": "Identifiant du bucket.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Gouvernance"
+    },
+    {
+      "key": "influxdb_labels_list",
+      "name": "influxdbLabelsList",
+      "schemaVersion": 2,
+      "title": "Lister les labels",
+      "subtitle": "Gouvernance",
+      "icon": "fa-solid fa-tags",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "InfluxDB",
+      "providerKey": "influxdb",
+      "tags": [
+        "influxdb",
+        "labels"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:influxdb_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les labels InfluxDB exploitables pour catégoriser les ressources.",
+      "args": {
+        "title": "Lister les labels",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre maximum (1-500).",
+            "col": {
+              "xs": 24
+            },
+            "default": 100
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Gouvernance"
     }
   ]
 }

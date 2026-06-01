@@ -1239,6 +1239,214 @@
         "displayDescription": false
       },
       "group": "chats"
+    },
+    {
+      "key": "llamaindex_chat_list",
+      "name": "llamaindexChatList",
+      "schemaVersion": 2,
+      "title": "Lister les sessions de chat",
+      "subtitle": "chats",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "LlamaIndex",
+      "providerKey": "llamaindex",
+      "tags": [
+        "llamaindex",
+        "chat",
+        "get"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:llamaindex_chats"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les sessions de chat LlamaIndex.",
+      "args": {
+        "title": "Lister les sessions de chat",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "chats",
+      "risk": "safe"
+    },
+    {
+      "key": "llamaindex_pipeline_document_create",
+      "name": "llamaindexPipelineDocumentCreate",
+      "schemaVersion": 2,
+      "title": "Créer un document pipeline",
+      "subtitle": "pipelines",
+      "icon": "fa-solid fa-plus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "LlamaIndex",
+      "providerKey": "llamaindex",
+      "tags": [
+        "llamaindex",
+        "pipeline",
+        "document_get"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:llamaindex_document"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Crée un document dans un pipeline LlamaIndex.",
+      "args": {
+        "title": "Créer un document pipeline",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "pipeline_id",
+            "label": "Pipeline ID",
+            "description": "Identifiant du pipeline.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "body",
+            "label": "Body (JSON)",
+            "description": "Payload de création document.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "pipelines",
+      "risk": "write"
+    },
+    {
+      "key": "llamaindex_pipeline_document_delete",
+      "name": "llamaindexPipelineDocumentDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un document pipeline",
+      "subtitle": "pipelines",
+      "icon": "fa-solid fa-trash",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "LlamaIndex",
+      "providerKey": "llamaindex",
+      "tags": [
+        "llamaindex",
+        "pipeline",
+        "document_get"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:llamaindex_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Supprime un document dans un pipeline LlamaIndex.",
+      "args": {
+        "title": "Supprimer un document pipeline",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "pipeline_id",
+            "label": "Pipeline ID",
+            "description": "Identifiant du pipeline.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "document_id",
+            "label": "Document ID",
+            "description": "Identifiant du document.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "pipelines",
+      "risk": "destructive"
     }
   ]
 }

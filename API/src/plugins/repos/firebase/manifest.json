@@ -7,54 +7,222 @@
   "variables": {
     "firebase_firestore_document": {
       "title": "Document Firestore",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "text", "key": "name", "label": "Nom complet", "col": { "xs": 24 } },
-        { "type": "text", "key": "path", "label": "Chemin", "col": { "xs": 24 } },
-        { "type": "text", "key": "id", "label": "ID", "col": { "xs": 24 } },
-        { "type": "textarea", "key": "fields", "label": "Champs JSON", "col": { "xs": 24 } },
-        { "type": "date", "key": "createTime", "label": "Date de création", "col": { "xs": 24 } },
-        { "type": "date", "key": "updateTime", "label": "Date de modification", "col": { "xs": 24 } }
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom complet",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "path",
+          "label": "Chemin",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "fields",
+          "label": "Champs JSON",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "createTime",
+          "label": "Date de création",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "updateTime",
+          "label": "Date de modification",
+          "col": {
+            "xs": 24
+          }
+        }
       ]
     },
     "firebase_firestore_documents": {
       "title": "Documents Firestore",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "number", "key": "totalCount", "label": "Nombre total", "col": { "xs": 24 } },
-        { "type": "text", "key": "nextPageToken", "label": "Jeton page suivante", "col": { "xs": 24 } },
-        { "type": "section", "title": "Documents", "key": "documents", "mode": "array", "array": { "initialItems": 0, "minItems": 0 }, "fields": [
-          { "type": "text", "key": "name", "label": "Nom complet", "col": { "xs": 24 } },
-          { "type": "text", "key": "path", "label": "Chemin", "col": { "xs": 24 } },
-          { "type": "text", "key": "id", "label": "ID", "col": { "xs": 24 } },
-          { "type": "textarea", "key": "fields", "label": "Champs JSON", "col": { "xs": 24 } }
-        ], "col": { "xs": 24 } }
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextPageToken",
+          "label": "Jeton page suivante",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Documents",
+          "key": "documents",
+          "mode": "array",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom complet",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "path",
+              "label": "Chemin",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "fields",
+              "label": "Champs JSON",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
       ]
     },
     "firebase_message": {
       "title": "Message Firebase",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "text", "key": "name", "label": "Nom", "col": { "xs": 24 } },
-        { "type": "text", "key": "success", "label": "Succès", "col": { "xs": 24 } }
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "success",
+          "label": "Succès",
+          "col": {
+            "xs": 24
+          }
+        }
       ]
     },
     "firebase_rtdb_value": {
       "title": "Valeur Realtime Database",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "text", "key": "path", "label": "Chemin", "col": { "xs": 24 } },
-        { "type": "textarea", "key": "value", "label": "Valeur JSON", "col": { "xs": 24 } },
-        { "type": "text", "key": "success", "label": "Succès", "col": { "xs": 24 } }
+        {
+          "type": "text",
+          "key": "path",
+          "label": "Chemin",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "value",
+          "label": "Valeur JSON",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "success",
+          "label": "Succès",
+          "col": {
+            "xs": 24
+          }
+        }
       ]
     },
     "firebase_result": {
       "title": "Résultat Firebase",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "text", "key": "id", "label": "ID", "col": { "xs": 24 } },
-        { "type": "text", "key": "path", "label": "Chemin", "col": { "xs": 24 } },
-        { "type": "text", "key": "success", "label": "Succès", "col": { "xs": 24 } }
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "path",
+          "label": "Chemin",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "success",
+          "label": "Succès",
+          "col": {
+            "xs": 24
+          }
+        }
       ]
     }
   },
@@ -66,20 +234,91 @@
       "iconUrl": "https://cdn.simpleicons.org/firebase",
       "iconClass": "fa-solid fa-fire",
       "color": "#ffca28",
-      "tags": ["firebase", "google", "database", "push"],
-      "categories": ["Développement"],
+      "tags": [
+        "firebase",
+        "google",
+        "database",
+        "push"
+      ],
+      "categories": [
+        "Développement"
+      ],
       "hasCredentials": true,
       "credentialsForm": {
         "title": "Identifiants Firebase",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
-          { "type": "text", "key": "projectId", "label": "ID projet", "description": "Identifiant du projet Firebase.", "validators": [{ "type": "required" }], "col": { "xs": 24 } },
-          { "type": "text", "key": "databaseId", "label": "ID base Firestore", "default": "(default)", "col": { "xs": 24 } },
-          { "type": "text", "key": "databaseUrl", "label": "URL Realtime Database", "description": "Exemple : https://mon-projet-default-rtdb.europe-west1.firebasedatabase.app", "col": { "xs": 24 } },
-          { "type": "text", "key": "clientId", "label": "Client ID OAuth", "col": { "xs": 24 } },
-          { "type": "text", "key": "clientSecret", "label": "Client secret OAuth", "secret": true, "col": { "xs": 24 } },
-          { "type": "text", "key": "refreshToken", "label": "Refresh token OAuth", "secret": true, "col": { "xs": 24 } },
-          { "type": "text", "key": "accessToken", "label": "Access token temporaire", "description": "Optionnel, utile pour tester sans refresh token.", "secret": true, "col": { "xs": 24 } }
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "ID projet",
+            "description": "Identifiant du projet Firebase.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "databaseId",
+            "label": "ID base Firestore",
+            "default": "(default)",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "databaseUrl",
+            "label": "URL Realtime Database",
+            "description": "Exemple : https://mon-projet-default-rtdb.europe-west1.firebasedatabase.app",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "clientId",
+            "label": "Client ID OAuth",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "clientSecret",
+            "label": "Client secret OAuth",
+            "secret": true,
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "refreshToken",
+            "label": "Refresh token OAuth",
+            "secret": true,
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "accessToken",
+            "label": "Access token temporaire",
+            "description": "Optionnel, utile pour tester sans refresh token.",
+            "secret": true,
+            "col": {
+              "xs": 24
+            }
+          }
         ],
         "displayTitle": false,
         "displayDescription": false
@@ -98,15 +337,57 @@
       "nodeKind": "function",
       "category": "Firebase",
       "providerKey": "firebase",
-      "tags": ["lecture", "firestore"],
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:firebase_firestore_document" }],
+      "tags": [
+        "lecture",
+        "firestore"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:firebase_firestore_document"
+        }
+      ],
       "authorize_catch_error": true,
       "description": "Récupère un document Firestore.",
-      "args": { "fields": [
-        { "type": "text", "key": "documentPath", "label": "Chemin du document", "description": "Exemple : users/abc123", "validators": [{ "type": "required" }], "col": { "xs": 24 } },
-        { "type": "text", "key": "databaseId", "label": "ID base", "col": { "xs": 24 } }
-      ] },
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "documentPath",
+            "label": "Chemin du document",
+            "description": "Exemple : users/abc123",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "databaseId",
+            "label": "ID base",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
       "group": "Firestore"
     },
     {
@@ -120,18 +401,83 @@
       "nodeKind": "function",
       "category": "Firebase",
       "providerKey": "firebase",
-      "tags": ["lecture", "firestore"],
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:firebase_firestore_documents" }],
+      "tags": [
+        "lecture",
+        "firestore"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:firebase_firestore_documents"
+        }
+      ],
       "authorize_catch_error": true,
       "description": "Liste les documents d'une collection Firestore.",
-      "args": { "fields": [
-        { "type": "text", "key": "collectionPath", "label": "Chemin de collection", "description": "Exemple : users ou users/abc/orders", "validators": [{ "type": "required" }], "col": { "xs": 24 } },
-        { "type": "text", "key": "databaseId", "label": "ID base", "col": { "xs": 24 } },
-        { "type": "number", "key": "pageSize", "label": "Taille page", "default": 50, "col": { "xs": 12 } },
-        { "type": "text", "key": "pageToken", "label": "Jeton page", "col": { "xs": 24 } },
-        { "type": "text", "key": "orderBy", "label": "Tri", "description": "Exemple : createdAt desc", "col": { "xs": 24 } }
-      ] },
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "collectionPath",
+            "label": "Chemin de collection",
+            "description": "Exemple : users ou users/abc/orders",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "databaseId",
+            "label": "ID base",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "pageSize",
+            "label": "Taille page",
+            "default": 50,
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "text",
+            "key": "pageToken",
+            "label": "Jeton page",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "orderBy",
+            "label": "Tri",
+            "description": "Exemple : createdAt desc",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
       "group": "Firestore"
     },
     {
@@ -145,17 +491,78 @@
       "nodeKind": "function",
       "category": "Firebase",
       "providerKey": "firebase",
-      "tags": ["création", "firestore"],
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:firebase_firestore_document" }],
+      "tags": [
+        "création",
+        "firestore"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:firebase_firestore_document"
+        }
+      ],
       "authorize_catch_error": true,
       "description": "Crée un document Firestore dans une collection.",
-      "args": { "fields": [
-        { "type": "text", "key": "collectionPath", "label": "Chemin de collection", "validators": [{ "type": "required" }], "col": { "xs": 24 } },
-        { "type": "text", "key": "documentId", "label": "ID document", "description": "Optionnel.", "col": { "xs": 24 } },
-        { "type": "text", "key": "databaseId", "label": "ID base", "col": { "xs": 24 } },
-        { "type": "textarea", "key": "fields", "label": "Champs JSON", "validators": [{ "type": "required" }], "col": { "xs": 24 } }
-      ] },
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "collectionPath",
+            "label": "Chemin de collection",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "documentId",
+            "label": "ID document",
+            "description": "Optionnel.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "databaseId",
+            "label": "ID base",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "fields",
+            "label": "Champs JSON",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
       "group": "Firestore"
     },
     {
@@ -169,17 +576,78 @@
       "nodeKind": "function",
       "category": "Firebase",
       "providerKey": "firebase",
-      "tags": ["modification", "firestore"],
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:firebase_firestore_document" }],
+      "tags": [
+        "modification",
+        "firestore"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:firebase_firestore_document"
+        }
+      ],
       "authorize_catch_error": true,
       "description": "Modifie un document Firestore.",
-      "args": { "fields": [
-        { "type": "text", "key": "documentPath", "label": "Chemin du document", "validators": [{ "type": "required" }], "col": { "xs": 24 } },
-        { "type": "text", "key": "databaseId", "label": "ID base", "col": { "xs": 24 } },
-        { "type": "textarea", "key": "fields", "label": "Champs JSON", "validators": [{ "type": "required" }], "col": { "xs": 24 } },
-        { "type": "textarea", "key": "updateMask", "label": "Champs à modifier", "description": "Une clé par ligne. Vide pour envoyer tous les champs.", "col": { "xs": 24 } }
-      ] },
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "documentPath",
+            "label": "Chemin du document",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "databaseId",
+            "label": "ID base",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "fields",
+            "label": "Champs JSON",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "updateMask",
+            "label": "Champs à modifier",
+            "description": "Une clé par ligne. Vide pour envoyer tous les champs.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
       "group": "Firestore"
     },
     {
@@ -193,15 +661,56 @@
       "nodeKind": "function",
       "category": "Firebase",
       "providerKey": "firebase",
-      "tags": ["suppression", "firestore"],
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:firebase_result" }],
+      "tags": [
+        "suppression",
+        "firestore"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:firebase_result"
+        }
+      ],
       "authorize_catch_error": true,
       "description": "Supprime un document Firestore.",
-      "args": { "fields": [
-        { "type": "text", "key": "documentPath", "label": "Chemin du document", "validators": [{ "type": "required" }], "col": { "xs": 24 } },
-        { "type": "text", "key": "databaseId", "label": "ID base", "col": { "xs": 24 } }
-      ] },
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "documentPath",
+            "label": "Chemin du document",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "databaseId",
+            "label": "ID base",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
       "group": "Firestore"
     },
     {
@@ -215,23 +724,127 @@
       "nodeKind": "function",
       "category": "Firebase",
       "providerKey": "firebase",
-      "tags": ["notification", "fcm"],
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:firebase_message" }],
+      "tags": [
+        "notification",
+        "fcm"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:firebase_message"
+        }
+      ],
       "authorize_catch_error": true,
       "description": "Envoie un message Firebase Cloud Messaging HTTP v1.",
-      "args": { "fields": [
-        { "type": "text", "key": "projectId", "label": "ID projet", "description": "Optionnel si défini dans les identifiants.", "col": { "xs": 24 } },
-        { "type": "select", "key": "targetType", "label": "Type de cible", "default": "token", "options": ["token", "topic", "condition"], "col": { "xs": 24 } },
-        { "type": "text", "key": "target", "label": "Cible", "validators": [{ "type": "required" }], "col": { "xs": 24 } },
-        { "type": "text", "key": "title", "label": "Titre", "col": { "xs": 24 } },
-        { "type": "textarea", "key": "body", "label": "Corps", "col": { "xs": 24 } },
-        { "type": "textarea", "key": "data", "label": "Données JSON", "col": { "xs": 24 } },
-        { "type": "textarea", "key": "android", "label": "Options Android JSON", "col": { "xs": 24 } },
-        { "type": "textarea", "key": "apns", "label": "Options APNs JSON", "col": { "xs": 24 } },
-        { "type": "textarea", "key": "webpush", "label": "Options Webpush JSON", "col": { "xs": 24 } },
-        { "type": "checkbox", "key": "validateOnly", "label": "Valider sans envoyer", "col": { "xs": 24 } }
-      ] },
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "ID projet",
+            "description": "Optionnel si défini dans les identifiants.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "select",
+            "key": "targetType",
+            "label": "Type de cible",
+            "default": "token",
+            "options": [
+              "token",
+              "topic",
+              "condition"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "target",
+            "label": "Cible",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "title",
+            "label": "Titre",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "body",
+            "label": "Corps",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "data",
+            "label": "Données JSON",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "android",
+            "label": "Options Android JSON",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "apns",
+            "label": "Options APNs JSON",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "webpush",
+            "label": "Options Webpush JSON",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "validateOnly",
+            "label": "Valider sans envoyer",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
       "group": "Cloud Messaging"
     },
     {
@@ -245,12 +858,48 @@
       "nodeKind": "function",
       "category": "Firebase",
       "providerKey": "firebase",
-      "tags": ["lecture", "database"],
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:firebase_rtdb_value" }],
+      "tags": [
+        "lecture",
+        "database"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:firebase_rtdb_value"
+        }
+      ],
       "authorize_catch_error": true,
       "description": "Lit une valeur Realtime Database.",
-      "args": { "fields": [{ "type": "text", "key": "path", "label": "Chemin", "validators": [{ "type": "required" }], "col": { "xs": 24 } }] },
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Chemin",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
       "group": "Realtime Database"
     },
     {
@@ -264,15 +913,61 @@
       "nodeKind": "function",
       "category": "Firebase",
       "providerKey": "firebase",
-      "tags": ["écriture", "database"],
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:firebase_rtdb_value" }],
+      "tags": [
+        "écriture",
+        "database"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:firebase_rtdb_value"
+        }
+      ],
       "authorize_catch_error": true,
       "description": "Remplace une valeur Realtime Database.",
-      "args": { "fields": [
-        { "type": "text", "key": "path", "label": "Chemin", "validators": [{ "type": "required" }], "col": { "xs": 24 } },
-        { "type": "textarea", "key": "value", "label": "Valeur JSON", "validators": [{ "type": "required" }], "col": { "xs": 24 } }
-      ] },
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Chemin",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "value",
+            "label": "Valeur JSON",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
       "group": "Realtime Database"
     },
     {
@@ -286,15 +981,61 @@
       "nodeKind": "function",
       "category": "Firebase",
       "providerKey": "firebase",
-      "tags": ["modification", "database"],
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:firebase_rtdb_value" }],
+      "tags": [
+        "modification",
+        "database"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:firebase_rtdb_value"
+        }
+      ],
       "authorize_catch_error": true,
       "description": "Modifie partiellement une valeur Realtime Database.",
-      "args": { "fields": [
-        { "type": "text", "key": "path", "label": "Chemin", "validators": [{ "type": "required" }], "col": { "xs": 24 } },
-        { "type": "textarea", "key": "value", "label": "Valeur JSON", "validators": [{ "type": "required" }], "col": { "xs": 24 } }
-      ] },
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Chemin",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "value",
+            "label": "Valeur JSON",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
       "group": "Realtime Database"
     },
     {
@@ -308,12 +1049,189 @@
       "nodeKind": "function",
       "category": "Firebase",
       "providerKey": "firebase",
-      "tags": ["suppression", "database"],
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:firebase_result" }],
+      "tags": [
+        "suppression",
+        "database"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:firebase_result"
+        }
+      ],
       "authorize_catch_error": true,
       "description": "Supprime une valeur Realtime Database.",
-      "args": { "fields": [{ "type": "text", "key": "path", "label": "Chemin", "validators": [{ "type": "required" }], "col": { "xs": 24 } }] },
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Chemin",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "group": "Realtime Database"
+    },
+    {
+      "key": "firebase_firestore_query_run",
+      "name": "firebaseFirestoreQueryRun",
+      "schemaVersion": 2,
+      "title": "Exécuter une requête",
+      "subtitle": "Firestore",
+      "icon": "fa-solid fa-filter",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Firebase",
+      "providerKey": "firebase",
+      "tags": [
+        "lecture",
+        "requête",
+        "firestore"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:firebase_firestore_documents"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Exécute une requête structurée Firestore (runQuery).",
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "parentPath",
+            "label": "Chemin parent",
+            "description": "Optionnel. Ex: users/abc/orders",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "databaseId",
+            "label": "ID base",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "structuredQuery",
+            "label": "Structured Query JSON",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "group": "Firestore"
+    },
+    {
+      "key": "firebase_rtdb_value_push",
+      "name": "firebaseRtdbValuePush",
+      "schemaVersion": 2,
+      "title": "Ajouter une valeur",
+      "subtitle": "Realtime Database",
+      "icon": "fa-solid fa-square-plus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Firebase",
+      "providerKey": "firebase",
+      "tags": [
+        "création",
+        "database"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:firebase_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Ajoute une valeur dans Realtime Database (POST avec clé générée).",
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Chemin",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "value",
+            "label": "Valeur JSON",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
       "group": "Realtime Database"
     }
   ]

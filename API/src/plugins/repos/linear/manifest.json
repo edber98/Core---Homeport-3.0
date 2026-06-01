@@ -2366,6 +2366,279 @@
       ],
       "group": "Événements",
       "risk": "safe"
+    },
+    {
+      "key": "linear_issue_delete",
+      "name": "linearIssueDelete",
+      "schemaVersion": 2,
+      "title": "Archiver une issue",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Linear",
+      "providerKey": "linear",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:linear_issue"
+        }
+      ],
+      "description": "Archive une issue Linear.",
+      "args": {
+        "title": "Archiver une issue",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "issueId",
+            "label": "Issue ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Issues",
+      "icon": "fa-solid fa-box-archive",
+      "tags": [
+        "linear",
+        "delete"
+      ],
+      "group": "Issues",
+      "risk": "destructive"
+    },
+    {
+      "key": "linear_project_update",
+      "name": "linearProjectUpdate",
+      "schemaVersion": 2,
+      "title": "Mettre à jour un projet",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Linear",
+      "providerKey": "linear",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:linear_project"
+        }
+      ],
+      "description": "Met à jour un projet Linear.",
+      "args": {
+        "title": "Mettre à jour un projet",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "Project ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "description",
+            "label": "Description",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Projets",
+      "icon": "fa-solid fa-pen-to-square",
+      "tags": [
+        "linear",
+        "projet"
+      ],
+      "group": "Projets",
+      "risk": "write"
+    },
+    {
+      "key": "linear_comment_update",
+      "name": "linearCommentUpdate",
+      "schemaVersion": 2,
+      "title": "Mettre à jour un commentaire",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Linear",
+      "providerKey": "linear",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:linear_issue"
+        }
+      ],
+      "description": "Met à jour un commentaire.",
+      "args": {
+        "title": "Mettre à jour un commentaire",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "commentId",
+            "label": "Comment ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "body",
+            "label": "Contenu",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Commentaires",
+      "icon": "fa-solid fa-pen",
+      "tags": [
+        "linear",
+        "comment"
+      ],
+      "group": "Commentaires",
+      "risk": "write"
+    },
+    {
+      "key": "linear_comment_delete",
+      "name": "linearCommentDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un commentaire",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Linear",
+      "providerKey": "linear",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:linear_issue"
+        }
+      ],
+      "description": "Supprime un commentaire.",
+      "args": {
+        "title": "Supprimer un commentaire",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "commentId",
+            "label": "Comment ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Commentaires",
+      "icon": "fa-solid fa-trash",
+      "tags": [
+        "linear",
+        "comment"
+      ],
+      "group": "Commentaires",
+      "risk": "destructive"
     }
   ]
 }
