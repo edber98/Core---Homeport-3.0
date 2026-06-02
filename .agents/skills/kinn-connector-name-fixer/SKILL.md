@@ -1,6 +1,6 @@
 ---
 name: kinn-connector-name-fixer
-description: 'Corrige manuellement les noms de noeuds Kinn/Homeport sous API/src/plugins/repos: traitement obligatoire et exhaustif noeud par noeud de tout le manifest, titres explicites en français sans symboles comme / ou -, descriptions courtes et claires orientées action, sans correction mécanique par script.'
+description: 'Corrige manuellement les noms de noeuds et les groupes Kinn/Homeport sous API/src/plugins/repos: traitement obligatoire et exhaustif noeud par noeud de tout le manifest, titres explicites en français sans symboles comme / ou -, groupes/catégories traduits en français, descriptions courtes et claires orientées action, sans correction mécanique par script.'
 ---
 
 # Kinn Connector Name Fixer
@@ -23,7 +23,7 @@ API/src/plugins/repos/{connector}/manifest.json
 1. Ouvrir `manifest.json` du connecteur cible et parcourir `nodeTemplates[]` intégralement, un noeud à la fois, sans en sauter, même si le connecteur contient plusieurs centaines ou milliers de noeuds.
 2. Pour chaque noeud, vérifier si les champs sont entièrement en français et compréhensibles:
    - `title`: libellé d’action clair en français (verbe d’action + objet métier), sans symbole de séparation du type `/`, `-`, `_` ou formulation technique compacte.
-   - `subtitle`: catégorie courte et claire en français.
+   - `subtitle`: libellé de groupe ou catégorie court, clair et traduit en français. Si le connecteur regroupe les noeuds par familles techniques ou métiers, ces groupes doivent aussi être renommés en français.
    - `description`: courte phrase explicative en français qui dit clairement ce que le noeud fait comme action pour l’utilisateur.
 3. Traiter chaque noeud individuellement. Même si un noeud semble deja correct, il doit etre relu explicitement puis conservé ou réécrit en connaissance du contexte métier.
 4. Corriger manuellement chaque noeud au cas par cas si nécessaire. La correction doit être contextuelle, fondée sur le sens métier réel, jamais automatique ni par lot.
@@ -43,6 +43,7 @@ node .agents/skills/kinn-connector-creator/scripts/check-connector.js {connector
 - Cette exhaustivité reste obligatoire quelle que soit la taille du connecteur: 10, 100 ou 1000 noeuds ne justifient aucun traitement partiel.
 - Le texte doit être naturel pour un humain non technique.
 - Le `title`, le `subtitle` et la `description` doivent être rédigés en français.
+- Les libellés de groupe ou de catégorie exposés dans le manifest doivent aussi être traduits en français, pas seulement les titres des noeuds.
 - Le `title` doit être un vrai libellé explicite, lisible seul, sans symbole de structure du type `/`, `-` ou `_`.
 - Le `title` doit exprimer clairement l'action et son objet métier, par exemple `Créer un contact` ou `Lister les factures`.
 - Pas de fragments techniques bruts dans les libellés utilisateur (`get_xxx`, `list_xxx`, `patch`, `docs_api`, etc.).
@@ -59,6 +60,7 @@ node .agents/skills/kinn-connector-creator/scripts/check-connector.js {connector
 ## Notes
 
 - Les clés internes (`nodeTemplates[].key`, noms de handlers, variables) ne sont pas traduites.
+- Les identifiants techniques de groupe ne sont pas traduits, mais leurs libellés affichés le sont.
 - L’objectif du skill est la clarté UX, pas la traduction littérale.
 - Le travail attendu est une réécriture éditoriale manuelle, noeud par noeud, orientée utilisateur.
 - Si l'utilisateur demande de corriger un connecteur ou "les noms d'un noeud", interpréter cela comme une revue intégrale de tous les noeuds du connecteur ciblé, pas seulement du noeud cité.
