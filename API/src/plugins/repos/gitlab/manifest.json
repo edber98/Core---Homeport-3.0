@@ -3326,6 +3326,2461 @@
         "GitLab"
       ],
       "risk": "safe"
+    },
+    {
+      "key": "gitlab_issue_delete",
+      "name": "gitlabIssueDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer une issue",
+      "subtitle": "Issue",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Issues",
+      "providerKey": "gitlab",
+      "icon": "fa-solid fa-trash",
+      "description": "Supprimer une issue GitLab",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gitlab_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Supprimer une issue",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "ID projet",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID ou chemin URL-encodé du projet.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "issueIid",
+            "label": "IID issue",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "IID de l'issue.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Issues",
+      "tags": [
+        "suppression",
+        "GitLab"
+      ],
+      "risk": "destructive"
+    },
+    {
+      "key": "gitlab_issue_note_get",
+      "name": "gitlabIssueNoteGet",
+      "schemaVersion": 2,
+      "title": "Obtenir un commentaire",
+      "subtitle": "Commentaire",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Issues",
+      "providerKey": "gitlab",
+      "icon": "fa-solid fa-eye",
+      "description": "Récupérer un commentaire d'issue GitLab",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gitlab_note"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Obtenir un commentaire",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "ID projet",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID ou chemin URL-encodé du projet.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "issueIid",
+            "label": "IID issue",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "IID de l'issue.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "noteId",
+            "label": "ID commentaire",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID du commentaire.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Issues",
+      "tags": [
+        "lecture",
+        "GitLab"
+      ],
+      "risk": "safe"
+    },
+    {
+      "key": "gitlab_issue_note_update",
+      "name": "gitlabIssueNoteUpdate",
+      "schemaVersion": 2,
+      "title": "Mettre à jour un commentaire",
+      "subtitle": "Commentaire",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Issues",
+      "providerKey": "gitlab",
+      "icon": "fa-solid fa-pen",
+      "description": "Mettre à jour un commentaire d'issue GitLab",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gitlab_note"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Mettre à jour un commentaire",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "ID projet",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID ou chemin URL-encodé du projet.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "issueIid",
+            "label": "IID issue",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "IID de l'issue.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "noteId",
+            "label": "ID commentaire",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID du commentaire.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "body",
+            "label": "Contenu",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Nouveau contenu du commentaire.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "confidential",
+            "label": "Confidentiel",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Marquer le commentaire comme confidentiel.",
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "internal",
+            "label": "Interne",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Marquer le commentaire comme interne.",
+            "expression": {
+              "allow": true
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Issues",
+      "tags": [
+        "mise à jour",
+        "GitLab"
+      ],
+      "risk": "write"
+    },
+    {
+      "key": "gitlab_issue_note_delete",
+      "name": "gitlabIssueNoteDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un commentaire",
+      "subtitle": "Commentaire",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Issues",
+      "providerKey": "gitlab",
+      "icon": "fa-solid fa-trash",
+      "description": "Supprimer un commentaire d'issue GitLab",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gitlab_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Supprimer un commentaire",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "ID projet",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID ou chemin URL-encodé du projet.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "issueIid",
+            "label": "IID issue",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "IID de l'issue.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "noteId",
+            "label": "ID commentaire",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID du commentaire.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Issues",
+      "tags": [
+        "suppression",
+        "GitLab"
+      ],
+      "risk": "destructive"
+    },
+    {
+      "key": "gitlab_issue_notes_list",
+      "name": "gitlabIssueNotesList",
+      "schemaVersion": 2,
+      "title": "Lister les commentaires",
+      "subtitle": "Commentaire",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Issues",
+      "providerKey": "gitlab",
+      "icon": "fa-solid fa-list",
+      "description": "Lister les commentaires d'une issue GitLab",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gitlab_notes"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Lister les commentaires",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "ID projet",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID ou chemin URL-encodé du projet.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "issueIid",
+            "label": "IID issue",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "IID de l'issue.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "sort",
+            "label": "Tri",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Ordre de tri asc ou desc.",
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "order_by",
+            "label": "Ordre",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Champ de tri created_at ou updated_at.",
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "activity_filter",
+            "label": "Filtre activité",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Filtrer les notes par type d'activité.",
+            "expression": {
+              "allow": true
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Issues",
+      "tags": [
+        "liste",
+        "GitLab"
+      ],
+      "risk": "safe"
+    },
+    {
+      "key": "gitlab_mr_delete",
+      "name": "gitlabMrDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer une merge request",
+      "subtitle": "Merge request",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Merge requests",
+      "providerKey": "gitlab",
+      "icon": "fa-solid fa-trash",
+      "description": "Supprimer une merge request GitLab",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gitlab_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Supprimer une merge request",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "ID projet",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID ou chemin URL-encodé du projet.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "mrIid",
+            "label": "IID MR",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "IID de la merge request.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Merge requests",
+      "tags": [
+        "suppression",
+        "GitLab"
+      ],
+      "risk": "destructive"
+    },
+    {
+      "key": "gitlab_mr_note_create",
+      "name": "gitlabMrNoteCreate",
+      "schemaVersion": 2,
+      "title": "Créer un commentaire",
+      "subtitle": "Commentaire",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Merge requests",
+      "providerKey": "gitlab",
+      "icon": "fa-solid fa-plus",
+      "description": "Créer un commentaire de merge request GitLab",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gitlab_note"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Créer un commentaire",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "ID projet",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID ou chemin URL-encodé du projet.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "mrIid",
+            "label": "IID MR",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "IID de la merge request.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "body",
+            "label": "Contenu",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Contenu du commentaire.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "internal",
+            "label": "Interne",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Marquer le commentaire comme interne.",
+            "expression": {
+              "allow": true
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Merge requests",
+      "tags": [
+        "création",
+        "GitLab"
+      ],
+      "risk": "write"
+    },
+    {
+      "key": "gitlab_mr_note_get",
+      "name": "gitlabMrNoteGet",
+      "schemaVersion": 2,
+      "title": "Obtenir un commentaire",
+      "subtitle": "Commentaire",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Merge requests",
+      "providerKey": "gitlab",
+      "icon": "fa-solid fa-eye",
+      "description": "Récupérer un commentaire de merge request GitLab",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gitlab_note"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Obtenir un commentaire",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "ID projet",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID ou chemin URL-encodé du projet.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "mrIid",
+            "label": "IID MR",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "IID de la merge request.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "noteId",
+            "label": "ID commentaire",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID du commentaire.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Merge requests",
+      "tags": [
+        "lecture",
+        "GitLab"
+      ],
+      "risk": "safe"
+    },
+    {
+      "key": "gitlab_mr_note_update",
+      "name": "gitlabMrNoteUpdate",
+      "schemaVersion": 2,
+      "title": "Mettre à jour un commentaire",
+      "subtitle": "Commentaire",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Merge requests",
+      "providerKey": "gitlab",
+      "icon": "fa-solid fa-pen",
+      "description": "Mettre à jour un commentaire de merge request GitLab",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gitlab_note"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Mettre à jour un commentaire",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "ID projet",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID ou chemin URL-encodé du projet.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "mrIid",
+            "label": "IID MR",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "IID de la merge request.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "noteId",
+            "label": "ID commentaire",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID du commentaire.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "body",
+            "label": "Contenu",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Nouveau contenu du commentaire.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "confidential",
+            "label": "Confidentiel",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Marquer le commentaire comme confidentiel.",
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "internal",
+            "label": "Interne",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Marquer le commentaire comme interne.",
+            "expression": {
+              "allow": true
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Merge requests",
+      "tags": [
+        "mise à jour",
+        "GitLab"
+      ],
+      "risk": "write"
+    },
+    {
+      "key": "gitlab_mr_note_delete",
+      "name": "gitlabMrNoteDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un commentaire",
+      "subtitle": "Commentaire",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Merge requests",
+      "providerKey": "gitlab",
+      "icon": "fa-solid fa-trash",
+      "description": "Supprimer un commentaire de merge request GitLab",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gitlab_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Supprimer un commentaire",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "ID projet",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID ou chemin URL-encodé du projet.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "mrIid",
+            "label": "IID MR",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "IID de la merge request.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "noteId",
+            "label": "ID commentaire",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID du commentaire.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Merge requests",
+      "tags": [
+        "suppression",
+        "GitLab"
+      ],
+      "risk": "destructive"
+    },
+    {
+      "key": "gitlab_mr_notes_list",
+      "name": "gitlabMrNotesList",
+      "schemaVersion": 2,
+      "title": "Lister les commentaires",
+      "subtitle": "Commentaire",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Merge requests",
+      "providerKey": "gitlab",
+      "icon": "fa-solid fa-list",
+      "description": "Lister les commentaires de merge request GitLab",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gitlab_notes"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Lister les commentaires",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "ID projet",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID ou chemin URL-encodé du projet.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "mrIid",
+            "label": "IID MR",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "IID de la merge request.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "sort",
+            "label": "Tri",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Ordre de tri asc ou desc.",
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "order_by",
+            "label": "Ordre",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Champ de tri created_at ou updated_at.",
+            "expression": {
+              "allow": true
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Merge requests",
+      "tags": [
+        "liste",
+        "GitLab"
+      ],
+      "risk": "safe"
+    },
+    {
+      "key": "gitlab_pipeline_cancel",
+      "name": "gitlabPipelineCancel",
+      "schemaVersion": 2,
+      "title": "Annuler un pipeline",
+      "subtitle": "Pipeline",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Pipelines",
+      "providerKey": "gitlab",
+      "icon": "fa-solid fa-ban",
+      "description": "Annuler un pipeline GitLab",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gitlab_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Annuler un pipeline",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "ID projet",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID ou chemin URL-encodé du projet.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "pipelineId",
+            "label": "ID pipeline",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID du pipeline.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Pipelines",
+      "tags": [
+        "annulation",
+        "GitLab"
+      ],
+      "risk": "write"
+    },
+    {
+      "key": "gitlab_file_get",
+      "name": "gitlabFileGet",
+      "schemaVersion": 2,
+      "title": "Obtenir un fichier",
+      "subtitle": "Fichier",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Fichiers",
+      "providerKey": "gitlab",
+      "icon": "fa-solid fa-eye",
+      "description": "Récupérer un fichier GitLab",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gitlab_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Obtenir un fichier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "ID projet",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID ou chemin URL-encodé du projet.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "filePath",
+            "label": "Chemin",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Chemin URL-encodé du fichier.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "ref",
+            "label": "Référence",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Branche, tag ou commit. Valeur HEAD possible.",
+            "default": "HEAD",
+            "expression": {
+              "allow": true
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Fichiers",
+      "tags": [
+        "lecture",
+        "GitLab"
+      ],
+      "risk": "safe"
+    },
+    {
+      "key": "gitlab_file_create",
+      "name": "gitlabFileCreate",
+      "schemaVersion": 2,
+      "title": "Créer un fichier",
+      "subtitle": "Fichier",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Fichiers",
+      "providerKey": "gitlab",
+      "icon": "fa-solid fa-plus",
+      "description": "Créer un fichier GitLab",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gitlab_file"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Créer un fichier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "ID projet",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID ou chemin URL-encodé du projet.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "filePath",
+            "label": "Chemin",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Chemin URL-encodé du fichier.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "branch",
+            "label": "Branche",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Branche cible.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "content",
+            "label": "Contenu",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Contenu du fichier.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "commit_message",
+            "label": "Message",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Message du commit.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "author_email",
+            "label": "Email auteur",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Email de l'auteur.",
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "author_name",
+            "label": "Nom auteur",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Nom de l'auteur.",
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "encoding",
+            "label": "Encodage",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Encodage du contenu. Valeur text ou base64.",
+            "default": "text",
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "execute_filemode",
+            "label": "Exécutable",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Activer le bit exécutable.",
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "start_branch",
+            "label": "Branche de départ",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Branche de base pour créer le fichier.",
+            "expression": {
+              "allow": true
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Fichiers",
+      "tags": [
+        "création",
+        "GitLab"
+      ],
+      "risk": "write"
+    },
+    {
+      "key": "gitlab_file_update",
+      "name": "gitlabFileUpdate",
+      "schemaVersion": 2,
+      "title": "Mettre à jour un fichier",
+      "subtitle": "Fichier",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Fichiers",
+      "providerKey": "gitlab",
+      "icon": "fa-solid fa-pen",
+      "description": "Mettre à jour un fichier GitLab",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gitlab_file"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Mettre à jour un fichier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "ID projet",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID ou chemin URL-encodé du projet.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "filePath",
+            "label": "Chemin",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Chemin URL-encodé du fichier.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "branch",
+            "label": "Branche",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Branche cible.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "content",
+            "label": "Contenu",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Contenu du fichier.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "commit_message",
+            "label": "Message",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Message du commit.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "last_commit_id",
+            "label": "Dernier commit",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "SHA du dernier commit connu.",
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "author_email",
+            "label": "Email auteur",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Email de l'auteur.",
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "author_name",
+            "label": "Nom auteur",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Nom de l'auteur.",
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "encoding",
+            "label": "Encodage",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Encodage du contenu. Valeur text ou base64.",
+            "default": "text",
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "execute_filemode",
+            "label": "Exécutable",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Activer le bit exécutable.",
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "start_branch",
+            "label": "Branche de départ",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Branche de base pour créer le fichier.",
+            "expression": {
+              "allow": true
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Fichiers",
+      "tags": [
+        "mise à jour",
+        "GitLab"
+      ],
+      "risk": "write"
+    },
+    {
+      "key": "gitlab_file_delete",
+      "name": "gitlabFileDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un fichier",
+      "subtitle": "Fichier",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Fichiers",
+      "providerKey": "gitlab",
+      "icon": "fa-solid fa-trash",
+      "description": "Supprimer un fichier GitLab",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gitlab_file"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Supprimer un fichier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "ID projet",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "ID ou chemin URL-encodé du projet.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "filePath",
+            "label": "Chemin",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Chemin URL-encodé du fichier.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "branch",
+            "label": "Branche",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Branche cible.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "commit_message",
+            "label": "Message",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Message du commit.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "last_commit_id",
+            "label": "Dernier commit",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "SHA du dernier commit connu.",
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "author_email",
+            "label": "Email auteur",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Email de l'auteur.",
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "author_name",
+            "label": "Nom auteur",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Nom de l'auteur.",
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "start_branch",
+            "label": "Branche de départ",
+            "col": {
+              "xs": 24,
+              "sm": 24,
+              "md": 24
+            },
+            "description": "Branche de base pour créer le fichier.",
+            "expression": {
+              "allow": true
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Fichiers",
+      "tags": [
+        "suppression",
+        "GitLab"
+      ],
+      "risk": "destructive"
+    },
+    {
+      "key": "gitlab_runners_list",
+      "name": "gitlabRunnersList",
+      "schemaVersion": 2,
+      "title": "Lister les runners",
+      "subtitle": "Runner",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Runners",
+      "providerKey": "gitlab",
+      "icon": "fa-solid fa-list",
+      "description": "Lister les runners visibles pour l'utilisateur GitLab",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": ["any"]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gitlab_runners"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Lister les runners",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "scope", "label": "Portée", "description": "Scope de runner, si nécessaire.", "col": { "xs": 24 }, "expression": { "allow": true } },
+          { "type": "text", "key": "type", "label": "Type", "description": "Type de runner.", "col": { "xs": 24 }, "expression": { "allow": true } },
+          { "type": "text", "key": "status", "label": "Statut", "description": "Statut du runner.", "col": { "xs": 24 }, "expression": { "allow": true } },
+          { "type": "checkbox", "key": "paused", "label": "En pause", "description": "Filtrer les runners en pause.", "col": { "xs": 24 }, "expression": { "allow": true } },
+          { "type": "text", "key": "tag_list", "label": "Tags", "description": "Tags séparés par des virgules.", "col": { "xs": 24 }, "expression": { "allow": true } },
+          { "type": "text", "key": "version_prefix", "label": "Préfixe version", "description": "Préfixe de version.", "col": { "xs": 24 }, "expression": { "allow": true } },
+          { "type": "number", "key": "page", "label": "Page", "description": "Numéro de page.", "default": 1, "col": { "xs": 24 }, "expression": { "allow": true } },
+          { "type": "number", "key": "per_page", "label": "Par page", "description": "Nombre de résultats par page.", "default": 20, "col": { "xs": 24 }, "expression": { "allow": true } }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Runners",
+      "tags": ["lecture", "GitLab"],
+      "risk": "safe"
+    },
+    {
+      "key": "gitlab_runners_all_list",
+      "name": "gitlabRunnersAllList",
+      "schemaVersion": 2,
+      "title": "Lister tous les runners",
+      "subtitle": "Runner",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Runners",
+      "providerKey": "gitlab",
+      "icon": "fa-solid fa-list",
+      "description": "Lister tous les runners de l'instance GitLab",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:gitlab_runners" }],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Lister tous les runners",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "scope", "label": "Portée", "description": "Scope de runner, si nécessaire.", "col": { "xs": 24 }, "expression": { "allow": true } },
+          { "type": "text", "key": "type", "label": "Type", "description": "Type de runner.", "col": { "xs": 24 }, "expression": { "allow": true } },
+          { "type": "text", "key": "status", "label": "Statut", "description": "Statut du runner.", "col": { "xs": 24 }, "expression": { "allow": true } },
+          { "type": "checkbox", "key": "paused", "label": "En pause", "description": "Filtrer les runners en pause.", "col": { "xs": 24 }, "expression": { "allow": true } },
+          { "type": "text", "key": "tag_list", "label": "Tags", "description": "Tags séparés par des virgules.", "col": { "xs": 24 }, "expression": { "allow": true } },
+          { "type": "text", "key": "version_prefix", "label": "Préfixe version", "description": "Préfixe de version.", "col": { "xs": 24 }, "expression": { "allow": true } },
+          { "type": "number", "key": "page", "label": "Page", "description": "Numéro de page.", "default": 1, "col": { "xs": 24 }, "expression": { "allow": true } },
+          { "type": "number", "key": "per_page", "label": "Par page", "description": "Nombre de résultats par page.", "default": 20, "col": { "xs": 24 }, "expression": { "allow": true } }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Runners",
+      "tags": ["lecture", "GitLab"],
+      "risk": "safe"
+    },
+    {
+      "key": "gitlab_runner_get",
+      "name": "gitlabRunnerGet",
+      "schemaVersion": 2,
+      "title": "Obtenir un runner",
+      "subtitle": "Runner",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Runners",
+      "providerKey": "gitlab",
+      "icon": "fa-solid fa-eye",
+      "description": "Récupérer le détail d'un runner GitLab",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:gitlab_runner" }],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Obtenir un runner",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "number", "key": "runnerId", "label": "ID runner", "description": "Identifiant du runner.", "col": { "xs": 24 }, "validators": [{ "type": "required" }], "expression": { "allow": true } }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Runners",
+      "tags": ["lecture", "GitLab"],
+      "risk": "safe"
+    },
+    {
+      "key": "gitlab_runner_update",
+      "name": "gitlabRunnerUpdate",
+      "schemaVersion": 2,
+      "title": "Mettre à jour un runner",
+      "subtitle": "Runner",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Runners",
+      "providerKey": "gitlab",
+      "icon": "fa-solid fa-pen",
+      "description": "Mettre à jour un runner GitLab",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:gitlab_runner" }],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Mettre à jour un runner",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "number", "key": "runnerId", "label": "ID runner", "description": "Identifiant du runner.", "col": { "xs": 24 }, "validators": [{ "type": "required" }], "expression": { "allow": true } },
+          { "type": "text", "key": "description", "label": "Description", "description": "Description du runner.", "col": { "xs": 24 }, "expression": { "allow": true } },
+          { "type": "checkbox", "key": "paused", "label": "En pause", "description": "Ignorer les nouveaux jobs.", "col": { "xs": 24 }, "expression": { "allow": true } },
+          { "type": "text", "key": "tag_list", "label": "Tags", "description": "Tags séparés par des virgules.", "col": { "xs": 24 }, "expression": { "allow": true } },
+          { "type": "checkbox", "key": "run_untagged", "label": "Sans tag", "description": "Exécuter les jobs sans tags.", "col": { "xs": 24 }, "expression": { "allow": true } },
+          { "type": "checkbox", "key": "locked", "label": "Verrouillé", "description": "Verrouiller le runner.", "col": { "xs": 24 }, "expression": { "allow": true } },
+          { "type": "text", "key": "access_level", "label": "Niveau d'accès", "description": "Niveau d'accès du runner.", "col": { "xs": 24 }, "expression": { "allow": true } },
+          { "type": "number", "key": "maximum_timeout", "label": "Timeout max", "description": "Timeout maximal en secondes.", "col": { "xs": 24 }, "expression": { "allow": true } },
+          { "type": "textarea", "key": "maintenance_note", "label": "Note de maintenance", "description": "Note de maintenance.", "col": { "xs": 24 }, "expression": { "allow": true } }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Runners",
+      "tags": ["mise à jour", "GitLab"],
+      "risk": "write"
+    },
+    {
+      "key": "gitlab_runner_delete",
+      "name": "gitlabRunnerDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un runner",
+      "subtitle": "Runner",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Runners",
+      "providerKey": "gitlab",
+      "icon": "fa-solid fa-trash",
+      "description": "Supprimer un runner GitLab",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:gitlab_result" }],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Supprimer un runner",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "number", "key": "runnerId", "label": "ID runner", "description": "Identifiant du runner.", "col": { "xs": 24 }, "validators": [{ "type": "required" }], "expression": { "allow": true } }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Runners",
+      "tags": ["suppression", "GitLab"],
+      "risk": "destructive"
+    },
+    {
+      "key": "gitlab_runner_jobs_list",
+      "name": "gitlabRunnerJobsList",
+      "schemaVersion": 2,
+      "title": "Lister les jobs du runner",
+      "subtitle": "Runner",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Runners",
+      "providerKey": "gitlab",
+      "icon": "fa-solid fa-list",
+      "description": "Lister les jobs traités par un runner GitLab",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:gitlab_runner_jobs" }],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Lister les jobs du runner",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "number", "key": "runnerId", "label": "ID runner", "description": "Identifiant du runner.", "col": { "xs": 24 }, "validators": [{ "type": "required" }], "expression": { "allow": true } },
+          { "type": "text", "key": "system_id", "label": "System ID", "description": "System ID du manager.", "col": { "xs": 24 }, "expression": { "allow": true } },
+          { "type": "text", "key": "status", "label": "Statut", "description": "Statut du job.", "col": { "xs": 24 }, "expression": { "allow": true } },
+          { "type": "text", "key": "order_by", "label": "Tri", "description": "Champ de tri.", "col": { "xs": 24 }, "expression": { "allow": true } },
+          { "type": "text", "key": "sort", "label": "Ordre", "description": "Ordre asc ou desc.", "col": { "xs": 24 }, "expression": { "allow": true } },
+          { "type": "number", "key": "page", "label": "Page", "description": "Numéro de page.", "default": 1, "col": { "xs": 24 }, "expression": { "allow": true } },
+          { "type": "number", "key": "per_page", "label": "Par page", "description": "Nombre de résultats par page.", "default": 20, "col": { "xs": 24 }, "expression": { "allow": true } }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Runners",
+      "tags": ["lecture", "GitLab"],
+      "risk": "safe"
+    },
+    {
+      "key": "gitlab_runner_managers_list",
+      "name": "gitlabRunnerManagersList",
+      "schemaVersion": 2,
+      "title": "Lister les managers du runner",
+      "subtitle": "Runner",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Runners",
+      "providerKey": "gitlab",
+      "icon": "fa-solid fa-server",
+      "description": "Lister les managers d'un runner GitLab",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:gitlab_runner_managers" }],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Lister les managers du runner",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "number", "key": "runnerId", "label": "ID runner", "description": "Identifiant du runner.", "col": { "xs": 24 }, "validators": [{ "type": "required" }], "expression": { "allow": true } }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Runners",
+      "tags": ["lecture", "GitLab"],
+      "risk": "safe"
+    },
+    {
+      "key": "gitlab_project_runners_list",
+      "name": "gitlabProjectRunnersList",
+      "schemaVersion": 2,
+      "title": "Lister les runners du projet",
+      "subtitle": "Runner",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Runners",
+      "providerKey": "gitlab",
+      "icon": "fa-solid fa-list",
+      "description": "Lister les runners disponibles pour un projet GitLab",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:gitlab_runners" }],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Lister les runners du projet",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "projectId", "label": "ID projet", "description": "ID ou chemin URL-encodé du projet.", "col": { "xs": 24 }, "validators": [{ "type": "required" }], "expression": { "allow": true } },
+          { "type": "text", "key": "scope", "label": "Portée", "description": "Scope de runner.", "col": { "xs": 24 }, "expression": { "allow": true } },
+          { "type": "text", "key": "type", "label": "Type", "description": "Type de runner.", "col": { "xs": 24 }, "expression": { "allow": true } },
+          { "type": "text", "key": "status", "label": "Statut", "description": "Statut du runner.", "col": { "xs": 24 }, "expression": { "allow": true } },
+          { "type": "checkbox", "key": "paused", "label": "En pause", "description": "Filtrer les runners en pause.", "col": { "xs": 24 }, "expression": { "allow": true } },
+          { "type": "text", "key": "tag_list", "label": "Tags", "description": "Tags séparés par des virgules.", "col": { "xs": 24 }, "expression": { "allow": true } },
+          { "type": "text", "key": "version_prefix", "label": "Préfixe version", "description": "Préfixe de version.", "col": { "xs": 24 }, "expression": { "allow": true } },
+          { "type": "number", "key": "page", "label": "Page", "description": "Numéro de page.", "default": 1, "col": { "xs": 24 }, "expression": { "allow": true } },
+          { "type": "number", "key": "per_page", "label": "Par page", "description": "Nombre de résultats par page.", "default": 20, "col": { "xs": 24 }, "expression": { "allow": true } }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Runners",
+      "tags": ["lecture", "GitLab"],
+      "risk": "safe"
+    },
+    {
+      "key": "gitlab_group_runners_list",
+      "name": "gitlabGroupRunnersList",
+      "schemaVersion": 2,
+      "title": "Lister les runners du groupe",
+      "subtitle": "Runner",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Runners",
+      "providerKey": "gitlab",
+      "icon": "fa-solid fa-list",
+      "description": "Lister les runners disponibles pour un groupe GitLab",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:gitlab_runners" }],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Lister les runners du groupe",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "groupId", "label": "ID groupe", "description": "ID ou chemin URL-encodé du groupe.", "col": { "xs": 24 }, "validators": [{ "type": "required" }], "expression": { "allow": true } },
+          { "type": "text", "key": "scope", "label": "Portée", "description": "Scope de runner.", "col": { "xs": 24 }, "expression": { "allow": true } },
+          { "type": "text", "key": "type", "label": "Type", "description": "Type de runner.", "col": { "xs": 24 }, "expression": { "allow": true } },
+          { "type": "text", "key": "status", "label": "Statut", "description": "Statut du runner.", "col": { "xs": 24 }, "expression": { "allow": true } },
+          { "type": "checkbox", "key": "paused", "label": "En pause", "description": "Filtrer les runners en pause.", "col": { "xs": 24 }, "expression": { "allow": true } },
+          { "type": "text", "key": "tag_list", "label": "Tags", "description": "Tags séparés par des virgules.", "col": { "xs": 24 }, "expression": { "allow": true } },
+          { "type": "text", "key": "version_prefix", "label": "Préfixe version", "description": "Préfixe de version.", "col": { "xs": 24 }, "expression": { "allow": true } },
+          { "type": "number", "key": "page", "label": "Page", "description": "Numéro de page.", "default": 1, "col": { "xs": 24 }, "expression": { "allow": true } },
+          { "type": "number", "key": "per_page", "label": "Par page", "description": "Nombre de résultats par page.", "default": 20, "col": { "xs": 24 }, "expression": { "allow": true } }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Runners",
+      "tags": ["lecture", "GitLab"],
+      "risk": "safe"
+    },
+    {
+      "key": "gitlab_project_runner_assign",
+      "name": "gitlabProjectRunnerAssign",
+      "schemaVersion": 2,
+      "title": "Affecter un runner",
+      "subtitle": "Runner",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Runners",
+      "providerKey": "gitlab",
+      "icon": "fa-solid fa-link",
+      "description": "Affecter un runner à un projet GitLab",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:gitlab_runner" }],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Affecter un runner",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "projectId", "label": "ID projet", "description": "ID ou chemin URL-encodé du projet.", "col": { "xs": 24 }, "validators": [{ "type": "required" }], "expression": { "allow": true } },
+          { "type": "number", "key": "runner_id", "label": "ID runner", "description": "Identifiant du runner.", "col": { "xs": 24 }, "validators": [{ "type": "required" }], "expression": { "allow": true } }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Runners",
+      "tags": ["mise à jour", "GitLab"],
+      "risk": "write"
+    },
+    {
+      "key": "gitlab_project_runner_unassign",
+      "name": "gitlabProjectRunnerUnassign",
+      "schemaVersion": 2,
+      "title": "Désaffecter un runner",
+      "subtitle": "Runner",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Runners",
+      "providerKey": "gitlab",
+      "icon": "fa-solid fa-unlink",
+      "description": "Désaffecter un runner d'un projet GitLab",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:gitlab_result" }],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Désaffecter un runner",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "projectId", "label": "ID projet", "description": "ID ou chemin URL-encodé du projet.", "col": { "xs": 24 }, "validators": [{ "type": "required" }], "expression": { "allow": true } },
+          { "type": "number", "key": "runnerId", "label": "ID runner", "description": "Identifiant du runner.", "col": { "xs": 24 }, "validators": [{ "type": "required" }], "expression": { "allow": true } }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Runners",
+      "tags": ["suppression", "GitLab"],
+      "risk": "destructive"
     }
   ],
   "variables": {
@@ -5643,6 +8098,354 @@
           }
         }
       ]
+    },
+    "gitlab_file": {
+      "title": "Fichier GitLab",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "description": "Succès de la requête.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Status HTTP",
+          "description": "Code de statut HTTP.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Fichier",
+          "key": "data",
+          "fields": [
+            {
+              "type": "text",
+              "key": "blob_id",
+              "label": "Blob",
+              "description": "SHA du blob.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "commit_id",
+              "label": "Commit",
+              "description": "SHA du commit.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "content",
+              "label": "Contenu",
+              "description": "Contenu encodé du fichier.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "content_sha256",
+              "label": "SHA256",
+              "description": "SHA256 du contenu.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "encoding",
+              "label": "Encodage",
+              "description": "Encodage du contenu.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "checkbox",
+              "key": "execute_filemode",
+              "label": "Exécutable",
+              "description": "Attribut exécutable.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "file_name",
+              "label": "Nom du fichier",
+              "description": "Nom du fichier.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "file_path",
+              "label": "Chemin",
+              "description": "Chemin complet du fichier.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "last_commit_id",
+              "label": "Dernier commit",
+              "description": "SHA du dernier commit ayant modifié le fichier.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "ref",
+              "label": "Référence",
+              "description": "Branche, tag ou commit utilisé.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "size",
+              "label": "Taille",
+              "description": "Taille du fichier en octets.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "branch",
+              "label": "Branche",
+              "description": "Branche cible de l'opération.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "gitlab_notes": {
+      "title": "Commentaires GitLab",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "OK",
+          "description": "Succès de la requête.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Status HTTP",
+          "description": "Code de statut HTTP.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total de commentaires.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Commentaires",
+          "key": "notes",
+          "fields": [
+            {
+              "type": "number",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant unique du commentaire.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "body",
+              "label": "Contenu",
+              "description": "Contenu du commentaire.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "author",
+              "label": "Auteur",
+              "description": "Nom de l'auteur.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "created_at",
+              "label": "Date de création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "updated_at",
+              "label": "Dernière mise à jour",
+              "description": "Date de dernière mise à jour.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "checkbox",
+              "key": "system",
+              "label": "Système",
+              "description": "Commentaire système.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          },
+          "mode": "array",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          }
+        }
+      ]
+    }
+    },
+    "gitlab_runner": {
+      "title": "Runner GitLab",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "number", "key": "id", "label": "ID", "col": { "xs": 24 } },
+        { "type": "text", "key": "description", "label": "Description", "col": { "xs": 24 } },
+        { "type": "checkbox", "key": "active", "label": "Actif", "col": { "xs": 24 } },
+        { "type": "checkbox", "key": "paused", "label": "En pause", "col": { "xs": 24 } },
+        { "type": "checkbox", "key": "is_shared", "label": "Partagé", "col": { "xs": 24 } },
+        { "type": "text", "key": "runner_type", "label": "Type", "col": { "xs": 24 } },
+        { "type": "text", "key": "name", "label": "Nom", "col": { "xs": 24 } },
+        { "type": "checkbox", "key": "online", "label": "En ligne", "col": { "xs": 24 } },
+        { "type": "text", "key": "status", "label": "Statut", "col": { "xs": 24 } },
+        { "type": "text", "key": "job_execution_status", "label": "Statut jobs", "col": { "xs": 24 } },
+        { "type": "text", "key": "version", "label": "Version", "col": { "xs": 24 } },
+        { "type": "text", "key": "revision", "label": "Révision", "col": { "xs": 24 } },
+        { "type": "text", "key": "platform", "label": "Plateforme", "col": { "xs": 24 } },
+        { "type": "text", "key": "architecture", "label": "Architecture", "col": { "xs": 24 } },
+        { "type": "date", "key": "created_at", "label": "Créé le", "col": { "xs": 24 } },
+        { "type": "date", "key": "contacted_at", "label": "Dernier contact", "col": { "xs": 24 } },
+        { "type": "number", "key": "maximum_timeout", "label": "Timeout max", "col": { "xs": 24 } },
+        { "type": "checkbox", "key": "run_untagged", "label": "Sans tag", "col": { "xs": 24 } },
+        { "type": "checkbox", "key": "locked", "label": "Verrouillé", "col": { "xs": 24 } },
+        { "type": "text", "key": "access_level", "label": "Niveau d'accès", "col": { "xs": 24 } },
+        { "type": "textarea", "key": "maintenance_note", "label": "Note de maintenance", "col": { "xs": 24 } },
+        { "type": "text", "key": "tag_list", "label": "Tags", "col": { "xs": 24 } }
+      ]
+    },
+    "gitlab_runners": {
+      "title": "Runners GitLab",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "number", "key": "totalCount", "label": "Nombre total", "col": { "xs": 24 } },
+        { "type": "section", "title": "Runners", "key": "runners", "mode": "array", "array": { "initialItems": 0, "minItems": 0 }, "fields": [
+          { "type": "number", "key": "id", "label": "ID", "col": { "xs": 24 } },
+          { "type": "text", "key": "description", "label": "Description", "col": { "xs": 24 } },
+          { "type": "checkbox", "key": "active", "label": "Actif", "col": { "xs": 24 } },
+          { "type": "checkbox", "key": "paused", "label": "En pause", "col": { "xs": 24 } },
+          { "type": "checkbox", "key": "is_shared", "label": "Partagé", "col": { "xs": 24 } },
+          { "type": "text", "key": "runner_type", "label": "Type", "col": { "xs": 24 } },
+          { "type": "text", "key": "name", "label": "Nom", "col": { "xs": 24 } },
+          { "type": "checkbox", "key": "online", "label": "En ligne", "col": { "xs": 24 } },
+          { "type": "text", "key": "status", "label": "Statut", "col": { "xs": 24 } },
+          { "type": "text", "key": "job_execution_status", "label": "Statut jobs", "col": { "xs": 24 } },
+          { "type": "text", "key": "version", "label": "Version", "col": { "xs": 24 } },
+          { "type": "text", "key": "revision", "label": "Révision", "col": { "xs": 24 } },
+          { "type": "text", "key": "platform", "label": "Plateforme", "col": { "xs": 24 } },
+          { "type": "text", "key": "architecture", "label": "Architecture", "col": { "xs": 24 } },
+          { "type": "date", "key": "created_at", "label": "Créé le", "col": { "xs": 24 } },
+          { "type": "date", "key": "contacted_at", "label": "Dernier contact", "col": { "xs": 24 } },
+          { "type": "number", "key": "maximum_timeout", "label": "Timeout max", "col": { "xs": 24 } },
+          { "type": "checkbox", "key": "run_untagged", "label": "Sans tag", "col": { "xs": 24 } },
+          { "type": "checkbox", "key": "locked", "label": "Verrouillé", "col": { "xs": 24 } },
+          { "type": "text", "key": "access_level", "label": "Niveau d'accès", "col": { "xs": 24 } },
+          { "type": "textarea", "key": "maintenance_note", "label": "Note de maintenance", "col": { "xs": 24 } },
+          { "type": "text", "key": "tag_list", "label": "Tags", "col": { "xs": 24 } }
+        ], "col": { "xs": 24 } }
+      ]
+    },
+    "gitlab_runner_jobs": {
+      "title": "Jobs Runner GitLab",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "number", "key": "totalCount", "label": "Nombre total", "col": { "xs": 24 } },
+        { "type": "section", "title": "Jobs", "key": "jobs", "mode": "array", "array": { "initialItems": 0, "minItems": 0 }, "fields": [
+          { "type": "number", "key": "id", "label": "ID", "col": { "xs": 24 } },
+          { "type": "text", "key": "status", "label": "Statut", "col": { "xs": 24 } },
+          { "type": "text", "key": "stage", "label": "Étape", "col": { "xs": 24 } },
+          { "type": "text", "key": "name", "label": "Nom", "col": { "xs": 24 } },
+          { "type": "text", "key": "ref", "label": "Référence", "col": { "xs": 24 } },
+          { "type": "number", "key": "pipeline", "label": "Pipeline", "col": { "xs": 24 } },
+          { "type": "date", "key": "created_at", "label": "Créé le", "col": { "xs": 24 } },
+          { "type": "date", "key": "started_at", "label": "Démarré le", "col": { "xs": 24 } },
+          { "type": "date", "key": "finished_at", "label": "Terminé le", "col": { "xs": 24 } },
+          { "type": "number", "key": "duration", "label": "Durée", "col": { "xs": 24 } }
+        ], "col": { "xs": 24 } }
+      ]
+    },
+    "gitlab_runner_managers": {
+      "title": "Managers Runner GitLab",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "number", "key": "totalCount", "label": "Nombre total", "col": { "xs": 24 } },
+        { "type": "section", "title": "Managers", "key": "managers", "mode": "array", "array": { "initialItems": 0, "minItems": 0 }, "fields": [
+          { "type": "number", "key": "id", "label": "ID", "col": { "xs": 24 } },
+          { "type": "text", "key": "system_id", "label": "System ID", "col": { "xs": 24 } },
+          { "type": "text", "key": "version", "label": "Version", "col": { "xs": 24 } },
+          { "type": "text", "key": "revision", "label": "Révision", "col": { "xs": 24 } },
+          { "type": "text", "key": "platform", "label": "Plateforme", "col": { "xs": 24 } },
+          { "type": "text", "key": "architecture", "label": "Architecture", "col": { "xs": 24 } },
+          { "type": "date", "key": "created_at", "label": "Créé le", "col": { "xs": 24 } },
+          { "type": "date", "key": "contacted_at", "label": "Dernier contact", "col": { "xs": 24 } },
+          { "type": "text", "key": "ip_address", "label": "IP", "col": { "xs": 24 } },
+          { "type": "text", "key": "status", "label": "Statut", "col": { "xs": 24 } },
+          { "type": "text", "key": "job_execution_status", "label": "Statut jobs", "col": { "xs": 24 } }
+        ], "col": { "xs": 24 } }
+      ]
     }
   }
-}
