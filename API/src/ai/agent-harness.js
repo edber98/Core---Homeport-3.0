@@ -134,19 +134,28 @@ async function* runHarness({ mode, messages, context, metadata, agentOverrides, 
 
   // LLM client (with agent overrides)
   const env = require('../config/env');
+  const VLLM_ALIASES = new Set(['vllm', 'ollama', 'lmstudio', 'openai-compatible', 'openai-compat']);
+  const resolveProviderConfig = (provider) => {
+    const p = String(provider || '').toLowerCase();
+    if (p === 'anthropic' || p === 'claude') {
+      return { apiKey: env.ANTHROPIC_API_KEY, baseURL: undefined, model: env.ANTHROPIC_MODEL };
+    }
+    if (VLLM_ALIASES.has(p)) {
+      return { apiKey: env.VLLM_API_KEY || 'local', baseURL: env.AI_BASE_URL || undefined, model: env.VLLM_MODEL || env.AI_MODEL };
+    }
+    return { apiKey: env.OPENAI_API_KEY, baseURL: undefined, model: env.OPENAI_MODEL };
+  };
   const llmConfig = { ...context.llmConfig };
-  // Si AI_PROVIDER est set explicitement en env, il gagne TOUJOURS sur l'override
-  // de l'agent sélectionné (fix demandé par le user : env AI_PROVIDER=openai doit
-  // être respecté même si l'AiAgent.llmProvider est 'anthropic').
   const envForcesProvider = !!process.env.AI_PROVIDER;
   if (agentOverrides?.llmProvider && !envForcesProvider) {
     llmConfig.provider = agentOverrides.llmProvider;
-    const p = agentOverrides.llmProvider.toLowerCase();
-    llmConfig.apiKey = (p === 'anthropic' || p === 'claude') ? env.ANTHROPIC_API_KEY : env.OPENAI_API_KEY;
+    Object.assign(llmConfig, resolveProviderConfig(agentOverrides.llmProvider));
   }
   if (agentOverrides?.llmModel && !envForcesProvider) llmConfig.model = agentOverrides.llmModel;
-  // Log pour debug
+  // AI_PROVIDER env force tout : resolve apiKey + baseURL + model selon provider.
   if (envForcesProvider) {
+    llmConfig.provider = process.env.AI_PROVIDER;
+    Object.assign(llmConfig, resolveProviderConfig(process.env.AI_PROVIDER));
     log.log(`AI_PROVIDER=${process.env.AI_PROVIDER} forcé (agent override ignoré)`);
   }
   const llm = createLlmClient(llmConfig.provider, llmConfig);

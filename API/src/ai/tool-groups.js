@@ -279,6 +279,33 @@ function buildOrchestratorToolSet(opts) {
         return executeMetaTool(name, input, metaCtx);
       }
 
+      // Tool inconnu — détecte s'il appartient à une capsule non activée pour
+      // suggérer `activate_capsule` au LLM (pattern fréquent : Qwen tente
+      // execute_code sans avoir activé la capsule code_exec).
+      const TOOL_TO_CAPSULE = {
+        execute_code: 'code_exec',
+        prepare_code_environment: 'code_exec',
+        install_package: 'code_exec',
+        generate_document: 'document',
+        edit_document: 'document',
+        render_html_preview: 'document',
+        build_website: 'document',
+        project_read_file: 'project_fs',
+        project_write_file: 'project_fs',
+        project_grep: 'project_fs',
+        web_search: 'web',
+        web_fetch: 'web',
+        web_download: 'web',
+      };
+      const requiredCapsule = TOOL_TO_CAPSULE[name];
+      if (requiredCapsule && !activeCapsules.has(requiredCapsule)) {
+        return {
+          success: false,
+          error: 'capsule_not_activated',
+          message: `Le tool "${name}" nécessite la capsule "${requiredCapsule}" qui n'est PAS encore active. Appelle d'abord activate_capsule({capsule: "${requiredCapsule}", reason: "..."}) puis ré-appelle ${name}.`,
+          hint_next_call: { tool: 'activate_capsule', args: { capsule: requiredCapsule } },
+        };
+      }
       return { error: `Outil inconnu : '${name}'. Utilise search_tools pour trouver l'outil adapté.` };
     },
 

@@ -1299,8 +1299,14 @@ export class AiService {
   // ── Side events for builders ──
   sideEvents$ = new Subject<AiStreamEvent>();
 
-  /** Emit a side event that builders can subscribe to */
-  emitSideEvent(ev: AiStreamEvent) { this.sideEvents$.next(ev); }
+  /** Emit a side event that builders can subscribe to.
+   *  Pose un flag _emittedAsSide pour qu'ai-chat.processStreamEvent ne re-emit
+   *  pas l'event dans sideEvents$ s'il le reçoit en retour via subj — sinon
+   *  boucle infinie (RangeError stack overflow). */
+  emitSideEvent(ev: AiStreamEvent) {
+    if (ev && typeof ev === 'object') (ev as any)._emittedAsSide = true;
+    this.sideEvents$.next(ev);
+  }
 
   // ── Quick send (auto-create thread if needed) ──
   async quickSend(content: string, mode?: string, attachments?: AiAttachment[]) {

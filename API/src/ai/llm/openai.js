@@ -8,13 +8,49 @@ async function* streamOpenAI(messages, tools, config) {
   if (!apiKey) throw new Error('OpenAI API key not configured');
 
   const model = config.model || 'gpt-5.2';
+  // baseURL configurable pour cibler un endpoint OpenAI-compatible :
+  //   - vLLM auto-hébergé (http://IP:8000/v1)
+  //   - LM Studio, Ollama, Groq, Together.ai, Mistral La Plateforme, etc.
+  //   - Tout serveur qui parle l'API Chat Completions
+  // Par défaut : OpenAI cloud officiel.
+  const baseURL = (config.baseURL || 'https://api.openai.com/v1').replace(/\/+$/, '');
   // GPT-5.2 with reasoning=none supports temperature; others don't
   const isReasoningModel = /^(gpt-5|o[1-9])/.test(model);
   const reasoningEffort = config.reasoningEffort || undefined;
   const noCustomTemp = isReasoningModel && reasoningEffort !== 'none';
+  const isOpenAiOfficial = baseURL.startsWith('https://api.openai.com');
+  // Pour les serveurs OpenAI-compatibles (vLLM/Qwen/Ollama/etc.), beaucoup de
+  // chat templates Jinja (notamment Qwen) imposent que les messages role='system'
+  // soient UNIQUEMENT en position 0. Or Kinn injecte parfois des system messages
+  // au milieu (drainMailbox, resume parent, todo_write nudges, etc.).
+  // → On consolide : 1er system reste tel quel, les suivants deviennent user
+  //   messages préfixés '[Note système]' (le contenu est préservé).
+  // OpenAI officiel et Anthropic ne sont PAS impactés (skip cette transformation).
+  let finalMessages = messages;
+  if (!isOpenAiOfficial && Array.isArray(messages)) {
+    let firstSystemSeen = false;
+    finalMessages = messages.map((m, i) => {
+      if (m?.role !== 'system') return m;
+      if (i === 0 || !firstSystemSeen) {
+        if (i === 0) firstSystemSeen = true;
+        return m;
+      }
+      // System message tardif → convert en user avec préfixe.
+      return { ...m, role: 'user', content: `[Note système]\n${m.content || ''}` };
+    });
+    // Edge case : si aucun system en position 0 mais un plus loin, on déplace
+    // le 1er system trouvé en tête (concat des autres en user après).
+    if (finalMessages[0]?.role !== 'system') {
+      const idx = finalMessages.findIndex(m => m?.role === 'system');
+      if (idx > 0) {
+        const sys = finalMessages[idx];
+        finalMessages = [sys, ...finalMessages.slice(0, idx), ...finalMessages.slice(idx + 1)];
+      }
+    }
+  }
   const body = {
     model,
-    messages,
+    messages: finalMessages,
     stream: true,
   };
   if (!noCustomTemp) body.temperature = config.temperature ?? 0.7;
@@ -22,8 +58,39 @@ async function* streamOpenAI(messages, tools, config) {
   if (isReasoningModel && reasoningEffort) {
     body.reasoning_effort = reasoningEffort;
   }
-  // Newer OpenAI models use max_completion_tokens instead of max_tokens
-  if (config.maxTokens) body.max_completion_tokens = config.maxTokens;
+  // Newer OpenAI models use max_completion_tokens instead of max_tokens.
+  // Les serveurs OpenAI-compatibles non-officiels (vLLM, Ollama, ...) acceptent
+  // souvent uniquement max_tokens classique. Détection via isOpenAiOfficial.
+  // ── Default max_tokens pour vLLM ──
+  // 8192 par défaut : assez pour les longs tool_calls (execute_code avec gros
+  // scripts Python génère facilement 3-5k tokens). Si le context est tight,
+  // le retry auto baisse dynamiquement à `ctx - input - 1024`.
+  // Override via env : VLLM_MAX_TOKENS=N.
+  let effectiveMaxTokens = config.maxTokens;
+  if (!isOpenAiOfficial) {
+    const vllmOverride = parseInt(process.env.VLLM_MAX_TOKENS || '0', 10);
+    if (vllmOverride > 0) effectiveMaxTokens = vllmOverride;
+    else if (!effectiveMaxTokens || effectiveMaxTokens > 16384) effectiveMaxTokens = 8192;
+  }
+  if (effectiveMaxTokens) {
+    if (isOpenAiOfficial) body.max_completion_tokens = effectiveMaxTokens;
+    else body.max_tokens = effectiveMaxTokens;
+  }
+
+  // ── Qwen 3.x / DeepSeek-R1 thinking mode ──────────────────────────
+  // Par défaut, Qwen 3 émet un raisonnement <think>…</think> AVANT la réponse
+  // finale. Si le serveur vLLM n'a PAS --reasoning-parser, tout part dans
+  // `content` → l'user voit le thinking en clair. Solution propre :
+  // désactiver le thinking via chat_template_kwargs.enable_thinking=false
+  // (lu par le template Jinja de Qwen).
+  // Override via env : AI_ENABLE_THINKING=1 si tu veux GARDER le thinking
+  // (utile si tu as configuré --reasoning-parser côté serveur).
+  if (!isOpenAiOfficial) {
+    const keepThinking = process.env.AI_ENABLE_THINKING === '1';
+    if (!keepThinking) {
+      body.chat_template_kwargs = { ...(body.chat_template_kwargs || {}), enable_thinking: false };
+    }
+  }
   if (tools && tools.length) {
     body.tools = tools;
     // Force sequential tool calls par défaut : évite que le LLM hallucine des
@@ -36,9 +103,10 @@ async function* streamOpenAI(messages, tools, config) {
   // Include usage in streaming response (otherwise totalUsage is always null)
   body.stream_options = { include_usage: true };
 
-  console.log(`[llm-openai] request: model=${body.model}, tools=${body.tools?.length || 0}, messages=${body.messages?.length || 0}`);
+  const providerTag = isOpenAiOfficial ? 'openai' : `openai-compat:${baseURL.replace(/^https?:\/\//, '')}`;
+  console.log(`[llm-${providerTag}] request: model=${body.model}, tools=${body.tools?.length || 0}, messages=${body.messages?.length || 0}`);
 
-  const res = await fetch('https://api.openai.com/v1/chat/completions', {
+  const res = await fetch(`${baseURL}/chat/completions`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -49,7 +117,41 @@ async function* streamOpenAI(messages, tools, config) {
 
   if (!res.ok) {
     const errText = await res.text().catch(() => '');
+    // ── Auto-retry si context length dépassé ──────────────────────────
+    // vLLM est strict : refuse si input + max_tokens > max_model_len.
+    // Parse l'erreur, recalcule max_tokens = ctx - input - 64 (marge), retry.
+    // Garde-fou : 1 seul retry pour éviter boucle infinie.
+    if (res.status === 400 && /maximum context length/i.test(errText) && !config._isRetry) {
+      const m = errText.match(/maximum context length is (\d+).*?prompt contains.*?(\d+) input tokens/i);
+      if (m) {
+        const ctxMax = parseInt(m[1], 10);
+        const inputTokens = parseInt(m[2], 10);
+        // Marge 1024 : entre les 2 essais le prompt peut grossir (system reminders
+        // injectés par le harness, variation comptage tokenizer côté vLLM, etc.).
+        // 64 était trop juste — observé : 30337 → 30402 (+65 tokens) entre 1er et 2e essai.
+        const safeOutput = Math.max(256, ctxMax - inputTokens - 1024);
+        console.warn(`[llm-openai] 🔄 Context tight (input=${inputTokens}/${ctxMax}). Retry avec max_tokens=${safeOutput} (au lieu de ${effectiveMaxTokens}, marge 1024).`);
+        // Recursive retry — config marqué pour éviter loop
+        yield* streamOpenAI(messages, tools, { ...config, maxTokens: safeOutput, _isRetry: true });
+        return;
+      }
+    }
     console.error(`[llm-openai] HTTP error ${res.status}: ${errText.slice(0, 500)}`);
+    if (res.status === 400 && /maximum context length/i.test(errText)) {
+      const m = errText.match(/maximum context length is (\d+).*?requested (\d+) output tokens.*?prompt contains.*?(\d+) input tokens/i);
+      if (m) {
+        const [, ctx, out, inp] = m;
+        console.warn(`[llm-openai] 💡 Context length exceeded (après retry échoué):
+  - Modèle context max : ${ctx} tokens
+  - Prompt (input)     : ${inp} tokens
+  - Output demandé     : ${out} tokens
+  - Dépassement        : ${parseInt(inp) + parseInt(out) - parseInt(ctx)} tokens
+  → L'historique est trop long. Solutions :
+    1. Augmenter --max-model-len côté vLLM (le plus simple)
+    2. Reset thread (nouveau message dans un thread vierge)
+    3. Réduire le nombre de tools actifs en context`);
+      }
+    }
     throw new Error(`OpenAI API error ${res.status}: ${errText}`);
   }
   console.log('[llm-openai] stream started');
@@ -101,9 +203,36 @@ async function* streamOpenAI(messages, tools, config) {
       const delta = choice.delta;
       if (!delta) continue;
 
-      // Text content
+      // Text content — strip les <think>...</think> Qwen si jamais le serveur
+      // ne sépare pas (= absence de --reasoning-parser). Émet le contenu thinking
+      // comme reasoning_delta séparé pour le rendre dans un bloc collapsé.
       if (delta.content) {
-        yield { type: 'text_delta', text: delta.content };
+        let text = delta.content;
+        // Détection simple <think>...</think> ou \n\n suivi de "Let me…" patterns
+        // qui collent souvent au début. Plus robust : reconstituer côté assembler
+        // mais ici on stream donc on fait du best-effort sur les balises XML.
+        if (typeof text === 'string' && /<think>|<\/think>/.test(text)) {
+          // Émet chaque partie séparée selon la présence des tags
+          const parts = text.split(/(<think>|<\/think>)/);
+          let inThink = false;
+          for (const part of parts) {
+            if (part === '<think>') { inThink = true; continue; }
+            if (part === '</think>') { inThink = false; continue; }
+            if (!part) continue;
+            if (inThink) yield { type: 'reasoning_delta', text: part };
+            else yield { type: 'text_delta', text: part };
+          }
+        } else {
+          yield { type: 'text_delta', text };
+        }
+      }
+
+      // Reasoning content (Qwen 3.x / DeepSeek-R1 avec --reasoning-parser côté vLLM).
+      // Le serveur sépare le <think>...</think> de la réponse finale et l'envoie
+      // dans delta.reasoning_content. On émet un event distinct que le frontend
+      // affichera dans un bloc reasoning collapsé (pas mélangé au content).
+      if (delta.reasoning_content) {
+        yield { type: 'reasoning_delta', text: delta.reasoning_content };
       }
 
       // Tool calls

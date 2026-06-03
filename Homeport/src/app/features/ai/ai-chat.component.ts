@@ -407,6 +407,39 @@ interface StreamTool {
 
     </div>
 
+    <!-- Bandeau jaune permission INTÉGRÉE : style claude-code, juste sous le tool
+         en cours qui l'a déclenchée. Border-left orange, compact, action inline.
+         Si plusieurs perms en attente, on les liste l'une sous l'autre dans l'ordre. -->
+    <div class="perm-inline-banner-wrap" *ngIf="pendingPermissions().length > 0">
+      <div class="perm-inline-banner" *ngFor="let pm of pendingPermissions(); trackBy: trackPermMsg">
+        <div class="pib-left">
+          <span class="pib-lock" nz-icon nzType="lock" nzTheme="outline"></span>
+          <span class="pib-text">
+            <strong *ngIf="pm.metadata?.permissionRequest?.subagentType || pm.metadata?.permissionRequest?.agentName">
+              {{ (pm.metadata?.permissionRequest?.agentEmoji || '🤖') }} {{ pm.metadata?.permissionRequest?.agentName || pm.metadata?.permissionRequest?.subagentType }}
+            </strong>
+            <ng-container *ngIf="!pm.metadata?.permissionRequest?.subagentType && !pm.metadata?.permissionRequest?.agentName">L'assistant</ng-container>
+            demande l'autorisation d'exécuter
+            <strong>{{ pm.metadata?.permissionRequest?.toolLabel || pm.metadata?.permissionRequest?.toolName }}</strong>
+          </span>
+        </div>
+        <div class="pib-actions">
+          <button nz-button nzSize="small" (click)="answerInlinePerm(pm, 'once')">
+            <span nz-icon nzType="check" nzTheme="outline"></span> Une fois
+          </button>
+          <button nz-button nzSize="small" (click)="answerInlinePerm(pm, 'session')">
+            <span nz-icon nzType="clock-circle" nzTheme="outline"></span> Conversation
+          </button>
+          <button nz-button nzType="primary" nzSize="small" (click)="answerInlinePerm(pm, 'always')">
+            <span nz-icon nzType="check-circle" nzTheme="outline"></span> Toujours
+          </button>
+          <button nz-button nzSize="small" nzDanger (click)="answerInlinePerm(pm, 'deny')">
+            <span nz-icon nzType="close" nzTheme="outline"></span> Refuser
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- Indicateur subagents en cours : petite card compacte, toujours visible
          tant qu'au moins 1 subagent est actif. Click → ouvre le canvas Agents. -->
     <div class="subagent-live-indicator" *ngIf="ai.activeSubagents().length && !ai.pendingQuestion()"
@@ -919,6 +952,42 @@ interface StreamTool {
 
     /* Indicateur subagents en cours : compacte, 1 ligne, sticky.
        Max-width 768px centré pour s'aligner avec la conversation et le footer. */
+    /* ── Bandeau permission INTÉGRÉE (style claude-code) ──
+       Apparaît juste sous le dernier tool en cours. Fond jaune doux,
+       border-left orange. Compact, action inline avec 4 boutons. */
+    .perm-inline-banner-wrap {
+      max-width: 768px;
+      margin: 4px auto 8px;
+      padding: 0 16px;
+      box-sizing: border-box;
+      display: flex; flex-direction: column; gap: 6px;
+      animation: pibSlide 220ms cubic-bezier(.2,.8,.2,1);
+    }
+    @keyframes pibSlide {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .perm-inline-banner {
+      display: flex; align-items: center; gap: 12px;
+      padding: 8px 12px;
+      background: #fffbe6;
+      border: 1px solid #ffe58f;
+      border-left: 3px solid #fa8c16;
+      border-radius: 6px;
+      font-size: 12px;
+      animation: pibPulse 2.5s ease-in-out infinite;
+    }
+    @keyframes pibPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(250, 140, 22, 0); }
+      50% { box-shadow: 0 0 0 3px rgba(250, 140, 22, 0.08); }
+    }
+    .pib-left { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; }
+    .pib-lock { color: #fa8c16; font-size: 14px; flex-shrink: 0; }
+    .pib-text { color: #595959; line-height: 1.4; overflow: hidden; text-overflow: ellipsis; }
+    .pib-text strong { color: #262626; font-weight: 600; }
+    .pib-actions { display: flex; gap: 4px; flex-shrink: 0; }
+    .pib-actions button { font-size: 11px !important; padding: 0 8px !important; }
+
     .subagent-live-indicator {
       /* Sticky en bas pour rester visible pendant que l'user scrolle l'historique.
          Avant : scrollait avec le contenu → disparaissait dès qu'on remontait
@@ -1101,6 +1170,21 @@ export class AiChatComponent implements AfterViewInit {
     return ref;
   });
 
+  /** Permission(s) en attente — affichées en bandeau intégré sous le tool en cours.
+   *  Filtrées par !answer. Triées par createdAt pour l'ordre chronologique. */
+  pendingPermissions = computed(() => {
+    return this.ai.messages()
+      .filter(m => {
+        const md: any = m?.metadata;
+        return md?.kind === 'permission_request' && md?.permissionRequest && !md.permissionRequest.answer;
+      })
+      .sort((a: any, b: any) => {
+        const ta = new Date(a.createdAt || 0).getTime();
+        const tb = new Date(b.createdAt || 0).getTime();
+        return ta - tb;
+      });
+  });
+
   messageGroups = computed(() => {
     const msgs = this.ai.messages();
     const inlineRefs = this._inlineReferencedWidgetIds();
@@ -1111,6 +1195,14 @@ export class AiChatComponent implements AfterViewInit {
       const kind = m.metadata?.kind;
       const wid = m?.metadata?.widgetId;
       const isWidget = isWidgetKind(kind);
+      // ── permission_request EN ATTENTE : masquée de la timeline normale.
+      //    Elle sera affichée INTÉGRÉE en bandeau jaune juste sous le tool en
+      //    cours (style claude-code : la perm est un sous-état du tool, pas un
+      //    message à part). Une fois answered, on la laisse dans la timeline
+      //    en mode collapsed (mini bandeau reasoning-style).
+      if (kind === 'permission_request' && !m?.metadata?.permissionRequest?.answer) {
+        continue;
+      }
       // Cas 1 : widget standalone TOUJOURS masqué du chat principal.
       // Le widget apparaît :
       //   - inline via [[WIDGET:id]] dans le texte (rendu par ai-message)
@@ -1946,16 +2038,21 @@ export class AiChatComponent implements AfterViewInit {
         this.thinkingIteration = (ev as any).iteration || 0;
         break;
       // Forward builder-relevant events (patch, snapshot, args, desc, form.update)
+      // ⚠️ Garde-fou anti-boucle : si l'event vient DÉJÀ de sideEvents$ (le sendMessage
+      // pipe sideEvents$ → subj → processStreamEvent), ne pas re-emit dans sideEvents$
+      // → sinon stack overflow. Le flag _emittedAsSide est posé par emitSideEvent.
       case 'patch':
       case 'snapshot':
       case 'args':
       case 'desc':
-        console.log('[ai-chat] forwarding side event:', ev.type, ev);
-        this.ai.emitSideEvent(ev);
+        if (!(ev as any)._emittedAsSide) {
+          console.log('[ai-chat] forwarding side event:', ev.type, ev);
+          this.ai.emitSideEvent(ev);
+        }
         break;
     }
-    // Forward form and flow events too
-    if ((ev as any).type?.startsWith?.('form.') || (ev as any).type?.startsWith?.('flow.')) {
+    // Forward form and flow events too (même garde-fou)
+    if (((ev as any).type?.startsWith?.('form.') || (ev as any).type?.startsWith?.('flow.')) && !(ev as any)._emittedAsSide) {
       console.log('[ai-chat] forwarding form/flow event:', (ev as any).type, ev);
       this.ai.emitSideEvent(ev);
     }
@@ -1999,6 +2096,27 @@ export class AiChatComponent implements AfterViewInit {
    *  Angular détruise et recrée <ai-message> à chaque delta de stream (spread
    *  object → nouvelle référence → composant recreated sans trackBy = flash). */
   trackMsgById(i: number, m: any) { return m?._id || `m:${i}`; }
+  /** trackBy pour les permissions pending intégrées. */
+  trackPermMsg = (_: number, m: any) => m?.metadata?.permissionRequest?.requestId || m?._id || `p:${_}`;
+
+  /** Répond à une permission inline (bandeau jaune sous le tool en cours). */
+  answerInlinePerm(msg: any, decision: 'once' | 'session' | 'always' | 'deny') {
+    const req = msg?.metadata?.permissionRequest;
+    if (!req) return;
+    const jobId = (req as any)?.childJobId || (msg.metadata as any)?.jobId;
+    if (!jobId) return;
+    this.ai.respondToPermission(jobId, req.requestId, decision, undefined, req.toolName, req.risk).subscribe({
+      next: () => {
+        // Optimistic local update — la perm sort de pendingPermissions() et
+        // retombe dans la timeline en mode collapsed.
+        if (msg.metadata?.permissionRequest) {
+          msg.metadata.permissionRequest.answer = decision;
+          msg.metadata.permissionRequest.answeredAt = new Date().toISOString();
+        }
+        this.cdr.markForCheck();
+      },
+    });
+  }
 
   toolLabel(name: string): string {
     return TOOL_LABELS[name] || name;

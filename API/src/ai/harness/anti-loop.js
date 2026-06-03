@@ -25,13 +25,30 @@ function _signatureOf(toolResults) {
  * @param {Array} toolResults - résultats du tour courant
  * @returns {boolean} true si boucle détectée
  */
+/** Détecte les "erreurs applicatives" : tool a status:'success' MAIS son content
+ *  contient un marqueur d'échec (success:false, error:...). C'est le cas typique
+ *  des tools Kinn qui valident leurs args et retournent {success:false, error}
+ *  au lieu de throw. Le LLM les voit comme erreur métier et a tendance à boucler. */
+function _looksLikeAppError(toolResult) {
+  if (!toolResult) return false;
+  if (toolResult.status === 'error') return true;
+  const c = String(toolResult.content || '');
+  if (!c) return false;
+  // patterns concrets observés en prod : execute_code "language invalide",
+  // add_field "field_key_exists", "template_not_found", "invalid_reference"…
+  return /"success"\s*:\s*false|"error"\s*:\s*"|"code"\s*:\s*4\d\d/.test(c);
+}
+
 function detectInfiniteLoop(jobContext, toolResults) {
   if (!jobContext || !toolResults?.length) return false;
   const signature = _signatureOf(toolResults);
   jobContext._recentToolSigs = (jobContext._recentToolSigs || []).concat(signature).slice(-3);
   const sigs = jobContext._recentToolSigs;
   const allSame = sigs.length === 3 && sigs.every(s => s === sigs[0]);
-  const allFailed = sigs.length === 3 && toolResults.every(r => r.status === 'error');
+  // Élargi : compte aussi les "erreurs applicatives" (status=success mais
+  // content={success:false}). Avant, on ne voyait que status='error', du coup
+  // les boucles execute_code({}) → "language invalide" tournaient à l'infini.
+  const allFailed = sigs.length === 3 && toolResults.every(r => _looksLikeAppError(r));
   return allSame && allFailed;
 }
 

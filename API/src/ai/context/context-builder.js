@@ -82,6 +82,9 @@ async function buildContext({ companyId, workspaceId, userId }) {
       provider: env.AI_PROVIDER,
       model: env.AI_MODEL,
       apiKey: env.AI_API_KEY,
+      // baseURL pour serveurs OpenAI-compatibles (vLLM/Ollama/LM Studio/...).
+      // Vide si provider standard (anthropic/openai cloud) → ignoré côté client.
+      baseURL: env.AI_BASE_URL || undefined,
       temperature: env.AI_TEMPERATURE,
       maxTokens: env.AI_MAX_TOKENS,
       reasoningEffort: env.AI_REASONING_EFFORT,

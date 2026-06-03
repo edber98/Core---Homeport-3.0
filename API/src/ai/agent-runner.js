@@ -165,23 +165,27 @@ async function* runAgent({ mode, messages, context, metadata, agentOverrides }) 
 
   // 4. Create LLM client (allow agent override)
   const env = require('../config/env');
+  const VLLM_ALIASES = new Set(['vllm', 'ollama', 'lmstudio', 'openai-compatible', 'openai-compat']);
+  const resolveProviderConfig = (provider) => {
+    const p = String(provider || '').toLowerCase();
+    if (p === 'anthropic' || p === 'claude') {
+      return { apiKey: env.ANTHROPIC_API_KEY, baseURL: undefined, model: env.ANTHROPIC_MODEL };
+    }
+    if (VLLM_ALIASES.has(p)) {
+      return { apiKey: env.VLLM_API_KEY || 'local', baseURL: env.AI_BASE_URL || undefined, model: env.VLLM_MODEL || env.AI_MODEL };
+    }
+    return { apiKey: env.OPENAI_API_KEY, baseURL: undefined, model: env.OPENAI_MODEL };
+  };
   const llmConfig = { ...context.llmConfig };
   if (agentOverrides?.llmProvider) {
     llmConfig.provider = agentOverrides.llmProvider;
-    // Resolve correct API key for overridden provider
-    const p = agentOverrides.llmProvider.toLowerCase();
-    if (p === 'anthropic' || p === 'claude') {
-      llmConfig.apiKey = env.ANTHROPIC_API_KEY;
-    } else {
-      llmConfig.apiKey = env.OPENAI_API_KEY;
-    }
+    Object.assign(llmConfig, resolveProviderConfig(agentOverrides.llmProvider));
   }
   if (agentOverrides?.llmModel) llmConfig.model = agentOverrides.llmModel;
-  // AI_PROVIDER env explicite → override priorité absolue sur agent config
+  // AI_PROVIDER env explicite → override priorité absolue
   if (process.env.AI_PROVIDER) {
     llmConfig.provider = process.env.AI_PROVIDER;
-    const p = process.env.AI_PROVIDER.toLowerCase();
-    llmConfig.apiKey = (p === 'anthropic' || p === 'claude') ? env.ANTHROPIC_API_KEY : env.OPENAI_API_KEY;
+    Object.assign(llmConfig, resolveProviderConfig(process.env.AI_PROVIDER));
   }
   const llm = createLlmClient(llmConfig.provider, llmConfig);
 

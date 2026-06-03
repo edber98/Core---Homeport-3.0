@@ -230,6 +230,24 @@ function createAdapter(provider, config = {}) {
     return new AnthropicAdapter(config);
   }
 
+  // Aliases pour serveurs OpenAI-compatibles auto-hébergés :
+  //   vllm, ollama, lmstudio, openai-compatible, together, groq, mistral-api
+  // Tous utilisent l'API Chat Completions standard avec baseURL custom.
+  // L'user passe baseURL dans config (ex: 'http://192.168.1.10:8000/v1').
+  const OPENAI_COMPAT_ALIASES = new Set([
+    'vllm', 'ollama', 'lmstudio', 'lm-studio',
+    'openai-compatible', 'openai-compat',
+    'together', 'groq', 'mistral-api', 'fireworks',
+  ]);
+  if (OPENAI_COMPAT_ALIASES.has(p)) {
+    // Force Chat Completions (jamais Responses API pour les serveurs non-officiels)
+    // + apiKey défaut 'local' si non fourni (vLLM accepte n'importe quoi).
+    return new OpenAiChatAdapter({
+      ...config,
+      apiKey: config.apiKey || 'local',
+    });
+  }
+
   const env = require('../../config/env');
   const forceChat = env.AI_FORCE_CHAT_COMPLETIONS;
   const useResponses = !forceChat && (config.useResponsesApi || /^(gpt-5|o[1-9])/.test(config.model || ''));

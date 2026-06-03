@@ -56,11 +56,17 @@ const ROUTER_META_NAMES = ['ask_user', 'save_memory', 'get_memory'];
  */
 async function* runRouter({ messages, context, agentOverrides }) {
   const env = require('../config/env');
+  const VLLM_ALIASES = new Set(['vllm', 'ollama', 'lmstudio', 'openai-compatible', 'openai-compat']);
+  const resolveProviderConfig = (provider) => {
+    const p = String(provider || '').toLowerCase();
+    if (p === 'anthropic' || p === 'claude') return { apiKey: env.ANTHROPIC_API_KEY, baseURL: undefined, model: env.ANTHROPIC_MODEL };
+    if (VLLM_ALIASES.has(p)) return { apiKey: env.VLLM_API_KEY || 'local', baseURL: env.AI_BASE_URL || undefined, model: env.VLLM_MODEL || env.AI_MODEL };
+    return { apiKey: env.OPENAI_API_KEY, baseURL: undefined, model: env.OPENAI_MODEL };
+  };
   const llmConfig = { ...context.llmConfig };
   if (agentOverrides?.llmProvider) {
     llmConfig.provider = agentOverrides.llmProvider;
-    const p = agentOverrides.llmProvider.toLowerCase();
-    llmConfig.apiKey = (p === 'anthropic' || p === 'claude') ? env.ANTHROPIC_API_KEY : env.OPENAI_API_KEY;
+    Object.assign(llmConfig, resolveProviderConfig(agentOverrides.llmProvider));
   }
   if (agentOverrides?.llmModel) llmConfig.model = agentOverrides.llmModel;
   const llm = createLlmClient(llmConfig.provider, llmConfig);
